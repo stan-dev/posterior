@@ -1,0 +1,16 @@
+Package: posterior
+Type: Package
+Title: Tools for Working with Posterior Distributions
+Version: 0.1.0
+Authors@R: c(person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("cre", "aut")),
+             person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut")))
+Maintainer: Jonah Gabry <jsg2201@columbia.edu>
+Description: Efficiently converts between different representations of 
+    posterior samples and computes modern MCMC diagnostics.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
+URL: https://github.com/jgabry/posterior
+BugReports: https://github.com/jgabry/posterior/issues
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1
