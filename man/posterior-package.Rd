@@ -5,5 +5,6 @@
 \alias{posterior-package}
 \title{Tools for working posterior distributions}
 \description{
-Tools for working posterior distributions
+Efficiently convert between different representations of posterior samples
+and compute modern MCMC diagnostics.
 }
