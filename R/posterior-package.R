@@ -5,5 +5,6 @@
 #'
 #' @docType package
 #' @name posterior-package
+#' @import checkmate
 #'
 NULL
