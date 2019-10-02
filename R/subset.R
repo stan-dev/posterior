@@ -1,65 +1,41 @@
-#' @export
-subset_draws <- function(x, draws, ...) {
-  # TODO: add default method?
-  UseMethod("subset_draws")
-}
-
-subset_draws.default <- function(x, draws, ...) {
-  x <- as_posterior(x)
-  subset_draws(x, draws, ...)
-}
-
-#' @export
-subset_draws.vctrs_rray <- function(x, draws, ...) {
-  # TODO: add class on top of those provided by rray
-  # currently they are dropped my all math operations
-  if (is_posterior_matrix(x)) {
+.subset_draws <- function(x, draws, format = NULL, ...) {
+  format <- format %||% detect_draws_format(format)
+  if (format == "matrix") {
     out <- x[draws, ]
-  } else if (is_posterior_array(x)) {
+  } else if (format == "array") {
+    # use iteration and draws interchangably here?
     out <- x[draws, , ]
   } else {
-    x <- as_posterior(x)
-    out <- subset_draws(x, draws, ...)
+    stop2("Format '", format, "' is not supported.")
   }
   out
 }
 
-#' @export
-subset_pars <- function(x, pars, ...) {
-  UseMethod("subset_pars")
-}
-
-subset_pars.default <- function(x, pars, ...) {
-  x <- as_posterior(x)
-  subset_pars(x, pars, ...)
-}
-
-#' @export
-subset_pars.vctrs_rray <- function(x, pars, ...) {
-  x <- as_posterior(x)
-  if (is_posterior_matrix(x)) {
-    out <- x[, pars]
-  } else if (is_posterior_array(x)) {
-    out <- x[, , pars]
+.subset_variables <- function(x, variables, format = NULL, ...) {
+  format <- format %||% detect_draws_format(format)
+  if (format == "matrix") {
+    out <- x[, variables]
+  } else if (format == "array") {
+    out <- x[, , variables]
   } else {
-    x <- as_posterior(x)
-    out <- subset_pars(x, pars, ...)
+    stop2("Format '", format, "' is not supported.")
   }
   out
 }
 
-#' Extract posterior matrix of a single parameter
-#'
-#' extract a draws x chain matrix for a single parameter
-#' required for various convergence diagnostics.
-#'
-#' @param x A posterior object.
-#' @param par A parameter name to extract draws for.
-#'
-#' @export
-extract_one_par_matrix <- function(x, par) {
-  par <- as_one_character(par)
-  out <- subset_pars(x, par)
-  out <- as_posterior_array(out)
+# Extract posterior matrix of a single parameter
+#
+# extract a draws x chain matrix for a single parameter
+# required for various convergence diagnostics.
+#
+# @param x A posterior object.
+# @param variable A parameter name to extract draws for.
+#
+# @export
+.extract_one_variable_matrix <- function(x, variable, format = NULL, ...) {
+  variable <- as_one_character(variable)
+  format <- format %||% detect_draws_format(format)
+  out <- .subset_variables(x, variable, format = format)
+  out <- transform_posterior_draws(out, from = format, to = "array")
   rray_squeeze(out, axes = 3L)
 }

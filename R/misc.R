@@ -35,6 +35,11 @@ seq_dim <- function(x, dim) {
   out
 }
 
+'%||%' <- function(x, y) {
+  if (is.null(x)) x <- y
+  x
+}
+
 # coerce 'x' to a single logical value
 as_one_logical <- function(x, allow_na = FALSE) {
   s <- substitute(x)
