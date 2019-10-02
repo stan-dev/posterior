@@ -79,6 +79,11 @@ as_one_character <- function(x, allow_na = FALSE) {
   x
 }
 
+# check if two objects are equal
+is_equal <- function(x, y, ...) {
+  isTRUE(all.equal(x, y, ...))
+}
+
 # prettily deparse an expression
 # @return a single character string
 deparse2 <- function(x, max_chars = NULL, max_wsp = 1L) {
@@ -89,6 +94,18 @@ deparse2 <- function(x, max_chars = NULL, max_wsp = 1L) {
     out <- substr(out, 1L, max_chars)
   }
   out
+}
+
+#' @export
+quantile.vctrs_rray <- function(x, ...) {
+  # TODO: make a PR to rray for this?
+  quantile(as.vector(x), ...)
+}
+
+#' @export
+median.vctrs_rray <- function(x, ...) {
+  # TODO: make a PR to rray for this?
+  median(as.vector(x), ...)
 }
 
 isNA <- function(x) {

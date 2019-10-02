@@ -22,6 +22,7 @@ as_posterior <- function(x, class = NULL) {
 .as_posterior <- function(x) {
   assert_false(is_posterior(x))
   if (is_matrix_like(x)) {
+    message("Converting to a posterior matrix.")
     x <- as_rray(x)
     new_dimnames <- list(draw = NULL, par = NULL)
     if (!is.null(dimnames(x)[[2]])) {
@@ -33,10 +34,10 @@ as_posterior <- function(x, class = NULL) {
     # TODO: use existing row names in any way?
     new_dimnames[[1]] <- as.character(seq_rows(x))
     dimnames(x) <- new_dimnames
-    add_class(x) <- "posterior_matrix"
   } else if (is_3d_array_like(x)) {
+    message("Converting to a posterior array.")
     x <- as_rray(x)
-    new_dimnames <- list(iter = NULL, chain = NULL, par = NULL)
+    new_dimnames <- list(draw = NULL, chain = NULL, par = NULL)
     if (!is.null(dimnames(x)[[3]])) {
       new_dimnames[[3]] <- dimnames(x)[[3]]
     } else {
@@ -47,7 +48,6 @@ as_posterior <- function(x, class = NULL) {
     new_dimnames[[1]] <- as.character(seq_rows(x))
     new_dimnames[[2]] <- as.character(seq_cols(x))
     dimnames(x) <- new_dimnames
-    add_class(x) <- "posterior_array"
   } else {
     stop2("Don't know how to transform an object of class ",
           "'", class(x)[1L], "' to a posterior object.")
@@ -81,10 +81,13 @@ all_posterior_classes <- function() {
 
 # extract the posterior class
 posterior_class <- function(x) {
-  out <- class(x)[1L]
-  all_ps_classes <- paste0("posterior_", all_posterior_classes())
-  assert_choice(out, all_ps_classes)
-  out <- sub("^posterior_", "", out)
+  if (is_posterior_matrix(x)) {
+    out <- "matrix"
+  } else if (is_posterior_array(x)) {
+    out <- "array"
+  } else {
+    stop2("Posterior type not recognized.")
+  }
   out
 }
 
@@ -95,12 +98,12 @@ is_posterior <- function(x) {
 
 #' @export
 is_posterior_matrix <- function(x) {
-  inherits(x, "posterior_matrix")
+  is_rray(x) && is_equal(names(dimnames(x)), c("draw", "par"))
 }
 
 #' @export
 is_posterior_array <- function(x) {
-  inherits(x, "posterior_array")
+  is_rray(x) && is_equal(names(dimnames(x)), c("draw", "chain", "par"))
 }
 
 is_matrix_like <- function(x) {
