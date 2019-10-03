@@ -1,5 +1,5 @@
 # create a new posterior_draws object
-new_posterior_draws <- function(draws) {
+new_posterior_draws <- function(x) {
   format <- detect_posterior_format(x)
   if (isNA(format)) {
     format <- forecast_posterior_format(x)
