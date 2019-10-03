@@ -1,13 +1,17 @@
-# add a new class
-'add_class<-' <- function(x, value) {
-  class(x) <- c(value, class(x))
-  x
-}
-
-# change the top-level class
-'change_class<-' <- function(x, value) {
-  class(x) <- c(value, class(x)[-1L])
-  x
+# create a named list using object names
+nlist <- function(...) {
+  m <- match.call()
+  dots <- list(...)
+  no_names <- is.null(names(dots))
+  has_name <- if (no_names) FALSE else nzchar(names(dots))
+  if (all(has_name)) return(dots)
+  nms <- as.character(m)[-1]
+  if (no_names) {
+    names(dots) <- nms
+  } else {
+    names(dots)[!has_name] <- nms[!has_name]
+  }
+  dots
 }
 
 seq_rows <- function(x) {
@@ -38,6 +42,11 @@ seq_dim <- function(x, dim) {
 '%||%' <- function(x, y) {
   if (is.null(x)) x <- y
   x
+}
+
+# cat with without separating elements
+cat0 <- function(..., file = "", fill = FALSE, labels = NULL, append = FALSE) {
+  cat(..., sep = "", file = file, fill = fill, labels = labels, append = append)
 }
 
 # coerce 'x' to a single logical value

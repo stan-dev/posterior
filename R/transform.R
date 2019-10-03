@@ -1,5 +1,5 @@
 # tranform posterior object to another representation
-transform_posterior_draws <- function(x, to, from = NULL) {
+transform_posterior_format <- function(x, to, from = NULL) {
   from <- from %||% detect_draws_format(x)
   assert_choice(to, all_posterior_formats())
   assert_choice(from, all_posterior_formats())
