@@ -1,4 +1,4 @@
-# kept for reference; should eventually be removed if we decide against R6
+# file kept for reference; should eventually be removed
 #' @export
 posterior <- R6::R6Class(
   classname = "posterior",

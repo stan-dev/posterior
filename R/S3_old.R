@@ -1,3 +1,4 @@
+# file kept for reference; should eventually be removed
 # create a new posterior_draws object
 new_posterior_draws <- function(x) {
   format <- detect_posterior_format(x)
@@ -150,3 +151,108 @@ is_matrix_like <- function(x) {
 is_3d_array_like <- function(x) {
   (is.array(x) || is_rray(x)) && length(dim(x)) == 3L
 }
+
+# tranform posterior object to another representation
+transform_posterior_format <- function(x, to, from = NULL) {
+  from <- from %||% detect_draws_format(x)
+  assert_choice(to, all_posterior_formats())
+  assert_choice(from, all_posterior_formats())
+  fun <- paste0("posterior_", from, "_to_", to)
+  fun <- get(fun, pos = asNamespace("posterior"))
+  fun(x)
+}
+
+posterior_matrix_to_matrix <- function(x) {
+  x
+}
+
+posterior_matrix_to_array <- function(x) {
+  old_dim <- dim(x)
+  old_dimnames <- dimnames(x)
+  x <- rray_reshape(x, dim = c(old_dim[1], 1, old_dim[2]))
+  dimnames(x) <- list(
+    iteration = as.character(seq_rows(x)),
+    chain = "1",
+    variable = old_dimnames[[2]]
+  )
+  x
+}
+
+posterior_array_to_matrix <- function(x) {
+  old_dim <- dim(x)
+  old_dimnames <- dimnames(x)
+  x <- rray_reshape(x, dim = c(old_dim[1] * old_dim[2], old_dim[3]))
+  dimnames(x) <- list(
+    draw = as.character(seq_rows(x)),
+    variable = old_dimnames[[3]]
+  )
+  x
+}
+
+posterior_array_to_array <- function(x) {
+  x
+}
+
+# @export
+# subset_draws <- function(x, draws, ...) {
+#   assert_class(x, "posterior_draws")
+#   x$draws <- .subset_draws(x$draws, draws, format = x$format, ...)
+#   x
+# }
+
+# helper function to subset draws for any posterior format
+# .subset_draws <- function(x, draws, format = NULL, ...) {
+#   format <- format %||% detect_draws_format(format)
+#   if (format == "matrix") {
+#     out <- x[draws, ]
+#   } else if (format == "array") {
+#     # use iteration and draws interchangably here?
+#     out <- x[draws, , ]
+#   } else {
+#     stop2("Format '", format, "' is not supported.")
+#   }
+#   out
+# }
+
+# @export
+# subset_variables <- function(x, variables, ...) {
+#   assert_class(x, "posterior_draws")
+#   x$draws <- .subset_variables(x$draws, variables, format = x$format, ...)
+#   x
+# }
+
+# helper function to subset variables for any posterior format
+# .subset_variables <- function(x, variables, format = NULL, ...) {
+#   format <- format %||% detect_draws_format(format)
+#   if (format == "matrix") {
+#     out <- x[, variables]
+#   } else if (format == "array") {
+#     out <- x[, , variables]
+#   } else {
+#     stop2("Format '", format, "' is not supported.")
+#   }
+#   out
+# }
+
+# Extract posterior matrix of a single parameter
+#
+# extract a iteration x chain matrix for a single parameter
+# required for various convergence diagnostics.
+#
+# @param x A posterior_draws object.
+# @param variable A parameter name to extract draws for.
+#
+# @export
+# extract_one_variable_matrix <- function(x, variable, ...) {
+#   .extract_one_variable_matrix(x$draws, variable, format = x$format, ...)
+# }
+
+# helper function to extract draws for a single variable
+# .extract_one_variable_matrix <- function(x, variable, format = NULL, ...) {
+#   variable <- as_one_character(variable)
+#   format <- format %||% detect_draws_format(format)
+#   out <- .subset_variables(x, variable, format = format)
+#   out <- transform_posterior_format(out, from = format, to = "array")
+#   rray_squeeze(out, axes = 3L)
+# }
+
