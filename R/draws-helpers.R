@@ -29,29 +29,25 @@ is_draws_array_like <- function(x) {
 }
 
 #' @export
-'[.draws_matrix' <- function(x, ..., drop = FALSE) {
-  # TODO: warn that drop = TRUE will be ignored
-  old_class <- class(x)
-  class(x) <- "matrix"
-  x <- x[..., drop = FALSE]
-  class(x) <- old_class
-  x
+`[.draws_matrix` <- function(x, i, j, ..., drop = FALSE) {
+  # TODO: add a warning that 'drop' is ignored?
+  out <- NextMethod("[", drop = FALSE)
+  class(out) <- class(x)
+  out
 }
 
 #' @export
-'[.draws_array' <- function(x, ..., drop = FALSE) {
-  # TODO: warn that drop = TRUE will be ignored
-  old_class <- class(x)
-  class(x) <- "array"
-  x <- x[..., drop = FALSE]
-  class(x) <- old_class
-  x
+`[.draws_array` <- function(x, i, j, ..., drop = FALSE) {
+  # TODO: add a warning that 'drop' is ignored?
+  out <- NextMethod("[", drop = FALSE)
+  class(out) <- class(x)
+  out
 }
 
 # TODO: do we want to support these '$' methods at all?
 # select draws of a single parameter
 #' @export
-'$.draws_matrix' <- function(x, name) {
+`$.draws_matrix` <- function(x, name) {
   class(x) <- "matrix"
   out <- x[, name, drop = FALSE]
   # selectively drop the second dimension
@@ -62,7 +58,7 @@ is_draws_array_like <- function(x) {
 
 # select draws of a single parameter
 #' @export
-'$.draws_array' <- function(x, name) {
+`$.draws_array` <- function(x, name) {
   class(x) <- "array"
   out <- x[, , name, drop = FALSE]
   # selectively drop the third dimension
