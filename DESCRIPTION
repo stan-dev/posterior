@@ -7,8 +7,7 @@ Authors@R: c(person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("
 Description: Efficiently converts between different representations of 
     posterior samples and computes summaries and modern MCMC diagnostics.
 Imports:
-  checkmate,
-  rray
+  checkmate
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
