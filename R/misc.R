@@ -39,6 +39,25 @@ seq_dim <- function(x, dim) {
   out
 }
 
+# selectively drop dimensions of arrays
+drop_dims <- function(x, dims = NULL) {
+  assert_array(x)
+  assert_integerish(dims, null.ok = TRUE)
+  old_dims <- dim(x)
+  if (is.null(dims)) {
+    dims <- old_dims[old_dims == 1L]
+  } else {
+    assert_true(all(old_dims[dims] <= 1L))
+  }
+  if (!length(dims)) {
+    return(x)
+  }
+  old_dimnames <- dimnames(x)
+  dim(x) <- old_dims[-dims]
+  dimnames(x) <- old_dimnames[-dims]
+  x
+}
+
 '%||%' <- function(x, y) {
   if (is.null(x)) x <- y
   x
@@ -110,16 +129,59 @@ deparse2 <- function(x, max_chars = NULL, max_wsp = 1L) {
   out
 }
 
-#' @export
-quantile.vctrs_rray <- function(x, ...) {
-  # TODO: make a PR to rray for this?
-  quantile(as.vector(x), ...)
+# like 'eval' but parses characters before evaluation
+eval2 <- function(expr, envir = parent.frame(), ...) {
+  if (is.character(expr)) {
+    expr <- parse(text = expr)
+  }
+  eval(expr, envir, ...)
 }
 
-#' @export
-median.vctrs_rray <- function(x, ...) {
-  # TODO: make a PR to rray for this?
-  median(as.vector(x), ...)
+# Execute a Function Call
+#
+# Execute a function call similar to \code{\link{do.call}}, but without
+# deparsing function arguments.
+#
+# @param what Either a function or a non-empty character string naming the
+#   function to be called.
+# @param args A list of arguments to the function call. The names attribute of
+#   \code{args} gives the argument names.
+# @param pkg Optional name of the package in which to search for the
+#   function if \code{what} is a character string.
+#
+# @return The result of the (evaluated) function call.
+#
+# @keywords internal
+# @export
+do_call <- function(what, args, pkg = NULL) {
+  call <- ""
+  if (length(args)) {
+    if (!is.list(args)) {
+      stop2("'args' must be a list.")
+    }
+    fun_args <- names(args)
+    if (is.null(fun_args)) {
+      fun_args <- rep("", length(args))
+    } else {
+      nzc <- nzchar(fun_args)
+      fun_args[nzc] <- paste0("`", fun_args[nzc], "` = ")
+    }
+    names(args) <- paste0(".x", seq_along(args))
+    call <- paste0(fun_args, names(args), collapse = ",")
+  } else {
+    args <- list()
+  }
+  if (is.function(what)) {
+    args$.fun <- what
+    what <- ".fun"
+  } else {
+    what <- paste0("`", as_one_character(what), "`")
+    if (!is.null(pkg)) {
+      what <- paste0(as_one_character(pkg), "::", what)
+    }
+  }
+  call <- paste0(what, "(", call, ")")
+  eval2(call, envir = args, enclos = parent.frame())
 }
 
 isNA <- function(x) {

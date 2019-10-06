@@ -11,10 +11,17 @@ subset_variables.default <- function(x, variables, ...) {
 
 #' @export
 subset_variables.draws_matrix <- function(x, variables, ...) {
-  x[, variables]
+  x[, unique(variables)]
 }
 
 #' @export
 subset_variables.draws_array <- function(x, variables, ...) {
-  x[, , variables]
+  x[, , unique(variables)]
+}
+
+#' @export
+subset_variables.draws_data_frame <- function(x, variables, ...) {
+  variables <- unique(variables)
+  extra_cols <- c(".iteration", ".chain", ".draw")
+  x[, c(variables, extra_cols)]
 }

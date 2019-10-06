@@ -10,6 +10,11 @@ as_draws_array.default <- function(x, ...) {
 }
 
 #' @export
+as_draws_array.draws_array <- function(x, ...) {
+  x
+}
+
+#' @export
 as_draws_array.draws_matrix <- function(x, ...) {
   old_dim <- dim(x)
   old_dimnames <- dimnames(x)
@@ -23,9 +28,27 @@ as_draws_array.draws_matrix <- function(x, ...) {
   x
 }
 
+#' @importFrom abind abind
 #' @export
-as_draws_array.draws_array <- function(x, ...) {
-  x
+as_draws_array.draws_data_frame <- function(x, ...) {
+  iterations <- .iterations(x)
+  chains <- .chains(x)
+  variables <- setdiff(names(x), meta_cols())
+  out <- vector("list", length(chains))
+  for (i in seq_along(out)) {
+    out[[i]] <- x[x$.chain == i, ]
+    out[[i]] <- remove_meta_columns(out[[i]])
+    out[[i]] <- as.matrix(out[[i]])
+  }
+  # TODO: add NAs if some chains have fewer iterations than others?
+  out <- abind(out, along = 3L)
+  dimnames(out) <- list(
+    iteration = iterations,
+    chain = chains,
+    variable = variables
+  )
+  class(out) <- c("draws_array", "array")
+  out
 }
 
 .as_draws_array <- function(x, ...) {

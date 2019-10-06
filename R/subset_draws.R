@@ -18,3 +18,5 @@ subset_draws.draws_matrix <- function(x, draws, ...) {
 subset_draws.draws_array <- function(x, draws, ...) {
   x[draws, , ]
 }
+
+# TODO: implement 'subset_draws.draws_data_frame' once #6 is resolved

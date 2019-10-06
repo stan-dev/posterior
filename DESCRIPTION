@@ -7,6 +7,8 @@ Authors@R: c(person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("
 Description: Efficiently converts between different representations of 
     posterior samples and computes summaries and modern MCMC diagnostics.
 Imports:
+  tibble,
+  abind,
   checkmate
 License: What license is it under?
 Encoding: UTF-8

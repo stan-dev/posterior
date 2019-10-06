@@ -27,6 +27,16 @@ as_draws_matrix.draws_array <- function(x, ...) {
   x
 }
 
+#' @export
+as_draws_matrix.draws_data_frame <- function(x, ...) {
+  draws <- x$.draw
+  x <- remove_meta_columns(x)
+  class(x) <- class(x)[-1L]
+  x <- .as_draws_matrix(x)
+  rownames(x) <- draws
+  x
+}
+
 # try to convert any R object into a 'draws_matrix' object
 .as_draws_matrix <- function(x, ...) {
   x <- as.matrix(x)
@@ -34,7 +44,7 @@ as_draws_matrix.draws_array <- function(x, ...) {
   if (!is.null(dimnames(x)[[2]])) {
     new_dimnames[[2]] <- dimnames(x)[[2]]
   } else {
-    # TODO: how format call variables by default?
+    # TODO: how to call variables by default?
     new_dimnames[[2]] <- paste0("variable", seq_cols(x))
   }
   # TODO: use existing row names in any way?

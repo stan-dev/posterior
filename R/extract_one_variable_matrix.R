@@ -19,10 +19,7 @@ extract_one_variable_matrix.draws_matrix <- function(x, variable, ...) {
 
 #' @export
 extract_one_variable_matrix.draws_array <- function(x, variable, ...) {
-  out <- x[, , variable]
-  # selectively drop the third dimension
-  dim(out) <- dim(x)[1:2]
-  dimnames(out) <- dimnames(x)[1:2]
+  out <- drop_dims(x[, , variable], dims = 3)
   class(out) <- "matrix"
   out
 }
