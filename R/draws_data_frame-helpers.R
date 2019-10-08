@@ -10,7 +10,7 @@ is_draws_data_frame_like <- function(x) {
 
 # meta column names
 meta_columns <- function() {
-  c(".iteration", ".chains", ".draw")
+  c(".iteration", ".chain", ".draw")
 }
 
 # remove meta columns
