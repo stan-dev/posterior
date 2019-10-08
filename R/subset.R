@@ -10,6 +10,7 @@ subset.draws_matrix <- function(x, variables = NULL, iterations = NULL,
     }
     draws <- iterations
   }
+  variables <- unique(variables)
   x <- subset_dims(x, draws, variables)
   rownames(x) <- as.character(seq_rows(x))
   x
@@ -21,6 +22,7 @@ subset.draws_array <- function(x, variables = NULL, iterations = NULL,
   if (!is.null(draws)) {
     stop2("Cannot subset 'draws' in 'draws_array' objects.")
   }
+  variables <- unique(variables)
   x <- subset_dims(x, iterations, chains, variables)
   rownames(x) <- as.character(seq_rows(x))
   colnames(x) <- as.character(seq_cols(x))
@@ -40,8 +42,7 @@ subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
   }
   if (!is.null(variables)) {
     variables <- unique(variables)
-    variables <- c(variables, meta_columns())
-    x <- x[, c(variables, extra_cols)]
+    x <- x[, c(variables, meta_columns())]
   }
   if (!is.null(draws)) {
     x <- x[x$.draw %in% draws, ]
