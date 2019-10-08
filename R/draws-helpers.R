@@ -15,9 +15,25 @@ closest_draws_format <- function(x) {
 
 # transform an object to the closest supported draws format
 as_closest_draws_format <- function(x) {
+  if (is_draws_object(x)) {
+    return(x)
+  }
   format <- closest_draws_format(x)
   fun <- get(paste0(".as_", format), asNamespace("posterior"))
   fun(x)
+}
+
+# is an object in one of the supported draws classes?
+is_draws_object <- function(x) {
+  is_draws_matrix(x) || is_draws_array(x) || is_draws_data_frame(x)
+}
+
+# check if an object is supported by the posterior package
+check_draws_object <- function(x) {
+  if (!is_draws_object(x)) {
+    stop2("'x' is not in a format supported by posterior.")
+  }
+  x
 }
 
 # TODO: move these functions to separate files?

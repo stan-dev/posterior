@@ -1,3 +1,8 @@
+#' @export
+is_draws_array <- function(x) {
+  inherits(x, "draws_array")
+}
+
 # is an object looking like a 'draws_array' object?
 is_draws_array_like <- function(x) {
   is.array(x) && length(dim(x)) == 3L
