@@ -24,14 +24,15 @@ as_draws_data_frame.draws_matrix <- function(x, ...) {
   x$.iteration <- draws
   x$.chain <- 1L
   x$.draw <- draws
+  x <- move_meta_columns_first(x)
   class(x) <- c("draws_data_frame", class(x))
   x
 }
 
 #' @export
 as_draws_data_frame.draws_array <- function(x, ...) {
-  iterations <- .iterations(x)
-  chains <- .chains(x)
+  iterations <- iterations(x)
+  chains <- chains(x)
   rownames(x) <- NULL
   out <- vector("list", NCOL(x))
   for (i in seq_along(out)) {
@@ -43,6 +44,7 @@ as_draws_data_frame.draws_array <- function(x, ...) {
     out[[i]]$.draw <- compute_draw_indices(iterations, chains[i])
   }
   out <- do_call(rbind, out)
+  x <- move_meta_columns_first(x)
   class(out) <- c("draws_data_frame", class(out))
   out
 }
@@ -54,6 +56,7 @@ as_draws_data_frame.draws_array <- function(x, ...) {
   x$.iteration <- seq_len(NROW(x))
   x$.chain <- 1L
   x$.draw <- compute_draw_indices(x$.iteration, x$.chain)
+  x <- move_meta_columns_first(x)
   class(x) <- c("draws_data_frame", class(x))
   x
 }

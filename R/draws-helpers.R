@@ -37,42 +37,63 @@ check_draws_object <- function(x) {
 }
 
 # TODO: move these functions to separate files?
+# get variable names
+variables <- function(x) {
+  UseMethod("variables")
+}
+
+#' @export
+variables.draws_matrix <- function(x) {
+  colnames(x)
+}
+
+#' @export
+variables.draws_array <- function(x) {
+  dimnames(x)[[3L]]
+}
+
+#' @export
+variables.draws_data_frame <- function(x) {
+  setdiff(names(x), meta_columns())
+}
+
+# TODO: return all iteration indices or the number of iterations?
 # get iteration indices
-.iterations <- function(x) {
-  UseMethod(".iterations")
+iterations <- function(x) {
+  UseMethod("iterations")
 }
 
 #' @export
-.iterations.draws_matrix <- function(x) {
+iterations.draws_matrix <- function(x) {
   as.integer(rownames(x))
 }
 
 #' @export
-.iterations.draws_array <- function(x) {
+iterations.draws_array <- function(x) {
   as.integer(rownames(x))
 }
 
 #' @export
-.iterations.draws_data_frame <- function(x) {
+iterations.draws_data_frame <- function(x) {
   as.integer(unique(x$.iteration))
 }
 
 # get chain indices
-.chains <- function(x) {
-  UseMethod(".chains")
+chains <- function(x) {
+  UseMethod("chains")
 }
 
 #' @export
-.chains.draws_matrix <- function(x) {
+chains.draws_matrix <- function(x) {
   1L
 }
 
 #' @export
-.chains.draws_array <- function(x) {
+chains.draws_array <- function(x) {
   as.integer(colnames(x))
 }
 
 #' @export
-.chains.draws_data_frame <- function(x) {
+chains.draws_data_frame <- function(x) {
   as.integer(unique(x$.chain))
 }

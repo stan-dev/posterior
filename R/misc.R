@@ -14,6 +14,22 @@ nlist <- function(...) {
   dots
 }
 
+# initialize a named list
+# @param names names of the elements
+# @param values optional values of the elements
+named_list <- function(names, values = NULL) {
+  if (!is.null(values)) {
+    if (length(values) <= 1L) {
+      values <- replicate(length(names), values)
+    }
+    values <- as.list(values)
+    stopifnot(length(values) == length(names))
+  } else {
+    values <- vector("list", length(names))
+  }
+  setNames(values, names)
+}
+
 seq_rows <- function(x) {
   seq_len(NROW(x))
 }
@@ -197,6 +213,10 @@ repl <- function(expr, n) {
 
 isNA <- function(x) {
   length(x) == 1L && is.na(x)
+}
+
+is_constant <- function(x, tol = .Machine$double.eps) {
+  abs(max(x) - min(x)) < tol
 }
 
 stop2 <- function(...) {

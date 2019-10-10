@@ -85,7 +85,7 @@ z_scale <- function(x) {
   z <- qnorm((r - 1 / 2) / S)
   if (!is.null(dim(x))) {
     # output should have the input dimension
-    z <- rray(z, dim = dim(x), dim_names = dimnames(x))
+    z <- array(z, dim = dim(x), dimnames = dimnames(x))
   }
   z
 }
@@ -109,7 +109,7 @@ u_scale <- function(x) {
   u <- (r - 1 / 2) / S
   if (!is.null(dim(x))) {
     # output should have the input dimension
-    u <- rray(u, dim = dim(x), dim_names = dimnames(x))
+    u <- array(u, dim = dim(x), dimnames = dimnames(x))
   }
   u
 }
@@ -131,102 +131,97 @@ r_scale <- function(x) {
   r <- rank(as.array(x), ties.method = 'average')
   if (!is.null(dim(x))) {
     # output should have the input dimension
-    r <- rray(r, dim = dim(x), dim_names = dimnames(x))
+    r <- array(r, dim = dim(x), dimnames = dimnames(x))
   }
   r
 }
 
+# split Markov chains
+# @param x a 2D array of draws (# iter * # chains)
 split_chains <- function(x) {
-  # split Markov chains
-  # Args:
-  #   x: a 2D array of samples (# iter * # chains)
   niter <- dim(x)[1]
   if (niter == 1L) {
     return(x)
   }
   half <- niter / 2
-  rray_cbind(x[1:floor(half), ], x[ceiling(half + 1):niter, ])
+  cbind(x[1:floor(half), ], x[ceiling(half + 1):niter, ])
 }
 
-is_constant <- function(x, tol = .Machine$double.eps) {
-  abs(max(x) - min(x)) < tol
-}
-
-#' Traditional Rhat convergence diagnostic
-#'
-#' Compute the Rhat convergence diagnostic for a single parameter
-#' For split-Rhat, call this with split chains.
-#'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
-#'
-#' @return A single numeric value for Rhat.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
-rhat_rfun <- function(x) {
+# Traditional Rhat convergence diagnostic
+#
+# Compute the Rhat convergence diagnostic for a single parameter
+# For split-Rhat, call this with split chains.
+#
+# @param x A 2D array _without_ warmup draws (# iter * # chains).
+#
+# @return A single numeric value for Rhat.
+#
+# @references
+# Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
+# Paul-Christian Bürkner (2019). Rank-normalization, folding, and
+# localization: An improved R-hat for assessing convergence of
+# MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+.rhat <- function(x) {
   if (any(!is.finite(x))) {
     return(NaN)
   }
   else if (is_constant(x)) {
     return(1)
   }
-  chains <- ncol(x)
-  ndraws <- nrow(x)
-  chain_mean <- numeric(chains)
-  chain_var <- numeric(chains)
-  for (i in seq_len(chains)) {
+  nchains <- NCOL(x)
+  niterations <- NROW(x)
+  chain_mean <- numeric(nchains)
+  chain_var <- numeric(nchains)
+  for (i in seq_len(nchains)) {
     chain_mean[i] <- mean(x[, i])
     chain_var[i] <- var(x[, i])
   }
-  var_between <- ndraws * var(chain_mean)
+  var_between <- niterations * var(chain_mean)
   var_within <- mean(chain_var)
-  sqrt((var_between / var_within + ndraws - 1) / ndraws)
+  sqrt((var_between / var_within + niterations - 1) / niterations)
 }
 
-#' Effective sample size
-#'
-#' Compute the effective sample size estimate for a sample of several chains
-#' for one parameter. For split-ESS, call this with split chains.
-#'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
-#'
-#' @return A single numeric value for the effective sample size.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
-ess_rfun <- function(x) {
-  chains <- ncol(x)
-  ndraws <- nrow(x)
-  if (any(!is.finite(x)) || ndraws < 3L) {
+# Effective sample size
+#
+# Compute the effective sample size estimate for a sample of several chains
+# for one parameter. For split-ESS, call this with split chains.
+#
+# @param x A 2D array _without_ warmup draws (# iter * # chains).
+#
+# @return A single numeric value for the effective sample size.
+#
+# @references
+# Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
+# Paul-Christian Bürkner (2019). Rank-normalization, folding, and
+# localization: An improved R-hat for assessing convergence of
+# MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+.ess <- function(x) {
+  nchains <- NCOL(x)
+  niterations <- NROW(x)
+  if (any(!is.finite(x)) || niterations < 3L) {
     return(NaN)
   }
   else if (is_constant(x)) {
-    return(chains * ndraws)
+    return(nchains * niterations)
   }
-  .acov_fun <- function(i) autocovariance(rray_extract(x, , i))
-  acov <- lapply(seq_len(chains), .acov_fun)
+  acov_fun <- function(i) autocovariance(x[, i])
+  acov <- lapply(seq_len(nchains), acov_fun)
   acov <- do.call(cbind, acov)
   chain_mean <- apply(x, 2, mean)
-  mean_var <- mean(acov[1, ]) * ndraws / (ndraws - 1)
-  var_plus <- mean_var * (ndraws - 1) / ndraws
-  if (chains > 1) {
+  mean_var <- mean(acov[1, ]) * niterations / (niterations - 1)
+  var_plus <- mean_var * (niterations - 1) / niterations
+  if (nchains > 1) {
     var_plus <- var_plus + var(chain_mean)
   }
 
   # Geyer's initial positive sequence
-  rho_hat_t <- rep.int(0, ndraws)
+  rho_hat_t <- rep.int(0, niterations)
   t <- 0
   rho_hat_even <- 1
   rho_hat_t[t + 1] <- rho_hat_even
   rho_hat_odd <- 1 - (mean_var - mean(acov[t + 2, ])) / var_plus
   rho_hat_t[t + 2] <- rho_hat_odd
-  while (t < nrow(acov) - 5 && !is.nan(rho_hat_even + rho_hat_odd) &&
+  while (t < NROW(acov) - 5 && !is.nan(rho_hat_even + rho_hat_odd) &&
          (rho_hat_even + rho_hat_odd > 0)) {
     t <- t + 2
     rho_hat_even = 1 - (mean_var - mean(acov[t + 1, ])) / var_plus
@@ -251,7 +246,7 @@ ess_rfun <- function(x) {
       rho_hat_t[t + 2] = rho_hat_t[t + 1];
     }
   }
-  ess <- chains * ndraws
+  ess <- nchains * niterations
   # Geyer's truncated estimate
   # tau_hat <- -1 + 2 * sum(rho_hat_t[1:max_t])
   # Improved estimate reduces variance in antithetic case
@@ -279,9 +274,9 @@ ess_rfun <- function(x) {
 #'
 #' @export
 Rhat <- function(x) {
-  bulk_rhat <- rhat_rfun(z_scale(split_chains(x)))
+  bulk_rhat <- .rhat(z_scale(split_chains(x)))
   sims_folded <- abs(x - median(x))
-  tail_rhat <- rhat_rfun(z_scale(split_chains(sims_folded)))
+  tail_rhat <- .rhat(z_scale(split_chains(sims_folded)))
   max(bulk_rhat, tail_rhat)
 }
 
@@ -304,7 +299,7 @@ Rhat <- function(x) {
 #'
 #' @export
 ess_bulk <- function(x) {
-  ess_rfun(z_scale(split_chains(x)))
+  .ess(z_scale(split_chains(x)))
 }
 
 #' Tail effective sample size (tail-ESS)
@@ -327,9 +322,9 @@ ess_bulk <- function(x) {
 #' @export
 ess_tail <- function(x) {
   I05 <- x <= quantile(x, 0.05)
-  q05_ess <- ess_rfun(split_chains(I05))
+  q05_ess <- .ess(split_chains(I05))
   I95 <- x <= quantile(x, 0.95)
-  q95_ess <- ess_rfun(split_chains(I95))
+  q95_ess <- .ess(split_chains(I95))
   min(q05_ess, q95_ess)
 }
 
@@ -353,7 +348,7 @@ ess_tail <- function(x) {
 #' @export
 ess_quantile <- function(x, prob) {
   I <- x <= quantile(x, prob)
-  ess_rfun(split_chains(I))
+  .ess(split_chains(I))
 }
 
 #' Effective sample size
@@ -374,7 +369,7 @@ ess_quantile <- function(x, prob) {
 #'
 #' @export
 ess_mean <- function(x) {
-  ess_rfun(split_chains(x))
+  .ess(split_chains(x))
 }
 
 #' Effective sample size
@@ -396,7 +391,7 @@ ess_mean <- function(x) {
 #'
 #' @export
 ess_sd <- function(x) {
-  min(ess_rfun(split_chains(x)), ess_rfun(split_chains(x^2)))
+  min(.ess(split_chains(x)), .ess(split_chains(x^2)))
 }
 
 #' Monte Carlo standard error for a quantile

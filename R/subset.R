@@ -42,7 +42,7 @@ subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
   }
   if (!is.null(variables)) {
     variables <- unique(variables)
-    x <- x[, c(variables, meta_columns())]
+    x <- x[, c(meta_columns(x), variables)]
   }
   if (!is.null(draws)) {
     x <- x[x$.draw %in% draws, ]
