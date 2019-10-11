@@ -50,8 +50,8 @@ as_draws_array.draws_data_frame <- function(x, ...) {
   out
 }
 
-.as_draws_array <- function(x, ...) {
-  message("Converting to a posterior array.")
+# try to convert any R object into a 'draws_array' object
+.as_draws_array <- function(x) {
   x <- as.array(x)
   new_dimnames <- list(iteration = NULL, chain = NULL, variable = NULL)
   if (!is.null(dimnames(x)[[3]])) {

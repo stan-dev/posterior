@@ -27,16 +27,6 @@ remove_meta_columns <- function(x) {
   x
 }
 
-# move meta columns to the start of a list or data frame
-move_meta_columns_first <- function(x) {
-  assert_true(is.list(x))
-  meta_columns <- intersect(names(x), meta_columns())
-  if (!length(meta_columns)) {
-    return(x)
-  }
-  x[c(meta_columns, setdiff(names(x), meta_columns))]
-}
-
 # compute index over draws from iteration and chain indices
 compute_draw_indices <- function(iterations, chains) {
   niter <- max(iterations)

@@ -38,7 +38,7 @@ as_draws_matrix.draws_data_frame <- function(x, ...) {
 }
 
 # try to convert any R object into a 'draws_matrix' object
-.as_draws_matrix <- function(x, ...) {
+.as_draws_matrix <- function(x) {
   x <- as.matrix(x)
   new_dimnames <- list(draw = NULL, variable = NULL)
   if (!is.null(dimnames(x)[[2]])) {

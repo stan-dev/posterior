@@ -29,7 +29,7 @@ summarise_draws.default <- function(x, measures = NULL,
   }
   out <- as_tibble(do_call(rbind, out))
   out$.variable <- variables
-  out <- move_meta_columns_first(out)
+  out <- move_to_start(out, ".variable")
   out
 }
 

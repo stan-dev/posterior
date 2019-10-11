@@ -133,6 +133,18 @@ is_equal <- function(x, y, ...) {
   isTRUE(all.equal(x, y, ...))
 }
 
+# move elements to the start of a named object
+move_to_start <- function(x, start) {
+  assert_named(x)
+  start <- intersect(names(x), start)
+  if (!length(start)) {
+    return(x)
+  }
+  out <- x[c(start, setdiff(names(x), start))]
+  class(out) <- class(x)
+  out
+}
+
 # prettily deparse an expression
 # @return a single character string
 deparse2 <- function(x, max_chars = NULL, max_wsp = 1L) {

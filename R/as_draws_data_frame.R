@@ -24,7 +24,7 @@ as_draws_data_frame.draws_matrix <- function(x, ...) {
   x$.iteration <- draws
   x$.chain <- 1L
   x$.draw <- draws
-  x <- move_meta_columns_first(x)
+  x <- move_to_start(x, meta_columns())
   class(x) <- c("draws_data_frame", class(x))
   x
 }
@@ -44,19 +44,20 @@ as_draws_data_frame.draws_array <- function(x, ...) {
     out[[i]]$.draw <- compute_draw_indices(iterations, chains[i])
   }
   out <- do_call(rbind, out)
-  x <- move_meta_columns_first(x)
+  out <- move_to_start(out, meta_columns())
   class(out) <- c("draws_data_frame", class(out))
   out
 }
 
-.as_draws_data_frame <- function(x, ...) {
+# try to convert any R object into a 'draws_data_frame' object
+.as_draws_data_frame <- function(x) {
   # TODO: add a proper names_repair function?
   x <- as_tibble(x)
   # TODO: validate and use existing .iteration and .chain columns
   x$.iteration <- seq_len(NROW(x))
   x$.chain <- 1L
   x$.draw <- compute_draw_indices(x$.iteration, x$.chain)
-  x <- move_meta_columns_first(x)
+  x <- move_to_start(x, meta_columns())
   class(x) <- c("draws_data_frame", class(x))
   x
 }
