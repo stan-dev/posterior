@@ -44,8 +44,8 @@ as_draws_matrix.draws_data_frame <- function(x, ...) {
   if (!is.null(dimnames(x)[[2]])) {
     new_dimnames[[2]] <- dimnames(x)[[2]]
   } else {
-    # TODO: how to call variables by default?
-    new_dimnames[[2]] <- paste0("variable", seq_cols(x))
+    # use the 'unique' naming strategy of tibble
+    new_dimnames[[2]] <- paste0("...", seq_cols(x))
   }
   # TODO: use existing row names in any way?
   new_dimnames[[1]] <- as.character(seq_rows(x))

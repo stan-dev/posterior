@@ -51,8 +51,7 @@ as_draws_data_frame.draws_array <- function(x, ...) {
 
 # try to convert any R object into a 'draws_data_frame' object
 .as_draws_data_frame <- function(x) {
-  # TODO: add a proper names_repair function?
-  x <- as_tibble(x)
+  x <- as_tibble(x, .name_repair = "unique")
   # TODO: validate and use existing .iteration and .chain columns
   x$.iteration <- seq_len(NROW(x))
   x$.chain <- 1L

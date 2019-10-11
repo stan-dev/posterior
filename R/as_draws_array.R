@@ -57,8 +57,8 @@ as_draws_array.draws_data_frame <- function(x, ...) {
   if (!is.null(dimnames(x)[[3]])) {
     new_dimnames[[3]] <- dimnames(x)[[3]]
   } else {
-    # TODO: how format call parameters by default?
-    new_dimnames[[3]] <- paste0("variable", seq_dim(x, 3))
+    # use the 'unique' naming strategy of tibble
+    new_dimnames[[3]] <- paste0("...", seq_dim(x, 3))
   }
   # TODO: use existing row/col names in any way?
   new_dimnames[[1]] <- as.character(seq_rows(x))
