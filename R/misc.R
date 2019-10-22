@@ -30,6 +30,11 @@ named_list <- function(names, values = NULL) {
   setNames(values, names)
 }
 
+# unlist lapply output
+ulapply <- function(X, FUN, ..., recursive = TRUE, use.names = TRUE) {
+  unlist(lapply(X, FUN, ...), recursive, use.names)
+}
+
 seq_rows <- function(x) {
   seq_len(NROW(x))
 }
