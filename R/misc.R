@@ -217,12 +217,6 @@ do_call <- function(what, args, pkg = NULL) {
   eval2(call, envir = args, enclos = parent.frame())
 }
 
-# create continuous indices from 1 to length(unique(x))
-index_continuously <- function(x) {
-  # TODO: use the order of appearence?
-  as.integer(factor(x))
-}
-
 # wrapper around replicate but without simplifying
 repl <- function(expr, n) {
   replicate(n, expr, simplify = FALSE)

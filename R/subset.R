@@ -1,6 +1,7 @@
 #' @export
 subset.draws_matrix <- function(x, variables = NULL, iterations = NULL,
                                 chains = NULL, draws = NULL, ...) {
+  x <- repair_indices(x)
   variables <- check_variables(variables, x)
   iterations <- check_iterations(iterations, x)
   draws <- check_draws(draws, x)
@@ -14,13 +15,14 @@ subset.draws_matrix <- function(x, variables = NULL, iterations = NULL,
     draws <- iterations
   }
   x <- subset_dims(x, draws, variables)
-  rownames(x) <- as.character(seq_rows(x))
+  x <- repair_indices(x)
   x
 }
 
 #' @export
 subset.draws_array <- function(x, variables = NULL, iterations = NULL,
                                chains = NULL, draws = NULL, ...) {
+  x <- repair_indices(x)
   variables <- check_variables(variables, x)
   iterations <- check_iterations(iterations, x)
   chains <- check_chains(chains, x)
@@ -28,14 +30,14 @@ subset.draws_array <- function(x, variables = NULL, iterations = NULL,
     stop2("Cannot subset 'draws' in 'draws_array' objects.")
   }
   x <- subset_dims(x, iterations, chains, variables)
-  rownames(x) <- as.character(seq_rows(x))
-  colnames(x) <- as.character(seq_cols(x))
+  x <- repair_indices(x)
   x
 }
 
 #' @export
 subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
                                     chains = NULL, draws = NULL, ...) {
+  x <- repair_indices(x)
   variables <- check_variables(variables, x)
   iterations <- check_iterations(iterations, x)
   chains <- check_chains(chains, x)
@@ -61,14 +63,12 @@ subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
   } else {
     if (!is.null(chains)) {
       x <- x[x$.chain %in% chains, ]
-      x$.chain <- index_continuously(x$.chain)
     }
     if (!is.null(iterations)) {
       x <- x[x$.iteration %in% iterations, ]
-      x$.iteration <- index_continuously(x$.iteration)
     }
     if (!is.null(chains) || !is.null(iterations)) {
-      x$.draw <- compute_draw_indices(x$.iteration, x$.chain)
+      x <- repair_indices(x)
     }
   }
   x
@@ -77,6 +77,7 @@ subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
 #' @export
 subset.draws_list <- function(x, variables = NULL, iterations = NULL,
                               chains = NULL, draws = NULL, ...) {
+  x <- repair_indices(x)
   variables <- check_variables(variables, x)
   iterations <- check_iterations(iterations, x)
   chains <- check_chains(chains, x)
@@ -85,7 +86,6 @@ subset.draws_list <- function(x, variables = NULL, iterations = NULL,
   }
   if (!is.null(chains)) {
     x <- x[chains]
-    names(x) <- as.character(seq_along(x))
   }
   if (!is.null(variables)) {
     for (i in seq_along(x)) {
@@ -99,6 +99,7 @@ subset.draws_list <- function(x, variables = NULL, iterations = NULL,
       }
     }
   }
+  x <- repair_indices(x)
   x
 }
 
