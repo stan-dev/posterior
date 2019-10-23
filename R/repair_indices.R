@@ -1,4 +1,11 @@
 #' Repair Indices of Draws Objects
+#'
+#' Repair indices of draws objects so that iterations, chains, and draws
+#' are continuously and consistently numbered.
+#'
+#' @param x An \R object.
+#' @param ... Arguments passed to or from other methods.
+#'
 #' @export
 repair_indices <- function(x, ...) {
   # TODO: decide whether to sort indices rather than just renaming them

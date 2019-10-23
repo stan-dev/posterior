@@ -220,13 +220,11 @@ ndraws.draws_list <- function(x) {
   niterations(x) * nchains(x)
 }
 
+# check validity of variable names
 check_variables <- function(variables, x) {
   check_draws_object(x)
   if (!is.null(variables)) {
-    variables <- as.character(variables)
-    if (any(duplicated(variables))) {
-      stop2("Subsetted variables should be unique.")
-    }
+    variables <- unique(as.character(variables))
     missing_variables <- setdiff(variables, variables(x))
     if (length(missing_variables)) {
       stop2("The following variables are missing in the draws object: ",
@@ -236,53 +234,54 @@ check_variables <- function(variables, x) {
   variables
 }
 
+# check validity of iteration indices
 check_iterations <- function(iterations, x) {
   check_draws_object(x)
   if (!is.null(iterations)) {
-    iterations <- as.integer(iterations)
-    # TODO: allow for non-unique subsetting?
-    if (any(duplicated(iterations))) {
-      stop2("Subsetted iterations should be unique.")
+    iterations <- sort(unique(as.integer(iterations)))
+    if (any(iterations < 1L)) {
+      stop2("Iteration indices should be positive.")
     }
     niterations <- niterations(x)
-    oos_iterations <-
-      iterations[iterations > niterations | iterations < - niterations]
-    if (length(oos_iterations)) {
-      stop2("Tried to subset iterations up to '", max(abs(oos_iterations)), "' ",
+    max_iterations <- max(iterations)
+    if (max_iterations > niterations) {
+      stop2("Tried to subset iterations up to '", max_iterations, "' ",
             "but the object only has '", niterations, "' iterations.")
     }
   }
   iterations
 }
 
+# check validity of chain indices
 check_chains <- function(chains, x) {
   check_draws_object(x)
   if (!is.null(chains)) {
-    chains <- as.integer(chains)
-    if (any(duplicated(chains))) {
-      stop2("Subsetted chains should be unique.")
+    chains <- sort(unique(as.integer(chains)))
+    if (any(chains < 1L)) {
+      stop2("Chain indices should be positive.")
     }
     nchains <- nchains(x)
-    oos_chains <- chains[chains > nchains | chains < - nchains]
-    if (length(oos_chains)) {
-      stop2("Tried to subset chains up to '", max(abs(oos_chains)), "' ",
+    max_chains <- max(chains)
+    if (max_chains > nchains) {
+      stop2("Tried to subset chains up to '", max_chains, "' ",
             "but the object only has '", nchains, "' chains.")
     }
   }
   chains
 }
 
+# check validity of draw indices
 check_draws <- function(draws, x) {
   check_draws_object(x)
   if (!is.null(draws)) {
-    draws <- as.integer(draws)
-    if (any(duplicated(draws))) {
-      stop2("Subsetted draws should be unique.")
+    draws <- sort(unique(as.integer(draws)))
+    if (any(draws < 1L)) {
+      stop2("Draw indices should be positive.")
     }
     ndraws <- ndraws(x)
-    oos_draws <- draws[draws > ndraws | draws < - ndraws]
-    if (length(oos_draws)) {
-      stop2("Tried to subset draws up to '", max(abs(oos_draws)), "' ",
+    max_draws <- max(draws)
+    if (max_draws > ndraws) {
+      stop2("Tried to subset draws up to '", max_draws, "' ",
             "but the object only has '", ndraws, "' draws.")
     }
   }

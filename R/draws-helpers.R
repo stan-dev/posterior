@@ -35,7 +35,7 @@ is_draws_object <- function(x) {
 # check if an object is supported by the posterior package
 check_draws_object <- function(x) {
   if (!is_draws_object(x)) {
-    stop2("'x' is not in a format supported by posterior.")
+    stop2("The object is not in a format supported by posterior.")
   }
   x
 }

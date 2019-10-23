@@ -6,6 +6,12 @@
 \usage{
 repair_indices(x, ...)
 }
+\arguments{
+\item{x}{An \R object.}
+
+\item{...}{Arguments passed to or from other methods.}
+}
 \description{
-Repair Indices of Draws Objects
+Repair indices of draws objects so that iterations, chains, and draws
+are continuously and consistently numbered.
 }
