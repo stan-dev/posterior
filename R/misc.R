@@ -236,6 +236,11 @@ is_constant <- function(x, tol = .Machine$double.eps) {
   abs(max(x) - min(x)) < tol
 }
 
+# collapse variables via commas for pretty printing
+comma <- function(...) {
+  paste0("(", paste0("'", c(...), "'", collapse = ", "), ")")
+}
+
 stop2 <- function(...) {
   stop(..., call. = FALSE)
 }

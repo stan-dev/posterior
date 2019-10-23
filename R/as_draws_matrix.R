@@ -37,6 +37,12 @@ as_draws_matrix.draws_data_frame <- function(x, ...) {
   x
 }
 
+#' @export
+as_draws_matrix.draws_list <- function(x, ...) {
+  x <- as_draws_data_frame(x)
+  as_draws_matrix(x, ...)
+}
+
 # try to convert any R object into a 'draws_matrix' object
 .as_draws_matrix <- function(x) {
   x <- as.matrix(x)
@@ -44,8 +50,7 @@ as_draws_matrix.draws_data_frame <- function(x, ...) {
   if (!is.null(dimnames(x)[[2]])) {
     new_dimnames[[2]] <- dimnames(x)[[2]]
   } else {
-    # use the 'unique' naming strategy of tibble
-    new_dimnames[[2]] <- paste0("...", seq_cols(x))
+    new_dimnames[[2]] <- default_variables(NCOL(x))
   }
   # TODO: use existing row names in any way?
   new_dimnames[[1]] <- as.character(seq_rows(x))

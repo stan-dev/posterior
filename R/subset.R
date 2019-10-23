@@ -1,6 +1,7 @@
 #' @export
 subset.draws_matrix <- function(x, variables = NULL, iterations = NULL,
                                 chains = NULL, draws = NULL, ...) {
+  check_index(x, variables, iterations, chains, draws)
   if (!is.null(chains)) {
     stop2("Cannot subset 'chains' in 'draws_matrix' objects.")
   }
@@ -19,6 +20,7 @@ subset.draws_matrix <- function(x, variables = NULL, iterations = NULL,
 #' @export
 subset.draws_array <- function(x, variables = NULL, iterations = NULL,
                                chains = NULL, draws = NULL, ...) {
+  check_index(x, variables, iterations, chains, draws)
   if (!is.null(draws)) {
     stop2("Cannot subset 'draws' in 'draws_array' objects.")
   }
@@ -32,6 +34,7 @@ subset.draws_array <- function(x, variables = NULL, iterations = NULL,
 #' @export
 subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
                                     chains = NULL, draws = NULL, ...) {
+  check_index(x, variables, iterations, chains, draws)
   if (!is.null(draws)) {
     if (!is.null(iterations)) {
       stop2("Cannot subset 'iterations' and 'draws' at the same time.")
@@ -61,6 +64,33 @@ subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
     }
     if (!is.null(chains) || !is.null(iterations)) {
       x$.draw <- compute_draw_indices(x$.iteration, x$.chain)
+    }
+  }
+  x
+}
+
+#' @export
+subset.draws_list <- function(x, variables = NULL, iterations = NULL,
+                              chains = NULL, draws = NULL, ...) {
+  check_index(x, variables, iterations, chains, draws)
+  if (!is.null(draws)) {
+    stop2("Cannot subset 'draws' in 'draws_array' objects.")
+  }
+  if (!is.null(chains)) {
+    x <- x[chains]
+  }
+
+  if (!is.null(variables)) {
+    variables <- unique(variables)
+    for (i in seq_along(x)) {
+      x[[i]] <- x[[i]][variables]
+    }
+  }
+  if (!is.null(iterations)) {
+    for (i in seq_along(x)) {
+      for (j in seq_along(x[[i]])) {
+        x[[i]][[j]] <- x[[i]][[j]][[iterations]]
+      }
     }
   }
   x

@@ -34,11 +34,28 @@ as_draws_data_frame.draws_array <- function(x, ...) {
   iterations <- iterations(x)
   chains <- chains(x)
   rownames(x) <- NULL
-  out <- vector("list", NCOL(x))
+  out <- named_list(chains)
   for (i in seq_along(out)) {
     out[[i]] <- drop_dims(x[, i, ], dims = 2)
     class(out[[i]]) <- "matrix"
     out[[i]] <- as_tibble(out[[i]])
+    out[[i]]$.iteration <- iterations
+    out[[i]]$.chain <- chains[i]
+    out[[i]]$.draw <- compute_draw_indices(iterations, chains[i])
+  }
+  out <- do_call(rbind, out)
+  out <- move_to_start(out, meta_columns())
+  class(out) <- c("draws_data_frame", class(out))
+  out
+}
+
+#' @export
+as_draws_data_frame.draws_list <- function(x, ...) {
+  iterations <- iterations(x)
+  chains <- chains(x)
+  out <- named_list(chains)
+  for (i in seq_along(out)) {
+    out[[i]] <- as_tibble(x[[i]])
     out[[i]]$.iteration <- iterations
     out[[i]]$.chain <- chains[i]
     out[[i]]$.draw <- compute_draw_indices(iterations, chains[i])

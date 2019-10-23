@@ -6,7 +6,10 @@ closest_draws_format <- function(x) {
     out <- "array"
   } else if (is_draws_data_frame_like(x)) {
     out <- "data_frame"
-  } else {
+  } else if (is_draws_list_like(x)) {
+    out <- "list"
+  }
+  else {
     stop2("Don't know how to transform an object of class ",
           "'", class(x)[1L], "' to any supported draws format.")
   }
@@ -25,7 +28,8 @@ as_closest_draws_format <- function(x) {
 
 # is an object in one of the supported draws classes?
 is_draws_object <- function(x) {
-  is_draws_matrix(x) || is_draws_array(x) || is_draws_data_frame(x)
+  is_draws_matrix(x) || is_draws_array(x) ||
+    is_draws_data_frame(x) || is_draws_list(x)
 }
 
 # check if an object is supported by the posterior package
@@ -34,4 +38,11 @@ check_draws_object <- function(x) {
     stop2("'x' is not in a format supported by posterior.")
   }
   x
+}
+
+# define default variable names
+# use the 'unique' naming strategy of tibble
+# @param nvariables number of variables
+default_variables <- function(nvariables) {
+  paste0("...", seq_len(nvariables))
 }

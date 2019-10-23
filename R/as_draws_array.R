@@ -40,7 +40,9 @@ as_draws_array.draws_data_frame <- function(x, ...) {
     out[[i]] <- remove_meta_columns(out[[i]])
     out[[i]] <- as.matrix(out[[i]])
   }
+  # TODO: make the two lines below more efficient?
   out <- abind(out, along = 3L)
+  out <- aperm(out, c(1, 3, 2))
   dimnames(out) <- list(
     iteration = iterations,
     chain = chains,
@@ -50,6 +52,12 @@ as_draws_array.draws_data_frame <- function(x, ...) {
   out
 }
 
+#' @export
+as_draws_array.draws_list <- function(x, ...) {
+  x <- as_draws_data_frame(x)
+  as_draws_array(x, ...)
+}
+
 # try to convert any R object into a 'draws_array' object
 .as_draws_array <- function(x) {
   x <- as.array(x)
@@ -57,8 +65,7 @@ as_draws_array.draws_data_frame <- function(x, ...) {
   if (!is.null(dimnames(x)[[3]])) {
     new_dimnames[[3]] <- dimnames(x)[[3]]
   } else {
-    # use the 'unique' naming strategy of tibble
-    new_dimnames[[3]] <- paste0("...", seq_dim(x, 3))
+    new_dimnames[[3]] <- default_variables(dim(x)[3])
   }
   # TODO: use existing row/col names in any way?
   new_dimnames[[1]] <- as.character(seq_rows(x))

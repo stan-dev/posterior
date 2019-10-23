@@ -27,6 +27,11 @@ variables.draws_data_frame <- function(x) {
   setdiff(names(x), meta_columns())
 }
 
+#' @export
+variables.draws_list <- function(x) {
+  names(x[[1]])
+}
+
 #' @rdname draws-index
 #' @export
 iterations <- function(x) {
@@ -48,6 +53,11 @@ iterations.draws_data_frame <- function(x) {
   as.integer(unique(x$.iteration))
 }
 
+#' @export
+iterations.draws_list <- function(x) {
+  seq_along(x[[1]][[1]])
+}
+
 #' @rdname draws-index
 #' @export
 chains <- function(x) {
@@ -67,6 +77,11 @@ chains.draws_array <- function(x) {
 #' @export
 chains.draws_data_frame <- function(x) {
   as.integer(unique(x$.chain))
+}
+
+#' @export
+chains.draws_list <- function(x) {
+  as.integer(names(x))
 }
 
 #' @rdname draws-index
@@ -93,6 +108,14 @@ draws.draws_data_frame <- function(x) {
   as.integer(unique(x$.draw))
 }
 
+#' @export
+draws.draws_list <- function(x) {
+  iterations <- iterations(x)
+  niterations <- niterations(x)
+  chains <- chains(x)
+  ulapply(chains, function(c) niterations * (c - 1) + iterations)
+}
+
 #' @rdname draws-index
 #' @export
 nvariables <- function(x) {
@@ -112,6 +135,11 @@ nvariables.draws_array <- function(x) {
 #' @export
 nvariables.draws_data_frame <- function(x) {
   length(variables(x))
+}
+
+#' @export
+nvariables.draws_list <- function(x) {
+  length(x[[1]])
 }
 
 #' @rdname draws-index
@@ -135,6 +163,11 @@ niterations.draws_data_frame <- function(x) {
   length(iterations(x))
 }
 
+#' @export
+niterations.draws_list <- function(x) {
+  length(x[[1]][[1]])
+}
+
 #' @rdname draws-index
 #' @export
 nchains <- function(x) {
@@ -156,6 +189,11 @@ nchains.draws_data_frame <- function(x) {
   length(chains(x))
 }
 
+#' @export
+nchains.draws_data_list <- function(x) {
+  length(x)
+}
+
 #' @rdname draws-index
 #' @export
 ndraws <- function(x) {
@@ -175,4 +213,26 @@ ndraws.draws_array <- function(x) {
 #' @export
 ndraws.draws_data_frame <- function(x) {
   NROW(x)
+}
+
+#' @export
+ndraws.draws_list <- function(x) {
+  niterations(x) * nchains(x)
+}
+
+
+check_index <- function(x, variables = NULL, iterations = NULL,
+                        chains = NULL, draws = NULL) {
+  check_draws_object(x)
+  if (!is.null(variables)) {
+    missing_variables <- setdiff(variables, variables(x))
+    if (length(missing_variables)) {
+      stop2("The following variables are missing in the draws object: ",
+            comma(variables))
+    }
+  }
+  # TODO: check iterations etc.
+  # first we need to decide whether non-continuously coded iterations etc.
+  # should be allows
+  x
 }
