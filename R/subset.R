@@ -1,7 +1,9 @@
 #' @export
 subset.draws_matrix <- function(x, variables = NULL, iterations = NULL,
                                 chains = NULL, draws = NULL, ...) {
-  check_index(x, variables, iterations, chains, draws)
+  variables <- check_variables(variables, x)
+  iterations <- check_iterations(iterations, x)
+  draws <- check_draws(draws, x)
   if (!is.null(chains)) {
     stop2("Cannot subset 'chains' in 'draws_matrix' objects.")
   }
@@ -11,7 +13,6 @@ subset.draws_matrix <- function(x, variables = NULL, iterations = NULL,
     }
     draws <- iterations
   }
-  variables <- unique(variables)
   x <- subset_dims(x, draws, variables)
   rownames(x) <- as.character(seq_rows(x))
   x
@@ -20,11 +21,12 @@ subset.draws_matrix <- function(x, variables = NULL, iterations = NULL,
 #' @export
 subset.draws_array <- function(x, variables = NULL, iterations = NULL,
                                chains = NULL, draws = NULL, ...) {
-  check_index(x, variables, iterations, chains, draws)
+  variables <- check_variables(variables, x)
+  iterations <- check_iterations(iterations, x)
+  chains <- check_chains(chains, x)
   if (!is.null(draws)) {
     stop2("Cannot subset 'draws' in 'draws_array' objects.")
   }
-  variables <- unique(variables)
   x <- subset_dims(x, iterations, chains, variables)
   rownames(x) <- as.character(seq_rows(x))
   colnames(x) <- as.character(seq_cols(x))
@@ -34,7 +36,10 @@ subset.draws_array <- function(x, variables = NULL, iterations = NULL,
 #' @export
 subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
                                     chains = NULL, draws = NULL, ...) {
-  check_index(x, variables, iterations, chains, draws)
+  variables <- check_variables(variables, x)
+  iterations <- check_iterations(iterations, x)
+  chains <- check_chains(chains, x)
+  draws <- check_draws(draws, x)
   if (!is.null(draws)) {
     if (!is.null(iterations)) {
       stop2("Cannot subset 'iterations' and 'draws' at the same time.")
@@ -44,9 +49,9 @@ subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
     }
   }
   if (!is.null(variables)) {
-    variables <- unique(variables)
     x <- x[, c(meta_columns(x), variables)]
   }
+  # TODO: allow for subsetting via negative integers
   if (!is.null(draws)) {
     x <- x[x$.draw %in% draws, ]
     # subsetting draws invalidates iterations and chains
@@ -72,16 +77,17 @@ subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
 #' @export
 subset.draws_list <- function(x, variables = NULL, iterations = NULL,
                               chains = NULL, draws = NULL, ...) {
-  check_index(x, variables, iterations, chains, draws)
+  variables <- check_variables(variables, x)
+  iterations <- check_iterations(iterations, x)
+  chains <- check_chains(chains, x)
   if (!is.null(draws)) {
     stop2("Cannot subset 'draws' in 'draws_array' objects.")
   }
   if (!is.null(chains)) {
     x <- x[chains]
+    names(x) <- as.character(seq_along(x))
   }
-
   if (!is.null(variables)) {
-    variables <- unique(variables)
     for (i in seq_along(x)) {
       x[[i]] <- x[[i]][variables]
     }

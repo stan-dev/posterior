@@ -220,19 +220,71 @@ ndraws.draws_list <- function(x) {
   niterations(x) * nchains(x)
 }
 
-
-check_index <- function(x, variables = NULL, iterations = NULL,
-                        chains = NULL, draws = NULL) {
+check_variables <- function(variables, x) {
   check_draws_object(x)
   if (!is.null(variables)) {
+    variables <- as.character(variables)
+    if (any(duplicated(variables))) {
+      stop2("Subsetted variables should be unique.")
+    }
     missing_variables <- setdiff(variables, variables(x))
     if (length(missing_variables)) {
       stop2("The following variables are missing in the draws object: ",
-            comma(variables))
+            comma(missing_variables))
     }
   }
-  # TODO: check iterations etc.
-  # first we need to decide whether non-continuously coded iterations etc.
-  # should be allows
-  x
+  variables
+}
+
+check_iterations <- function(iterations, x) {
+  check_draws_object(x)
+  if (!is.null(iterations)) {
+    iterations <- as.integer(iterations)
+    # TODO: allow for non-unique subsetting?
+    if (any(duplicated(iterations))) {
+      stop2("Subsetted iterations should be unique.")
+    }
+    niterations <- niterations(x)
+    oos_iterations <-
+      iterations[iterations > niterations | iterations < - niterations]
+    if (length(oos_iterations)) {
+      stop2("Tried to subset iterations up to '", max(abs(oos_iterations)), "' ",
+            "but the object only has '", niterations, "' iterations.")
+    }
+  }
+  iterations
+}
+
+check_chains <- function(chains, x) {
+  check_draws_object(x)
+  if (!is.null(chains)) {
+    chains <- as.integer(chains)
+    if (any(duplicated(chains))) {
+      stop2("Subsetted chains should be unique.")
+    }
+    nchains <- nchains(x)
+    oos_chains <- chains[chains > nchains | chains < - nchains]
+    if (length(oos_chains)) {
+      stop2("Tried to subset chains up to '", max(abs(oos_chains)), "' ",
+            "but the object only has '", nchains, "' chains.")
+    }
+  }
+  chains
+}
+
+check_draws <- function(draws, x) {
+  check_draws_object(x)
+  if (!is.null(draws)) {
+    draws <- as.integer(draws)
+    if (any(duplicated(draws))) {
+      stop2("Subsetted draws should be unique.")
+    }
+    ndraws <- ndraws(x)
+    oos_draws <- draws[draws > ndraws | draws < - ndraws]
+    if (length(oos_draws)) {
+      stop2("Tried to subset draws up to '", max(abs(oos_draws)), "' ",
+            "but the object only has '", ndraws, "' draws.")
+    }
+  }
+  draws
 }
