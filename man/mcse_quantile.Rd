@@ -3,19 +3,22 @@
 \name{mcse_quantile}
 \alias{mcse_quantile}
 \alias{mcse_median}
-\title{Monte Carlo standard error for a quantile}
+\title{Monte Carlo standard error for quantiles}
 \usage{
 mcse_quantile(x, probs, names = TRUE)
 
 mcse_median(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (# iter * # chains).}
+\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
 
 \item{probs}{A numeric vector of probabilities.}
+
+\item{names}{Logical. If \code{TRUE}, the result has a names
+attribute. Set to \code{FALSE} for speedup with many probs.}
 }
 \value{
-A numeric vector of Monte-Carlo standard errors for quantile
+A numeric vector of Monte Carlo standard errors for quantile
 estimates.
 }
 \description{

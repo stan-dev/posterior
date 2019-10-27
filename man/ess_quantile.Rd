@@ -3,16 +3,19 @@
 \name{ess_quantile}
 \alias{ess_quantile}
 \alias{ess_median}
-\title{Quantile effective sample size}
+\title{Effective sample sizes for quantiles}
 \usage{
 ess_quantile(x, probs, names = TRUE)
 
 ess_median(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (# iter * # chains).}
+\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
 
 \item{probs}{A numeric vector of probabilities.}
+
+\item{names}{Logical. If \code{TRUE}, the result has a names
+attribute. Set to \code{FALSE} for speedup with many probs.}
 }
 \value{
 A numeric vector of effective sample sizes for quantile estimates.

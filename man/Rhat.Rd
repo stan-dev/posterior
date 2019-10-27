@@ -7,14 +7,15 @@
 Rhat(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (# iter * # chains).}
+\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
 }
 \value{
 A single numeric value for the effective sample size.
 }
 \description{
 Compute Rhat convergence diagnostic as the maximum of rank normalized
-split-Rhat and rank normalized folded-split-Rhat for one parameter.
+split-Rhat and rank normalized folded-split-Rhat for a single parameter
+as proposed in Vehtari et al. (2019).
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and

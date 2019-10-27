@@ -2,20 +2,20 @@
 % Please edit documentation in R/convergence.R
 \name{ess_sd}
 \alias{ess_sd}
-\title{Effective sample size}
+\title{Effective sample size for the standard deviation}
 \usage{
 ess_sd(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (# iter * # chains).}
+\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
 }
 \value{
 A single numeric value for the effective sample size
 estimate for standard deviation estimate.
 }
 \description{
-Compute effective sample size estimate for standard deviation (s)
-estimate of one parameter. This is defined as minimum of effective
+Compute an effective sample size estimate for the standard deviation (sd)
+estimate of a single parameter. This is defined as minimum of effective
 sample size estimate for mean and mean of squared value.
 }
 \references{

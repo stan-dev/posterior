@@ -2,12 +2,12 @@
 % Please edit documentation in R/convergence.R
 \name{ess_mean}
 \alias{ess_mean}
-\title{Effective sample size}
+\title{Effective sample size for the mean}
 \usage{
 ess_mean(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (# iter * # chains).}
+\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
 }
 \value{
 A single numeric value for the effective sample size
@@ -15,7 +15,7 @@ estimate for mean estimate.
 }
 \description{
 Compute effective sample size estimate for a mean (expectation)
-estimate of one parameter.
+estimate of a single parameter.
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and

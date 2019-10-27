@@ -136,8 +136,9 @@ r_scale <- function(x) {
   r
 }
 
-# split Markov chains
-# @param x a 2D array of draws (# iter * # chains)
+# split Markov chains in half
+# @param x a 2D array of draws (#iterations * #chains)
+# @return a 2D array of draws with split chains
 split_chains <- function(x) {
   if (is.null(dim(x))) {
     x <- matrix(x)
@@ -150,20 +151,8 @@ split_chains <- function(x) {
   cbind(x[1:floor(half), ], x[ceiling(half + 1):niter, ])
 }
 
-# Traditional Rhat convergence diagnostic
-#
-# Compute the Rhat convergence diagnostic for a single parameter
-# For split-Rhat, call this with split chains.
-#
-# @param x A 2D array _without_ warmup draws (# iter * # chains).
-#
-# @return A single numeric value for Rhat.
-#
-# @references
-# Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-# Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-# localization: An improved R-hat for assessing convergence of
-# MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+# compute the rhat converence diagnostic
+# @param x A 2D array of draws (#iterations * #chains).
 .rhat <- function(x) {
   if (any(!is.finite(x))) {
     return(NaN)
@@ -184,20 +173,6 @@ split_chains <- function(x) {
   sqrt((var_between / var_within + niterations - 1) / niterations)
 }
 
-# Effective sample size
-#
-# Compute the effective sample size estimate for a sample of several chains
-# for one parameter. For split-ESS, call this with split chains.
-#
-# @param x A 2D array _without_ warmup draws (# iter * # chains).
-#
-# @return A single numeric value for the effective sample size.
-#
-# @references
-# Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-# Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-# localization: An improved R-hat for assessing convergence of
-# MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
 .ess <- function(x) {
   nchains <- NCOL(x)
   niterations <- NROW(x)
@@ -260,12 +235,65 @@ split_chains <- function(x) {
   ess
 }
 
+#' Basic version of the Rhat convergence diagnostic
+#'
+#' Compute the basic Rhat convergence diagnostic for a single parameter as
+#' described in Gelman et al. (2013). For practical applications, we strongly
+#' recommend the improved Rhat convergence diagnostic implemented in
+#' \code{\link{Rhat}}.
+#'
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
+#' @param split Logical. If \code{TRUE}, compute Rhat on split chains.
+#'
+#' @return A single numeric value for Rhat.
+#'
+#' @references
+#' Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
+#' Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
+#' Hall/CRC.
+#'
+#' @export
+Rhat_basic <- function(x, split = TRUE) {
+  split <- as_one_logical(split)
+  if (split) {
+    x <- split_chains(x)
+  }
+  .rhat(x)
+}
+
+#' Basic version of the effective sample size
+#'
+#' Compute the basic effective sample size (ESS) estimate for a single parameter
+#' as described in Gelman et al. (2013). For practical applications, we strongly
+#' recommend the improved ESS convergence diagnostics implemented in
+#' \code{\link{ess_bulk}} and \code{\link{ess_tail}}.
+#'
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
+#' @param split Logical. If \code{TRUE}, compute ESS on split chains.
+#'
+#' @return A single numeric value for the effective sample size.
+#'
+#' @references
+#' Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
+#' Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
+#' Hall/CRC.
+#'
+#' @export
+ess_basic <- function(x, split = TRUE) {
+  split <- as_one_logical(split)
+  if (split) {
+    x <- split_chains(x)
+  }
+  .ess(x)
+}
+
 #' Rhat convergence diagnostic
 #'
 #' Compute Rhat convergence diagnostic as the maximum of rank normalized
-#' split-Rhat and rank normalized folded-split-Rhat for one parameter.
+#' split-Rhat and rank normalized folded-split-Rhat for a single parameter
+#' as proposed in Vehtari et al. (2019).
 #'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
 #'
 #' @return A single numeric value for the effective sample size.
 #'
@@ -285,12 +313,12 @@ Rhat <- function(x) {
 
 #' Bulk effective sample size (bulk-ESS)
 #'
-#' Compute bulk effective sample size estimate (bulk-ESS) for one parameter.
+#' Compute bulk effective sample size estimate (bulk-ESS) for a single parameter.
 #' Bulk-ESS is useful as a generic diagnostic for the sampling
 #' efficiency in the bulk of the posterior. It is defined as the
 #' effective sample size for rank normalized values using split chains.
 #'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
 #'
 #' @return A single numeric value for the bulk effective sample size.
 #'
@@ -307,12 +335,12 @@ ess_bulk <- function(x) {
 
 #' Tail effective sample size (tail-ESS)
 #'
-#' Compute tail effective sample size estimate (tail-ESS) for one parameter.
+#' Compute tail effective sample size estimate (tail-ESS) for a single parameter.
 #' Tail-ESS is useful for generic diagnostic for the sampling
 #' efficiency in the tails of the posterior. It is defined as
 #' the minimum of the effective sample sizes for 5% and 95% quantiles.
 #'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
 #'
 #' @return A single numeric value for the tail effective sample size.
 #'
@@ -324,20 +352,20 @@ ess_bulk <- function(x) {
 #'
 #' @export
 ess_tail <- function(x) {
-  I05 <- x <= quantile(x, 0.05)
-  q05_ess <- .ess(split_chains(I05))
-  I95 <- x <= quantile(x, 0.95)
-  q95_ess <- .ess(split_chains(I95))
+  q05_ess <- ess_quantile(x, 0.05)
+  q95_ess <- ess_quantile(x, 0.95)
   min(q05_ess, q95_ess)
 }
 
-#' Quantile effective sample size
+#' Effective sample sizes for quantiles
 #'
 #' Compute effective sample size estimates for quantile estimates of
 #' a single parameter.
 #'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
 #' @param probs A numeric vector of probabilities.
+#' @param names Logical. If \code{TRUE}, the result has a names
+#'   attribute. Set to \code{FALSE} for speedup with many probs.
 #'
 #' @return A numeric vector of effective sample sizes for quantile estimates.
 #'
@@ -373,12 +401,12 @@ ess_median <- function(x) {
   .ess_quantile(x, prob = 0.5)
 }
 
-#' Effective sample size
+#' Effective sample size for the mean
 #'
 #' Compute effective sample size estimate for a mean (expectation)
-#' estimate of one parameter.
+#' estimate of a single parameter.
 #'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
 #'
 #' @return A single numeric value for the effective sample size
 #'     estimate for mean estimate.
@@ -394,13 +422,13 @@ ess_mean <- function(x) {
   .ess(split_chains(x))
 }
 
-#' Effective sample size
+#' Effective sample size for the standard deviation
 #'
-#' Compute effective sample size estimate for standard deviation (s)
-#' estimate of one parameter. This is defined as minimum of effective
+#' Compute an effective sample size estimate for the standard deviation (sd)
+#' estimate of a single parameter. This is defined as minimum of effective
 #' sample size estimate for mean and mean of squared value.
 #'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
 #'
 #' @return A single numeric value for the effective sample size
 #'     estimate for standard deviation estimate.
@@ -416,15 +444,17 @@ ess_sd <- function(x) {
   min(.ess(split_chains(x)), .ess(split_chains(x^2)))
 }
 
-#' Monte Carlo standard error for a quantile
+#' Monte Carlo standard error for quantiles
 #'
 #' Compute Monte Carlo standard errors for quantile estimates of a
 #' single parameter.
 #'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
 #' @param probs A numeric vector of probabilities.
+#' @param names Logical. If \code{TRUE}, the result has a names
+#'   attribute. Set to \code{FALSE} for speedup with many probs.
 #'
-#' @return A numeric vector of Monte-Carlo standard errors for quantile
+#' @return A numeric vector of Monte Carlo standard errors for quantile
 #'   estimates.
 #'
 #' @references
@@ -465,12 +495,12 @@ mcse_median <- function(x) {
   .mcse_quantile(x, prob = 0.5)
 }
 
-#' Monte Carlo standard error for mean
+#' Monte Carlo standard error for the mean
 #'
 #' Compute Monte Carlo standard error for mean (expectation) of a
 #' single parameter.
 #'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
 #'
 #' @return A single numeric value for Monte Carlo standard error
 #'     for mean estimate.
@@ -492,13 +522,13 @@ mcse_mean <- function(x) {
   sd(x) / sqrt(ess_mean(x))
 }
 
-#' Monte Carlo standard error for standard error
+#' Monte Carlo standard error for the standard deviation
 #'
 #' Compute Monte Carlo standard error for standard deviation (sd) of a
 #' single parameter using Stirling's approximation and assuming
 #' approximate normality.
 #'
-#' @param x A 2D array _without_ warmup draws (# iter * # chains).
+#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
 #'
 #' @return A single numeric value for Monte Carlo standard error
 #'     for standard deviation estimate.

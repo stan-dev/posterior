@@ -2,12 +2,12 @@
 % Please edit documentation in R/convergence.R
 \name{mcse_mean}
 \alias{mcse_mean}
-\title{Monte Carlo standard error for mean}
+\title{Monte Carlo standard error for the mean}
 \usage{
 mcse_mean(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (# iter * # chains).}
+\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
 }
 \value{
 A single numeric value for Monte Carlo standard error
