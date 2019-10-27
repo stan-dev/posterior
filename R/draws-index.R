@@ -190,7 +190,7 @@ nchains.draws_data_frame <- function(x) {
 }
 
 #' @export
-nchains.draws_data_list <- function(x) {
+nchains.draws_list <- function(x) {
   length(x)
 }
 

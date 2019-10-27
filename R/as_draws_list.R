@@ -35,6 +35,7 @@ as_draws_list.draws_data_frame <- function(x, ...) {
     out[[i]] <- remove_meta_columns(out[[i]])
     out[[i]] <- as.list(out[[i]])
   }
+  class(out) <- c("draws_list", class(out))
   out
 }
 

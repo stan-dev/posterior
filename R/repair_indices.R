@@ -28,7 +28,7 @@ repair_indices.draws_array <- function(x, ...) {
 #' @export
 repair_indices.draws_data_frame <- function(x, ...) {
   x$.chain <- index_continuously(x$.chain)
-  x$.iterations <- index_continuously(x$.iteration)
+  x$.iteration <- index_continuously(x$.iteration)
   x$.draw <- compute_draw_indices(x$.iteration, x$.chain)
   x
 }
