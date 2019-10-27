@@ -2,22 +2,24 @@
 % Please edit documentation in R/convergence.R
 \name{ess_quantile}
 \alias{ess_quantile}
+\alias{ess_median}
 \title{Quantile effective sample size}
 \usage{
-ess_quantile(x, prob)
+ess_quantile(x, probs, names = TRUE)
+
+ess_median(x)
 }
 \arguments{
 \item{x}{A 2D array \emph{without} warmup draws (# iter * # chains).}
 
-\item{prob}{A single numeric value of probability.}
+\item{probs}{A numeric vector of probabilities.}
 }
 \value{
-A single numeric value for the effective sample size for a
-quantile estimate corresponding to the probability.
+A numeric vector of effective sample sizes for quantile estimates.
 }
 \description{
-Compute effective sample size estimate for a quantile estimate of
-one parameter.
+Compute effective sample size estimates for quantile estimates of
+a single parameter.
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and

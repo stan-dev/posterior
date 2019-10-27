@@ -2,21 +2,24 @@
 % Please edit documentation in R/convergence.R
 \name{mcse_quantile}
 \alias{mcse_quantile}
+\alias{mcse_median}
 \title{Monte Carlo standard error for a quantile}
 \usage{
-mcse_quantile(x, prob)
+mcse_quantile(x, probs, names = TRUE)
+
+mcse_median(x)
 }
 \arguments{
 \item{x}{A 2D array \emph{without} warmup draws (# iter * # chains).}
 
-\item{prob}{A single numeric value of probability.}
+\item{probs}{A numeric vector of probabilities.}
 }
 \value{
-A single numeric value for Monte Carlo standard error for a
-quantile estimate corresponding to the probability.
+A numeric vector of Monte-Carlo standard errors for quantile
+estimates.
 }
 \description{
-Compute Monte Carlo standard error for a quantile estimate of a
+Compute Monte Carlo standard errors for quantile estimates of a
 single parameter.
 }
 \references{

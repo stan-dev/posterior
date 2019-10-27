@@ -9,13 +9,25 @@ summarise_draws.default <- function(x, measures = NULL,
   x <- as_closest_draws_format(x)
   variables <- variables(x)
   if (is.null(measures)) {
-    measures <- c(all_summary_measures(), all_convergence_measures())
+    measures <- c(
+      default_summary_measures(),
+      default_convergence_measures(),
+      default_mcse_measures()
+    )
   }
   measures <- as.character(measures)
   if ("quantile" %in% measures) {
     # ensure correct format for quantiles
     .quantile <- function(x, ...) quantile2(x, probs, ...)
     measures[measures == "quantile"] <- ".quantile"
+  }
+  if ("mcse_quantile" %in% measures) {
+    .mcse_quantile <- function(x, ...) mcse_quantile2(x, probs, ...)
+    measures[measures == "mcse_quantile"] <- ".mcse_quantile"
+  }
+  if ("ess_quantile" %in% measures) {
+    .ess_quantile <- function(x, ...) ess_quantile2(x, probs, ...)
+    measures[measures == "ess_quantile"] <- ".ess_quantile"
   }
   out <- named_list(variables, value = list(named_list(measures)))
   funs <- lapply(measures, get, environment())
@@ -37,20 +49,37 @@ summarise_draws.default <- function(x, measures = NULL,
 }
 
 #' @export
-all_summary_measures <- function() {
-  # TODO: add more?
+default_summary_measures <- function() {
   c("mean", "median", "sd", "mad", "quantile")
 }
 
 #' @export
-all_convergence_measures <- function() {
-  # TODO: Add mcse functions
+default_convergence_measures <- function() {
   c("Rhat", "ess_bulk", "ess_tail")
+}
+
+#' @export
+default_mcse_measures <- function() {
+  c("mcse_mean", "mcse_median", "mcse_sd", "mcse_quantile")
 }
 
 # ensure quantiles are returned in the right format
 quantile2 <- function(x, probs, ...) {
   out <- matrix(quantile(x, probs = probs, ...), nrow = 1L)
   colnames(out) <- paste0("Q", probs * 100)
+  out
+}
+
+# ensure MCSE of quantiles are returned in the right format
+mcse_quantile2 <- function(x, probs, ...) {
+  out <- matrix(mcse_quantile(x, probs = probs, ...), nrow = 1L)
+  colnames(out) <- paste0("mcse_Q", probs * 100)
+  out
+}
+
+# ensure ESS of quantiles are returned in the right format
+ess_quantile2 <- function(x, probs, ...) {
+  out <- matrix(ess_quantile(x, probs = probs, ...), nrow = 1L)
+  colnames(out) <- paste0("ess_Q", probs * 100)
   out
 }

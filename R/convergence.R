@@ -139,7 +139,10 @@ r_scale <- function(x) {
 # split Markov chains
 # @param x a 2D array of draws (# iter * # chains)
 split_chains <- function(x) {
-  niter <- dim(x)[1]
+  if (is.null(dim(x))) {
+    x <- matrix(x)
+  }
+  niter <- NROW(x)
   if (niter == 1L) {
     return(x)
   }
@@ -330,14 +333,13 @@ ess_tail <- function(x) {
 
 #' Quantile effective sample size
 #'
-#' Compute effective sample size estimate for a quantile estimate of
-#' one parameter.
+#' Compute effective sample size estimates for quantile estimates of
+#' a single parameter.
 #'
 #' @param x A 2D array _without_ warmup draws (# iter * # chains).
-#' @param prob A single numeric value of probability.
+#' @param probs A numeric vector of probabilities.
 #'
-#' @return A single numeric value for the effective sample size for a
-#'     quantile estimate corresponding to the probability.
+#' @return A numeric vector of effective sample sizes for quantile estimates.
 #'
 #' @references
 #' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
@@ -346,9 +348,29 @@ ess_tail <- function(x) {
 #' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
 #'
 #' @export
-ess_quantile <- function(x, prob) {
+ess_quantile <- function(x, probs, names = TRUE) {
+  probs <- as.numeric(probs)
+  if (any(probs < 0 | probs > 1)) {
+    stop2("'probs' must contain values between 0 and 1.")
+  }
+  names <- as_one_logical(names)
+  out <- ulapply(probs, .ess_quantile, x = x)
+  if (names) {
+    names(out) <- paste0("Q", probs * 100)
+  }
+  out
+}
+
+# ess of a single quantile
+.ess_quantile <- function(x, prob) {
   I <- x <= quantile(x, prob)
   .ess(split_chains(I))
+}
+
+#' @rdname ess_quantile
+#' @export
+ess_median <- function(x) {
+  .ess_quantile(x, prob = 0.5)
 }
 
 #' Effective sample size
@@ -396,14 +418,14 @@ ess_sd <- function(x) {
 
 #' Monte Carlo standard error for a quantile
 #'
-#' Compute Monte Carlo standard error for a quantile estimate of a
+#' Compute Monte Carlo standard errors for quantile estimates of a
 #' single parameter.
 #'
 #' @param x A 2D array _without_ warmup draws (# iter * # chains).
-#' @param prob A single numeric value of probability.
+#' @param probs A numeric vector of probabilities.
 #'
-#' @return A single numeric value for Monte Carlo standard error for a
-#'     quantile estimate corresponding to the probability.
+#' @return A numeric vector of Monte-Carlo standard errors for quantile
+#'   estimates.
 #'
 #' @references
 #' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
@@ -412,7 +434,21 @@ ess_sd <- function(x) {
 #' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
 #'
 #' @export
-mcse_quantile <- function(x, prob) {
+mcse_quantile <- function(x, probs, names = TRUE) {
+  probs <- as.numeric(probs)
+  if (any(probs < 0 | probs > 1)) {
+    stop2("'probs' must contain values between 0 and 1.")
+  }
+  names <- as_one_logical(names)
+  out <- ulapply(probs, .mcse_quantile, x = x)
+  if (names) {
+    names(out) <- paste0("Q", probs * 100)
+  }
+  out
+}
+
+# mcse of a single quantile
+.mcse_quantile <- function(x, prob) {
   ess <- ess_quantile(x, prob)
   p <- c(0.1586553, 0.8413447)
   a <- qbeta(p, ess * prob + 1, ess * (1 - prob) + 1)
@@ -421,6 +457,12 @@ mcse_quantile <- function(x, prob) {
   th1 <- ssims[max(round(a[1] * S), 1)]
   th2 <- ssims[min(round(a[2] * S), S)]
   as.vector((th2 - th1) / 2)
+}
+
+#' @rdname mcse_quantile
+#' @export
+mcse_median <- function(x) {
+  .mcse_quantile(x, prob = 0.5)
 }
 
 #' Monte Carlo standard error for mean
