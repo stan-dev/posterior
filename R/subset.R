@@ -53,7 +53,6 @@ subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
   if (!is.null(variables)) {
     x <- x[, c(meta_columns(x), variables)]
   }
-  # TODO: allow for subsetting via negative integers
   if (!is.null(draws)) {
     x <- x[x$.draw %in% draws, ]
     # subsetting draws invalidates iterations and chains
@@ -129,7 +128,7 @@ subset_draws <- function(x, draws) {
 
 # subset specified non-NULL dimensions
 # @param x an object to be subsetted
-# @param ... arguments containing indixes for subsetting a dimension
+# @param ... arguments containing indices for subsetting a dimension
 #   NULL is treated as not subsetting that dimension
 subset_dims <- function(x, ...) {
   dots <- list(...)
