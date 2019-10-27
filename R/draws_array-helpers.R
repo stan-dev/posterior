@@ -16,15 +16,3 @@ is_draws_array_like <- function(x) {
   out
 }
 
-# TODO: do we want to support this '$' method at all?
-# select draws of a single parameter
-#' @export
-`$.draws_array` <- function(x, name) {
-  class(x) <- "array"
-  out <- x[, , name, drop = FALSE]
-  # selectively drop the third dimension
-  dim(out) <- dim(x)[1:2]
-  dimnames(out) <- dimnames(x)[1:2]
-  out
-}
-

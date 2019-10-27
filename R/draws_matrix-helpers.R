@@ -19,11 +19,3 @@ is_draws_matrix_like <- function(x) {
   dimnames(out) <- dimnames(x)[1]
   out
 }
-
-#' @export
-`[.draws_matrix` <- function(x, i, j, ..., drop = FALSE) {
-  # TODO: add a warning that 'drop' is ignored?
-  out <- NextMethod("[", drop = FALSE)
-  class(out) <- class(x)
-  out
-}
