@@ -28,8 +28,11 @@ summarise_draws.default <- function(x, measures = NULL,
     out[[v]] <- do_call(cbind, out[[v]])
   }
   out <- as_tibble(do_call(rbind, out))
-  out$.variable <- variables
-  out <- move_to_start(out, ".variable")
+  if (any(names(out) == "variable")) {
+    stop2("Name 'variable' is reserved in 'summarise_draws'.")
+  }
+  out$variable <- variables
+  out <- move_to_start(out, "variable")
   out
 }
 

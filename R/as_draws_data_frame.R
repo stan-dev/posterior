@@ -69,6 +69,7 @@ as_draws_data_frame.draws_list <- function(x, ...) {
 # try to convert any R object into a 'draws_data_frame' object
 .as_draws_data_frame <- function(x) {
   x <- as_tibble(x, .name_repair = "unique")
+  check_reserved_variables(names(x))
   # TODO: validate and use existing .iteration and .chain columns
   x$.iteration <- seq_len(NROW(x))
   x$.chain <- 1L

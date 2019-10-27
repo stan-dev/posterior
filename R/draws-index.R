@@ -225,11 +225,22 @@ check_variables <- function(variables, x) {
   check_draws_object(x)
   if (!is.null(variables)) {
     variables <- unique(as.character(variables))
+    variables <- check_reserved_variables(variables)
     missing_variables <- setdiff(variables, variables(x))
     if (length(missing_variables)) {
       stop2("The following variables are missing in the draws object: ",
             comma(missing_variables))
     }
+  }
+  variables
+}
+
+# check for the usage of reserved variable names
+check_reserved_variables <- function(variables) {
+  assert_character(variables)
+  used_meta_columns <- intersect(meta_columns(), variables)
+  if (length(used_meta_columns)) {
+    stop2("Variable names ", comma(used_meta_columns), " are reserved.")
   }
   variables
 }

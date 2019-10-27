@@ -11,7 +11,7 @@ is_draws_data_frame_like <- function(x) {
 # meta column names
 # @param x a named object from which to extract existing meta column names
 meta_columns <- function(x = NULL) {
-  out <- c(".variable", ".iteration", ".chain", ".draw")
+  out <- c(".iteration", ".chain", ".draw")
   if (!is.null(x)) {
     out <- intersect(out, names(x))
   }

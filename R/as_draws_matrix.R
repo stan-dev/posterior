@@ -52,6 +52,7 @@ as_draws_matrix.draws_list <- function(x, ...) {
   } else {
     new_dimnames[[2]] <- default_variables(NCOL(x))
   }
+  check_reserved_variables(new_dimnames[[2]])
   # TODO: use existing row names in any way?
   new_dimnames[[1]] <- as.character(seq_rows(x))
   dimnames(x) <- new_dimnames
