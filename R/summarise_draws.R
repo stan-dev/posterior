@@ -11,8 +11,7 @@ summarise_draws.default <- function(x, measures = NULL,
   if (is.null(measures)) {
     measures <- c(
       default_summary_measures(),
-      default_convergence_measures(),
-      default_mcse_measures()
+      default_convergence_measures()
     )
   }
   measures <- as.character(measures)
@@ -55,7 +54,7 @@ default_summary_measures <- function() {
 
 #' @export
 default_convergence_measures <- function() {
-  c("Rhat", "ess_bulk", "ess_tail")
+  c("rhat", "ess_bulk", "ess_tail")
 }
 
 #' @export
@@ -66,20 +65,20 @@ default_mcse_measures <- function() {
 # ensure quantiles are returned in the right format
 quantile2 <- function(x, probs, ...) {
   out <- matrix(quantile(x, probs = probs, ...), nrow = 1L)
-  colnames(out) <- paste0("Q", probs * 100)
+  colnames(out) <- paste0("q", probs * 100)
   out
 }
 
 # ensure MCSE of quantiles are returned in the right format
 mcse_quantile2 <- function(x, probs, ...) {
   out <- matrix(mcse_quantile(x, probs = probs, ...), nrow = 1L)
-  colnames(out) <- paste0("mcse_Q", probs * 100)
+  colnames(out) <- paste0("mcse_q", probs * 100)
   out
 }
 
 # ensure ESS of quantiles are returned in the right format
 ess_quantile2 <- function(x, probs, ...) {
   out <- matrix(ess_quantile(x, probs = probs, ...), nrow = 1L)
-  colnames(out) <- paste0("ess_Q", probs * 100)
+  colnames(out) <- paste0("ess_q", probs * 100)
   out
 }

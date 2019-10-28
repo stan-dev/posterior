@@ -253,7 +253,7 @@ split_chains <- function(x) {
 #' Hall/CRC.
 #'
 #' @export
-Rhat_basic <- function(x, split = TRUE) {
+rhat_basic <- function(x, split = TRUE) {
   split <- as_one_logical(split)
   if (split) {
     x <- split_chains(x)
@@ -304,11 +304,11 @@ ess_basic <- function(x, split = TRUE) {
 #' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
 #'
 #' @export
-Rhat <- function(x) {
-  bulk_rhat <- .rhat(z_scale(split_chains(x)))
+rhat <- function(x) {
+  rhat_bulk <- .rhat(z_scale(split_chains(x)))
   sims_folded <- abs(x - median(x))
-  tail_rhat <- .rhat(z_scale(split_chains(sims_folded)))
-  max(bulk_rhat, tail_rhat)
+  rhat_tail <- .rhat(z_scale(split_chains(sims_folded)))
+  max(rhat_bulk, rhat_tail)
 }
 
 #' Bulk effective sample size (bulk-ESS)
@@ -384,7 +384,7 @@ ess_quantile <- function(x, probs, names = TRUE) {
   names <- as_one_logical(names)
   out <- ulapply(probs, .ess_quantile, x = x)
   if (names) {
-    names(out) <- paste0("Q", probs * 100)
+    names(out) <- paste0("q", probs * 100)
   }
   out
 }
@@ -472,7 +472,7 @@ mcse_quantile <- function(x, probs, names = TRUE) {
   names <- as_one_logical(names)
   out <- ulapply(probs, .mcse_quantile, x = x)
   if (names) {
-    names(out) <- paste0("Q", probs * 100)
+    names(out) <- paste0("q", probs * 100)
   }
   out
 }
