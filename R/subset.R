@@ -1,72 +1,72 @@
 #' @export
-subset.draws_matrix <- function(x, variables = NULL, iterations = NULL,
-                                chains = NULL, draws = NULL, ...) {
+subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
+                                chain = NULL, draw = NULL, ...) {
   x <- repair_indices(x)
-  variables <- check_variables(variables, x)
-  iterations <- check_iterations(iterations, x)
-  draws <- check_draws(draws, x)
-  if (!is.null(chains)) {
-    stop2("Cannot subset 'chains' in 'draws_matrix' objects.")
+  variable <- check_variables(variable, x)
+  iteration <- check_iterations(iteration, x)
+  draw <- check_draws(draw, x)
+  if (!is.null(chain)) {
+    stop2("Cannot subset 'chain' in 'draws_matrix' objects.")
   }
-  if (!is.null(iterations)) {
-    if (!is.null(draws)) {
-      stop2("Cannot subset 'iterations' and 'draws' at the same time.")
+  if (!is.null(iteration)) {
+    if (!is.null(draw)) {
+      stop2("Cannot subset 'iteration' and 'draw' at the same time.")
     }
-    draws <- iterations
+    draw <- iteration
   }
-  x <- subset_dims(x, draws, variables)
+  x <- subset_dims(x, draw, variable)
   x <- repair_indices(x)
   x
 }
 
 #' @export
-subset.draws_array <- function(x, variables = NULL, iterations = NULL,
-                               chains = NULL, draws = NULL, ...) {
+subset.draws_array <- function(x, variable = NULL, iteration = NULL,
+                               chain = NULL, draw = NULL, ...) {
   x <- repair_indices(x)
-  variables <- check_variables(variables, x)
-  iterations <- check_iterations(iterations, x)
-  chains <- check_chains(chains, x)
-  if (!is.null(draws)) {
-    stop2("Cannot subset 'draws' in 'draws_array' objects.")
+  variable <- check_variables(variable, x)
+  iteration <- check_iterations(iteration, x)
+  chain <- check_chains(chain, x)
+  if (!is.null(draw)) {
+    stop2("Cannot subset 'draw' in 'draws_array' objects.")
   }
-  x <- subset_dims(x, iterations, chains, variables)
+  x <- subset_dims(x, iteration, chain, variable)
   x <- repair_indices(x)
   x
 }
 
 #' @export
-subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
-                                    chains = NULL, draws = NULL, ...) {
+subset.draws_data_frame <- function(x, variable = NULL, iteration = NULL,
+                                    chain = NULL, draw = NULL, ...) {
   x <- repair_indices(x)
-  variables <- check_variables(variables, x)
-  iterations <- check_iterations(iterations, x)
-  chains <- check_chains(chains, x)
-  draws <- check_draws(draws, x)
-  if (!is.null(draws)) {
-    if (!is.null(iterations)) {
-      stop2("Cannot subset 'iterations' and 'draws' at the same time.")
+  variable <- check_variables(variable, x)
+  iteration <- check_iterations(iteration, x)
+  chain <- check_chains(chain, x)
+  draw <- check_draws(draw, x)
+  if (!is.null(draw)) {
+    if (!is.null(iteration)) {
+      stop2("Cannot subset 'iteration' and 'draw' at the same time.")
     }
-    if (!is.null(chains)) {
-      stop2("Cannot subset 'chains' and 'draws' at the same time.")
+    if (!is.null(chain)) {
+      stop2("Cannot subset 'chain' and 'draw' at the same time.")
     }
   }
-  if (!is.null(variables)) {
-    x <- x[, c(meta_columns(x), variables)]
+  if (!is.null(variable)) {
+    x <- x[, c(meta_columns(x), variable)]
   }
-  if (!is.null(draws)) {
-    x <- x[x$.draw %in% draws, ]
-    # subsetting draws invalidates iterations and chains
+  if (!is.null(draw)) {
+    x <- x[x$.draw %in% draw, ]
+    # subsetting draw invalidates iteration and chain
     x$.draw <- index_continuously(x$.draw)
     x$.iteration <- x$.draw
     x$.chain <- 1L
   } else {
-    if (!is.null(chains)) {
-      x <- x[x$.chain %in% chains, ]
+    if (!is.null(chain)) {
+      x <- x[x$.chain %in% chain, ]
     }
-    if (!is.null(iterations)) {
-      x <- x[x$.iteration %in% iterations, ]
+    if (!is.null(iteration)) {
+      x <- x[x$.iteration %in% iteration, ]
     }
-    if (!is.null(chains) || !is.null(iterations)) {
+    if (!is.null(chain) || !is.null(iteration)) {
       x <- repair_indices(x)
     }
   }
@@ -74,27 +74,27 @@ subset.draws_data_frame <- function(x, variables = NULL, iterations = NULL,
 }
 
 #' @export
-subset.draws_list <- function(x, variables = NULL, iterations = NULL,
-                              chains = NULL, draws = NULL, ...) {
+subset.draws_list <- function(x, variable = NULL, iteration = NULL,
+                              chain = NULL, draw = NULL, ...) {
   x <- repair_indices(x)
-  variables <- check_variables(variables, x)
-  iterations <- check_iterations(iterations, x)
-  chains <- check_chains(chains, x)
-  if (!is.null(draws)) {
-    stop2("Cannot subset 'draws' in 'draws_array' objects.")
+  variable <- check_variables(variable, x)
+  iteration <- check_iterations(iteration, x)
+  chain <- check_chains(chain, x)
+  if (!is.null(draw)) {
+    stop2("Cannot subset 'draw' in 'draws_array' objects.")
   }
-  if (!is.null(chains)) {
-    x <- x[chains]
+  if (!is.null(chain)) {
+    x <- x[chain]
   }
-  if (!is.null(variables)) {
+  if (!is.null(variable)) {
     for (i in seq_along(x)) {
-      x[[i]] <- x[[i]][variables]
+      x[[i]] <- x[[i]][variable]
     }
   }
-  if (!is.null(iterations)) {
+  if (!is.null(iteration)) {
     for (i in seq_along(x)) {
       for (j in seq_along(x[[i]])) {
-        x[[i]][[j]] <- x[[i]][[j]][[iterations]]
+        x[[i]][[j]] <- x[[i]][[j]][[iteration]]
       }
     }
   }
@@ -103,27 +103,27 @@ subset.draws_list <- function(x, variables = NULL, iterations = NULL,
 }
 
 #' @export
-subset_variables <- function(x, variables) {
+subset_variables <- function(x, variable) {
   check_draws_object(x)
-  subset(x, variables = variables)
+  subset(x, variable = variable)
 }
 
 #' @export
-subset_iterations <- function(x, iterations) {
+subset_iterations <- function(x, iteration) {
   check_draws_object(x)
-  subset(x, iterations = iterations)
+  subset(x, iteration = iteration)
 }
 
 #' @export
-subset_chains <- function(x, chains) {
+subset_chains <- function(x, chain) {
   check_draws_object(x)
-  subset(x, chains = chains)
+  subset(x, chain = chain)
 }
 
 #' @export
-subset_draws <- function(x, draws) {
+subset_draws <- function(x, draw) {
   check_draws_object(x)
-  subset(x, draws = draws)
+  subset(x, draw = draw)
 }
 
 # subset specified non-NULL dimensions
