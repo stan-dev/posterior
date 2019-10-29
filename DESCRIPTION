@@ -5,7 +5,8 @@ Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.c
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
              person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")))
 Description: Efficiently converts between different representations of 
-    posterior samples and computes summaries and modern MCMC diagnostics.
+    draws from posterior (or prior) distributions and computes summaries 
+    and modern MCMC diagnostics.
 Imports:
   tibble,
   abind,
