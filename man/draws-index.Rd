@@ -29,8 +29,31 @@ nchains(x)
 ndraws(x)
 }
 \arguments{
-\item{x}{An \R object.}
+\item{x}{An \R object for which the methods are defined.}
 }
 \description{
 Index variables, iterations, chains, and draws.
+}
+\details{
+The methods \code{variables}, \code{iterations}, \code{chains}, and
+\code{draws} return vectors of all variables, iterations, chains, and draws,
+respectively. In contrast, the methods \code{nvariables}, \code{niterations},
+\code{nchains}, and \code{ndraws} return the number of variables, iterations,
+chains, and draws, respectively.
+}
+\examples{
+data("draws_eight_schools")
+
+variables(draws_eight_schools)
+nvariables(draws_eight_schools)
+
+iterations(draws_eight_schools)
+niterations(draws_eight_schools)
+
+chains(draws_eight_schools)
+nchains(draws_eight_schools)
+
+draws(draws_eight_schools)
+ndraws(draws_eight_schools)
+
 }
