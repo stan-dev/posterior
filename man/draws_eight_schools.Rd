@@ -5,7 +5,13 @@
 \alias{draws_eight_schools}
 \alias{eight_schools}
 \title{Draws from the eight schools model}
-\format{An object of class \code{array} of dimension 100 x 4 x 10.}
+\format{A \code{draws_array} object with 100 iterations for each of the 4
+chains containing posterior draws of the following variables.
+\describe{
+\item{mu}{Overall mean of the eight schools}
+\item{tau}{Standard deviation between schools}
+\item{theta}{Individual means of each of the eight schools}
+}}
 \source{
 Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
 Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
@@ -20,7 +26,6 @@ model described in Gelman et al. 2013.
 }
 \examples{
 data("draws_eight_schools")
-draws_eight_schools <- as_draws_array(draws_eight_schools)
 summarise_draws(draws_eight_schools)
 
 }

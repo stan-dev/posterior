@@ -5,17 +5,16 @@
 #'
 #' @aliases eight_schools
 #'
-#' @format An array of 100 iteration for each of the 4 chains
-#'   containing posterior draws of the following variables.
+#' @format A \code{draws_array} object with 100 iterations for each of the 4
+#'   chains containing posterior draws of the following variables.
 #' \describe{
 #'  \item{mu}{Overall mean of the eight schools}
 #'  \item{tau}{Standard deviation between schools}
-#'  \item{theta]{Indiviudal means for each of the eight schools}
+#'  \item{theta}{Individual means of each of the eight schools}
 #' }
 #'
 #' @examples
 #' data("draws_eight_schools")
-#' draws_eight_schools <- as_draws_array(draws_eight_schools)
 #' summarise_draws(draws_eight_schools)
 #'
 #' @source
