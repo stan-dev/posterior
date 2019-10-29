@@ -1,20 +1,51 @@
+#' The `draws_df` format
+#'
+#' @name draws_df
+#' @family formats
+#'
+#' @templateVar draws_format draws_df
+#' @templateVar base_class class(tibble::tibble())
+#' @template draws_format-skeleton
+#'
+#' @details Objects of class `"draws_df"` are [tibble][tibble::tibble] data
+#'   frames. They have one column per variable as well as additional metadata
+#'   columns `".iteration"`, `".chain"`, and `".draw"`. The difference between
+#'   the `".iteration"` and `".draw"` columns is that the former is relative to
+#'   the MCMC chain while the latter ignores the chain information and has all
+#'   unique values. See **Examples**.
+#'
+#' @examples
+#'
+#' # the difference between iteration and draw is clearer when contrasting
+#' # the head and tail of the data frame
+#' x <- as_draws_df(draws_eight_schools)
+#' head(x[, c(".iteration", ".chain", ".draw")])
+#' tail(x[, c(".iteration", ".chain", ".draw")])
+#'
 #' @import tibble
+NULL
+
+
+#' @rdname draws_df
 #' @export
 as_draws_df <- function(x, ...) {
   UseMethod("as_draws_df")
 }
 
+#' @rdname draws_df
 #' @export
 as_draws_df.default <- function(x, ...) {
   x <- as_draws(x)
   as_draws_df(x, ...)
 }
 
+#' @rdname draws_df
 #' @export
 as_draws_df.draws_df <- function(x, ...) {
   x
 }
 
+#' @rdname draws_df
 #' @export
 as_draws_df.draws_matrix <- function(x, ...) {
   class(x) <- "matrix"
@@ -29,6 +60,7 @@ as_draws_df.draws_matrix <- function(x, ...) {
   x
 }
 
+#' @rdname draws_df
 #' @export
 as_draws_df.draws_array <- function(x, ...) {
   iterations <- iterations(x)
@@ -49,6 +81,7 @@ as_draws_df.draws_array <- function(x, ...) {
   out
 }
 
+#' @rdname draws_df
 #' @export
 as_draws_df.draws_list <- function(x, ...) {
   iterations <- iterations(x)

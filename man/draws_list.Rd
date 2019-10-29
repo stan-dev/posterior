@@ -28,10 +28,12 @@ as_draws_list(x, ...)
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-A \code{draws_list} object, which has classes \code{c("draws_list", "draws", "list")}.
+A \code{draws_list} object, which has classes
+\code{c("draws_list", "draws", "list")}.
 }
 \description{
-Convert objects to the \code{draws_list} format.
+The \code{as_draws_list()} methods convert
+objects to the \code{draws_list} format. See \strong{Details}.
 }
 \details{
 Objects of class \code{"draws_list"} are lists with one element per MCMC
@@ -43,5 +45,9 @@ number of saved iterations per chain. See \strong{Examples}.
 x <- as_draws_list(draws_eight_schools)
 class(x)
 str(x)
-
 }
+\seealso{
+Other formats: \code{\link{draws_array}},
+  \code{\link{draws_df}}, \code{\link{draws_matrix}}
+}
+\concept{formats}

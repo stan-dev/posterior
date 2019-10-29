@@ -1,22 +1,16 @@
 #' The `draws_list` format
 #'
 #' @name draws_list
+#' @family formats
 #'
-#' @description Convert objects to the `draws_list` format. See **Details**.
+#' @templateVar draws_format draws_list
+#' @templateVar base_class "list"
+#' @template draws_format-skeleton
 #'
 #' @details Objects of class `"draws_list"` are lists with one element per MCMC
 #'   chain. Each of these elements is itself a named list of numeric vectors
 #'   with one vector per variable. The length of each vector is equal to the
 #'   number of saved iterations per chain. See **Examples**.
-#'
-#' @param x An object to convert to a `draws_list` object.
-#' @param ... Arguments passed to individual methods (if applicable).
-#' @return A `draws_list` object, which has classes `c("draws_list", "draws", "list")`.
-#'
-#' @examples
-#' x <- as_draws_list(draws_eight_schools)
-#' class(x)
-#' str(x)
 #'
 NULL
 

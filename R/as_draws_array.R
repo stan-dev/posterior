@@ -1,19 +1,37 @@
+#' The `draws_array` format
+#'
+#' @name draws_array
+#' @family formats
+#'
+#' @templateVar draws_format draws_array
+#' @templateVar base_class "array"
+#' @template draws_format-skeleton
+#'
+#' @details Objects of class `"draws_array"` are 3-D arrays with dimensions
+#'   `"iteration"`, `"chain"`, and `"variable"`. See **Examples**.
+#'
+NULL
+
+#' @rdname draws_array
 #' @export
 as_draws_array <- function(x, ...) {
   UseMethod("as_draws_array")
 }
 
+#' @rdname draws_array
 #' @export
 as_draws_array.default <- function(x, ...) {
   x <- as_draws(x)
   as_draws_array(x, ...)
 }
 
+#' @rdname draws_array
 #' @export
 as_draws_array.draws_array <- function(x, ...) {
   x
 }
 
+#' @rdname draws_array
 #' @export
 as_draws_array.draws_matrix <- function(x, ...) {
   old_dim <- dim(x)
@@ -28,8 +46,9 @@ as_draws_array.draws_matrix <- function(x, ...) {
   x
 }
 
-#' @importFrom abind abind
+#' @rdname draws_array
 #' @export
+#' @importFrom abind abind
 as_draws_array.draws_df <- function(x, ...) {
   iterations <- iterations(x)
   chains <- chains(x)
@@ -52,6 +71,7 @@ as_draws_array.draws_df <- function(x, ...) {
   out
 }
 
+#' @rdname draws_array
 #' @export
 as_draws_array.draws_list <- function(x, ...) {
   x <- as_draws_df(x)

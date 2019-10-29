@@ -1,19 +1,40 @@
+#' The `draws_matrix` format
+#'
+#' @name draws_matrix
+#' @family formats
+#'
+#' @templateVar draws_format draws_matrix
+#' @templateVar base_class "matrix"
+#' @template draws_format-skeleton
+#'
+#' @details Objects of class `"draws_matrix"` are matrices (2-D arrays) with
+#'   dimensions `"draw"` and `"variable"`. This format does not store any
+#'   information about which MCMC chain the draws are from and so we simply
+#'   refer to the rows as draws and not iterations (unlike for the
+#'   [`draws_array`] format). See **Examples**.
+#'
+NULL
+
+#' @rdname draws_matrix
 #' @export
 as_draws_matrix <- function(x, ...) {
   UseMethod("as_draws_matrix")
 }
 
+#' @rdname draws_matrix
 #' @export
 as_draws_matrix.default <- function(x, ...) {
   x <- as_draws(x)
   as_draws_matrix(x, ...)
 }
 
+#' @rdname draws_matrix
 #' @export
 as_draws_matrix.draws_matrix <- function(x, ...) {
   x
 }
 
+#' @rdname draws_matrix
 #' @export
 as_draws_matrix.draws_array <- function(x, ...) {
   old_dim <- dim(x)
@@ -27,6 +48,7 @@ as_draws_matrix.draws_array <- function(x, ...) {
   x
 }
 
+#' @rdname draws_matrix
 #' @export
 as_draws_matrix.draws_df <- function(x, ...) {
   draws <- x$.draw
@@ -37,6 +59,7 @@ as_draws_matrix.draws_df <- function(x, ...) {
   x
 }
 
+#' @rdname draws_matrix
 #' @export
 as_draws_matrix.draws_list <- function(x, ...) {
   x <- as_draws_df(x)
