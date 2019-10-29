@@ -7,18 +7,24 @@
 rhat_basic(x, split = TRUE)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
+\item{x}{A 2D array of draws (iterations x chains).}
 
-\item{split}{Logical. If \code{TRUE}, compute Rhat on split chains.}
+\item{split}{Logical. If \code{TRUE}, compute estimate on split chains.}
 }
 \value{
-A single numeric value for Rhat.
+A single numeric value.
 }
 \description{
-Compute the basic Rhat convergence diagnostic for a single parameter as
+Compute the basic Rhat convergence diagnostic for a single variable as
 described in Gelman et al. (2013). For practical applications, we strongly
 recommend the improved Rhat convergence diagnostic implemented in
 \code{\link{Rhat}}.
+}
+\examples{
+data("draws_eight_schools")
+mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+rhat_basic(mu)
+
 }
 \references{
 Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and

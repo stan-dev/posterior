@@ -10,7 +10,7 @@ ess_quantile(x, probs, names = TRUE)
 ess_median(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
+\item{x}{A 2D array of draws (iterations x chains).}
 
 \item{probs}{A numeric vector of probabilities.}
 
@@ -18,11 +18,17 @@ ess_median(x)
 attribute. Set to \code{FALSE} for speedup with many probs.}
 }
 \value{
-A numeric vector of effective sample sizes for quantile estimates.
+A numeric vector with one element per quantile.
 }
 \description{
 Compute effective sample size estimates for quantile estimates of
-a single parameter.
+a single variable.
+}
+\examples{
+data("draws_eight_schools")
+mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+ess_quantile(mu)
+
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and

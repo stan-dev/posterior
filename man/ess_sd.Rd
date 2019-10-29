@@ -7,16 +7,21 @@
 ess_sd(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
+\item{x}{A 2D array of draws (iterations x chains).}
 }
 \value{
-A single numeric value for the effective sample size
-estimate for standard deviation estimate.
+A single numeric value.
 }
 \description{
-Compute an effective sample size estimate for the standard deviation (sd)
-estimate of a single parameter. This is defined as minimum of effective
+Compute an effective sample size estimate for the standard deviation (SD)
+estimate of a single variable. This is defined as minimum of effective
 sample size estimate for mean and mean of squared value.
+}
+\examples{
+data("draws_eight_schools")
+mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+ess_sd(mu)
+
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and

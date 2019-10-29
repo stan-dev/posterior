@@ -7,19 +7,23 @@
 mcse_mean(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
+\item{x}{A 2D array of draws (iterations x chains).}
 }
 \value{
-A single numeric value for Monte Carlo standard error
-for mean estimate.
+A single numeric value.
 }
 \description{
 Compute Monte Carlo standard error for mean (expectation) of a
-single parameter.
+single variable.
+}
+\examples{
+data("draws_eight_schools")
+mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+mcse_mean(mu)
+
 }
 \references{
-Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-localization: An improved R-hat for assessing convergence of
-MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
+Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
+Hall/CRC.
 }

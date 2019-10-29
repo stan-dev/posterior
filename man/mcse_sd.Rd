@@ -7,16 +7,21 @@
 mcse_sd(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
+\item{x}{A 2D array of draws (iterations x chains).}
 }
 \value{
-A single numeric value for Monte Carlo standard error
-for standard deviation estimate.
+A single numeric value.
 }
 \description{
-Compute Monte Carlo standard error for standard deviation (sd) of a
-single parameter using Stirling's approximation and assuming
+Compute Monte Carlo standard error for standard deviation (SD) of a
+single variable using Stirling's approximation and assuming
 approximate normality.
+}
+\examples{
+data("draws_eight_schools")
+mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+mcse_sd(mu)
+
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and

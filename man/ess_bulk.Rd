@@ -7,16 +7,22 @@
 ess_bulk(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
+\item{x}{A 2D array of draws (iterations x chains).}
 }
 \value{
-A single numeric value for the bulk effective sample size.
+A single numeric value.
 }
 \description{
-Compute bulk effective sample size estimate (bulk-ESS) for a single parameter.
+Compute bulk effective sample size estimate (bulk-ESS) for a single variable.
 Bulk-ESS is useful as a generic diagnostic for the sampling
 efficiency in the bulk of the posterior. It is defined as the
 effective sample size for rank normalized values using split chains.
+}
+\examples{
+data("draws_eight_schools")
+mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+ess_bulk(mu)
+
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and

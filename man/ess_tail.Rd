@@ -7,16 +7,22 @@
 ess_tail(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
+\item{x}{A 2D array of draws (iterations x chains).}
 }
 \value{
-A single numeric value for the tail effective sample size.
+A single numeric value.
 }
 \description{
-Compute tail effective sample size estimate (tail-ESS) for a single parameter.
+Compute tail effective sample size estimate (tail-ESS) for a single variable.
 Tail-ESS is useful for generic diagnostic for the sampling
 efficiency in the tails of the posterior. It is defined as
 the minimum of the effective sample sizes for 5% and 95% quantiles.
+}
+\examples{
+data("draws_eight_schools")
+mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+ess_tail(mu)
+
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and

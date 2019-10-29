@@ -16,9 +16,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+#' Find the optimal next size for the FFT so that a minimum number of zeros
+#' are padded.
+#' @param N length of the sequence over which to apply FFT
+#' @return the optimal next step size as a single integer
+#' @noRd
 fft_next_good_size <- function(N) {
-  # Find the optimal next size for the FFT so that
-  # a minimum number of zeros are padded.
   if (N <= 2)
     return(2)
   while (TRUE) {
@@ -35,12 +38,12 @@ fft_next_good_size <- function(N) {
 #' Autocovariance estimates
 #'
 #' Compute autocovariance estimates for every lag for the specified
-#' input sequence using a fast Fourier transform approach. Estimate
-#' for lag t is scaled by N-t.
+#' input sequence using a fast Fourier transform approach. The estimate
+#' for lag t is scaled by N-t where N is the length of the sequence.
 #'
-#' @param x A numeric vector forming a sequence of values.
-#'
+#' @template args-conv-seq
 #' @return A numeric vector of autocovariances at every lag (scaled by N-lag).
+#' @noRd
 autocovariance <- function(x) {
   N <- length(x)
   M <- fft_next_good_size(N)
@@ -57,12 +60,12 @@ autocovariance <- function(x) {
 #' Autocorrelation estimates
 #'
 #' Compute autocorrelation estimates for every lag for the specified
-#' input sequence using a fast Fourier transform approach. Estimate
-#' for lag t is scaled by N-t.
+#' input sequence using a fast Fourier transform approach. The estimate
+#' for lag t is scaled by N-t where N is the length of the sequence.
 #'
-#' @param x A numeric vector forming a sequence of values.
-#'
+#' @template args-conv-seq
 #' @return A numeric vector of autocorrelations at every lag (scaled by N-lag).
+#' @noRd
 autocorrelation <- function(x) {
   ac <- autocovariance(x)
   ac <- ac / ac[1]
@@ -75,10 +78,10 @@ autocorrelation <- function(x) {
 #' number of unique values of discrete quantities. Second, normalize
 #' ranks via the inverse normal transformation.
 #'
-#' @param x A numeric array of values.
-#'
-#' @return A numeric array of rank normalized values with the same
-#'     size as input.
+#' @template args-scale
+#' @return A numeric array of rank normalized values with the same size
+#'   and dimension as the input.
+#' @noRd
 z_scale <- function(x) {
   S <- length(x)
   r <- rank(as.array(x), ties.method = 'average')
@@ -98,11 +101,10 @@ z_scale <- function(x) {
 #' ranks to scale \code{[1/(2S), 1-1/(2S)]}, where \code{S} is the the number
 #' of values.
 #'
-#' @param x A numeric array of values.
-#'
-#' @return A numeric array of rank uniformized values with the same
-#'     size as input.
-#'
+#' @template args-scale
+#' @return A numeric array of uniformized values with the same size
+#'   and dimension as the input.
+#' @noRd
 u_scale <- function(x) {
   S <- length(x)
   r <- rank(as.array(x), ties.method = 'average')
@@ -121,11 +123,10 @@ u_scale <- function(x) {
 #' number of unique values of discrete quantities. Second, normalize
 #' ranks via the inverse normal transformation.
 #'
-#' @param x A numeric array of values.
-#'
-#' @return A numeric array of ranked values with the same
-#'     size as input.
-#'
+#' @template args-scale
+#' @return A numeric array of ranked values with the same size
+#'   and dimension as the input.
+#' @noRd
 r_scale <- function(x) {
   S <- length(x)
   r <- rank(as.array(x), ties.method = 'average')
@@ -136,9 +137,10 @@ r_scale <- function(x) {
   r
 }
 
-# split Markov chains in half
-# @param x a 2D array of draws (#iterations * #chains)
-# @return a 2D array of draws with split chains
+#' Split Markov chains in half
+#' @template args-conv
+#' @return A 2D array of draws with split chains.
+#' @noRd
 split_chains <- function(x) {
   if (is.null(dim(x))) {
     x <- matrix(x)
@@ -151,8 +153,10 @@ split_chains <- function(x) {
   cbind(x[1:floor(half), ], x[ceiling(half + 1):niter, ])
 }
 
-# compute the rhat converence diagnostic
-# @param x A 2D array of draws (#iterations * #chains).
+#' Compute the Rhat converence diagnostic
+#' @template args-conv
+#' @template return-conv
+#' @noRd
 .rhat <- function(x) {
   if (any(!is.finite(x))) {
     return(NaN)
@@ -173,6 +177,10 @@ split_chains <- function(x) {
   sqrt((var_between / var_within + niterations - 1) / niterations)
 }
 
+#' Compute the effective sample size
+#' @template args-conv
+#' @template return-conv
+#' @noRd
 .ess <- function(x) {
   nchains <- NCOL(x)
   niterations <- NROW(x)
@@ -237,20 +245,20 @@ split_chains <- function(x) {
 
 #' Basic version of the Rhat convergence diagnostic
 #'
-#' Compute the basic Rhat convergence diagnostic for a single parameter as
+#' Compute the basic Rhat convergence diagnostic for a single variable as
 #' described in Gelman et al. (2013). For practical applications, we strongly
 #' recommend the improved Rhat convergence diagnostic implemented in
 #' \code{\link{Rhat}}.
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
-#' @param split Logical. If \code{TRUE}, compute Rhat on split chains.
+#' @template args-conv
+#' @template args-conv-split
+#' @template return-conv
+#' @template ref-gelman-bda-2013
 #'
-#' @return A single numeric value for Rhat.
-#'
-#' @references
-#' Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
-#' Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
-#' Hall/CRC.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' rhat_basic(mu)
 #'
 #' @export
 rhat_basic <- function(x, split = TRUE) {
@@ -263,20 +271,20 @@ rhat_basic <- function(x, split = TRUE) {
 
 #' Basic version of the effective sample size
 #'
-#' Compute the basic effective sample size (ESS) estimate for a single parameter
+#' Compute the basic effective sample size (ESS) estimate for a single variable
 #' as described in Gelman et al. (2013). For practical applications, we strongly
 #' recommend the improved ESS convergence diagnostics implemented in
 #' \code{\link{ess_bulk}} and \code{\link{ess_tail}}.
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
-#' @param split Logical. If \code{TRUE}, compute ESS on split chains.
+#' @template args-conv
+#' @template args-conv-split
+#' @template return-conv
+#' @template ref-gelman-bda-2013
 #'
-#' @return A single numeric value for the effective sample size.
-#'
-#' @references
-#' Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
-#' Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
-#' Hall/CRC.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_basic(mu)
 #'
 #' @export
 ess_basic <- function(x, split = TRUE) {
@@ -290,18 +298,17 @@ ess_basic <- function(x, split = TRUE) {
 #' Rhat convergence diagnostic
 #'
 #' Compute Rhat convergence diagnostic as the maximum of rank normalized
-#' split-Rhat and rank normalized folded-split-Rhat for a single parameter
+#' split-Rhat and rank normalized folded-split-Rhat for a single variable
 #' as proposed in Vehtari et al. (2019).
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
+#' @template args-conv
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
 #'
-#' @return A single numeric value for the effective sample size.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' rhat(mu)
 #'
 #' @export
 rhat <- function(x) {
@@ -313,20 +320,19 @@ rhat <- function(x) {
 
 #' Bulk effective sample size (bulk-ESS)
 #'
-#' Compute bulk effective sample size estimate (bulk-ESS) for a single parameter.
+#' Compute bulk effective sample size estimate (bulk-ESS) for a single variable.
 #' Bulk-ESS is useful as a generic diagnostic for the sampling
 #' efficiency in the bulk of the posterior. It is defined as the
 #' effective sample size for rank normalized values using split chains.
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
+#' @template args-conv
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
 #'
-#' @return A single numeric value for the bulk effective sample size.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_bulk(mu)
 #'
 #' @export
 ess_bulk <- function(x) {
@@ -335,20 +341,19 @@ ess_bulk <- function(x) {
 
 #' Tail effective sample size (tail-ESS)
 #'
-#' Compute tail effective sample size estimate (tail-ESS) for a single parameter.
+#' Compute tail effective sample size estimate (tail-ESS) for a single variable.
 #' Tail-ESS is useful for generic diagnostic for the sampling
 #' efficiency in the tails of the posterior. It is defined as
 #' the minimum of the effective sample sizes for 5% and 95% quantiles.
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
+#' @template args-conv
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
 #'
-#' @return A single numeric value for the tail effective sample size.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_tail(mu)
 #'
 #' @export
 ess_tail <- function(x) {
@@ -360,20 +365,17 @@ ess_tail <- function(x) {
 #' Effective sample sizes for quantiles
 #'
 #' Compute effective sample size estimates for quantile estimates of
-#' a single parameter.
+#' a single variable.
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
-#' @param probs A numeric vector of probabilities.
-#' @param names Logical. If \code{TRUE}, the result has a names
-#'   attribute. Set to \code{FALSE} for speedup with many probs.
+#' @template args-conv
+#' @template args-conv-quantile
+#' @template return-conv-quantile
+#' @template ref-vehtari-rhat-2019
 #'
-#' @return A numeric vector of effective sample sizes for quantile estimates.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_quantile(mu)
 #'
 #' @export
 ess_quantile <- function(x, probs, names = TRUE) {
@@ -389,7 +391,8 @@ ess_quantile <- function(x, probs, names = TRUE) {
   out
 }
 
-# ess of a single quantile
+#' ESS of a single quantile
+#' @noRd
 .ess_quantile <- function(x, prob) {
   I <- x <= quantile(x, prob)
   .ess(split_chains(I))
@@ -404,18 +407,16 @@ ess_median <- function(x) {
 #' Effective sample size for the mean
 #'
 #' Compute effective sample size estimate for a mean (expectation)
-#' estimate of a single parameter.
+#' estimate of a single variable.
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
+#' @template args-conv
+#' @template return-conv
+#' @template ref-gelman-bda-2013
 #'
-#' @return A single numeric value for the effective sample size
-#'     estimate for mean estimate.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_mean(mu)
 #'
 #' @export
 ess_mean <- function(x) {
@@ -424,20 +425,18 @@ ess_mean <- function(x) {
 
 #' Effective sample size for the standard deviation
 #'
-#' Compute an effective sample size estimate for the standard deviation (sd)
-#' estimate of a single parameter. This is defined as minimum of effective
+#' Compute an effective sample size estimate for the standard deviation (SD)
+#' estimate of a single variable. This is defined as minimum of effective
 #' sample size estimate for mean and mean of squared value.
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
+#' @template args-conv
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
 #'
-#' @return A single numeric value for the effective sample size
-#'     estimate for standard deviation estimate.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_sd(mu)
 #'
 #' @export
 ess_sd <- function(x) {
@@ -447,21 +446,17 @@ ess_sd <- function(x) {
 #' Monte Carlo standard error for quantiles
 #'
 #' Compute Monte Carlo standard errors for quantile estimates of a
-#' single parameter.
+#' single variable.
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
-#' @param probs A numeric vector of probabilities.
-#' @param names Logical. If \code{TRUE}, the result has a names
-#'   attribute. Set to \code{FALSE} for speedup with many probs.
+#' @template args-conv
+#' @template args-conv-quantile
+#' @template return-conv-quantile
+#' @template ref-vehtari-rhat-2019
 #'
-#' @return A numeric vector of Monte Carlo standard errors for quantile
-#'   estimates.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' mcse_quantile(mu)
 #'
 #' @export
 mcse_quantile <- function(x, probs, names = TRUE) {
@@ -477,7 +472,8 @@ mcse_quantile <- function(x, probs, names = TRUE) {
   out
 }
 
-# mcse of a single quantile
+#' MCSE of a single quantile
+#' @noRd
 .mcse_quantile <- function(x, prob) {
   ess <- ess_quantile(x, prob)
   p <- c(0.1586553, 0.8413447)
@@ -498,18 +494,16 @@ mcse_median <- function(x) {
 #' Monte Carlo standard error for the mean
 #'
 #' Compute Monte Carlo standard error for mean (expectation) of a
-#' single parameter.
+#' single variable.
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
+#' @template args-conv
+#' @template return-conv
+#' @template ref-gelman-bda-2013
 #'
-#' @return A single numeric value for Monte Carlo standard error
-#'     for mean estimate.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' mcse_mean(mu)
 #'
 #' @export
 mcse_mean <- function(x) {
@@ -518,20 +512,18 @@ mcse_mean <- function(x) {
 
 #' Monte Carlo standard error for the standard deviation
 #'
-#' Compute Monte Carlo standard error for standard deviation (sd) of a
-#' single parameter using Stirling's approximation and assuming
+#' Compute Monte Carlo standard error for standard deviation (SD) of a
+#' single variable using Stirling's approximation and assuming
 #' approximate normality.
 #'
-#' @param x A 2D array _without_ warmup draws (#iterations * #chains).
+#' @template args-conv
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
 #'
-#' @return A single numeric value for Monte Carlo standard error
-#'     for standard deviation estimate.
-#'
-#' @references
-#' Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-#' Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-#' localization: An improved R-hat for assessing convergence of
-#' MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' mcse_sd(mu)
 #'
 #' @export
 mcse_sd <- function(x) {

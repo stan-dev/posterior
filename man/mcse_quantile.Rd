@@ -10,7 +10,7 @@ mcse_quantile(x, probs, names = TRUE)
 mcse_median(x)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
+\item{x}{A 2D array of draws (iterations x chains).}
 
 \item{probs}{A numeric vector of probabilities.}
 
@@ -18,12 +18,17 @@ mcse_median(x)
 attribute. Set to \code{FALSE} for speedup with many probs.}
 }
 \value{
-A numeric vector of Monte Carlo standard errors for quantile
-estimates.
+A numeric vector with one element per quantile.
 }
 \description{
 Compute Monte Carlo standard errors for quantile estimates of a
-single parameter.
+single variable.
+}
+\examples{
+data("draws_eight_schools")
+mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+mcse_quantile(mu)
+
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and

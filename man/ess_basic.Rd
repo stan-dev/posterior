@@ -7,18 +7,24 @@
 ess_basic(x, split = TRUE)
 }
 \arguments{
-\item{x}{A 2D array \emph{without} warmup draws (#iterations * #chains).}
+\item{x}{A 2D array of draws (iterations x chains).}
 
-\item{split}{Logical. If \code{TRUE}, compute ESS on split chains.}
+\item{split}{Logical. If \code{TRUE}, compute estimate on split chains.}
 }
 \value{
-A single numeric value for the effective sample size.
+A single numeric value.
 }
 \description{
-Compute the basic effective sample size (ESS) estimate for a single parameter
+Compute the basic effective sample size (ESS) estimate for a single variable
 as described in Gelman et al. (2013). For practical applications, we strongly
 recommend the improved ESS convergence diagnostics implemented in
 \code{\link{ess_bulk}} and \code{\link{ess_tail}}.
+}
+\examples{
+data("draws_eight_schools")
+mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+ess_basic(mu)
+
 }
 \references{
 Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
