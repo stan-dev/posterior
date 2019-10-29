@@ -8,7 +8,6 @@
 #'
 #' @export
 repair_indices <- function(x, ...) {
-  # TODO: decide whether to sort indices rather than just renaming them
   UseMethod("repair_indices")
 }
 
@@ -40,8 +39,16 @@ repair_indices.draws_list <- function(x, ...) {
 }
 
 # create continuous indices from 1 to length(unique(x))
-index_continuously <- function(x) {
-  # TODO: use the order of appearence?
-  as.integer(factor(x))
+# @param x a vector
+# @param order order values in ascending order (TRUE)
+#   or keep their order of appearence (FALSE)
+index_continuously <- function(x, order = TRUE) {
+  check_logical(order, len = 1L)
+  if (order) {
+    out <- as.integer(factor(x))
+  } else {
+    out <- as.integer(factor(x, levels = unique(x)))
+  }
+  out
 }
 
