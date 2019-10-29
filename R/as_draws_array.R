@@ -30,7 +30,7 @@ as_draws_array.draws_matrix <- function(x, ...) {
 
 #' @importFrom abind abind
 #' @export
-as_draws_array.draws_data_frame <- function(x, ...) {
+as_draws_array.draws_df <- function(x, ...) {
   iterations <- iterations(x)
   chains <- chains(x)
   variables <- setdiff(names(x), meta_columns())
@@ -54,7 +54,7 @@ as_draws_array.draws_data_frame <- function(x, ...) {
 
 #' @export
 as_draws_array.draws_list <- function(x, ...) {
-  x <- as_draws_data_frame(x)
+  x <- as_draws_df(x)
   as_draws_array(x, ...)
 }
 

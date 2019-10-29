@@ -28,7 +28,7 @@ as_draws_matrix.draws_array <- function(x, ...) {
 }
 
 #' @export
-as_draws_matrix.draws_data_frame <- function(x, ...) {
+as_draws_matrix.draws_df <- function(x, ...) {
   draws <- x$.draw
   x <- remove_meta_columns(x)
   class(x) <- class(x)[-1L]
@@ -39,7 +39,7 @@ as_draws_matrix.draws_data_frame <- function(x, ...) {
 
 #' @export
 as_draws_matrix.draws_list <- function(x, ...) {
-  x <- as_draws_data_frame(x)
+  x <- as_draws_df(x)
   as_draws_matrix(x, ...)
 }
 

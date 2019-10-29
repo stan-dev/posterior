@@ -4,8 +4,8 @@ closest_draws_format <- function(x) {
     out <- "matrix"
   } else if (is_draws_array_like(x)) {
     out <- "array"
-  } else if (is_draws_data_frame_like(x)) {
-    out <- "data_frame"
+  } else if (is_draws_df_like(x)) {
+    out <- "df"
   } else if (is_draws_list_like(x)) {
     out <- "list"
   }

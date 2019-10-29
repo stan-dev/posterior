@@ -28,7 +28,7 @@ extract_one_variable_matrix.draws_array <- function(x, variable, ...) {
 }
 
 #' @export
-extract_one_variable_matrix.draws_data_frame <- function(x, variable, ...) {
+extract_one_variable_matrix.draws_df <- function(x, variable, ...) {
   variable <- as_one_character(variable)
   out <- subset(x, variable = variable)
   out <- as_draws_array(out)

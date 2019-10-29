@@ -23,7 +23,7 @@ variables.draws_array <- function(x) {
 }
 
 #' @export
-variables.draws_data_frame <- function(x) {
+variables.draws_df <- function(x) {
   setdiff(names(x), meta_columns())
 }
 
@@ -49,7 +49,7 @@ iterations.draws_array <- function(x) {
 }
 
 #' @export
-iterations.draws_data_frame <- function(x) {
+iterations.draws_df <- function(x) {
   as.integer(unique(x$.iteration))
 }
 
@@ -75,7 +75,7 @@ chains.draws_array <- function(x) {
 }
 
 #' @export
-chains.draws_data_frame <- function(x) {
+chains.draws_df <- function(x) {
   as.integer(unique(x$.chain))
 }
 
@@ -104,7 +104,7 @@ draws.draws_array <- function(x) {
 }
 
 #' @export
-draws.draws_data_frame <- function(x) {
+draws.draws_df <- function(x) {
   as.integer(unique(x$.draw))
 }
 
@@ -133,7 +133,7 @@ nvariables.draws_array <- function(x) {
 }
 
 #' @export
-nvariables.draws_data_frame <- function(x) {
+nvariables.draws_df <- function(x) {
   length(variables(x))
 }
 
@@ -159,7 +159,7 @@ niterations.draws_array <- function(x) {
 }
 
 #' @export
-niterations.draws_data_frame <- function(x) {
+niterations.draws_df <- function(x) {
   length(iterations(x))
 }
 
@@ -185,7 +185,7 @@ nchains.draws_array <- function(x) {
 }
 
 #' @export
-nchains.draws_data_frame <- function(x) {
+nchains.draws_df <- function(x) {
   length(chains(x))
 }
 
@@ -211,7 +211,7 @@ ndraws.draws_array <- function(x) {
 }
 
 #' @export
-ndraws.draws_data_frame <- function(x) {
+ndraws.draws_df <- function(x) {
   NROW(x)
 }
 

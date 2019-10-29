@@ -1,22 +1,22 @@
 #' @import tibble
 #' @export
-as_draws_data_frame <- function(x, ...) {
-  UseMethod("as_draws_data_frame")
+as_draws_df <- function(x, ...) {
+  UseMethod("as_draws_df")
 }
 
 #' @export
-as_draws_data_frame.default <- function(x, ...) {
+as_draws_df.default <- function(x, ...) {
   x <- as_closest_draws_format(x)
-  as_draws_data_frame(x, ...)
+  as_draws_df(x, ...)
 }
 
 #' @export
-as_draws_data_frame.draws_data_frame <- function(x, ...) {
+as_draws_df.draws_df <- function(x, ...) {
   x
 }
 
 #' @export
-as_draws_data_frame.draws_matrix <- function(x, ...) {
+as_draws_df.draws_matrix <- function(x, ...) {
   class(x) <- "matrix"
   draws <- as.integer(rownames(x))
   rownames(x) <- NULL
@@ -25,12 +25,12 @@ as_draws_data_frame.draws_matrix <- function(x, ...) {
   x$.chain <- 1L
   x$.draw <- draws
   x <- move_to_start(x, meta_columns())
-  class(x) <- class_draws_data_frame(class(x))
+  class(x) <- class_draws_df()
   x
 }
 
 #' @export
-as_draws_data_frame.draws_array <- function(x, ...) {
+as_draws_df.draws_array <- function(x, ...) {
   iterations <- iterations(x)
   chains <- chains(x)
   rownames(x) <- NULL
@@ -45,12 +45,12 @@ as_draws_data_frame.draws_array <- function(x, ...) {
   }
   out <- do_call(rbind, out)
   out <- move_to_start(out, meta_columns())
-  class(out) <- class_draws_data_frame(class(x))
+  class(out) <- class_draws_df()
   out
 }
 
 #' @export
-as_draws_data_frame.draws_list <- function(x, ...) {
+as_draws_df.draws_list <- function(x, ...) {
   iterations <- iterations(x)
   chains <- chains(x)
   out <- named_list(chains)
@@ -62,12 +62,12 @@ as_draws_data_frame.draws_list <- function(x, ...) {
   }
   out <- do_call(rbind, out)
   out <- move_to_start(out, meta_columns())
-  class(out) <- class_draws_data_frame(class(x))
+  class(out) <- class_draws_df()
   out
 }
 
-# try to convert any R object into a 'draws_data_frame' object
-.as_draws_data_frame <- function(x) {
+# try to convert any R object into a 'draws_df' object
+.as_draws_df <- function(x) {
   x <- as_tibble(x, .name_repair = "unique")
   check_reserved_variables(names(x))
   # TODO: validate and use existing .iteration and .chain columns
@@ -75,10 +75,11 @@ as_draws_data_frame.draws_list <- function(x, ...) {
   x$.chain <- 1L
   x$.draw <- compute_draw_indices(x$.iteration, x$.chain)
   x <- move_to_start(x, meta_columns())
-  class(x) <- class_draws_data_frame(class(x))
+  class(x) <- class_draws_df()
   x
 }
 
-class_draws_data_frame <- function(parent_class) {
-  c("draws_data_frame", "draws", parent_class)
+class_draws_df <- function() {
+  # inherits for tibbles
+  c("draws_df", "draws", "tbl_df", "tbl", "data.frame")
 }

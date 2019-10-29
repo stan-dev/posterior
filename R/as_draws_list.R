@@ -16,18 +16,18 @@ as_draws_list.draws_list <- function(x, ...) {
 
 #' @export
 as_draws_list.draws_matrix <- function(x, ...) {
-  x <- as_draws_data_frame(x)
+  x <- as_draws_df(x)
   as_draws_list(x, ...)
 }
 
 #' @export
 as_draws_list.draws_array <- function(x, ...) {
-  x <- as_draws_data_frame(x)
+  x <- as_draws_df(x)
   as_draws_list(x, ...)
 }
 
 #' @export
-as_draws_list.draws_data_frame <- function(x, ...) {
+as_draws_list.draws_df <- function(x, ...) {
   out <- named_list(chains(x))
   x <- x[order(x$.draw), ]
   for (i in seq_along(out)) {

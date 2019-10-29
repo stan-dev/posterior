@@ -1,10 +1,10 @@
 #' @export
-is_draws_data_frame <- function(x) {
-  inherits(x, "draws_data_frame")
+is_draws_df <- function(x) {
+  inherits(x, "draws_df")
 }
 
-# is an object looking like a 'draws_data_frame' object?
-is_draws_data_frame_like <- function(x) {
+# is an object looking like a 'draws_df' object?
+is_draws_df_like <- function(x) {
   is.data.frame(x)
 }
 

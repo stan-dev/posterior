@@ -9,7 +9,7 @@ summary.draws_array <- function(object, ...) {
 }
 
 #' @export
-summary.draws_data_frame <- function(object, ...) {
+summary.draws_df <- function(object, ...) {
   summarise_draws(object, ...)
 }
 

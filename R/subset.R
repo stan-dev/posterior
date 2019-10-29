@@ -35,8 +35,8 @@ subset.draws_array <- function(x, variable = NULL, iteration = NULL,
 }
 
 #' @export
-subset.draws_data_frame <- function(x, variable = NULL, iteration = NULL,
-                                    chain = NULL, draw = NULL, ...) {
+subset.draws_df <- function(x, variable = NULL, iteration = NULL,
+                            chain = NULL, draw = NULL, ...) {
   x <- repair_indices(x)
   variable <- check_variables(variable, x)
   iteration <- check_iterations(iteration, x)
