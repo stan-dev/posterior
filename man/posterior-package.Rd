@@ -3,8 +3,18 @@
 \docType{package}
 \name{posterior-package}
 \alias{posterior-package}
-\title{Tools for working posterior distributions}
+\alias{posterior}
+\title{Tools for working with posterior (and prior) distributions}
 \description{
-Efficiently convert between different representations of posterior samples
-and compute modern MCMC diagnostics.
+The \pkg{posterior} package is intended to provide useful tools
+for both users and developers of packages for fitting Bayesian models or
+working with output from Bayesian models. The primary goals of the
+package are to:
+\itemize{
+\item Efficiently convert between many different useful representations of
+draws (samples) from posterior or prior distributions.
+\item Provide various summaries of draws in convenient formats.
+\item Provide implementations of state of the art MCMC diagnostics without
+requiring a dependency on packages like \pkg{rstan}.
+}
 }
