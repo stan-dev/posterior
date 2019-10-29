@@ -4,9 +4,14 @@ summarise_draws <- function(x, ...) {
 }
 
 #' @export
-summarise_draws.default <- function(x, measures = NULL,
-                                    probs = c(0.05, 0.95), ...) {
+summarise_draws.default <- function(x, ...) {
   x <- as_closest_draws_format(x)
+  summarise_draws.default(x, ...)
+}
+
+#' @export
+summarise_draws.draws <- function(x, measures = NULL,
+                                  probs = c(0.05, 0.95), ...) {
   variables <- variables(x)
   if (is.null(measures)) {
     measures <- c(
@@ -45,6 +50,11 @@ summarise_draws.default <- function(x, measures = NULL,
   out$variable <- variables
   out <- move_to_start(out, "variable")
   out
+}
+
+#' @export
+summary.draws <- function(x, ...) {
+  summarise_draws(x, ...)
 }
 
 #' @export

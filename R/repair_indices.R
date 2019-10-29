@@ -39,7 +39,7 @@ repair_indices.draws_list <- function(x, ...) {
 }
 
 # create continuous indices from 1 to length(unique(x))
-# @param x a vector
+# @param x a vector to be converted to indices
 # @param order order values in ascending order (TRUE)
 #   or keep their order of appearence (FALSE)
 index_continuously <- function(x, order = TRUE) {
