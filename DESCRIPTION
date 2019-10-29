@@ -4,14 +4,18 @@ Version: 0.0.0.9000
 Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
              person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")))
-Description: Efficiently converts between different representations of 
-    draws from posterior (or prior) distributions and computes summaries 
-    and modern MCMC diagnostics.
+Description: The posterior package is intended to provide useful tools for both
+  users and developers of packages for fitting Bayesian models or working with 
+  output from Bayesian models. The primary goals of the package are to: 
+  (a) Efficiently convert between many different useful formats of
+  draws (samples) from posterior or prior distributions.
+  (b) Provide various summaries of draws in convenient formats.
+  (c) Provide lightweight implementations of state of the art MCMC diagnostics.
 Imports:
   tibble,
   abind,
   checkmate
-License: What license is it under?
+License: BSD-3
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/jgabry/posterior

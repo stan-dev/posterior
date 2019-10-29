@@ -9,7 +9,7 @@
 #'   for both users and developers of packages for fitting Bayesian models or
 #'   working with output from Bayesian models. The primary goals of the
 #'   package are to:
-#'   * Efficiently convert between many different useful representations of
+#'   * Efficiently convert between many different useful formats of
 #'     draws (samples) from posterior or prior distributions.
 #'   * Provide various summaries of draws in convenient formats.
 #'   * Provide implementations of state of the art MCMC diagnostics without
