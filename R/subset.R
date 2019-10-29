@@ -102,30 +102,6 @@ subset.draws_list <- function(x, variable = NULL, iteration = NULL,
   x
 }
 
-#' @export
-subset_variables <- function(x, variable) {
-  check_draws_object(x)
-  subset(x, variable = variable)
-}
-
-#' @export
-subset_iterations <- function(x, iteration) {
-  check_draws_object(x)
-  subset(x, iteration = iteration)
-}
-
-#' @export
-subset_chains <- function(x, chain) {
-  check_draws_object(x)
-  subset(x, chain = chain)
-}
-
-#' @export
-subset_draws <- function(x, draw) {
-  check_draws_object(x)
-  subset(x, draw = draw)
-}
-
 # subset specified non-NULL dimensions
 # @param x an object to be subsetted
 # @param ... arguments containing indices for subsetting a dimension
