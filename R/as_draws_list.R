@@ -1,31 +1,59 @@
+#' The `draws_list` format
+#'
+#' @name draws_list
+#'
+#' @description Convert objects to the `draws_list` format. See **Details**.
+#'
+#' @details Objects of class `"draws_list"` are lists with one element per MCMC
+#'   chain. Each of these elements is itself a named list of numeric vectors
+#'   with one vector per variable. The length of each vector is equal to the
+#'   number of saved iterations per chain. See **Examples**.
+#'
+#' @param x An object to convert to a `draws_list` object.
+#' @param ... Arguments passed to individual methods (if applicable).
+#' @return A `draws_list` object, which has classes `c("draws_list", "draws", "list")`.
+#'
+#' @examples
+#' x <- as_draws_list(draws_eight_schools)
+#' class(x)
+#' str(x)
+#'
+NULL
+
+#' @rdname draws_list
 #' @export
 as_draws_list <- function(x, ...) {
   UseMethod("as_draws_list")
 }
 
+#' @rdname draws_list
 #' @export
 as_draws_list.default <- function(x, ...) {
   x <- as_draws(x)
   as_draws_list(x, ...)
 }
 
+#' @rdname draws_list
 #' @export
 as_draws_list.draws_list <- function(x, ...) {
   x
 }
 
+#' @rdname draws_list
 #' @export
 as_draws_list.draws_matrix <- function(x, ...) {
   x <- as_draws_df(x)
   as_draws_list(x, ...)
 }
 
+#' @rdname draws_list
 #' @export
 as_draws_list.draws_array <- function(x, ...) {
   x <- as_draws_df(x)
   as_draws_list(x, ...)
 }
 
+#' @rdname draws_list
 #' @export
 as_draws_list.draws_df <- function(x, ...) {
   out <- named_list(chains(x))
