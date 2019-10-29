@@ -38,17 +38,34 @@ repair_indices.draws_list <- function(x, ...) {
   x
 }
 
-# create continuous indices from 1 to length(unique(x))
-# @param x a vector to be converted to indices
-# @param order order values in ascending order (TRUE)
-#   or keep their order of appearence (FALSE)
-index_continuously <- function(x, order = TRUE) {
+#' Create continuous indices
+#' @param x A vector to be converted to indices.
+#' @param g An optional grouping vector. In the most common use case,
+#'   `x` is the iteration number and `g` is the chain number.
+#' @param order Order values in ascending order (`TRUE`)
+#'   or keep their order of appearence (`FALSE`)
+#' @noRd
+index_continuously <- function(x, g = NULL, order = TRUE) {
   check_logical(order, len = 1L)
-  if (order) {
-    out <- as.integer(factor(x))
+  # internal function actually doing the indexing
+  .index_continuously <- function(x) {
+    if (order) {
+      x <- as.integer(factor(x))
+    } else {
+      x <- as.integer(factor(x, levels = unique(x)))
+    }
+    return(x)
+  }
+  if (is.null(g)) {
+    out <- .index_continuously(x)
   } else {
-    out <- as.integer(factor(x, levels = unique(x)))
+    check_true(length(x) == length(g))
+    unique_y <- unique(g)
+    out <- rep(NA, length(x))
+    for (u in unique_y) {
+      sel <- g == u
+      out[sel] <- .index_continuously(x[sel])
+    }
   }
   out
 }
-
