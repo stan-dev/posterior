@@ -5,7 +5,7 @@ as_draws_matrix <- function(x, ...) {
 
 #' @export
 as_draws_matrix.default <- function(x, ...) {
-  x <- as_closest_draws_format(x)
+  x <- as_draws(x)
   as_draws_matrix(x, ...)
 }
 

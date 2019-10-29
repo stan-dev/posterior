@@ -5,7 +5,7 @@ extract_one_variable_matrix <- function(x, variable, ...) {
 
 #' @export
 extract_one_variable_matrix.default <- function(x, variable, ...) {
-  x <- as_detected_draws_format(x)
+  x <- as_draws(x)
   extract_one_variable_matrix(x, variable, ...)
 }
 

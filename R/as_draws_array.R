@@ -5,7 +5,7 @@ as_draws_array <- function(x, ...) {
 
 #' @export
 as_draws_array.default <- function(x, ...) {
-  x <- as_closest_draws_format(x)
+  x <- as_draws(x)
   as_draws_array(x, ...)
 }
 

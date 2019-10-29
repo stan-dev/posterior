@@ -1,3 +1,32 @@
+#' Transform to \code{draws} objects
+#'
+#' Try to transform an \R object to a \code{draws} object
+#' supported by the \pkg{posterior} package.
+#'
+#' @param x An \R object.
+#' @param ... Further arguments passed to or from other methods.
+#'
+#' @details The \code{draws} class is the parent class of
+#'   all draws formats supported by the \pkg{posterior} package.
+#'
+#' @export
+as_draws <- function(x, ...) {
+  UseMethod("as_draws")
+}
+
+#' @export
+as_draws.draws <- function(x, ...) {
+  x
+}
+
+#' @export
+as_draws.default <- function(x, ...) {
+  # transform an object to the closest supported draws format
+  format <- closest_draws_format(x)
+  fun <- get(paste0(".as_", format), asNamespace("posterior"))
+  fun(x, ...)
+}
+
 # detect the supported format closest to the format of the input
 closest_draws_format <- function(x) {
   if (is_draws_matrix_like(x)) {
@@ -16,17 +45,6 @@ closest_draws_format <- function(x) {
   paste0("draws_", out)
 }
 
-# transform an object to the closest supported draws format
-as_closest_draws_format <- function(x) {
-  if (is_draws(x)) {
-    # 'x' is already in a supported format
-    return(x)
-  }
-  format <- closest_draws_format(x)
-  fun <- get(paste0(".as_", format), asNamespace("posterior"))
-  fun(x)
-}
-
 #' Check if argument is a \code{draws} object
 #'
 #' Check if argument is a \code{draws} object, which constitutes the
@@ -39,6 +57,8 @@ is_draws <- function(x) {
 }
 
 # check if an object is supported by the posterior package
+# the name 'check_draws' is already in use for checking
+# the validity of the 'draw' argument in 'subset'
 check_draws_object <- function(x) {
   if (!is_draws(x)) {
     stop2("The object is not in a format supported by posterior.")

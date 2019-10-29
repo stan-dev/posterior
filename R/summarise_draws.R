@@ -5,7 +5,7 @@ summarise_draws <- function(x, ...) {
 
 #' @export
 summarise_draws.default <- function(x, ...) {
-  x <- as_closest_draws_format(x)
+  x <- as_draws(x)
   summarise_draws.default(x, ...)
 }
 

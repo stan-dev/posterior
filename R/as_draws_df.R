@@ -6,7 +6,7 @@ as_draws_df <- function(x, ...) {
 
 #' @export
 as_draws_df.default <- function(x, ...) {
-  x <- as_closest_draws_format(x)
+  x <- as_draws(x)
   as_draws_df(x, ...)
 }
 
