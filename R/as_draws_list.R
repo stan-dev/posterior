@@ -35,7 +35,7 @@ as_draws_list.draws_data_frame <- function(x, ...) {
     out[[i]] <- remove_meta_columns(out[[i]])
     out[[i]] <- as.list(out[[i]])
   }
-  class(out) <- c("draws_list", class(out))
+  class(out) <- class_draws_list()
   out
 }
 
@@ -73,6 +73,10 @@ as_draws_list.draws_data_frame <- function(x, ...) {
     }
   }
   names(x) <- as.character(seq_along(x))
-  class(x) <- c("draws_list", class(x))
+  class(x) <- class_draws_list()
   x
+}
+
+class_draws_list <- function() {
+  c("draws_list", "draws", "list")
 }

@@ -24,7 +24,7 @@ as_draws_array.draws_matrix <- function(x, ...) {
     chain = "1",
     variable = old_dimnames[[2]]
   )
-  class(x) <- c("draws_array", "matrix")
+  class(x) <- class_draws_array()
   x
 }
 
@@ -48,7 +48,7 @@ as_draws_array.draws_data_frame <- function(x, ...) {
     chain = chains,
     variable = variables
   )
-  class(out) <- c("draws_array", "array")
+  class(out) <- class_draws_array()
   out
 }
 
@@ -72,6 +72,10 @@ as_draws_array.draws_list <- function(x, ...) {
   new_dimnames[[1]] <- as.character(seq_rows(x))
   new_dimnames[[2]] <- as.character(seq_cols(x))
   dimnames(x) <- new_dimnames
-  class(x) <- c("draws_array", "array")
+  class(x) <- class_draws_array()
   x
+}
+
+class_draws_array <- function() {
+  c("draws_array", "draws", "array")
 }

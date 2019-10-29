@@ -25,7 +25,7 @@ as_draws_data_frame.draws_matrix <- function(x, ...) {
   x$.chain <- 1L
   x$.draw <- draws
   x <- move_to_start(x, meta_columns())
-  class(x) <- c("draws_data_frame", class(x))
+  class(x) <- class_draws_data_frame(class(x))
   x
 }
 
@@ -45,7 +45,7 @@ as_draws_data_frame.draws_array <- function(x, ...) {
   }
   out <- do_call(rbind, out)
   out <- move_to_start(out, meta_columns())
-  class(out) <- c("draws_data_frame", class(out))
+  class(out) <- class_draws_data_frame(class(x))
   out
 }
 
@@ -62,7 +62,7 @@ as_draws_data_frame.draws_list <- function(x, ...) {
   }
   out <- do_call(rbind, out)
   out <- move_to_start(out, meta_columns())
-  class(out) <- c("draws_data_frame", class(out))
+  class(out) <- class_draws_data_frame(class(x))
   out
 }
 
@@ -75,6 +75,10 @@ as_draws_data_frame.draws_list <- function(x, ...) {
   x$.chain <- 1L
   x$.draw <- compute_draw_indices(x$.iteration, x$.chain)
   x <- move_to_start(x, meta_columns())
-  class(x) <- c("draws_data_frame", class(x))
+  class(x) <- class_draws_data_frame(class(x))
   x
+}
+
+class_draws_data_frame <- function(parent_class) {
+  c("draws_data_frame", "draws", parent_class)
 }

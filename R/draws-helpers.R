@@ -18,7 +18,8 @@ closest_draws_format <- function(x) {
 
 # transform an object to the closest supported draws format
 as_closest_draws_format <- function(x) {
-  if (is_draws_object(x)) {
+  if (is_draws(x)) {
+    # 'x' is already in a supported format
     return(x)
   }
   format <- closest_draws_format(x)
@@ -26,15 +27,20 @@ as_closest_draws_format <- function(x) {
   fun(x)
 }
 
-# is an object in one of the supported draws classes?
-is_draws_object <- function(x) {
-  is_draws_matrix(x) || is_draws_array(x) ||
-    is_draws_data_frame(x) || is_draws_list(x)
+#' Check if argument is a \code{draws} object
+#'
+#' Check if argument is a \code{draws} object, which constitutes the
+#' parent class of all draws formats supported by \pkg{posterior}.
+#'
+#' @param x An \R object.
+#' @export
+is_draws <- function(x) {
+  inherits(x, "draws")
 }
 
 # check if an object is supported by the posterior package
 check_draws_object <- function(x) {
-  if (!is_draws_object(x)) {
+  if (!is_draws(x)) {
     stop2("The object is not in a format supported by posterior.")
   }
   x

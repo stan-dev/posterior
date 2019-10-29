@@ -23,7 +23,7 @@ as_draws_matrix.draws_array <- function(x, ...) {
     draw = as.character(seq_rows(x)),
     variable = old_dimnames[[3]]
   )
-  class(x) <- c("draws_matrix", "matrix")
+  class(x) <- class_draws_matrix()
   x
 }
 
@@ -53,10 +53,12 @@ as_draws_matrix.draws_list <- function(x, ...) {
     new_dimnames[[2]] <- default_variables(NCOL(x))
   }
   check_reserved_variables(new_dimnames[[2]])
-  # TODO: use existing row names in any way?
   new_dimnames[[1]] <- as.character(seq_rows(x))
   dimnames(x) <- new_dimnames
-  class(x) <- c("draws_matrix", "matrix")
+  class(x) <- class_draws_matrix()
   x
 }
 
+class_draws_matrix <- function() {
+  c("draws_matrix", "draws", "matrix")
+}
