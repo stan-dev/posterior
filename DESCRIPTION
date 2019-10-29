@@ -1,8 +1,8 @@
 Package: posterior
 Title: Tools for Working with Posterior Distributions
 Version: 0.0.0.9000
-Authors@R: c(person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("cre", "aut")),
-             person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut")),
+Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
+             person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
              person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")))
 Description: Efficiently converts between different representations of 
     posterior samples and computes summaries and modern MCMC diagnostics.
