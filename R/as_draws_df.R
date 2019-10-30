@@ -22,7 +22,6 @@
 #' head(x[, c(".iteration", ".chain", ".draw")])
 #' tail(x[, c(".iteration", ".chain", ".draw")])
 #'
-#' @import tibble
 NULL
 
 
