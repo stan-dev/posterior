@@ -104,10 +104,6 @@ summarise_draws.draws <- function(x,
 
 #' @rdname draws_summary
 #' @export
-summarize_draws.draws <- summarise_draws.draws
-
-#' @rdname draws_summary
-#' @export
 summary.draws <- function(x, ...) {
   summarise_draws(x, ...)
 }

@@ -5,7 +5,6 @@
 \alias{summarise_draws}
 \alias{summarize_draws}
 \alias{summarise_draws.draws}
-\alias{summarize_draws.draws}
 \alias{summary.draws}
 \alias{default_summary_measures}
 \alias{default_convergence_measures}
@@ -17,9 +16,6 @@ summarise_draws(x, ...)
 summarize_draws(x, ...)
 
 \method{summarise_draws}{draws}(x, measures = NULL, ...,
-  probs = c(0.05, 0.95))
-
-\method{summarize_draws}{draws}(x, measures = NULL, ...,
   probs = c(0.05, 0.95))
 
 \method{summary}{draws}(x, ...)
