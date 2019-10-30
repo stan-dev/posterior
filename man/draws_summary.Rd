@@ -3,8 +3,9 @@
 \name{draws_summary}
 \alias{draws_summary}
 \alias{summarise_draws}
-\alias{summarise_draws.default}
+\alias{summarize_draws}
 \alias{summarise_draws.draws}
+\alias{summarize_draws.draws}
 \alias{summary.draws}
 \alias{default_summary_measures}
 \alias{default_convergence_measures}
@@ -13,9 +14,12 @@
 \usage{
 summarise_draws(x, ...)
 
-\method{summarise_draws}{default}(x, ...)
+summarize_draws(x, ...)
 
 \method{summarise_draws}{draws}(x, measures = NULL, ...,
+  probs = c(0.05, 0.95))
+
+\method{summarize_draws}{draws}(x, measures = NULL, ...,
   probs = c(0.05, 0.95))
 
 \method{summary}{draws}(x, ...)
@@ -41,10 +45,29 @@ the output any columns corresponding to quantiles will have names starting
 with lowercase \code{"q"} (e.g. \code{"q95"}).}
 }
 \value{
-A \link[tibble:tibble]{tibble} data frame. The first column,
-\code{"variable"}, contains the variable names and the remaining columns contain
-summary statistics and diagnostics.
+The \code{summarise_draws()} methods return a \link[tibble:tibble]{tibble} data frame.
+The first column, \code{"variable"}, contains the variable names and the remaining
+columns contain summary statistics and diagnostics.
+
+The functions \code{default_summary_measures()}, \code{default_convergence_measures()},
+and \code{default_mcse_measures()} return character vectors of names of the
+default measures included.
 }
 \description{
-Summaries of draws objects
+The \code{summarise_draws()} (and \code{summarize_draws()}) methods provide a quick way
+to get a table of summary statistics and diagnostics. These methods will
+convert an object to a \code{draws} object if it isn't already. For convenience, a
+\link[base:summary]{summary()} method for \code{draws} objects is also provided as an
+alias for \code{summarise_draws()} if the input object is already a \code{draws}
+object.
+}
+\examples{
+x <- draws_eight_schools
+class(x)
+str(x)
+
+summarise_draws(x) # default output
+summarise_draws(x, "quantile", probs = c(0.1, 0.9))
+summarise_draws(x, c("mean", "median"))
+
 }
