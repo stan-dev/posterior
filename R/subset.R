@@ -1,7 +1,7 @@
 #' @export
 subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
                                 chain = NULL, draw = NULL, ...) {
-  x <- repair_indices(x)
+  x <- repair_draws(x)
   variable <- check_variables(variable, x)
   iteration <- check_iterations(iteration, x)
   draw <- check_draws(draw, x)
@@ -15,14 +15,14 @@ subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
     draw <- iteration
   }
   x <- subset_dims(x, draw, variable)
-  x <- repair_indices(x)
+  x <- repair_draws(x)
   x
 }
 
 #' @export
 subset.draws_array <- function(x, variable = NULL, iteration = NULL,
                                chain = NULL, draw = NULL, ...) {
-  x <- repair_indices(x)
+  x <- repair_draws(x)
   variable <- check_variables(variable, x)
   iteration <- check_iterations(iteration, x)
   chain <- check_chains(chain, x)
@@ -30,14 +30,14 @@ subset.draws_array <- function(x, variable = NULL, iteration = NULL,
     stop2("Cannot subset 'draw' in 'draws_array' objects.")
   }
   x <- subset_dims(x, iteration, chain, variable)
-  x <- repair_indices(x)
+  x <- repair_draws(x)
   x
 }
 
 #' @export
 subset.draws_df <- function(x, variable = NULL, iteration = NULL,
                             chain = NULL, draw = NULL, ...) {
-  x <- repair_indices(x)
+  x <- repair_draws(x)
   variable <- check_variables(variable, x)
   iteration <- check_iterations(iteration, x)
   chain <- check_chains(chain, x)
@@ -56,7 +56,7 @@ subset.draws_df <- function(x, variable = NULL, iteration = NULL,
   if (!is.null(draw)) {
     x <- x[x$.draw %in% draw, ]
     # subsetting draw invalidates iteration and chain
-    x$.draw <- index_continuously(x$.draw)
+    x$.draw <- repair_iteration_indices(x$.draw)
     x$.iteration <- x$.draw
     x$.chain <- 1L
   } else {
@@ -67,7 +67,7 @@ subset.draws_df <- function(x, variable = NULL, iteration = NULL,
       x <- x[x$.iteration %in% iteration, ]
     }
     if (!is.null(chain) || !is.null(iteration)) {
-      x <- repair_indices(x)
+      x <- repair_draws(x)
     }
   }
   x
@@ -76,7 +76,7 @@ subset.draws_df <- function(x, variable = NULL, iteration = NULL,
 #' @export
 subset.draws_list <- function(x, variable = NULL, iteration = NULL,
                               chain = NULL, draw = NULL, ...) {
-  x <- repair_indices(x)
+  x <- repair_draws(x)
   variable <- check_variables(variable, x)
   iteration <- check_iterations(iteration, x)
   chain <- check_chains(chain, x)
@@ -98,7 +98,7 @@ subset.draws_list <- function(x, variable = NULL, iteration = NULL,
       }
     }
   }
-  x <- repair_indices(x)
+  x <- repair_draws(x)
   x
 }
 
