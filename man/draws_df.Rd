@@ -4,6 +4,7 @@
 \alias{draws_df}
 \alias{as_draws_df}
 \alias{as_draws_df.default}
+\alias{as_draws_df.data.frame}
 \alias{as_draws_df.draws_df}
 \alias{as_draws_df.draws_matrix}
 \alias{as_draws_df.draws_array}
@@ -14,6 +15,9 @@
 as_draws_df(x, ...)
 
 \method{as_draws_df}{default}(x, ...)
+
+\method{as_draws_df}{data.frame}(x, .iteration = NULL, .chain = NULL,
+  ...)
 
 \method{as_draws_df}{draws_df}(x, ...)
 

@@ -40,6 +40,12 @@ as_draws_df.default <- function(x, ...) {
 
 #' @rdname draws_df
 #' @export
+as_draws_df.data.frame <- function(x, .iteration = NULL, .chain = NULL, ...) {
+  .as_draws_df(x, .iteration = .iteration, .chain = .chain)
+}
+
+#' @rdname draws_df
+#' @export
 as_draws_df.draws_df <- function(x, ...) {
   x
 }
@@ -98,13 +104,57 @@ as_draws_df.draws_list <- function(x, ...) {
   out
 }
 
-# try to convert any R object into a 'draws_df' object
-.as_draws_df <- function(x) {
+#' Convert any \R object into a \code{draws_df} object
+#' @param x An \R object.
+#' @param .iteration optional name of the column containing iteration indices
+#' @param .chain optional name of the column containing chain indices
+#' @noRd
+.as_draws_df <- function(x, .iteration = NULL, .chain = NULL) {
   x <- tibble::as_tibble(x, .name_repair = "unique")
+
+  # prepare iteration indices
+  if (!is.null(.iteration)) {
+    .iteration <- as_one_character(.iteration)
+    has_iteration_column <- .iteration %in% names(x)
+    if (!has_iteration_column) {
+      stop2("Iteration indicator '", .iteration, "' cannot be found.")
+    }
+  } else {
+    .iteration <- ".iteration"
+    has_iteration_column <- .iteration %in% names(x)
+  }
+  if (has_iteration_column) {
+    iterations <- x[[.iteration]]
+    x[[.iteration]] <- NULL
+  } else {
+    iterations <- seq_len(NROW(x))
+  }
+  # prepare chain indices
+  if (!is.null(.chain)) {
+    .chain <- as_one_character(.chain)
+    has_chain_column <- .chain %in% names(x)
+    if (!has_chain_column) {
+      stop2("Chain indicator '", .chain, "' cannot be found.")
+    }
+  } else {
+    .chain <- ".chain"
+    has_chain_column <- .chain %in% names(x)
+  }
+  if (has_chain_column) {
+    chains <- x[[.chain]]
+    x[[.chain]] <- NULL
+  } else {
+    chains <- rep(1L, NROW(x))
+  }
+
+  # add meta columns to the data
   check_reserved_variables(names(x))
-  # TODO: validate and use existing .iteration and .chain columns
-  x$.iteration <- seq_len(NROW(x))
-  x$.chain <- 1L
+  x$.chain <- chains
+  x$.iteration <- iterations
+  if (has_iteration_column || has_chain_column) {
+    x$.chain <- repair_chain_indices(x$.chain)
+    x$.iteration <- repair_iteration_indices(x$.iteration, x$.chain)
+  }
   x$.draw <- compute_draw_indices(x$.iteration, x$.chain)
   x <- move_to_start(x, meta_columns())
   class(x) <- class_draws_df()
@@ -115,7 +165,6 @@ class_draws_df <- function() {
   # inherits for tibbles
   c("draws_df", "draws", "tbl_df", "tbl", "data.frame")
 }
-
 
 #' @rdname draws_df
 #' @export
@@ -146,10 +195,3 @@ remove_meta_columns <- function(x) {
   }
   x
 }
-
-# compute index over draws from iteration and chain indices
-compute_draw_indices <- function(iterations, chains) {
-  niter <- max(iterations)
-  (chains - 1) * niter + iterations
-}
-

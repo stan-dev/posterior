@@ -45,7 +45,6 @@ closest_draws_format <- function(x) {
   paste0("draws_", out)
 }
 
-
 #' @rdname as_draws
 #' @export
 is_draws <- function(x) {
