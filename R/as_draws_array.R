@@ -99,3 +99,23 @@ as_draws_array.draws_list <- function(x, ...) {
 class_draws_array <- function() {
   c("draws_array", "draws", "array")
 }
+
+#' @rdname draws_array
+#' @export
+is_draws_array <- function(x) {
+  inherits(x, "draws_array")
+}
+
+# is an object looking like a 'draws_array' object?
+is_draws_array_like <- function(x) {
+  is.array(x) && length(dim(x)) == 3L
+}
+
+#' @export
+`[.draws_array` <- function(x, i, j, ..., drop = FALSE) {
+  # TODO: add a warning that 'drop' is ignored?
+  out <- NextMethod("[", drop = FALSE)
+  class(out) <- class(x)
+  out
+}
+
