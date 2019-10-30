@@ -5,7 +5,6 @@
 #' @aliases posterior
 #'
 #' @import checkmate
-#' @importFrom tibble as_tibble
 #'
 #' @description The \pkg{posterior} package is intended to provide useful tools
 #'   for both users and developers of packages for fitting Bayesian models or

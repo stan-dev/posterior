@@ -50,7 +50,7 @@ as_draws_df.draws_matrix <- function(x, ...) {
   class(x) <- "matrix"
   draws <- as.integer(rownames(x))
   rownames(x) <- NULL
-  x <- as_tibble(x)
+  x <- tibble::as_tibble(x)
   x$.iteration <- draws
   x$.chain <- 1L
   x$.draw <- draws
@@ -69,7 +69,7 @@ as_draws_df.draws_array <- function(x, ...) {
   for (i in seq_along(out)) {
     out[[i]] <- drop_dims(x[, i, ], dims = 2)
     class(out[[i]]) <- "matrix"
-    out[[i]] <- as_tibble(out[[i]])
+    out[[i]] <- tibble::as_tibble(out[[i]])
     out[[i]]$.iteration <- iterations
     out[[i]]$.chain <- chains[i]
     out[[i]]$.draw <- compute_draw_indices(iterations, chains[i])
@@ -87,7 +87,7 @@ as_draws_df.draws_list <- function(x, ...) {
   chains <- chains(x)
   out <- named_list(chains)
   for (i in seq_along(out)) {
-    out[[i]] <- as_tibble(x[[i]])
+    out[[i]] <- tibble::as_tibble(x[[i]])
     out[[i]]$.iteration <- iterations
     out[[i]]$.chain <- chains[i]
     out[[i]]$.draw <- compute_draw_indices(iterations, chains[i])
@@ -100,7 +100,7 @@ as_draws_df.draws_list <- function(x, ...) {
 
 # try to convert any R object into a 'draws_df' object
 .as_draws_df <- function(x) {
-  x <- as_tibble(x, .name_repair = "unique")
+  x <- tibble::as_tibble(x, .name_repair = "unique")
   check_reserved_variables(names(x))
   # TODO: validate and use existing .iteration and .chain columns
   x$.iteration <- seq_len(NROW(x))

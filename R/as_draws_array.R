@@ -48,7 +48,6 @@ as_draws_array.draws_matrix <- function(x, ...) {
 
 #' @rdname draws_array
 #' @export
-#' @importFrom abind abind
 as_draws_array.draws_df <- function(x, ...) {
   iterations <- iterations(x)
   chains <- chains(x)
@@ -60,7 +59,7 @@ as_draws_array.draws_df <- function(x, ...) {
     out[[i]] <- as.matrix(out[[i]])
   }
   # TODO: make the two lines below more efficient?
-  out <- abind(out, along = 3L)
+  out <- abind::abind(out, along = 3L)
   out <- aperm(out, c(1, 3, 2))
   dimnames(out) <- list(
     iteration = iterations,
