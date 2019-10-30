@@ -53,7 +53,7 @@ as_draws_list.draws_df <- function(x, ...) {
   out <- named_list(chains(x))
   x <- x[order(x$.draw), ]
   for (i in seq_along(out)) {
-    out[[i]] <- subset(x, chains = i)
+    out[[i]] <- subset(x, chain = i)
     out[[i]] <- remove_meta_columns(out[[i]])
     out[[i]] <- as.list(out[[i]])
   }
