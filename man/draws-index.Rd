@@ -35,11 +35,11 @@ ndraws(x)
 Index variables, iterations, chains, and draws.
 }
 \details{
-The methods \code{variables}, \code{iterations}, \code{chains}, and
-\code{draws} return vectors of all variables, iterations, chains, and draws,
-respectively. In contrast, the methods \code{nvariables}, \code{niterations},
-\code{nchains}, and \code{ndraws} return the number of variables, iterations,
-chains, and draws, respectively.
+The methods \code{variables()}, \code{iterations()}, \code{chains()}, and \code{draws()} return
+vectors of all variables, iterations, chains, and draws, respectively. In
+contrast, the methods \code{nvariables()}, \code{niterations()}, \code{nchains()}, and
+\code{ndraws()} return the number of variables, iterations, chains, and draws,
+respectively.
 }
 \examples{
 data("draws_eight_schools")

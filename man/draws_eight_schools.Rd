@@ -3,14 +3,13 @@
 \docType{data}
 \name{draws_eight_schools}
 \alias{draws_eight_schools}
-\alias{eight_schools}
 \title{Draws from the eight schools model}
-\format{A \code{draws_array} object with 100 iterations for each of the 4
-chains containing posterior draws of the following variables.
-\describe{
-\item{mu}{Overall mean of the eight schools}
-\item{tau}{Standard deviation between schools}
-\item{theta}{Individual means of each of the eight schools}
+\format{A \code{draws_array} object with 100 iterations for each of the 4 chains
+containing posterior draws of the following variables:
+\itemize{
+\item \code{mu}: Overall mean of the eight schools
+\item \code{tau}: Standard deviation between schools
+\item \code{theta}:  Individual means of each of the eight schools
 }}
 \source{
 Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and

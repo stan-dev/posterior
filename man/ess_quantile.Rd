@@ -14,8 +14,8 @@ ess_median(x)
 
 \item{probs}{A numeric vector of probabilities.}
 
-\item{names}{Logical. If \code{TRUE}, the result has a names
-attribute. Set to \code{FALSE} for speedup with many probs.}
+\item{names}{Logical. If \code{TRUE}, the result has a names attribute. Set to
+\code{FALSE} for speedup with many probs.}
 }
 \value{
 A numeric vector with one element per quantile.

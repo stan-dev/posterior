@@ -18,7 +18,7 @@ A single numeric value.
 Compute the basic effective sample size (ESS) estimate for a single variable
 as described in Gelman et al. (2013). For practical applications, we strongly
 recommend the improved ESS convergence diagnostics implemented in
-\code{\link{ess_bulk}} and \code{\link{ess_tail}}.
+\code{\link[=ess_bulk]{ess_bulk()}} and \code{\link[=ess_tail]{ess_tail()}}.
 }
 \examples{
 data("draws_eight_schools")

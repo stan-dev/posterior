@@ -18,7 +18,7 @@ A single numeric value.
 Compute the basic Rhat convergence diagnostic for a single variable as
 described in Gelman et al. (2013). For practical applications, we strongly
 recommend the improved Rhat convergence diagnostic implemented in
-\code{\link{Rhat}}.
+\code{\link[=Rhat]{Rhat()}}.
 }
 \examples{
 data("draws_eight_schools")

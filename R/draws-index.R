@@ -6,11 +6,11 @@
 #' @param x An \R object for which the methods are defined.
 #'
 #' @details
-#' The methods \code{variables}, \code{iterations}, \code{chains}, and
-#' \code{draws} return vectors of all variables, iterations, chains, and draws,
-#' respectively. In contrast, the methods \code{nvariables}, \code{niterations},
-#' \code{nchains}, and \code{ndraws} return the number of variables, iterations,
-#' chains, and draws, respectively.
+#' The methods `variables()`, `iterations()`, `chains()`, and `draws()` return
+#' vectors of all variables, iterations, chains, and draws, respectively. In
+#' contrast, the methods `nvariables()`, `niterations()`, `nchains()`, and
+#' `ndraws()` return the number of variables, iterations, chains, and draws,
+#' respectively.
 #'
 #' @examples
 #' data("draws_eight_schools")
