@@ -48,7 +48,6 @@ as_draws_array.draws_matrix <- function(x, ...) {
 
 #' @rdname draws_array
 #' @export
-#' @importFrom abind abind
 as_draws_array.draws_df <- function(x, ...) {
   iterations <- iterations(x)
   chains <- chains(x)
@@ -60,7 +59,7 @@ as_draws_array.draws_df <- function(x, ...) {
     out[[i]] <- as.matrix(out[[i]])
   }
   # TODO: make the two lines below more efficient?
-  out <- abind(out, along = 3L)
+  out <- abind::abind(out, along = 3L)
   out <- aperm(out, c(1, 3, 2))
   dimnames(out) <- list(
     iteration = iterations,
@@ -99,3 +98,23 @@ as_draws_array.draws_list <- function(x, ...) {
 class_draws_array <- function() {
   c("draws_array", "draws", "array")
 }
+
+#' @rdname draws_array
+#' @export
+is_draws_array <- function(x) {
+  inherits(x, "draws_array")
+}
+
+# is an object looking like a 'draws_array' object?
+is_draws_array_like <- function(x) {
+  is.array(x) && length(dim(x)) == 3L
+}
+
+#' @export
+`[.draws_array` <- function(x, i, j, ..., drop = FALSE) {
+  # TODO: add a warning that 'drop' is ignored?
+  out <- NextMethod("[", drop = FALSE)
+  class(out) <- class(x)
+  out
+}
+

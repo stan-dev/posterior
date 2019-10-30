@@ -46,7 +46,7 @@ repair_indices.draws_list <- function(x, ...) {
 #'   or keep their order of appearence (`FALSE`)
 #' @noRd
 index_continuously <- function(x, g = NULL, order = TRUE) {
-  check_logical(order, len = 1L)
+  assert_flag(order)
   # internal function actually doing the indexing
   .index_continuously <- function(x) {
     if (order) {

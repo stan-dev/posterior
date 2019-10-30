@@ -43,7 +43,7 @@ summarise_draws.draws <- function(x, measures = NULL,
     }
     out[[v]] <- do_call(cbind, out[[v]])
   }
-  out <- as_tibble(do_call(rbind, out))
+  out <- tibble::as_tibble(do_call(rbind, out))
   if (any(names(out) == "variable")) {
     stop2("Name 'variable' is reserved in 'summarise_draws'.")
   }

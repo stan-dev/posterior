@@ -3,15 +3,11 @@
 #' @description Posterior draws from the eight schools
 #'   model described in Gelman et al. 2013.
 #'
-#' @aliases eight_schools
-#'
-#' @format A \code{draws_array} object with 100 iterations for each of the 4
-#'   chains containing posterior draws of the following variables.
-#' \describe{
-#'  \item{mu}{Overall mean of the eight schools}
-#'  \item{tau}{Standard deviation between schools}
-#'  \item{theta}{Individual means of each of the eight schools}
-#' }
+#' @format A `draws_array` object with 100 iterations for each of the 4 chains
+#'   containing posterior draws of the following variables:
+#' * `mu`: Overall mean of the eight schools
+#' * `tau`: Standard deviation between schools
+#' * `theta`:  Individual means of each of the eight schools
 #'
 #' @examples
 #' data("draws_eight_schools")

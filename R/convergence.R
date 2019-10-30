@@ -16,6 +16,308 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+#' Basic version of the Rhat convergence diagnostic
+#'
+#' Compute the basic Rhat convergence diagnostic for a single variable as
+#' described in Gelman et al. (2013). For practical applications, we strongly
+#' recommend the improved Rhat convergence diagnostic implemented in
+#' [rhat()].
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template args-conv-split
+#' @template return-conv
+#' @template ref-gelman-bda-2013
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' rhat_basic(mu)
+#'
+#' @export
+rhat_basic <- function(x, split = TRUE) {
+  split <- as_one_logical(split)
+  if (split) {
+    x <- split_chains(x)
+  }
+  .rhat(x)
+}
+
+#' Basic version of the effective sample size
+#'
+#' Compute the basic effective sample size (ESS) estimate for a single variable
+#' as described in Gelman et al. (2013). For practical applications, we strongly
+#' recommend the improved ESS convergence diagnostics implemented in
+#' [ess_bulk()] and [ess_tail()].
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template args-conv-split
+#' @template return-conv
+#' @template ref-gelman-bda-2013
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_basic(mu)
+#'
+#' @export
+ess_basic <- function(x, split = TRUE) {
+  split <- as_one_logical(split)
+  if (split) {
+    x <- split_chains(x)
+  }
+  .ess(x)
+}
+
+#' Rhat convergence diagnostic
+#'
+#' Compute Rhat convergence diagnostic as the maximum of rank normalized
+#' split-Rhat and rank normalized folded-split-Rhat for a single variable
+#' as proposed in Vehtari et al. (2019).
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' rhat(mu)
+#'
+#' @export
+rhat <- function(x) {
+  rhat_bulk <- .rhat(z_scale(split_chains(x)))
+  sims_folded <- abs(x - median(x))
+  rhat_tail <- .rhat(z_scale(split_chains(sims_folded)))
+  max(rhat_bulk, rhat_tail)
+}
+
+#' Bulk effective sample size (bulk-ESS)
+#'
+#' Compute bulk effective sample size estimate (bulk-ESS) for a single variable.
+#' Bulk-ESS is useful as a generic diagnostic for the sampling
+#' efficiency in the bulk of the posterior. It is defined as the
+#' effective sample size for rank normalized values using split chains.
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_bulk(mu)
+#'
+#' @export
+ess_bulk <- function(x) {
+  .ess(z_scale(split_chains(x)))
+}
+
+#' Tail effective sample size (tail-ESS)
+#'
+#' Compute tail effective sample size estimate (tail-ESS) for a single variable.
+#' Tail-ESS is useful for generic diagnostic for the sampling
+#' efficiency in the tails of the posterior. It is defined as
+#' the minimum of the effective sample sizes for 5% and 95% quantiles.
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_tail(mu)
+#'
+#' @export
+ess_tail <- function(x) {
+  q05_ess <- ess_quantile(x, 0.05)
+  q95_ess <- ess_quantile(x, 0.95)
+  min(q05_ess, q95_ess)
+}
+
+#' Effective sample sizes for quantiles
+#'
+#' Compute effective sample size estimates for quantile estimates of
+#' a single variable.
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template args-conv-quantile
+#' @template return-conv-quantile
+#' @template ref-vehtari-rhat-2019
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_quantile(mu)
+#'
+#' @export
+ess_quantile <- function(x, probs, names = TRUE) {
+  probs <- as.numeric(probs)
+  if (any(probs < 0 | probs > 1)) {
+    stop2("'probs' must contain values between 0 and 1.")
+  }
+  names <- as_one_logical(names)
+  out <- ulapply(probs, .ess_quantile, x = x)
+  if (names) {
+    names(out) <- paste0("q", probs * 100)
+  }
+  out
+}
+
+#' @rdname ess_quantile
+#' @export
+ess_median <- function(x) {
+  .ess_quantile(x, prob = 0.5)
+}
+
+# ESS of a single quantile
+.ess_quantile <- function(x, prob) {
+  I <- x <= quantile(x, prob)
+  .ess(split_chains(I))
+}
+
+
+#' Effective sample size for the mean
+#'
+#' Compute effective sample size estimate for a mean (expectation)
+#' estimate of a single variable.
+#'
+#' @template args-conv
+#' @template return-conv
+#' @template ref-gelman-bda-2013
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_mean(mu)
+#'
+#' @export
+ess_mean <- function(x) {
+  .ess(split_chains(x))
+}
+
+#' Effective sample size for the standard deviation
+#'
+#' Compute an effective sample size estimate for the standard deviation (SD)
+#' estimate of a single variable. This is defined as minimum of effective
+#' sample size estimate for mean and mean of squared value.
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' ess_sd(mu)
+#'
+#' @export
+ess_sd <- function(x) {
+  min(.ess(split_chains(x)), .ess(split_chains(x^2)))
+}
+
+#' Monte Carlo standard error for quantiles
+#'
+#' Compute Monte Carlo standard errors for quantile estimates of a
+#' single variable.
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template args-conv-quantile
+#' @template return-conv-quantile
+#' @template ref-vehtari-rhat-2019
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' mcse_quantile(mu)
+#'
+#' @export
+mcse_quantile <- function(x, probs, names = TRUE) {
+  probs <- as.numeric(probs)
+  if (any(probs < 0 | probs > 1)) {
+    stop2("'probs' must contain values between 0 and 1.")
+  }
+  names <- as_one_logical(names)
+  out <- ulapply(probs, .mcse_quantile, x = x)
+  if (names) {
+    names(out) <- paste0("q", probs * 100)
+  }
+  out
+}
+
+#' @rdname mcse_quantile
+#' @export
+mcse_median <- function(x) {
+  .mcse_quantile(x, prob = 0.5)
+}
+
+# MCSE of a single quantile
+.mcse_quantile <- function(x, prob) {
+  ess <- ess_quantile(x, prob)
+  p <- c(0.1586553, 0.8413447)
+  a <- qbeta(p, ess * prob + 1, ess * (1 - prob) + 1)
+  ssims <- sort(x)
+  S <- length(ssims)
+  th1 <- ssims[max(round(a[1] * S), 1)]
+  th2 <- ssims[min(round(a[2] * S), S)]
+  as.vector((th2 - th1) / 2)
+}
+
+#' Monte Carlo standard error for the mean
+#'
+#' Compute Monte Carlo standard error for mean (expectation) of a
+#' single variable.
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template return-conv
+#' @template ref-gelman-bda-2013
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' mcse_mean(mu)
+#'
+#' @export
+mcse_mean <- function(x) {
+  sd(x) / sqrt(ess_mean(x))
+}
+
+#' Monte Carlo standard error for the standard deviation
+#'
+#' Compute Monte Carlo standard error for standard deviation (SD) of a
+#' single variable using Stirling's approximation and assuming
+#' approximate normality.
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
+#'
+#' @examples
+#' data("draws_eight_schools")
+#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+#' mcse_sd(mu)
+#'
+#' @export
+mcse_sd <- function(x) {
+  # assumes normality of x and uses Stirling's approximation
+  ess_sd <- ess_sd(x)
+  sd(x) * sqrt(exp(1) * (1 - 1 / ess_sd)^(ess_sd - 1) - 1)
+}
+
+
+
+# internal ----------------------------------------------------------------
+
 #' Find the optimal next size for the FFT so that a minimum number of zeros
 #' are padded.
 #' @param N length of the sequence over which to apply FFT
@@ -98,7 +400,7 @@ z_scale <- function(x) {
 #' Compute rank uniformization for a numeric array. First replace each
 #' value by its rank. Average rank for ties are used to conserve the
 #' number of unique values of discrete quantities. Second, uniformize
-#' ranks to scale \code{[1/(2S), 1-1/(2S)]}, where \code{S} is the the number
+#' ranks to scale `[1/(2S), 1-1/(2S)]`, where `S` is the the number
 #' of values.
 #'
 #' @template args-scale
@@ -241,293 +543,4 @@ split_chains <- function(x) {
   tau_hat <- max(tau_hat, 1/log10(ess))
   ess <- ess / tau_hat
   ess
-}
-
-#' Basic version of the Rhat convergence diagnostic
-#'
-#' Compute the basic Rhat convergence diagnostic for a single variable as
-#' described in Gelman et al. (2013). For practical applications, we strongly
-#' recommend the improved Rhat convergence diagnostic implemented in
-#' \code{\link{Rhat}}.
-#'
-#' @template args-conv
-#' @template args-conv-split
-#' @template return-conv
-#' @template ref-gelman-bda-2013
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' rhat_basic(mu)
-#'
-#' @export
-rhat_basic <- function(x, split = TRUE) {
-  split <- as_one_logical(split)
-  if (split) {
-    x <- split_chains(x)
-  }
-  .rhat(x)
-}
-
-#' Basic version of the effective sample size
-#'
-#' Compute the basic effective sample size (ESS) estimate for a single variable
-#' as described in Gelman et al. (2013). For practical applications, we strongly
-#' recommend the improved ESS convergence diagnostics implemented in
-#' \code{\link{ess_bulk}} and \code{\link{ess_tail}}.
-#'
-#' @template args-conv
-#' @template args-conv-split
-#' @template return-conv
-#' @template ref-gelman-bda-2013
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' ess_basic(mu)
-#'
-#' @export
-ess_basic <- function(x, split = TRUE) {
-  split <- as_one_logical(split)
-  if (split) {
-    x <- split_chains(x)
-  }
-  .ess(x)
-}
-
-#' Rhat convergence diagnostic
-#'
-#' Compute Rhat convergence diagnostic as the maximum of rank normalized
-#' split-Rhat and rank normalized folded-split-Rhat for a single variable
-#' as proposed in Vehtari et al. (2019).
-#'
-#' @template args-conv
-#' @template return-conv
-#' @template ref-vehtari-rhat-2019
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' rhat(mu)
-#'
-#' @export
-rhat <- function(x) {
-  rhat_bulk <- .rhat(z_scale(split_chains(x)))
-  sims_folded <- abs(x - median(x))
-  rhat_tail <- .rhat(z_scale(split_chains(sims_folded)))
-  max(rhat_bulk, rhat_tail)
-}
-
-#' Bulk effective sample size (bulk-ESS)
-#'
-#' Compute bulk effective sample size estimate (bulk-ESS) for a single variable.
-#' Bulk-ESS is useful as a generic diagnostic for the sampling
-#' efficiency in the bulk of the posterior. It is defined as the
-#' effective sample size for rank normalized values using split chains.
-#'
-#' @template args-conv
-#' @template return-conv
-#' @template ref-vehtari-rhat-2019
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' ess_bulk(mu)
-#'
-#' @export
-ess_bulk <- function(x) {
-  .ess(z_scale(split_chains(x)))
-}
-
-#' Tail effective sample size (tail-ESS)
-#'
-#' Compute tail effective sample size estimate (tail-ESS) for a single variable.
-#' Tail-ESS is useful for generic diagnostic for the sampling
-#' efficiency in the tails of the posterior. It is defined as
-#' the minimum of the effective sample sizes for 5% and 95% quantiles.
-#'
-#' @template args-conv
-#' @template return-conv
-#' @template ref-vehtari-rhat-2019
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' ess_tail(mu)
-#'
-#' @export
-ess_tail <- function(x) {
-  q05_ess <- ess_quantile(x, 0.05)
-  q95_ess <- ess_quantile(x, 0.95)
-  min(q05_ess, q95_ess)
-}
-
-#' Effective sample sizes for quantiles
-#'
-#' Compute effective sample size estimates for quantile estimates of
-#' a single variable.
-#'
-#' @template args-conv
-#' @template args-conv-quantile
-#' @template return-conv-quantile
-#' @template ref-vehtari-rhat-2019
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' ess_quantile(mu)
-#'
-#' @export
-ess_quantile <- function(x, probs, names = TRUE) {
-  probs <- as.numeric(probs)
-  if (any(probs < 0 | probs > 1)) {
-    stop2("'probs' must contain values between 0 and 1.")
-  }
-  names <- as_one_logical(names)
-  out <- ulapply(probs, .ess_quantile, x = x)
-  if (names) {
-    names(out) <- paste0("q", probs * 100)
-  }
-  out
-}
-
-#' ESS of a single quantile
-#' @noRd
-.ess_quantile <- function(x, prob) {
-  I <- x <= quantile(x, prob)
-  .ess(split_chains(I))
-}
-
-#' @rdname ess_quantile
-#' @export
-ess_median <- function(x) {
-  .ess_quantile(x, prob = 0.5)
-}
-
-#' Effective sample size for the mean
-#'
-#' Compute effective sample size estimate for a mean (expectation)
-#' estimate of a single variable.
-#'
-#' @template args-conv
-#' @template return-conv
-#' @template ref-gelman-bda-2013
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' ess_mean(mu)
-#'
-#' @export
-ess_mean <- function(x) {
-  .ess(split_chains(x))
-}
-
-#' Effective sample size for the standard deviation
-#'
-#' Compute an effective sample size estimate for the standard deviation (SD)
-#' estimate of a single variable. This is defined as minimum of effective
-#' sample size estimate for mean and mean of squared value.
-#'
-#' @template args-conv
-#' @template return-conv
-#' @template ref-vehtari-rhat-2019
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' ess_sd(mu)
-#'
-#' @export
-ess_sd <- function(x) {
-  min(.ess(split_chains(x)), .ess(split_chains(x^2)))
-}
-
-#' Monte Carlo standard error for quantiles
-#'
-#' Compute Monte Carlo standard errors for quantile estimates of a
-#' single variable.
-#'
-#' @template args-conv
-#' @template args-conv-quantile
-#' @template return-conv-quantile
-#' @template ref-vehtari-rhat-2019
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' mcse_quantile(mu)
-#'
-#' @export
-mcse_quantile <- function(x, probs, names = TRUE) {
-  probs <- as.numeric(probs)
-  if (any(probs < 0 | probs > 1)) {
-    stop2("'probs' must contain values between 0 and 1.")
-  }
-  names <- as_one_logical(names)
-  out <- ulapply(probs, .mcse_quantile, x = x)
-  if (names) {
-    names(out) <- paste0("q", probs * 100)
-  }
-  out
-}
-
-#' MCSE of a single quantile
-#' @noRd
-.mcse_quantile <- function(x, prob) {
-  ess <- ess_quantile(x, prob)
-  p <- c(0.1586553, 0.8413447)
-  a <- qbeta(p, ess * prob + 1, ess * (1 - prob) + 1)
-  ssims <- sort(x)
-  S <- length(ssims)
-  th1 <- ssims[max(round(a[1] * S), 1)]
-  th2 <- ssims[min(round(a[2] * S), S)]
-  as.vector((th2 - th1) / 2)
-}
-
-#' @rdname mcse_quantile
-#' @export
-mcse_median <- function(x) {
-  .mcse_quantile(x, prob = 0.5)
-}
-
-#' Monte Carlo standard error for the mean
-#'
-#' Compute Monte Carlo standard error for mean (expectation) of a
-#' single variable.
-#'
-#' @template args-conv
-#' @template return-conv
-#' @template ref-gelman-bda-2013
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' mcse_mean(mu)
-#'
-#' @export
-mcse_mean <- function(x) {
-  sd(x) / sqrt(ess_mean(x))
-}
-
-#' Monte Carlo standard error for the standard deviation
-#'
-#' Compute Monte Carlo standard error for standard deviation (SD) of a
-#' single variable using Stirling's approximation and assuming
-#' approximate normality.
-#'
-#' @template args-conv
-#' @template return-conv
-#' @template ref-vehtari-rhat-2019
-#'
-#' @examples
-#' data("draws_eight_schools")
-#' mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
-#' mcse_sd(mu)
-#'
-#' @export
-mcse_sd <- function(x) {
-  # assumes normality of x and uses Stirling's approximation
-  ess_sd <- ess_sd(x)
-  sd(x) * sqrt(exp(1) * (1 - 1 / ess_sd)^(ess_sd - 1) - 1)
 }

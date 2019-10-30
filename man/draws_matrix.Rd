@@ -8,6 +8,7 @@
 \alias{as_draws_matrix.draws_array}
 \alias{as_draws_matrix.draws_df}
 \alias{as_draws_matrix.draws_list}
+\alias{is_draws_matrix}
 \title{The \code{draws_matrix} format}
 \usage{
 as_draws_matrix(x, ...)
@@ -21,6 +22,8 @@ as_draws_matrix(x, ...)
 \method{as_draws_matrix}{draws_df}(x, ...)
 
 \method{as_draws_matrix}{draws_list}(x, ...)
+
+is_draws_matrix(x)
 }
 \arguments{
 \item{x}{An object to convert to a \code{draws_matrix} object.}

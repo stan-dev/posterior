@@ -3,6 +3,7 @@
 #' @docType package
 #' @name posterior-package
 #' @aliases posterior
+#'
 #' @import checkmate
 #'
 #' @description The \pkg{posterior} package is intended to provide useful tools
