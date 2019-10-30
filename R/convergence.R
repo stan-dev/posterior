@@ -21,8 +21,9 @@
 #' Compute the basic Rhat convergence diagnostic for a single variable as
 #' described in Gelman et al. (2013). For practical applications, we strongly
 #' recommend the improved Rhat convergence diagnostic implemented in
-#' [Rhat()].
+#' [rhat()].
 #'
+#' @family diagnostics
 #' @template args-conv
 #' @template args-conv-split
 #' @template return-conv
@@ -49,6 +50,7 @@ rhat_basic <- function(x, split = TRUE) {
 #' recommend the improved ESS convergence diagnostics implemented in
 #' [ess_bulk()] and [ess_tail()].
 #'
+#' @family diagnostics
 #' @template args-conv
 #' @template args-conv-split
 #' @template return-conv
@@ -74,6 +76,7 @@ ess_basic <- function(x, split = TRUE) {
 #' split-Rhat and rank normalized folded-split-Rhat for a single variable
 #' as proposed in Vehtari et al. (2019).
 #'
+#' @family diagnostics
 #' @template args-conv
 #' @template return-conv
 #' @template ref-vehtari-rhat-2019
@@ -98,6 +101,7 @@ rhat <- function(x) {
 #' efficiency in the bulk of the posterior. It is defined as the
 #' effective sample size for rank normalized values using split chains.
 #'
+#' @family diagnostics
 #' @template args-conv
 #' @template return-conv
 #' @template ref-vehtari-rhat-2019
@@ -119,6 +123,7 @@ ess_bulk <- function(x) {
 #' efficiency in the tails of the posterior. It is defined as
 #' the minimum of the effective sample sizes for 5% and 95% quantiles.
 #'
+#' @family diagnostics
 #' @template args-conv
 #' @template return-conv
 #' @template ref-vehtari-rhat-2019
@@ -140,6 +145,7 @@ ess_tail <- function(x) {
 #' Compute effective sample size estimates for quantile estimates of
 #' a single variable.
 #'
+#' @family diagnostics
 #' @template args-conv
 #' @template args-conv-quantile
 #' @template return-conv-quantile
@@ -164,18 +170,18 @@ ess_quantile <- function(x, probs, names = TRUE) {
   out
 }
 
-#' ESS of a single quantile
-#' @noRd
-.ess_quantile <- function(x, prob) {
-  I <- x <= quantile(x, prob)
-  .ess(split_chains(I))
-}
-
 #' @rdname ess_quantile
 #' @export
 ess_median <- function(x) {
   .ess_quantile(x, prob = 0.5)
 }
+
+# ESS of a single quantile
+.ess_quantile <- function(x, prob) {
+  I <- x <= quantile(x, prob)
+  .ess(split_chains(I))
+}
+
 
 #' Effective sample size for the mean
 #'
@@ -202,6 +208,7 @@ ess_mean <- function(x) {
 #' estimate of a single variable. This is defined as minimum of effective
 #' sample size estimate for mean and mean of squared value.
 #'
+#' @family diagnostics
 #' @template args-conv
 #' @template return-conv
 #' @template ref-vehtari-rhat-2019
@@ -221,6 +228,7 @@ ess_sd <- function(x) {
 #' Compute Monte Carlo standard errors for quantile estimates of a
 #' single variable.
 #'
+#' @family diagnostics
 #' @template args-conv
 #' @template args-conv-quantile
 #' @template return-conv-quantile
@@ -245,8 +253,13 @@ mcse_quantile <- function(x, probs, names = TRUE) {
   out
 }
 
-#' MCSE of a single quantile
-#' @noRd
+#' @rdname mcse_quantile
+#' @export
+mcse_median <- function(x) {
+  .mcse_quantile(x, prob = 0.5)
+}
+
+# MCSE of a single quantile
 .mcse_quantile <- function(x, prob) {
   ess <- ess_quantile(x, prob)
   p <- c(0.1586553, 0.8413447)
@@ -258,17 +271,12 @@ mcse_quantile <- function(x, probs, names = TRUE) {
   as.vector((th2 - th1) / 2)
 }
 
-#' @rdname mcse_quantile
-#' @export
-mcse_median <- function(x) {
-  .mcse_quantile(x, prob = 0.5)
-}
-
 #' Monte Carlo standard error for the mean
 #'
 #' Compute Monte Carlo standard error for mean (expectation) of a
 #' single variable.
 #'
+#' @family diagnostics
 #' @template args-conv
 #' @template return-conv
 #' @template ref-gelman-bda-2013
@@ -289,6 +297,7 @@ mcse_mean <- function(x) {
 #' single variable using Stirling's approximation and assuming
 #' approximate normality.
 #'
+#' @family diagnostics
 #' @template args-conv
 #' @template return-conv
 #' @template ref-vehtari-rhat-2019
@@ -305,6 +314,9 @@ mcse_sd <- function(x) {
   sd(x) * sqrt(exp(1) * (1 - 1 / ess_sd)^(ess_sd - 1) - 1)
 }
 
+
+
+# internal ----------------------------------------------------------------
 
 #' Find the optimal next size for the FFT so that a minimum number of zeros
 #' are padded.

@@ -18,7 +18,7 @@ A single numeric value.
 Compute the basic Rhat convergence diagnostic for a single variable as
 described in Gelman et al. (2013). For practical applications, we strongly
 recommend the improved Rhat convergence diagnostic implemented in
-\code{\link[=Rhat]{Rhat()}}.
+\code{\link[=rhat]{rhat()}}.
 }
 \examples{
 data("draws_eight_schools")
@@ -31,3 +31,11 @@ Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
 Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
 Hall/CRC.
 }
+\seealso{
+Other diagnostics: \code{\link{ess_basic}},
+  \code{\link{ess_bulk}}, \code{\link{ess_quantile}},
+  \code{\link{ess_sd}}, \code{\link{ess_tail}},
+  \code{\link{mcse_mean}}, \code{\link{mcse_quantile}},
+  \code{\link{mcse_sd}}, \code{\link{rhat}}
+}
+\concept{diagnostics}

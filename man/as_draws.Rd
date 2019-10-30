@@ -2,9 +2,12 @@
 % Please edit documentation in R/as_draws.R
 \name{as_draws}
 \alias{as_draws}
+\alias{is_draws}
 \title{Transform to \code{draws} objects}
 \usage{
 as_draws(x, ...)
+
+is_draws(x)
 }
 \arguments{
 \item{x}{An \R object.}

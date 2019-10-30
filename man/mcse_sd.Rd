@@ -29,3 +29,11 @@ Paul-Christian Bürkner (2019). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
 MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
 }
+\seealso{
+Other diagnostics: \code{\link{ess_basic}},
+  \code{\link{ess_bulk}}, \code{\link{ess_quantile}},
+  \code{\link{ess_sd}}, \code{\link{ess_tail}},
+  \code{\link{mcse_mean}}, \code{\link{mcse_quantile}},
+  \code{\link{rhat_basic}}, \code{\link{rhat}}
+}
+\concept{diagnostics}
