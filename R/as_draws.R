@@ -45,12 +45,8 @@ closest_draws_format <- function(x) {
   paste0("draws_", out)
 }
 
-#' Check if argument is a \code{draws} object
-#'
-#' Check if argument is a \code{draws} object, which constitutes the
-#' parent class of all draws formats supported by \pkg{posterior}.
-#'
-#' @param x An \R object.
+
+#' @rdname as_draws
 #' @export
 is_draws <- function(x) {
   inherits(x, "draws")
