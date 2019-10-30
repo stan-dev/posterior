@@ -16,239 +16,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-#' Find the optimal next size for the FFT so that a minimum number of zeros
-#' are padded.
-#' @param N length of the sequence over which to apply FFT
-#' @return the optimal next step size as a single integer
-#' @noRd
-fft_next_good_size <- function(N) {
-  if (N <= 2)
-    return(2)
-  while (TRUE) {
-    m <- N
-    while ((m %% 2) == 0) m <- m / 2
-    while ((m %% 3) == 0) m <- m / 3
-    while ((m %% 5) == 0) m <- m / 5
-    if (m <= 1)
-      return(N)
-    N <- N + 1
-  }
-}
-
-#' Autocovariance estimates
-#'
-#' Compute autocovariance estimates for every lag for the specified
-#' input sequence using a fast Fourier transform approach. The estimate
-#' for lag t is scaled by N-t where N is the length of the sequence.
-#'
-#' @template args-conv-seq
-#' @return A numeric vector of autocovariances at every lag (scaled by N-lag).
-#' @noRd
-autocovariance <- function(x) {
-  N <- length(x)
-  M <- fft_next_good_size(N)
-  Mt2 <- 2 * M
-  yc <- x - mean(x)
-  yc <- c(yc, rep.int(0, Mt2 - N))
-  transform <- fft(yc)
-  ac <- fft(Conj(transform) * transform, inverse = TRUE)
-  # use "biased" estimate as recommended by Geyer (1992)
-  ac <- Re(ac)[1:N] / (N^2 * 2)
-  ac
-}
-
-#' Autocorrelation estimates
-#'
-#' Compute autocorrelation estimates for every lag for the specified
-#' input sequence using a fast Fourier transform approach. The estimate
-#' for lag t is scaled by N-t where N is the length of the sequence.
-#'
-#' @template args-conv-seq
-#' @return A numeric vector of autocorrelations at every lag (scaled by N-lag).
-#' @noRd
-autocorrelation <- function(x) {
-  ac <- autocovariance(x)
-  ac <- ac / ac[1]
-}
-
-#' Rank normalization
-#'
-#' Compute rank normalization for a numeric array. First replace each
-#' value by its rank. Average rank for ties are used to conserve the
-#' number of unique values of discrete quantities. Second, normalize
-#' ranks via the inverse normal transformation.
-#'
-#' @template args-scale
-#' @return A numeric array of rank normalized values with the same size
-#'   and dimension as the input.
-#' @noRd
-z_scale <- function(x) {
-  S <- length(x)
-  r <- rank(as.array(x), ties.method = 'average')
-  z <- qnorm((r - 1 / 2) / S)
-  if (!is.null(dim(x))) {
-    # output should have the input dimension
-    z <- array(z, dim = dim(x), dimnames = dimnames(x))
-  }
-  z
-}
-
-#' Rank uniformization
-#'
-#' Compute rank uniformization for a numeric array. First replace each
-#' value by its rank. Average rank for ties are used to conserve the
-#' number of unique values of discrete quantities. Second, uniformize
-#' ranks to scale \code{[1/(2S), 1-1/(2S)]}, where \code{S} is the the number
-#' of values.
-#'
-#' @template args-scale
-#' @return A numeric array of uniformized values with the same size
-#'   and dimension as the input.
-#' @noRd
-u_scale <- function(x) {
-  S <- length(x)
-  r <- rank(as.array(x), ties.method = 'average')
-  u <- (r - 1 / 2) / S
-  if (!is.null(dim(x))) {
-    # output should have the input dimension
-    u <- array(u, dim = dim(x), dimnames = dimnames(x))
-  }
-  u
-}
-
-#' Rank values
-#'
-#' Compute ranks for a numeric array. First replace each
-#' value by its rank. Average rank for ties are used to conserve the
-#' number of unique values of discrete quantities. Second, normalize
-#' ranks via the inverse normal transformation.
-#'
-#' @template args-scale
-#' @return A numeric array of ranked values with the same size
-#'   and dimension as the input.
-#' @noRd
-r_scale <- function(x) {
-  S <- length(x)
-  r <- rank(as.array(x), ties.method = 'average')
-  if (!is.null(dim(x))) {
-    # output should have the input dimension
-    r <- array(r, dim = dim(x), dimnames = dimnames(x))
-  }
-  r
-}
-
-#' Split Markov chains in half
-#' @template args-conv
-#' @return A 2D array of draws with split chains.
-#' @noRd
-split_chains <- function(x) {
-  if (is.null(dim(x))) {
-    x <- matrix(x)
-  }
-  niter <- NROW(x)
-  if (niter == 1L) {
-    return(x)
-  }
-  half <- niter / 2
-  cbind(x[1:floor(half), ], x[ceiling(half + 1):niter, ])
-}
-
-#' Compute the Rhat converence diagnostic
-#' @template args-conv
-#' @template return-conv
-#' @noRd
-.rhat <- function(x) {
-  if (any(!is.finite(x))) {
-    return(NaN)
-  }
-  else if (is_constant(x)) {
-    return(1)
-  }
-  nchains <- NCOL(x)
-  niterations <- NROW(x)
-  chain_mean <- numeric(nchains)
-  chain_var <- numeric(nchains)
-  for (i in seq_len(nchains)) {
-    chain_mean[i] <- mean(x[, i])
-    chain_var[i] <- var(x[, i])
-  }
-  var_between <- niterations * var(chain_mean)
-  var_within <- mean(chain_var)
-  sqrt((var_between / var_within + niterations - 1) / niterations)
-}
-
-#' Compute the effective sample size
-#' @template args-conv
-#' @template return-conv
-#' @noRd
-.ess <- function(x) {
-  nchains <- NCOL(x)
-  niterations <- NROW(x)
-  if (any(!is.finite(x)) || niterations < 3L) {
-    return(NaN)
-  }
-  else if (is_constant(x)) {
-    return(nchains * niterations)
-  }
-  acov_fun <- function(i) autocovariance(x[, i])
-  acov <- lapply(seq_len(nchains), acov_fun)
-  acov <- do.call(cbind, acov)
-  chain_mean <- apply(x, 2, mean)
-  mean_var <- mean(acov[1, ]) * niterations / (niterations - 1)
-  var_plus <- mean_var * (niterations - 1) / niterations
-  if (nchains > 1) {
-    var_plus <- var_plus + var(chain_mean)
-  }
-
-  # Geyer's initial positive sequence
-  rho_hat_t <- rep.int(0, niterations)
-  t <- 0
-  rho_hat_even <- 1
-  rho_hat_t[t + 1] <- rho_hat_even
-  rho_hat_odd <- 1 - (mean_var - mean(acov[t + 2, ])) / var_plus
-  rho_hat_t[t + 2] <- rho_hat_odd
-  while (t < NROW(acov) - 5 && !is.nan(rho_hat_even + rho_hat_odd) &&
-         (rho_hat_even + rho_hat_odd > 0)) {
-    t <- t + 2
-    rho_hat_even = 1 - (mean_var - mean(acov[t + 1, ])) / var_plus
-    rho_hat_odd = 1 - (mean_var - mean(acov[t + 2, ])) / var_plus
-    if ((rho_hat_even + rho_hat_odd) >= 0) {
-      rho_hat_t[t + 1] <- rho_hat_even
-      rho_hat_t[t + 2] <- rho_hat_odd
-    }
-  }
-  max_t <- t
-  # this is used in the improved estimate
-  if (rho_hat_even>0)
-    rho_hat_t[max_t + 1] <- rho_hat_even
-
-  # Geyer's initial monotone sequence
-  t <- 0
-  while (t <= max_t - 4) {
-    t <- t + 2
-    if (rho_hat_t[t + 1] + rho_hat_t[t + 2] >
-        rho_hat_t[t - 1] + rho_hat_t[t]) {
-      rho_hat_t[t + 1] = (rho_hat_t[t - 1] + rho_hat_t[t]) / 2;
-      rho_hat_t[t + 2] = rho_hat_t[t + 1];
-    }
-  }
-  ess <- nchains * niterations
-  # Geyer's truncated estimate
-  # tau_hat <- -1 + 2 * sum(rho_hat_t[1:max_t])
-  # Improved estimate reduces variance in antithetic case
-  tau_hat <- -1 + 2 * sum(rho_hat_t[1:max_t]) + rho_hat_t[max_t+1]
-  # Safety check for negative values and with max ess equal to ess*log10(ess)
-  tau_hat <- max(tau_hat, 1/log10(ess))
-  ess <- ess / tau_hat
-  ess
-}
-
 #' Basic version of the Rhat convergence diagnostic
 #'
 #' Compute the basic Rhat convergence diagnostic for a single variable as
 #' described in Gelman et al. (2013). For practical applications, we strongly
 #' recommend the improved Rhat convergence diagnostic implemented in
-#' \code{\link{Rhat}}.
+#' [Rhat()].
 #'
 #' @template args-conv
 #' @template args-conv-split
@@ -274,7 +47,7 @@ rhat_basic <- function(x, split = TRUE) {
 #' Compute the basic effective sample size (ESS) estimate for a single variable
 #' as described in Gelman et al. (2013). For practical applications, we strongly
 #' recommend the improved ESS convergence diagnostics implemented in
-#' \code{\link{ess_bulk}} and \code{\link{ess_tail}}.
+#' [ess_bulk()] and [ess_tail()].
 #'
 #' @template args-conv
 #' @template args-conv-split
@@ -530,4 +303,232 @@ mcse_sd <- function(x) {
   # assumes normality of x and uses Stirling's approximation
   ess_sd <- ess_sd(x)
   sd(x) * sqrt(exp(1) * (1 - 1 / ess_sd)^(ess_sd - 1) - 1)
+}
+
+
+#' Find the optimal next size for the FFT so that a minimum number of zeros
+#' are padded.
+#' @param N length of the sequence over which to apply FFT
+#' @return the optimal next step size as a single integer
+#' @noRd
+fft_next_good_size <- function(N) {
+  if (N <= 2)
+    return(2)
+  while (TRUE) {
+    m <- N
+    while ((m %% 2) == 0) m <- m / 2
+    while ((m %% 3) == 0) m <- m / 3
+    while ((m %% 5) == 0) m <- m / 5
+    if (m <= 1)
+      return(N)
+    N <- N + 1
+  }
+}
+
+#' Autocovariance estimates
+#'
+#' Compute autocovariance estimates for every lag for the specified
+#' input sequence using a fast Fourier transform approach. The estimate
+#' for lag t is scaled by N-t where N is the length of the sequence.
+#'
+#' @template args-conv-seq
+#' @return A numeric vector of autocovariances at every lag (scaled by N-lag).
+#' @noRd
+autocovariance <- function(x) {
+  N <- length(x)
+  M <- fft_next_good_size(N)
+  Mt2 <- 2 * M
+  yc <- x - mean(x)
+  yc <- c(yc, rep.int(0, Mt2 - N))
+  transform <- fft(yc)
+  ac <- fft(Conj(transform) * transform, inverse = TRUE)
+  # use "biased" estimate as recommended by Geyer (1992)
+  ac <- Re(ac)[1:N] / (N^2 * 2)
+  ac
+}
+
+#' Autocorrelation estimates
+#'
+#' Compute autocorrelation estimates for every lag for the specified
+#' input sequence using a fast Fourier transform approach. The estimate
+#' for lag t is scaled by N-t where N is the length of the sequence.
+#'
+#' @template args-conv-seq
+#' @return A numeric vector of autocorrelations at every lag (scaled by N-lag).
+#' @noRd
+autocorrelation <- function(x) {
+  ac <- autocovariance(x)
+  ac <- ac / ac[1]
+}
+
+#' Rank normalization
+#'
+#' Compute rank normalization for a numeric array. First replace each
+#' value by its rank. Average rank for ties are used to conserve the
+#' number of unique values of discrete quantities. Second, normalize
+#' ranks via the inverse normal transformation.
+#'
+#' @template args-scale
+#' @return A numeric array of rank normalized values with the same size
+#'   and dimension as the input.
+#' @noRd
+z_scale <- function(x) {
+  S <- length(x)
+  r <- rank(as.array(x), ties.method = 'average')
+  z <- qnorm((r - 1 / 2) / S)
+  if (!is.null(dim(x))) {
+    # output should have the input dimension
+    z <- array(z, dim = dim(x), dimnames = dimnames(x))
+  }
+  z
+}
+
+#' Rank uniformization
+#'
+#' Compute rank uniformization for a numeric array. First replace each
+#' value by its rank. Average rank for ties are used to conserve the
+#' number of unique values of discrete quantities. Second, uniformize
+#' ranks to scale `[1/(2S), 1-1/(2S)]`, where `S` is the the number
+#' of values.
+#'
+#' @template args-scale
+#' @return A numeric array of uniformized values with the same size
+#'   and dimension as the input.
+#' @noRd
+u_scale <- function(x) {
+  S <- length(x)
+  r <- rank(as.array(x), ties.method = 'average')
+  u <- (r - 1 / 2) / S
+  if (!is.null(dim(x))) {
+    # output should have the input dimension
+    u <- array(u, dim = dim(x), dimnames = dimnames(x))
+  }
+  u
+}
+
+#' Rank values
+#'
+#' Compute ranks for a numeric array. First replace each
+#' value by its rank. Average rank for ties are used to conserve the
+#' number of unique values of discrete quantities. Second, normalize
+#' ranks via the inverse normal transformation.
+#'
+#' @template args-scale
+#' @return A numeric array of ranked values with the same size
+#'   and dimension as the input.
+#' @noRd
+r_scale <- function(x) {
+  S <- length(x)
+  r <- rank(as.array(x), ties.method = 'average')
+  if (!is.null(dim(x))) {
+    # output should have the input dimension
+    r <- array(r, dim = dim(x), dimnames = dimnames(x))
+  }
+  r
+}
+
+#' Split Markov chains in half
+#' @template args-conv
+#' @return A 2D array of draws with split chains.
+#' @noRd
+split_chains <- function(x) {
+  if (is.null(dim(x))) {
+    x <- matrix(x)
+  }
+  niter <- NROW(x)
+  if (niter == 1L) {
+    return(x)
+  }
+  half <- niter / 2
+  cbind(x[1:floor(half), ], x[ceiling(half + 1):niter, ])
+}
+
+#' Compute the Rhat converence diagnostic
+#' @template args-conv
+#' @template return-conv
+#' @noRd
+.rhat <- function(x) {
+  if (any(!is.finite(x))) {
+    return(NaN)
+  }
+  else if (is_constant(x)) {
+    return(1)
+  }
+  nchains <- NCOL(x)
+  niterations <- NROW(x)
+  chain_mean <- numeric(nchains)
+  chain_var <- numeric(nchains)
+  for (i in seq_len(nchains)) {
+    chain_mean[i] <- mean(x[, i])
+    chain_var[i] <- var(x[, i])
+  }
+  var_between <- niterations * var(chain_mean)
+  var_within <- mean(chain_var)
+  sqrt((var_between / var_within + niterations - 1) / niterations)
+}
+
+#' Compute the effective sample size
+#' @template args-conv
+#' @template return-conv
+#' @noRd
+.ess <- function(x) {
+  nchains <- NCOL(x)
+  niterations <- NROW(x)
+  if (any(!is.finite(x)) || niterations < 3L) {
+    return(NaN)
+  }
+  else if (is_constant(x)) {
+    return(nchains * niterations)
+  }
+  acov_fun <- function(i) autocovariance(x[, i])
+  acov <- lapply(seq_len(nchains), acov_fun)
+  acov <- do.call(cbind, acov)
+  chain_mean <- apply(x, 2, mean)
+  mean_var <- mean(acov[1, ]) * niterations / (niterations - 1)
+  var_plus <- mean_var * (niterations - 1) / niterations
+  if (nchains > 1) {
+    var_plus <- var_plus + var(chain_mean)
+  }
+
+  # Geyer's initial positive sequence
+  rho_hat_t <- rep.int(0, niterations)
+  t <- 0
+  rho_hat_even <- 1
+  rho_hat_t[t + 1] <- rho_hat_even
+  rho_hat_odd <- 1 - (mean_var - mean(acov[t + 2, ])) / var_plus
+  rho_hat_t[t + 2] <- rho_hat_odd
+  while (t < NROW(acov) - 5 && !is.nan(rho_hat_even + rho_hat_odd) &&
+         (rho_hat_even + rho_hat_odd > 0)) {
+    t <- t + 2
+    rho_hat_even = 1 - (mean_var - mean(acov[t + 1, ])) / var_plus
+    rho_hat_odd = 1 - (mean_var - mean(acov[t + 2, ])) / var_plus
+    if ((rho_hat_even + rho_hat_odd) >= 0) {
+      rho_hat_t[t + 1] <- rho_hat_even
+      rho_hat_t[t + 2] <- rho_hat_odd
+    }
+  }
+  max_t <- t
+  # this is used in the improved estimate
+  if (rho_hat_even>0)
+    rho_hat_t[max_t + 1] <- rho_hat_even
+
+  # Geyer's initial monotone sequence
+  t <- 0
+  while (t <= max_t - 4) {
+    t <- t + 2
+    if (rho_hat_t[t + 1] + rho_hat_t[t + 2] >
+        rho_hat_t[t - 1] + rho_hat_t[t]) {
+      rho_hat_t[t + 1] = (rho_hat_t[t - 1] + rho_hat_t[t]) / 2;
+      rho_hat_t[t + 2] = rho_hat_t[t + 1];
+    }
+  }
+  ess <- nchains * niterations
+  # Geyer's truncated estimate
+  # tau_hat <- -1 + 2 * sum(rho_hat_t[1:max_t])
+  # Improved estimate reduces variance in antithetic case
+  tau_hat <- -1 + 2 * sum(rho_hat_t[1:max_t]) + rho_hat_t[max_t+1]
+  # Safety check for negative values and with max ess equal to ess*log10(ess)
+  tau_hat <- max(tau_hat, 1/log10(ess))
+  ess <- ess / tau_hat
+  ess
 }
