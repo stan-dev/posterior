@@ -2,10 +2,14 @@
 #'
 #' Objects for use in examples.
 #'
+#' @param example Name of the example `draws` object. See **Details**
+#' for available options.
 #' @return A `draws` object.
 #'
 #' @details
-#' Currently the only example is a [`draws_array`] object with 100 iterations
+#' The following example `draws` objects are available.
+#'
+#' **eight_schools**: A [`draws_array`] object with 100 iterations
 #' from each of 4 Markov chains obtained by fitting the eight schools model
 #' described in Gelman et al. (2013) with [Stan](https://mc-stan.org). The
 #' variables are:
@@ -22,7 +26,11 @@
 #' x <- example_draws()
 #' summarise_draws(x)
 #'
-example_draws <- function() {
+#' @export
+example_draws <- function(example = "eight_schools") {
+  choices <- c("eight_schools")
+  assert_choice(example, choices)
   # saved in R/sysdata.rda
-  draws_eight_schools
+  draws_name <- paste0("draws_", example)
+  get(draws_name, asNamespace("posterior"))
 }

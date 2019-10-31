@@ -4,7 +4,11 @@
 \alias{example_draws}
 \title{Example \code{draws} objects}
 \usage{
-example_draws()
+example_draws(example = "eight_schools")
+}
+\arguments{
+\item{example}{Name of the example \code{draws} object. See \strong{Details}
+for available options.}
 }
 \value{
 A \code{draws} object.
@@ -13,7 +17,9 @@ A \code{draws} object.
 Objects for use in examples.
 }
 \details{
-Currently the only example is a \code{\link{draws_array}} object with 100 iterations
+The following example \code{draws} objects are available.
+
+\strong{eight_schools}: A \code{\link{draws_array}} object with 100 iterations
 from each of 4 Markov chains obtained by fitting the eight schools model
 described in Gelman et al. (2013) with \href{https://mc-stan.org}{Stan}. The
 variables are:
