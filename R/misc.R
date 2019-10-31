@@ -232,7 +232,7 @@ is_constant <- function(x, tol = .Machine$double.eps) {
 
 # collapse variables via commas for pretty printing
 comma <- function(...) {
-  paste0("(", paste0("'", c(...), "'", collapse = ", "), ")")
+  paste0("{", paste0("'", c(...), "'", collapse = ", "), "}")
 }
 
 stop2 <- function(...) {
