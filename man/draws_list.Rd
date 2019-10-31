@@ -45,7 +45,7 @@ with one vector per variable. The length of each vector is equal to the
 number of saved iterations per chain. See \strong{Examples}.
 }
 \examples{
-x <- as_draws_list(draws_eight_schools)
+x <- as_draws_list(example_draws())
 class(x)
 str(x)
 }

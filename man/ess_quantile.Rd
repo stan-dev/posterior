@@ -25,8 +25,7 @@ Compute effective sample size estimates for quantile estimates of
 a single variable.
 }
 \examples{
-data("draws_eight_schools")
-mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+mu <- extract_one_variable_matrix(example_draws(), "mu")
 ess_quantile(mu)
 
 }

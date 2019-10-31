@@ -29,7 +29,7 @@
 #' default measures included.
 #'
 #' @examples
-#' x <- draws_eight_schools
+#' x <- example_draws()
 #' class(x)
 #' str(x)
 #'
