@@ -3,29 +3,34 @@
 #' Repair indices of draws objects so that iterations, chains, and draws
 #' are continuously and consistently numbered.
 #'
-#' @param x An \R object.
-#' @param ... Arguments passed to or from other methods.
+#' @template args-methods-x
+#' @template args-methods-dots
+#' @param order Logical; Indicates if draws should be ordered (via
+#'   `\link{order_draws}`) before reparing indices. Defaults to `TRUE`.
 #'
 #' @export
-repair_draws <- function(x, ...) {
+repair_draws <- function(x, order = TRUE, ...) {
   UseMethod("repair_draws")
 }
 
 #' @export
-repair_draws.draws_matrix <- function(x, ...) {
+repair_draws.draws_matrix <- function(x, order = TRUE, ...) {
+  x <- do_ordering(x, order)
   rownames(x) <- as.character(seq_rows(x))
   x
 }
 
 #' @export
-repair_draws.draws_array <- function(x, ...) {
+repair_draws.draws_array <- function(x, order = TRUE, ...) {
+  x <- do_ordering(x, order)
   rownames(x) <- as.character(seq_rows(x))
   colnames(x) <- as.character(seq_cols(x))
   x
 }
 
 #' @export
-repair_draws.draws_df <- function(x, ...) {
+repair_draws.draws_df <- function(x, order = TRUE, ...) {
+  x <- do_ordering(x, order)
   x$.chain <- repair_chain_indices(x$.chain)
   x$.iteration <- repair_iteration_indices(x$.iteration, x$.chain)
   x$.draw <- compute_draw_indices(x$.iteration, x$.chain)
@@ -33,7 +38,8 @@ repair_draws.draws_df <- function(x, ...) {
 }
 
 #' @export
-repair_draws.draws_list <- function(x, ...) {
+repair_draws.draws_list <- function(x, order = TRUE, ...) {
+  x <- do_ordering(x, order)
   names(x) <- seq_along(x)
   x
 }

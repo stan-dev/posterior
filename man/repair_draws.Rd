@@ -4,12 +4,15 @@
 \alias{repair_draws}
 \title{Repair Indices of Draws Objects}
 \usage{
-repair_draws(x, ...)
+repair_draws(x, order = TRUE, ...)
 }
 \arguments{
-\item{x}{An \R object.}
+\item{x}{An \R object for which the methods are defined.}
 
-\item{...}{Arguments passed to or from other methods.}
+\item{order}{Logical; Indicates if draws should be ordered (via
+\code{\link{order_draws}}) before reparing indices. Defaults to \code{TRUE}.}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \description{
 Repair indices of draws objects so that iterations, chains, and draws

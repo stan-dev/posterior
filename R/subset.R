@@ -15,7 +15,7 @@ subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
     draw <- iteration
   }
   x <- subset_dims(x, draw, variable)
-  x <- repair_draws(x)
+  x <- repair_draws(x, order = FALSE)
   x
 }
 
@@ -30,7 +30,7 @@ subset.draws_array <- function(x, variable = NULL, iteration = NULL,
     stop2("Cannot subset 'draw' in 'draws_array' objects.")
   }
   x <- subset_dims(x, iteration, chain, variable)
-  x <- repair_draws(x)
+  x <- repair_draws(x, order = FALSE)
   x
 }
 
@@ -67,7 +67,7 @@ subset.draws_df <- function(x, variable = NULL, iteration = NULL,
       x <- x[x$.iteration %in% iteration, ]
     }
     if (!is.null(chain) || !is.null(iteration)) {
-      x <- repair_draws(x)
+      x <- repair_draws(x, order = FALSE)
     }
   }
   x
@@ -98,7 +98,7 @@ subset.draws_list <- function(x, variable = NULL, iteration = NULL,
       }
     }
   }
-  x <- repair_draws(x)
+  x <- repair_draws(x, order = FALSE)
   x
 }
 

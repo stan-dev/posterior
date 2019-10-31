@@ -11,9 +11,9 @@ as_draws(x, ...)
 is_draws(x)
 }
 \arguments{
-\item{x}{An \R object.}
+\item{x}{An \R object for which the methods are defined.}
 
-\item{...}{Further arguments passed to or from other methods.}
+\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 If possible, a \code{draws} object in the closest supported format to \code{x}.

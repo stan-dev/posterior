@@ -6,8 +6,8 @@
 #' @name draws
 #' @family formats
 #'
-#' @param x An \R object.
-#' @param ... Further arguments passed to or from other methods.
+#' @template args-methods-x
+#' @template args-methods-dots
 #'
 #' @details The class `"draws"` is the parent class of all supported formats,
 #'   which also have their own subclasses of the form `"draws_{format}"` (e.g.
