@@ -25,8 +25,7 @@ Compute Monte Carlo standard errors for quantile estimates of a
 single variable.
 }
 \examples{
-data("draws_eight_schools")
-mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+mu <- extract_one_variable_matrix(example_draws(), "mu")
 mcse_quantile(mu)
 
 }

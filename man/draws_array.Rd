@@ -43,7 +43,7 @@ Objects of class \code{"draws_array"} are 3-D arrays with dimensions
 \code{"iteration"}, \code{"chain"}, and \code{"variable"}. See \strong{Examples}.
 }
 \examples{
-x <- as_draws_array(draws_eight_schools)
+x <- as_draws_array(example_draws())
 class(x)
 str(x)
 }

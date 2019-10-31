@@ -42,18 +42,18 @@ contrast, the methods \code{nvariables()}, \code{niterations()}, \code{nchains()
 respectively.
 }
 \examples{
-data("draws_eight_schools")
+x <- example_draws()
 
-variables(draws_eight_schools)
-nvariables(draws_eight_schools)
+variables(x)
+nvariables(x)
 
-iterations(draws_eight_schools)
-niterations(draws_eight_schools)
+iterations(x)
+niterations(x)
 
-chains(draws_eight_schools)
-nchains(draws_eight_schools)
+chains(x)
+nchains(x)
 
-draws(draws_eight_schools)
-ndraws(draws_eight_schools)
+draws(x)
+ndraws(x)
 
 }

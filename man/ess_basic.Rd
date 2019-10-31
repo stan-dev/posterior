@@ -21,8 +21,7 @@ recommend the improved ESS convergence diagnostics implemented in
 \code{\link[=ess_bulk]{ess_bulk()}} and \code{\link[=ess_tail]{ess_tail()}}.
 }
 \examples{
-data("draws_eight_schools")
-mu <- extract_one_variable_matrix(draws_eight_schools, "mu")
+mu <- extract_one_variable_matrix(example_draws(), "mu")
 ess_basic(mu)
 
 }

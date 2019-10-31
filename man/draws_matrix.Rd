@@ -46,7 +46,7 @@ refer to the rows as draws and not iterations (unlike for the
 \code{\link{draws_array}} format). See \strong{Examples}.
 }
 \examples{
-x <- as_draws_matrix(draws_eight_schools)
+x <- as_draws_matrix(example_draws())
 class(x)
 str(x)
 }

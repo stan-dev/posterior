@@ -3,9 +3,12 @@
 \name{draws}
 \alias{draws}
 \alias{as_draws}
+\alias{is_draws}
 \title{Transform to \code{draws} objects}
 \usage{
 as_draws(x, ...)
+
+is_draws(x)
 }
 \arguments{
 \item{x}{An \R object.}

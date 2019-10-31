@@ -20,6 +20,6 @@
 # documentation, which includes this example plus another one.
 
 #' @examples
-#' x <- <%=paste0("as_", draws_format)%>(draws_eight_schools)
+#' x <- <%=paste0("as_", draws_format)%>(example_draws())
 #' class(x)
 #' str(x)

@@ -58,7 +58,7 @@ alias for \code{summarise_draws()} if the input object is already a \code{draws}
 object.
 }
 \examples{
-x <- draws_eight_schools
+x <- example_draws()
 class(x)
 str(x)
 
