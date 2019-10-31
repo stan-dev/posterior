@@ -52,6 +52,7 @@ str(x)
 }
 \seealso{
 Other formats: \code{\link{draws_array}},
-  \code{\link{draws_df}}, \code{\link{draws_list}}
+  \code{\link{draws_df}}, \code{\link{draws_list}},
+  \code{\link{draws}}
 }
 \concept{formats}

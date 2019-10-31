@@ -33,7 +33,7 @@
 #' class(x)
 #' str(x)
 #'
-#' summarise_draws(x) # default output
+#' summarise_draws(x)
 #' summarise_draws(x, "quantile", probs = c(0.1, 0.9))
 #' summarise_draws(x, c("mean", "median"))
 #'

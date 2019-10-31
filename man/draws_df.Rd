@@ -64,6 +64,7 @@ tail(x[, c(".iteration", ".chain", ".draw")])
 }
 \seealso{
 Other formats: \code{\link{draws_array}},
-  \code{\link{draws_list}}, \code{\link{draws_matrix}}
+  \code{\link{draws_list}}, \code{\link{draws_matrix}},
+  \code{\link{draws}}
 }
 \concept{formats}

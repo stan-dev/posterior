@@ -1,14 +1,24 @@
 #' Transform to `draws` objects
 #'
-#' Try to transform an \R object to a `draws` object
-#' supported by the \pkg{posterior} package.
+#' Try to transform an \R object to a format supported by the \pkg{posterior}
+#' package.
+#'
+#' @name draws
+#' @family formats
 #'
 #' @param x An \R object.
 #' @param ... Further arguments passed to or from other methods.
 #'
-#' @details The `draws` class is the parent class of
-#'   all draws formats supported by the \pkg{posterior} package.
+#' @details The class `"draws"` is the parent class of all supported formats,
+#'   which also have their own subclasses of the form `"draws_{format}"` (e.g.
+#'   `"draws_array"`).
 #'
+#' @return If possible, a `draws` object in the closest supported format to `x`.
+#'   The formats are linked to in the **See Also** section below.
+#'
+NULL
+
+#' @rdname draws
 #' @export
 as_draws <- function(x, ...) {
   UseMethod("as_draws")
