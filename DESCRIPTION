@@ -15,6 +15,8 @@ Imports:
   tibble,
   abind,
   checkmate
+Suggests: 
+  testthat
 License: BSD-3
 Encoding: UTF-8
 LazyData: true
