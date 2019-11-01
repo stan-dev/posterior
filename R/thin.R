@@ -1,0 +1,39 @@
+#' Thin Draws Objects
+#'
+#' Thin `draws` objects to reduce their size and autocorrelation of the chains.
+#'
+#' @template args-methods-x
+#' @param thin A positive integer specifying the period for selecting draws.
+#' @template args-methods-dots
+#' @template return-draws
+#'
+#' @examples
+#' x <- example_draws()
+#' niterations(x)
+#'
+#' x <- thin(x, thin = 5)
+#' niterations(x)
+#'
+#' @export
+thin <- function(x, thin, ...) {
+  UseMethod("thin")
+}
+
+#' @rdname thin
+#' @export
+thin.draws <- function(x, thin, ...) {
+  thin <- as_one_integer(thin)
+  if (thin == 1L) {
+    # no thinning requested
+    return(x)
+  }
+  if (thin <= 0L) {
+    stop2("'thin' must be a positive integer.")
+  }
+  niterations <- niterations(x)
+  if (thin > niterations ) {
+    stop2("'thin' must be smaller than the total number of iterations.")
+  }
+  sel_iterations <- seq(1, niterations, by = thin)
+  subset(x, iteration = sel_iterations)
+}
