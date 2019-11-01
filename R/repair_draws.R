@@ -8,11 +8,19 @@
 #' @param order Logical; Indicates if draws should be ordered (via
 #'   `\link{order_draws}`) before reparing indices. Defaults to `TRUE`.
 #'
+#' @examples
+#' x <- as_draws_array(example_draws())
+#' # manually select some iterations and chains
+#' (x <- x[10:5, 3:4, ])
+#' # repair iteration and chain indices
+#' repair_draws(x)
+#'
 #' @export
 repair_draws <- function(x, order = TRUE, ...) {
   UseMethod("repair_draws")
 }
 
+#' @rdname repair_draws
 #' @export
 repair_draws.draws_matrix <- function(x, order = TRUE, ...) {
   x <- do_ordering(x, order)
@@ -20,6 +28,7 @@ repair_draws.draws_matrix <- function(x, order = TRUE, ...) {
   x
 }
 
+#' @rdname repair_draws
 #' @export
 repair_draws.draws_array <- function(x, order = TRUE, ...) {
   x <- do_ordering(x, order)
@@ -28,6 +37,7 @@ repair_draws.draws_array <- function(x, order = TRUE, ...) {
   x
 }
 
+#' @rdname repair_draws
 #' @export
 repair_draws.draws_df <- function(x, order = TRUE, ...) {
   x <- do_ordering(x, order)
@@ -37,6 +47,7 @@ repair_draws.draws_df <- function(x, order = TRUE, ...) {
   x
 }
 
+#' @rdname repair_draws
 #' @export
 repair_draws.draws_list <- function(x, order = TRUE, ...) {
   x <- do_ordering(x, order)

@@ -7,11 +7,19 @@
 #' @template args-methods-x
 #' @template args-methods-dots
 #'
+#' @examples
+#' x <- as_draws_array(example_draws())
+#' # manually select some iterations and chains
+#' (x <- x[10:5, 4:3, ])
+#' # reorder iteration and chain indices
+#' order_draws(x)
+#'
 #' @export
 order_draws <- function(x, ...) {
   UseMethod("order_draws")
 }
 
+#' @rdname order_draws
 #' @export
 order_draws.draws_matrix <- function(x, ...) {
   iteration_order <- order(rownames(x))
@@ -21,6 +29,7 @@ order_draws.draws_matrix <- function(x, ...) {
   x
 }
 
+#' @rdname order_draws
 #' @export
 order_draws.draws_array <- function(x, ...) {
   iteration_order <- order(rownames(x))
@@ -31,6 +40,7 @@ order_draws.draws_array <- function(x, ...) {
   x
 }
 
+#' @rdname order_draws
 #' @export
 order_draws.draws_df <- function(x, ...) {
   row_order <- order(x$.chain, x$.iteration)
@@ -40,6 +50,7 @@ order_draws.draws_df <- function(x, ...) {
   x
 }
 
+#' @rdname order_draws
 #' @export
 order_draws.draws_list <- function(x, ...) {
   chain_order <- order(names(x))

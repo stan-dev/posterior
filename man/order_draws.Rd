@@ -2,9 +2,21 @@
 % Please edit documentation in R/order_draws.R
 \name{order_draws}
 \alias{order_draws}
+\alias{order_draws.draws_matrix}
+\alias{order_draws.draws_array}
+\alias{order_draws.draws_df}
+\alias{order_draws.draws_list}
 \title{Order Draws Objects}
 \usage{
 order_draws(x, ...)
+
+\method{order_draws}{draws_matrix}(x, ...)
+
+\method{order_draws}{draws_array}(x, ...)
+
+\method{order_draws}{draws_df}(x, ...)
+
+\method{order_draws}{draws_list}(x, ...)
 }
 \arguments{
 \item{x}{An \R object for which the methods are defined.}
@@ -15,4 +27,12 @@ order_draws(x, ...)
 Order \code{draws} objects according to iteration and chain number. By default,
 draws objects are ordered but subsetting or extracting parts of them may
 leave them in an unordered state.
+}
+\examples{
+x <- as_draws_array(example_draws())
+# manually select some iterations and chains
+(x <- x[10:5, 4:3, ])
+# reorder iteration and chain indices
+order_draws(x)
+
 }

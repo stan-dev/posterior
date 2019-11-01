@@ -1,3 +1,32 @@
+#' Subset Draws Objects
+#'
+#' Subset `draws` objects after variables, iteration, chains, and draws
+#' indices.
+#'
+#' @name subset-draws
+#' @aliases subset.draws
+#' @template args-methods-x
+#' @param variable Character vector of variable names to be selected.
+#' @param iteration Numeric vector of iteration indices to be selected.
+#' @param chain Numeric vector of chain indices to be selected.
+#' @param draw Numeric vector of draw indices to be selected.
+#' @template args-methods-dots
+#' @template return-draws
+#'
+#' @details
+#' To ensure that multiple consequtive subsetting operations are working
+#' correctly, `subset` repairs `draws` objects before and after subsetting
+#' via `\link{repair_draws}`.
+#'
+#' @examples
+#' x <- example_draws()
+#' subset(x, variable = c("mu", "tau"))
+#' subset(x, chain = 2)
+#' subset(x, iteration = 5:10, chain = 3:4)
+#'
+NULL
+
+#' @rdname subset-draws
 #' @export
 subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
                                 chain = NULL, draw = NULL, ...) {
@@ -19,6 +48,7 @@ subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
   x
 }
 
+#' @rdname subset-draws
 #' @export
 subset.draws_array <- function(x, variable = NULL, iteration = NULL,
                                chain = NULL, draw = NULL, ...) {
@@ -34,6 +64,7 @@ subset.draws_array <- function(x, variable = NULL, iteration = NULL,
   x
 }
 
+#' @rdname subset-draws
 #' @export
 subset.draws_df <- function(x, variable = NULL, iteration = NULL,
                             chain = NULL, draw = NULL, ...) {
@@ -73,6 +104,7 @@ subset.draws_df <- function(x, variable = NULL, iteration = NULL,
   x
 }
 
+#' @rdname subset-draws
 #' @export
 subset.draws_list <- function(x, variable = NULL, iteration = NULL,
                               chain = NULL, draw = NULL, ...) {
@@ -102,10 +134,11 @@ subset.draws_list <- function(x, variable = NULL, iteration = NULL,
   x
 }
 
-# subset specified non-NULL dimensions
-# @param x an object to be subsetted
-# @param ... arguments containing indices for subsetting a dimension
-#   NULL is treated as not subsetting that dimension
+#' subset specified non-NULL dimensions
+#' @param x an object to be subsetted
+#' @param ... arguments containing indices for subsetting a dimension
+#'   NULL is treated as not subsetting that dimension
+#' @noRd
 subset_dims <- function(x, ...) {
   dots <- list(...)
   if (!length(dots)) {
