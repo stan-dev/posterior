@@ -83,7 +83,7 @@ summarise_draws.draws <- function(x,
     .ess_quantile <- function(x, ...) ess_quantile2(x, probs, ...)
     measures[measures == "ess_quantile"] <- ".ess_quantile"
   }
-  out <- named_list(variables, value = list(named_list(measures)))
+  out <- named_list(variables, values = list(named_list(measures)))
   funs <- lapply(measures, get, environment())
   names(funs) <- measures
   for (v in variables) {

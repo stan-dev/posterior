@@ -31,9 +31,9 @@ repair_draws.draws_array <- function(x, order = TRUE, ...) {
 #' @export
 repair_draws.draws_df <- function(x, order = TRUE, ...) {
   x <- do_ordering(x, order)
-  x$.chain <- repair_chain_indices(x$.chain)
-  x$.iteration <- repair_iteration_indices(x$.iteration, x$.chain)
-  x$.draw <- compute_draw_indices(x$.iteration, x$.chain)
+  x$.chain <- repair_chain_ids(x$.chain)
+  x$.iteration <- repair_iteration_ids(x$.iteration, x$.chain)
+  x$.draw <- compute_draw_ids(x$.iteration, x$.chain)
   x
 }
 
@@ -45,39 +45,39 @@ repair_draws.draws_list <- function(x, order = TRUE, ...) {
 }
 
 #' Repair iteration indices
-#' @param iterations A vector of iteration indices
-#' @param chains A vector of chain indices
+#' @param iteration_ids A vector of iteration indices
+#' @param chain_ids A vector of chain indices
 #' @noRd
-repair_iteration_indices <- function(iterations, chains = NULL) {
-  .repair_iteration_indices <- function(x) {
+repair_iteration_ids <- function(iteration_ids, chain_ids = NULL) {
+  .repair_iteration_ids <- function(x) {
     match(seq_along(x), order(x))
   }
-  if (is.null(chains)) {
-    out <- .repair_iteration_indices(iterations)
+  if (is.null(chain_ids)) {
+    out <- .repair_iteration_ids(iteration_ids)
   } else {
-    check_true(length(iterations) == length(chains))
-    unique_chains <- unique(chains)
-    out <- rep(NA, length(iterations))
-    for (u in unique(chains)) {
-      sel <- chains == u
-      out[sel] <- .repair_iteration_indices(iterations[sel])
+    check_true(length(iteration_ids) == length(chain_ids))
+    unique_chain_ids <- unique(chain_ids)
+    out <- rep(NA, length(iteration_ids))
+    for (u in unique(chain_ids)) {
+      sel <- chain_ids == u
+      out[sel] <- .repair_iteration_ids(iteration_ids[sel])
     }
   }
   out
 }
 
 #' Repair chain indices
-#' @param chains A vector of chain indices
+#' @param chain_ids A vector of chain indices
 #' @noRd
-repair_chain_indices <- function(chains) {
-  as.integer(factor(chains))
+repair_chain_ids <- function(chain_ids) {
+  as.integer(factor(chain_ids))
 }
 
-#' Compute draw indices from iterations and chains
-#' @param iterations A vector of iteration indices
-#' @param chains A vector of chain indices
+#' Compute draw indices from iteration and chain indices
+#' @param iteration_ids A vector of iteration indices
+#' @param chain_ids A vector of chain indices
 #' @noRd
-compute_draw_indices <- function(iterations, chains) {
-  niter <- max(iterations)
-  (chains - 1) * niter + iterations
+compute_draw_ids <- function(iteration_ids, chain_ids) {
+  niterations <- max(iteration_ids)
+  (chain_ids - 1) * niterations + iteration_ids
 }

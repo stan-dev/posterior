@@ -3,8 +3,8 @@ subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
                                 chain = NULL, draw = NULL, ...) {
   x <- repair_draws(x)
   variable <- check_variables(variable, x)
-  iteration <- check_iterations(iteration, x)
-  draw <- check_draws(draw, x)
+  iteration <- check_iteration_ids(iteration, x)
+  draw <- check_draw_ids(draw, x)
   if (!is.null(chain)) {
     stop2("Cannot subset 'chain' in 'draws_matrix' objects.")
   }
@@ -24,8 +24,8 @@ subset.draws_array <- function(x, variable = NULL, iteration = NULL,
                                chain = NULL, draw = NULL, ...) {
   x <- repair_draws(x)
   variable <- check_variables(variable, x)
-  iteration <- check_iterations(iteration, x)
-  chain <- check_chains(chain, x)
+  iteration <- check_iteration_ids(iteration, x)
+  chain <- check_chain_ids(chain, x)
   if (!is.null(draw)) {
     stop2("Cannot subset 'draw' in 'draws_array' objects.")
   }
@@ -39,9 +39,9 @@ subset.draws_df <- function(x, variable = NULL, iteration = NULL,
                             chain = NULL, draw = NULL, ...) {
   x <- repair_draws(x)
   variable <- check_variables(variable, x)
-  iteration <- check_iterations(iteration, x)
-  chain <- check_chains(chain, x)
-  draw <- check_draws(draw, x)
+  iteration <- check_iteration_ids(iteration, x)
+  chain <- check_chain_ids(chain, x)
+  draw <- check_draw_ids(draw, x)
   if (!is.null(draw)) {
     if (!is.null(iteration)) {
       stop2("Cannot subset 'iteration' and 'draw' at the same time.")
@@ -78,8 +78,8 @@ subset.draws_list <- function(x, variable = NULL, iteration = NULL,
                               chain = NULL, draw = NULL, ...) {
   x <- repair_draws(x)
   variable <- check_variables(variable, x)
-  iteration <- check_iterations(iteration, x)
-  chain <- check_chains(chain, x)
+  iteration <- check_iteration_ids(iteration, x)
+  chain <- check_chain_ids(chain, x)
   if (!is.null(draw)) {
     stop2("Cannot subset 'draw' in 'draws_array' objects.")
   }

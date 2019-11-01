@@ -57,7 +57,6 @@ str(x)
 
 # the difference between iteration and draw is clearer when contrasting
 # the head and tail of the data frame
-x <- as_draws_df(example_draws())
 head(x[, c(".iteration", ".chain", ".draw")])
 tail(x[, c(".iteration", ".chain", ".draw")])
 

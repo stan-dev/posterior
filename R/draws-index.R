@@ -6,7 +6,7 @@
 #' @template args-methods-x
 #'
 #' @details
-#' The methods `variables()`, `iterations()`, `chains()`, and `draws()` return
+#' The methods `variables()`, `iteration_ids()`, `chain_ids()`, and `draw_ids()` return
 #' vectors of all variables, iterations, chains, and draws, respectively. In
 #' contrast, the methods `nvariables()`, `niterations()`, `nchains()`, and
 #' `ndraws()` return the number of variables, iterations, chains, and draws,
@@ -18,13 +18,13 @@
 #' variables(x)
 #' nvariables(x)
 #'
-#' iterations(x)
+#' iteration_ids(x)
 #' niterations(x)
 #'
-#' chains(x)
+#' chain_ids(x)
 #' nchains(x)
 #'
-#' draws(x)
+#' draw_ids(x)
 #' ndraws(x)
 #'
 NULL
@@ -57,86 +57,86 @@ variables.draws_list <- function(x) {
 
 #' @rdname draws-index
 #' @export
-iterations <- function(x) {
-  UseMethod("iterations")
+iteration_ids <- function(x) {
+  UseMethod("iteration_ids")
 }
 
 #' @export
-iterations.draws_matrix <- function(x) {
+iteration_ids.draws_matrix <- function(x) {
   as.integer(rownames(x))
 }
 
 #' @export
-iterations.draws_array <- function(x) {
+iteration_ids.draws_array <- function(x) {
   as.integer(rownames(x))
 }
 
 #' @export
-iterations.draws_df <- function(x) {
+iteration_ids.draws_df <- function(x) {
   as.integer(unique(x$.iteration))
 }
 
 #' @export
-iterations.draws_list <- function(x) {
+iteration_ids.draws_list <- function(x) {
   seq_along(x[[1]][[1]])
 }
 
 #' @rdname draws-index
 #' @export
-chains <- function(x) {
-  UseMethod("chains")
+chain_ids <- function(x) {
+  UseMethod("chain_ids")
 }
 
 #' @export
-chains.draws_matrix <- function(x) {
+chain_ids.draws_matrix <- function(x) {
   1L
 }
 
 #' @export
-chains.draws_array <- function(x) {
+chain_ids.draws_array <- function(x) {
   as.integer(colnames(x))
 }
 
 #' @export
-chains.draws_df <- function(x) {
+chain_ids.draws_df <- function(x) {
   as.integer(unique(x$.chain))
 }
 
 #' @export
-chains.draws_list <- function(x) {
+chain_ids.draws_list <- function(x) {
   as.integer(names(x))
 }
 
 #' @rdname draws-index
 #' @export
-draws <- function(x) {
-  UseMethod("draws")
+draw_ids <- function(x) {
+  UseMethod("draw_ids")
 }
 
 #' @export
-draws.draws_matrix <- function(x) {
+draw_ids.draws_matrix <- function(x) {
   as.integer(rownames(x))
 }
 
 #' @export
-draws.draws_array <- function(x) {
-  iterations <- iterations(x)
+draw_ids.draws_array <- function(x) {
+  iteration_ids <- iteration_ids(x)
   niterations <- niterations(x)
-  chains <- chains(x)
-  ulapply(chains, function(c) niterations * (c - 1) + iterations)
+  chain_ids <- chain_ids(x)
+  ulapply(chain_ids, function(c) niterations * (c - 1) + iteration_ids)
 }
 
 #' @export
-draws.draws_df <- function(x) {
+draw_ids.draws_df <- function(x) {
   as.integer(unique(x$.draw))
 }
 
 #' @export
-draws.draws_list <- function(x) {
-  iterations <- iterations(x)
+draw_ids.draws_list <- function(x) {
+  iteration_ids <- iteration_ids(x)
   niterations <- niterations(x)
-  chains <- chains(x)
-  ulapply(chains, function(c) niterations * (c - 1) + iterations)
+  chain_ids <- chain_ids(x)
+  ulapply(chain_ids, function(c) niterations * (c - 1) + iteration_ids)
 }
 
 #' @rdname draws-index
@@ -183,7 +183,7 @@ niterations.draws_array <- function(x) {
 
 #' @export
 niterations.draws_df <- function(x) {
-  length(iterations(x))
+  length(iteration_ids(x))
 }
 
 #' @export
@@ -209,7 +209,7 @@ nchains.draws_array <- function(x) {
 
 #' @export
 nchains.draws_df <- function(x) {
-  length(chains(x))
+  length(chain_ids(x))
 }
 
 #' @export
@@ -269,55 +269,55 @@ check_reserved_variables <- function(variables) {
 }
 
 # check validity of iteration indices
-check_iterations <- function(iterations, x) {
+check_iteration_ids <- function(iteration_ids, x) {
   check_draws_object(x)
-  if (!is.null(iterations)) {
-    iterations <- sort(unique(as.integer(iterations)))
-    if (any(iterations < 1L)) {
+  if (!is.null(iteration_ids)) {
+    iteration_ids <- sort(unique(as.integer(iteration_ids)))
+    if (any(iteration_ids < 1L)) {
       stop2("Iteration indices should be positive.")
     }
     niterations <- niterations(x)
-    max_iterations <- max(iterations)
-    if (max_iterations > niterations) {
-      stop2("Tried to subset iterations up to '", max_iterations, "' ",
+    max_iteration <- max(iteration_ids)
+    if (max_iteration > niterations) {
+      stop2("Tried to subset iterations up to '", max_iteration, "' ",
             "but the object only has '", niterations, "' iterations.")
     }
   }
-  iterations
+  iteration_ids
 }
 
 # check validity of chain indices
-check_chains <- function(chains, x) {
+check_chain_ids <- function(chain_ids, x) {
   check_draws_object(x)
-  if (!is.null(chains)) {
-    chains <- sort(unique(as.integer(chains)))
-    if (any(chains < 1L)) {
+  if (!is.null(chain_ids)) {
+    chain_ids <- sort(unique(as.integer(chain_ids)))
+    if (any(chain_ids < 1L)) {
       stop2("Chain indices should be positive.")
     }
     nchains <- nchains(x)
-    max_chains <- max(chains)
-    if (max_chains > nchains) {
-      stop2("Tried to subset chains up to '", max_chains, "' ",
+    max_chain <- max(chain_ids)
+    if (max_chain > nchains) {
+      stop2("Tried to subset chains up to '", max_chain, "' ",
             "but the object only has '", nchains, "' chains.")
     }
   }
-  chains
+  chain_ids
 }
 
 # check validity of draw indices
-check_draws <- function(draws, x) {
+check_draw_ids <- function(draw_ids, x) {
   check_draws_object(x)
-  if (!is.null(draws)) {
-    draws <- sort(unique(as.integer(draws)))
-    if (any(draws < 1L)) {
+  if (!is.null(draw_ids)) {
+    draw_ids <- sort(unique(as.integer(draw_ids)))
+    if (any(draw_ids < 1L)) {
       stop2("Draw indices should be positive.")
     }
     ndraws <- ndraws(x)
-    max_draws <- max(draws)
-    if (max_draws > ndraws) {
-      stop2("Tried to subset draws up to '", max_draws, "' ",
+    max_draw <- max(draw_ids)
+    if (max_draw > ndraws) {
+      stop2("Tried to subset draws up to '", max_draw, "' ",
             "but the object only has '", ndraws, "' draws.")
     }
   }
-  draws
+  draw_ids
 }
