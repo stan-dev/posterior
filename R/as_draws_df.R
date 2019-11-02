@@ -6,6 +6,14 @@
 #' @templateVar draws_format draws_df
 #' @templateVar base_class class(tibble::tibble())
 #' @template draws_format-skeleton
+#' @param .iteration Optional name of a column in the supplied `data.frame`
+#' that contain iteration indices. If `NULL` (the default), the `.iteration`
+#' column is used if it exists. Otherwise, the input is treated as being
+#' index continuously from the first to the last row.
+#' @param .chain Optional name of a column in the supplied `data.frame`
+#' that contain chain indices. If `NULL` (the default), the `.chain`
+#' column is used if it exists. Otherwise, the input is treated as belonging
+#' to a single chain.
 #'
 #' @details Objects of class `"draws_df"` are [tibble][tibble::tibble] data
 #'   frames. They have one column per variable as well as additional metadata

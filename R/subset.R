@@ -87,7 +87,7 @@ subset.draws_df <- function(x, variable = NULL, iteration = NULL,
   if (!is.null(draw)) {
     x <- x[x$.draw %in% draw, ]
     # subsetting draw invalidates iteration and chain
-    x$.draw <- repair_iteration_indices(x$.draw)
+    x$.draw <- repair_iteration_ids(x$.draw)
     x$.iteration <- x$.draw
     x$.chain <- 1L
   } else {

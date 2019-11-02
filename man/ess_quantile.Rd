@@ -26,7 +26,7 @@ a single variable.
 }
 \examples{
 mu <- extract_one_variable_matrix(example_draws(), "mu")
-ess_quantile(mu)
+ess_quantile(mu, probs = c(0.1, 0.9))
 
 }
 \references{

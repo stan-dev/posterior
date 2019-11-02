@@ -18,7 +18,7 @@ summarize_draws(x, ...)
 \method{summarise_draws}{draws}(x, measures = NULL, ...,
   probs = c(0.05, 0.95))
 
-\method{summary}{draws}(x, ...)
+\method{summary}{draws}(object, ...)
 
 default_summary_measures()
 
@@ -27,7 +27,7 @@ default_convergence_measures()
 default_mcse_measures()
 }
 \arguments{
-\item{x}{A \code{draws} object or one coercible to a \code{draws} object.}
+\item{x, object}{A \code{draws} object or one coercible to a \code{draws} object.}
 
 \item{...}{Optionally, arguments to pass to specific methods.}
 

@@ -9,7 +9,7 @@
 #'
 #' @name draws_summary
 #'
-#' @param x A `draws` object or one coercible to a `draws` object.
+#' @param x,object A `draws` object or one coercible to a `draws` object.
 #' @param ... Optionally, arguments to pass to specific methods.
 #' @param measures A character vector containing the names of summary stats or
 #'   diagnostics to include. The convenience functions with names `default_*`
@@ -104,8 +104,8 @@ summarise_draws.draws <- function(x,
 
 #' @rdname draws_summary
 #' @export
-summary.draws <- function(x, ...) {
-  summarise_draws(x, ...)
+summary.draws <- function(object, ...) {
+  summarise_draws(object, ...)
 }
 
 #' @rdname draws_summary

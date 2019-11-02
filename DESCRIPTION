@@ -11,11 +11,15 @@ Description: The posterior package is intended to provide useful tools for both
   draws (samples) from posterior or prior distributions.
   (b) Provide various summaries of draws in convenient formats.
   (c) Provide lightweight implementations of state of the art MCMC diagnostics.
+Depends: 
+  R (>= 3.2.0)
 Imports:
+  methods,
+  stats,
   tibble,
   abind,
   checkmate
-License: BSD-3
+License: GPL-2
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/jgabry/posterior

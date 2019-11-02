@@ -162,6 +162,19 @@ deparse2 <- function(x, max_chars = NULL, max_wsp = 1L) {
   out
 }
 
+# remove whitespaces from strings
+rm_wsp <- function(x, max_wsp = 0) {
+  assert_character(x)
+  assert_int(max_wsp)
+  wsp <- collapse(rep(" ", max_wsp))
+  gsub("[ \t\r\n]+", wsp, x, perl = TRUE)
+}
+
+# collapse a character vector
+collapse <- function(..., sep = "") {
+  paste(..., sep = sep, collapse = "")
+}
+
 # like 'eval' but parses characters before evaluation
 eval2 <- function(expr, envir = parent.frame(), ...) {
   if (is.character(expr)) {
