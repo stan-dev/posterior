@@ -1,10 +1,11 @@
 test_that('duplicate variable names are not allowed', {
   x = matrix(11:20, ncol = 2, dimnames = list(NULL, c("a", "a")))
 
-  expect_error(as_draws_matrix(x))
-  expect_error(as_draws_df(x))
-  expect_error(as_draws_list(x))
-  expect_error(as_draws_array(x))
+  err = "Duplicate variable names are not allowed"
+  expect_error(as_draws_matrix(x), err)
+  expect_error(as_draws_df(x), err)
+  expect_error(as_draws_list(x), err)
+  expect_error(as_draws_array(x), err)
 })
 
 test_that("variables() and variables<-() work on draws_matrix", {

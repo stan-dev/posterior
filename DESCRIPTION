@@ -16,7 +16,7 @@ Imports:
   abind,
   checkmate
 Suggests: 
-  testthat
+  testthat (>= 2.1.0)
 License: BSD-3
 Encoding: UTF-8
 LazyData: true
