@@ -53,7 +53,9 @@ variables.draws_array <- function(x) {
 
 #' @export
 variables.draws_df <- function(x) {
-  setdiff(names(x), meta_columns())
+  # can't use setdiff() here as in the corner case where someone
+  # manually creates duplicate columns it will give incorrect results
+  names(x)[!names(x) %in% meta_columns(x)]
 }
 
 #' @export
