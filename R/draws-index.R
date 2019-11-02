@@ -4,6 +4,7 @@
 #'
 #' @name draws-index
 #' @template args-methods-x
+#' @param value For `variables(x) <- value`, a character vector of new variable names.
 #'
 #' @details
 #' The methods `variables()`, `iterations()`, `chains()`, and `draws()` return
@@ -12,11 +13,16 @@
 #' `ndraws()` return the number of variables, iterations, chains, and draws,
 #' respectively.
 #'
+#' `variables(x) <- value` allows you to modify the vector of variable names,
+#' similar to how `names(x) <- value` works for vectors and lists. For renaming
+#' specific variables, [rename_variables()] may offer a more convenient approach.
+#'
 #' @examples
 #' x <- example_draws()
 #'
 #' variables(x)
 #' nvariables(x)
+#' variables(x) <- letters[1:nvariables(x)]
 #'
 #' iterations(x)
 #' niterations(x)
@@ -53,6 +59,42 @@ variables.draws_df <- function(x) {
 #' @export
 variables.draws_list <- function(x) {
   names(x[[1]])
+}
+
+#' @rdname draws-index
+#' @export
+`variables<-` <- function(x, value) {
+  UseMethod("variables<-")
+}
+
+#' @export
+`variables<-.draws_matrix` <- function(x, value) {
+  check_new_variables(value)
+  colnames(x) <- value
+  x
+}
+
+#' @export
+`variables<-.draws_array` <- function(x, value) {
+  check_new_variables(value)
+  dimnames(x)[[3L]] <- value
+  x
+}
+
+#' @export
+`variables<-.draws_df` <- function(x, value) {
+  check_new_variables(value)
+  names(x)[!names(x) %in% meta_columns(x)] <- value
+  x
+}
+
+#' @export
+`variables<-.draws_list` <- function(x, value) {
+  check_new_variables(value)
+  for (i in seq_along(x)) {
+    names(x[[i]]) <- value
+  }
+  x
 }
 
 #' @rdname draws-index
@@ -243,8 +285,10 @@ ndraws.draws_list <- function(x) {
   niterations(x) * nchains(x)
 }
 
-# check validity of variable names
-check_variables <- function(variables, x) {
+# check validity of existing variable names: e.g., that
+# all `variables` exist in `x` and that no `variables`
+# are reserved words
+check_existing_variables <- function(variables, x) {
   check_draws_object(x)
   if (!is.null(variables)) {
     variables <- unique(as.character(variables))
@@ -258,7 +302,24 @@ check_variables <- function(variables, x) {
   variables
 }
 
-# check for the usage of reserved variable names
+# check validity of new variables: e.g., that there are
+# no duplicates in `variables` and that they do not use
+# reserved words
+check_new_variables <- function(variables) {
+  # use anyDuplicated() for the check since it is faster than any(duplicated(x)) and
+  # we shouldn't expect to take this branch often (since it is an error)
+  if (anyDuplicated(variables)) {
+    duplicates = unique(variables[duplicated(variables)])
+    stop2(
+      "Duplicate variable names are not allowed in draws objects.\n",
+      "The following variable names are duplicates:\n",
+      comma(duplicates)
+    )
+  }
+  check_reserved_variables(variables)
+}
+
+# check variables do not make use of reserved words
 check_reserved_variables <- function(variables) {
   assert_character(variables)
   used_meta_columns <- intersect(meta_columns(), variables)
