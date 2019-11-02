@@ -148,7 +148,7 @@ ess_tail <- function(x) {
 #'
 #' @examples
 #' mu <- extract_one_variable_matrix(example_draws(), "mu")
-#' ess_quantile(mu)
+#' ess_quantile(mu, probs = c(0.1, 0.9))
 #'
 #' @export
 ess_quantile <- function(x, probs, names = TRUE) {
@@ -228,7 +228,7 @@ ess_sd <- function(x) {
 #'
 #' @examples
 #' mu <- extract_one_variable_matrix(example_draws(), "mu")
-#' mcse_quantile(mu)
+#' mcse_quantile(mu, probs = c(0.1, 0.9))
 #'
 #' @export
 mcse_quantile <- function(x, probs, names = TRUE) {

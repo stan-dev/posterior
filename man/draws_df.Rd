@@ -33,6 +33,16 @@ is_draws_df(x)
 \item{x}{An object to convert to a \code{draws_df} object.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{.iteration}{Optional name of a column in the supplied \code{data.frame}
+that contain iteration indices. If \code{NULL} (the default), the \code{.iteration}
+column is used if it exists. Otherwise, the input is treated as being
+index continuously from the first to the last row.}
+
+\item{.chain}{Optional name of a column in the supplied \code{data.frame}
+that contain chain indices. If \code{NULL} (the default), the \code{.chain}
+column is used if it exists. Otherwise, the input is treated as belonging
+to a single chain.}
 }
 \value{
 A \code{draws_df} object, which has classes
@@ -57,7 +67,6 @@ str(x)
 
 # the difference between iteration and draw is clearer when contrasting
 # the head and tail of the data frame
-x <- as_draws_df(example_draws())
 head(x[, c(".iteration", ".chain", ".draw")])
 tail(x[, c(".iteration", ".chain", ".draw")])
 

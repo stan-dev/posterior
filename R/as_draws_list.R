@@ -50,7 +50,7 @@ as_draws_list.draws_array <- function(x, ...) {
 #' @rdname draws_list
 #' @export
 as_draws_list.draws_df <- function(x, ...) {
-  out <- named_list(chains(x))
+  out <- named_list(chain_ids(x))
   x <- x[order(x$.draw), ]
   for (i in seq_along(out)) {
     out[[i]] <- subset(x, chain = i)

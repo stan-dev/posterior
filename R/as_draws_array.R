@@ -49,8 +49,8 @@ as_draws_array.draws_matrix <- function(x, ...) {
 #' @rdname draws_array
 #' @export
 as_draws_array.draws_df <- function(x, ...) {
-  iterations <- iterations(x)
-  chains <- chains(x)
+  iterations <- iteration_ids(x)
+  chains <- chain_ids(x)
   variables <- setdiff(names(x), meta_columns())
   out <- vector("list", length(chains))
   for (i in seq_along(out)) {

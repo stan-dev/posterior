@@ -4,9 +4,9 @@
 \alias{draws-index}
 \alias{variables}
 \alias{variables<-}
-\alias{iterations}
-\alias{chains}
-\alias{draws}
+\alias{iteration_ids}
+\alias{chain_ids}
+\alias{draw_ids}
 \alias{nvariables}
 \alias{niterations}
 \alias{nchains}
@@ -17,11 +17,11 @@ variables(x)
 
 variables(x) <- value
 
-iterations(x)
+iteration_ids(x)
 
-chains(x)
+chain_ids(x)
 
-draws(x)
+draw_ids(x)
 
 nvariables(x)
 
@@ -40,7 +40,7 @@ ndraws(x)
 Index variables, iterations, chains, and draws.
 }
 \details{
-The methods \code{variables()}, \code{iterations()}, \code{chains()}, and \code{draws()} return
+The methods \code{variables()}, \code{iteration_ids()}, \code{chain_ids()}, and \code{draw_ids()} return
 vectors of all variables, iterations, chains, and draws, respectively. In
 contrast, the methods \code{nvariables()}, \code{niterations()}, \code{nchains()}, and
 \code{ndraws()} return the number of variables, iterations, chains, and draws,
@@ -57,13 +57,13 @@ variables(x)
 nvariables(x)
 variables(x) <- letters[1:nvariables(x)]
 
-iterations(x)
+iteration_ids(x)
 niterations(x)
 
-chains(x)
+chain_ids(x)
 nchains(x)
 
-draws(x)
+draw_ids(x)
 ndraws(x)
 
 }
