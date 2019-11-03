@@ -433,9 +433,7 @@ r_scale <- function(x) {
 #' @return A 2D array of draws with split chains.
 #' @noRd
 split_chains <- function(x) {
-  if (is.null(dim(x))) {
-    x <- matrix(x)
-  }
+  x <- as.matrix(x)
   niter <- NROW(x)
   if (niter == 1L) {
     return(x)
@@ -449,6 +447,7 @@ split_chains <- function(x) {
 #' @template return-conv
 #' @noRd
 .rhat <- function(x) {
+  x <- as.matrix(x)
   if (any(!is.finite(x))) {
     return(NaN)
   }
@@ -473,6 +472,7 @@ split_chains <- function(x) {
 #' @template return-conv
 #' @noRd
 .ess <- function(x) {
+  x <- as.matrix(x)
   nchains <- NCOL(x)
   niterations <- NROW(x)
   if (any(!is.finite(x)) || niterations < 3L) {

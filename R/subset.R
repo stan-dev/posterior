@@ -126,7 +126,7 @@ subset.draws_list <- function(x, variable = NULL, iteration = NULL,
   if (!is.null(iteration)) {
     for (i in seq_along(x)) {
       for (j in seq_along(x[[i]])) {
-        x[[i]][[j]] <- x[[i]][[j]][[iteration]]
+        x[[i]][[j]] <- x[[i]][[j]][iteration]
       }
     }
   }

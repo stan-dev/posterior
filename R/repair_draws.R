@@ -62,7 +62,7 @@ repair_draws.draws_list <- function(x, order = TRUE, ...) {
   x
 }
 
-#' Repair indices to be continuously numbered integers
+#' Repair indices to be continuously numbered integers starting from one
 #' @param x vector of values
 #' @noRd
 repair_ids <- function(x) {
@@ -70,9 +70,11 @@ repair_ids <- function(x) {
   if (anyNA(out)) {
     # use character instead of integer ordering if
     # some values cannot be converted to integers
-    out <- as.integer(factor(x))
+    out <- factor(x)
+  } else {
+    out <- factor(out)
   }
-  out
+  as.integer(out)
 }
 
 #' Repair iteration indices
