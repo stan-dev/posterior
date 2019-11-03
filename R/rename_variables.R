@@ -11,6 +11,8 @@
 #' Returns a [draws] object of the same format as `.x`, with variables renamed
 #' according to the expressions provided in `...`.
 #'
+#' @importFrom rlang quos as_name
+#'
 #' @examples
 #' x <- example_draws()
 #'

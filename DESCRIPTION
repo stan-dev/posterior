@@ -16,6 +16,7 @@ Depends:
 Imports:
   methods,
   stats,
+  rlang,
   tibble,
   abind,
   checkmate

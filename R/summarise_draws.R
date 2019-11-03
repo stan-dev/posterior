@@ -53,7 +53,7 @@ summarize_draws <- summarise_draws
 #' @export
 summarise_draws.default <- function(x, ...) {
   x <- as_draws(x)
-  summarise_draws.default(x, ...)
+  summarise_draws(x, ...)
 }
 
 #' @rdname draws_summary
