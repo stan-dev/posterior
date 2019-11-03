@@ -9,3 +9,12 @@ test_that("summarise_draws works correctly", {
   mcses <- summarise_draws(x, default_mcse_measures())
   expect_true(all(c("mcse_q5", "mcse_q95") %in% names(mcses)))
 })
+
+test_that("aliases of summarise_draws work", {
+  x <- as_draws_array(example_draws())
+  sum_x <- summarise_draws(x)
+  sum_x2 <- summarize_draws(x)
+  expect_equal(sum_x, sum_x2)
+  sum_x3 <- summary(x)
+  expect_equal(sum_x, sum_x3)
+})
