@@ -3,32 +3,35 @@
 \name{rename_variables}
 \alias{rename_variables}
 \alias{rename_variables.draws}
-\title{Rename variables in draws objects}
+\title{Rename Variables in Draws Objects}
 \usage{
 rename_variables(.x, ...)
 
 \method{rename_variables}{draws}(.x, ...)
 }
 \arguments{
-\item{.x}{A \link{draws} object.}
+\item{.x}{A \code{\link{draws}} object.}
 
 \item{...}{One or more expressions separated by commas indicating the variables
 to rename. Existing variable names can be unquoted expressions, as in
 \code{new_name = old_name}, or character vectors, as in \code{new_name = "old_name"}.}
 }
 \value{
-Returns a \link{draws} object of the same format as \code{.x}, with variables renamed
+Returns a \code{\link{draws}} object of the same format as \code{.x}, with variables renamed
 according to the expressions provided in \code{...}.
 }
 \description{
-Rename variables within a \link{draws} object.
+Rename variables within a \code{\link{draws}} object.
 }
 \examples{
-x <- example_draws()
+x <- as_draws_df(example_draws())
 
 x
 rename_variables(x, mean = mu, sigma = tau)
 rename_variables(x, b = `theta[1]`)
 rename_variables(x, b = "theta[1]")
 
+}
+\seealso{
+\code{\link{variables}}
 }
