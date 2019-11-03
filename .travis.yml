@@ -1,0 +1,18 @@
+language: r
+r: devel
+sudo: FALSE
+
+cache:
+  - packages
+  - ccache
+
+warnings_are_errors: TRUE
+
+r_build_args: '--no-build-vignettes'
+r_check_args: '--ignore-vignettes'
+
+before_install:
+  - mkdir -p ~/.R
+
+after_success:
+  - travis_wait 30 Rscript -e 'covr::codecov()'

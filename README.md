@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travis-ci.org/jgabry/posterior)
+[![Coverage Status](https://codecov.io/github/jgabry/posterior/coverage.svg?branch=master)](https://codecov.io/github/jgabry/posterior?branch=master)
+
 # posterior
 
 The **posterior** R package will provide various tools for working with posterior distributions that are represented by samples.

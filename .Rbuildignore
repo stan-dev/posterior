@@ -2,3 +2,4 @@
 ^\.Rproj\.user$
 ^archive$
 ^man-roxygen$
+^\.travis\.yml$
