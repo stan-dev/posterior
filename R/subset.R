@@ -31,7 +31,7 @@ NULL
 subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
                                 chain = NULL, draw = NULL, ...) {
   x <- repair_draws(x)
-  variable <- check_variables(variable, x)
+  variable <- check_existing_variables(variable, x)
   iteration <- check_iteration_ids(iteration, x)
   draw <- check_draw_ids(draw, x)
   if (!is.null(chain)) {
@@ -53,7 +53,7 @@ subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
 subset.draws_array <- function(x, variable = NULL, iteration = NULL,
                                chain = NULL, draw = NULL, ...) {
   x <- repair_draws(x)
-  variable <- check_variables(variable, x)
+  variable <- check_existing_variables(variable, x)
   iteration <- check_iteration_ids(iteration, x)
   chain <- check_chain_ids(chain, x)
   if (!is.null(draw)) {
@@ -69,7 +69,7 @@ subset.draws_array <- function(x, variable = NULL, iteration = NULL,
 subset.draws_df <- function(x, variable = NULL, iteration = NULL,
                             chain = NULL, draw = NULL, ...) {
   x <- repair_draws(x)
-  variable <- check_variables(variable, x)
+  variable <- check_existing_variables(variable, x)
   iteration <- check_iteration_ids(iteration, x)
   chain <- check_chain_ids(chain, x)
   draw <- check_draw_ids(draw, x)
@@ -109,7 +109,7 @@ subset.draws_df <- function(x, variable = NULL, iteration = NULL,
 subset.draws_list <- function(x, variable = NULL, iteration = NULL,
                               chain = NULL, draw = NULL, ...) {
   x <- repair_draws(x)
-  variable <- check_variables(variable, x)
+  variable <- check_existing_variables(variable, x)
   iteration <- check_iteration_ids(iteration, x)
   chain <- check_chain_ids(chain, x)
   if (!is.null(draw)) {

@@ -155,7 +155,7 @@ as_draws_df.draws_list <- function(x, ...) {
   }
 
   # add meta columns to the data
-  check_reserved_variables(names(x))
+  check_new_variables(names(x))
   x$.chain <- chain_ids
   x$.iteration <- iteration_ids
   if (has_iteration_column || has_chain_column) {

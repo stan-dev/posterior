@@ -19,6 +19,8 @@ Imports:
   tibble,
   abind,
   checkmate
+Suggests: 
+  testthat (>= 2.1.0)
 License: GPL-2
 Encoding: UTF-8
 LazyData: true

@@ -82,7 +82,7 @@ as_draws_list.draws_df <- function(x, ...) {
     }
   }
   variables <- names(x[[1]])
-  check_reserved_variables(variables)
+  check_new_variables(variables)
   niterations <- length(x[[1]][[1]])
   for (i in seq_along(x)) {
     if (!all(names(x[[i]]) == variables)) {

@@ -3,6 +3,7 @@
 \name{draws-index}
 \alias{draws-index}
 \alias{variables}
+\alias{variables<-}
 \alias{iteration_ids}
 \alias{chain_ids}
 \alias{draw_ids}
@@ -13,6 +14,8 @@
 \title{Index Draws Objects}
 \usage{
 variables(x)
+
+variables(x) <- value
 
 iteration_ids(x)
 
@@ -30,6 +33,8 @@ ndraws(x)
 }
 \arguments{
 \item{x}{An \R object for which the methods are defined.}
+
+\item{value}{For \code{variables(x) <- value}, a character vector of new variable names.}
 }
 \description{
 Index variables, iterations, chains, and draws.
@@ -40,12 +45,17 @@ vectors of all variables, iterations, chains, and draws, respectively. In
 contrast, the methods \code{nvariables()}, \code{niterations()}, \code{nchains()}, and
 \code{ndraws()} return the number of variables, iterations, chains, and draws,
 respectively.
+
+\code{variables(x) <- value} allows you to modify the vector of variable names,
+similar to how \code{names(x) <- value} works for vectors and lists. For renaming
+specific variables, \code{\link[=rename_variables]{rename_variables()}} may offer a more convenient approach.
 }
 \examples{
 x <- example_draws()
 
 variables(x)
 nvariables(x)
+variables(x) <- letters[1:nvariables(x)]
 
 iteration_ids(x)
 niterations(x)
