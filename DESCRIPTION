@@ -18,7 +18,9 @@ Imports:
   stats,
   tibble,
   abind,
-  checkmate
+  checkmate,
+  vctrs,
+  rray
 Suggests: 
   testthat (>= 2.1.0)
 License: GPL-2
