@@ -64,8 +64,8 @@ as_draws_df.draws_matrix <- function(x, ...) {
   draws <- as.integer(rownames(x))
   rownames(x) <- NULL
   x <- tibble::as_tibble(x)
-  x$.iteration <- draws
   x$.chain <- 1L
+  x$.iteration <- draws
   x$.draw <- draws
   x <- move_to_start(x, meta_columns())
   class(x) <- class_draws_df()
@@ -83,8 +83,8 @@ as_draws_df.draws_array <- function(x, ...) {
     out[[i]] <- drop_dims(x[, i, ], dims = 2)
     class(out[[i]]) <- "matrix"
     out[[i]] <- tibble::as_tibble(out[[i]])
-    out[[i]]$.iteration <- iteration_ids
     out[[i]]$.chain <- chain_ids[i]
+    out[[i]]$.iteration <- iteration_ids
     out[[i]]$.draw <- compute_draw_ids(iteration_ids, chain_ids[i])
   }
   out <- do_call(rbind, out)
@@ -101,8 +101,8 @@ as_draws_df.draws_list <- function(x, ...) {
   out <- named_list(chain_ids)
   for (i in seq_along(out)) {
     out[[i]] <- tibble::as_tibble(x[[i]])
-    out[[i]]$.iteration <- iteration_ids
     out[[i]]$.chain <- chain_ids[i]
+    out[[i]]$.iteration <- iteration_ids
     out[[i]]$.draw <- compute_draw_ids(iteration_ids, chain_ids[i])
   }
   out <- do_call(rbind, out)
@@ -187,7 +187,7 @@ is_draws_df_like <- function(x) {
 # meta column names
 # @param x a named object from which to extract existing meta column names
 meta_columns <- function(x = NULL) {
-  out <- c(".iteration", ".chain", ".draw")
+  out <- c(".chain", ".iteration", ".draw")
   if (!is.null(x)) {
     out <- intersect(out, names(x))
   }
