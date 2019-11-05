@@ -1,18 +1,16 @@
+# R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
+
 language: r
-r: devel
-sudo: FALSE
+r:
+  - release
+  - devel
+cache: packages
 
-cache:
-  - packages
-  - ccache
+warnings_are_errors: true
 
-warnings_are_errors: TRUE
-
-r_build_args: '--no-build-vignettes'
-r_check_args: '--ignore-vignettes'
-
-before_install:
-  - mkdir -p ~/.R
+r_github_packages:
+  - r-lib/covr
 
 after_success:
-  - travis_wait 30 Rscript -e 'covr::codecov()'
+    - Rscript -e 'covr::codecov()'
+
