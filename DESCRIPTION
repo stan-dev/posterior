@@ -14,7 +14,6 @@ Description: The posterior package is intended to provide useful tools for both
 Depends: 
   R (>= 3.2.0)
 Imports:
-  methods,
   stats,
   rlang,
   tibble,
