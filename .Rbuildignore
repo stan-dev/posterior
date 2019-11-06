@@ -4,3 +4,4 @@
 ^man-roxygen$
 ^\.travis\.yml$
 ^LICENSE\.md$
+^README\.Rmd$
