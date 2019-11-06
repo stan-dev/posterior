@@ -22,12 +22,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+# posterior
+
 <!-- badges: start -->
 [![Build Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travis-ci.org/jgabry/posterior)
 [![Coverage Status](https://codecov.io/github/jgabry/posterior/coverage.svg?branch=master)](https://codecov.io/github/jgabry/posterior?branch=master)
 <!-- badges: end -->
 
-# posterior
+## Overview
 
 The **posterior** R package is intended to provide useful tools for both users
 and developers of packages for fitting Bayesian models or working with output
@@ -38,8 +40,84 @@ from Bayesian models. The primary goals of the package are to:
 * Provide various summaries of draws in convenient formats.
 * Provide lightweight implementations of state of the art MCMC diagnostics.
 
+## How to use posterior
 
-### Installation
+```{r}
+library(posterior)
+```
+
+To demonstrate how to work with the posterior package, we will apply it to
+posterior draws obtained from the eight schools model described in Gelman et al.
+(2013). Essentially, we have an estimate per school (variables `theta[1]` to
+`theta[8]`) as well as an overall mean and standard deviation across schools
+(variables `mu` and `tau`, respectively).
+
+```{r}
+eight_schools <- example_draws("eight_schools")
+```
+
+The draws for this example come as a `draws_array` object, that is, an array
+with dimensions iterations x chains x variables. We can easily transform it to
+another format, for instance, data frame with additional meta information.
+
+```{r}
+eight_schools <- as_draws_df(eight_schools)
+print(eight_schools)
+```
+
+Different formats are preferable in different situations and hence posterior
+supports multiple formats and easy conversion between them. For more details see
+`help("draws")`.
+
+Summarising posterior draws and computing convergnece diagnostics is one of the
+most common tasks when working with Markov Chain Monte Carlo (MCMC) draws. The
+posterior package provides a flexible interface for thus purpose with sensible
+defaults.
+
+```{r}
+summarise_draws(eight_schools)
+```
+
+Basically, we get a data frame one row per variable and one column summary
+statistics or convergence diagnostics. We can choose which summaries to compute
+via the `measures` argument. For instance, if we were just interested in the
+mean and corresponding Monto Carlo Standard Error (MCSE), we could write
+
+```{r}
+summarise_draws(eight_schools, measures = c("mean", "mcse_mean"))
+```
+
+For a measure to work, there needs to be a function defined with the same
+name as specified in `measures` which takes a vector or matrix of numeric
+values and returns a single numeric value or a named vector of numeric values.
+
+Another common task when working with posterior (or prior) draws, is subsetting
+various aspects of the draws, that is, iterations, chains, or variables.
+posterior provides a convienent interface for this purpose via the `subset` 
+method. For instance, if we want to extract the first 5 iterations
+of the first two chains of the variables `mu`, we can write
+
+```{r}
+mu <- subset(eight_schools, variable = "mu", chain = 1:2, iteration = 1:5)
+mu
+```
+
+The `eight_schools` example already comes in a format natively supported by
+posterior but we could of course also import the draws from other sources,
+for example, from common base R objects.
+
+```{r}
+x <- matrix(rnorm(50), nrow = 10, ncol = 5)
+colnames(x) <- paste0("V", 1:5)
+x <- as_draws_matrix(x)
+head(x)
+```
+
+The posterior is under active development. If you find bugs or have ideas for
+new features, you are very welcome to open an issue on GitHub
+(https://github.com/jgabry/posterior).
+
+## Installation
 
 The package is not released yet. Currently you can install the development
 version from GitHub, but expect frequent changes until an official release.
@@ -48,3 +126,9 @@ version from GitHub, but expect frequent changes until an official release.
 # install.packages("remotes")
 remotes::install_github("jgabry/posterior")
 ```
+
+## References
+
+Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and Hall/CRC.
+
+Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and Paul-Christian Bürkner (2019). Rank-normalization, folding, and localization: An improved R-hat for assessing convergence of MCMC. arXiv preprint arXiv:1903.08008.
