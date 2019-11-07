@@ -1,7 +1,7 @@
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-posterior
-=========
+# posterior
 
 <!-- badges: start -->
 
@@ -11,46 +11,76 @@ Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travi
 Status](https://codecov.io/github/jgabry/posterior/coverage.svg?branch=master)](https://codecov.io/github/jgabry/posterior?branch=master)
 <!-- badges: end -->
 
-Overview
---------
-
 The **posterior** R package is intended to provide useful tools for both
 users and developers of packages for fitting Bayesian models or working
 with output from Bayesian models. The primary goals of the package are
 to:
 
--   Efficiently convert between many different useful formats of draws
+  - Efficiently convert between many different useful formats of draws
     (samples) from posterior or prior distributions.
--   Provide various summaries of draws in convenient formats.
--   Provide lightweight implementations of state of the art MCMC
+  - Provide various summaries of draws in convenient formats.
+  - Provide lightweight implementations of state of the art MCMC
     diagnostics.
 
-How to use posterior
---------------------
+### Installation
+
+The package is not released yet. Currently you can install the
+development version from GitHub, but expect frequent changes until an
+official release.
 
 ``` r
-library(posterior)
+# install.packages("remotes")
+remotes::install_github("jgabry/posterior")
 ```
 
-To demonstrate how to work with the posterior package, we will apply it
-to posterior draws obtained from the eight schools model described in
-Gelman et al. (2013). Essentially, we have an estimate per school
-(variables `theta[1]` to `theta[8]`) as well as an overall mean and
-standard deviation across schools (variables `mu` and `tau`,
-respectively).
+### How to use **posterior**
 
 ``` r
-eight_schools <- example_draws("eight_schools")
+library("posterior")
+```
+
+To demonstrate how to work with the **posterior** package, we will use
+example posterior draws obtained from the eight schools hierarchical
+meta-analysis model described in Gelman et al. (2013). Essentially, we
+have an estimate per school (`theta[1]` through `theta[8]`) as well as
+an overall mean (`mu`) and standard deviation across schools (`tau`).
+
+#### Draws formats
+
+``` r
+eight_schools_array <- example_draws("eight_schools")
+str(eight_schools_array)
+#>  'draws_array' num [1:100, 1:4, 1:10] -4.78 6.92 11.65 3.37 1.33 ...
+#>  - attr(*, "dimnames")=List of 3
+#>   ..$ iteration: chr [1:100] "1" "2" "3" "4" ...
+#>   ..$ chain    : chr [1:4] "1" "2" "3" "4"
+#>   ..$ variable : chr [1:10] "mu" "tau" "theta[1]" "theta[2]" ...
 ```
 
 The draws for this example come as a `draws_array` object, that is, an
 array with dimensions iterations x chains x variables. We can easily
-transform it to another format, for instance, data frame with additional
-meta information.
+transform it to another format, for instance, a data frame with
+additional meta information.
 
 ``` r
-eight_schools <- as_draws_df(eight_schools)
-print(eight_schools)
+eight_schools_df <- as_draws_df(eight_schools_array)
+str(eight_schools_df)
+#> Classes 'draws_df', 'draws', 'tbl_df', 'tbl' and 'data.frame':   400 obs. of  13 variables:
+#>  $ .chain    : int  1 1 1 1 1 1 1 1 1 1 ...
+#>  $ .iteration: int  1 2 3 4 5 6 7 8 9 10 ...
+#>  $ .draw     : num  1 2 3 4 5 6 7 8 9 10 ...
+#>  $ mu        : num  -4.78 6.92 11.65 3.37 1.33 ...
+#>  $ tau       : num  1.62 3.4 2.37 14.62 4.78 ...
+#>  $ theta[1]  : num  -1.61 10.97 15.77 15.42 3.3 ...
+#>  $ theta[2]  : num  -4.96 9.34 11.04 6.84 3.09 ...
+#>  $ theta[3]  : num  -5.41 8.6 14.87 -3.31 5.27 ...
+#>  $ theta[4]  : num  -2.88 8.37 10.74 5.56 2.1 ...
+#>  $ theta[5]  : num  -3.411 10.541 8.736 3.827 0.327 ...
+#>  $ theta[6]  : num  -5.2 5.4 8.87 7.94 -1.33 ...
+#>  $ theta[7]  : num  -4.15 7.82 9.48 23.2 1.83 ...
+#>  $ theta[8]  : num  -5.11 6.33 10.14 6.12 4.01 ...
+
+print(eight_schools_df)
 #> # A tibble: 400 x 13
 #>    .chain .iteration .draw    mu    tau `theta[1]` `theta[2]` `theta[3]` `theta[4]`
 #>     <int>      <int> <dbl> <dbl>  <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
@@ -64,21 +94,25 @@ print(eight_schools)
 #>  8      1          8     8  1.63  4.42       8.41        4.09      -6.82    -0.0910
 #>  9      1          9     9  8.51  1.13       7.97        8.70      12.1      9.24  
 #> 10      1         10    10  6.41  1.35       5.72        4.34       4.39     6.46  
-#> # ... with 390 more rows, and 4 more variables: `theta[5]` <dbl>, `theta[6]` <dbl>,
+#> # … with 390 more rows, and 4 more variables: `theta[5]` <dbl>, `theta[6]` <dbl>,
 #> #   `theta[7]` <dbl>, `theta[8]` <dbl>
 ```
 
 Different formats are preferable in different situations and hence
 posterior supports multiple formats and easy conversion between them.
-For more details see `help("draws")`.
+For more details on the available formats see `help("draws")`.
 
-Summarising posterior draws and computing convergnece diagnostics is one
-of the most common tasks when working with Markov Chain Monte Carlo
-(MCMC) draws. The posterior package provides a flexible interface for
-thus purpose with sensible defaults.
+#### Draws summaries
+
+Computing summaries of posterior or prior draws and convergence
+diagnostics for posterior draws is one of the most common tasks when
+working with Bayesian models fit using Markov Chain Monte Carlo (MCMC)
+methods. The **posterior** package provides a flexible interface for
+this purpose via `summarise_draws()`:
 
 ``` r
-summarise_draws(eight_schools)
+# summarise_draws or summarize_draws
+summarise_draws(eight_schools_df)
 #> # A tibble: 10 x 10
 #>    variable  mean median    sd   mad     q5   q95  rhat ess_bulk ess_tail
 #>    <chr>    <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>    <dbl>    <dbl>
@@ -94,14 +128,14 @@ summarise_draws(eight_schools)
 #> 10 theta[8]  5.00   4.52  5.21  4.55 -2.83  13.3  1.01      618.     332.
 ```
 
-Basically, we get a data frame one row per variable and one column
-summary statistics or convergence diagnostics. We can choose which
+Basically, we get a data frame with one row per variable and one column
+per summary statistic or convergence diagnostic. We can choose which
 summaries to compute via the `measures` argument. For instance, if we
-were just interested in the mean and corresponding Monto Carlo Standard
-Error (MCSE), we could write
+only wanted the mean and its corresponding Monto Carlo Standard Error
+(MCSE) we would use:
 
 ``` r
-summarise_draws(eight_schools, measures = c("mean", "mcse_mean"))
+summarise_draws(eight_schools_df, measures = c("mean", "mcse_mean"))
 #> # A tibble: 10 x 3
 #>    variable  mean mcse_mean
 #>    <chr>    <dbl>     <dbl>
@@ -118,19 +152,19 @@ summarise_draws(eight_schools, measures = c("mean", "mcse_mean"))
 ```
 
 For a measure to work, there needs to be a function defined with the
-same name as specified in `measures` which takes a vector or matrix of
-numeric values and returns a single numeric value or a named vector of
-numeric values.
+same name as the name specified in `measures` and that takes a vector or
+matrix of numeric values and returns a single numeric value or a named
+vector of numeric values.
 
 Another common task when working with posterior (or prior) draws, is
-subsetting various aspects of the draws, that is, iterations, chains, or
-variables. posterior provides a convienent interface for this purpose
-via the `subset` method. For instance, if we want to extract the first 5
-iterations of the first two chains of the variables `mu`, we can write
+subsetting according to various aspects of the draws (iterations,
+chains, or variables). **posterior** provides a convienent interface for
+this purpose via the `subset()` method. For example, here is the code to
+extract the first five iterations of the first two chains of the
+variable `mu`:
 
 ``` r
-mu <- subset(eight_schools, variable = "mu", chain = 1:2, iteration = 1:5)
-mu
+subset(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 #> # A tibble: 10 x 4
 #>    .chain .iteration .draw    mu
 #>     <int>      <int> <dbl> <dbl>
@@ -146,51 +180,46 @@ mu
 #> 10      2          5    10  3.54
 ```
 
+#### Converting from regular R objects to draws formats
+
 The `eight_schools` example already comes in a format natively supported
 by posterior but we could of course also import the draws from other
-sources, for example, from common base R objects.
+sources, for example, from common base R objects:
 
 ``` r
 x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
-head(x)
-#>     variable
-#> draw          V1          V2         V3          V4         V5
-#>    1 -0.46572509 -0.00488813  0.6061416  0.88225982 -0.5952354
-#>    2 -0.79117217 -0.40600382 -0.5127453  0.42769260 -0.1232202
-#>    3 -0.15215536 -0.26181763 -1.4353462 -0.03474504 -1.8125592
-#>    4 -0.21933591 -0.24057212  1.1645277 -0.19201152 -0.3296461
-#>    5  0.09434903 -1.44727585 -2.4372994  0.69270231  1.3265395
-#>    6 -0.02862217  1.74869716 -0.9398305 -0.34068929  0.8509511
-#> attr(,"class")
-#> [1] "draws_matrix" "draws"        "matrix"
+str(x)
+#>  'draws_matrix' num [1:10, 1:5] 0.882 0.294 -0.97 1.652 -0.495 ...
+#>  - attr(*, "dimnames")=List of 2
+#>   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
+#>   ..$ variable: chr [1:5] "V1" "V2" "V3" "V4" ...
+
+summarise_draws(x, c("mean", "sd", "median", "mad"))
+#> # A tibble: 5 x 5
+#>   variable    mean    sd  median   mad
+#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
+#> 1 V1       -0.213  0.932 -0.480  0.751
+#> 2 V2       -0.0220 1.23   0.0753 1.40 
+#> 3 V3        0.0882 0.699  0.182  0.346
+#> 4 V4        0.0765 1.14  -0.147  1.49 
+#> 5 V5        0.355  0.926  0.459  1.13
 ```
 
-The posterior is under active development. If you find bugs or have
-ideas for new features, you are very welcome to open an issue on GitHub
-(<a href="https://github.com/jgabry/posterior" class="uri">https://github.com/jgabry/posterior</a>).
+Instead of `as_draws_matrix()` we also could have just used
+`as_draws()`, which attempts to find the closest available format to the
+input object. In this case this would result in a `draws_matrix` object
+either way.
 
-Installation
-------------
+### Contributing
 
-The package is not released yet. Currently you can install the
-development version from GitHub, but expect frequent changes until an
-official release.
+The **posterior** package is under active development. If you find bugs
+or have ideas for new features (for us or yourself to implement) please
+open an issue on GitHub (<https://github.com/jgabry/posterior/issues>).
 
-``` r
-# install.packages("remotes")
-remotes::install_github("jgabry/posterior")
-```
-
-References
-----------
+### References
 
 Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki
 Vehtari and Donald B. Rubin (2013). Bayesian Data Analysis, Third
 Edition. Chapman and Hall/CRC.
-
-Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-Paul-Christian Bürkner (2019). Rank-normalization, folding, and
-localization: An improved R-hat for assessing convergence of MCMC. arXiv
-preprint arXiv:1903.08008.

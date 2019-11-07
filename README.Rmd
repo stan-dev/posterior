@@ -1,7 +1,5 @@
 ---
-output:
-  md_document:
-    variant: markdown_github
+output: github_document
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -29,7 +27,6 @@ knitr::opts_chunk$set(
 [![Coverage Status](https://codecov.io/github/jgabry/posterior/coverage.svg?branch=master)](https://codecov.io/github/jgabry/posterior?branch=master)
 <!-- badges: end -->
 
-## Overview
 
 The **posterior** R package is intended to provide useful tools for both users
 and developers of packages for fitting Bayesian models or working with output
@@ -40,95 +37,113 @@ from Bayesian models. The primary goals of the package are to:
 * Provide various summaries of draws in convenient formats.
 * Provide lightweight implementations of state of the art MCMC diagnostics.
 
-## How to use posterior
-
-```{r}
-library(posterior)
-```
-
-To demonstrate how to work with the posterior package, we will apply it to
-posterior draws obtained from the eight schools model described in Gelman et al.
-(2013). Essentially, we have an estimate per school (variables `theta[1]` to
-`theta[8]`) as well as an overall mean and standard deviation across schools
-(variables `mu` and `tau`, respectively).
-
-```{r}
-eight_schools <- example_draws("eight_schools")
-```
-
-The draws for this example come as a `draws_array` object, that is, an array
-with dimensions iterations x chains x variables. We can easily transform it to
-another format, for instance, data frame with additional meta information.
-
-```{r}
-eight_schools <- as_draws_df(eight_schools)
-print(eight_schools)
-```
-
-Different formats are preferable in different situations and hence posterior
-supports multiple formats and easy conversion between them. For more details see
-`help("draws")`.
-
-Summarising posterior draws and computing convergnece diagnostics is one of the
-most common tasks when working with Markov Chain Monte Carlo (MCMC) draws. The
-posterior package provides a flexible interface for thus purpose with sensible
-defaults.
-
-```{r}
-summarise_draws(eight_schools)
-```
-
-Basically, we get a data frame one row per variable and one column summary
-statistics or convergence diagnostics. We can choose which summaries to compute
-via the `measures` argument. For instance, if we were just interested in the
-mean and corresponding Monto Carlo Standard Error (MCSE), we could write
-
-```{r}
-summarise_draws(eight_schools, measures = c("mean", "mcse_mean"))
-```
-
-For a measure to work, there needs to be a function defined with the same
-name as specified in `measures` which takes a vector or matrix of numeric
-values and returns a single numeric value or a named vector of numeric values.
-
-Another common task when working with posterior (or prior) draws, is subsetting
-various aspects of the draws, that is, iterations, chains, or variables.
-posterior provides a convienent interface for this purpose via the `subset` 
-method. For instance, if we want to extract the first 5 iterations
-of the first two chains of the variables `mu`, we can write
-
-```{r}
-mu <- subset(eight_schools, variable = "mu", chain = 1:2, iteration = 1:5)
-mu
-```
-
-The `eight_schools` example already comes in a format natively supported by
-posterior but we could of course also import the draws from other sources,
-for example, from common base R objects.
-
-```{r}
-x <- matrix(rnorm(50), nrow = 10, ncol = 5)
-colnames(x) <- paste0("V", 1:5)
-x <- as_draws_matrix(x)
-head(x)
-```
-
-The posterior is under active development. If you find bugs or have ideas for
-new features, you are very welcome to open an issue on GitHub
-(https://github.com/jgabry/posterior).
-
-## Installation
+### Installation
 
 The package is not released yet. Currently you can install the development
 version from GitHub, but expect frequent changes until an official release.
 
-```{r, eval = FALSE}
+```{r install, eval=FALSE}
 # install.packages("remotes")
 remotes::install_github("jgabry/posterior")
 ```
 
-## References
+### How to use **posterior**
 
-Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and Hall/CRC.
+```{r load}
+library("posterior")
+```
 
-Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and Paul-Christian Bürkner (2019). Rank-normalization, folding, and localization: An improved R-hat for assessing convergence of MCMC. arXiv preprint arXiv:1903.08008.
+To demonstrate how to work with the **posterior** package, we will use example
+posterior draws obtained from the eight schools hierarchical meta-analysis model
+described in Gelman et al. (2013). Essentially, we have an estimate per school
+(`theta[1]` through `theta[8]`) as well as an overall mean (`mu`) and standard
+deviation across schools (`tau`).
+
+#### Draws formats 
+
+```{r draws_array}
+eight_schools_array <- example_draws("eight_schools")
+str(eight_schools_array)
+```
+
+The draws for this example come as a `draws_array` object, that is, an array
+with dimensions iterations x chains x variables. We can easily transform it to
+another format, for instance, a data frame with additional meta information.
+
+```{r draws_df}
+eight_schools_df <- as_draws_df(eight_schools_array)
+str(eight_schools_df)
+
+print(eight_schools_df)
+```
+
+Different formats are preferable in different situations and hence posterior
+supports multiple formats and easy conversion between them. For more details 
+on the available formats see `help("draws")`.
+
+#### Draws summaries
+
+Computing summaries of posterior or prior draws and convergence diagnostics for
+posterior draws is one of the most common tasks when working with Bayesian
+models fit using Markov Chain Monte Carlo (MCMC) methods. The **posterior**
+package provides a flexible interface for this purpose via `summarise_draws()`:
+
+```{r summary}
+# summarise_draws or summarize_draws
+summarise_draws(eight_schools_df)
+```
+
+Basically, we get a data frame with one row per variable and one column per
+summary statistic or convergence diagnostic. We can choose which summaries to
+compute via the `measures` argument. For instance, if we only wanted the mean
+and its corresponding Monto Carlo Standard Error (MCSE) we would use:
+
+```{r summary-with-measures}
+summarise_draws(eight_schools_df, measures = c("mean", "mcse_mean"))
+```
+
+For a measure to work, there needs to be a function defined with the same name
+as the name specified in `measures` and that takes a vector or matrix of numeric
+values and returns a single numeric value or a named vector of numeric values.
+
+Another common task when working with posterior (or prior) draws, is subsetting
+according to various aspects of the draws (iterations, chains, or variables).
+**posterior** provides a convienent interface for this purpose via the
+`subset()` method. For example, here is the code to extract the first five 
+iterations of the first two chains of the variable `mu`:
+
+```{r subset}
+subset(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
+```
+
+#### Converting from regular R objects to draws formats
+
+The `eight_schools` example already comes in a format natively supported by
+posterior but we could of course also import the draws from other sources,
+for example, from common base R objects:
+
+```{r draws_matrix}
+x <- matrix(rnorm(50), nrow = 10, ncol = 5)
+colnames(x) <- paste0("V", 1:5)
+x <- as_draws_matrix(x)
+str(x)
+
+summarise_draws(x, c("mean", "sd", "median", "mad"))
+```
+
+Instead of `as_draws_matrix()` we also could have just used `as_draws()`, which
+attempts to find the closest available format to the input object. In this case
+this would result in a `draws_matrix` object either way.
+
+### Contributing
+
+The **posterior** package is under active development. If you find bugs or have
+ideas for new features (for us or yourself to implement) please open an issue on
+GitHub (https://github.com/jgabry/posterior/issues).
+
+
+### References
+
+Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
+Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
+Hall/CRC.
