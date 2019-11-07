@@ -374,9 +374,8 @@ autocorrelation <- function(x) {
 #'   and dimension as the input.
 #' @noRd
 z_scale <- function(x) {
-  S <- length(x)
   r <- rank(as.array(x), ties.method = 'average')
-  z <- qnorm((r - 1 / 2) / S)
+  z <- qnorm(backtransform_ranks(r))
   if (!is.null(dim(x))) {
     # output should have the input dimension
     z <- array(z, dim = dim(x), dimnames = dimnames(x))
@@ -399,12 +398,22 @@ z_scale <- function(x) {
 u_scale <- function(x) {
   S <- length(x)
   r <- rank(as.array(x), ties.method = 'average')
-  u <- (r - 1 / 2) / S
+  u <- backtransform_ranks(r)
   if (!is.null(dim(x))) {
     # output should have the input dimension
     u <- array(u, dim = dim(x), dimnames = dimnames(x))
   }
   u
+}
+
+#' Backtransformation of ranks
+#'
+#' @param r array of ranks
+#' @param c fractional offset; defaults to c = 3/8 as recommend by Bloom (1985)
+#' @noRd
+backtransform_ranks <- function(r, c = 3/8) {
+  S <- length(r)
+  (r - c) / (S - 2 * c + 1)
 }
 
 #' Rank values
