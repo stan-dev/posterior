@@ -96,7 +96,7 @@ repair_iteration_ids <- function(iteration_ids, chain_ids = NULL) {
       out[sel] <- .repair_iteration_ids(iteration_ids[sel])
     }
   }
-  out
+  as.integer(out)
 }
 
 #' Repair chain indices
@@ -112,5 +112,6 @@ repair_chain_ids <- function(chain_ids) {
 #' @noRd
 compute_draw_ids <- function(iteration_ids, chain_ids) {
   niterations <- max(iteration_ids)
-  (chain_ids - 1) * niterations + iteration_ids
+  out <- (chain_ids - 1L) * niterations + iteration_ids
+  as.integer(out)
 }
