@@ -11,7 +11,7 @@
 
 \method{format}{rvar}(x, ..., color = FALSE)
 
-\method{type_sum}{rvar}(x)
+type_sum.rvar(x)
 
 pillar_shaft.rvar(x, ...)
 }

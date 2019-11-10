@@ -2,14 +2,7 @@
 % Please edit documentation in R/rvar-ops.R
 \name{rvar-ops}
 \alias{rvar-ops}
-\alias{Math.rvar}
-\alias{Ops.rvar}
 \title{Operations on random variables}
-\usage{
-\method{Math}{rvar}(x)
-
-\method{Ops}{rvar}(e1, e2)
-}
 \description{
 Basic math operations on \link{rvar}s
 }

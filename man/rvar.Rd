@@ -2,19 +2,20 @@
 % Please edit documentation in R/rvar.R
 \name{rvar}
 \alias{rvar}
-\title{Random variables}
+\title{Random variables of arbitrary dimension}
 \usage{
 rvar(x)
 }
 \arguments{
-\item{x}{A list or vector where each entry represents a draw from a distribution}
+\item{x}{A vector or array where the last dimension is draws from a distribution}
 }
 \value{
 An object of class \code{"rvar"} representing a random variable.
 }
 \description{
-Random variables of arbitrary objects
+Random variables backed by arrays of arbitrary dimension
 }
 \details{
-The \code{"rvar"} class represents random variables of arbitrary objects.
+The \code{"rvar"} class represents random variables as arrays of arbitrary
+dimension, where the last dimension is used to index draws from the distribution.
 }

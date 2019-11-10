@@ -19,23 +19,17 @@ print.rvar = function(x, ...) {
 #' @rdname print.rvar
 #' @export
 format.rvar = function(x, ..., color = FALSE) {
-  draws = x$draws
+  draws = field(x, 1)
 
-  if (is.numeric(draws[[1]]) || is.logical(draws[[1]])) {
-    draws = simplify2array(draws)
-    if (is.null(dim(draws))) {
-      .mean = mean(draws)
-      .sd = sd(draws)
-      out = format_mean_sd(.mean, .sd, color = color)
-      names(out) = names(draws)
-    } else {
-      summary_dimensions = seq_len(length(dim(draws)) - 1)
-      .mean = apply(draws, summary_dimensions, mean)
-      .sd = apply(draws, summary_dimensions, sd)
-      out = format_mean_sd(.mean, .sd, color = color)
-      dim(out) = dim(draws)[summary_dimensions]
-      dimnames(out) = dimnames(draws)[summary_dimensions]
-    }
+  if (is.numeric(draws) || is.logical(draws)) {
+    summary_dimensions = seq_len(length(dim(draws)) - 1)
+
+    .mean = apply(draws, summary_dimensions, mean)
+    .sd = apply(draws, summary_dimensions, sd)
+    out = format_mean_sd(.mean, .sd, color = color)
+
+    dim(out) = dim(draws)[summary_dimensions]
+    dimnames(out) = dimnames(draws)[summary_dimensions]
     out
   } else {
     pillar::obj_sum(draws[[1]])
@@ -56,7 +50,6 @@ pillar_shaft.rvar <- function(x, ...) {
 }
 
 
-
 # formatting helpers ------------------------------------------------------
 
 format_mean = function(x, color = FALSE) {
@@ -75,4 +68,3 @@ format_sd = function(x, color = FALSE) {
 format_mean_sd = function(.mean, .sd, color = FALSE) {
   paste0(format_mean(.mean, color = color), format_sd(.sd, color = color))
 }
-
