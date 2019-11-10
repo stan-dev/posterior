@@ -5,21 +5,21 @@
 #' @param x A list or vector where each entry represents a draw from a distribution
 #' @param color Whether or not to use color when formatting the output
 #'
-#' @details The `"rvar_array"` class represents random variables of arbitrary objects.
+#' @details The `"rvar_array2"` class represents random variables of arbitrary objects.
 #'
-#' @return An object of class `"rvar_array"` representing a random variable.
+#' @return An object of class `"rvar_array2"` representing a random variable.
 #'
 #' @export
-print.rvar_array = function(x, ...) {
-  cat0("rvar_array<", ndraws(x), ">:\n")
+print.rvar_array2 = function(x, ...) {
+  cat0("rvar_array2<", ndraws(x), ">:\n")
   print(format(x, color = FALSE), quote = FALSE)
   invisible(x)
 }
 
-#' @rdname print.rvar_array
+#' @rdname print.rvar_array2
 #' @export
-format.rvar_array = function(x, ..., color = FALSE) {
-  draws = x$draws
+format.rvar_array2 = function(x, ..., color = FALSE) {
+  draws = field(x, 1)
 
   if (is.numeric(draws) || is.logical(draws)) {
     summary_dimensions = seq_len(length(dim(draws)) - 1)
@@ -36,17 +36,15 @@ format.rvar_array = function(x, ..., color = FALSE) {
   }
 }
 
-#' @rdname print.rvar_array
-#' @importFrom pillar type_sum
+#' @rdname print.rvar_array2
 #' @export
-type_sum.rvar_array <- function(x) {
-  "rvar_array"
+type_sum.rvar_array2 <- function(x) {
+  "rvar_array2"
 }
 
-#' @rdname print.rvar_array
-#' @importFrom pillar type_sum
+#' @rdname print.rvar_array2
 #' @export
-pillar_shaft.rvar_array <- function(x, ...) {
+pillar_shaft.rvar_array2 <- function(x, ...) {
   out = format(x, color = TRUE)
   pillar::new_pillar_shaft_simple(out, align = "right")
 }

@@ -41,34 +41,38 @@ is_rvar_array2 = function(x) {
 
 #' @export
 length.rvar_array2 = function(x) {
-  draws = field(x, 1)
-  if (is.null(draws)) {
+  .draws = field(x, 1)
+
+  if (is.null(.draws)) {
     0
   } else {
-    .dim = dim(draws)
-    length(draws) / .dim[length(.dim)]
+    dim(.draws)[[1]]
   }
 }
 
 
-# #' @export
-# dim.rvar_array2 = function(x) {
-#   .dim = dim(x$draws)
-#   ndim = length(.dim)
-#   if (ndim == 2) {
-#     # just a vector
-#     NULL
-#   } else {
-#     .dim[-ndim]
-#   }
-# }
+#' @export
+dim.rvar_array2 = function(x) {
+  .draws = field(x, 1)
+  .dim = dim(.draws)
+  ndim = length(.dim)
 
-# #' @export
-# `dim<-.rvar_array2` = function(x, value) {
-#   .ndraws = ndraws(x)
-#   dim(x$draws) = c(value, .ndraws)
-#   x
-# }
+  if (ndim == 2) {
+    # just a vector
+    NULL
+  } else {
+    # everything except the draws dimension
+    .dim[-ndim]
+  }
+}
+
+#' @export
+`dim<-.rvar_array2` = function(x, value) {
+  .ndraws = ndraws(x)
+
+  dim(x$draws) = c(value, .ndraws)
+  x
+}
 
 # #' @export
 # dimnames.rvar_array2 = function(x) {
@@ -82,10 +86,12 @@ length.rvar_array2 = function(x) {
 #   x
 # }
 
-# #' @export
-# is.matrix.rvar_array2 = function(x) {
-#   length(dim(x$draws)) == 3
-# }
+#' @export
+is.matrix.rvar_array2 = function(x) {
+  .draws = field(x, 1)
+
+  length(dim(.draws)) == 3
+}
 
 # #' @export
 # names.rvar_array2 = function(x) {
@@ -102,13 +108,27 @@ length.rvar_array2 = function(x) {
 # }
 
 # #' @export
+# #' @importFrom rlang missing_arg
+# #' @importFrom rlang enquos eval_bare
 # `[.rvar_array2` = function(x, ..., drop = FALSE) {
-#   n_args = length(substitute(list(...))[-1])
-#   if (n_args == length(dim(x$draws))) {
-#     rvar_array2(x$draws[..., drop = FALSE])
-#   } else {
-#     rvar_array2(x$draws[..., , drop = FALSE])
+#   draws = field(x, 1)
+#   args = enexprs(...)
+#
+#   if (length(args) == length(dim(draws))) {
+#     # can't index into the draws dimension
+#     args[[length(dim(draws))]] = NULL
 #   }
+#   eval_bare(expr(draws[!!!args, drop = drop]))
+#
+#   # args = c(list(x = draws), args, list(drop = drop))
+#   # print(str(args))
+#   # rvar_array2(do.call(`[`, args))
+#   # n_args = length(substitute(list(...))[-1])
+#   # if (n_args == length(dim(x$draws))) {
+#   #   rvar_array2(x$draws[..., drop = drop])
+#   # } else {
+#   #   rvar_array2(x$draws[..., , drop = drop])
+#   # }
 #
 # }
 
@@ -116,23 +136,16 @@ length.rvar_array2 = function(x) {
 # vctrs stuff -------------------------------------------------------------
 
 #' @importFrom vctrs vec_proxy
+#' @importFrom rray rray_split
 #' @export
 vec_proxy.rvar_array2 = function(x, ...) {
-  # decompose into a list of lists by the first index
-  # extra_args = c(
-  #   list(x$draws, NA),
-  #   replicate(length(dim(x$draws)) - 1, missing_arg()),
-  #   list(drop = FALSE)
-  # )
-  # lapply(seq_len(nrow(x$draws)), function(i) {
-  #   extra_args[[2]] = i
-  #   list(do.call(`[`, extra_args))
-  # })
-  draws = field(x, 1)
-  if (is.null(draws)) {
+  .draws = field(x, 1)
+
+  if (is.null(.draws)) {
     list()
   } else {
-    apply(draws, 1, list)
+    # decompose into a list of lists by the first index
+    rray_split(.draws, 1)
   }
 }
 
@@ -152,6 +165,7 @@ vec_proxy.rvar_array2 = function(x, ...) {
 
 
 #' @importFrom vctrs vec_restore
+#' @importFrom rray rray_rbind
 #' @export
 vec_restore.rvar_array2 = function(x, ...) {
   if (length(x) > 0) {
@@ -164,9 +178,13 @@ vec_restore.rvar_array2 = function(x, ...) {
     # you get back list(NULL, NULL), but when you do something like
     # double()[c(NA_integer_,NA_integer_)] you get back c(NA, NA).
     # So we have to make the NULL values be NA values to mimic vector indexing.
-    x[sapply(x, is.null)] = NA
+
+    # N.B. could potentially do this with vec_cast as well (as long as the first
+    # dimension is the slicing index)
+    x[sapply(x, is.null)] = list(array(NA, dim = c(1,1)))
+
   }
-  x_array = do.call(rbind, lapply(x, `[[`, 1))
+  x_array = do.call(rray_rbind, x)
   rvar_array2(x_array)
 }
 
@@ -203,55 +221,8 @@ vec_restore.rvar_array2 = function(x, ...) {
 
 # chain / iteration / draw info -------------------------------------------
 
-# ndraws.rvar_array2 = function(x) {
-#   .dim = dim(x$draws)
-#   .dim[length(.dim)]
-# }
-
-#' @export
-new_a2 <- function(x) {
-  new_vctr(list(x), class = "a2")
-}
-
-#' @export
-vec_proxy.a2 = function(x) {
-  as.list(field(x, 1))
-}
-
-#' @export
-vec_restore.a2 = function(x, ...) {
-  new_a2(unlist(x))
-}
-
-#' @export
-length.a2 = function(x, ...) {
-  length(field(x, 1))
-}
-
-
-# a1 ----------------------------------------------------------------------
-
-
-#' @export
-new_a1 <- function(x) {
-  new_vctr(list(x), class = "a1")
-}
-
-#' @export
-vec_proxy.a1 = function(x) {
-  proxy = field(x, 1)
-  attr(proxy, "foo") = "bar"
-  proxy
-}
-
-#' @export
-vec_restore.a1 = function(x, ...) {
-  print(str(x))
-  print(list(...))
-  new_a1(x)
-}
-
-#' @export
-length.a1 = function(x, ...) {
-  length(field(x, 1))
+ndraws.rvar_array2 = function(x) {
+  .draws = field(x, 1)
+  .dim = dim(.draws)
+  .dim[length(.dim)]
 }
