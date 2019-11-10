@@ -44,6 +44,9 @@ rvar = function(x = double()) {
   new_rvar(x)
 }
 
+#' @importFrom methods setOldClass
+methods::setOldClass(c("rvar", "vctrs_vctr"))
+
 #' @export
 is_rvar = function(x) {
   inherits(x, "rvar")
