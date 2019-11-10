@@ -3,7 +3,7 @@
 \name{print.rvar}
 \alias{print.rvar}
 \alias{format.rvar}
-\alias{type_sum.rvar}
+\alias{str.rvar}
 \alias{pillar_shaft.rvar}
 \title{Print or format a random variable}
 \usage{
@@ -11,9 +11,9 @@
 
 \method{format}{rvar}(x, ..., color = FALSE)
 
-type_sum.rvar(x)
+\method{str}{rvar}(x, ..., vec.len = NULL, width = NULL)
 
-pillar_shaft.rvar(x, ...)
+\method{pillar_shaft}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{A list or vector where each entry represents a draw from a distribution}
