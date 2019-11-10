@@ -58,11 +58,11 @@ NULL
 #
 # # map a function over var
 # rvar_map = function(.x, .f, ...) {
-#   rvar(lapply(.x, .f, ...))
+#   new_rvar(lapply(.x, .f, ...))
 # }
 #
 # # map a function over .x and .y in parallel.
 # rvar_map2 = function(.x, .y, .f, ...) {
-#   rvar(mapply(.f, .x, .y, MoreArgs = list(...), SIMPLIFY = FALSE, USE.NAMES = FALSE))
+#   new_rvar(mapply(.f, .x, .y, MoreArgs = list(...), SIMPLIFY = FALSE, USE.NAMES = FALSE))
 # }
 #

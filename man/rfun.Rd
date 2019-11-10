@@ -2,7 +2,7 @@
 % Please edit documentation in R/rfun.R
 \name{rfun}
 \alias{rfun}
-\title{Construct random variable functions}
+\title{Create functions of random variables}
 \usage{
 rfun(.f, rvar_args = NULL, .ndraws = 4000)
 }
@@ -15,14 +15,14 @@ If \code{NULL} (the default), all arguments to \code{.f} are turned into argumen
 \link{rvar}s.}
 
 \item{.ndraws}{When no \link{rvar}s are supplied as arguments to the new function, this is the number
-of draws that will be used to construct random variables returned by the new function.}
+of draws that will be used to construct new random variables}
 }
 \value{
 A function with the same argument specification as \code{.f}, but which can accept and return
 \link{rvar}s.
 }
 \description{
-Function to create functions that can accept and/or produce random variables.
+Function that create functions that can accept and/or produce random variables.
 }
 \details{
 This function wraps an existing funtion (\code{.f}) such that it returns \link{rvar}s containing

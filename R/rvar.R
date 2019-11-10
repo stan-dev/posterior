@@ -14,22 +14,34 @@
 NULL
 
 #' @rdname rvar
-#' @export
-#' @importFrom vctrs field
-rvar = function(x) {
-  if (!is.null(x)) {
-    x = as.array(x)
+#' @importFrom vctrs field new_vctr
+new_rvar = function(x = double()) {
+  # TODO: decide on supported types and cast to them in here
+  if (is.null(x)) {
+    x = double()
+  }
+  x = as.array(x)
+  .dim = dim(x)
 
-    if (is.null(dim(x)) || length(dim(x)) == 1) {
-      dim(x) = c(1, length(x))
+  if (length(x) == 0) {
+    if (is.null(.dim)) {
+      dim(x) = c(0, 0)
+    } else {
+      dim(x) = c(.dim, 0)
     }
   }
+  else if (is.null(dim(x)) || length(dim(x)) == 1) {
+    # 1d vectors get treated as a single variable
+    dim(x) = c(1, length(x))
+  }
 
-  structure(list(
-    x
-  ),
-    class = c("rvar", "vctrs_vctr")
-  )
+  new_vctr(list(x), class = "rvar")
+}
+
+#' @rdname rvar
+#' @export
+rvar = function(x = double()) {
+  new_rvar(x)
 }
 
 #' @export
@@ -105,7 +117,7 @@ is.matrix.rvar = function(x) {
 # #' @export
 # `[[.rvar` = function(x, i) {
 #   args = c(list(x$draws, i), replicate(length(dim(x$draws)) - 1, missing_arg()), list(drop = FALSE))
-#   rvar(do.call(`[`, args))
+#   new_rvar(do.call(`[`, args))
 # }
 
 # #' @export
@@ -123,16 +135,29 @@ is.matrix.rvar = function(x) {
 #
 #   # args = c(list(x = draws), args, list(drop = drop))
 #   # print(str(args))
-#   # rvar(do.call(`[`, args))
+#   # new_rvar(do.call(`[`, args))
 #   # n_args = length(substitute(list(...))[-1])
 #   # if (n_args == length(dim(x$draws))) {
-#   #   rvar(x$draws[..., drop = drop])
+#   #   new_rvar(x$draws[..., drop = drop])
 #   # } else {
-#   #   rvar(x$draws[..., , drop = drop])
+#   #   new_rvar(x$draws[..., , drop = drop])
 #   # }
 #
 # }
 
+
+
+# manipulating raw draws array --------------------------------------------
+
+#' @export
+draws_of = function(x) {
+  field(x, 1)
+}
+
+#' @export
+`draws_of<-` = function(x, value) {
+  field(x, 1) = value
+}
 
 # vctrs stuff -------------------------------------------------------------
 
@@ -186,7 +211,7 @@ vec_restore.rvar = function(x, ...) {
 
   }
   x_array = do.call(rray_rbind, x)
-  rvar(x_array)
+  new_rvar(x_array)
 }
 
 
@@ -204,9 +229,9 @@ vec_restore.rvar = function(x, ...) {
 #   draws1 = args[[1]]$draws
 #   if (is_rvar(args[[2]])) {
 #     draws2 = args[[2]]$draws
-#     result = rvar(rray_bind(draws1, draws2, .axis = 1))
+#     result = new_rvar(rray_bind(draws1, draws2, .axis = 1))
 #   } else {
-#     result = rvar(rray_bind(draws1, args[[2]], .axis = 1))
+#     result = new_rvar(rray_bind(draws1, args[[2]], .axis = 1))
 #   }
 #
 #   if (length(args) > 2) {
@@ -227,3 +252,17 @@ ndraws.rvar = function(x) {
   .dim = dim(.draws)
   .dim[length(.dim)]
 }
+
+
+
+
+# helpers -----------------------------------------------------------------
+
+# convert into a list of draws for applying a function draw-wise
+list_of_draws = function(x) {
+  .draws = draws_of(x)
+
+  lapply(apply(.draws, length(dim(.draws)), list), `[[`, 1)
+}
+
+

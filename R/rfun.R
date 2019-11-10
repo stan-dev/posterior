@@ -1,6 +1,6 @@
-#' Construct random variable functions
+#' Create functions of random variables
 #'
-#' Function to create functions that can accept and/or produce random variables.
+#' Function that create functions that can accept and/or produce random variables.
 #'
 #' @param .f A function (or a one-sided formula representing a function that can be parsed by
 #' [rlang::as_function()]) to turn into a function that accepts and/or produces random variables.
@@ -8,7 +8,7 @@
 #' If `NULL` (the default), all arguments to `.f` are turned into arguments that accept
 #' [rvar]s.
 #' @param .ndraws When no [rvar]s are supplied as arguments to the new function, this is the number
-#' of draws that will be used to construct random variables returned by the new function.
+#' of draws that will be used to construct new random variables
 #'
 #' @details This function wraps an existing funtion (`.f`) such that it returns [rvar]s containing
 #' whatever type of data `.f` would normally return.
@@ -42,16 +42,20 @@ rfun = function (.f, rvar_args = NULL, .ndraws = 4000) {
       else names(args)
 
     is_rvar_arg <- (arg_names %in% rvar_args) & as.logical(lapply(args, is_rvar))
-    rvar_args = lapply(args[is_rvar_arg], function(x) x$draws)
+    rvar_args = lapply(args[is_rvar_arg], list_of_draws)
 
     if (length(rvar_args) == 0) {
       # no rvar arguments, so just create a random variable by applying this function
       # .ndraws times
-      rvar(replicate(.ndraws, do.call(.f, args), simplify = FALSE))
+      list_of_draws = replicate(.ndraws, do.call(.f, args), simplify = FALSE)
     } else {
-      rvar(do.call(mapply, c(FUN = .f, rvar_args, MoreArgs = list(args[!is_rvar_arg]),
-        SIMPLIFY = FALSE, USE.NAMES = FALSE)))
+      list_of_draws = do.call(mapply, c(FUN = .f, rvar_args, MoreArgs = list(args[!is_rvar_arg]),
+        SIMPLIFY = FALSE, USE.NAMES = FALSE
+      ))
     }
+    # TODO: could speed this up if we assert all vectors must have same dimensions, then
+    # it's a straigtforward concatenation + setting the dimensions to be the c(dim(vec[[1]]), length(vecs))
+    new_rvar(abind::abind(list_of_draws, rev.along = 0))
   }
   formals(FUNV) <- formals(.f)
   FUNV

@@ -47,6 +47,7 @@ str.rvar <- function(x, ..., vec.len = NULL, width = NULL) {
 
 # pillar methods ----------------------------------------------------------
 
+#' @importFrom pillar pillar_shaft
 #' @rdname print.rvar
 #' @export
 pillar_shaft.rvar <- function(x, ...) {
@@ -71,6 +72,11 @@ format_draws.default = function(draws, ...) {
 }
 
 format_draws.numeric = function(draws, ..., color = FALSE) {
+  if (dim(draws)[length(dim(draws))] == 0) {
+    # NULL: no draws
+    return(NULL)
+  }
+
   summary_dimensions = seq_len(length(dim(draws)) - 1)
 
   .mean = apply(draws, summary_dimensions, mean)

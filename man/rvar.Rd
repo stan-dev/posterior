@@ -2,9 +2,12 @@
 % Please edit documentation in R/rvar.R
 \name{rvar}
 \alias{rvar}
+\alias{new_rvar}
 \title{Random variables of arbitrary dimension}
 \usage{
-rvar(x)
+new_rvar(x = double())
+
+rvar(x = double())
 }
 \arguments{
 \item{x}{A vector or array where the last dimension is draws from a distribution}
