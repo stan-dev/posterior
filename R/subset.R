@@ -10,6 +10,9 @@
 #' @param iteration Numeric vector of iteration indices to be selected.
 #' @param chain Numeric vector of chain indices to be selected.
 #' @param draw Numeric vector of draw indices to be selected.
+#' @param regex Logical. Indicates whether `variable` should be treated as a
+#'   (vector of) regular expressions. Any variable in `x` matching at least one
+#'   of the regular expressions will be selected.
 #' @template args-methods-dots
 #' @template return-draws
 #'
@@ -29,9 +32,9 @@ NULL
 #' @rdname subset-draws
 #' @export
 subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
-                                chain = NULL, draw = NULL, ...) {
+                                chain = NULL, draw = NULL, regex = FALSE, ...) {
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x)
+  variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x)
   draw <- check_draw_ids(draw, x)
   if (!is.null(chain)) {
@@ -51,9 +54,9 @@ subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
 #' @rdname subset-draws
 #' @export
 subset.draws_array <- function(x, variable = NULL, iteration = NULL,
-                               chain = NULL, draw = NULL, ...) {
+                               chain = NULL, draw = NULL, regex = FALSE, ...) {
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x)
+  variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x)
   chain <- check_chain_ids(chain, x)
   if (!is.null(draw)) {
@@ -67,9 +70,9 @@ subset.draws_array <- function(x, variable = NULL, iteration = NULL,
 #' @rdname subset-draws
 #' @export
 subset.draws_df <- function(x, variable = NULL, iteration = NULL,
-                            chain = NULL, draw = NULL, ...) {
+                            chain = NULL, draw = NULL, regex = FALSE, ...) {
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x)
+  variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x)
   chain <- check_chain_ids(chain, x)
   draw <- check_draw_ids(draw, x)
@@ -107,9 +110,9 @@ subset.draws_df <- function(x, variable = NULL, iteration = NULL,
 #' @rdname subset-draws
 #' @export
 subset.draws_list <- function(x, variable = NULL, iteration = NULL,
-                              chain = NULL, draw = NULL, ...) {
+                              chain = NULL, draw = NULL, regex = FALSE, ...) {
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x)
+  variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x)
   chain <- check_chain_ids(chain, x)
   if (!is.null(draw)) {

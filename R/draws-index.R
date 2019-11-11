@@ -290,10 +290,20 @@ ndraws.draws_list <- function(x) {
 # check validity of existing variable names: e.g., that
 # all `variables` exist in `x` and that no `variables`
 # are reserved words
-check_existing_variables <- function(variables, x) {
+# @param regex should 'variables' be treated as regular expressions?
+check_existing_variables <- function(variables, x, regex = FALSE) {
   check_draws_object(x)
   if (!is.null(variables)) {
+    regex <- as_one_logical(regex)
     variables <- unique(as.character(variables))
+    if (regex) {
+      all_variables <- variables(x)
+      tmp <- named_list(variables)
+      for (i in seq_along(variables)) {
+        tmp[[i]] <- all_variables[grepl(variables[i], all_variables)]
+      }
+      variables <- as.character(unique(unlist(tmp)))
+    }
     variables <- check_reserved_variables(variables)
     missing_variables <- setdiff(variables, variables(x))
     if (length(missing_variables)) {

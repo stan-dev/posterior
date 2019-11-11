@@ -10,16 +10,16 @@
 \title{Subset Draws Objects}
 \usage{
 \method{subset}{draws_matrix}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, ...)
+  chain = NULL, draw = NULL, regex = FALSE, ...)
 
 \method{subset}{draws_array}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, ...)
+  chain = NULL, draw = NULL, regex = FALSE, ...)
 
 \method{subset}{draws_df}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, ...)
+  chain = NULL, draw = NULL, regex = FALSE, ...)
 
 \method{subset}{draws_list}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, ...)
+  chain = NULL, draw = NULL, regex = FALSE, ...)
 }
 \arguments{
 \item{x}{An \R object for which the methods are defined.}
@@ -31,6 +31,10 @@
 \item{chain}{Numeric vector of chain indices to be selected.}
 
 \item{draw}{Numeric vector of draw indices to be selected.}
+
+\item{regex}{Logical. Indicates whether \code{variable} should be treated as a
+(vector of) regular expressions. Any variable in \code{x} matching at least one
+of the regular expressions will be selected.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }

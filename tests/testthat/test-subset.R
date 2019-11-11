@@ -29,6 +29,12 @@ test_that("subset works correctly for draws_list objects", {
   expect_equal(chain_ids(x_sub), 1:2)
 })
 
+test_that("variables can be subsetted via regular expressions", {
+  x <- as_draws_df(example_draws())
+  x_sub <- subset(x, variable = c("theta\\[", "m"), regex = TRUE)
+  expect_equal(variables(x_sub), c(paste0("theta[", 1:8, "]"), "mu"))
+})
+
 test_that("thin works correctly", {
   x <- as_draws_array(example_draws())
   expect_equal(niterations(thin(x, 5L)), niterations(x) / 5)
