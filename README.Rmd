@@ -23,7 +23,9 @@ knitr::opts_chunk$set(
 # posterior
 
 <!-- badges: start -->
-[![Build Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travis-ci.org/jgabry/posterior)
+[![CRAN status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.org/package=posterior)
+[![Travis Build Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travis-ci.org/jgabry/posterior)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/jgabry/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/jgabry/posterior)
 [![Coverage Status](https://codecov.io/github/jgabry/posterior/coverage.svg?branch=master)](https://codecov.io/github/jgabry/posterior?branch=master)
 <!-- badges: end -->
 

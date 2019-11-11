@@ -5,8 +5,12 @@
 
 <!-- badges: start -->
 
-[![Build
+[![CRAN
+status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.org/package=posterior)
+[![Travis Build
 Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travis-ci.org/jgabry/posterior)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/github/jgabry/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/jgabry/posterior)
 [![Coverage
 Status](https://codecov.io/github/jgabry/posterior/coverage.svg?branch=master)](https://codecov.io/github/jgabry/posterior?branch=master)
 <!-- badges: end -->
@@ -68,7 +72,7 @@ str(eight_schools_df)
 #> Classes 'draws_df', 'draws', 'tbl_df', 'tbl' and 'data.frame':   400 obs. of  13 variables:
 #>  $ .chain    : int  1 1 1 1 1 1 1 1 1 1 ...
 #>  $ .iteration: int  1 2 3 4 5 6 7 8 9 10 ...
-#>  $ .draw     : num  1 2 3 4 5 6 7 8 9 10 ...
+#>  $ .draw     : int  1 2 3 4 5 6 7 8 9 10 ...
 #>  $ mu        : num  -4.78 6.92 11.65 3.37 1.33 ...
 #>  $ tau       : num  1.62 3.4 2.37 14.62 4.78 ...
 #>  $ theta[1]  : num  -1.61 10.97 15.77 15.42 3.3 ...
@@ -83,7 +87,7 @@ str(eight_schools_df)
 print(eight_schools_df)
 #> # A tibble: 400 x 13
 #>    .chain .iteration .draw    mu    tau `theta[1]` `theta[2]` `theta[3]` `theta[4]`
-#>     <int>      <int> <dbl> <dbl>  <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
+#>     <int>      <int> <int> <dbl>  <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
 #>  1      1          1     1 -4.78  1.62      -1.61       -4.96      -5.41    -2.88  
 #>  2      1          2     2  6.92  3.40      11.0         9.34       8.60     8.37  
 #>  3      1          3     3 11.6   2.37      15.8        11.0       14.9     10.7   
@@ -116,15 +120,15 @@ summarise_draws(eight_schools_df)
 #> # A tibble: 10 x 10
 #>    variable  mean median    sd   mad     q5   q95  rhat ess_bulk ess_tail
 #>    <chr>    <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>    <dbl>    <dbl>
-#>  1 mu        4.56   4.49  3.36  3.45 -0.889  9.88 1.00      878.     300.
-#>  2 tau       3.85   2.90  3.32  2.65  0.331  9.98 0.998     387.     311.
-#>  3 theta[1]  6.57   5.47  6.45  4.92 -1.50  17.8  1.000     551.     272.
-#>  4 theta[2]  4.74   4.53  4.63  4.14 -2.42  12.2  1.04      765.     344.
-#>  5 theta[3]  4.22   4.52  5.03  4.63 -4.32  12.2  1.02      553.     246.
-#>  6 theta[4]  4.79   4.95  4.45  4.65 -2.24  12.0  0.998     655.     370.
-#>  7 theta[5]  3.75   3.85  4.89  4.25 -4.80  11.1  1.000     608.     326.
-#>  8 theta[6]  4.28   4.36  4.88  4.65 -4.21  12.3  0.998     643.     305.
-#>  9 theta[7]  6.53   6.18  5.38  4.52 -0.763 15.9  0.995     622.     345.
+#>  1 mu        4.56   4.49  3.36  3.45 -0.889  9.88 1.00      881.     300.
+#>  2 tau       3.85   2.90  3.32  2.65  0.331  9.98 0.998     386.     311.
+#>  3 theta[1]  6.57   5.47  6.45  4.92 -1.50  17.8  1.000     552.     272.
+#>  4 theta[2]  4.74   4.53  4.63  4.14 -2.42  12.2  1.04      767.     344.
+#>  5 theta[3]  4.22   4.52  5.03  4.63 -4.32  12.2  1.02      554.     246.
+#>  6 theta[4]  4.79   4.95  4.45  4.65 -2.24  12.0  0.998     656.     370.
+#>  7 theta[5]  3.75   3.85  4.89  4.25 -4.80  11.1  1.000     609.     326.
+#>  8 theta[6]  4.28   4.36  4.88  4.65 -4.21  12.3  0.998     644.     305.
+#>  9 theta[7]  6.53   6.18  5.38  4.52 -0.763 15.9  0.995     624.     345.
 #> 10 theta[8]  5.00   4.52  5.21  4.55 -2.83  13.3  1.01      618.     332.
 ```
 
@@ -167,7 +171,7 @@ variable `mu`:
 subset(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 #> # A tibble: 10 x 4
 #>    .chain .iteration .draw    mu
-#>     <int>      <int> <dbl> <dbl>
+#>     <int>      <int> <int> <dbl>
 #>  1      1          1     1 -4.78
 #>  2      1          2     2  6.92
 #>  3      1          3     3 11.6 
@@ -191,7 +195,7 @@ x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
 str(x)
-#>  'draws_matrix' num [1:10, 1:5] 0.882 0.294 -0.97 1.652 -0.495 ...
+#>  'draws_matrix' num [1:10, 1:5] -0.0918 -0.0465 0.1637 -0.4479 1.5137 ...
 #>  - attr(*, "dimnames")=List of 2
 #>   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
 #>   ..$ variable: chr [1:5] "V1" "V2" "V3" "V4" ...
@@ -200,11 +204,11 @@ summarise_draws(x, c("mean", "sd", "median", "mad"))
 #> # A tibble: 5 x 5
 #>   variable    mean    sd  median   mad
 #>   <chr>      <dbl> <dbl>   <dbl> <dbl>
-#> 1 V1       -0.213  0.932 -0.480  0.751
-#> 2 V2       -0.0220 1.23   0.0753 1.40 
-#> 3 V3        0.0882 0.699  0.182  0.346
-#> 4 V4        0.0765 1.14  -0.147  1.49 
-#> 5 V5        0.355  0.926  0.459  1.13
+#> 1 V1        0.446  0.569  0.550  0.451
+#> 2 V2        0.190  0.968  0.425  0.508
+#> 3 V3        0.0979 0.769  0.0609 0.875
+#> 4 V4       -0.132  1.06  -0.329  0.944
+#> 5 V5        0.118  0.665  0.146  0.701
 ```
 
 Instead of `as_draws_matrix()` we also could have just used

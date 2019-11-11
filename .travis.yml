@@ -4,7 +4,11 @@ language: r
 r:
   - release
   - devel
+
 cache: packages
+
+env:
+  - NOT_CRAN=true
 
 warnings_are_errors: true
 
