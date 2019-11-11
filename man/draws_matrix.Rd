@@ -8,6 +8,8 @@
 \alias{as_draws_matrix.draws_array}
 \alias{as_draws_matrix.draws_df}
 \alias{as_draws_matrix.draws_list}
+\alias{as_draws_matrix.mcmc}
+\alias{as_draws_matrix.mcmc.list}
 \alias{is_draws_matrix}
 \title{The \code{draws_matrix} format}
 \usage{
@@ -22,6 +24,10 @@ as_draws_matrix(x, ...)
 \method{as_draws_matrix}{draws_df}(x, ...)
 
 \method{as_draws_matrix}{draws_list}(x, ...)
+
+\method{as_draws_matrix}{mcmc}(x, ...)
+
+\method{as_draws_matrix}{mcmc.list}(x, ...)
 
 is_draws_matrix(x)
 }

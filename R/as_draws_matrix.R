@@ -66,6 +66,20 @@ as_draws_matrix.draws_list <- function(x, ...) {
   as_draws_matrix(x, ...)
 }
 
+#' @rdname draws_matrix
+#' @export
+as_draws_matrix.mcmc <- function(x, ...) {
+  class(x) <- "matrix"
+  attributes(x)[c("title", "mcpar")] <- NULL
+  .as_draws_matrix(x)
+}
+
+#' @rdname draws_matrix
+#' @export
+as_draws_matrix.mcmc.list <- function(x, ...) {
+  as_draws_matrix(as_draws_array(x), ...)
+}
+
 # try to convert any R object into a 'draws_matrix' object
 .as_draws_matrix <- function(x) {
   x <- as.matrix(x)

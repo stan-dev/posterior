@@ -61,6 +61,18 @@ as_draws_list.draws_df <- function(x, ...) {
   out
 }
 
+#' @rdname draws_list
+#' @export
+as_draws_list.mcmc <- function(x, ...) {
+  as_draws_list(as_draws_matrix(x), ...)
+}
+
+#' @rdname draws_list
+#' @export
+as_draws_list.mcmc.list <- function(x, ...) {
+  as_draws_list(as_draws_array(x), ...)
+}
+
 # try to convert any R object into a 'draws_list' object
 .as_draws_list <- function(x) {
   x <- as.list(x)

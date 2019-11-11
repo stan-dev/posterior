@@ -111,6 +111,18 @@ as_draws_df.draws_list <- function(x, ...) {
   out
 }
 
+#' @rdname draws_df
+#' @export
+as_draws_df.mcmc <- function(x, ...) {
+  as_draws_df(as_draws_matrix(x), ...)
+}
+
+#' @rdname draws_df
+#' @export
+as_draws_df.mcmc.list <- function(x, ...) {
+  as_draws_df(as_draws_array(x), ...)
+}
+
 #' Convert any \R object into a \code{draws_df} object
 #' @param x An \R object.
 #' @param .iteration optional name of the column containing iteration indices

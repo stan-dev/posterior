@@ -58,9 +58,7 @@ as_draws_array.draws_df <- function(x, ...) {
     out[[i]] <- remove_meta_columns(out[[i]])
     out[[i]] <- as.matrix(out[[i]])
   }
-  # TODO: make the two lines below more efficient?
-  out <- abind::abind(out, along = 3L)
-  out <- aperm(out, c(1, 3, 2))
+  out <- as_array_matrix_list(out)
   dimnames(out) <- list(
     iteration = iterations,
     chain = chains,
@@ -75,6 +73,19 @@ as_draws_array.draws_df <- function(x, ...) {
 as_draws_array.draws_list <- function(x, ...) {
   x <- as_draws_df(x)
   as_draws_array(x, ...)
+}
+
+#' @rdname draws_array
+#' @export
+as_draws_array.mcmc <- function(x, ...) {
+  as_draws_array(as_draws_matrix(x), ...)
+}
+
+#' @rdname draws_array
+#' @export
+as_draws_array.mcmc.list <- function(x, ...) {
+  class(x) <- "list"
+  .as_draws_array(as_array_matrix_list(x))
 }
 
 # try to convert any R object into a 'draws_array' object
@@ -118,3 +129,9 @@ is_draws_array_like <- function(x) {
   out
 }
 
+# convert a list of matrices to an array
+as_array_matrix_list <- function(x) {
+  stopifnot(is.list(x))
+  x <- abind::abind(x, along = 3L)
+  x <- aperm(x, c(1, 3, 2))
+}

@@ -9,6 +9,8 @@
 \alias{as_draws_df.draws_matrix}
 \alias{as_draws_df.draws_array}
 \alias{as_draws_df.draws_list}
+\alias{as_draws_df.mcmc}
+\alias{as_draws_df.mcmc.list}
 \alias{is_draws_df}
 \title{The \code{draws_df} format}
 \usage{
@@ -26,6 +28,10 @@ as_draws_df(x, ...)
 \method{as_draws_df}{draws_array}(x, ...)
 
 \method{as_draws_df}{draws_list}(x, ...)
+
+\method{as_draws_df}{mcmc}(x, ...)
+
+\method{as_draws_df}{mcmc.list}(x, ...)
 
 is_draws_df(x)
 }
