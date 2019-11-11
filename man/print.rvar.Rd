@@ -11,7 +11,7 @@
 
 \method{format}{rvar}(x, ..., color = FALSE)
 
-\method{str}{rvar}(x, ..., vec.len = NULL, width = NULL)
+\method{str}{rvar}(object, ..., vec.len = NULL, width = NULL)
 
 \method{pillar_shaft}{rvar}(x, ...)
 }

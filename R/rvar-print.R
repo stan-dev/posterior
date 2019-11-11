@@ -27,8 +27,8 @@ format.rvar <- function(x, ..., color = FALSE) {
 
 #' @rdname print.rvar
 #' @export
-str.rvar <- function(x, ..., vec.len = NULL, width = NULL) {
-  .draws <- draws_of(x)
+str.rvar <- function(object, ..., vec.len = NULL, width = NULL) {
+  .draws <- draws_of(object)
   width <- width %||% getOption("width")
   vec.len <- vec.len %||% getOption("str")$vec.len
 
@@ -43,8 +43,8 @@ str.rvar <- function(x, ..., vec.len = NULL, width = NULL) {
     ellipsis <- ""
   }
 
-  cat0(" ", rvar_type_abbr(x), " " , paste(format_rvar_draws(.draws), collapse = " "), ellipsis, "\n")
-  invisible(x)
+  cat0(" ", rvar_type_abbr(object), " " , paste(format_rvar_draws(.draws), collapse = " "), ellipsis, "\n")
+  invisible(object)
 }
 
 
@@ -122,7 +122,8 @@ format_mean <- function(x, color = FALSE) {
 }
 
 format_sd <- function(x, color = FALSE) {
-  sd_string <- paste0("±", format(x, justify = "right", digits = 2, scientific = 2))
+  # \u00b1 = plus/minus sign
+  sd_string <- paste0("\u00b1", format(x, justify = "right", digits = 2, scientific = 2))
   if (color) {
     pillar::style_subtle(sd_string)
   } else {

@@ -3,7 +3,7 @@
 # the extra roxygen @method and @export bits in here are necessary for
 # S3 double dispatch. See vignette("s3-vector").
 
-#' @importFrom vctrs vec_ptype2
+#' @importFrom vctrs vec_ptype2 vec_default_ptype2
 #' @method vec_ptype2 rvar
 #' @export
 #' @export vec_ptype2.rvar
@@ -14,7 +14,7 @@ vec_ptype2.rvar.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
   vec_default_ptype2(x, y, x_arg = x_arg, y_arg = y_arg)
 }
 
-#' @importFrom vctrs vec_cast
+#' @importFrom vctrs vec_cast vec_default_cast
 #' @method vec_cast rvar
 #' @export
 #' @export vec_cast.rvar
@@ -23,6 +23,7 @@ vec_cast.rvar <- function(x, to, ...) UseMethod("vec_cast.rvar")
 #' @export
 vec_cast.rvar.default <- function(x, to, ...) vec_default_cast(x, to)
 
+#' @rdname rvar
 #' @export
 as_rvar <- function(x) {
   if (is_rvar(x)) x

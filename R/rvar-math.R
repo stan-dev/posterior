@@ -119,7 +119,7 @@ Ops.rvar <- function(e1, e2) {
 
 # matrix multiplication ---------------------------------------------------
 
-#' @importFrom tensorA mul.tensor
+#' @importFrom tensorA mul.tensor as.tensor
 `%*%.rvar` <- function(x, y) {
   # TODO: get someone else to double-check this
   # rdo(x %*% y)
