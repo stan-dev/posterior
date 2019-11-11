@@ -12,7 +12,7 @@ Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travi
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/jgabry/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/jgabry/posterior)
 [![Coverage
-Status](https://codecov.io/github/jgabry/posterior/coverage.svg?branch=master)](https://codecov.io/github/jgabry/posterior?branch=master)
+Status](https://codecov.io/gh/jgabry/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/jgabry/posterior)
 <!-- badges: end -->
 
 The **posterior** R package is intended to provide useful tools for both
@@ -195,20 +195,20 @@ x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
 str(x)
-#>  'draws_matrix' num [1:10, 1:5] -0.0918 -0.0465 0.1637 -0.4479 1.5137 ...
+#>  'draws_matrix' num [1:10, 1:5] 0.0351 0.5902 -0.6591 1.2565 -0.2824 ...
 #>  - attr(*, "dimnames")=List of 2
 #>   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
 #>   ..$ variable: chr [1:5] "V1" "V2" "V3" "V4" ...
 
 summarise_draws(x, c("mean", "sd", "median", "mad"))
 #> # A tibble: 5 x 5
-#>   variable    mean    sd  median   mad
-#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
-#> 1 V1        0.446  0.569  0.550  0.451
-#> 2 V2        0.190  0.968  0.425  0.508
-#> 3 V3        0.0979 0.769  0.0609 0.875
-#> 4 V4       -0.132  1.06  -0.329  0.944
-#> 5 V5        0.118  0.665  0.146  0.701
+#>   variable   mean    sd  median   mad
+#>   <chr>     <dbl> <dbl>   <dbl> <dbl>
+#> 1 V1       0.487  0.915  0.447  0.966
+#> 2 V2       0.154  0.578  0.105  0.824
+#> 3 V3       0.114  0.703 -0.0252 0.865
+#> 4 V4       0.185  0.886 -0.135  0.753
+#> 5 V5       0.0426 0.864  0.0264 1.29
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
