@@ -13,7 +13,7 @@
 #'
 #' @importFrom rlang quos as_name
 #'
-#' @seealso [`variables`]
+#' @seealso [`variables`], [`mutate_variables`]
 #'
 #' @examples
 #' x <- as_draws_df(example_draws())

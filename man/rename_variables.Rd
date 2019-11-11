@@ -33,5 +33,5 @@ rename_variables(x, b = "theta[1]")
 
 }
 \seealso{
-\code{\link{variables}}
+\code{\link{variables}}, \code{\link{mutate_variables}}
 }
