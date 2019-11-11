@@ -14,7 +14,7 @@
 NULL
 
 #' @rdname rvar
-#' @importFrom vctrs field new_vctr
+#' @importFrom vctrs new_vctr
 new_rvar = function(x = double()) {
   # TODO: decide on supported types and cast to them in here
   if (is.null(x)) {
@@ -35,7 +35,12 @@ new_rvar = function(x = double()) {
     dim(x) = c(1, length(x))
   }
 
-  new_vctr(list(x), class = "rvar")
+  # setting the S4 flag on the object allows us to dispatch matrix
+  # multiplication correctly --- %*% does its own dispatching where
+  # it will not dispatch to S3 objects even if they have an S4 class
+  # defined through setOldClass, they *must* also have isS4() return
+  # TRUE, hence the need to set that flag here.
+  asS4(new_vctr(list(), draws = x, class = "rvar"))
 }
 
 #' @rdname rvar
@@ -46,6 +51,57 @@ rvar = function(x = double()) {
 
 #' @importFrom methods setOldClass
 methods::setOldClass(c("rvar", "vctrs_vctr"))
+methods::setMethod("show", "rvar", function(object) print.rvar(object))
+
+# matrix multiplication ---------------------------------------------------
+
+#' @importFrom tensorA mul.tensor
+`%*%.rvar` = function(x, y) {
+  # TODO: get someone else to double-check this
+  # rdo(x %*% y)
+
+  # ensure everything is a matrix by adding dimensions as necessary to make `x`
+  # a row vector and `y` a column vector
+  ndim_x = length(dim(x))
+  if (ndim_x == 0) {
+    dim(x) = c(1, length(x))
+  } else if (ndim_x == 1) {
+    dim(x) = c(1, dim(x))
+  } else if (ndim_x != 2) {
+    stop("First argument (`x`) is not a vector or matrix, cannot matrix-multiply")
+  }
+
+  ndim_y = length(dim(y))
+  if (ndim_y == 0) {
+    dim(y) = c(length(y), 1)
+  } else if (ndim_y == 1) {
+    dim(y) = c(dim(y), 1)
+  } else if (ndim_y != 2) {
+    stop("Second argument (`y`) is not a vector or matrix, cannot matrix-multiply")
+  }
+
+  # convert both objects into rvars if they aren't already (this will give us
+  # a 3d draws array for each variable)
+  x = as_rvar(x)
+  y = as_rvar(y)
+
+  # conform the draws dimension in both variables
+  .ndraws = check_ndraws2(x, y)
+  x = broadcast_draws(x, .ndraws)
+  y = broadcast_draws(y, .ndraws)
+
+  # do a tensor multiplication equivalent of the requested matrix multiplication
+  result = mul.tensor(as.tensor(draws_of(x)), 2, as.tensor(draws_of(y)), 1, by = 3)
+
+  # restore names (as.tensor adds dummy names to dimensions)
+  names(result) = names(dimnames(draws_of(x)))
+  new_rvar(unclass(result))
+}
+
+setMethod("%*%", c(x = "rvar", y = "rvar"), `%*%.rvar`)
+setMethod("%*%", c(x = "rvar"), `%*%.rvar`)
+setMethod("%*%", c(y = "rvar"), `%*%.rvar`)
+
 
 #' @export
 is_rvar = function(x) {
@@ -57,7 +113,7 @@ is_rvar = function(x) {
 
 #' @export
 length.rvar = function(x) {
-  .draws = field(x, 1)
+  .draws = draws_of(x)
 
   if (is.null(.draws)) {
     0
@@ -69,8 +125,7 @@ length.rvar = function(x) {
 
 #' @export
 dim.rvar = function(x) {
-  .draws = field(x, 1)
-  .dim = dim(.draws)
+  .dim = dim(draws_of(x))
   ndim = length(.dim)
 
   if (ndim == 2) {
@@ -84,29 +139,25 @@ dim.rvar = function(x) {
 
 #' @export
 `dim<-.rvar` = function(x, value) {
-  .ndraws = ndraws(x)
-
-  dim(x$draws) = c(value, .ndraws)
+  dim(draws_of(x)) = c(value, ndraws(x))
   x
 }
 
-# #' @export
-# dimnames.rvar = function(x) {
-#   .dimnames = dimnames(x$draws)
-#   .dimnames[-length(.dimnames)]
-# }
+#' @export
+dimnames.rvar = function(x) {
+  .dimnames = dimnames(draws_of(x))
+  .dimnames[-length(.dimnames)]
+}
 
-# #' @export
-# `dimnames<-.rvar` = function(x, value) {
-#   dimnames(x$draws) = value
-#   x
-# }
+#' @export
+`dimnames<-.rvar` = function(x, value) {
+  dimnames(draws_of(x)) = value
+  x
+}
 
 #' @export
 is.matrix.rvar = function(x) {
-  .draws = field(x, 1)
-
-  length(dim(.draws)) == 3
+  length(dim(draws_of(x))) == 3
 }
 
 # #' @export
@@ -154,12 +205,13 @@ is.matrix.rvar = function(x) {
 
 #' @export
 draws_of = function(x) {
-  field(x, 1)
+  attr(x, "draws")
 }
 
 #' @export
 `draws_of<-` = function(x, value) {
-  field(x, 1) = value
+  attr(x, "draws") = value
+  x
 }
 
 # vctrs stuff -------------------------------------------------------------
@@ -168,7 +220,7 @@ draws_of = function(x) {
 #' @importFrom rray rray_split
 #' @export
 vec_proxy.rvar = function(x, ...) {
-  .draws = field(x, 1)
+  .draws = draws_of(x)
 
   if (is.null(.draws)) {
     list()
@@ -251,12 +303,9 @@ vec_restore.rvar = function(x, ...) {
 # chain / iteration / draw info -------------------------------------------
 
 ndraws.rvar = function(x) {
-  .draws = field(x, 1)
-  .dim = dim(.draws)
+  .dim = dim(draws_of(x))
   .dim[length(.dim)]
 }
-
-
 
 
 # helpers -----------------------------------------------------------------
@@ -268,4 +317,35 @@ list_of_draws = function(x) {
   lapply(apply(.draws, length(dim(.draws)), list), `[[`, 1)
 }
 
+# Check that two rvars have a compatible number of draws and
+# return an appropriate number of draws that both objects could be broadcasted
+# to, or throw an error if there is no such number of draws.
+check_ndraws2 = function(x, y) {
+  ndraws_x = ndraws(x)
+  ndraws_y = ndraws(y)
 
+  if (ndraws_x == 1) {
+    ndraws_y
+  } else if (ndraws_y == 1) {
+    ndraws_x
+  } else if (ndraws_x == ndraws_y) {
+    ndraws_x
+  } else {
+    stop(
+      "Random variables have different number of draws (", ndraws_x,
+      " and ", ndraws_y, ") can cannot be used together."
+    )
+  }
+}
+
+# broadcast the draws dimension of an rvar to the requested size
+broadcast_draws = function(x, .ndraws) {
+  if (.ndraws == ndraws(x)) {
+    x
+  } else {
+    draws = draws_of(x)
+    new_dim = dim(draws)
+    new_dim[length(new_dim)] = .ndraws
+    new_rvar(rray::rray_broadcast(draws, new_dim))
+  }
+}

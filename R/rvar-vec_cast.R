@@ -13,7 +13,8 @@ vec_cast.rvar.default <- function(x, to, ...) vec_default_cast(x, to)
 
 #' @export
 as_rvar <- function(x) {
-  vec_cast(x, new_rvar())
+  if (is_rvar(x)) x
+  else vec_cast(x, new_rvar())
 }
 
 # identity cast -----------------------------------------------------------

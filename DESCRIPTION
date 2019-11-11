@@ -20,7 +20,8 @@ Imports:
   abind,
   checkmate,
   vctrs,
-  rray
+  rray,
+  tensorA
 Suggests: 
   testthat (>= 2.1.0)
 License: GPL-2

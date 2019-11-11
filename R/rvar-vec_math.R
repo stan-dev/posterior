@@ -67,15 +67,11 @@ vec_arith.rvar.rvar <- function(op, x, y, ...) {
 # [rvar, numeric] and [rvar, logical] operations ---------------------------------------------------
 
 vec_arith.rvar.numeric <- function(op, x, y, ...) {
-  draws_x = draws_of(x)
-  op_fun = getExportedValue("base", op)
-  new_rvar(op_fun(draws_x, y, ...))
+  vec_arith.rvar.rvar(op, x, as_rvar(y), ...)
 }
 
 vec_arith.numeric.rvar <- function(op, x, y, ...) {
-  draws_y = draws_of(y)
-  op_fun = getExportedValue("base", op)
-  new_rvar(op_fun(x, draws_y, ...))
+  vec_arith.rvar.rvar(op, as_rvar(x), y, ...)
 }
 
 vec_arith.rvar.logical = vec_arith.rvar.numeric
@@ -87,28 +83,14 @@ vec_arith.logical.rvar = vec_arith.rvar.logical
 
 Ops.rvar = function(e1, e2) {
   if (.Generic %in% c("==", "!=", "<", "<=", ">=", ">")) {
-    if (is_rvar(e1)) {
-      rvar_compare_left(op = .Generic, e1, e2)
-    } else {
-      rvar_compare_right(op = .Generic, e1, e2)
-    }
+    vec_arith.rvar.rvar(.Generic, as_rvar(e1), as_rvar(e2))
   } else {
     NextMethod()
   }
 }
 
-rvar_compare_left = function(op, x, y, ...) UseMethod("rvar_compare_left", y)
-rvar_compare_left.default = function(op, x, y, ...) {
-  stop_incompatible_op(op, x, y)
-}
-rvar_compare_right = function(op, x, y, ...) UseMethod("rvar_compare_right", x)
-rvar_compare_right.default = rvar_compare_left.default
 
-rvar_compare_left.rvar = vec_arith.rvar.rvar
-rvar_compare_right.numeric = vec_arith.numeric.rvar
 
-rvar_compare_left.numeric = vec_arith.rvar.numeric
-rvar_compare_right.numeric = vec_arith.numeric.rvar
-rvar_compare_left.logical = vec_arith.rvar.logical
-rvar_compare_right.logical = vec_arith.logical.rvar
+
+
 

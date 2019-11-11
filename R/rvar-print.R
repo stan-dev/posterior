@@ -19,13 +19,13 @@ print.rvar = function(x, ...) {
 #' @rdname print.rvar
 #' @export
 format.rvar = function(x, ..., color = FALSE) {
-  format_draws(field(x, 1), ..., color = color)
+  format_draws(draws_of(x), ..., color = color)
 }
 
 #' @rdname print.rvar
 #' @export
 str.rvar <- function(x, ..., vec.len = NULL, width = NULL) {
-  .draws = field(x, 1)
+  .draws = draws_of(x)
   width = width %||% getOption("width")
   vec.len = vec.len %||% getOption("str")$vec.len
 
@@ -111,8 +111,7 @@ format_mean_sd = function(.mean, .sd, color = FALSE) {
 
 # succinct type summary for an rvar
 rvar_type_abbr = function(x) {
-  .draws = field(x, 1)
-  .dim = dim(.draws)
+  .dim = dim(draws_of(x))
 
   dim_str = paste0("1:", .dim[-length(.dim)], collapse = ", ")
   paste0("rvar<", ndraws(x), "> [", dim_str, "]")
