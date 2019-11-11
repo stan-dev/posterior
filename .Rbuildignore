@@ -5,4 +5,4 @@
 ^\.travis\.yml$
 ^LICENSE\.md$
 ^README\.Rmd$
-^appveyor\.yml$
+^\.appveyor\.yml$
