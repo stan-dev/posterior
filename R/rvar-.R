@@ -158,11 +158,31 @@ is.matrix.rvar <- function(x) {
 
 # manipulating raw draws array --------------------------------------------
 
+#' Get/set array of draws underlying a random variable
+#'
+#' Gets/sets the array-representation that backs an [rvar]
+#'
+#' @param x An [rvar]
+#' @param value An array
+#'
+#' @details
+#'
+#' While [rvar]s implements fast versions of basic math operations (including
+#' [matrix multiplication][rvar-matmult]), sometimes you may need to bypass
+#' the [rvar] abstraction to do what you need to do more efficiently.
+#' `draws_of()` allows you to get / set the underlying array of draws in
+#' order to do that.
+#'
+#' [rvar]s represent draws internally using arrays of arbitrary dimension, which
+#' is returned by `draws_of(x)` and can be set using `draws_of(x) <- value`.
+#' The **last** dimension of these arrays is the index of the draws.
+#'
 #' @export
 draws_of <- function(x) {
   attr(x, "draws")
 }
 
+#' @rdname draws_of
 #' @export
 `draws_of<-` <- function(x, value) {
   attr(x, "draws") <- value

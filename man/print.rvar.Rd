@@ -11,20 +11,28 @@
 
 \method{format}{rvar}(x, ..., color = FALSE)
 
-\method{str}{rvar}(object, ..., vec.len = NULL, width = NULL)
+\method{str}{rvar}(object, ..., vec.len = NULL)
 
 \method{pillar_shaft}{rvar}(x, ...)
 }
 \arguments{
-\item{x}{A list or vector where each entry represents a draw from a distribution}
+\item{x, object}{An \link{rvar}.}
 
-\item{color}{Whether or not to use color when formatting the output}
+\item{...}{Further arguments passed to other functions.}
+
+\item{color}{Whether or not to use color when formatting the output. If \code{TRUE},
+the \code{\link[pillar:style_num]{pillar::style_num()}} functions may be used to produce strings containing
+control sequences to produced colored output on the terminal.}
+
+\item{vec.len}{Numeric (>= 0) indicating how many ‘first few’ elements are
+displayed of each vector. If \code{NULL}, defaults to \code{getOption("str")$vec.len},
+which defaults to 4.}
 }
 \value{
 An object of class \code{"rvar"} representing a random variable.
 }
 \description{
-Printing and formatting methods for random variables of arbitrary objects
+Printing and formatting methods for \link{rvar}s.
 }
 \details{
 The \code{"rvar"} class represents random variables of arbitrary objects.

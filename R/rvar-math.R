@@ -2,6 +2,7 @@
 # the extra roxygen @method and @export bits in here are necessary for
 # S3 double dispatch. See vignette("s3-vector").
 
+#' @rdname vctrs-compat
 #' @importFrom vctrs vec_arith
 #' @method vec_arith rvar
 #' @export
@@ -9,6 +10,7 @@
 vec_arith.rvar <- function(op, x, y, ...) {
   UseMethod("vec_arith.rvar", y)
 }
+#' @rdname vctrs-compat
 #' @method vec_arith.rvar default
 #' @export
 #' @importFrom vctrs stop_incompatible_op
@@ -19,6 +21,7 @@ vec_arith.rvar.default <- function(op, x, y, ...) {
 
 # (rvar) operations ---------------------------------------------------------
 
+#' @rdname vctrs-compat
 #' @importFrom vctrs vec_math
 #' @export
 vec_math.rvar <- function(.fn, .x, ...) {
@@ -38,6 +41,7 @@ vec_math.rvar <- function(.fn, .x, ...) {
 
 # (rvar, rvar) operations ---------------------------------------------------
 
+#' @rdname vctrs-compat
 #' @method vec_arith.rvar rvar
 #' @export
 vec_arith.rvar.rvar <- function(op, x, y, ...) {
@@ -81,24 +85,28 @@ vec_arith.rvar.rvar <- function(op, x, y, ...) {
 
 # (rvar, numeric) and (rvar, logical) operations ---------------------------
 
+#' @rdname vctrs-compat
 #' @importFrom vctrs vec_arith.numeric
 #' @method vec_arith.numeric rvar
 #' @export
 vec_arith.numeric.rvar <- function(op, x, y, ...) {
   vec_arith.rvar.rvar(op, as_rvar(x), y, ...)
 }
+#' @rdname vctrs-compat
 #' @method vec_arith.rvar numeric
 #' @export
 vec_arith.rvar.numeric <- function(op, x, y, ...) {
   vec_arith.rvar.rvar(op, x, as_rvar(y), ...)
 }
 
+#' @rdname vctrs-compat
 #' @importFrom vctrs vec_arith.logical
 #' @method vec_arith.logical rvar
 #' @export
 vec_arith.logical.rvar <- function(op, x, y, ...) {
   vec_arith.rvar.rvar(op, as_rvar(x), y, ...)
 }
+#' @rdname vctrs-compat
 #' @method vec_arith.rvar logical
 #' @export
 vec_arith.rvar.logical <- function(op, x, y, ...) {
@@ -119,10 +127,32 @@ Ops.rvar <- function(e1, e2) {
 
 # matrix multiplication ---------------------------------------------------
 
+#' Matrix multiplication of random variables
+#'
+#' Efficient matrix multiplication of random variables.
+#'
+#' @name rvar-matmult
+#' @aliases %*%
+#' @param x An [rvar], [numeric], or [logical]. Must be 1 or 2-dimensional. If it is a vector,
+#' it is treated as a row vector.
+#' @param y An [rvar], [numeric], or [logical]. Must be 1 or 2-dimensional. If it is a vector,
+#' it is treated as a column vector.
+#'
+#' @details
+#' If `x` or `y` are vectors, they are converted into matrices prior to multiplication, with `x`
+#' converted to a row vector and `y` to a column vector. Numerics and logicals can be multiplied
+#' by [rvar]s and are broadcasted across all draws of the [rvar] argument. Tensor multiplication
+#' is used to efficiently multiply matrices across draws, so if either `x` or `y` is an [rvar],
+#' `x %*% y` will be much faster than `rdo(x %*% y)`.
+#'
+#' @return An [rvar] representing the matrix product of `x` and `y`.
+#'
 #' @importFrom tensorA mul.tensor as.tensor
+#' @method %*% rvar
+#' @export
 `%*%.rvar` <- function(x, y) {
   # TODO: get someone else to double-check this
-  # rdo(x %*% y)
+  # Fast version of rdo(x %*% y)
 
   # ensure everything is a matrix by adding dimensions as necessary to make `x`
   # a row vector and `y` a column vector
@@ -162,6 +192,12 @@ Ops.rvar <- function(e1, e2) {
   new_rvar(unclass(result))
 }
 
+#' @rdname rvar-matmult
+#' @export
 setMethod("%*%", c(x = "rvar", y = "rvar"), `%*%.rvar`)
+#' @rdname rvar-matmult
+#' @export
 setMethod("%*%", c(x = "rvar"), `%*%.rvar`)
+#' @rdname rvar-matmult
+#' @export
 setMethod("%*%", c(y = "rvar"), `%*%.rvar`)

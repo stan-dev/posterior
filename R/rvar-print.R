@@ -1,9 +1,15 @@
 #' Print or format a random variable
 #'
-#' Printing and formatting methods for random variables of arbitrary objects
+#' Printing and formatting methods for [rvar]s.
 #'
-#' @param x A list or vector where each entry represents a draw from a distribution
-#' @param color Whether or not to use color when formatting the output
+#' @param x,object An [rvar].
+#' @param color Whether or not to use color when formatting the output. If `TRUE`,
+#' the [pillar::style_num()] functions may be used to produce strings containing
+#' control sequences to produced colored output on the terminal.
+#' @param vec.len Numeric (>= 0) indicating how many ‘first few’ elements are
+#' displayed of each vector. If `NULL`, defaults to `getOption("str")$vec.len`,
+#' which defaults to 4.
+#' @param ... Further arguments passed to other functions.
 #'
 #' @details The `"rvar"` class represents random variables of arbitrary objects.
 #'
@@ -27,10 +33,9 @@ format.rvar <- function(x, ..., color = FALSE) {
 
 #' @rdname print.rvar
 #' @export
-str.rvar <- function(object, ..., vec.len = NULL, width = NULL) {
+str.rvar <- function(object, ..., vec.len = NULL) {
   .draws <- draws_of(object)
-  width <- width %||% getOption("width")
-  vec.len <- vec.len %||% getOption("str")$vec.len
+  vec.len <- vec.len %||% getOption("str")$vec.len %||% 4
 
   # flatten all the non-draws dimensions
   .dim <- dim(.draws)
