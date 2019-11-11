@@ -20,7 +20,7 @@
 #' @export
 rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
   # based loosely on base::Vectorize
-  ndraws <- getOption("rvar.ndraws", 4000)
+  ndraws <- ndraws %||% getOption("rvar.ndraws", 4000)
   .f <- rlang::as_function(.f)
 
   arg_names <- as.list(formals(.f))
