@@ -4,7 +4,11 @@ language: r
 r:
   - release
   - devel
+
 cache: packages
+
+env:
+  - NOT_CRAN=true
 
 warnings_are_errors: true
 
@@ -12,5 +16,5 @@ r_github_packages:
   - r-lib/covr
 
 after_success:
-    - Rscript -e 'covr::codecov()'
+  - Rscript -e 'covr::codecov()'
 

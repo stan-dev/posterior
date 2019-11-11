@@ -21,7 +21,7 @@ Imports:
   checkmate
 Suggests: 
   testthat (>= 2.1.0)
-License: BSD 3-clause License + file LICENSE
+License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/jgabry/posterior
