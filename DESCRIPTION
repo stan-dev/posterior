@@ -16,17 +16,17 @@ Depends:
 Imports:
   methods,
   stats,
+  rlang,
   tibble,
   abind,
   checkmate,
   vctrs,
   rray,
   tensorA,
-  pillar,
-  rlang
+  pillar
 Suggests: 
   testthat (>= 2.1.0)
-License: GPL-2
+License: BSD 3-clause License + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/jgabry/posterior

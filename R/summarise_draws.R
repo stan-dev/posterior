@@ -53,7 +53,7 @@ summarize_draws <- summarise_draws
 #' @export
 summarise_draws.default <- function(x, ...) {
   x <- as_draws(x)
-  summarise_draws.default(x, ...)
+  summarise_draws(x, ...)
 }
 
 #' @rdname draws_summary
@@ -90,6 +90,9 @@ summarise_draws.draws <- function(x,
     draws <- extract_one_variable_matrix(x, variable = v)
     for (m in measures) {
       out[[v]][[m]] <- funs[[m]](draws, ...)
+      if (length(out[[v]][[m]]) > 1L) {
+        out[[v]][[m]] <- rbind(out[[v]][[m]])
+      }
     }
     out[[v]] <- do_call(cbind, out[[v]])
   }
@@ -126,23 +129,23 @@ default_mcse_measures <- function() {
   c("mcse_mean", "mcse_median", "mcse_sd", "mcse_quantile")
 }
 
-# ensure quantiles are returned in the right format
+# ensure quantiles are returned with the right names
 quantile2 <- function(x, probs, ...) {
-  out <- matrix(quantile(x, probs = probs, ...), nrow = 1L)
-  colnames(out) <- paste0("q", probs * 100)
+  out <- quantile(x, probs = probs, ...)
+  names(out) <- paste0("q", probs * 100)
   out
 }
 
-# ensure MCSE of quantiles are returned in the right format
+# ensure MCSE of quantiles are returned with the right names
 mcse_quantile2 <- function(x, probs, ...) {
-  out <- matrix(mcse_quantile(x, probs = probs, ...), nrow = 1L)
-  colnames(out) <- paste0("mcse_q", probs * 100)
+  out <- mcse_quantile(x, probs = probs, ...)
+  names(out) <- paste0("mcse_q", probs * 100)
   out
 }
 
-# ensure ESS of quantiles are returned in the right format
+# ensure ESS of quantiles are returned with the right names
 ess_quantile2 <- function(x, probs, ...) {
-  out <- matrix(ess_quantile(x, probs = probs, ...), nrow = 1L)
-  colnames(out) <- paste0("ess_q", probs * 100)
+  out <- ess_quantile(x, probs = probs, ...)
+  names(out) <- paste0("ess_q", probs * 100)
   out
 }

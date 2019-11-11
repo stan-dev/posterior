@@ -22,7 +22,7 @@ order_draws <- function(x, ...) {
 #' @rdname order_draws
 #' @export
 order_draws.draws_matrix <- function(x, ...) {
-  iteration_order <- order(rownames(x))
+  iteration_order <- order(iteration_ids(x))
   if (needs_ordering(iteration_order)) {
     x <- x[iteration_order, ]
   }
@@ -32,8 +32,8 @@ order_draws.draws_matrix <- function(x, ...) {
 #' @rdname order_draws
 #' @export
 order_draws.draws_array <- function(x, ...) {
-  iteration_order <- order(rownames(x))
-  chain_order <- order(colnames(x))
+  iteration_order <- order(iteration_ids(x))
+  chain_order <- order(chain_ids(x))
   if (needs_ordering(iteration_order, chain_order)) {
     x <- x[iteration_order, chain_order, ]
   }
@@ -53,7 +53,7 @@ order_draws.draws_df <- function(x, ...) {
 #' @rdname order_draws
 #' @export
 order_draws.draws_list <- function(x, ...) {
-  chain_order <- order(names(x))
+  chain_order <- order(chain_ids(x))
   if (needs_ordering(chain_order)) {
     x <- x[chain_order]
   }

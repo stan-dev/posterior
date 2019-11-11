@@ -1,18 +1,22 @@
-#' Rename variables in draws objects
+#' Rename Variables in Draws Objects
 #'
-#' Rename variables within a [draws] object.
+#' Rename variables within a [`draws`] object.
 #'
-#' @param .x A [draws] object.
+#' @param .x A [`draws`] object.
 #' @param ... One or more expressions separated by commas indicating the variables
 #'   to rename. Existing variable names can be unquoted expressions, as in
 #'   `new_name = old_name`, or character vectors, as in `new_name = "old_name"`.
 #'
 #' @return
-#' Returns a [draws] object of the same format as `.x`, with variables renamed
+#' Returns a [`draws`] object of the same format as `.x`, with variables renamed
 #' according to the expressions provided in `...`.
 #'
+#' @importFrom rlang quos as_name
+#'
+#' @seealso [`variables`]
+#'
 #' @examples
-#' x <- example_draws()
+#' x <- as_draws_df(example_draws())
 #'
 #' x
 #' rename_variables(x, mean = mu, sigma = tau)

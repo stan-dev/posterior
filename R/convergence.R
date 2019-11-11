@@ -374,9 +374,8 @@ autocorrelation <- function(x) {
 #'   and dimension as the input.
 #' @noRd
 z_scale <- function(x) {
-  S <- length(x)
   r <- rank(as.array(x), ties.method = 'average')
-  z <- qnorm((r - 1 / 2) / S)
+  z <- qnorm(backtransform_ranks(r))
   if (!is.null(dim(x))) {
     # output should have the input dimension
     z <- array(z, dim = dim(x), dimnames = dimnames(x))
@@ -397,9 +396,8 @@ z_scale <- function(x) {
 #'   and dimension as the input.
 #' @noRd
 u_scale <- function(x) {
-  S <- length(x)
   r <- rank(as.array(x), ties.method = 'average')
-  u <- (r - 1 / 2) / S
+  u <- backtransform_ranks(r)
   if (!is.null(dim(x))) {
     # output should have the input dimension
     u <- array(u, dim = dim(x), dimnames = dimnames(x))
@@ -419,7 +417,6 @@ u_scale <- function(x) {
 #'   and dimension as the input.
 #' @noRd
 r_scale <- function(x) {
-  S <- length(x)
   r <- rank(as.array(x), ties.method = 'average')
   if (!is.null(dim(x))) {
     # output should have the input dimension
@@ -428,14 +425,22 @@ r_scale <- function(x) {
   r
 }
 
+#' Backtransformation of ranks
+#'
+#' @param r array of ranks
+#' @param c fractional offset; defaults to c = 3/8 as recommend by Bloom (1985)
+#' @noRd
+backtransform_ranks <- function(r, c = 3/8) {
+  S <- length(r)
+  (r - c) / (S - 2 * c + 1)
+}
+
 #' Split Markov chains in half
 #' @template args-conv
 #' @return A 2D array of draws with split chains.
 #' @noRd
 split_chains <- function(x) {
-  if (is.null(dim(x))) {
-    x <- matrix(x)
-  }
+  x <- as.matrix(x)
   niter <- NROW(x)
   if (niter == 1L) {
     return(x)
@@ -449,6 +454,7 @@ split_chains <- function(x) {
 #' @template return-conv
 #' @noRd
 .rhat <- function(x) {
+  x <- as.matrix(x)
   if (any(!is.finite(x))) {
     return(NaN)
   }
@@ -473,6 +479,7 @@ split_chains <- function(x) {
 #' @template return-conv
 #' @noRd
 .ess <- function(x) {
+  x <- as.matrix(x)
   nchains <- NCOL(x)
   niterations <- NROW(x)
   if (any(!is.finite(x)) || niterations < 3L) {

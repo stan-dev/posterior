@@ -2,3 +2,6 @@
 ^\.Rproj\.user$
 ^archive$
 ^man-roxygen$
+^\.travis\.yml$
+^LICENSE\.md$
+^README\.Rmd$

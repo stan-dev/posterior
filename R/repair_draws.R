@@ -23,6 +23,8 @@ repair_draws <- function(x, order = TRUE, ...) {
 #' @rdname repair_draws
 #' @export
 repair_draws.draws_matrix <- function(x, order = TRUE, ...) {
+  # ensure integer instead of character ordering
+  rownames(x) <- repair_ids(rownames(x))
   x <- do_ordering(x, order)
   rownames(x) <- as.character(seq_rows(x))
   x
@@ -31,6 +33,9 @@ repair_draws.draws_matrix <- function(x, order = TRUE, ...) {
 #' @rdname repair_draws
 #' @export
 repair_draws.draws_array <- function(x, order = TRUE, ...) {
+  # ensure integer instead of character ordering
+  rownames(x) <- repair_ids(rownames(x))
+  colnames(x) <- repair_ids(colnames(x))
   x <- do_ordering(x, order)
   rownames(x) <- as.character(seq_rows(x))
   colnames(x) <- as.character(seq_cols(x))
@@ -50,9 +55,26 @@ repair_draws.draws_df <- function(x, order = TRUE, ...) {
 #' @rdname repair_draws
 #' @export
 repair_draws.draws_list <- function(x, order = TRUE, ...) {
+  # ensure integer instead of character ordering
+  names(x) <- repair_ids(names(x))
   x <- do_ordering(x, order)
   names(x) <- seq_along(x)
   x
+}
+
+#' Repair indices to be continuously numbered integers starting from one
+#' @param x vector of values
+#' @noRd
+repair_ids <- function(x) {
+  out <- SW(as.integer(x))
+  if (anyNA(out)) {
+    # use character instead of integer ordering if
+    # some values cannot be converted to integers
+    out <- factor(x)
+  } else {
+    out <- factor(out)
+  }
+  as.integer(out)
 }
 
 #' Repair iteration indices
@@ -74,14 +96,14 @@ repair_iteration_ids <- function(iteration_ids, chain_ids = NULL) {
       out[sel] <- .repair_iteration_ids(iteration_ids[sel])
     }
   }
-  out
+  as.integer(out)
 }
 
 #' Repair chain indices
 #' @param chain_ids A vector of chain indices
 #' @noRd
 repair_chain_ids <- function(chain_ids) {
-  as.integer(factor(chain_ids))
+  repair_ids(chain_ids)
 }
 
 #' Compute draw indices from iteration and chain indices
@@ -90,5 +112,6 @@ repair_chain_ids <- function(chain_ids) {
 #' @noRd
 compute_draw_ids <- function(iteration_ids, chain_ids) {
   niterations <- max(iteration_ids)
-  (chain_ids - 1) * niterations + iteration_ids
+  out <- (chain_ids - 1L) * niterations + iteration_ids
+  as.integer(out)
 }
