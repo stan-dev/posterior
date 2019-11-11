@@ -15,24 +15,24 @@ NULL
 
 #' @rdname rvar
 #' @importFrom vctrs new_vctr
-new_rvar = function(x = double()) {
+new_rvar <- function(x = double()) {
   # TODO: decide on supported types and cast to them in here
   if (is.null(x)) {
-    x = double()
+    x <- double()
   }
-  x = as.array(x)
-  .dim = dim(x)
+  x <- as.array(x)
+  .dim <- dim(x)
 
   if (length(x) == 0) {
     if (is.null(.dim)) {
-      dim(x) = c(0, 0)
+      dim(x) <- c(0, 0)
     } else {
-      dim(x) = c(.dim, 0)
+      dim(x) <- c(.dim, 0)
     }
   }
   else if (is.null(dim(x)) || length(dim(x)) == 1) {
     # 1d vectors get treated as a single variable
-    dim(x) = c(1, length(x))
+    dim(x) <- c(1, length(x))
   }
 
   # setting the S4 flag on the object allows us to dispatch matrix
@@ -45,66 +45,16 @@ new_rvar = function(x = double()) {
 
 #' @rdname rvar
 #' @export
-rvar = function(x = double()) {
+rvar <- function(x = double()) {
   new_rvar(x)
 }
 
 #' @importFrom methods setOldClass
-methods::setOldClass(c("rvar", "vctrs_vctr"))
-methods::setMethod("show", "rvar", function(object) print.rvar(object))
+setOldClass(c("rvar", "vctrs_vctr"))
 
-# matrix multiplication ---------------------------------------------------
-
-#' @importFrom tensorA mul.tensor
-`%*%.rvar` = function(x, y) {
-  # TODO: get someone else to double-check this
-  # rdo(x %*% y)
-
-  # ensure everything is a matrix by adding dimensions as necessary to make `x`
-  # a row vector and `y` a column vector
-  ndim_x = length(dim(x))
-  if (ndim_x == 0) {
-    dim(x) = c(1, length(x))
-  } else if (ndim_x == 1) {
-    dim(x) = c(1, dim(x))
-  } else if (ndim_x != 2) {
-    stop("First argument (`x`) is not a vector or matrix, cannot matrix-multiply")
-  }
-
-  ndim_y = length(dim(y))
-  if (ndim_y == 0) {
-    dim(y) = c(length(y), 1)
-  } else if (ndim_y == 1) {
-    dim(y) = c(dim(y), 1)
-  } else if (ndim_y != 2) {
-    stop("Second argument (`y`) is not a vector or matrix, cannot matrix-multiply")
-  }
-
-  # convert both objects into rvars if they aren't already (this will give us
-  # a 3d draws array for each variable)
-  x = as_rvar(x)
-  y = as_rvar(y)
-
-  # conform the draws dimension in both variables
-  .ndraws = check_ndraws2(x, y)
-  x = broadcast_draws(x, .ndraws)
-  y = broadcast_draws(y, .ndraws)
-
-  # do a tensor multiplication equivalent of the requested matrix multiplication
-  result = mul.tensor(as.tensor(draws_of(x)), 2, as.tensor(draws_of(y)), 1, by = 3)
-
-  # restore names (as.tensor adds dummy names to dimensions)
-  names(result) = names(dimnames(draws_of(x)))
-  new_rvar(unclass(result))
-}
-
-setMethod("%*%", c(x = "rvar", y = "rvar"), `%*%.rvar`)
-setMethod("%*%", c(x = "rvar"), `%*%.rvar`)
-setMethod("%*%", c(y = "rvar"), `%*%.rvar`)
-
-
+#' @rdname rvar
 #' @export
-is_rvar = function(x) {
+is_rvar <- function(x) {
   inherits(x, "rvar")
 }
 
@@ -112,8 +62,8 @@ is_rvar = function(x) {
 # length and dimensions ---------------------------------------------------
 
 #' @export
-length.rvar = function(x) {
-  .draws = draws_of(x)
+length.rvar <- function(x) {
+  .draws <- draws_of(x)
 
   if (is.null(.draws)) {
     0
@@ -122,11 +72,10 @@ length.rvar = function(x) {
   }
 }
 
-
 #' @export
-dim.rvar = function(x) {
-  .dim = dim(draws_of(x))
-  ndim = length(.dim)
+dim.rvar <- function(x) {
+  .dim <- dim(draws_of(x))
+  ndim <- length(.dim)
 
   if (ndim == 2) {
     # just a vector
@@ -138,59 +87,66 @@ dim.rvar = function(x) {
 }
 
 #' @export
-`dim<-.rvar` = function(x, value) {
-  dim(draws_of(x)) = c(value, ndraws(x))
+`dim<-.rvar` <- function(x, value) {
+  dim(draws_of(x)) <- c(value, ndraws(x))
   x
 }
 
 #' @export
-dimnames.rvar = function(x) {
-  .dimnames = dimnames(draws_of(x))
+dimnames.rvar <- function(x) {
+  .dimnames <- dimnames(draws_of(x))
   .dimnames[-length(.dimnames)]
 }
 
 #' @export
-`dimnames<-.rvar` = function(x, value) {
-  dimnames(draws_of(x)) = value
+`dimnames<-.rvar` <- function(x, value) {
+  dimnames(draws_of(x)) <- value
   x
 }
 
 #' @export
-is.matrix.rvar = function(x) {
-  length(dim(draws_of(x))) == 3
+names.rvar <- function(x) {
+  .dimnames <- dimnames(draws_of(x))
+  .dimnames[[1]]
 }
 
-# #' @export
-# names.rvar = function(x) {
-#   NULL
-# }
+#' @export
+`names<-.rvar` <- function(x, value) {
+  dimnames(draws_of(x))[[1]] <- value
+  x
+}
+
+#' @export
+is.matrix.rvar <- function(x) {
+  length(dim(draws_of(x))) == 3
+}
 
 
 # indexing ----------------------------------------------------------------
 
 # #' @export
-# `[[.rvar` = function(x, i) {
-#   args = c(list(x$draws, i), replicate(length(dim(x$draws)) - 1, missing_arg()), list(drop = FALSE))
+# `[[.rvar` <- function(x, i) {
+#   args <- c(list(x$draws, i), replicate(length(dim(x$draws)) - 1, missing_arg()), list(drop = FALSE))
 #   new_rvar(do.call(`[`, args))
 # }
 
 # #' @export
 # #' @importFrom rlang missing_arg
 # #' @importFrom rlang enquos eval_bare
-# `[.rvar` = function(x, ..., drop = FALSE) {
-#   draws = field(x, 1)
-#   args = enexprs(...)
+# `[.rvar` <- function(x, ..., drop <- FALSE) {
+#   draws <- field(x, 1)
+#   args <- enexprs(...)
 #
 #   if (length(args) == length(dim(draws))) {
 #     # can't index into the draws dimension
-#     args[[length(dim(draws))]] = NULL
+#     args[[length(dim(draws))]] <- NULL
 #   }
 #   eval_bare(expr(draws[!!!args, drop = drop]))
 #
-#   # args = c(list(x = draws), args, list(drop = drop))
+#   # args <- c(list(x = draws), args, list(drop = drop))
 #   # print(str(args))
 #   # new_rvar(do.call(`[`, args))
-#   # n_args = length(substitute(list(...))[-1])
+#   # n_args <- length(substitute(list(...))[-1])
 #   # if (n_args == length(dim(x$draws))) {
 #   #   new_rvar(x$draws[..., drop = drop])
 #   # } else {
@@ -200,27 +156,27 @@ is.matrix.rvar = function(x) {
 # }
 
 
-
 # manipulating raw draws array --------------------------------------------
 
 #' @export
-draws_of = function(x) {
+draws_of <- function(x) {
   attr(x, "draws")
 }
 
 #' @export
-`draws_of<-` = function(x, value) {
-  attr(x, "draws") = value
+`draws_of<-` <- function(x, value) {
+  attr(x, "draws") <- value
   x
 }
+
 
 # vctrs stuff -------------------------------------------------------------
 
 #' @importFrom vctrs vec_proxy
 #' @importFrom rray rray_split
 #' @export
-vec_proxy.rvar = function(x, ...) {
-  .draws = draws_of(x)
+vec_proxy.rvar <- function(x, ...) {
+  .draws <- draws_of(x)
 
   if (is.null(.draws)) {
     list()
@@ -230,16 +186,16 @@ vec_proxy.rvar = function(x, ...) {
   }
 }
 
-# vec_proxy.rvar = function(x, ...) {
+# vec_proxy.rvar <- function(x, ...) {
 #   # decompose into a list of arrays by the first index
 #
-#   extra_args = c(
+#   extra_args <- c(
 #     list(x$draws, NA),
 #     replicate(length(dim(x$draws)) - 1, missing_arg()),
 #     list(drop = FALSE)
 #   )
 #   lapply(seq_len(nrow(x$draws)), function(i) {
-#     extra_args[[2]] = i
+#     extra_args[[2]] <- i
 #     do.call(`[`, extra_args)
 #   })
 # }
@@ -248,7 +204,7 @@ vec_proxy.rvar = function(x, ...) {
 #' @importFrom vctrs vec_restore
 #' @importFrom rray rray_rbind
 #' @export
-vec_restore.rvar = function(x, ...) {
+vec_restore.rvar <- function(x, ...) {
   if (length(x) > 0) {
     # need to handle the case of creating NAs from NULL entries so that
     # vec_init() works properly: vec_init requires vec_slice(x, NA_integer_)
@@ -262,10 +218,10 @@ vec_restore.rvar = function(x, ...) {
 
     # N.B. could potentially do this with vec_cast as well (as long as the first
     # dimension is the slicing index)
-    x[sapply(x, is.null)] = list(array(NA, dim = c(1,1)))
+    x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
 
   }
-  x_array = do.call(rray_rbind, x)
+  x_array <- do.call(rray_rbind, x)
   new_rvar(x_array)
 }
 
@@ -275,23 +231,23 @@ vec_restore.rvar = function(x, ...) {
 
 # #' @export
 # #' @importFrom rray rray_bind
-# c.rvar = function(...) {
-#   args = list(...)
+# c.rvar <- function(...) {
+#   args <- list(...)
 #   if (length(args) == 1) {
 #     return(args[[1]])
 #   }
 #
-#   draws1 = args[[1]]$draws
+#   draws1 <- args[[1]]$draws
 #   if (is_rvar(args[[2]])) {
-#     draws2 = args[[2]]$draws
-#     result = new_rvar(rray_bind(draws1, draws2, .axis = 1))
+#     draws2 <- args[[2]]$draws
+#     result <- new_rvar(rray_bind(draws1, draws2, .axis = 1))
 #   } else {
-#     result = new_rvar(rray_bind(draws1, args[[2]], .axis = 1))
+#     result <- new_rvar(rray_bind(draws1, args[[2]], .axis = 1))
 #   }
 #
 #   if (length(args) > 2) {
-#     args[[1]] = result
-#     args[[2]] = NULL
+#     args[[1]] <- result
+#     args[[2]] <- NULL
 #     do.call(c, args)
 #   } else {
 #     result
@@ -299,11 +255,10 @@ vec_restore.rvar = function(x, ...) {
 # }
 
 
-
 # chain / iteration / draw info -------------------------------------------
 
-ndraws.rvar = function(x) {
-  .dim = dim(draws_of(x))
+ndraws.rvar <- function(x) {
+  .dim <- dim(draws_of(x))
   .dim[length(.dim)]
 }
 
@@ -311,8 +266,8 @@ ndraws.rvar = function(x) {
 # helpers -----------------------------------------------------------------
 
 # convert into a list of draws for applying a function draw-wise
-list_of_draws = function(x) {
-  .draws = draws_of(x)
+list_of_draws <- function(x) {
+  .draws <- draws_of(x)
 
   lapply(apply(.draws, length(dim(.draws)), list), `[[`, 1)
 }
@@ -320,9 +275,9 @@ list_of_draws = function(x) {
 # Check that two rvars have a compatible number of draws and
 # return an appropriate number of draws that both objects could be broadcasted
 # to, or throw an error if there is no such number of draws.
-check_ndraws2 = function(x, y) {
-  ndraws_x = ndraws(x)
-  ndraws_y = ndraws(y)
+check_ndraws2 <- function(x, y) {
+  ndraws_x <- ndraws(x)
+  ndraws_y <- ndraws(y)
 
   if (ndraws_x == 1) {
     ndraws_y
@@ -339,13 +294,13 @@ check_ndraws2 = function(x, y) {
 }
 
 # broadcast the draws dimension of an rvar to the requested size
-broadcast_draws = function(x, .ndraws) {
+broadcast_draws <- function(x, .ndraws) {
   if (.ndraws == ndraws(x)) {
     x
   } else {
-    draws = draws_of(x)
-    new_dim = dim(draws)
-    new_dim[length(new_dim)] = .ndraws
+    draws <- draws_of(x)
+    new_dim <- dim(draws)
+    new_dim[length(new_dim)] <- .ndraws
     new_rvar(rray::rray_broadcast(draws, new_dim))
   }
 }

@@ -7,8 +7,9 @@
 #' @param rvar_args The arguments of `.f` that should be allowed to accept [rvar]s as arguments.
 #' If `NULL` (the default), all arguments to `.f` are turned into arguments that accept
 #' [rvar]s.
-#' @param .ndraws When no [rvar]s are supplied as arguments to the new function, this is the number
-#' of draws that will be used to construct new random variables
+#' @param ndraws When no [rvar]s are supplied as arguments to the new function, this is the number
+#' of draws that will be used to construct new random variables. If `NULL`,
+#' getOption("rvar.ndraws") is used (default 4000).
 #'
 #' @details This function wraps an existing funtion (`.f`) such that it returns [rvar]s containing
 #' whatever type of data `.f` would normally return.
@@ -17,9 +18,10 @@
 #' [rvar]s.
 #'
 #' @export
-rfun = function (.f, rvar_args = NULL, .ndraws = 4000) {
-  # based on base::Vectorize
-  .f = rlang::as_function(.f)
+rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
+  # based loosely on base::Vectorize
+  ndraws <- getOption("rvar.ndraws", 4000)
+  .f <- rlang::as_function(.f)
 
   arg_names <- as.list(formals(.f))
   arg_names[["..."]] <- NULL
@@ -42,14 +44,14 @@ rfun = function (.f, rvar_args = NULL, .ndraws = 4000) {
       else names(args)
 
     is_rvar_arg <- (arg_names %in% rvar_args) & as.logical(lapply(args, is_rvar))
-    rvar_args = lapply(args[is_rvar_arg], list_of_draws)
+    rvar_args <- lapply(args[is_rvar_arg], list_of_draws)
 
     if (length(rvar_args) == 0) {
       # no rvar arguments, so just create a random variable by applying this function
-      # .ndraws times
-      list_of_draws = replicate(.ndraws, do.call(.f, args), simplify = FALSE)
+      # ndraws times
+      list_of_draws <- replicate(ndraws, do.call(.f, args), simplify = FALSE)
     } else {
-      list_of_draws = do.call(mapply, c(FUN = .f, rvar_args, MoreArgs = list(args[!is_rvar_arg]),
+      list_of_draws <- do.call(mapply, c(FUN = .f, rvar_args, MoreArgs = list(args[!is_rvar_arg]),
         SIMPLIFY = FALSE, USE.NAMES = FALSE
       ))
     }
@@ -59,28 +61,4 @@ rfun = function (.f, rvar_args = NULL, .ndraws = 4000) {
   }
   formals(FUNV) <- formals(.f)
   FUNV
-}
-
-#' @importFrom rlang eval_tidy quo_get_env enquo missing_arg quo_get_expr
-rdo = function(.expr, .ndraws = 4000) {
-  # basic idea here is to find all the variables that are used in the expression
-  # and which are also random variables in the expression's environment, then
-  # build a function that executes the expression and takes those random
-  # variables as arguments, then vectorize that function using `rfun()` and execute it.
-  f_expr = enquo(.expr)
-  f_env = quo_get_env(f_expr)
-
-  rvars_in_expr = list()
-  f_alist = alist()
-  for (name in all.vars(f_expr)) {
-    var = get(name, f_env)
-    if (is_rvar(var)) {
-      rvars_in_expr[[name]] = var
-      f_alist[[name]] = missing_arg()
-    }
-  }
-
-  f_alist = append(f_alist, quo_get_expr(f_expr))
-  f = rfun(as.function(f_alist, envir = f_env), .ndraws = .ndraws)
-  do.call(f, rvars_in_expr, envir = f_env)
 }

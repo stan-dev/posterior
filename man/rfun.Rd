@@ -4,7 +4,7 @@
 \alias{rfun}
 \title{Create functions of random variables}
 \usage{
-rfun(.f, rvar_args = NULL, .ndraws = 4000)
+rfun(.f, rvar_args = NULL, ndraws = NULL)
 }
 \arguments{
 \item{.f}{A function (or a one-sided formula representing a function that can be parsed by
@@ -14,8 +14,9 @@ rfun(.f, rvar_args = NULL, .ndraws = 4000)
 If \code{NULL} (the default), all arguments to \code{.f} are turned into arguments that accept
 \link{rvar}s.}
 
-\item{.ndraws}{When no \link{rvar}s are supplied as arguments to the new function, this is the number
-of draws that will be used to construct new random variables}
+\item{ndraws}{When no \link{rvar}s are supplied as arguments to the new function, this is the number
+of draws that will be used to construct new random variables. If \code{NULL},
+getOption("rvar.ndraws") is used (default 4000).}
 }
 \value{
 A function with the same argument specification as \code{.f}, but which can accept and return
