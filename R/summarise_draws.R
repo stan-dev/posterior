@@ -63,6 +63,9 @@ summarise_draws.draws <- function(x,
                                   ...,
                                   probs = c(0.05, 0.95)) {
   variables <- variables(x)
+  if ("variable" %in% variables) {
+    stop2("Name 'variable' is reserved in 'summarise_draws'.")
+  }
   if (is.null(measures)) {
     measures <- c(
       default_summary_measures(),
@@ -97,9 +100,6 @@ summarise_draws.draws <- function(x,
     out[[v]] <- do_call(cbind, out[[v]])
   }
   out <- tibble::as_tibble(do_call(rbind, out))
-  if (any(names(out) == "variable")) {
-    stop2("Name 'variable' is reserved in 'summarise_draws'.")
-  }
   out$variable <- variables
   out <- move_to_start(out, "variable")
   out

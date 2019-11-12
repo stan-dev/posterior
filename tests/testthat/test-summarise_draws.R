@@ -18,3 +18,8 @@ test_that("aliases of summarise_draws work", {
   sum_x3 <- summary(x)
   expect_equal(sum_x, sum_x3)
 })
+
+test_that("summarise_draws errors if name 'variable' is used", {
+  x <- rename_variables(example_draws(), "variable" = "mu")
+  expect_error(summarise_draws(x), "Name 'variable' is reserved")
+})
