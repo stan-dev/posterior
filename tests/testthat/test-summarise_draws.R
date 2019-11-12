@@ -6,6 +6,9 @@ test_that("summarise_draws works correctly", {
   expect_equal(sum_x$variable, variables(x))
   expect_equal(mean(x$mu), sum_x$mean[sum_x$variable == "mu"])
 
+  sum_x <- summarize_draws(x, measures = "quantile", probs = 0.25)
+  expect_true("q25" %in% names(sum_x))
+
   mcses <- summarise_draws(x, default_mcse_measures())
   expect_true(all(c("mcse_q5", "mcse_q95") %in% names(mcses)))
 })
@@ -20,6 +23,10 @@ test_that("aliases of summarise_draws work", {
 })
 
 test_that("summarise_draws errors if name 'variable' is used", {
-  x <- rename_variables(example_draws(), "variable" = "mu")
-  expect_error(summarise_draws(x), "Name 'variable' is reserved")
+  x <- example_draws()
+  variable <- function(x) mean(x)
+  expect_error(
+    summarise_draws(x, measures = "variable"),
+    "Name 'variable' is reserved in 'summarise_draws'"
+  )
 })
