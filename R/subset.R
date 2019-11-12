@@ -1,7 +1,6 @@
-#' Subset Draws Objects
+#' Subset `draws` objects
 #'
-#' Subset `draws` objects after variables, iteration, chains, and draws
-#' indices.
+#' Subset [`draws`] objects by variables, iterations, chains, and draws indices.
 #'
 #' @name subset-draws
 #' @aliases subset.draws
@@ -17,9 +16,9 @@
 #' @template return-draws
 #'
 #' @details
-#' To ensure that multiple consequtive subsetting operations are working
-#' correctly, `subset` repairs `draws` objects before and after subsetting
-#' via `\link{repair_draws}`.
+#' To ensure that multiple consecutive subsetting operations work correctly,
+#' `subset()` *[repairs][repair_draws]* the `draws` object before and after
+#' subsetting.
 #'
 #' @examples
 #' x <- example_draws()

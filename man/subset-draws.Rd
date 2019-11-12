@@ -7,7 +7,7 @@
 \alias{subset.draws_array}
 \alias{subset.draws_df}
 \alias{subset.draws_list}
-\title{Subset Draws Objects}
+\title{Subset \code{draws} objects}
 \usage{
 \method{subset}{draws_matrix}(x, variable = NULL, iteration = NULL,
   chain = NULL, draw = NULL, regex = FALSE, ...)
@@ -42,13 +42,12 @@ of the regular expressions will be selected.}
 A \code{draws} object of the same class as \code{x}.
 }
 \description{
-Subset \code{draws} objects after variables, iteration, chains, and draws
-indices.
+Subset \code{\link{draws}} objects by variables, iterations, chains, and draws indices.
 }
 \details{
-To ensure that multiple consequtive subsetting operations are working
-correctly, \code{subset} repairs \code{draws} objects before and after subsetting
-via \code{\link{repair_draws}}.
+To ensure that multiple consecutive subsetting operations work correctly,
+\code{subset()} \emph{\link[=repair_draws]{repairs}} the \code{draws} object before and after
+subsetting.
 }
 \examples{
 x <- example_draws()

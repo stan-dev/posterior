@@ -7,14 +7,14 @@
 example_draws(example = "eight_schools")
 }
 \arguments{
-\item{example}{Name of the example \code{draws} object. See \strong{Details}
-for available options.}
+\item{example}{Name of the example \code{draws} object. See \strong{Details} for
+available options.}
 }
 \value{
 A \code{draws} object.
 }
 \description{
-Objects for use in examples.
+Objects for use in examples, vignettes, and tests.
 }
 \details{
 The following example \code{draws} objects are available.
@@ -28,6 +28,13 @@ variables are:
 \item \code{tau}: Standard deviation between schools
 \item \code{theta}:  Individual means of each of the eight schools
 }
+
+\strong{sleepstudy}: A \code{\link{draws_array}} object with
+}
+\note{
+These objects are only intended to be used in demonstrations and tests.
+They contain fewer iterations and chains than recommended for performing
+actual inference.
 }
 \examples{
 x <- example_draws()
