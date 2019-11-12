@@ -180,7 +180,7 @@ Ops.rvar <- function(e1, e2) {
   y <- as_rvar(y)
 
   # conform the draws dimension in both variables
-  .ndraws <- check_ndraws2(x, y)
+  .ndraws <- check_rvar_ndraws_both(x, y)
   x <- broadcast_draws(x, .ndraws)
   y <- broadcast_draws(y, .ndraws)
 

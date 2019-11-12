@@ -128,7 +128,7 @@ format_mean <- function(x, color = FALSE) {
 
 format_sd <- function(x, color = FALSE) {
   # \u00b1 = plus/minus sign
-  sd_string <- paste0("\u00b1", format(x, justify = "right", digits = 2, scientific = 2))
+  sd_string <- paste0("\u00b1", format(x, justify = "left", trim = TRUE, digits = 2, scientific = 2))
   if (color) {
     pillar::style_subtle(sd_string)
   } else {
@@ -137,6 +137,6 @@ format_sd <- function(x, color = FALSE) {
 }
 
 format_mean_sd <- function(.mean, .sd, color = FALSE) {
-  paste0(format_mean(.mean, color = color), format_sd(.sd, color = color))
+  format(paste0(format_mean(.mean, color = color), format_sd(.sd, color = color)), justify = "left")
 }
 

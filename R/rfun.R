@@ -62,3 +62,31 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
   formals(FUNV) <- formals(.f)
   FUNV
 }
+
+rvar_r <- function(.f, n, ..., ndraws = 4000) {
+  ndraws <- ndraws %||% getOption("rvar.ndraws", 4000)
+  args = list(...)
+  is_rvar_arg <- as.logical(lapply(args, is_rvar))
+  rvar_args = args[is_rvar_arg]
+
+  rvar_args_ndraws = sapply(rvar_args, ndraws)
+  if (length(rvar_args_ndraws) != 0) {
+    ndraws = max(rvar_args_ndraws)
+    if (!all(rvar_args_ndraws == 1 | rvar_args_ndraws == ndraws)) {
+      stop2("All arguments must have a compatible number of draws")
+    }
+
+    rvar_args_ndims = sapply(rvar_args, function(x) length(dim(x)))
+    if (!all(rvar_args_ndims == 0)) {
+      stop2("All arguments must be single-dimensional rvars")
+    }
+
+    args[is_rvar_arg] <- lapply(rvar_args, draws_of)
+  }
+
+  nd = n * ndraws
+  args = c(list(n = nd), args)
+  result = do.call(.f, args)
+  dim(result) = c(n, ndraws)
+  new_rvar(result)
+}
