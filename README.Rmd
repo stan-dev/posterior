@@ -49,7 +49,7 @@ version from GitHub, but expect frequent changes until an official release.
 remotes::install_github("jgabry/posterior")
 ```
 
-### How to use **posterior**
+### Examples
 
 ```{r load}
 library("posterior")
@@ -108,6 +108,8 @@ For a measure to work, there needs to be a function defined with the same name
 as the name specified in `measures` and that takes a vector or matrix of numeric
 values and returns a single numeric value or a named vector of numeric values.
 
+#### Subsetting draws 
+
 Another common task when working with posterior (or prior) draws, is subsetting
 according to various aspects of the draws (iterations, chains, or variables).
 **posterior** provides a convienent interface for this purpose via the
@@ -142,10 +144,10 @@ this would result in a `draws_matrix` object either way.
 
 ### Contributing
 
-The **posterior** package is under active development. If you find bugs or have
-ideas for new features (for us or yourself to implement) please open an issue on
-GitHub (https://github.com/jgabry/posterior/issues).
-
+We welcome contributions! The **posterior** package is under active development.
+If you find bugs or have ideas for new features (for us or yourself to
+implement) please open an issue on GitHub
+(https://github.com/jgabry/posterior/issues).
 
 ### References
 

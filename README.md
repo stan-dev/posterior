@@ -37,7 +37,7 @@ official release.
 remotes::install_github("jgabry/posterior")
 ```
 
-### How to use **posterior**
+### Examples
 
 ``` r
 library("posterior")
@@ -161,6 +161,8 @@ same name as the name specified in `measures` and that takes a vector or
 matrix of numeric values and returns a single numeric value or a named
 vector of numeric values.
 
+#### Subsetting draws
+
 Another common task when working with posterior (or prior) draws, is
 subsetting according to various aspects of the draws (iterations,
 chains, or variables). **posterior** provides a convienent interface for
@@ -199,20 +201,20 @@ x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
 str(x)
-#>  'draws_matrix' num [1:10, 1:5] -1.151 0.065 1.265 0.616 0.403 ...
+#>  'draws_matrix' num [1:10, 1:5] -2.769 -0.312 -0.119 -0.231 1.34 ...
 #>  - attr(*, "dimnames")=List of 2
 #>   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
 #>   ..$ variable: chr [1:5] "V1" "V2" "V3" "V4" ...
 
 summarise_draws(x, c("mean", "sd", "median", "mad"))
 #> # A tibble: 5 x 5
-#>   variable   mean    sd median   mad
-#>   <chr>     <dbl> <dbl>  <dbl> <dbl>
-#> 1 V1        0.300 0.947  0.403 0.694
-#> 2 V2       -0.232 0.537 -0.490 0.415
-#> 3 V3       -0.716 1.21  -0.483 0.972
-#> 4 V4       -0.130 0.817 -0.248 0.996
-#> 5 V5       -0.448 1.08  -0.454 0.795
+#>   variable    mean    sd  median   mad
+#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
+#> 1 V1       -0.199  1.09  -0.122  0.592
+#> 2 V2       -0.152  1.03  -0.390  0.690
+#> 3 V3        0.0621 0.720 -0.0492 0.797
+#> 4 V4       -0.497  1.30  -0.247  0.298
+#> 5 V5       -0.384  0.659 -0.265  0.632
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
@@ -222,9 +224,10 @@ either way.
 
 ### Contributing
 
-The **posterior** package is under active development. If you find bugs
-or have ideas for new features (for us or yourself to implement) please
-open an issue on GitHub (<https://github.com/jgabry/posterior/issues>).
+We welcome contributions\! The **posterior** package is under active
+development. If you find bugs or have ideas for new features (for us or
+yourself to implement) please open an issue on GitHub
+(<https://github.com/jgabry/posterior/issues>).
 
 ### References
 
