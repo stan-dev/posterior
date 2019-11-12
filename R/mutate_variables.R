@@ -22,7 +22,7 @@
 #'
 #' @seealso [`variables`], [`rename_variables`]
 #'
-#' @importFrom rlang enquos caller_env eval_tidy
+#' @importFrom rlang enquos caller_env eval_tidy as_label
 #'
 #' @examples
 #' x <- as_draws_df(example_draws())
@@ -78,14 +78,15 @@ mutate_variables.draws_list <- function(.x, ...) {
 .mutate_variable <- function(expr, data, env = caller_env()) {
   out <- eval_tidy(expr, data, env)
   if (!is.numeric(out)) {
-    stop2("{", expr, "} does not evaluate to a numeric vector.")
+    stop2("{", as_label(expr), "} does not evaluate to a numeric vector.")
   }
   n <- length(data[[1]])
   if (length(out) == 1L) {
     out <- rep(out, n)
   }
   if (length(out) != n) {
-    stop2("{", expr, "} does not evaluate to a vector of length 1 or ", n, ".")
+    stop2("{", as_label(expr), "} does not evaluate ",
+          "to a vector of length 1 or ", n, ".")
   }
   out
 }

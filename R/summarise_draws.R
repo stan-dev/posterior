@@ -63,9 +63,6 @@ summarise_draws.draws <- function(x,
                                   ...,
                                   probs = c(0.05, 0.95)) {
   variables <- variables(x)
-  if ("variable" %in% variables) {
-    stop2("Name 'variable' is reserved in 'summarise_draws'.")
-  }
   if (is.null(measures)) {
     measures <- c(
       default_summary_measures(),
@@ -73,33 +70,35 @@ summarise_draws.draws <- function(x,
     )
   }
   measures <- as.character(measures)
-  if ("quantile" %in% measures) {
-    # ensure correct format for quantiles
-    .quantile <- function(x, ...) quantile2(x, probs, ...)
-    measures[measures == "quantile"] <- ".quantile"
-  }
-  if ("mcse_quantile" %in% measures) {
-    .mcse_quantile <- function(x, ...) mcse_quantile2(x, probs, ...)
-    measures[measures == "mcse_quantile"] <- ".mcse_quantile"
-  }
-  if ("ess_quantile" %in% measures) {
-    .ess_quantile <- function(x, ...) ess_quantile2(x, probs, ...)
-    measures[measures == "ess_quantile"] <- ".ess_quantile"
-  }
+
+  # ensure correct format for quantiles
+  quantile <- function(x, ...) quantile2(x, probs, ...)
+  mcse_quantile <- function(x, ...) mcse_quantile2(x, probs, ...)
+  ess_quantile <- function(x, ...) ess_quantile2(x, probs, ...)
+  # get functions from the right environments
+  special_measures <- c("quantile", "mcse_quantile", "ess_quantile")
+  special_measures <- intersect(measures, special_measures)
+  special_funs <- mget(special_measures, environment(), mode = "function")
+  other_measures <- setdiff(measures, special_measures)
+  funs <- mget(other_measures, caller_env(), mode = "function", inherits = TRUE)
+  funs <- c(funs, special_funs)[measures]
+
   out <- named_list(variables, values = list(named_list(measures)))
-  funs <- lapply(measures, get, environment())
-  names(funs) <- measures
   for (v in variables) {
     draws <- extract_one_variable_matrix(x, variable = v)
     for (m in measures) {
       out[[v]][[m]] <- funs[[m]](draws, ...)
-      if (length(out[[v]][[m]]) > 1L) {
+      if (rlang::is_named(out[[v]][[m]])) {
+        # use names returned by the measures to name columns
         out[[v]][[m]] <- rbind(out[[v]][[m]])
       }
     }
     out[[v]] <- do_call(cbind, out[[v]])
   }
   out <- tibble::as_tibble(do_call(rbind, out))
+  if ("variable" %in% names(out)) {
+    stop2("Name 'variable' is reserved in 'summarise_draws'.")
+  }
   out$variable <- variables
   out <- move_to_start(out, "variable")
   out
