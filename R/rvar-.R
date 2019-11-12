@@ -139,6 +139,11 @@ is.matrix.rvar <- function(x) {
 }
 
 #' @export
+is.array.rvar <- function(x) {
+  length(dim(draws_of(x))) > 0
+}
+
+#' @export
 levels.rvar <- function(x) {
   NULL
 }
