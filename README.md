@@ -41,6 +41,7 @@ remotes::install_github("jgabry/posterior")
 
 ``` r
 library("posterior")
+#> This is posterior version 0.0.0.9000
 ```
 
 To demonstrate how to work with the **posterior** package, we will use
@@ -184,6 +185,9 @@ subset(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 #> 10      2          5    10  3.54
 ```
 
+The same call to `subset()` can be used regardless of whether the object
+is a `draws_df`, `draws_array`, `draws_list`, etc.
+
 #### Converting from regular R objects to draws formats
 
 The `eight_schools` example already comes in a format natively supported
@@ -195,20 +199,20 @@ x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
 str(x)
-#>  'draws_matrix' num [1:10, 1:5] 0.0351 0.5902 -0.6591 1.2565 -0.2824 ...
+#>  'draws_matrix' num [1:10, 1:5] -1.151 0.065 1.265 0.616 0.403 ...
 #>  - attr(*, "dimnames")=List of 2
 #>   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
 #>   ..$ variable: chr [1:5] "V1" "V2" "V3" "V4" ...
 
 summarise_draws(x, c("mean", "sd", "median", "mad"))
 #> # A tibble: 5 x 5
-#>   variable   mean    sd  median   mad
-#>   <chr>     <dbl> <dbl>   <dbl> <dbl>
-#> 1 V1       0.487  0.915  0.447  0.966
-#> 2 V2       0.154  0.578  0.105  0.824
-#> 3 V3       0.114  0.703 -0.0252 0.865
-#> 4 V4       0.185  0.886 -0.135  0.753
-#> 5 V5       0.0426 0.864  0.0264 1.29
+#>   variable   mean    sd median   mad
+#>   <chr>     <dbl> <dbl>  <dbl> <dbl>
+#> 1 V1        0.300 0.947  0.403 0.694
+#> 2 V2       -0.232 0.537 -0.490 0.415
+#> 3 V3       -0.716 1.21  -0.483 0.972
+#> 4 V4       -0.130 0.817 -0.248 0.996
+#> 5 V5       -0.448 1.08  -0.454 0.795
 ```
 
 Instead of `as_draws_matrix()` we also could have just used

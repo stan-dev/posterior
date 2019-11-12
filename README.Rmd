@@ -118,6 +118,9 @@ iterations of the first two chains of the variable `mu`:
 subset(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 ```
 
+The same call to `subset()` can be used regardless of whether the object is a
+`draws_df`, `draws_array`, `draws_list`, etc.
+
 #### Converting from regular R objects to draws formats
 
 The `eight_schools` example already comes in a format natively supported by
