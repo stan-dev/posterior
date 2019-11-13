@@ -75,13 +75,23 @@ summarise_draws.draws <- function(x,
   quantile <- function(x, ...) quantile2(x, probs, ...)
   mcse_quantile <- function(x, ...) mcse_quantile2(x, probs, ...)
   ess_quantile <- function(x, ...) ess_quantile2(x, probs, ...)
+  amended_measures <- c("quantile", "mcse_quantile", "ess_quantile")
+
   # get functions from the right environments
-  special_measures <- c("quantile", "mcse_quantile", "ess_quantile")
-  special_measures <- intersect(measures, special_measures)
-  special_funs <- mget(special_measures, environment(), mode = "function")
-  other_measures <- setdiff(measures, special_measures)
-  funs <- mget(other_measures, caller_env(), mode = "function", inherits = TRUE)
-  funs <- c(funs, special_funs)[measures]
+  funs <- named_list(measures)
+  for (m in measures) {
+    if (m %in% amended_measures) {
+      # measures amended in this function are given priority
+      env <- environment()
+    } else if (exists(m, envir = caller_env())) {
+      env <- caller_env()
+    } else if (exists(m, envir = asNamespace("posterior"))) {
+      env <- asNamespace("posterior")
+    } else {
+      stop2("Cannot find function '", m, "'.")
+    }
+    funs[[m]] <- get(m, envir = env, mode = "function")
+  }
 
   out <- named_list(variables, values = list(named_list(measures)))
   for (v in variables) {
