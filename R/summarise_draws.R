@@ -111,6 +111,7 @@ summarise_draws.draws <- function(x,
   }
   out$variable <- variables
   out <- move_to_start(out, "variable")
+  class(out) <- c("draws_summary", class(out))
   out
 }
 
