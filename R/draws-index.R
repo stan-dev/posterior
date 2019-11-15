@@ -107,12 +107,14 @@ iteration_ids <- function(x) {
 
 #' @export
 iteration_ids.draws_matrix <- function(x) {
-  as.integer(rownames(x))
+  out <- rownames(x) %||% seq_rows(x)
+  as.integer(out)
 }
 
 #' @export
 iteration_ids.draws_array <- function(x) {
-  as.integer(rownames(x))
+  out <- rownames(x) %||% seq_rows(x)
+  as.integer(out)
 }
 
 #' @export
@@ -138,7 +140,8 @@ chain_ids.draws_matrix <- function(x) {
 
 #' @export
 chain_ids.draws_array <- function(x) {
-  as.integer(colnames(x))
+  out <- colnames(x) %||% seq_cols(x)
+  as.integer(out)
 }
 
 #' @export
@@ -148,7 +151,8 @@ chain_ids.draws_df <- function(x) {
 
 #' @export
 chain_ids.draws_list <- function(x) {
-  as.integer(names(x))
+  out <- names(x) %||% seq_rows(x)
+  as.integer(out)
 }
 
 #' @rdname draws-index
@@ -159,7 +163,7 @@ draw_ids <- function(x) {
 
 #' @export
 draw_ids.draws_matrix <- function(x) {
-  as.integer(rownames(x))
+  iteration_ids(x)
 }
 
 #' @export
@@ -167,7 +171,7 @@ draw_ids.draws_array <- function(x) {
   iteration_ids <- iteration_ids(x)
   niterations <- niterations(x)
   chain_ids <- chain_ids(x)
-  ulapply(chain_ids, function(c) niterations * (c - 1) + iteration_ids)
+  ulapply(chain_ids, function(c) niterations * (c - 1L) + iteration_ids)
 }
 
 #' @export
@@ -180,7 +184,7 @@ draw_ids.draws_list <- function(x) {
   iteration_ids <- iteration_ids(x)
   niterations <- niterations(x)
   chain_ids <- chain_ids(x)
-  ulapply(chain_ids, function(c) niterations * (c - 1) + iteration_ids)
+  ulapply(chain_ids, function(c) niterations * (c - 1L) + iteration_ids)
 }
 
 #' @rdname draws-index
