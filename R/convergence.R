@@ -72,8 +72,7 @@ ess_basic <- function(x, split = TRUE) {
 #' @export
 rhat <- function(x) {
   rhat_bulk <- .rhat(z_scale(split_chains(x)))
-  sims_folded <- abs(x - median(x))
-  rhat_tail <- .rhat(z_scale(split_chains(sims_folded)))
+  rhat_tail <- .rhat(z_scale(split_chains(fold_draws(x))))
   max(rhat_bulk, rhat_tail)
 }
 
@@ -162,7 +161,6 @@ ess_median <- function(x) {
   I <- x <= quantile(x, prob)
   .ess(split_chains(I))
 }
-
 
 #' Effective sample size for the mean
 #'
@@ -321,7 +319,8 @@ fft_next_good_size <- function(N) {
 #'
 #' @template args-conv-seq
 #' @return A numeric vector of autocovariances at every lag (scaled by N-lag).
-#' @noRd
+#' @keywords internal
+#' @export
 autocovariance <- function(x) {
   N <- length(x)
   M <- fft_next_good_size(N)
@@ -343,7 +342,8 @@ autocovariance <- function(x) {
 #'
 #' @template args-conv-seq
 #' @return A numeric vector of autocorrelations at every lag (scaled by N-lag).
-#' @noRd
+#' @keywords internal
+#' @export
 autocorrelation <- function(x) {
   ac <- autocovariance(x)
   ac <- ac / ac[1]
@@ -359,7 +359,8 @@ autocorrelation <- function(x) {
 #' @template args-scale
 #' @return A numeric array of rank normalized values with the same size
 #'   and dimension as the input.
-#' @noRd
+#' @keywords internal
+#' @export
 z_scale <- function(x) {
   r <- rank(as.array(x), ties.method = 'average')
   z <- qnorm(backtransform_ranks(r))
@@ -381,7 +382,8 @@ z_scale <- function(x) {
 #' @template args-scale
 #' @return A numeric array of uniformized values with the same size
 #'   and dimension as the input.
-#' @noRd
+#' @keywords internal
+#' @export
 u_scale <- function(x) {
   r <- rank(as.array(x), ties.method = 'average')
   u <- backtransform_ranks(r)
@@ -402,7 +404,8 @@ u_scale <- function(x) {
 #' @template args-scale
 #' @return A numeric array of ranked values with the same size
 #'   and dimension as the input.
-#' @noRd
+#' @keywords internal
+#' @export
 r_scale <- function(x) {
   r <- rank(as.array(x), ties.method = 'average')
   if (!is.null(dim(x))) {
@@ -425,7 +428,8 @@ backtransform_ranks <- function(r, c = 3/8) {
 #' Split Markov chains in half
 #' @template args-conv
 #' @return A 2D array of draws with split chains.
-#' @noRd
+#' @keywords internal
+#' @export
 split_chains <- function(x) {
   x <- as.matrix(x)
   niter <- NROW(x)
@@ -436,10 +440,20 @@ split_chains <- function(x) {
   cbind(x[1:floor(half), ], x[ceiling(half + 1):niter, ])
 }
 
-#' Compute the Rhat converence diagnostic
+#' Fold draws around their median
+#' @template args-conv
+#' @return An array or vector of folded draws.
+#' @keywords internal
+#' @export
+fold_draws <- function(x) {
+  abs(x - median(x))
+}
+
+#' Compute the Rhat convergence diagnostic
 #' @template args-conv
 #' @template return-conv
-#' @noRd
+#' @keywords internal
+#' @export
 .rhat <- function(x) {
   x <- as.matrix(x)
   if (any(!is.finite(x))) {
@@ -464,7 +478,8 @@ split_chains <- function(x) {
 #' Compute the effective sample size
 #' @template args-conv
 #' @template return-conv
-#' @noRd
+#' @keywords internal
+#' @export
 .ess <- function(x) {
   x <- as.matrix(x)
   nchains <- NCOL(x)
