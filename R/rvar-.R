@@ -201,7 +201,9 @@ rep_len.rvar <- function(x, length.out) {
 `[[.rvar` <- function(x, i, ...) {
   check_rvar_yank_index(x, i, ...)
 
-  new_rvar(rray_slice(draws_of(x), i, 1))
+  x <- new_rvar(rray_slice(draws_of(x), i, 1))
+  dimnames(x) <- NULL
+  x
 }
 
 #' @importFrom rray rray_slice<-
@@ -228,13 +230,22 @@ rep_len.rvar <- function(x, length.out) {
     if (is_missing(quo_get_expr(index[[i]]))) {
       index[[i]] <- missing_arg()
     } else {
-      index[[i]] <- eval_tidy(index[[i]])
+      index_i <- eval_tidy(index[[i]])
 
-      if (is.numeric(index[[i]])) {
-        # numeric indices outside the range of the corresponding dimension
-        # should create NAs; but array indexing doesn't do this (it throws
-        # an error), so we adjust the indices to do so.
-        index[[i]][index[[i]] > .dim[[i]]] <- NA_integer_
+      if (length(index_i) == 0) {
+        # need to do this in a second step just in case index_i evaluate to
+        # NULL (which would cause assignment to this list to remove the
+        # index at i rather than setting it to NULL)
+        index[[i]] <- integer(0)
+      } else {
+        index[[i]] <- index_i
+
+        if (is.numeric(index[[i]])) {
+          # numeric indices outside the range of the corresponding dimension
+          # should create NAs; but array indexing doesn't do this (it throws
+          # an error), so we adjust the indices to do so.
+          index[[i]][index[[i]] > .dim[[i]]] <- NA_integer_
+        }
       }
     }
   }
@@ -242,7 +253,7 @@ rep_len.rvar <- function(x, length.out) {
   # fill in final indices with missing arguments
   index[seq(length(index) + 1, length(dim(.draws)))] = list(missing_arg())
 
-  x = eval_tidy(expr(new_rvar(.draws[!!!index])))
+  x = eval_tidy(expr(new_rvar(.draws[!!!index, drop = FALSE])))
 
   #print(expr(.draws[!!!indices]))
 
@@ -420,6 +431,15 @@ ndraws.rvar <- function(x) {
 
 # helpers -----------------------------------------------------------------
 
+# dim or length: nevers returns NULL except in cases where rvar is NULL
+# (unlike dim which will return NULL on single-dimensional vector)
+diml <- function(x) {
+  .dim <- dim(draws_of(x))
+  ndim <- length(.dim)
+  .dim[-ndim]
+}
+
+
 # convert into a list of draws for applying a function draw-wise
 list_of_draws <- function(x) {
   .draws <- draws_of(x)
@@ -432,6 +452,9 @@ list_of_draws <- function(x) {
 check_rvar_yank_index = function(x, i, ...) {
   if (length(i) != 1 || length(list(...)) != 0) {
     stop2("You can only select one element with `[[` on rvar objects.")
+  }
+  if (is.logical(i)) {
+    stop2("logical indices are not supported with `[[` on rvar objects.")
   }
 }
 
@@ -515,7 +538,15 @@ broadcast_draws <- function(x, .ndraws) {
 }
 
 drop_ <- function(x) {
-  .dim = dim(x)
-  dim(x) <- .dim[.dim != 1]
+  .diml <- diml(x)
+
+  if (isFALSE(all.equal(.diml, 1))) {
+    # with exactly 1 element left we don't want to drop anything
+    # (otherwise names get lost), so only do this with > 1 element
+    .dimnames <- dimnames(x)
+    dim(x) <- .diml[.diml != 1]
+    dimnames(x) <- .dimnames[.diml != 1]
+  }
+
   x
 }
