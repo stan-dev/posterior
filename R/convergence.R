@@ -158,6 +158,7 @@ ess_median <- function(x) {
 
 # ESS of a single quantile
 .ess_quantile <- function(x, prob) {
+  x <- as.matrix(x)
   I <- x <= quantile(x, prob)
   .ess(split_chains(I))
 }
