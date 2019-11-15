@@ -27,4 +27,18 @@ Random variables backed by arrays of arbitrary dimension
 \details{
 The \code{"rvar"} class represents random variables as arrays of arbitrary
 dimension, where the last dimension is used to index draws from the distribution.
+
+Most mathmetical operators and functions are supported, including efficient matrix
+multiplication and vector and array-style indexing. The intent is that an \code{rvar}
+works as closely as possible to how a base vector/matrix/array does.
+
+For functions that expect base numeric arrays and for which \code{rvar}s cannot be
+used directly as arguments, you can use \code{\link[=rfun]{rfun()}} or \code{\link[=rdo]{rdo()}} to translate your
+code into code that executes across draws from one or more random variables
+and returns a random variable as output. Typically \code{\link[=rdo]{rdo()}} offers the most
+straightforward translation.
+
+For faster operation than is possible with \code{\link[=rfun]{rfun()}} or \code{\link[=rdo]{rdo()}} (if those functions
+are not sufficiently performant for your use case), you can also operate directly
+on the underlying array using the \code{\link[=draws_of]{draws_of()}} function.
 }

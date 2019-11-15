@@ -9,6 +9,20 @@
 #' @details The `"rvar"` class represents random variables as arrays of arbitrary
 #' dimension, where the last dimension is used to index draws from the distribution.
 #'
+#' Most mathmetical operators and functions are supported, including efficient matrix
+#' multiplication and vector and array-style indexing. The intent is that an `rvar`
+#' works as closely as possible to how a base vector/matrix/array does.
+#'
+#' For functions that expect base numeric arrays and for which `rvar`s cannot be
+#' used directly as arguments, you can use [rfun()] or [rdo()] to translate your
+#' code into code that executes across draws from one or more random variables
+#' and returns a random variable as output. Typically [rdo()] offers the most
+#' straightforward translation.
+#'
+#' For faster operation than is possible with [rfun()] or [rdo()] (if those functions
+#' are not sufficiently performant for your use case), you can also operate directly
+#' on the underlying array using the [draws_of()] function.
+#'
 #' @return An object of class `"rvar"` representing a random variable.
 #'
 NULL
@@ -45,11 +59,7 @@ new_rvar <- function(x = double()) {
   # it will not dispatch to S3 objects even if they have an S4 class
   # defined through setOldClass, they *must* also have isS4() return
   # TRUE, hence the need to set that flag here.
-
-  # we also wrap a dummy list with same length as the first
-  # dimension so that code that relies on the internal length of
-  # this vector (such as dplyr::mutate()) behaves correctly.
-  asS4(new_vctr(vector("list", dim_1_length), draws = x, class = "rvar"))
+  asS4(new_vctr(list(), draws = x, class = "rvar"))
 }
 
 #' @rdname rvar
@@ -148,6 +158,42 @@ levels.rvar <- function(x) {
   NULL
 }
 
+#' @export
+rep.rvar <- function(x, ..., times = 1, length.out = NA, each = 1) {
+  if (each != 1) {
+    # TODO: implement
+    stop2("rep(each = ) is not yet implemented for `rvar`s.")
+  }
+
+  draws = draws_of(x)
+  if (is.na(length.out)) {
+    # use `times`
+    rep_draws = rep(draws, times)
+    dim = dim(draws)
+    dim[[1]] = dim[[1]] * times
+    dim(rep_draws) = dim
+    new_rvar(rep_draws)
+  } else {
+    # use `length.out`
+    rep_draws = rep_len(draws, length.out * ndraws(x))
+    dim(rep_draws) = c(length(rep_draws) / ndraws(x), ndraws(x))
+    new_rvar(rep_draws)
+  }
+}
+
+#' @method rep.int rvar
+#' @export
+rep.int.rvar <- function(x, times) {
+  rep(x, times = times)
+}
+
+#' @method rep_len rvar
+#' @export
+rep_len.rvar <- function(x, length.out) {
+  rep(x, length.out = length.out)
+}
+
+
 # indexing ----------------------------------------------------------------
 
 #' @importFrom rray rray_slice
@@ -166,7 +212,7 @@ levels.rvar <- function(x) {
   value <- check_rvar_dims_first(value, x[[i, ...]])
 
   rray_slice(draws_of(x), i, 1) <- draws_of(value)
-  update_rvar_length(x)
+  x
 }
 
 #' @importFrom rray rray_subset
@@ -223,33 +269,8 @@ levels.rvar <- function(x) {
   value <- check_rvar_dims_first(value, x[i, ...])
 
   rray_subset(draws_of(x), i, ...) <- draws_of(value)
-  update_rvar_length(x)
+  x
 }
-
-# #' @export
-# #' @importFrom rlang missing_arg
-# #' @importFrom rlang enquos eval_bare
-# `[.rvar` <- function(x, ..., drop <- FALSE) {
-#   draws <- field(x, 1)
-#   args <- enexprs(...)
-#
-#   if (length(args) == length(dim(draws))) {
-#     # can't index into the draws dimension
-#     args[[length(dim(draws))]] <- NULL
-#   }
-#   eval_bare(expr(draws[!!!args, drop = drop]))
-#
-#   # args <- c(list(x = draws), args, list(drop = drop))
-#   # print(str(args))
-#   # new_rvar(do.call(`[`, args))
-#   # n_args <- length(substitute(list(...))[-1])
-#   # if (n_args == length(dim(x$draws))) {
-#   #   new_rvar(x$draws[..., drop = drop])
-#   # } else {
-#   #   new_rvar(x$draws[..., , drop = drop])
-#   # }
-#
-# }
 
 
 # manipulating raw draws array --------------------------------------------
@@ -281,9 +302,8 @@ draws_of <- function(x) {
 #' @rdname draws_of
 #' @export
 `draws_of<-` <- function(x, value) {
-  # workaround to ensure internal length of wrapped vector matches correct length
   attr(x, "draws") <- value
-  update_rvar_length(x)
+  x
 }
 
 
@@ -390,17 +410,6 @@ combine_rvar <- function(.f, args, .axis = 1) {
 }
 
 
-
-# setMethod("rbind2", c(x = "rvar", y = "rvar"), function(x, y) {
-#   if (is.null(dim(y))) {
-#     dim(y) <- c(length(y), 1)
-#   }
-#   result <- c(x, y)
-#   rownames(result) <- NULL #c(rownames(x), rownames(y))
-#   result
-# })
-
-
 # chain / iteration / draw info -------------------------------------------
 
 ndraws.rvar <- function(x) {
@@ -491,16 +500,6 @@ check_rvar_dims_first <- function(x, y) {
   }
 
   x
-}
-
-update_rvar_length = function(x) {
-  # TODO: make this faster, save attributes
-  new_rvar(draws_of(x))
-  # class. = attr(x, "class")
-  # x = unclass(x)
-  # length(x) = dim(attr(x, "draws"))[[1]]
-  # attr(x, "class") = class.
-  # x
 }
 
 # broadcast the draws dimension of an rvar to the requested size
