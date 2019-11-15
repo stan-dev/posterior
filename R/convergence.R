@@ -243,8 +243,8 @@ mcse_median <- function(x) {
   a <- qbeta(p, ess * prob + 1, ess * (1 - prob) + 1)
   ssims <- sort(x)
   S <- length(ssims)
-  th1 <- ssims[max(round(a[1] * S), 1)]
-  th2 <- ssims[min(round(a[2] * S), S)]
+  th1 <- ssims[max(floor(a[1] * S), 1)]
+  th2 <- ssims[min(ceiling(a[2] * S), S)]
   as.vector((th2 - th1) / 2)
 }
 
