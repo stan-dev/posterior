@@ -16,7 +16,7 @@ A single numeric value.
 Compute tail effective sample size estimate (tail-ESS) for a single variable.
 Tail-ESS is useful for generic diagnostic for the sampling
 efficiency in the tails of the posterior. It is defined as
-the minimum of the effective sample sizes for 5% and 95% quantiles.
+the minimum of the effective sample sizes for 5\% and 95\% quantiles.
 }
 \examples{
 mu <- extract_one_variable_matrix(example_draws(), "mu")
@@ -30,10 +30,15 @@ localization: An improved R-hat for assessing convergence of
 MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
 }
 \seealso{
-Other diagnostics: \code{\link{ess_basic}},
-  \code{\link{ess_bulk}}, \code{\link{ess_quantile}},
-  \code{\link{ess_sd}}, \code{\link{mcse_mean}},
-  \code{\link{mcse_quantile}}, \code{\link{mcse_sd}},
-  \code{\link{rhat_basic}}, \code{\link{rhat}}
+Other diagnostics: 
+\code{\link{ess_basic}()},
+\code{\link{ess_bulk}()},
+\code{\link{ess_quantile}()},
+\code{\link{ess_sd}()},
+\code{\link{mcse_mean}()},
+\code{\link{mcse_quantile}()},
+\code{\link{mcse_sd}()},
+\code{\link{rhat_basic}()},
+\code{\link{rhat}()}
 }
 \concept{diagnostics}

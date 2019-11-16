@@ -17,7 +17,7 @@ and dimension as the input.
 Compute rank uniformization for a numeric array. First replace each
 value by its rank. Average rank for ties are used to conserve the
 number of unique values of discrete quantities. Second, uniformize
-ranks to scale \code{[1/(2S), 1-1/(2S)]}, where \code{S} is the the number
+ranks to scale \verb{[1/(2S), 1-1/(2S)]}, where \code{S} is the the number
 of values.
 }
 \keyword{internal}
