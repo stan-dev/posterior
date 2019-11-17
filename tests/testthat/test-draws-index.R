@@ -8,6 +8,9 @@ test_that("indices of draws_matrix objects are correct", {
    expect_equal(niterations(x), NROW(x))
    expect_equal(nchains(x), 1)
    expect_equal(ndraws(x), NROW(x))
+
+   rownames(x) <- NULL
+   expect_equal(iteration_ids(x), 1:NROW(x))
 })
 
 test_that("indices of draws_array objects are correct", {
@@ -20,6 +23,11 @@ test_that("indices of draws_array objects are correct", {
   expect_equal(niterations(x), NROW(x))
   expect_equal(nchains(x), NCOL(x))
   expect_equal(ndraws(x), NROW(x) * NCOL(x))
+
+  colnames(x) <- NULL
+  rownames(x) <- NULL
+  expect_equal(iteration_ids(x), 1:NROW(x))
+  expect_equal(chain_ids(x), 1:NCOL(x))
 })
 
 test_that("indices of draws_df objects are correct", {
@@ -44,5 +52,8 @@ test_that("indices of draws_list objects are correct", {
   expect_equal(niterations(x), length(x[[1]][[1]]))
   expect_equal(nchains(x), length(x))
   expect_equal(ndraws(x), length(x[[1]][[1]]) * length(x))
+
+  names(x) <- NULL
+  expect_equal(chain_ids(x), 1:length(x))
 })
 
