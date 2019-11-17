@@ -37,6 +37,11 @@ new_rvar <- function(x = double()) {
   x <- as.array(x)
   .dim <- dim(x)
 
+  # ensure dimnames is set (makes comparison easier for tests)
+  if (is.null(dimnames(x))) {
+    dimnames(x) <- list(NULL)
+  }
+
   if (length(x) == 0) {
     if (is.null(.dim)) {
       dim(x) <- c(0, 0)
@@ -59,7 +64,7 @@ new_rvar <- function(x = double()) {
   # it will not dispatch to S3 objects even if they have an S4 class
   # defined through setOldClass, they *must* also have isS4() return
   # TRUE, hence the need to set that flag here.
-  asS4(new_vctr(list(), draws = x, class = "rvar"))
+  asS4(structure(rep.int(NA, dim_1_length), draws = x, class = c("rvar")))
 }
 
 #' @rdname rvar
@@ -69,7 +74,7 @@ rvar <- function(x = double()) {
 }
 
 #' @importFrom methods setOldClass
-setOldClass(c("rvar", "vctrs_vctr"))
+setOldClass(c("rvar"))
 
 #' @rdname rvar
 #' @export
@@ -82,13 +87,7 @@ is_rvar <- function(x) {
 
 #' @export
 length.rvar <- function(x) {
-  .draws <- draws_of(x)
-
-  if (is.null(.draws)) {
-    0
-  } else {
-    dim(.draws)[[1]]
-  }
+  prod(diml(x))
 }
 
 #' @export
@@ -193,6 +192,64 @@ rep_len.rvar <- function(x, length.out) {
   rep(x, length.out = length.out)
 }
 
+#' @export
+unique.rvar <- function(x, MARGIN = 1, ...) {
+  check_rvar_margin(x, MARGIN)
+  draws_of(x) <- unique(draws_of(x), MARGIN = MARGIN, ...)
+  x
+}
+
+#' @export
+duplicated.rvar <- function(x, MARGIN = 1, ...) {
+  check_rvar_margin(x, MARGIN)
+  duplicated(draws_of(x), MARGIN = MARGIN, ...)
+}
+
+#' @export
+anyDuplicated.rvar <- function(x, MARGIN = 1, ...) {
+  check_rvar_margin(x, MARGIN)
+  anyDuplicated(draws_of(x), MARGIN = MARGIN, ...)
+}
+
+check_rvar_margin <- function(x, MARGIN) {
+  if (!between(MARGIN, 1, length(diml(x)))) {
+    stop2("MARGIN = ", MARGIN, " is invalid for dim = ", paste0(diml(x), collapse = ","))
+  }
+}
+
+#' @export
+all.equal.rvar <- function(target, current, ...) {
+  if (!inherits(target, "rvar")) {
+    return("'target' is not an rvar")
+  }
+  if (!inherits(current, "rvar")) {
+    return("'current' is not a rvar")
+  }
+  result = NULL
+
+  class_result = all.equal(class(current), class(target), ...)
+  if (!isTRUE(class_result)) {
+    result = c(result, paste("Class: <", class_result, ">"))
+  }
+
+  object_result = all.equal(unclass(target), unclass(current), ...)
+  if (!isTRUE(object_result)) {
+    result = c(result, object_result)
+  }
+
+  if (is.null(result)) TRUE else result
+}
+
+as.vector.rvar <- function(x, mode = "any") {
+  x
+}
+
+#' @export
+as.list.rvar <- function(x, ...) {
+  .draws = draws_of(x)
+  lapply(apply(.draws, length(dim(.draws)), list), function(x) new_rvar(x[[1]]))
+}
+
 
 # indexing ----------------------------------------------------------------
 
@@ -269,7 +326,7 @@ rep_len.rvar <- function(x, length.out) {
 #' @importFrom rray rray_subset<-
 #' @export
 `[<-.rvar` <- function(x, i, ..., value) {
-  if (is.null(dim(x)) && any(i > length(x), na.rm = TRUE)) {
+  if (length(diml(x) == 1) && any(i > length(x), na.rm = TRUE)) {
     # unidimensional indexing allows array extension; extend the array
     # before we do the assignment
     x <- x[seq_len(max(i, na.rm = TRUE))]
@@ -313,51 +370,64 @@ draws_of <- function(x) {
 #' @rdname draws_of
 #' @export
 `draws_of<-` <- function(x, value) {
-  attr(x, "draws") <- value
-  x
+  # TODO: fix stopgap or at least make attrs stay
+  new_rvar(value)
+  # attr(x, "draws") <- value
+  # x
 }
 
 
 # vctrs stuff -------------------------------------------------------------
 
-#' @importFrom vctrs vec_proxy
-#' @importFrom rray rray_split
-#' @export
-vec_proxy.rvar <- function(x, ...) {
-  .draws <- draws_of(x)
+# #' @importFrom vctrs vec_proxy
+# #' @importFrom rray rray_split
+# #' @export
+# vec_proxy.rvar <- function(x, ...) {
+#   draws_of(x)
+# }
+#
+# vec_restore.rvar <- function(x, ...) {
+#   new_rvar(x)
+# }
 
-  if (is.null(.draws)) {
-    list()
-  } else {
-    # decompose into a list of lists by the first index
-    rray_split(.draws, 1)
-  }
-}
-
-
-#' @importFrom vctrs vec_restore
-#' @importFrom rray rray_rbind
-#' @export
-vec_restore.rvar <- function(x, ...) {
-  if (length(x) > 0) {
-    # need to handle the case of creating NAs from NULL entries so that
-    # vec_init() works properly: vec_init requires vec_slice(x, NA_integer_)
-    # to give you back NA values, but this breaks because we use lists as proxies.
-    # When using a list as a proxy, a proxy entry in `x` that is equal to NULL
-    # actually corresponds to an NA value due to the way that list indexing
-    # works: when you do something like list()[c(NA_integer_,NA_integer_)]
-    # you get back list(NULL, NULL), but when you do something like
-    # double()[c(NA_integer_,NA_integer_)] you get back c(NA, NA).
-    # So we have to make the NULL values be NA values to mimic vector indexing.
-
-    # N.B. could potentially do this with vec_cast as well (as long as the first
-    # dimension is the slicing index)
-    x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
-
-  }
-  x_array <- do.call(rray_rbind, x)
-  new_rvar(x_array)
-}
+# #' @importFrom vctrs vec_proxy
+# #' @importFrom rray rray_split
+# #' @export
+# vec_proxy.rvar <- function(x, ...) {
+#   .draws <- draws_of(x)
+#
+#   if (is.null(.draws)) {
+#     list()
+#   } else {
+#     # decompose into a list of lists by the first index
+#     rray_split(.draws, 1)
+#   }
+# }
+#
+#
+# #' @importFrom vctrs vec_restore
+# #' @importFrom rray rray_rbind
+# #' @export
+# vec_restore.rvar <- function(x, ...) {
+#   if (length(x) > 0) {
+#     # need to handle the case of creating NAs from NULL entries so that
+#     # vec_init() works properly: vec_init requires vec_slice(x, NA_integer_)
+#     # to give you back NA values, but this breaks because we use lists as proxies.
+#     # When using a list as a proxy, a proxy entry in `x` that is equal to NULL
+#     # actually corresponds to an NA value due to the way that list indexing
+#     # works: when you do something like list()[c(NA_integer_,NA_integer_)]
+#     # you get back list(NULL, NULL), but when you do something like
+#     # double()[c(NA_integer_,NA_integer_)] you get back c(NA, NA).
+#     # So we have to make the NULL values be NA values to mimic vector indexing.
+#
+#     # N.B. could potentially do this with vec_cast as well (as long as the first
+#     # dimension is the slicing index)
+#     x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
+#
+#   }
+#   x_array <- do.call(rray_rbind, x)
+#   new_rvar(x_array)
+# }
 
 
 
@@ -507,9 +577,9 @@ check_rvar_ndraws_both <- function(x, y) {
 # Check that the first rvar can be conformed to the dimensions of the second,
 # ignoring 1s
 check_rvar_dims_first <- function(x, y) {
-  x_dim <- dim(x) %||% length(x)
+  x_dim <- diml(x)
   x_dim_dropped <- as.integer(x_dim[x_dim != 1])
-  y_dim <- dim(y) %||% length(y)
+  y_dim <- diml(y)
   y_dim_dropped <- as.integer(y_dim[y_dim != 1])
 
   if (length(x_dim_dropped) == 0) {
@@ -549,4 +619,24 @@ drop_ <- function(x) {
   }
 
   x
+}
+
+# apply a summary function within each draw of the rvar (dropping other dimensions)
+summarise_rvar_within_draws <- function(x, .f, ...) {
+  draws <- draws_of(x)
+  dim <- dim(draws)
+  new_rvar(apply(draws, length(dim), .f, ...))
+}
+
+# apply vectorized function to an rvar's draws
+rvar_apply_vec_fun <- function(.f, x, ...) {
+  draws_of(x) <- .f(draws_of(x), ...)
+  x
+}
+
+# apply a summary function across draws of the rvar (i.e., by each element)
+summarise_rvar_by_element <- function(x, .f, ...) {
+  draws <- draws_of(x)
+  dim <- dim(draws)
+  apply(draws, seq_len(length(dim) - 1), .f, ...)
 }

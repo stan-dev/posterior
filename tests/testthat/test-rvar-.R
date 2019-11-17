@@ -1,3 +1,5 @@
+# indexing ----------------------------------------------------------------
+
 test_that("indexing with [[ works on a vector", {
   x_array <- array(1:20, dim = c(4,5), dimnames = list(A = paste0("a", 1:4), NULL))
   x = new_rvar(x_array)
@@ -57,11 +59,26 @@ test_that("indexing with [ works on a vector", {
   expect_error(x[1,1])
 })
 
+
+# unique, duplicated, etc -------------------------------------------------
+
+test_that("unique.rvar and duplicated.rvar work", {
+  x <- rvar(matrix(c(1,2,1, 1,2,1, 3,3,3), nrow = 3))
+  unique_x <- rvar(matrix(c(1,2, 1,2, 3,3), nrow = 2))
+
+  expect_equal(unique(x), unique_x)
+  expect_equal(as.vector(duplicated(x)), c(FALSE, FALSE, TRUE))
+  expect_equal(anyDuplicated(x), 3)
+})
+
+
+# tibbles -----------------------------------------------------------------
+
 test_that("rvars work in tibbles", {
   skip_if_not_installed("dplyr")
   skip_if_not_installed("tidyr")
 
-  x_array = array(1:20, dim = c(4,5), dimnames = list(A = paste0("a", 1:4), NULL))
+  x_array = array(1:20, dim = c(4,5))
   x = new_rvar(x_array)
   df = tibble::tibble(x, y = x + 1)
 
@@ -70,16 +87,20 @@ test_that("rvars work in tibbles", {
   expect_identical(dplyr::mutate(df, z = x)$z, x)
 
   # TODO: fix
-  # expect_equal(dplyr::mutate(df, z = x * 2)$z, new_rvar(x_array * 2))
+  expect_equal(dplyr::mutate(df, z = x * 2)$z, new_rvar(x_array * 2))
+  # expect_equal(
+  #   dplyr::mutate(dplyr::group_by(df, 1:4), z = x * 2)$z,
+  #   new_rvar(x_array * 2)
+  # )
 
   df = tibble::tibble(x, g = letters[1:4])
   ref = tibble::tibble(
-    a = new_rvar(x_array["a1",, drop = FALSE]),
-    b = new_rvar(x_array["a2",, drop = FALSE]),
-    c = new_rvar(x_array["a3",, drop = FALSE]),
-    d = new_rvar(x_array["a4",, drop = FALSE])
+    a = new_rvar(x_array[1,, drop = FALSE]),
+    b = new_rvar(x_array[2,, drop = FALSE]),
+    c = new_rvar(x_array[3,, drop = FALSE]),
+    d = new_rvar(x_array[4,, drop = FALSE])
   )
-  expect_identical(tidyr::pivot_wider(df, names_from = g, values_from = x), ref)
+  expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref)
 
   # TODO: fix (will crash R)
   # df$y = df$x + 1

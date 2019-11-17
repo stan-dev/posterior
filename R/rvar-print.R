@@ -17,7 +17,8 @@
 #'
 #' @export
 print.rvar <- function(x, ...) {
-  cat0(rvar_type_abbr(x), ":\n")
+  # \u00b1 = plus/minus sign
+  cat0(rvar_type_abbr(x), " ", pillar::style_subtle("mean\u00b1sd:"), "\n")
   print(format(x, color = FALSE), quote = FALSE)
   invisible(x)
 }
