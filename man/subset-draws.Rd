@@ -9,17 +9,45 @@
 \alias{subset.draws_list}
 \title{Subset \code{draws} objects}
 \usage{
-\method{subset}{draws_matrix}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, regex = FALSE, ...)
+\method{subset}{draws_matrix}(
+  x,
+  variable = NULL,
+  iteration = NULL,
+  chain = NULL,
+  draw = NULL,
+  regex = FALSE,
+  ...
+)
 
-\method{subset}{draws_array}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, regex = FALSE, ...)
+\method{subset}{draws_array}(
+  x,
+  variable = NULL,
+  iteration = NULL,
+  chain = NULL,
+  draw = NULL,
+  regex = FALSE,
+  ...
+)
 
-\method{subset}{draws_df}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, regex = FALSE, ...)
+\method{subset}{draws_df}(
+  x,
+  variable = NULL,
+  iteration = NULL,
+  chain = NULL,
+  draw = NULL,
+  regex = FALSE,
+  ...
+)
 
-\method{subset}{draws_list}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, regex = FALSE, ...)
+\method{subset}{draws_list}(
+  x,
+  variable = NULL,
+  iteration = NULL,
+  chain = NULL,
+  draw = NULL,
+  regex = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{An \R object for which the methods are defined.}

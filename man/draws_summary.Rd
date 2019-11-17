@@ -15,8 +15,7 @@ summarise_draws(x, ...)
 
 summarize_draws(x, ...)
 
-\method{summarise_draws}{draws}(x, measures = NULL, ...,
-  probs = c(0.05, 0.95))
+\method{summarise_draws}{draws}(x, measures = NULL, ..., probs = c(0.05, 0.95))
 
 \method{summary}{draws}(object, ...)
 
@@ -32,7 +31,7 @@ default_mcse_measures()
 \item{...}{Optionally, arguments to pass to specific methods.}
 
 \item{measures}{A character vector containing the names of summary stats or
-diagnostics to include. The convenience functions with names \code{default_*}
+diagnostics to include. The convenience functions with names \verb{default_*}
 return character vectors with the names of the measures included by
 default.}
 
