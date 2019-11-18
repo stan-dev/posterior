@@ -48,6 +48,7 @@ Pr <- function(x, na.rm = FALSE) {
 
 # Ops: math operators ---------------------------------------------------
 
+#' @importFrom vctrs stop_incompatible_op
 #' @export
 Ops.rvar <- function(e1, e2) {
   e1 <- as_rvar(e1)

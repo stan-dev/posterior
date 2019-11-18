@@ -42,7 +42,7 @@ test_that("indexing with [ works on a vector", {
   expect_identical(x[c(TRUE,FALSE,TRUE)], new_rvar(x_array[c(TRUE,FALSE,TRUE),, drop = FALSE]))
   expect_identical(x[c(TRUE,FALSE,FALSE,TRUE)], new_rvar(x_array[c(TRUE,FALSE,FALSE,TRUE),, drop = FALSE]))
 
-  # dropping should preserve names
+  # dropping should preserve names (hence the drop = FALSE on x_array for this test)
   expect_identical(x["a1", drop = TRUE], new_rvar(x_array["a1",, drop = FALSE]))
   expect_identical(x[1:2, drop = TRUE], new_rvar(x_array[1:2,, drop = FALSE]))
 
@@ -57,6 +57,45 @@ test_that("indexing with [ works on a vector", {
   expect_identical(x[NULL], new_rvar())
 
   expect_error(x[1,1])
+})
+
+test_that("indexing with [ works on a matrix", {
+  x_array = array(
+    1:24, dim = c(4,3,2),
+    dimnames = list(A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x = new_rvar(x_array)
+
+  expect_identical(x[], x)
+
+  expect_identical(x[2], new_rvar(x_array[2,,, drop = FALSE]))
+  expect_identical(x["a2"], new_rvar(x_array["a2",,, drop = FALSE]))
+  expect_identical(x[c(1,2)], new_rvar(x_array[c(1,2),,, drop = FALSE]))
+  expect_identical(x[,c(1,3)], new_rvar(x_array[,c(1,3),, drop = FALSE]))
+  expect_identical(x[,c("b2","b3")], new_rvar(x_array[,c("b2","b3"),, drop = FALSE]))
+
+  expect_identical(x[,c(-1,-3)], new_rvar(x_array[,c(-1,-3),, drop = FALSE]))
+
+  expect_identical(x[TRUE], new_rvar(x_array[TRUE,,, drop = FALSE]))
+  expect_identical(x[c(TRUE,FALSE)], new_rvar(x_array[c(TRUE,FALSE),,, drop = FALSE]))
+  expect_identical(x[c(TRUE,FALSE,TRUE)], new_rvar(x_array[c(TRUE,FALSE,TRUE),,, drop = FALSE]))
+  expect_identical(x[c(TRUE,FALSE,FALSE,TRUE)], new_rvar(x_array[c(TRUE,FALSE,FALSE,TRUE),,, drop = FALSE]))
+
+  # dropping works
+  expect_identical(x["a1", drop = TRUE], new_rvar(drop(x_array["a1",,, drop = TRUE])))
+  expect_identical(x[1:2, drop = TRUE], new_rvar(x_array[1:2,,, drop = TRUE]))
+
+  # indexing beyond the end of the array should result in NAs, to mimic normal vector indexing
+  expect_identical(x[c(4,5)], new_rvar(x_array[c(4,NA_integer_),,, drop = FALSE]))
+  expect_identical(x[c(8,9)], new_rvar(x_array[c(NA_integer_,NA_integer_),,, drop = FALSE]))
+
+  expect_identical(x[NA], new_rvar(x_array[NA,,, drop = FALSE]))
+  expect_identical(x[NA_integer_], new_rvar(x_array[NA_integer_,,, drop = FALSE]))
+  expect_identical(x[rep(NA_integer_,7)], new_rvar(x_array[rep(NA_integer_,7),,, drop = FALSE]))
+
+  expect_identical(x[NULL], new_rvar())
+
+  expect_error(x[1,1,1])
 })
 
 

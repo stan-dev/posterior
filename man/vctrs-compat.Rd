@@ -50,15 +50,13 @@
 \method{vec_cast.rvar}{logical}(x, to, ...)
 }
 \arguments{
-\item{x, y, .x}{Vectors}
+\item{x, y}{Vectors}
 
 \item{...}{Further arguments passed to other functions}
 
 \item{x_arg, y_arg}{Argument names for \code{x} and \code{y}}
 
 \item{to}{Type to cast to}
-
-\item{op, .fn}{An operator as a string}
 }
 \description{
 These functions implement compatibility with \link{vctrs-package} for \link{rvar}s.

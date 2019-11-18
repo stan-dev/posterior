@@ -4,11 +4,14 @@
 \alias{rdo}
 \title{Execute expressions of random variables}
 \usage{
-rdo(expr, ndraws = NULL)
+rdo(expr, dim = NULL, ndraws = NULL)
 }
 \arguments{
 \item{expr}{A bare expression that can (optionally) contain \link{rvar}s. The expression
 supports \link{quasiquotation}.}
+
+\item{dim}{Override for the dimensions of the \link{rvar} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
+or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
 
 \item{ndraws}{When no \link{rvar}s are supplied in \code{expr}, this is the number
 of draws that will be used to construct new random variables. If \code{NULL},

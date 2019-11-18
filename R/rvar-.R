@@ -4,11 +4,19 @@
 #'
 #' @name rvar
 #'
-#' @param x A vector or array where the last dimension is draws from a distribution
+#' @param x A vector or array where the last dimension is draws from
+#' a distribution. The resulting [rvar] will have dimension `dim(x)[-length(dim(x))]`; that is,
+#' everything up to the last dimension is used for the shape of the variable, and the
+#' last dimension is used to index draws from the distribution.
+#' @template args-rvar-dim
 #'
 #' @details The `"rvar"` class represents random variables as arrays of arbitrary
 #' dimension, where the last dimension is used to index draws from the distribution.
-#'
+#
+#' `new_rvar()` is a low-level constructor; generally speaking you should use `rvar()`
+#' in most code. To convert other objects to `rvar`s or to easily create constants,
+#' use [as_rvar()].
+#
 #' Most mathmetical operators and functions are supported, including efficient matrix
 #' multiplication and vector and array-style indexing. The intent is that an `rvar`
 #' works as closely as possible to how a base vector/matrix/array does.
@@ -23,6 +31,8 @@
 #' are not sufficiently performant for your use case), you can also operate directly
 #' on the underlying array using the [draws_of()] function.
 #'
+#' @seealso [as_rvar()] to convert objects to `rvar`s.
+#'
 #' @return An object of class `"rvar"` representing a random variable.
 #'
 NULL
@@ -35,28 +45,23 @@ new_rvar <- function(x = double()) {
     x <- double()
   }
   x <- as.array(x)
-  .dim <- dim(x)
 
   # ensure dimnames is set (makes comparison easier for tests)
   if (is.null(dimnames(x))) {
     dimnames(x) <- list(NULL)
   }
 
+  .dim <- dim(x)
   if (length(x) == 0) {
     if (is.null(.dim)) {
       dim(x) <- c(0, 0)
-      dim_1_length <- 0
     } else {
       dim(x) <- c(.dim, 0)
-      dim_1_length <- .dim[[1]]
     }
   }
-  else if (is.null(dim(x)) || length(dim(x)) == 1) {
+  else if (is.null(.dim) || length(.dim) == 1) {
     # 1d vectors get treated as a single variable
     dim(x) <- c(1, length(x))
-    dim_1_length <- 1
-  } else {
-    dim_1_length <- dim(x)[[1]]
   }
 
   # setting the S4 flag on the object allows us to dispatch matrix
@@ -64,19 +69,33 @@ new_rvar <- function(x = double()) {
   # it will not dispatch to S3 objects even if they have an S4 class
   # defined through setOldClass, they *must* also have isS4() return
   # TRUE, hence the need to set that flag here.
-  asS4(structure(rep.int(NA, dim_1_length), draws = x, class = c("rvar")))
+  asS4(structure(rep.int(NA, NROW(x)), draws = x, class = c("rvar")))
 }
 
 #' @rdname rvar
 #' @export
-rvar <- function(x = double()) {
-  new_rvar(x)
+rvar <- function(x = double(), dim = NULL) {
+  x <- new_rvar(x)
+
+  if (!is.null(dim)) {
+    dim(x) <- dim
+  }
+  x
 }
 
 #' @importFrom methods setOldClass
 setOldClass(c("rvar"))
 
-#' @rdname rvar
+#' Is `x` a random variables?
+#'
+#' Test if `x` is an [rvar].
+#'
+#' @param x An object
+#'
+#' @seealso [as_rvar()] to convert objects to `rvar`s.
+#'
+#' @return `TRUE` if `x` is an [rvar], `FALSE` otherwise.
+#'
 #' @export
 is_rvar <- function(x) {
   inherits(x, "rvar")
@@ -193,26 +212,26 @@ rep_len.rvar <- function(x, length.out) {
 }
 
 #' @export
-unique.rvar <- function(x, MARGIN = 1, ...) {
+unique.rvar <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
   check_rvar_margin(x, MARGIN)
-  draws_of(x) <- unique(draws_of(x), MARGIN = MARGIN, ...)
+  draws_of(x) <- unique(draws_of(x), incomparables = incomparables, MARGIN = MARGIN, ...)
   x
 }
 
 #' @export
-duplicated.rvar <- function(x, MARGIN = 1, ...) {
+duplicated.rvar <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
   check_rvar_margin(x, MARGIN)
-  duplicated(draws_of(x), MARGIN = MARGIN, ...)
+  duplicated(draws_of(x), incomparables = incomparables, MARGIN = MARGIN, ...)
 }
 
 #' @export
-anyDuplicated.rvar <- function(x, MARGIN = 1, ...) {
+anyDuplicated.rvar <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
   check_rvar_margin(x, MARGIN)
-  anyDuplicated(draws_of(x), MARGIN = MARGIN, ...)
+  anyDuplicated(draws_of(x), incomparables = incomparables, MARGIN = MARGIN, ...)
 }
 
 check_rvar_margin <- function(x, MARGIN) {
-  if (!between(MARGIN, 1, length(diml(x)))) {
+  if (!(1 <= MARGIN && MARGIN <= length(diml(x)))) {
     stop2("MARGIN = ", MARGIN, " is invalid for dim = ", paste0(diml(x), collapse = ","))
   }
 }
@@ -240,6 +259,7 @@ all.equal.rvar <- function(target, current, ...) {
   if (is.null(result)) TRUE else result
 }
 
+#' @export
 as.vector.rvar <- function(x, mode = "any") {
   x
 }
@@ -610,7 +630,7 @@ broadcast_draws <- function(x, .ndraws) {
 drop_ <- function(x) {
   .diml <- diml(x)
 
-  if (isFALSE(all.equal(.diml, 1))) {
+  if (!isTRUE(all.equal(.diml, 1))) {
     # with exactly 1 element left we don't want to drop anything
     # (otherwise names get lost), so only do this with > 1 element
     .dimnames <- dimnames(x)

@@ -7,6 +7,7 @@
 #' @param ndraws When no [rvar]s are supplied in `expr`, this is the number
 #' of draws that will be used to construct new random variables. If `NULL`,
 #' getOption("rvar.ndraws") is used (default 4000).
+#' @template args-rvar-dim
 #'
 #' @details This function evaluates `expr` possibly multiple times, once for each draw of
 #' the [rvar]s it contains, then returns a new [rvar] representing the output of those
@@ -32,7 +33,7 @@
 #'
 #' @importFrom rlang eval_tidy quo_get_env enquo missing_arg quo_get_expr
 #' @export
-rdo <- function(expr, ndraws = NULL) {
+rdo <- function(expr, dim = NULL, ndraws = NULL) {
   ndraws <- ndraws %||% getOption("rvar.ndraws", 4000)
 
   # basic idea here is to find all the variables that are used in the expression
@@ -54,5 +55,10 @@ rdo <- function(expr, ndraws = NULL) {
 
   f_alist <- append(f_alist, quo_get_expr(f_expr))
   f <- rfun(as.function(f_alist, envir = f_env), ndraws = ndraws)
-  do.call(f, rvars_in_expr, envir = f_env)
+  result <- do.call(f, rvars_in_expr, envir = f_env)
+
+  if (!is.null(dim)) {
+    dim(result) <- dim
+  }
+  result
 }

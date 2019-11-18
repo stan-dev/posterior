@@ -1,3 +1,35 @@
+#' Coerce to a random variable
+#'
+#' Convert `x` to an [rvar] object.
+#'
+#' @param x An object that can be converted to an [rvar], such as a vector or array
+#' (or an [rvar] itself).
+#' @template args-rvar-dim
+#'
+#' @details For objects that are already [rvar]s, returns them (with modified dimensions)
+#' if `dim` is not `NULL`).
+#'
+#' For numeric or logical vectors or arrays, returns an [rvar] with a single draw and
+#' the same dimensions as `x`. This is in contrast to the [rvar()] constructor, which
+#' treats the last dimension of `x` as the draws dimension. As a result, `as_rvar()`
+#' is very useful for creating constants.
+#'
+#' @seealso [rvar()] to construct [rvar]s directly.
+#'
+#' @return An object of class `"rvar"` representing a random variable.
+#'
+as_rvar <- function(x, dim = NULL) {
+  x <-
+    if (is_rvar(x)) x
+  else vec_cast(x, new_rvar())
+
+  if (!is.null(dim)) {
+    dim(x) <- dim
+  }
+
+  x
+}
+
 
 # double-dispatch boilerplate ---------------------------------------------
 # the extra roxygen @method and @export bits in here are necessary for
@@ -9,8 +41,7 @@
 #'
 #' @name vctrs-compat
 #'
-#' @param op,.fn An operator as a string
-#' @param x,y,.x Vectors
+#' @param x,y Vectors
 #' @param to Type to cast to
 #' @param ... Further arguments passed to other functions
 #' @param x_arg,y_arg Argument names for `x` and `y`
@@ -44,13 +75,6 @@ vec_cast.rvar <- function(x, to, ...) UseMethod("vec_cast.rvar")
 #' @method vec_cast.rvar default
 #' @export
 vec_cast.rvar.default <- function(x, to, ...) vec_default_cast(x, to)
-
-#' @rdname rvar
-#' @export
-as_rvar <- function(x) {
-  if (is_rvar(x)) x
-  else vec_cast(x, new_rvar())
-}
 
 
 # identity cast -----------------------------------------------------------
