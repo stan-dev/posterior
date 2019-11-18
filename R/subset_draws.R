@@ -2,8 +2,6 @@
 #'
 #' Subset [`draws`] objects by variables, iterations, chains, and draws indices.
 #'
-#' @name subset-draws
-#' @aliases subset.draws
 #' @template args-methods-x
 #' @param variable Character vector of variable names to be selected.
 #' @param iteration Numeric vector of iteration indices to be selected.
@@ -22,16 +20,20 @@
 #'
 #' @examples
 #' x <- example_draws()
-#' subset(x, variable = c("mu", "tau"))
-#' subset(x, chain = 2)
-#' subset(x, iteration = 5:10, chain = 3:4)
+#' subset_draws(x, variable = c("mu", "tau"))
+#' subset_draws(x, chain = 2)
+#' subset_draws(x, iteration = 5:10, chain = 3:4)
 #'
-NULL
-
-#' @rdname subset-draws
 #' @export
-subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
-                                chain = NULL, draw = NULL, regex = FALSE, ...) {
+subset_draws <- function(x, ...) {
+  UseMethod("subset_draws")
+}
+
+#' @rdname subset_draws
+#' @export
+subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
+                                      chain = NULL, draw = NULL, regex = FALSE,
+                                      ...) {
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x)
@@ -50,10 +52,11 @@ subset.draws_matrix <- function(x, variable = NULL, iteration = NULL,
   x
 }
 
-#' @rdname subset-draws
+#' @rdname subset_draws
 #' @export
-subset.draws_array <- function(x, variable = NULL, iteration = NULL,
-                               chain = NULL, draw = NULL, regex = FALSE, ...) {
+subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
+                                     chain = NULL, draw = NULL, regex = FALSE,
+                                     ...) {
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x)
@@ -66,10 +69,11 @@ subset.draws_array <- function(x, variable = NULL, iteration = NULL,
   x
 }
 
-#' @rdname subset-draws
+#' @rdname subset_draws
 #' @export
-subset.draws_df <- function(x, variable = NULL, iteration = NULL,
-                            chain = NULL, draw = NULL, regex = FALSE, ...) {
+subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
+                                  chain = NULL, draw = NULL, regex = FALSE,
+                                  ...) {
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x)
@@ -106,10 +110,11 @@ subset.draws_df <- function(x, variable = NULL, iteration = NULL,
   x
 }
 
-#' @rdname subset-draws
+#' @rdname subset_draws
 #' @export
-subset.draws_list <- function(x, variable = NULL, iteration = NULL,
-                              chain = NULL, draw = NULL, regex = FALSE, ...) {
+subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
+                                    chain = NULL, draw = NULL, regex = FALSE,
+                                    ...) {
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x)
@@ -134,6 +139,11 @@ subset.draws_list <- function(x, variable = NULL, iteration = NULL,
   }
   x <- repair_draws(x, order = FALSE)
   x
+}
+#' @rdname subset_draws
+#' @export
+subset.draws <- function(x, ...) {
+  subset_draws(x, ...)
 }
 
 #' subset specified non-NULL dimensions
