@@ -456,11 +456,14 @@ fold_draws <- function(x) {
 #' @export
 .rhat <- function(x) {
   x <- as.matrix(x)
+  if (anyNA(x)) {
+    return(NA)
+  }
   if (any(!is.finite(x))) {
     return(NaN)
   }
-  else if (is_constant(x)) {
-    return(1)
+  if (is_constant(x)) {
+    return(NA)
   }
   nchains <- NCOL(x)
   niterations <- NROW(x)
@@ -484,11 +487,14 @@ fold_draws <- function(x) {
   x <- as.matrix(x)
   nchains <- NCOL(x)
   niterations <- NROW(x)
-  if (any(!is.finite(x)) || niterations < 3L) {
+  if (niterations < 3L || anyNA(x)) {
+    return(NA)
+  }
+  if (any(!is.finite(x))) {
     return(NaN)
   }
-  else if (is_constant(x)) {
-    return(nchains * niterations)
+  if (is_constant(x)) {
+    return(NA)
   }
   acov_fun <- function(i) autocovariance(x[, i])
   acov <- lapply(seq_len(nchains), acov_fun)
