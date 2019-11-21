@@ -364,6 +364,7 @@ autocorrelation <- function(x) {
 z_scale <- function(x) {
   r <- rank(as.array(x), ties.method = 'average')
   z <- qnorm(backtransform_ranks(r))
+  z[is.na(x)] <- NA
   if (!is.null(dim(x))) {
     # output should have the input dimension
     z <- array(z, dim = dim(x), dimnames = dimnames(x))
@@ -387,6 +388,7 @@ z_scale <- function(x) {
 u_scale <- function(x) {
   r <- rank(as.array(x), ties.method = 'average')
   u <- backtransform_ranks(r)
+  u[is.na(x)] <- NA
   if (!is.null(dim(x))) {
     # output should have the input dimension
     u <- array(u, dim = dim(x), dimnames = dimnames(x))
@@ -408,6 +410,7 @@ u_scale <- function(x) {
 #' @export
 r_scale <- function(x) {
   r <- rank(as.array(x), ties.method = 'average')
+  r[is.na(x)] <- NA
   if (!is.null(dim(x))) {
     # output should have the input dimension
     r <- array(r, dim = dim(x), dimnames = dimnames(x))

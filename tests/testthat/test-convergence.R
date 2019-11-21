@@ -70,3 +70,18 @@ test_that("convergence diagnostics accept vectors as input", {
   expect_true(mcse > 0.02 & mcse < 0.04)
 })
 
+test_that("convergence diagnostics handle special cases correctly", {
+  set.seed(1234)
+
+  x <- c(rnorm(10), NA)
+  expect_true(is.na(rhat_basic(x)))
+  expect_true(is.na(ess_basic(x)))
+
+  x <- c(rnorm(10), Inf)
+  expect_true(is.na(rhat_basic(x)))
+  expect_true(is.na(ess_basic(x)))
+
+  x <- rep(1, 10)
+  expect_true(is.na(rhat_basic(x)))
+  expect_true(is.na(ess_basic(x)))
+})
