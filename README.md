@@ -41,12 +41,12 @@ remotes::install_github("jgabry/posterior")
 
 ``` r
 library("posterior")
-#> This is posterior version 0.0.0.9000
+#> This is posterior version 0.0.1
 ```
 
 To demonstrate how to work with the **posterior** package, we will use
 example posterior draws obtained from the eight schools hierarchical
-meta-analysis model described in Gelman et al. (2013). Essentially, we
+meta-analysis model described in Gelman et al. (2013). Essentially, we
 have an estimate per school (`theta[1]` through `theta[8]`) as well as
 an overall mean (`mu`) and standard deviation across schools (`tau`).
 
@@ -99,7 +99,7 @@ print(eight_schools_df)
 #>  8      1          8     8  1.63  4.42       8.41        4.09      -6.82    -0.0910
 #>  9      1          9     9  8.51  1.13       7.97        8.70      12.1      9.24  
 #> 10      1         10    10  6.41  1.35       5.72        4.34       4.39     6.46  
-#> # … with 390 more rows, and 4 more variables: `theta[5]` <dbl>, `theta[6]` <dbl>,
+#> # ... with 390 more rows, and 4 more variables: `theta[5]` <dbl>, `theta[6]` <dbl>,
 #> #   `theta[7]` <dbl>, `theta[8]` <dbl>
 ```
 
@@ -201,20 +201,20 @@ x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
 str(x)
-#>  'draws_matrix' num [1:10, 1:5] -2.769 -0.312 -0.119 -0.231 1.34 ...
+#>  'draws_matrix' num [1:10, 1:5] -0.0544 0.729 0.5425 -0.1981 0.5282 ...
 #>  - attr(*, "dimnames")=List of 2
 #>   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
 #>   ..$ variable: chr [1:5] "V1" "V2" "V3" "V4" ...
 
 summarise_draws(x, c("mean", "sd", "median", "mad"))
 #> # A tibble: 5 x 5
-#>   variable    mean    sd  median   mad
-#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
-#> 1 V1       -0.199  1.09  -0.122  0.592
-#> 2 V2       -0.152  1.03  -0.390  0.690
-#> 3 V3        0.0621 0.720 -0.0492 0.797
-#> 4 V4       -0.497  1.30  -0.247  0.298
-#> 5 V5       -0.384  0.659 -0.265  0.632
+#>   variable    mean    sd   median   mad
+#>   <chr>      <dbl> <dbl>    <dbl> <dbl>
+#> 1 V1        0.384  0.471  0.471   0.442
+#> 2 V2        0.0682 0.654  0.00765 0.675
+#> 3 V3        0.171  1.06   0.141   1.05 
+#> 4 V4       -0.117  1.18  -0.00950 1.06 
+#> 5 V5        0.315  0.527  0.399   0.573
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
