@@ -27,4 +27,4 @@ LazyData: true
 URL: https://github.com/jgabry/posterior
 BugReports: https://github.com/jgabry/posterior/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.0.0
+RoxygenNote: 7.0.2
