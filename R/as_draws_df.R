@@ -85,7 +85,7 @@ as_draws_df.draws_array <- function(x, ...) {
     out[[i]] <- tibble::as_tibble(out[[i]])
     out[[i]]$.chain <- chain_ids[i]
     out[[i]]$.iteration <- iteration_ids
-    out[[i]]$.draw <- compute_draw_ids(iteration_ids, chain_ids[i])
+    out[[i]]$.draw <- compute_draw_ids(chain_ids[i], iteration_ids)
   }
   out <- do_call(rbind, out)
   out <- move_to_start(out, meta_columns())
@@ -103,7 +103,7 @@ as_draws_df.draws_list <- function(x, ...) {
     out[[i]] <- tibble::as_tibble(x[[i]])
     out[[i]]$.chain <- chain_ids[i]
     out[[i]]$.iteration <- iteration_ids
-    out[[i]]$.draw <- compute_draw_ids(iteration_ids, chain_ids[i])
+    out[[i]]$.draw <- compute_draw_ids(chain_ids[i], iteration_ids)
   }
   out <- do_call(rbind, out)
   out <- move_to_start(out, meta_columns())
@@ -174,7 +174,7 @@ as_draws_df.mcmc.list <- function(x, ...) {
     x$.chain <- repair_chain_ids(x$.chain)
     x$.iteration <- repair_iteration_ids(x$.iteration, x$.chain)
   }
-  x$.draw <- compute_draw_ids(x$.iteration, x$.chain)
+  x$.draw <- compute_draw_ids(x$.chain, x$.iteration)
   x <- move_to_start(x, meta_columns())
   class(x) <- class_draws_df()
   x

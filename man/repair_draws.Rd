@@ -22,7 +22,7 @@ repair_draws(x, order = TRUE, ...)
 \item{x}{An \R object for which the methods are defined.}
 
 \item{order}{Logical; Indicates if draws should be ordered (via
-\verb{\link{order_draws}}) before reparing indices. Defaults to \code{TRUE}.}
+\code{\link{order_draws}}) before reparing indices. Defaults to \code{TRUE}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
