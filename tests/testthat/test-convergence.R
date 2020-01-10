@@ -27,7 +27,7 @@ test_that("ess diagnostics return reasonable values", {
   expect_true(ess > 280 & ess < 320)
 
   ess <- ess_quantile(tau, probs = c(0.1, 0.9))
-  expect_equal(names(ess), c("q10", "q90"))
+  expect_equal(names(ess), c("ess_q10", "ess_q90"))
   expect_true(all(ess > 280 & ess < 350))
 
   ess <- ess_median(tau)
@@ -44,7 +44,7 @@ test_that("mcse diagnostics return reasonable values", {
   expect_true(mcse > 0.1 & mcse < 0.2)
 
   mcse <- mcse_quantile(tau, probs = c(0.1, 0.9))
-  expect_equal(names(mcse), c("q10", "q90"))
+  expect_equal(names(mcse), c("mcse_q10", "mcse_q90"))
   expect_true(mcse[1] > 0.05 & mcse[1] < 0.12)
   # due to right skewness of tau the 90%ile is way more uncertain
   expect_true(mcse[2] > 0.8 & mcse[2] < 1)
