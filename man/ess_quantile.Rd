@@ -5,7 +5,7 @@
 \alias{ess_median}
 \title{Effective sample sizes for quantiles}
 \usage{
-ess_quantile(x, probs, names = TRUE)
+ess_quantile(x, probs = c(0.05, 0.95), names = TRUE)
 
 ess_median(x)
 }

@@ -136,7 +136,7 @@ ess_tail <- function(x) {
 #' ess_quantile(mu, probs = c(0.1, 0.9))
 #'
 #' @export
-ess_quantile <- function(x, probs, names = TRUE) {
+ess_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
   probs <- as.numeric(probs)
   if (any(probs < 0 | probs > 1)) {
     stop2("'probs' must contain values between 0 and 1.")
@@ -144,7 +144,7 @@ ess_quantile <- function(x, probs, names = TRUE) {
   names <- as_one_logical(names)
   out <- ulapply(probs, .ess_quantile, x = x)
   if (names) {
-    names(out) <- paste0("q", probs * 100)
+    names(out) <- paste0("ess_q", probs * 100)
   }
   out
 }
@@ -216,7 +216,7 @@ ess_sd <- function(x) {
 #' mcse_quantile(mu, probs = c(0.1, 0.9))
 #'
 #' @export
-mcse_quantile <- function(x, probs, names = TRUE) {
+mcse_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
   probs <- as.numeric(probs)
   if (any(probs < 0 | probs > 1)) {
     stop2("'probs' must contain values between 0 and 1.")
@@ -224,7 +224,7 @@ mcse_quantile <- function(x, probs, names = TRUE) {
   names <- as_one_logical(names)
   out <- ulapply(probs, .mcse_quantile, x = x)
   if (names) {
-    names(out) <- paste0("q", probs * 100)
+    names(out) <- paste0("mcse_q", probs * 100)
   }
   out
 }
@@ -288,7 +288,30 @@ mcse_sd <- function(x) {
   sd(x) * sqrt(exp(1) * (1 - 1 / ess_sd)^(ess_sd - 1) - 1)
 }
 
-
+#' Compute Quantiles
+#'
+#' Compute quantiles of a sample and return them in a format consistent
+#' with other summary functions of the \pkg{posterior} package.
+#'
+#' @template args-conv
+#' @template args-conv-quantile
+#' @param ... Further arguments passed to [quantile()].
+#'
+#' @examples
+#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' quantile2(mu)
+#'
+#' @export
+quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
+  names <- as_one_logical(names)
+  out <- quantile(x, probs = probs, ...)
+  if (names) {
+    names(out) <- paste0("q", probs * 100)
+  } else {
+    names(out) <- NULL
+  }
+  out
+}
 
 # internal ----------------------------------------------------------------
 

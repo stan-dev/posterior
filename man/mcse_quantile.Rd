@@ -5,7 +5,7 @@
 \alias{mcse_median}
 \title{Monte Carlo standard error for quantiles}
 \usage{
-mcse_quantile(x, probs, names = TRUE)
+mcse_quantile(x, probs = c(0.05, 0.95), names = TRUE)
 
 mcse_median(x)
 }

@@ -15,7 +15,7 @@ summarise_draws(x, ...)
 
 summarize_draws(x, ...)
 
-\method{summarise_draws}{draws}(x, measures = NULL, ..., probs = c(0.05, 0.95))
+\method{summarise_draws}{draws}(x, ...)
 
 \method{summary}{draws}(object, ...)
 
@@ -28,25 +28,17 @@ default_mcse_measures()
 \arguments{
 \item{x, object}{A \code{draws} object or one coercible to a \code{draws} object.}
 
-\item{...}{Optionally, arguments to pass to specific methods.}
-
-\item{measures}{A character vector containing the names of summary stats or
-diagnostics to include. The convenience functions with names \verb{default_*}
-return character vectors with the names of the measures included by
-default.}
-
-\item{probs}{A numeric vector of probabilities used to compute quantiles. In
-the output any columns corresponding to quantiles will have names starting
-with lowercase \code{"q"} (e.g. \code{"q95"}).}
+\item{...}{Name-value pairs of summary functions.
+The name will be the name of the variable in the result unless
+the function returns a named vector in which case the latter names
+are used. Functions can be passed in all formats supported by
+\link[rlang:as_function]{as_function()}. See the 'Examples' section below
+for examples.}
 }
 \value{
 The \code{summarise_draws()} methods return a \link[tibble:tibble]{tibble} data frame.
 The first column, \code{"variable"}, contains the variable names and the remaining
 columns contain summary statistics and diagnostics.
-
-The functions \code{default_summary_measures()}, \code{default_convergence_measures()},
-and \code{default_mcse_measures()} return character vectors of names of the
-default measures included.
 }
 \description{
 The \code{summarise_draws()} (and \code{summarize_draws()}) methods provide a quick way
@@ -56,13 +48,22 @@ convert an object to a \code{draws} object if it isn't already. For convenience,
 alias for \code{summarise_draws()} if the input object is already a \code{draws}
 object.
 }
+\details{
+By default, the following summary functions are used: \code{\link[=mean]{mean()}}, \code{\link[=median]{median()}},
+\code{\link[=sd]{sd()}}, \code{\link[=mad]{mad()}}, \code{\link[=quantile2]{quantile2()}}, \code{\link[=rhat]{rhat()}}, \code{\link[=ess_bulk]{ess_bulk()}}, and \code{\link[=ess_tail]{ess_tail()}}.
+The functions \code{default_summary_measures()}, \code{default_convergence_measures()},
+and \code{default_mcse_measures()} return character vectors of names of the
+default measures included in the package.
+}
 \examples{
-x <- example_draws()
+x <- example_draws("eight_schools")
 class(x)
 str(x)
 
 summarise_draws(x)
-summarise_draws(x, "quantile", probs = c(0.1, 0.9))
-summarise_draws(x, c("mean", "median"))
+summarise_draws(x, "mean", "median")
+summarise_draws(x, default_convergence_measures())
+summarise_draws(x, mean, mcse = mcse_mean)
+summarise_draws(x, ~quantile(.x, probs = c(0.4, 0.6)))
 
 }
