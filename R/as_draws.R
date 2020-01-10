@@ -16,6 +16,20 @@
 #' @return If possible, a `draws` object in the closest supported format to `x`.
 #'   The formats are linked to in the **See Also** section below.
 #'
+#' @examples
+#' # create some random draws
+#' x <- matrix(rnorm(30), nrow = 10)
+#' colnames(x) <- c("a", "b", "c")
+#' str(x)
+#'
+#' # transform to a draws object
+#' y <- as_draws(x)
+#' str(y)
+#'
+#' # remove the draws classes from the object
+#' class(y) <- class(y)[-(1:2)]
+#' str(y)
+#'
 NULL
 
 #' @rdname draws

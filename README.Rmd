@@ -80,8 +80,10 @@ print(eight_schools_df)
 ```
 
 Different formats are preferable in different situations and hence posterior
-supports multiple formats and easy conversion between them. For more details 
-on the available formats see `help("draws")`.
+supports multiple formats and easy conversion between them. For more details on
+the available formats see `help("draws")`. All of the formats are essentially
+base R object classes and can be used as such. For example, a `draws_matrix`
+object is just a `matrix` with a little more consistency and additional methods.
 
 #### Draws summaries
 
@@ -97,16 +99,17 @@ summarise_draws(eight_schools_df)
 
 Basically, we get a data frame with one row per variable and one column per
 summary statistic or convergence diagnostic. We can choose which summaries to
-compute via the `measures` argument. For instance, if we only wanted the mean
-and its corresponding Monto Carlo Standard Error (MCSE) we would use:
+compute by passing additional arguments, either functions or names of functions.
+For instance, if we only wanted the mean and its corresponding Monte Carlo
+Standard Error (MCSE) we would use:
 
 ```{r summary-with-measures}
-summarise_draws(eight_schools_df, measures = c("mean", "mcse_mean"))
+summarise_draws(eight_schools_df, "mean", "mcse_mean")
 ```
 
-For a measure to work, there needs to be a function defined with the same name
-as the name specified in `measures` and that takes a vector or matrix of numeric
-values and returns a single numeric value or a named vector of numeric values.
+For a function to work with `summarise_draws`, it needs to take a vector or
+matrix of numeric values and returns a single numeric value or a named vector of
+numeric values.
 
 #### Subsetting draws 
 
@@ -135,7 +138,7 @@ colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
 str(x)
 
-summarise_draws(x, c("mean", "sd", "median", "mad"))
+summarise_draws(x, "mean", "sd", "median", "mad")
 ```
 
 Instead of `as_draws_matrix()` we also could have just used `as_draws()`, which

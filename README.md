@@ -105,7 +105,10 @@ print(eight_schools_df)
 
 Different formats are preferable in different situations and hence
 posterior supports multiple formats and easy conversion between them.
-For more details on the available formats see `help("draws")`.
+For more details on the available formats see `help("draws")`. All of
+the formats are essentially base R object classes and can be used as
+such. For example, a `draws_matrix` object is just a `matrix` with a
+little more consistency and additional methods.
 
 #### Draws summaries
 
@@ -135,12 +138,12 @@ summarise_draws(eight_schools_df)
 
 Basically, we get a data frame with one row per variable and one column
 per summary statistic or convergence diagnostic. We can choose which
-summaries to compute via the `measures` argument. For instance, if we
-only wanted the mean and its corresponding Monto Carlo Standard Error
-(MCSE) we would use:
+summaries to compute by passing additional arguments, either functions
+or names of functions. For instance, if we only wanted the mean and its
+corresponding Monte Carlo Standard Error (MCSE) we would use:
 
 ``` r
-summarise_draws(eight_schools_df, measures = c("mean", "mcse_mean"))
+summarise_draws(eight_schools_df, "mean", "mcse_mean")
 #> # A tibble: 10 x 3
 #>    variable  mean mcse_mean
 #>    <chr>    <dbl>     <dbl>
@@ -156,10 +159,9 @@ summarise_draws(eight_schools_df, measures = c("mean", "mcse_mean"))
 #> 10 theta[8]  5.00     0.215
 ```
 
-For a measure to work, there needs to be a function defined with the
-same name as the name specified in `measures` and that takes a vector or
-matrix of numeric values and returns a single numeric value or a named
-vector of numeric values.
+For a function to work with `summarise_draws`, it needs to take a vector
+or matrix of numeric values and returns a single numeric value or a
+named vector of numeric values.
 
 #### Subsetting draws
 
@@ -201,20 +203,20 @@ x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
 str(x)
-#>  'draws_matrix' num [1:10, 1:5] -0.0544 0.729 0.5425 -0.1981 0.5282 ...
+#>  'draws_matrix' num [1:10, 1:5] 0.174 -1.183 -0.939 -1.297 -0.686 ...
 #>  - attr(*, "dimnames")=List of 2
 #>   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
 #>   ..$ variable: chr [1:5] "V1" "V2" "V3" "V4" ...
 
-summarise_draws(x, c("mean", "sd", "median", "mad"))
+summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 x 5
-#>   variable    mean    sd   median   mad
-#>   <chr>      <dbl> <dbl>    <dbl> <dbl>
-#> 1 V1        0.384  0.471  0.471   0.442
-#> 2 V2        0.0682 0.654  0.00765 0.675
-#> 3 V3        0.171  1.06   0.141   1.05 
-#> 4 V4       -0.117  1.18  -0.00950 1.06 
-#> 5 V5        0.315  0.527  0.399   0.573
+#>   variable    mean    sd  median   mad
+#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
+#> 1 V1       -0.420  0.755 -0.707  0.790
+#> 2 V2       -0.0354 1.51  -0.0852 2.23 
+#> 3 V3       -0.591  0.852 -0.811  0.823
+#> 4 V4       -0.345  1.000 -0.259  1.28 
+#> 5 V5        0.145  0.626  0.231  0.660
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
