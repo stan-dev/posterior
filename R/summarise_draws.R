@@ -109,10 +109,14 @@ summarise_draws.draws <- function(x, ...) {
     )
   }
 
+  # it is more efficient to repair and transform objects for all variables
+  # at once instead of doing it within the loop for each variable separately
+  x <- repair_draws(x)
+  x <- as_draws_array(x)
   variables <- variables(x)
   out <- named_list(variables, values = list(named_list(names(funs))))
   for (v in variables) {
-    draws <- extract_one_variable_matrix(x, variable = v)
+    draws <- drop_dims(x[, , v], dims = 3)
     for (m in names(funs)) {
       out[[v]][[m]] <- funs[[m]](draws)
       if (rlang::is_named(out[[v]][[m]])) {
