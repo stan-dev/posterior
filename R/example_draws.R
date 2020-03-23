@@ -15,9 +15,13 @@
 #' variables are:
 #' * `mu`: Overall mean of the eight schools
 #' * `tau`: Standard deviation between schools
-#' * `theta`:  Individual means of each of the eight schools
+#' * `theta`: Individual means of each of the eight schools
 #'
-#' **sleepstudy**: A [`draws_array`] object with
+#' **multi_normal**: A [`draws_array`] object with 100 iterations from each of
+#' the 4 Markov chains obtained by fitting a 3-dimensional multivariate normal
+#' model to 100 simulated observations. The variables are:
+#' * `mu`: Mean parameter vector of length 3
+#' * `Sigma`: Covariance matrix of dimension 3 x 3
 #'
 #' @note These objects are only intended to be used in demonstrations and tests.
 #'   They contain fewer iterations and chains than recommended for performing
@@ -29,12 +33,15 @@
 #' Hall/CRC.
 #'
 #' @examples
-#' x <- example_draws()
-#' summarise_draws(x)
+#' draws_eight_schools <- example_draws("eight_schools")
+#' summarise_draws(draws_eight_schools)
+#'
+#' draws_multi_normal <- example_draws("multi_normal")
+#' summarise_draws(draws_multi_normal)
 #'
 #' @export
 example_draws <- function(example = "eight_schools") {
-  choices <- c("eight_schools")
+  choices <- c("eight_schools", "multi_normal")
   assert_choice(example, choices)
   # saved in R/sysdata.rda
   draws_name <- paste0("draws_", example)

@@ -26,10 +26,16 @@ variables are:
 \itemize{
 \item \code{mu}: Overall mean of the eight schools
 \item \code{tau}: Standard deviation between schools
-\item \code{theta}:  Individual means of each of the eight schools
+\item \code{theta}: Individual means of each of the eight schools
 }
 
-\strong{sleepstudy}: A \code{\link{draws_array}} object with
+\strong{multi_normal}: A \code{\link{draws_array}} object with 100 iterations from each of
+the 4 Markov chains obtained by fitting a 3-dimensional multivariate normal
+model to 100 simulated observations. The variables are:
+\itemize{
+\item \code{mu}: Mean parameter vector of length 3
+\item \code{Sigma}: Covariance matrix of dimension 3 x 3
+}
 }
 \note{
 These objects are only intended to be used in demonstrations and tests.
@@ -37,8 +43,11 @@ They contain fewer iterations and chains than recommended for performing
 actual inference.
 }
 \examples{
-x <- example_draws()
-summarise_draws(x)
+draws_eight_schools <- example_draws("eight_schools")
+summarise_draws(draws_eight_schools)
+
+draws_multi_normal <- example_draws("multi_normal")
+summarise_draws(draws_multi_normal)
 
 }
 \references{
