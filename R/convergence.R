@@ -16,7 +16,7 @@
 #' @template ref-gelman-bda-2013
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' rhat_basic(mu)
 #'
 #' @export
@@ -42,7 +42,7 @@ rhat_basic <- function(x, split = TRUE) {
 #' @template ref-gelman-bda-2013
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_basic(mu)
 #'
 #' @export
@@ -66,7 +66,7 @@ ess_basic <- function(x, split = TRUE) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' rhat(mu)
 #'
 #' @export
@@ -89,7 +89,7 @@ rhat <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_bulk(mu)
 #'
 #' @export
@@ -110,7 +110,7 @@ ess_bulk <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_tail(mu)
 #'
 #' @export
@@ -132,7 +132,7 @@ ess_tail <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_quantile(mu, probs = c(0.1, 0.9))
 #'
 #' @export
@@ -172,7 +172,7 @@ ess_median <- function(x) {
 #' @template ref-gelman-bda-2013
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_mean(mu)
 #'
 #' @export
@@ -192,7 +192,7 @@ ess_mean <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_sd(mu)
 #'
 #' @export
@@ -212,7 +212,7 @@ ess_sd <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' mcse_quantile(mu, probs = c(0.1, 0.9))
 #'
 #' @export
@@ -258,7 +258,7 @@ mcse_median <- function(x) {
 #' @template ref-gelman-bda-2013
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' mcse_mean(mu)
 #'
 #' @export
@@ -278,7 +278,7 @@ mcse_mean <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' mcse_sd(mu)
 #'
 #' @export
@@ -298,7 +298,7 @@ mcse_sd <- function(x) {
 #' @param ... Further arguments passed to [quantile()].
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' quantile2(mu)
 #'
 #' @export

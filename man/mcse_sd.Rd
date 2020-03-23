@@ -18,7 +18,7 @@ single variable using Stirling's approximation and assuming
 approximate normality.
 }
 \examples{
-mu <- extract_one_variable_matrix(example_draws(), "mu")
+mu <- extract_variable_matrix(example_draws(), "mu")
 mcse_sd(mu)
 
 }

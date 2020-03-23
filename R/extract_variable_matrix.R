@@ -1,4 +1,4 @@
-#' Extract Draws Matrix of one Variable
+#' Extract Draws Matrix of a Single Variable
 #'
 #' Extract a matrix of draws of a single variable with dimension
 #' #iterations x #chains primarily for use in convergence functions
@@ -11,24 +11,24 @@
 #'
 #' @examples
 #' x <- example_draws()
-#' mu <- extract_one_variable_matrix(x, variable = "mu")
+#' mu <- extract_variable_matrix(x, variable = "mu")
 #' rhat(mu)
 #'
 #' @export
-extract_one_variable_matrix <- function(x, variable, ...) {
-  UseMethod("extract_one_variable_matrix")
+extract_variable_matrix <- function(x, variable, ...) {
+  UseMethod("extract_variable_matrix")
 }
 
-#' @rdname extract_one_variable_matrix
+#' @rdname extract_variable_matrix
 #' @export
-extract_one_variable_matrix.default <- function(x, variable, ...) {
+extract_variable_matrix.default <- function(x, variable, ...) {
   x <- as_draws(x)
-  extract_one_variable_matrix(x, variable, ...)
+  extract_variable_matrix(x, variable, ...)
 }
 
-#' @rdname extract_one_variable_matrix
+#' @rdname extract_variable_matrix
 #' @export
-extract_one_variable_matrix.draws <- function(x, variable, ...) {
+extract_variable_matrix.draws <- function(x, variable, ...) {
   variable <- as_one_character(variable)
   out <- subset_draws(x, variable = variable)
   out <- as_draws_array(out)

@@ -21,7 +21,7 @@ recommend the improved Rhat convergence diagnostic implemented in
 \code{\link[=rhat]{rhat()}}.
 }
 \examples{
-mu <- extract_one_variable_matrix(example_draws(), "mu")
+mu <- extract_variable_matrix(example_draws(), "mu")
 rhat_basic(mu)
 
 }

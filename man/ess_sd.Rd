@@ -18,7 +18,7 @@ estimate of a single variable. This is defined as minimum of effective
 sample size estimate for mean and mean of squared value.
 }
 \examples{
-mu <- extract_one_variable_matrix(example_draws(), "mu")
+mu <- extract_variable_matrix(example_draws(), "mu")
 ess_sd(mu)
 
 }

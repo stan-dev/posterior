@@ -19,7 +19,7 @@ efficiency in the bulk of the posterior. It is defined as the
 effective sample size for rank normalized values using split chains.
 }
 \examples{
-mu <- extract_one_variable_matrix(example_draws(), "mu")
+mu <- extract_variable_matrix(example_draws(), "mu")
 ess_bulk(mu)
 
 }
