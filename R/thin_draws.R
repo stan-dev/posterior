@@ -37,5 +37,5 @@ thin_draws.draws <- function(x, thin, ...) {
     stop2("'thin' must be smaller than the total number of iterations.")
   }
   sel_iterations <- seq(1, niterations, by = thin)
-  subset(x, iteration = sel_iterations)
+  subset_draws(x, iteration = sel_iterations)
 }

@@ -297,23 +297,24 @@ ndraws.draws_list <- function(x) {
 # @param regex should 'variables' be treated as regular expressions?
 check_existing_variables <- function(variables, x, regex = FALSE) {
   check_draws_object(x)
-  if (!is.null(variables)) {
-    regex <- as_one_logical(regex)
-    variables <- unique(as.character(variables))
-    if (regex) {
-      all_variables <- variables(x)
-      tmp <- named_list(variables)
-      for (i in seq_along(variables)) {
-        tmp[[i]] <- all_variables[grepl(variables[i], all_variables)]
-      }
-      variables <- as.character(unique(unlist(tmp)))
+  if (is.null(variables)) {
+    return(NULL)
+  }
+  regex <- as_one_logical(regex)
+  variables <- unique(as.character(variables))
+  if (regex) {
+    all_variables <- variables(x)
+    tmp <- named_list(variables)
+    for (i in seq_along(variables)) {
+      tmp[[i]] <- all_variables[grepl(variables[i], all_variables)]
     }
-    variables <- check_reserved_variables(variables)
-    missing_variables <- setdiff(variables, variables(x))
-    if (length(missing_variables)) {
-      stop2("The following variables are missing in the draws object: ",
-            comma(missing_variables))
-    }
+    variables <- as.character(unique(unlist(tmp)))
+  }
+  variables <- check_reserved_variables(variables)
+  missing_variables <- setdiff(variables, variables(x))
+  if (length(missing_variables)) {
+    stop2("The following variables are missing in the draws object: ",
+          comma(missing_variables))
   }
   variables
 }
@@ -346,55 +347,76 @@ check_reserved_variables <- function(variables) {
 }
 
 # check validity of iteration indices
-check_iteration_ids <- function(iteration_ids, x) {
+# @param unique should the returned IDs be unique?
+check_iteration_ids <- function(iteration_ids, x, unique = TRUE) {
   check_draws_object(x)
-  if (!is.null(iteration_ids)) {
-    iteration_ids <- sort(unique(as.integer(iteration_ids)))
-    if (any(iteration_ids < 1L)) {
-      stop2("Iteration indices should be positive.")
-    }
-    niterations <- niterations(x)
-    max_iteration <- max(iteration_ids)
-    if (max_iteration > niterations) {
-      stop2("Tried to subset iterations up to '", max_iteration, "' ",
-            "but the object only has '", niterations, "' iterations.")
-    }
+  if (is.null(iteration_ids)) {
+    return(NULL)
+  }
+  unique <- as_one_logical(unique)
+  iteration_ids <- as.integer(iteration_ids)
+  if (unique) {
+    iteration_ids <- unique(iteration_ids)
+  }
+  iteration_ids <- sort(iteration_ids)
+  if (any(iteration_ids < 1L)) {
+    stop2("Iteration indices should be positive.")
+  }
+  niterations <- niterations(x)
+  max_iteration <- max(iteration_ids)
+  if (max_iteration > niterations) {
+    stop2("Tried to subset iterations up to '", max_iteration, "' ",
+          "but the object only has '", niterations, "' iterations.")
   }
   iteration_ids
 }
 
 # check validity of chain indices
-check_chain_ids <- function(chain_ids, x) {
+# @param unique should the returned IDs be unique?
+check_chain_ids <- function(chain_ids, x, unique = TRUE) {
   check_draws_object(x)
-  if (!is.null(chain_ids)) {
-    chain_ids <- sort(unique(as.integer(chain_ids)))
-    if (any(chain_ids < 1L)) {
-      stop2("Chain indices should be positive.")
-    }
-    nchains <- nchains(x)
-    max_chain <- max(chain_ids)
-    if (max_chain > nchains) {
-      stop2("Tried to subset chains up to '", max_chain, "' ",
-            "but the object only has '", nchains, "' chains.")
-    }
+  if (is.null(chain_ids)) {
+    return(NULL)
+  }
+  unique <- as_one_logical(unique)
+  chain_ids <- as.integer(chain_ids)
+  if (unique) {
+    chain_ids <- unique(chain_ids)
+  }
+  chain_ids <- sort(chain_ids)
+  if (any(chain_ids < 1L)) {
+    stop2("Chain indices should be positive.")
+  }
+  nchains <- nchains(x)
+  max_chain <- max(chain_ids)
+  if (max_chain > nchains) {
+    stop2("Tried to subset chains up to '", max_chain, "' ",
+          "but the object only has '", nchains, "' chains.")
   }
   chain_ids
 }
 
 # check validity of draw indices
-check_draw_ids <- function(draw_ids, x) {
+# @param unique should the returned IDs be unique?
+check_draw_ids <- function(draw_ids, x, unique = TRUE) {
   check_draws_object(x)
-  if (!is.null(draw_ids)) {
-    draw_ids <- sort(unique(as.integer(draw_ids)))
-    if (any(draw_ids < 1L)) {
-      stop2("Draw indices should be positive.")
-    }
-    ndraws <- ndraws(x)
-    max_draw <- max(draw_ids)
-    if (max_draw > ndraws) {
-      stop2("Tried to subset draws up to '", max_draw, "' ",
-            "but the object only has '", ndraws, "' draws.")
-    }
+  if (is.null(draw_ids)) {
+    return(NULL)
+  }
+  unique <- as_one_logical(unique)
+  draw_ids <- as.integer(draw_ids)
+  if (unique) {
+    draw_ids <- unique(draw_ids)
+  }
+  draw_ids <- sort(draw_ids)
+  if (any(draw_ids < 1L)) {
+    stop2("Draw indices should be positive.")
+  }
+  ndraws <- ndraws(x)
+  max_draw <- max(draw_ids)
+  if (max_draw > ndraws) {
+    stop2("Tried to subset draws up to '", max_draw, "' ",
+          "but the object only has '", ndraws, "' draws.")
   }
   draw_ids
 }

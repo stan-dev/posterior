@@ -18,6 +18,7 @@ subset_draws(x, ...)
   chain = NULL,
   draw = NULL,
   regex = FALSE,
+  unique = TRUE,
   ...
 )
 
@@ -28,6 +29,7 @@ subset_draws(x, ...)
   chain = NULL,
   draw = NULL,
   regex = FALSE,
+  unique = TRUE,
   ...
 )
 
@@ -38,6 +40,7 @@ subset_draws(x, ...)
   chain = NULL,
   draw = NULL,
   regex = FALSE,
+  unique = TRUE,
   ...
 )
 
@@ -48,6 +51,7 @@ subset_draws(x, ...)
   chain = NULL,
   draw = NULL,
   regex = FALSE,
+  unique = TRUE,
   ...
 )
 
@@ -69,6 +73,11 @@ subset_draws(x, ...)
 \item{regex}{Logical. Indicates whether \code{variable} should be treated as a
 (vector of) regular expressions. Any variable in \code{x} matching at least one
 of the regular expressions will be selected.}
+
+\item{unique}{Logical. Indicates whether duplicated selection of chains,
+iterations, or draws is possible. If \code{TRUE} (the default) only
+unique chains, iterations, and draws are selected regardless of how
+often they appear in the respective selecting arguments.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.
@@ -86,5 +95,8 @@ x <- example_draws()
 subset_draws(x, variable = c("mu", "tau"))
 subset_draws(x, chain = 2)
 subset_draws(x, iteration = 5:10, chain = 3:4)
+
+# extract the first chain twice
+subset_draws(x, chain = c(1, 1), unique = FALSE)
 
 }
