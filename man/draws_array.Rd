@@ -51,6 +51,7 @@ Objects of class \code{"draws_array"} are 3-D arrays with dimensions
 \examples{
 x <- as_draws_array(example_draws())
 class(x)
+print(x)
 str(x)
 }
 \seealso{

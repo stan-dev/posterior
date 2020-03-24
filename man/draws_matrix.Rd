@@ -54,6 +54,7 @@ refer to the rows as draws and not iterations (unlike for the
 \examples{
 x <- as_draws_matrix(example_draws())
 class(x)
+print(x)
 str(x)
 }
 \seealso{

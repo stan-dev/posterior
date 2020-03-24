@@ -68,12 +68,13 @@ unique values. See \strong{Examples}.
 \examples{
 x <- as_draws_df(example_draws())
 class(x)
+print(x)
 str(x)
 
 # the difference between iteration and draw is clearer when contrasting
 # the head and tail of the data frame
-head(x[, c(".iteration", ".chain", ".draw")])
-tail(x[, c(".iteration", ".chain", ".draw")])
+print(head(x), meta_columns = TRUE, max_variables = 2)
+print(tail(x), meta_columns = TRUE, max_variables = 2)
 
 }
 \seealso{

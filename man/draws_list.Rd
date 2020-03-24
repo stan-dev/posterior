@@ -53,6 +53,7 @@ number of saved iterations per chain. See \strong{Examples}.
 \examples{
 x <- as_draws_list(example_draws())
 class(x)
+print(x)
 str(x)
 }
 \seealso{

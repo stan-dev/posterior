@@ -22,4 +22,5 @@
 #' @examples
 #' x <- <%=paste0("as_", draws_format)%>(example_draws())
 #' class(x)
+#' print(x)
 #' str(x)
