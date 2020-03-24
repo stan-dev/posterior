@@ -11,7 +11,7 @@
 #'   (vector of) regular expressions. Any variable in `x` matching at least one
 #'   of the regular expressions will be selected.
 #' @param unique Logical. Indicates whether duplicated selection of chains,
-#'   iterations, or draws is possible. If \code{TRUE} (the default) only
+#'   iterations, or draws is possible. If `TRUE` (the default) only
 #'   unique chains, iterations, and draws are selected regardless of how
 #'   often they appear in the respective selecting arguments.
 #'
@@ -101,7 +101,7 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
     }
   }
   if (!is.null(variable)) {
-    x <- x[, c(meta_columns(x), variable)]
+    x <- x[, c(variable, meta_columns(x))]
   }
   if (!is.null(draw)) {
     # each x$.draw is unique so using 'match' is valid here

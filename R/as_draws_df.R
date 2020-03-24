@@ -67,7 +67,6 @@ as_draws_df.draws_matrix <- function(x, ...) {
   x$.chain <- 1L
   x$.iteration <- draws
   x$.draw <- draws
-  x <- move_to_start(x, meta_columns())
   class(x) <- class_draws_df()
   x
 }
@@ -88,7 +87,6 @@ as_draws_df.draws_array <- function(x, ...) {
     out[[i]]$.draw <- compute_draw_ids(chain_ids[i], iteration_ids)
   }
   out <- do_call(rbind, out)
-  out <- move_to_start(out, meta_columns())
   class(out) <- class_draws_df()
   out
 }
@@ -106,7 +104,6 @@ as_draws_df.draws_list <- function(x, ...) {
     out[[i]]$.draw <- compute_draw_ids(chain_ids[i], iteration_ids)
   }
   out <- do_call(rbind, out)
-  out <- move_to_start(out, meta_columns())
   class(out) <- class_draws_df()
   out
 }
@@ -175,7 +172,6 @@ as_draws_df.mcmc.list <- function(x, ...) {
     x$.iteration <- repair_iteration_ids(x$.iteration, x$.chain)
   }
   x$.draw <- compute_draw_ids(x$.chain, x$.iteration)
-  x <- move_to_start(x, meta_columns())
   class(x) <- class_draws_df()
   x
 }
