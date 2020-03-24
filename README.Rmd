@@ -65,7 +65,7 @@ deviation across schools (`tau`).
 
 ```{r draws_array}
 eight_schools_array <- example_draws("eight_schools")
-str(eight_schools_array)
+print(eight_schools_array, max_variables = 3)
 ```
 
 The draws for this example come as a `draws_array` object, that is, an array
@@ -74,8 +74,6 @@ another format, for instance, a data frame with additional meta information.
 
 ```{r draws_df}
 eight_schools_df <- as_draws_df(eight_schools_array)
-str(eight_schools_df)
-
 print(eight_schools_df)
 ```
 
@@ -120,11 +118,11 @@ according to various aspects of the draws (iterations, chains, or variables).
 iterations of the first two chains of the variable `mu`:
 
 ```{r subset}
-subset(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
+subset_draws(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 ```
 
-The same call to `subset()` can be used regardless of whether the object is a
-`draws_df`, `draws_array`, `draws_list`, etc.
+The same call to `subset_draws()` can be used regardless of whether the object 
+is a `draws_df`, `draws_array`, `draws_list`, etc.
 
 #### Converting from regular R objects to draws formats
 
@@ -136,7 +134,7 @@ for example, from common base R objects:
 x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
-str(x)
+print(x)
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 ```

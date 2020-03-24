@@ -54,12 +54,39 @@ an overall mean (`mu`) and standard deviation across schools (`tau`).
 
 ``` r
 eight_schools_array <- example_draws("eight_schools")
-str(eight_schools_array)
-#>  'draws_array' num [1:100, 1:4, 1:10] -4.78 6.92 11.65 3.37 1.33 ...
-#>  - attr(*, "dimnames")=List of 3
-#>   ..$ iteration: chr [1:100] "1" "2" "3" "4" ...
-#>   ..$ chain    : chr [1:4] "1" "2" "3" "4"
-#>   ..$ variable : chr [1:10] "mu" "tau" "theta[1]" "theta[2]" ...
+print(eight_schools_array, max_variables = 3)
+#> # A draws_array: 100 iterations, 4 chains, and 10 variables
+#> , , variable = mu
+#> 
+#>          chain
+#> iteration   1    2     3   4
+#>         1 2.0  3.0  1.79 6.5
+#>         2 1.5  8.2  5.99 9.1
+#>         3 5.8 -1.2  2.56 0.2
+#>         4 6.8 10.9  2.79 3.7
+#>         5 1.8  9.8 -0.03 5.5
+#> 
+#> , , variable = tau
+#> 
+#>          chain
+#> iteration   1    2    3   4
+#>         1 2.8 2.80  8.7 3.8
+#>         2 7.0 2.76  2.9 6.8
+#>         3 9.7 0.57  8.4 5.3
+#>         4 4.8 2.45  4.4 1.6
+#>         5 2.8 2.80 11.0 3.0
+#> 
+#> , , variable = theta[1]
+#> 
+#>          chain
+#> iteration     1     2    3     4
+#>         1  3.96  6.26 13.3  5.78
+#>         2  0.12  9.32  6.3  2.09
+#>         3 21.25 -0.97 10.6 15.72
+#>         4 14.70 12.45  5.4  2.69
+#>         5  5.96  9.75  8.2 -0.91
+#> 
+#> # ... with 95 more iterations, and 7 more variables
 ```
 
 The draws for this example come as a `draws_array` object, that is, an
@@ -69,38 +96,20 @@ additional meta information.
 
 ``` r
 eight_schools_df <- as_draws_df(eight_schools_array)
-str(eight_schools_df)
-#> Classes 'draws_df', 'draws', 'tbl_df', 'tbl' and 'data.frame':   400 obs. of  13 variables:
-#>  $ .chain    : int  1 1 1 1 1 1 1 1 1 1 ...
-#>  $ .iteration: int  1 2 3 4 5 6 7 8 9 10 ...
-#>  $ .draw     : int  1 2 3 4 5 6 7 8 9 10 ...
-#>  $ mu        : num  -4.78 6.92 11.65 3.37 1.33 ...
-#>  $ tau       : num  1.62 3.4 2.37 14.62 4.78 ...
-#>  $ theta[1]  : num  -1.61 10.97 15.77 15.42 3.3 ...
-#>  $ theta[2]  : num  -4.96 9.34 11.04 6.84 3.09 ...
-#>  $ theta[3]  : num  -5.41 8.6 14.87 -3.31 5.27 ...
-#>  $ theta[4]  : num  -2.88 8.37 10.74 5.56 2.1 ...
-#>  $ theta[5]  : num  -3.411 10.541 8.736 3.827 0.327 ...
-#>  $ theta[6]  : num  -5.2 5.4 8.87 7.94 -1.33 ...
-#>  $ theta[7]  : num  -4.15 7.82 9.48 23.2 1.83 ...
-#>  $ theta[8]  : num  -5.11 6.33 10.14 6.12 4.01 ...
-
 print(eight_schools_df)
-#> # A tibble: 400 x 13
-#>    .chain .iteration .draw    mu    tau `theta[1]` `theta[2]` `theta[3]` `theta[4]`
-#>     <int>      <int> <int> <dbl>  <dbl>      <dbl>      <dbl>      <dbl>      <dbl>
-#>  1      1          1     1 -4.78  1.62      -1.61       -4.96      -5.41    -2.88  
-#>  2      1          2     2  6.92  3.40      11.0         9.34       8.60     8.37  
-#>  3      1          3     3 11.6   2.37      15.8        11.0       14.9     10.7   
-#>  4      1          4     4  3.37 14.6       15.4         6.84      -3.31     5.56  
-#>  5      1          5     5  1.33  4.78       3.30        3.09       5.27     2.10  
-#>  6      1          6     6 -1.23  6.31       0.452       1.05      -9.22    -4.71  
-#>  7      1          7     7  8.35  0.248      8.40        8.09       8.67     8.53  
-#>  8      1          8     8  1.63  4.42       8.41        4.09      -6.82    -0.0910
-#>  9      1          9     9  8.51  1.13       7.97        8.70      12.1      9.24  
-#> 10      1         10    10  6.41  1.35       5.72        4.34       4.39     6.46  
-#> # ... with 390 more rows, and 4 more variables: `theta[5]` <dbl>, `theta[6]` <dbl>,
-#> #   `theta[7]` <dbl>, `theta[8]` <dbl>
+#> # A draws_df: 100 iterations, 4 chains, and 10 variables
+#>      mu tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6]
+#> 1  2.01 2.8     3.96    0.271    -0.74      2.1    0.923      1.7
+#> 2  1.46 7.0     0.12   -0.069     0.95      7.3   -0.062     11.3
+#> 3  5.81 9.7    21.25   14.931     1.83      1.4    0.531      7.2
+#> 4  6.85 4.8    14.70    8.586     2.67      4.4    4.758      8.1
+#> 5  1.81 2.8     5.96    1.156     3.11      2.0    0.769      4.7
+#> 6  3.84 4.1     5.76    9.909    -1.00      5.3    5.889     -1.7
+#> 7  5.47 4.0     4.03    4.151    10.15      6.6    3.741     -2.2
+#> 8  1.20 1.5    -0.28    1.846     0.47      4.3    1.467      3.3
+#> 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1
+#> 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5
+#> # ... with 390 more draws, and 2 more variables
 ```
 
 Different formats are preferable in different situations and hence
@@ -122,18 +131,18 @@ this purpose via `summarise_draws()`:
 # summarise_draws or summarize_draws
 summarise_draws(eight_schools_df)
 #> # A tibble: 10 x 10
-#>    variable  mean median    sd   mad     q5   q95  rhat ess_bulk ess_tail
-#>    <chr>    <dbl>  <dbl> <dbl> <dbl>  <dbl> <dbl> <dbl>    <dbl>    <dbl>
-#>  1 mu        4.56   4.49  3.36  3.45 -0.889  9.88 1.00      881.     300.
-#>  2 tau       3.85   2.90  3.32  2.65  0.331  9.98 0.998     386.     311.
-#>  3 theta[1]  6.57   5.47  6.45  4.92 -1.50  17.8  1.000     552.     272.
-#>  4 theta[2]  4.74   4.53  4.63  4.14 -2.42  12.2  1.04      767.     344.
-#>  5 theta[3]  4.22   4.52  5.03  4.63 -4.32  12.2  1.02      554.     246.
-#>  6 theta[4]  4.79   4.95  4.45  4.65 -2.24  12.0  0.998     656.     370.
-#>  7 theta[5]  3.75   3.85  4.89  4.25 -4.80  11.1  1.000     609.     326.
-#>  8 theta[6]  4.28   4.36  4.88  4.65 -4.21  12.3  0.998     644.     305.
-#>  9 theta[7]  6.53   6.18  5.38  4.52 -0.763 15.9  0.995     624.     345.
-#> 10 theta[8]  5.00   4.52  5.21  4.55 -2.83  13.3  1.01      618.     332.
+#>    variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail
+#>    <chr>    <dbl>  <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl>    <dbl>    <dbl>
+#>  1 mu        4.18   4.16  3.40  3.57  -0.854  9.39  1.02     558.     322.
+#>  2 tau       4.16   3.07  3.58  2.89   0.309 11.0   1.01     246.     202.
+#>  3 theta[1]  6.75   5.97  6.30  4.87  -1.23  18.9   1.01     400.     254.
+#>  4 theta[2]  5.25   5.13  4.63  4.25  -1.97  12.5   1.02     564.     372.
+#>  5 theta[3]  3.04   3.99  6.80  4.94 -10.3   11.9   1.01     312.     205.
+#>  6 theta[4]  4.86   4.99  4.92  4.51  -3.57  12.2   1.02     695.     252.
+#>  7 theta[5]  3.22   3.72  5.08  4.38  -5.93  10.8   1.01     523.     306.
+#>  8 theta[6]  3.99   4.14  5.16  4.81  -4.32  11.5   1.02     548.     205.
+#>  9 theta[7]  6.50   5.90  5.26  4.54  -1.19  15.4   1.00     434.     308.
+#> 10 theta[8]  4.57   4.64  5.25  4.89  -3.79  12.2   1.02     355.     146.
 ```
 
 Basically, we get a data frame with one row per variable and one column
@@ -147,16 +156,16 @@ summarise_draws(eight_schools_df, "mean", "mcse_mean")
 #> # A tibble: 10 x 3
 #>    variable  mean mcse_mean
 #>    <chr>    <dbl>     <dbl>
-#>  1 mu        4.56     0.113
-#>  2 tau       3.85     0.165
-#>  3 theta[1]  6.57     0.300
-#>  4 theta[2]  4.74     0.176
-#>  5 theta[3]  4.22     0.220
-#>  6 theta[4]  4.79     0.175
-#>  7 theta[5]  3.75     0.198
-#>  8 theta[6]  4.28     0.198
-#>  9 theta[7]  6.53     0.232
-#> 10 theta[8]  5.00     0.215
+#>  1 mu        4.18     0.150
+#>  2 tau       4.16     0.213
+#>  3 theta[1]  6.75     0.319
+#>  4 theta[2]  5.25     0.202
+#>  5 theta[3]  3.04     0.447
+#>  6 theta[4]  4.86     0.189
+#>  7 theta[5]  3.22     0.232
+#>  8 theta[6]  3.99     0.222
+#>  9 theta[7]  6.50     0.250
+#> 10 theta[8]  4.57     0.273
 ```
 
 For a function to work with `summarise_draws`, it needs to take a vector
@@ -173,24 +182,23 @@ extract the first five iterations of the first two chains of the
 variable `mu`:
 
 ``` r
-subset(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
-#> # A tibble: 10 x 4
-#>    .chain .iteration .draw    mu
-#>     <int>      <int> <int> <dbl>
-#>  1      1          1     1 -4.78
-#>  2      1          2     2  6.92
-#>  3      1          3     3 11.6 
-#>  4      1          4     4  3.37
-#>  5      1          5     5  1.33
-#>  6      2          1     6 10.9 
-#>  7      2          2     7  4.08
-#>  8      2          3     8  5.67
-#>  9      2          4     9  2.27
-#> 10      2          5    10  3.54
+subset_draws(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
+#> # A draws_df: 5 iterations, 2 chains, and 1 variables
+#>      mu
+#> 1   2.0
+#> 2   1.5
+#> 3   5.8
+#> 4   6.8
+#> 5   1.8
+#> 6   3.0
+#> 7   8.2
+#> 8  -1.2
+#> 9  10.9
+#> 10  9.8
 ```
 
-The same call to `subset()` can be used regardless of whether the object
-is a `draws_df`, `draws_array`, `draws_list`, etc.
+The same call to `subset_draws()` can be used regardless of whether the
+object is a `draws_df`, `draws_array`, `draws_list`, etc.
 
 #### Converting from regular R objects to draws formats
 
@@ -202,21 +210,30 @@ sources, for example, from common base R objects:
 x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
-str(x)
-#>  'draws_matrix' num [1:10, 1:5] 0.174 -1.183 -0.939 -1.297 -0.686 ...
-#>  - attr(*, "dimnames")=List of 2
-#>   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
-#>   ..$ variable: chr [1:5] "V1" "V2" "V3" "V4" ...
+print(x)
+#> # A draws_matrix: 10 draws, and 5 variables
+#>     variable
+#> draw    V1     V2      V3    V4     V5
+#>   1  -0.43  0.582 -0.0269  0.65  0.393
+#>   2   0.98  1.077  0.2652 -1.34  0.461
+#>   3   0.17 -0.778 -1.3508  0.41 -0.099
+#>   4  -0.21  0.608 -2.1685 -0.36  2.660
+#>   5   0.87  1.810 -0.3891 -0.50 -0.481
+#>   6  -0.29  0.264 -0.0025 -0.30 -0.780
+#>   7   0.69  0.088  1.3062 -1.02  0.631
+#>   8   0.50  0.128  0.5418 -0.27  0.228
+#>   9   1.84  1.267  1.0108  1.91  0.138
+#>   10 -1.85 -0.600  0.8428  1.68 -0.243
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 x 5
-#>   variable    mean    sd  median   mad
-#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
-#> 1 V1       -0.420  0.755 -0.707  0.790
-#> 2 V2       -0.0354 1.51  -0.0852 2.23 
-#> 3 V3       -0.591  0.852 -0.811  0.823
-#> 4 V4       -0.345  1.000 -0.259  1.28 
-#> 5 V5        0.145  0.626  0.231  0.660
+#>   variable    mean    sd median   mad
+#>   <chr>      <dbl> <dbl>  <dbl> <dbl>
+#> 1 V1       0.227   1.00   0.334 0.866
+#> 2 V2       0.445   0.805  0.423 0.734
+#> 3 V3       0.00290 1.08   0.131 0.913
+#> 4 V4       0.0879  1.07  -0.284 1.06 
+#> 5 V5       0.291   0.941  0.183 0.524
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
