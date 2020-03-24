@@ -41,9 +41,13 @@
 #'
 #' @export
 example_draws <- function(example = "eight_schools") {
-  choices <- c("eight_schools", "multi_normal")
-  assert_choice(example, choices)
+  assert_choice(example, example_choices())
   # saved in R/sysdata.rda
   draws_name <- paste0("draws_", example)
   get(draws_name, asNamespace("posterior"))
+}
+
+# names of choices for 'example_draws'
+example_choices <- function() {
+  c("eight_schools", "multi_normal")
 }
