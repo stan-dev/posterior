@@ -17,7 +17,7 @@ Compute Monte Carlo standard error for mean (expectation) of a
 single variable.
 }
 \examples{
-mu <- extract_one_variable_matrix(example_draws(), "mu")
+mu <- extract_variable_matrix(example_draws(), "mu")
 mcse_mean(mu)
 
 }

@@ -1,5 +1,5 @@
 test_that("rhat diagnostics return reasonable values", {
-  tau <- extract_one_variable_matrix(example_draws(), "tau")
+  tau <- extract_variable_matrix(example_draws(), "tau")
 
   rhat <- rhat_basic(tau)
   expect_true(rhat > 0.99 & rhat < 1.05)
@@ -9,7 +9,7 @@ test_that("rhat diagnostics return reasonable values", {
 })
 
 test_that("ess diagnostics return reasonable values", {
-  tau <- extract_one_variable_matrix(example_draws(), "tau")
+  tau <- extract_variable_matrix(example_draws(), "tau")
 
   ess <- ess_basic(tau)
   expect_true(ess > 250 & ess < 310)
@@ -36,7 +36,7 @@ test_that("ess diagnostics return reasonable values", {
 })
 
 test_that("mcse diagnostics return reasonable values", {
-  tau <- extract_one_variable_matrix(example_draws(), "tau")
+  tau <- extract_variable_matrix(example_draws(), "tau")
 
   mcse <- mcse_mean(tau)
   expect_true(mcse > 0.15 & mcse < 0.25)

@@ -19,7 +19,7 @@ efficiency in the tails of the posterior. It is defined as
 the minimum of the effective sample sizes for 5\% and 95\% quantiles.
 }
 \examples{
-mu <- extract_one_variable_matrix(example_draws(), "mu")
+mu <- extract_variable_matrix(example_draws(), "mu")
 ess_tail(mu)
 
 }

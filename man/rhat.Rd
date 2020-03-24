@@ -18,7 +18,7 @@ split-Rhat and rank normalized folded-split-Rhat for a single variable
 as proposed in Vehtari et al. (2019).
 }
 \examples{
-mu <- extract_one_variable_matrix(example_draws(), "mu")
+mu <- extract_variable_matrix(example_draws(), "mu")
 rhat(mu)
 
 }

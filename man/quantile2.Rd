@@ -21,7 +21,7 @@ Compute quantiles of a sample and return them in a format consistent
 with other summary functions of the \pkg{posterior} package.
 }
 \examples{
-mu <- extract_one_variable_matrix(example_draws(), "mu")
+mu <- extract_variable_matrix(example_draws(), "mu")
 quantile2(mu)
 
 }
