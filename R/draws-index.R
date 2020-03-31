@@ -60,6 +60,9 @@ variables.draws_df <- function(x) {
 
 #' @export
 variables.draws_list <- function(x) {
+  if (!length(x)) {
+    return(character(0))
+  }
   names(x[[1]])
 }
 
@@ -210,6 +213,9 @@ nvariables.draws_df <- function(x) {
 
 #' @export
 nvariables.draws_list <- function(x) {
+  if (!length(x)) {
+    return(0)
+  }
   length(x[[1]])
 }
 
@@ -236,6 +242,9 @@ niterations.draws_df <- function(x) {
 
 #' @export
 niterations.draws_list <- function(x) {
+  if (!length(x) || !length(x[[1]])) {
+    return(0)
+  }
   length(x[[1]][[1]])
 }
 
@@ -363,7 +372,7 @@ check_iteration_ids <- function(iteration_ids, x, unique = TRUE) {
     stop2("Iteration indices should be positive.")
   }
   niterations <- niterations(x)
-  max_iteration <- max(iteration_ids)
+  max_iteration <- SW(max(iteration_ids))
   if (max_iteration > niterations) {
     stop2("Tried to subset iterations up to '", max_iteration, "' ",
           "but the object only has '", niterations, "' iterations.")
@@ -388,7 +397,7 @@ check_chain_ids <- function(chain_ids, x, unique = TRUE) {
     stop2("Chain indices should be positive.")
   }
   nchains <- nchains(x)
-  max_chain <- max(chain_ids)
+  max_chain <- SW(max(chain_ids))
   if (max_chain > nchains) {
     stop2("Tried to subset chains up to '", max_chain, "' ",
           "but the object only has '", nchains, "' chains.")
@@ -413,7 +422,7 @@ check_draw_ids <- function(draw_ids, x, unique = TRUE) {
     stop2("Draw indices should be positive.")
   }
   ndraws <- ndraws(x)
-  max_draw <- max(draw_ids)
+  max_draw <- SW(max(draw_ids))
   if (max_draw > ndraws) {
     stop2("Tried to subset draws up to '", max_draw, "' ",
           "but the object only has '", ndraws, "' draws.")

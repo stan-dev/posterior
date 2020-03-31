@@ -111,6 +111,9 @@ summarise_draws.draws <- function(x, ...) {
 
   # it is more efficient to repair and transform objects for all variables
   # at once instead of doing it within the loop for each variable separately
+  if (ndraws(x) == 0L) {
+    return(empty_draws_summary())
+  }
   x <- repair_draws(x)
   x <- as_draws_array(x)
   variables <- variables(x)
@@ -132,7 +135,7 @@ summarise_draws.draws <- function(x, ...) {
   }
   out$variable <- variables
   out <- move_to_start(out, "variable")
-  class(out) <- c("draws_summary", class(out))
+  class(out) <- class_draws_summary()
   out
 }
 
@@ -158,4 +161,20 @@ default_convergence_measures <- function() {
 #' @export
 default_mcse_measures <- function() {
   c("mcse_mean", "mcse_median", "mcse_sd", "mcse_quantile")
+}
+
+class_draws_summary <- function() {
+  c("draws_summary", "tbl_df", "tbl", "data.frame")
+}
+
+# empty draws_summary object
+# @param dimensions names of dimensions to be added as empty columns
+empty_draws_summary <- function(dimensions = "variable") {
+  assert_character(dimensions, null.ok = TRUE)
+  out <- tibble::tibble()
+  for (d in dimensions) {
+    out[[d]] <- character(0)
+  }
+  class(out) <- class_draws_summary()
+  out
 }

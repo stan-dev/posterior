@@ -64,7 +64,7 @@ as_draws_df.draws_matrix <- function(x, ...) {
   draws <- as.integer(rownames(x))
   rownames(x) <- NULL
   x <- tibble::as_tibble(x)
-  x$.chain <- 1L
+  x$.chain <- rep(1L, nrow(x))
   x$.iteration <- draws
   x$.draw <- draws
   class(x) <- class_draws_df()
@@ -74,6 +74,9 @@ as_draws_df.draws_matrix <- function(x, ...) {
 #' @rdname draws_df
 #' @export
 as_draws_df.draws_array <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_df(variables(x)))
+  }
   iteration_ids <- iteration_ids(x)
   chain_ids <- chain_ids(x)
   rownames(x) <- NULL
@@ -94,6 +97,9 @@ as_draws_df.draws_array <- function(x, ...) {
 #' @rdname draws_df
 #' @export
 as_draws_df.draws_list <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_df(variables(x)))
+  }
   iteration_ids <- iteration_ids(x)
   chain_ids <- chain_ids(x)
   out <- named_list(chain_ids)
@@ -209,4 +215,18 @@ remove_meta_columns <- function(x) {
     x[[col]] <- NULL
   }
   x
+}
+
+# create an empty draws_df object
+empty_draws_df <- function(variables = character(0)) {
+  assert_character(variables, null.ok = TRUE)
+  out <- tibble::tibble()
+  for (v in variables) {
+    out[[v]] <- numeric(0)
+  }
+  out$.chain <- integer(0)
+  out$.iteration <- integer(0)
+  out$.draw <- integer(0)
+  class(out) <- class_draws_df()
+  out
 }

@@ -111,7 +111,7 @@ repair_chain_ids <- function(chain_ids) {
 #' @param iteration_ids A vector of iteration indices
 #' @noRd
 compute_draw_ids <- function(chain_ids, iteration_ids) {
-  niterations <- max(iteration_ids)
+  niterations <- SW(max(iteration_ids))
   out <- (chain_ids - 1L) * niterations + iteration_ids
   as.integer(out)
 }

@@ -49,6 +49,9 @@ as_draws_array.draws_matrix <- function(x, ...) {
 #' @rdname draws_array
 #' @export
 as_draws_array.draws_df <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_array(variables(x)))
+  }
   iterations <- iteration_ids(x)
   chains <- chain_ids(x)
   variables <- setdiff(names(x), meta_columns())
@@ -134,4 +137,23 @@ as_array_matrix_list <- function(x) {
   stopifnot(is.list(x))
   x <- abind::abind(x, along = 3L)
   x <- aperm(x, c(1, 3, 2))
+}
+
+# create an empty draws_array object
+empty_draws_array <- function(variables = character(0), nchains = 0,
+                              niterations = 0) {
+  assert_character(variables, null.ok = TRUE)
+  assert_number(nchains, lower = 0)
+  assert_number(niterations, lower = 0)
+  out <- array(
+    numeric(0),
+    dim = c(niterations, nchains, length(variables)),
+    dimnames = list(
+      iteration = seq_len(niterations),
+      chain = seq_len(nchains),
+      variable = variables
+    )
+  )
+  class(out) <- class_draws_array()
+  out
 }

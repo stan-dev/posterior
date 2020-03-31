@@ -37,6 +37,9 @@ as_draws_matrix.draws_matrix <- function(x, ...) {
 #' @rdname draws_matrix
 #' @export
 as_draws_matrix.draws_array <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_matrix(variables(x), niterations(x)))
+  }
   old_dim <- dim(x)
   old_dimnames <- dimnames(x)
   dim(x) <- c(old_dim[1] * old_dim[2], old_dim[3])
@@ -51,6 +54,9 @@ as_draws_matrix.draws_array <- function(x, ...) {
 #' @rdname draws_matrix
 #' @export
 as_draws_matrix.draws_df <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_matrix(variables(x)))
+  }
   draws <- x$.draw
   x <- remove_meta_columns(x)
   class(x) <- class(x)[-1L]
@@ -119,3 +125,19 @@ is_draws_matrix_like <- function(x) {
   out
 }
 
+# create an empty draws_matrix object
+empty_draws_matrix <- function(variables = character(0), ndraws = 0) {
+  assert_character(variables, null.ok = TRUE)
+  assert_number(ndraws, lower = 0)
+  out <- matrix(
+    numeric(0),
+    nrow = ndraws,
+    ncol = length(variables),
+    dimnames = list(
+      draw = seq_len(ndraws),
+      variable = variables
+    )
+  )
+  class(out) <- class_draws_matrix()
+  out
+}

@@ -50,6 +50,9 @@ as_draws_list.draws_array <- function(x, ...) {
 #' @rdname draws_list
 #' @export
 as_draws_list.draws_df <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_list(variables(x)))
+  }
   out <- named_list(chain_ids(x))
   x <- x[order(x$.draw), ]
   for (i in seq_along(out)) {
@@ -134,3 +137,15 @@ is_draws_list_like <- function(x) {
   out
 }
 
+# create an empty draws_list object
+empty_draws_list <- function(variables = character(0),
+                             nchains = 0) {
+  assert_character(variables, null.ok = TRUE)
+  assert_number(nchains, lower = 0)
+  out <- named_list(seq_len(nchains))
+  for (i in seq_along(out)) {
+    out[[i]] <- named_list(variables, numeric(0))
+  }
+  class(out) <- class_draws_list()
+  out
+}

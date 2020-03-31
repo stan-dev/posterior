@@ -109,7 +109,7 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
     # subsetting draw invalidates iteration and chain
     x$.draw <- repair_iteration_ids(x$.draw)
     x$.iteration <- x$.draw
-    x$.chain <- 1L
+    x$.chain <- rep(1L, nrow(x))
   } else if (!is.null(chain) || !is.null(iteration)) {
     if (unique) {
       if (!is.null(chain)) {
