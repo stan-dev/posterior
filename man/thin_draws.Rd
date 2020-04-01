@@ -21,7 +21,7 @@ thin_draws(x, thin, ...)
 A \code{draws} object of the same class as \code{x}.
 }
 \description{
-Thin \code{draws} objects to reduce their size and autocorrelation of the chains.
+Thin \code{\link{draws}} objects to reduce their size and autocorrelation of the chains.
 }
 \examples{
 x <- example_draws()
