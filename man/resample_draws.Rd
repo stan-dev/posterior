@@ -14,26 +14,24 @@ resample_draws(x, ...)
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{weights}{A vector of positive weights of length equal to the
-number of draws in \code{draws} (as obtained by method \code{\link{ndraws}}).
-Draws with higher weights will be selected more often, usually
-roughly proportional to their weights. How exactly the weights are handled
-depends on the \code{method} argument. Weights will be internally normalized
-if necessary.}
+\item{weights}{A vector of positive weights of length equal to the number of
+draws in \code{draws} (as obtained by method \code{\link{ndraws}}). Weights will be
+internally normalized. How exactly the weights are handled depends on the
+\code{method} argument.}
 
-\item{method}{Name of the resampling method being applied.
-Possible choices are \code{"simple"} for simple random resampling with
-replacement, \code{"simple_no_replace"} for simple random resampling without
-replacement, \code{"stratified"} for stratified resampling with replacement
-and \code{"deterministic"} for deterministic resampling with replacement.
-Currently, \code{"stratified"} is the default as it has comparably
-low variance and bias with respect to ideal resampling. The latter would
-sample perfectly proportional to the weights but is not possible in practice
-where only a finite number of draws are available. For more details
-about resampling methods, see Kitagawa (1996).}
+\item{method}{Name of the resampling method being applied. Possible choices
+are \code{"simple"} for simple random resampling with replacement,
+\code{"simple_no_replace"} for simple random resampling without replacement,
+\code{"stratified"} for stratified resampling with replacement and
+\code{"deterministic"} for deterministic resampling with replacement. Currently,
+\code{"stratified"} is the default as it has comparably low variance and bias
+with respect to ideal resampling. The latter would sample perfectly
+proportional to the weights but is not possible in practice where only a
+finite number of draws are available. For more details about resampling
+methods, see Kitagawa (1996).}
 
-\item{ndraws}{Number of draws to be returned. By default (\code{NULL}),
-\code{ndraws} is set internally to the total number of draws in \code{x} if sensible.}
+\item{ndraws}{Number of draws to be returned. By default (\code{NULL}), \code{ndraws}
+is set internally to the total number of draws in \code{x} if sensible.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.
@@ -43,11 +41,8 @@ Resample \code{\link{draws}} objects according to given weights obtained,
 for instance, through importance sampling.
 }
 \details{
-It is only possible to resample \code{draws} formats in which draws
-can be subsetted directly without breaking the format's structure,
-that is, only in \code{draws_matrix} and \code{draws_df} objects. Upon usage of
-\code{resample_draws}, chain information will be silently dropped due to
-subsetting of individual draws (see \code{\link{subset_draws}} for details).
+Upon usage of \code{resample_draws}, chains will be automatically merged
+due to subsetting of individual draws (see \code{\link{subset_draws}} for details).
 }
 \examples{
 x <- as_draws_df(example_draws())

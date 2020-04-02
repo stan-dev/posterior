@@ -36,6 +36,6 @@ thin_draws.draws <- function(x, thin, ...) {
   if (thin > niterations ) {
     stop2("'thin' must be smaller than the total number of iterations.")
   }
-  sel_iterations <- seq(1, niterations, by = thin)
-  subset_draws(x, iteration = sel_iterations)
+  iteration_ids <- seq(1, niterations, by = thin)
+  subset_draws(x, iteration = iteration_ids)
 }

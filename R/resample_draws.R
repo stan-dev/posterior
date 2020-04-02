@@ -4,32 +4,27 @@
 #' for instance, through importance sampling.
 #'
 #' @template args-methods-x
-#' @param weights A vector of positive weights of length equal to the
-#' number of draws in `draws` (as obtained by method [`ndraws`]).
-#' Draws with higher weights will be selected more often, usually
-#' roughly proportional to their weights. How exactly the weights are handled
-#' depends on the `method` argument. Weights will be internally normalized
-#' if necessary.
-#' @param method Name of the resampling method being applied.
-#' Possible choices are `"simple"` for simple random resampling with
-#' replacement, `"simple_no_replace"` for simple random resampling without
-#' replacement, `"stratified"` for stratified resampling with replacement
-#' and `"deterministic"` for deterministic resampling with replacement.
-#' Currently, `"stratified"` is the default as it has comparably
-#' low variance and bias with respect to ideal resampling. The latter would
-#' sample perfectly proportional to the weights but is not possible in practice
-#' where only a finite number of draws are available. For more details
-#' about resampling methods, see Kitagawa (1996).
-#' @param ndraws Number of draws to be returned. By default (`NULL`),
-#' `ndraws` is set internally to the total number of draws in `x` if sensible.
+#' @param weights A vector of positive weights of length equal to the number of
+#'   draws in `draws` (as obtained by method [`ndraws`]). Weights will be
+#'   internally normalized. How exactly the weights are handled depends on the
+#'   `method` argument.
+#' @param method Name of the resampling method being applied. Possible choices
+#'   are `"simple"` for simple random resampling with replacement,
+#'   `"simple_no_replace"` for simple random resampling without replacement,
+#'   `"stratified"` for stratified resampling with replacement and
+#'   `"deterministic"` for deterministic resampling with replacement. Currently,
+#'   `"stratified"` is the default as it has comparably low variance and bias
+#'   with respect to ideal resampling. The latter would sample perfectly
+#'   proportional to the weights but is not possible in practice where only a
+#'   finite number of draws are available. For more details about resampling
+#'   methods, see Kitagawa (1996).
+#' @param ndraws Number of draws to be returned. By default (`NULL`), `ndraws`
+#'   is set internally to the total number of draws in `x` if sensible.
 #' @template args-methods-dots
 #' @template return-draws
 #'
-#' @details It is only possible to resample `draws` formats in which draws
-#' can be subsetted directly without breaking the format's structure,
-#' that is, only in `draws_matrix` and `draws_df` objects. Upon usage of
-#' `resample_draws`, chain information will be silently dropped due to
-#' subsetting of individual draws (see [`subset_draws`] for details).
+#' @details Upon usage of `resample_draws`, chains will be automatically merged
+#'   due to subsetting of individual draws (see [`subset_draws`] for details).
 #'
 #' @references
 #' Kitagawa, G., Monte Carlo Filter and Smoother for Non-Gaussian Nonlinear '
@@ -59,10 +54,6 @@ resample_draws <- function(x, ...) {
 #' @export
 resample_draws.draws <- function(x, weights, method = "stratified",
                                  ndraws = NULL, ...) {
-  if (!allow_resample_draws(x)) {
-    stop2("'resample_draws' requires formats which can be subsetted ",
-          "by individual draws, not only by iterations or chains.")
-  }
   ndraws_total <- ndraws(x)
   assert_numeric(weights, len = ndraws_total, lower = 0, null.ok = TRUE)
   assert_choice(method, supported_resample_methods())
@@ -70,12 +61,8 @@ resample_draws.draws <- function(x, weights, method = "stratified",
   weights <- weights / sum(weights)
   method_fun <- paste0(".resample_", method)
   method_fun <- get(method_fun, asNamespace("posterior"))
-  sel_draws <- method_fun(
-    weights = weights,
-    ndraws = ndraws,
-    ...
-  )
-  subset_draws(x, draw = sel_draws, unique = FALSE)
+  draw_ids <- method_fun(weights = weights, ndraws = ndraws, ...)
+  subset_draws(x, draw = draw_ids, unique = FALSE)
 }
 
 # simple random resampling with replacement
@@ -167,10 +154,4 @@ supported_resample_methods <- function() {
 # default 'ndraws' argument for 'resample_draws'
 default_ndraws_resample <- function(ndraws, weights) {
   ndraws %||% length(weights)
-}
-
-# allow resampling for draws for this format
-# not all formats support subsetting of draws
-allow_resample_draws <- function(x) {
-  is_draws_matrix(x) || is_draws_df(x)
 }
