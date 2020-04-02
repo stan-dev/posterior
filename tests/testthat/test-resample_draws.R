@@ -34,13 +34,16 @@ test_that("Resampling algorithms return the correct result in expectation", {
   expected_mean <- sum(x$mu * (w / sum(w)))
 
   x_rs <- resample_draws(x, w, method = "stratified")
-  expect_true(mean(x_rs$mu) > 6660 && x_rs < 6670)
+  mean_rs <- mean(x_rs$mu)
+  expect_true(mean_rs > 6660 && mean_rs < 6670)
 
   x_rs <- resample_draws(x, w, method = "deterministic")
-  expect_true(mean(x_rs$mu) > 6660 && x_rs < 6670)
+  mean_rs <- mean(x_rs$mu)
+  expect_true(mean_rs > 6660 && mean_rs < 6670)
 
   x_rs <- resample_draws(x, w, method = "simple")
-  expect_true(mean(x_rs$mu) > 6650 && x_rs < 6690)
+  mean_rs <- mean(x_rs$mu)
+  expect_true(mean_rs > 6650 && mean_rs < 6690)
 
   # method 'simple_no_replace' will be biased for weights with large variance
 })
