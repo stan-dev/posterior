@@ -58,6 +58,12 @@ resample_draws.draws <- function(x, weights, method = "stratified",
   assert_numeric(weights, len = ndraws_total, lower = 0, null.ok = TRUE)
   assert_choice(method, supported_resample_methods())
   assert_number(ndraws, null.ok = TRUE, lower = 0)
+  if (is.null(ndraws)) {
+    if (grepl("_no_replace$", method)) {
+      stop2("Argument 'ndraws' is required when sampling without replacement.")
+    }
+    ndraws <- length(weights)
+  }
   weights <- weights / sum(weights)
   method_fun <- paste0(".resample_", method)
   method_fun <- get(method_fun, asNamespace("posterior"))
@@ -68,7 +74,6 @@ resample_draws.draws <- function(x, weights, method = "stratified",
 # simple random resampling with replacement
 # @return index vector of length 'ndraws'
 .resample_simple <- function(weights, ndraws, ...) {
-  ndraws <- default_ndraws_resample(ndraws, weights)
   out <- seq_along(weights)
   sample(out, ndraws, replace = TRUE, prob = weights)
 }
@@ -76,9 +81,6 @@ resample_draws.draws <- function(x, weights, method = "stratified",
 # simple random resampling without replacement
 # @return index vector of length 'ndraws'
 .resample_simple_no_replace <- function(weights, ndraws, ...) {
-  if (is.null(ndraws)) {
-    stop2("Argument 'ndraws' is required for method 'simple_no_replace'.")
-  }
   if (ndraws > length(weights)) {
     stop2("Argument 'ndraws' must be smaller than the total ",
           "number of draws in method 'simple_no_replace'.")
@@ -93,10 +95,9 @@ resample_draws.draws <- function(x, weights, method = "stratified",
 #   Graphical Statistics, 5(1):1-25, 1996.
 # @return index vector of length 'ndraws'
 .resample_stratified <- function(weights, ndraws, ...) {
-  ndraws <- default_ndraws_resample(ndraws, weights)
   # expected number of repetitions for each original draw
   w <- ndraws * weights
-  out <- rep(NA, ndraws)
+  out <- integer(ndraws)
   c <- 0
   j <- 0
   for (i in seq_along(w)) {
@@ -122,11 +123,10 @@ resample_draws.draws <- function(x, weights, method = "stratified",
 #   Graphical Statistics, 5(1):1-25, 1996.
 # @return index vector of length 'ndraws'
 .resample_deterministic <- function(weights, ndraws, ...) {
-  ndraws <- default_ndraws_resample(ndraws, weights)
   # expected number of repetitions for each original draw
   w <- ndraws * weights
   fw <- floor(w)
-  out <- rep(NA, ndraws)
+  out <- integer(ndraws)
   k <- 0
   c <- 0.5
   for (i in seq_along(w)) {
@@ -149,9 +149,4 @@ resample_draws.draws <- function(x, weights, method = "stratified",
 # names of supported resampling methods
 supported_resample_methods <- function() {
   c("simple", "simple_no_replace", "stratified", "deterministic")
-}
-
-# default 'ndraws' argument for 'resample_draws'
-default_ndraws_resample <- function(ndraws, weights) {
-  ndraws %||% length(weights)
 }

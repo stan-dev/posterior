@@ -26,3 +26,21 @@ test_that("resample_draws returns expected format", {
     "Argument 'ndraws' is required"
   )
 })
+
+test_that("Resampling algorithms return the correct result in expectation", {
+  set.seed(1234)
+  x <- as_draws_df(cbind(mu = 1:10000))
+  w <- 1:10000 / 777
+  expected_mean <- sum(x$mu * (w / sum(w)))
+
+  x_rs <- resample_draws(x, w, method = "stratified")
+  expect_true(mean(x_rs$mu) > 6660 && x_rs < 6670)
+
+  x_rs <- resample_draws(x, w, method = "deterministic")
+  expect_true(mean(x_rs$mu) > 6660 && x_rs < 6670)
+
+  x_rs <- resample_draws(x, w, method = "simple")
+  expect_true(mean(x_rs$mu) > 6650 && x_rs < 6690)
+
+  # method 'simple_no_replace' will be biased for weights with large variance
+})
