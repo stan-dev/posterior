@@ -8,8 +8,8 @@
   x,
   digits = 2,
   max_iterations = getOption("max_iterations", 10),
-  max_chains = getOption("max_chains", 4),
-  max_variables = getOption("max_variables", 5),
+  max_chains = getOption("max_chains", 2),
+  max_variables = getOption("max_variables", 4),
   ...
 )
 }

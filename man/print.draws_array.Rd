@@ -9,7 +9,7 @@
   digits = 2,
   max_iterations = getOption("max_iterations", 5),
   max_chains = getOption("max_chains", 8),
-  max_variables = getOption("max_variables", 5),
+  max_variables = getOption("max_variables", 4),
   ...
 )
 }
