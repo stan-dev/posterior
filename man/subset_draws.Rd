@@ -68,7 +68,9 @@ subset_draws(x, ...)
 
 \item{chain}{Numeric vector of chain indices to be selected.}
 
-\item{draw}{Numeric vector of draw indices to be selected.}
+\item{draw}{Numeric vector of draw indices to be selected.
+Subsetting draw indices will lead to an automatic merging of chains
+via \code{\link{merge_chains}}.}
 
 \item{regex}{Logical. Indicates whether \code{variable} should be treated as a
 (vector of) regular expressions. Any variable in \code{x} matching at least one

@@ -3,7 +3,8 @@ Title: Tools for Working with Posterior Distributions
 Version: 0.0.2
 Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
-             person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")))
+             person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")),
+             person("Måns", "Magnusson", role = c("ctb")))
 Description: The posterior package is intended to provide useful tools for both
   users and developers of packages for fitting Bayesian models or working with 
   output from Bayesian models. The primary goals of the package are to: 

@@ -7,6 +7,8 @@
 #' @param iteration Numeric vector of iteration indices to be selected.
 #' @param chain Numeric vector of chain indices to be selected.
 #' @param draw Numeric vector of draw indices to be selected.
+#'   Subsetting draw indices will lead to an automatic merging of chains
+#'   via [`merge_chains`].
 #' @param regex Logical. Indicates whether `variable` should be treated as a
 #'   (vector of) regular expressions. Any variable in `x` matching at least one
 #'   of the regular expressions will be selected.
@@ -45,14 +47,10 @@ subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
+  chain <- check_chain_ids(chain, x, unique = unique)
   draw <- check_draw_ids(draw, x, unique = unique)
-  if (!is.null(chain)) {
-    stop2("Cannot subset 'chain' in 'draws_matrix' objects.")
-  }
+  x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(iteration)) {
-    if (!is.null(draw)) {
-      stop2("Cannot subset 'iteration' and 'draw' at the same time.")
-    }
     draw <- iteration
   }
   x <- subset_dims(x, draw, variable)
@@ -71,8 +69,10 @@ subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
   chain <- check_chain_ids(chain, x, unique = unique)
+  draw <- check_draw_ids(draw, x, unique = unique)
+  x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(draw)) {
-    stop2("Cannot subset 'draw' in 'draws_array' objects.")
+    iteration <- draw
   }
   x <- subset_dims(x, iteration, chain, variable)
   if (!is.null(chain) || !is.null(iteration)) {
@@ -92,24 +92,15 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
   iteration <- check_iteration_ids(iteration, x, unique = unique)
   chain <- check_chain_ids(chain, x, unique = unique)
   draw <- check_draw_ids(draw, x, unique = unique)
-  if (!is.null(draw)) {
-    if (!is.null(iteration)) {
-      stop2("Cannot subset 'iteration' and 'draw' at the same time.")
-    }
-    if (!is.null(chain)) {
-      stop2("Cannot subset 'chain' and 'draw' at the same time.")
-    }
-  }
+  x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(variable)) {
     x <- x[, c(variable, meta_columns(x))]
   }
   if (!is.null(draw)) {
     # each x$.draw is unique so using 'match' is valid here
     x <- x[match(draw, x$.draw), ]
-    # subsetting draw invalidates iteration and chain
     x$.draw <- repair_iteration_ids(x$.draw)
     x$.iteration <- x$.draw
-    x$.chain <- rep(1L, nrow(x))
   } else if (!is.null(chain) || !is.null(iteration)) {
     if (unique) {
       if (!is.null(chain)) {
@@ -139,8 +130,10 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
   chain <- check_chain_ids(chain, x, unique = unique)
+  draw <- check_draw_ids(draw, x, unique = unique)
+  x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(draw)) {
-    stop2("Cannot subset 'draw' in 'draws_array' objects.")
+    iteration <- draw
   }
   if (!is.null(chain)) {
     x <- x[chain]
@@ -196,4 +189,22 @@ subset_dims <- function(x, ...) {
   call <- paste0("x[", args, "]")
   dots$x <- x
   eval2(call, dots)
+}
+
+# prepare object to be subsetted via 'subset_draws'
+prepare_subsetting <- function(x, iteration = NULL, chain = NULL,
+                               draw = NULL) {
+  if (!is.null(draw)) {
+    if (!is.null(iteration)) {
+      stop2("Cannot subset 'iteration' and 'draw' at the same time.")
+    }
+    if (!is.null(chain)) {
+      stop2("Cannot subset 'chain' and 'draw' at the same time.")
+    }
+    if (nchains(x) > 1L) {
+      message("Merging chains in order to subset via 'draw'.")
+      x <- merge_chains(x)
+    }
+  }
+  x
 }
