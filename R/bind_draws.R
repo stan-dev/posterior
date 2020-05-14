@@ -26,6 +26,7 @@ bind_draws.draws_matrix <- function(x, ..., along = "variable") {
     return(as_draws_matrix(x))
   }
   dots <- c(list(x), dots)
+  dots <- remove_null(dots)
   dots <- lapply(dots, as_draws_matrix)
   dots <- lapply(dots, repair_draws)
   if (along == "variable") {
@@ -49,6 +50,7 @@ bind_draws.draws_array <- function(x, ..., along = "variable") {
     return(as_draws_array(x))
   }
   dots <- c(list(x), dots)
+  dots <- remove_null(dots)
   dots <- lapply(dots, as_draws_array)
   dots <- lapply(dots, repair_draws)
   if (along == "variable") {
@@ -78,6 +80,7 @@ bind_draws.draws_df <- function(x, ..., along = "variable") {
     return(as_draws_df(x))
   }
   dots <- c(list(x), dots)
+  dots <- remove_null(dots)
   dots <- lapply(dots, as_draws_df)
   dots <- lapply(dots, repair_draws)
   if (along == "variable") {
@@ -125,6 +128,7 @@ bind_draws.draws_list <- function(x, ..., along = "variable") {
     return(as_draws_list(x))
   }
   dots <- c(list(x), dots)
+  dots <- remove_null(dots)
   dots <- lapply(dots, as_draws_list)
   dots <- lapply(dots, repair_draws)
   if (along == "variable") {
@@ -156,6 +160,16 @@ bind_draws.draws_list <- function(x, ..., along = "variable") {
     stop2("Cannot bind 'draws_list' objects along 'draw'.")
   }
   as_draws_list(out)
+}
+
+#' @export
+bind_draws.NULL <- function(x, ..., along = "variable") {
+  dots <- list(...)
+  dots <- remove_null(dots)
+  if (!length(dots)) {
+    stop2("All objects passed to 'bind_draws' are NULL.")
+  }
+  do_call(bind_draws, dots)
 }
 
 # check if function output is the same across objects

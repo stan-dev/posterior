@@ -163,6 +163,11 @@ deparse2 <- function(x, max_chars = NULL, max_wsp = 1L) {
   out
 }
 
+# remove NULL elements from a list
+remove_null <- function(x) {
+  Filter(Negate(is.null), x)
+}
+
 # remove whitespaces from strings
 rm_wsp <- function(x, max_wsp = 0) {
   assert_character(x)

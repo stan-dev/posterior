@@ -89,6 +89,9 @@ test_that("bind_draws works for draws_df objects", {
   draws_new <- bind_draws(draws1, draws3, along = "draw")
   expect_equal(ndraws(draws_new), ndraws(draws1) + ndraws(draws3))
   expect_equal(nchains(draws_new), 1L)
+
+  draws_new <- bind_draws(NULL, draws1)
+  expect_equal(draws_new, draws1)
 })
 
 test_that("bind_draws works for draws_list objects", {
