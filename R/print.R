@@ -143,11 +143,12 @@ print.draws_df <- function(x, digits = 2,
     nchains, " chains, and ", nvariables, " variables\n"
   )
   cat(header)
+  meta_cols <- intersect(names(x), meta_columns())
   sel_draws <- seq_len(min(max_draws, ndraws))
   sel_variables <- seq_len(min(max_variables, nvariables))
   y <- x[sel_variables]
   if (meta_columns) {
-    y <- cbind(y, x[, meta_columns()])
+    y <- cbind(y, x[, meta_cols])
   }
   y <- y[sel_draws, ]
   class(y) <- "data.frame"
@@ -165,6 +166,9 @@ print.draws_df <- function(x, digits = 2,
     comment <- paste0(comment, collapse = ", and ")
     comment <- paste0("# ... with ", comment, "\n")
     cat(comment)
+  }
+  if (!meta_columns) {
+    cat0("# ... hidden meta-columns ", comma(meta_cols), "\n")
   }
   invisible(x)
 }
