@@ -157,6 +157,9 @@ ess_median <- function(x) {
 
 # ESS of a single quantile
 .ess_quantile <- function(x, prob) {
+  if (should_return_NA(x)) {
+    return(NA_real_)
+  }
   x <- as.matrix(x)
   I <- x <= quantile(x, prob)
   .ess(split_chains(I))
@@ -482,14 +485,8 @@ fold_draws <- function(x) {
 #' @export
 .rhat <- function(x) {
   x <- as.matrix(x)
-  if (anyNA(x)) {
-    return(NA)
-  }
-  if (any(!is.finite(x))) {
-    return(NaN)
-  }
-  if (is_constant(x)) {
-    return(NA)
+  if (should_return_NA(x)) {
+    return(NA_real_)
   }
   nchains <- NCOL(x)
   niterations <- NROW(x)
@@ -513,14 +510,8 @@ fold_draws <- function(x) {
   x <- as.matrix(x)
   nchains <- NCOL(x)
   niterations <- NROW(x)
-  if (niterations < 3L || anyNA(x)) {
-    return(NA)
-  }
-  if (any(!is.finite(x))) {
-    return(NaN)
-  }
-  if (is_constant(x)) {
-    return(NA)
+  if (niterations < 3L || should_return_NA(x)) {
+    return(NA_real_)
   }
   acov_fun <- function(i) autocovariance(x[, i])
   acov <- lapply(seq_len(nchains), acov_fun)
@@ -573,4 +564,9 @@ fold_draws <- function(x) {
   tau_hat <- max(tau_hat, 1/log10(ess))
   ess <- ess / tau_hat
   ess
+}
+
+# should NA be returned by a convergence diagnostic?
+should_return_NA <- function(x) {
+  anyNA(x) || checkmate::anyInfinite(x) || is_constant(x)
 }
