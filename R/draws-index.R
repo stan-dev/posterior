@@ -304,23 +304,40 @@ ndraws.draws_list <- function(x) {
 # all `variables` exist in `x` and that no `variables`
 # are reserved words
 # @param regex should 'variables' be treated as regular expressions?
-check_existing_variables <- function(variables, x, regex = FALSE) {
+# @param scalar should only scalar variables be matched?
+check_existing_variables <- function(variables, x, regex = FALSE,
+                                     scalar = TRUE) {
   check_draws_object(x)
   if (is.null(variables)) {
     return(NULL)
   }
   regex <- as_one_logical(regex)
+  scalar <- as_one_logical(scalar)
   variables <- unique(as.character(variables))
+  all_variables <- variables(x)
   if (regex) {
-    all_variables <- variables(x)
     tmp <- named_list(variables)
     for (i in seq_along(variables)) {
       tmp[[i]] <- all_variables[grepl(variables[i], all_variables)]
     }
+    # regular expressions are not required to match anything
+    missing_variables <- NULL
     variables <- as.character(unique(unlist(tmp)))
+  } else if (!scalar) {
+    tmp <- named_list(variables)
+    escaped_variables <- escape_all(variables)
+    missing <- rep(NA, length(variables))
+    for (i in seq_along(variables)) {
+      v_regex <- paste0("^", escaped_variables[i], "(\\[[^\\]*])?$")
+      tmp[[i]] <- all_variables[grepl(v_regex, all_variables)]
+      missing[i] <- !length(tmp[[i]])
+    }
+    missing_variables <- variables[missing]
+    variables <- as.character(unique(unlist(tmp)))
+  } else {
+    missing_variables <- setdiff(variables, all_variables)
   }
   variables <- check_reserved_variables(variables)
-  missing_variables <- setdiff(variables, variables(x))
   if (length(missing_variables)) {
     stop2("The following variables are missing in the draws object: ",
           comma(missing_variables))

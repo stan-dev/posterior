@@ -67,3 +67,11 @@ test_that("variables can be subsetted via regular expressions", {
   x_sub <- subset(x, variable = c("theta\\[", "m"), regex = TRUE)
   expect_equal(variables(x_sub), c(paste0("theta[", 1:8, "]"), "mu"))
 })
+
+test_that("variables can be subsetted via non-scalar selection", {
+  x <- as_draws_df(example_draws())
+  x_sub <- subset_draws(x, variable = "theta", scalar = FALSE)
+  expect_equal(variables(x_sub), c(paste0("theta[", 1:8, "]")))
+
+  expect_error(subset_draws(x, variable = "theta", scalar = TRUE), "theta")
+})

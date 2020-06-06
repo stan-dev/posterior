@@ -18,6 +18,7 @@ subset_draws(x, ...)
   chain = NULL,
   draw = NULL,
   regex = FALSE,
+  scalar = FALSE,
   unique = TRUE,
   ...
 )
@@ -29,6 +30,7 @@ subset_draws(x, ...)
   chain = NULL,
   draw = NULL,
   regex = FALSE,
+  scalar = FALSE,
   unique = TRUE,
   ...
 )
@@ -40,6 +42,7 @@ subset_draws(x, ...)
   chain = NULL,
   draw = NULL,
   regex = FALSE,
+  scalar = FALSE,
   unique = TRUE,
   ...
 )
@@ -51,6 +54,7 @@ subset_draws(x, ...)
   chain = NULL,
   draw = NULL,
   regex = FALSE,
+  scalar = FALSE,
   unique = TRUE,
   ...
 )
@@ -74,7 +78,14 @@ via \code{\link{merge_chains}}.}
 
 \item{regex}{Logical. Indicates whether \code{variable} should be treated as a
 (vector of) regular expressions. Any variable in \code{x} matching at least one
-of the regular expressions will be selected.}
+of the regular expressions will be selected. Defaults to \code{FALSE}.}
+
+\item{scalar}{Logical. Indicates whether \code{variable} should be treated as
+names of scalar variables, that is, if \code{variable} should contain the
+variable dimension (if existent) in order for the variables to be selected.
+If \code{FALSE} (the default), all variables of the form \verb{<variable>[...]} will
+be selected even if \verb{[...]} was not specified in \code{variable} (see examples).
+Ignored if \code{regex} is \code{TRUE}.}
 
 \item{unique}{Logical. Indicates whether duplicated selection of chains,
 iterations, or draws is possible. If \code{TRUE} (the default) only
@@ -100,5 +111,10 @@ subset_draws(x, iteration = 5:10, chain = 3:4)
 
 # extract the first chain twice
 subset_draws(x, chain = c(1, 1), unique = FALSE)
+
+# extract all elements of 'theta'
+subset_draws(x, variable = "theta")
+# will result in an error since the scalar variable 'theta' does not exist
+# subset_draws(x, variable = "theta", scalar = TRUE)
 
 }

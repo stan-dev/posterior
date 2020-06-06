@@ -265,3 +265,12 @@ warning2 <- function(...) {
 SW <- function(expr) {
   base::suppressWarnings(expr)
 }
+
+# escape all special characters in character strings
+escape_all <- function(x) {
+  specials <- c(".", "*", "+", "?", "^", "$", "(", ")", "[", "]", "|")
+  for (s in specials) {
+    x <- gsub(s, paste0("\\", s), x, fixed = TRUE)
+  }
+  x
+}

@@ -11,7 +11,13 @@
 #'   via [`merge_chains`].
 #' @param regex Logical. Indicates whether `variable` should be treated as a
 #'   (vector of) regular expressions. Any variable in `x` matching at least one
-#'   of the regular expressions will be selected.
+#'   of the regular expressions will be selected. Defaults to `FALSE`.
+#' @param scalar Logical. Indicates whether `variable` should be treated as
+#'   names of scalar variables, that is, if `variable` should contain the
+#'   variable dimension (if existent) in order for the variables to be selected.
+#'   If `FALSE` (the default), all variables of the form `<variable>[...]` will
+#'   be selected even if `[...]` was not specified in `variable` (see examples).
+#'   Ignored if `regex` is `TRUE`.
 #' @param unique Logical. Indicates whether duplicated selection of chains,
 #'   iterations, or draws is possible. If `TRUE` (the default) only
 #'   unique chains, iterations, and draws are selected regardless of how
@@ -34,6 +40,11 @@
 #' # extract the first chain twice
 #' subset_draws(x, chain = c(1, 1), unique = FALSE)
 #'
+#' # extract all elements of 'theta'
+#' subset_draws(x, variable = "theta")
+#' # will result in an error since the scalar variable 'theta' does not exist
+#' # subset_draws(x, variable = "theta", scalar = TRUE)
+#'
 #' @export
 subset_draws <- function(x, ...) {
   UseMethod("subset_draws")
@@ -43,9 +54,9 @@ subset_draws <- function(x, ...) {
 #' @export
 subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
                                       chain = NULL, draw = NULL, regex = FALSE,
-                                      unique = TRUE, ...) {
+                                      scalar = FALSE, unique = TRUE, ...) {
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex)
+  variable <- check_existing_variables(variable, x, regex, scalar)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
   chain <- check_chain_ids(chain, x, unique = unique)
   draw <- check_draw_ids(draw, x, unique = unique)
@@ -64,9 +75,9 @@ subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
 #' @export
 subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
                                      chain = NULL, draw = NULL, regex = FALSE,
-                                     unique = TRUE, ...) {
+                                     scalar = FALSE, unique = TRUE, ...) {
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex)
+  variable <- check_existing_variables(variable, x, regex, scalar)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
   chain <- check_chain_ids(chain, x, unique = unique)
   draw <- check_draw_ids(draw, x, unique = unique)
@@ -85,10 +96,10 @@ subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
 #' @export
 subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
                                   chain = NULL, draw = NULL, regex = FALSE,
-                                  unique = TRUE, ...) {
+                                  scalar = FALSE, unique = TRUE, ...) {
   x <- repair_draws(x)
   unique <- as_one_logical(unique)
-  variable <- check_existing_variables(variable, x, regex = regex)
+  variable <- check_existing_variables(variable, x, regex, scalar)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
   chain <- check_chain_ids(chain, x, unique = unique)
   draw <- check_draw_ids(draw, x, unique = unique)
@@ -125,9 +136,9 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
 #' @export
 subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
                                     chain = NULL, draw = NULL, regex = FALSE,
-                                    unique = TRUE, ...) {
+                                    scalar = FALSE, unique = TRUE, ...) {
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex)
+  variable <- check_existing_variables(variable, x, regex, scalar)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
   chain <- check_chain_ids(chain, x, unique = unique)
   draw <- check_draw_ids(draw, x, unique = unique)
