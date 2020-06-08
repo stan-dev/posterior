@@ -6,6 +6,7 @@
 #' @param ... One or more expressions separated by commas indicating the variables
 #'   to rename. Existing variable names can be unquoted expressions, as in
 #'   `new_name = old_name`, or character vectors, as in `new_name = "old_name"`.
+#'   All elements of non-scalar variables can be renamed at once.
 #'
 #' @return
 #' Returns a [`draws`] object of the same format as `.x`, with variables renamed
@@ -22,6 +23,9 @@
 #' rename_variables(x, mean = mu, sigma = tau)
 #' rename_variables(x, b = `theta[1]`)
 #' rename_variables(x, b = "theta[1]")
+#'
+#' # rename all elements of 'theta' at once
+#' rename_variables(x, alpha = theta)
 #'
 #' @export
 rename_variables <- function(.x, ...) {
@@ -43,8 +47,17 @@ rename_variables.draws <- function(.x, ...) {
     )
   }
 
-  check_existing_variables(old_names, .x)
-  old_names_index <- match(old_names, variables(.x))
-  variables(.x)[old_names_index] <- new_names
+  # loop over names as every old name may correspond to multiple
+  # scalar variables if the name targets a non-scalar variable
+  # also this allows renaming operations to be chained
+  for (i in seq_along(old_names)) {
+    old_names_i <- check_existing_variables(old_names[i], .x)
+    v_regex <- paste0("^", escape_all(old_names[i]))
+    v_indices <- sub(v_regex, "", old_names_i)
+    new_names_i <- paste0(new_names[i], v_indices)
+    sel <- which(variables(.x) %in% old_names_i)
+    variables(.x)[sel] <- new_names_i
+  }
+  check_new_variables(variables(.x))
   .x
 }

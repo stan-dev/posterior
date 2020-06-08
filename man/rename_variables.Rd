@@ -14,7 +14,8 @@ rename_variables(.x, ...)
 
 \item{...}{One or more expressions separated by commas indicating the variables
 to rename. Existing variable names can be unquoted expressions, as in
-\code{new_name = old_name}, or character vectors, as in \code{new_name = "old_name"}.}
+\code{new_name = old_name}, or character vectors, as in \code{new_name = "old_name"}.
+All elements of non-scalar variables can be renamed at once.}
 }
 \value{
 Returns a \code{\link{draws}} object of the same format as \code{.x}, with variables renamed
@@ -30,6 +31,9 @@ x
 rename_variables(x, mean = mu, sigma = tau)
 rename_variables(x, b = `theta[1]`)
 rename_variables(x, b = "theta[1]")
+
+# rename all elements of 'theta' at once
+rename_variables(x, alpha = theta)
 
 }
 \seealso{
