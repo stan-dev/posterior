@@ -301,18 +301,17 @@ ndraws.draws_list <- function(x) {
 }
 
 # check validity of existing variable names: e.g., that
-# all `variables` exist in `x` and that no `variables`
-# are reserved words
+# all `variables` exist in `x` and that no `variables`are reserved words
 # @param regex should 'variables' be treated as regular expressions?
-# @param scalar should only scalar variables be matched?
+# @param scalar_only should only scalar variables be matched?
 check_existing_variables <- function(variables, x, regex = FALSE,
-                                     scalar = TRUE) {
+                                     scalar_only = FALSE) {
   check_draws_object(x)
   if (is.null(variables)) {
     return(NULL)
   }
   regex <- as_one_logical(regex)
-  scalar <- as_one_logical(scalar)
+  scalar_only <- as_one_logical(scalar_only)
   variables <- unique(as.character(variables))
   all_variables <- variables(x)
   if (regex) {
@@ -323,12 +322,12 @@ check_existing_variables <- function(variables, x, regex = FALSE,
     # regular expressions are not required to match anything
     missing_variables <- NULL
     variables <- as.character(unique(unlist(tmp)))
-  } else if (!scalar) {
+  } else if (!scalar_only) {
     tmp <- named_list(variables)
     escaped_variables <- escape_all(variables)
     missing <- rep(NA, length(variables))
     for (i in seq_along(variables)) {
-      v_regex <- paste0("^", escaped_variables[i], "(\\[[^\\]*])?$")
+      v_regex <- paste0("^", escaped_variables[i], "(\\[.*\\])?$")
       tmp[[i]] <- all_variables[grepl(v_regex, all_variables)]
       missing[i] <- !length(tmp[[i]])
     }
