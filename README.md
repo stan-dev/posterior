@@ -10,9 +10,8 @@ status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.
 [![Travis Build
 Status](https://travis-ci.org/stan-dev/posterior.svg?branch=master)](https://travis-ci.org/stan-dev/posterior)
 [![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/jgabry/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/jgabry/posterior)
-[![Coverage
-Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
+status](https://ci.appveyor.com/api/projects/status/github/stan-dev/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/jgabry/posterior)
+[![codecov](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
 <!-- badges: end -->
 
 The **posterior** R package is intended to provide useful tools for both
