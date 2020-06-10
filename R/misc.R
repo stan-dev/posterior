@@ -274,3 +274,10 @@ escape_all <- function(x) {
   }
   x
 }
+
+# numerically stable version of log(sum(exp(x)))
+log_sum_exp <- function(x) {
+  max <- max(x)
+  sum <- sum(exp(x - max))
+  max + log(sum)
+}

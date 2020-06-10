@@ -4,22 +4,22 @@ test_that("resample_draws returns expected format", {
 
   x <- as_draws_matrix(x)
   x_rs <- resample_draws(x, weights = w, method = "stratified")
-  expect_class(x_rs, "draws_matrix")
+  expect_true(is_draws_matrix(x_rs))
   expect_equal(ndraws(x_rs), ndraws(x))
 
   x <- as_draws_array(x)
   x_rs <- resample_draws(x, weights = w, method = "deterministic", ndraws = 200)
-  expect_class(x_rs, "draws_array")
+  expect_true(is_draws_array(x_rs))
   expect_equal(ndraws(x_rs), 200)
 
   x <- as_draws_df(x)
   x_rs <- resample_draws(x, weights = w, method = "simple")
-  expect_class(x_rs, "draws_df")
+  expect_true(is_draws_df(x_rs))
   expect_equal(ndraws(x_rs), ndraws(x))
 
   x <- as_draws_list(x)
   x_rs <- resample_draws(x, w, method = "simple_no_replace", ndraws = 100)
-  expect_class(x_rs, "draws_list")
+  expect_true(is_draws_list(x_rs))
   expect_equal(ndraws(x_rs), 100)
   expect_error(
     resample_draws(x, w, method = "simple_no_replace"),
@@ -46,4 +46,16 @@ test_that("Resampling algorithms return the correct result in expectation", {
   expect_true(mean_rs > 6650 && mean_rs < 6690)
 
   # method 'simple_no_replace' will be biased for weights with large variance
+})
+
+test_that("resample_draws uses stored weights when available", {
+  x <- example_draws()
+  expect_error(resample_draws(x),
+    "No weights are provided and none can be found within the draws object"
+  )
+  w <- runif(ndraws(x), 0, 10)
+  x <- weight_draws(x, w)
+  x_rs <- resample_draws(x)
+  expect_true(is_draws_array(x_rs))
+  expect_equal(ndraws(x_rs), ndraws(x))
 })

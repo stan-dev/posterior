@@ -7,7 +7,7 @@
 \usage{
 resample_draws(x, ...)
 
-\method{resample_draws}{draws}(x, weights, method = "stratified", ndraws = NULL, ...)
+\method{resample_draws}{draws}(x, weights = NULL, method = "stratified", ndraws = NULL, ...)
 }
 \arguments{
 \item{x}{An \R object for which the methods are defined.}
@@ -16,8 +16,10 @@ resample_draws(x, ...)
 
 \item{weights}{A vector of positive weights of length equal to the number of
 draws in \code{draws} (as obtained by method \code{\link{ndraws}}). Weights will be
-internally normalized. How exactly the weights are handled depends on the
-\code{method} argument.}
+internally normalized. If \code{weights} is \code{NULL} (the default), an attempt
+will be made to extract weights stored already in the draws object (via
+\code{\link{weight_draws}}). How exactly the weights influence the resampling
+depends on the \code{method} argument.}
 
 \item{method}{Name of the resampling method being applied. Possible choices
 are \code{"simple"} for simple random resampling with replacement,

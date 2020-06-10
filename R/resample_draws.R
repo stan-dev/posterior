@@ -6,8 +6,10 @@
 #' @template args-methods-x
 #' @param weights A vector of positive weights of length equal to the number of
 #'   draws in `draws` (as obtained by method [`ndraws`]). Weights will be
-#'   internally normalized. How exactly the weights are handled depends on the
-#'   `method` argument.
+#'   internally normalized. If `weights` is `NULL` (the default), an attempt
+#'   will be made to extract weights stored already in the draws object (via
+#'   [`weight_draws`]). How exactly the weights influence the resampling
+#'   depends on the `method` argument.
 #' @param method Name of the resampling method being applied. Possible choices
 #'   are `"simple"` for simple random resampling with replacement,
 #'   `"simple_no_replace"` for simple random resampling without replacement,
@@ -52,19 +54,29 @@ resample_draws <- function(x, ...) {
 
 #' @rdname resample_draws
 #' @export
-resample_draws.draws <- function(x, weights, method = "stratified",
+resample_draws.draws <- function(x, weights = NULL, method = "stratified",
                                  ndraws = NULL, ...) {
   ndraws_total <- ndraws(x)
   assert_numeric(weights, len = ndraws_total, lower = 0, null.ok = TRUE)
   assert_choice(method, supported_resample_methods())
   assert_number(ndraws, null.ok = TRUE, lower = 0)
+  if (is.null(weights)) {
+    tryCatch(
+      weights <- weights(x, normalize = TRUE),
+      error = function(e) stop2(
+        "No weights are provided and none can ",
+        "be found within the draws object."
+      )
+    )
+  } else {
+    weights <- weights / sum(weights)
+  }
   if (is.null(ndraws)) {
     if (grepl("_no_replace$", method)) {
       stop2("Argument 'ndraws' is required when sampling without replacement.")
     }
     ndraws <- length(weights)
   }
-  weights <- weights / sum(weights)
   method_fun <- paste0(".resample_", method)
   method_fun <- get(method_fun, asNamespace("posterior"))
   draw_ids <- method_fun(weights = weights, ndraws = ndraws, ...)
