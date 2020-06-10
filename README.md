@@ -11,7 +11,8 @@ status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.
 Status](https://travis-ci.org/stan-dev/posterior.svg?branch=master)](https://travis-ci.org/stan-dev/posterior)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/stan-dev/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/jgabry/posterior)
-[![codecov](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
+[![Coverage
+Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
 <!-- badges: end -->
 
 The **posterior** R package is intended to provide useful tools for both
@@ -40,7 +41,7 @@ remotes::install_github("stan-dev/posterior")
 
 ``` r
 library("posterior")
-#> This is posterior version 0.0.1
+#> This is posterior version 0.0.3
 ```
 
 To demonstrate how to work with the **posterior** package, we will use
@@ -109,6 +110,7 @@ print(eight_schools_df)
 #> 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1
 #> 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5
 #> # ... with 390 more draws, and 2 more variables
+#> # ... hidden meta-columns {'.chain', '.iteration', '.draw'}
 ```
 
 Different formats are preferable in different situations and hence
@@ -194,6 +196,7 @@ subset_draws(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 #> 8  -1.2
 #> 9  10.9
 #> 10  9.8
+#> # ... hidden meta-columns {'.chain', '.iteration', '.draw'}
 ```
 
 The same call to `subset_draws()` can be used regardless of whether the
@@ -212,27 +215,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 draws, and 5 variables
 #>     variable
-#> draw    V1     V2      V3    V4     V5
-#>   1  -0.43  0.582 -0.0269  0.65  0.393
-#>   2   0.98  1.077  0.2652 -1.34  0.461
-#>   3   0.17 -0.778 -1.3508  0.41 -0.099
-#>   4  -0.21  0.608 -2.1685 -0.36  2.660
-#>   5   0.87  1.810 -0.3891 -0.50 -0.481
-#>   6  -0.29  0.264 -0.0025 -0.30 -0.780
-#>   7   0.69  0.088  1.3062 -1.02  0.631
-#>   8   0.50  0.128  0.5418 -0.27  0.228
-#>   9   1.84  1.267  1.0108  1.91  0.138
-#>   10 -1.85 -0.600  0.8428  1.68 -0.243
+#> draw     V1    V2    V3    V4    V5
+#>   1  -0.087  0.45 -0.33  0.20  0.31
+#>   2   0.014 -0.69 -0.65 -1.41 -1.26
+#>   3  -0.398  1.69  0.19 -0.82 -0.57
+#>   4   1.519  0.41  0.11  0.50 -2.91
+#>   5  -1.132  0.16 -0.19 -0.63 -0.39
+#>   6   0.166 -0.46  0.36  0.35  1.04
+#>   7  -0.481 -0.34  0.46 -0.73 -0.41
+#>   8   1.136 -0.23 -0.41  1.12  0.75
+#>   9   1.115 -0.41 -1.03  0.24  1.06
+#>   10 -1.281  0.78  1.63  0.61  0.89
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 x 5
-#>   variable    mean    sd median   mad
-#>   <chr>      <dbl> <dbl>  <dbl> <dbl>
-#> 1 V1       0.227   1.00   0.334 0.866
-#> 2 V2       0.445   0.805  0.423 0.734
-#> 3 V3       0.00290 1.08   0.131 0.913
-#> 4 V4       0.0879  1.07  -0.284 1.06 
-#> 5 V5       0.291   0.941  0.183 0.524
+#>   variable    mean    sd  median   mad
+#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
+#> 1 V1        0.0571 0.952 -0.0362 1.14 
+#> 2 V2        0.136  0.722 -0.0321 0.645
+#> 3 V3        0.0139 0.733 -0.0416 0.569
+#> 4 V4       -0.0586 0.793  0.221  0.919
+#> 5 V5       -0.149  1.25  -0.0392 1.28
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
