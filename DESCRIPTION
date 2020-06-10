@@ -25,7 +25,7 @@ Suggests:
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/stan-dev/posterior
+URL: https://mc-stan.org/posterior/, https://discourse.mc-stan.org/
 BugReports: https://github.com/stan-dev/posterior/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
