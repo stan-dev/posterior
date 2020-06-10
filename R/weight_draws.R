@@ -156,7 +156,7 @@ validate_weights <- function(weights, draws, log = FALSE) {
   }
   if (!log) {
     if (any(weights < 0)) {
-      stop2("Weights needs to be non-negative.")
+      stop2("Weights must be non-negative.")
     }
     weights <- log(weights)
   }
