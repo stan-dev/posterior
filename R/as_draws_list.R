@@ -6,6 +6,7 @@
 #' @templateVar draws_format draws_list
 #' @templateVar base_class "list"
 #' @template draws_format-skeleton
+#' @template args-format-nchains
 #'
 #' @details Objects of class `"draws_list"` are lists with one element per MCMC
 #'   chain. Each of these elements is itself a named list of numeric vectors
@@ -112,6 +113,13 @@ as_draws_list.mcmc.list <- function(x, ...) {
   names(x) <- as.character(seq_along(x))
   class(x) <- class_draws_list()
   x
+}
+
+#' @rdname draws_list
+#' @export
+draws_list <- function(..., .nchains = 1) {
+  out <- draws_df(..., .nchains = .nchains)
+  as_draws_list(out)
 }
 
 class_draws_list <- function() {

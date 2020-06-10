@@ -6,6 +6,7 @@
 #' @templateVar draws_format draws_array
 #' @templateVar base_class "array"
 #' @template draws_format-skeleton
+#' @template args-format-nchains
 #'
 #' @details Objects of class `"draws_array"` are 3-D arrays with dimensions
 #'   `"iteration"`, `"chain"`, and `"variable"`. See **Examples**.
@@ -107,6 +108,26 @@ as_draws_array.mcmc.list <- function(x, ...) {
   dimnames(x) <- new_dimnames
   class(x) <- class_draws_array()
   x
+}
+
+#' @rdname draws_array
+#' @export
+draws_array <- function(..., .nchains = 1) {
+  out <- validate_draws_per_variable(...)
+  .nchains <- as_one_integer(.nchains)
+  if (.nchains < 1) {
+    stop2("Number of chains must be positive.")
+  }
+  ndraws <- length(out[[1]])
+  if (ndraws %% .nchains != 0) {
+    stop2("Number of chains does not divide the number of draws.")
+  }
+  niterations <- ndraws %/% .nchains
+  variables <- names(out)
+  out <- unlist(out)
+  out <- array(out, dim = c(niterations, .nchains, length(variables)))
+  dimnames(out)[[3]] <- variables
+  as_draws_array(out)
 }
 
 class_draws_array <- function() {

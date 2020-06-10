@@ -138,3 +138,32 @@ test_that("lists can be transformed to draws_list objects", {
   expect_equal(nchains(y), 2)
 })
 
+test_that("numeric vectors can be transformed to draws_matrix objects", {
+  draws_matrix <- draws_matrix(a = 1:10, b = 11:20, c = 1)
+  draws_matrix2 <- as_draws_matrix(cbind(1:10, 11:20, 1))
+  expect_equivalent(draws_matrix, draws_matrix2)
+})
+
+test_that("numeric vectors can be transformed to draws_array objects", {
+  draws_array <- draws_array(a = 1:10, b = 11:20, c = 1, .nchains = 2)
+  draws_array2 <- array(c(1:10, 11:20, rep(1, 10)), c(5, 2, 3))
+  dimnames(draws_array2)[[3]] <- c("a", "b", "c")
+  draws_array2 <- as_draws_array(draws_array2)
+  expect_equivalent(draws_array, draws_array2)
+})
+
+test_that("numeric vectors can be transformed to draws_df objects", {
+  draws_df <- draws_df(a = 1:10, b = 11:20, c = 1, .nchains = 2)
+  draws_array <- array(c(1:10, 11:20, rep(1, 10)), c(5, 2, 3))
+  dimnames(draws_array)[[3]] <- c("a", "b", "c")
+  draws_df2 <- as_draws_df(draws_array)
+  expect_equivalent(draws_df, draws_df2)
+})
+
+test_that("numeric vectors can be transformed to draws_list objects", {
+  draws_list <- draws_list(a = 1:10, b = 11:20, c = 1, .nchains = 2)
+  draws_array <- array(c(1:10, 11:20, rep(1, 10)), c(5, 2, 3))
+  dimnames(draws_array)[[3]] <- c("a", "b", "c")
+  draws_list2 <- as_draws_list(draws_array)
+  expect_equivalent(draws_list, draws_list2)
+})

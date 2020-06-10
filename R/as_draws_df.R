@@ -14,6 +14,7 @@
 #' that contain chain indices. If `NULL` (the default), the `.chain`
 #' column is used if it exists. Otherwise, the input is treated as belonging
 #' to a single chain.
+#' @template args-format-nchains
 #'
 #' @details Objects of class `"draws_df"` are [tibble][tibble::tibble] data
 #'   frames. They have one column per variable as well as additional metadata
@@ -180,6 +181,25 @@ as_draws_df.mcmc.list <- function(x, ...) {
   x$.draw <- compute_draw_ids(x$.chain, x$.iteration)
   class(x) <- class_draws_df()
   x
+}
+
+#' @rdname draws_df
+#' @export
+draws_df <- function(..., .nchains = 1) {
+  out <- validate_draws_per_variable(...)
+  .nchains <- as_one_integer(.nchains)
+  if (.nchains < 1) {
+    stop2("Number of chains must be positive.")
+  }
+  ndraws <- length(out[[1]])
+  if (ndraws %% .nchains != 0) {
+    stop2("Number of chains does not divide the number of draws.")
+  }
+  niterations <- ndraws %/% .nchains
+  out <- as.data.frame(out)
+  out$.iteration <- rep(1L:niterations, .nchains)
+  out$.chain <- rep(1L:.nchains, each = niterations)
+  as_draws_df(out)
 }
 
 class_draws_df <- function() {

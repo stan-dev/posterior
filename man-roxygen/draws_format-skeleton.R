@@ -1,10 +1,17 @@
-#' @description The `<%=paste0("as_", draws_format, "()")%>` methods convert
-#'   objects to the `<%=draws_format%>` format. See **Details**.
+#' @description
+#'   The `<%=paste0("as_", draws_format, "()")%>` methods convert
+#'   objects to the `<%=draws_format%>` format.
+#'   The `<%=paste0(draws_format, "()")%>` function creates an object of the
+#'   `<%=draws_format%>` format based on a set of numeric vectors.
+#'   See **Details**.
 
 # Shared arguments
 
 #' @param x An object to convert to a `<%=draws_format%>` object.
-#' @param ... Arguments passed to individual methods (if applicable).
+#' @param ... For `<%=paste0("as_", draws_format, "()")%>`:
+#'   Arguments passed to individual methods (if applicable).
+#'   For `<%=paste0(draws_format, "()")%>`: Named
+#'   arguments containing numeric vectors each defining a separate variable.
 
 # The @return template also uses a base_class template variable because
 # although could determine base_class just from sub("draws_", "", draws_format),
@@ -20,7 +27,12 @@
 # documentation, which includes this example plus another one.
 
 #' @examples
-#' x <- <%=paste0("as_", draws_format)%>(example_draws())
-#' class(x)
-#' print(x)
-#' str(x)
+#' x1 <- <%=paste0("as_", draws_format)%>(example_draws())
+#' class(x1)
+#' print(x1)
+#' str(x1)
+#'
+#' x2 <- <%=draws_format%>(a = rnorm(10), b = rnorm(10), c = 1)
+#' class(x2)
+#' print(x2)
+#' str(x2)

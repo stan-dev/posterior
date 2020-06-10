@@ -102,6 +102,13 @@ as_draws_matrix.mcmc.list <- function(x, ...) {
   x
 }
 
+#' @rdname draws_matrix
+#' @export
+draws_matrix <- function(...) {
+  out <- validate_draws_per_variable(...)
+  as_draws_matrix(do_call(cbind, out))
+}
+
 class_draws_matrix <- function() {
   c("draws_matrix", "draws", "matrix")
 }

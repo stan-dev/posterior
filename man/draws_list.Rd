@@ -29,12 +29,19 @@ as_draws_list(x, ...)
 
 \method{as_draws_list}{mcmc.list}(x, ...)
 
+draws_list(..., .nchains = 1)
+
 is_draws_list(x)
 }
 \arguments{
 \item{x}{An object to convert to a \code{draws_list} object.}
 
-\item{...}{Arguments passed to individual methods (if applicable).}
+\item{...}{For \code{as_draws_list()}:
+Arguments passed to individual methods (if applicable).
+For \code{draws_list()}: Named
+arguments containing numeric vectors each defining a separate variable.}
+
+\item{.nchains}{Number of chains (default is \code{1}).}
 }
 \value{
 A \code{draws_list} object, which has classes
@@ -42,7 +49,10 @@ A \code{draws_list} object, which has classes
 }
 \description{
 The \code{as_draws_list()} methods convert
-objects to the \code{draws_list} format. See \strong{Details}.
+objects to the \code{draws_list} format.
+The \code{draws_list()} function creates an object of the
+\code{draws_list} format based on a set of numeric vectors.
+See \strong{Details}.
 }
 \details{
 Objects of class \code{"draws_list"} are lists with one element per MCMC
@@ -51,16 +61,21 @@ with one vector per variable. The length of each vector is equal to the
 number of saved iterations per chain. See \strong{Examples}.
 }
 \examples{
-x <- as_draws_list(example_draws())
-class(x)
-print(x)
-str(x)
+x1 <- as_draws_list(example_draws())
+class(x1)
+print(x1)
+str(x1)
+
+x2 <- draws_list(a = rnorm(10), b = rnorm(10), c = 1)
+class(x2)
+print(x2)
+str(x2)
 }
 \seealso{
 Other formats: 
-\code{\link{draws_array}},
-\code{\link{draws_df}},
-\code{\link{draws_matrix}},
+\code{\link{draws_array}()},
+\code{\link{draws_df}()},
+\code{\link{draws_matrix}()},
 \code{\link{draws}}
 }
 \concept{formats}
