@@ -12,12 +12,12 @@ template:
 navbar:
   title: "posterior"
   left:
-    - text: "Vignettes"
-      href: articles/index.html
+    # - text: "Vignettes"
+    #   href: articles/index.html
     - text: "Functions"
       href: reference/index.html
-    - text: "News"
-      href: news/index.html
+    # - text: "News"
+    #   href: news/index.html
     - text: "Other Packages"
       menu:
         - text: "rstan"
