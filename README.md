@@ -8,11 +8,11 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.org/package=posterior)
 [![Travis Build
-Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travis-ci.org/jgabry/posterior)
+Status](https://travis-ci.org/stan-dev/posterior.svg?branch=master)](https://travis-ci.org/stan-dev/posterior)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/jgabry/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/jgabry/posterior)
 [![Coverage
-Status](https://codecov.io/gh/jgabry/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/jgabry/posterior)
+Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
 <!-- badges: end -->
 
 The **posterior** R package is intended to provide useful tools for both
@@ -34,7 +34,7 @@ official release.
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("jgabry/posterior")
+remotes::install_github("stan-dev/posterior")
 ```
 
 ### Examples
@@ -246,7 +246,7 @@ either way.
 We welcome contributions\! The **posterior** package is under active
 development. If you find bugs or have ideas for new features (for us or
 yourself to implement) please open an issue on GitHub
-(<https://github.com/jgabry/posterior/issues>).
+(<https://github.com/stan-dev/posterior/issues>).
 
 ### References
 
