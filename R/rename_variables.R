@@ -1,4 +1,4 @@
-#' Rename Variables in Draws Objects
+#' Rename variables in `draws` objects
 #'
 #' Rename variables within a [`draws`] object.
 #'

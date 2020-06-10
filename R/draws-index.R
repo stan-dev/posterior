@@ -1,4 +1,4 @@
-#' Index Draws Objects
+#' Index `draws` objects
 #'
 #' Index variables, iterations, chains, and draws.
 #'

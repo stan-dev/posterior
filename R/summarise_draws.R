@@ -1,4 +1,4 @@
-#' Summaries of draws objects
+#' Summaries of `draws` objects
 #'
 #' The `summarise_draws()` (and `summarize_draws()`) methods provide a quick way
 #' to get a table of summary statistics and diagnostics. These methods will

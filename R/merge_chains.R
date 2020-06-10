@@ -1,4 +1,4 @@
-#' Merge Chains of Draws Objects
+#' Merge chains of `draws` objects
 #'
 #' Merge chains of [`draws`] objects into a single chain.
 #'
@@ -8,7 +8,9 @@
 #'
 #' @examples
 #' x <- example_draws()
-#' merge_chains(x)
+#' str(x)
+#'
+#' str(merge_chains(x))
 #'
 #' @export
 merge_chains <- function(x, ...) {

@@ -1,4 +1,4 @@
-#' Weight Draws Objects
+#' Weight `draws` objects
 #'
 #' Add weights to [`draws`] objects, with one weight per draw, for use in
 #' subsequent weighting operations. For reasons of numerical accuracy, weights

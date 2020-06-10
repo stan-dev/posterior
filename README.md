@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# posterior
+# posterior <img src="man/figures/stanlogo.png" align="right" width="120" />
 
 <!-- badges: start -->
 
@@ -41,7 +41,7 @@ remotes::install_github("stan-dev/posterior")
 
 ``` r
 library("posterior")
-#> This is posterior version 0.0.3
+#> This is posterior version 0.0.4
 ```
 
 To demonstrate how to work with the **posterior** package, we will use
@@ -215,27 +215,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 draws, and 5 variables
 #>     variable
-#> draw     V1    V2    V3    V4    V5
-#>   1  -0.087  0.45 -0.33  0.20  0.31
-#>   2   0.014 -0.69 -0.65 -1.41 -1.26
-#>   3  -0.398  1.69  0.19 -0.82 -0.57
-#>   4   1.519  0.41  0.11  0.50 -2.91
-#>   5  -1.132  0.16 -0.19 -0.63 -0.39
-#>   6   0.166 -0.46  0.36  0.35  1.04
-#>   7  -0.481 -0.34  0.46 -0.73 -0.41
-#>   8   1.136 -0.23 -0.41  1.12  0.75
-#>   9   1.115 -0.41 -1.03  0.24  1.06
-#>   10 -1.281  0.78  1.63  0.61  0.89
+#> draw    V1    V2      V3     V4    V5
+#>   1  -1.70 -0.48 -0.5510 -0.939 -0.37
+#>   2  -0.54 -0.54 -0.4694 -0.063  1.93
+#>   3  -0.48  1.02 -0.8398  0.332  0.39
+#>   4  -0.15  1.17  0.0177  2.015  0.30
+#>   5  -1.58  0.24  0.3077 -0.290  1.93
+#>   6  -1.09 -1.23  1.0036  0.796 -1.16
+#>   7   0.92  1.79  0.4623  0.217  0.98
+#>   8  -2.51 -0.41 -1.3883  0.242  0.38
+#>   9  -0.35  0.17 -2.2000  0.735 -0.26
+#>   10 -1.13  0.79  0.0045  0.655 -2.34
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 x 5
-#>   variable    mean    sd  median   mad
-#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
-#> 1 V1        0.0571 0.952 -0.0362 1.14 
-#> 2 V2        0.136  0.722 -0.0321 0.645
-#> 3 V3        0.0139 0.733 -0.0416 0.569
-#> 4 V4       -0.0586 0.793  0.221  0.919
-#> 5 V5       -0.149  1.25  -0.0392 1.28
+#>   variable   mean    sd median   mad
+#>   <chr>     <dbl> <dbl>  <dbl> <dbl>
+#> 1 V1       -0.861 0.958 -0.817 0.841
+#> 2 V2        0.252 0.937  0.207 1.07 
+#> 3 V3       -0.365 0.942 -0.232 0.851
+#> 4 V4        0.370 0.780  0.287 0.604
+#> 5 V5        0.178 1.31   0.337 1.00
 ```
 
 Instead of `as_draws_matrix()` we also could have just used

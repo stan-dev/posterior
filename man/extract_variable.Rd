@@ -4,7 +4,7 @@
 \alias{extract_variable}
 \alias{extract_variable.default}
 \alias{extract_variable.draws}
-\title{Extract Draws of a Single Variable}
+\title{Extract draws of a single variable}
 \usage{
 extract_variable(x, variable, ...)
 
@@ -20,7 +20,7 @@ extract_variable(x, variable, ...)
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-An numeric vector of length #draws.
+A numeric vector of length #draws.
 }
 \description{
 Extract a vector of draws of a single variable.

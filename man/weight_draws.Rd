@@ -6,7 +6,7 @@
 \alias{weight_draws.draws_array}
 \alias{weight_draws.draws_df}
 \alias{weight_draws.draws_list}
-\title{Weight Draws Objects}
+\title{Weight \code{draws} objects}
 \usage{
 weight_draws(x, weights, ...)
 

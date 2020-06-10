@@ -6,7 +6,7 @@
 \alias{repair_draws.draws_array}
 \alias{repair_draws.draws_df}
 \alias{repair_draws.draws_list}
-\title{Repair Indices of Draws Objects}
+\title{Repair indices of \code{draws} objects}
 \usage{
 repair_draws(x, order = TRUE, ...)
 
@@ -27,7 +27,7 @@ repair_draws(x, order = TRUE, ...)
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \description{
-Repair indices of draws objects so that iterations, chains, and draws
+Repair indices of \code{draws} objects so that iterations, chains, and draws
 are continuously and consistently numbered.
 }
 \examples{

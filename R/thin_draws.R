@@ -1,4 +1,4 @@
-#' Thin Draws Objects
+#' Thin `draws` objects
 #'
 #' Thin [`draws`] objects to reduce their size and autocorrelation of the chains.
 #'

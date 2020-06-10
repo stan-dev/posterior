@@ -3,7 +3,7 @@
 \name{rename_variables}
 \alias{rename_variables}
 \alias{rename_variables.draws}
-\title{Rename Variables in Draws Objects}
+\title{Rename variables in \code{draws} objects}
 \usage{
 rename_variables(.x, ...)
 

@@ -1,4 +1,4 @@
-#' Resample Draws Objects
+#' Resample `draws` objects
 #'
 #' Resample [`draws`] objects according to given weights obtained,
 #' for instance, through importance sampling.

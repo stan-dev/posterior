@@ -1,6 +1,6 @@
-#' Repair Indices of Draws Objects
+#' Repair indices of `draws` objects
 #'
-#' Repair indices of draws objects so that iterations, chains, and draws
+#' Repair indices of `draws` objects so that iterations, chains, and draws
 #' are continuously and consistently numbered.
 #'
 #' @template args-methods-x
