@@ -47,11 +47,11 @@ weight_draws <- function(x, weights, ...) {
 weight_draws.draws_matrix <- function(x, weights, log = FALSE, ...) {
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
-  if (".log_weight" %in% colnames(x)) {
+  if (".log_weight" %in% variables(x)) {
     # overwrite existing weights
     x[, ".log_weight"] <- log_weights
   } else {
-    # add weights as a new column
+    # add weights as a new variable
     log_weights <- draws_matrix(.log_weight = log_weights)
     x <- bind_draws(x, log_weights)
   }
@@ -63,11 +63,11 @@ weight_draws.draws_matrix <- function(x, weights, log = FALSE, ...) {
 weight_draws.draws_array <- function(x, weights, log = FALSE, ...) {
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
-  if (".log_weight" %in% dimnames(x)[[3]]) {
+  if (".log_weight" %in% variables(x)) {
     # overwrite existing weights
     x[, , ".log_weight"] <- log_weights
   } else {
-    # add weights as a new column
+    # add weights as a new variable
     log_weights <- draws_array(.log_weight = log_weights, .nchains = nchains(x))
     x <- bind_draws(x, log_weights)
   }
