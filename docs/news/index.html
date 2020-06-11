@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute Quantiles — quantile2 • posterior</title>
+<title>Changelog • posterior</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,7 @@
 
 
 
-<meta property="og:title" content="Compute Quantiles — quantile2" />
-<meta property="og:description" content="Compute quantiles of a sample and return them in a format consistent
-with other summary functions of the posterior package." />
+<meta property="og:title" content="Changelog" />
 
 
 
@@ -60,7 +58,7 @@ with other summary functions of the posterior package." />
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-topic">
+    <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -154,52 +152,25 @@ with other summary functions of the posterior package." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute Quantiles</h1>
-    <small class="dont-index">Source: <a href='https://github.com/stan-dev/posterior/blob/master/R/convergence.R'><code>R/convergence.R</code></a></small>
-    <div class="hidden name"><code>quantile2.Rd</code></div>
+      <h1 data-toc-skip>Changelog <small></small></h1>
+      <small>Source: <a href='https://github.com/stan-dev/posterior/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div class="ref-description">
-    <p>Compute quantiles of a sample and return them in a format consistent
-with other summary functions of the <span class="pkg">posterior</span> package.</p>
-    </div>
-
-    <pre class="usage"><span class='fu'>quantile2</span>(<span class='no'>x</span>, <span class='kw'>probs</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='fl'>0.05</span>, <span class='fl'>0.95</span>), <span class='kw'>names</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
-
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>A 2D array of draws (iterations x chains).</p></td>
-    </tr>
-    <tr>
-      <th>probs</th>
-      <td><p>A numeric vector of probabilities.</p></td>
-    </tr>
-    <tr>
-      <th>names</th>
-      <td><p>Logical. If <code>TRUE</code>, the result has a names attribute. Set to
-<code>FALSE</code> for speedup with many probs.</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Further arguments passed to <code><a href='https://rdrr.io/r/stats/quantile.html'>quantile()</a></code>.</p></td>
-    </tr>
-    </table>
-
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>mu</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='extract_variable_matrix.html'>extract_variable_matrix</a></span>(<span class='fu'><a href='example_draws.html'>example_draws</a></span>(), <span class='st'>"mu"</span>)
-<span class='fu'>quantile2</span>(<span class='no'>mu</span>)</div><div class='output co'>#&gt;         q5        q95 
-#&gt; -0.8536202  9.3873124 </div><div class='input'>
-</div></pre>
+    <div id="posterior-010" class="section level1">
+<h1 class="page-header" data-toc-text="0.1.0">
+<a href="#posterior-010" class="anchor"></a>posterior 0.1.0</h1>
+<ul>
+<li>beta release</li>
+</ul>
+</div>
   </div>
+
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
+
 </div>
 
 
