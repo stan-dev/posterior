@@ -126,7 +126,7 @@ draws_array <- function(..., .nchains = 1) {
   variables <- names(out)
   out <- unlist(out)
   out <- array(out, dim = c(niterations, .nchains, length(variables)))
-  dimnames(out)[[3]] <- variables
+  dimnames(out) <- list(NULL, NULL, variables)
   as_draws_array(out)
 }
 
