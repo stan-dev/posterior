@@ -24,9 +24,9 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![CRAN status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.org/package=posterior)
-[![Travis Build Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travis-ci.org/jgabry/posterior)
-[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/jgabry/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/jgabry/posterior)
-[![Coverage Status](https://codecov.io/gh/jgabry/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/jgabry/posterior)
+[![Travis Build Status](https://travis-ci.org/stan-dev/posterior.svg?branch=master)](https://travis-ci.org/stan-dev/posterior)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/stan-dev/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/stan-dev/posterior)
+[![Coverage Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
 <!-- badges: end -->
 
 
@@ -36,6 +36,8 @@ from Bayesian models. The primary goals of the package are to:
 
 * Efficiently convert between many different useful formats of
   draws (samples) from posterior or prior distributions.
+* Provide consistent methods for operations commonly performed on draws, 
+  for example, subsetting, binding, or mutating draws.
 * Provide various summaries of draws in convenient formats.
 * Provide lightweight implementations of state of the art MCMC diagnostics.
 
@@ -46,7 +48,7 @@ version from GitHub, but expect frequent changes until an official release.
 
 ```{r install, eval=FALSE}
 # install.packages("remotes")
-remotes::install_github("jgabry/posterior")
+remotes::install_github("stan-dev/posterior")
 ```
 
 ### Examples
@@ -83,7 +85,7 @@ the available formats see `help("draws")`. All of the formats are essentially
 base R object classes and can be used as such. For example, a `draws_matrix`
 object is just a `matrix` with a little more consistency and additional methods.
 
-#### Draws summaries
+#### Summarising draws
 
 Computing summaries of posterior or prior draws and convergence diagnostics for
 posterior draws is one of the most common tasks when working with Bayesian
@@ -113,8 +115,8 @@ numeric values.
 
 Another common task when working with posterior (or prior) draws, is subsetting
 according to various aspects of the draws (iterations, chains, or variables).
-**posterior** provides a convienent interface for this purpose via the
-`subset()` method. For example, here is the code to extract the first five 
+**posterior** provides a convenient interface for this purpose via the
+`subset_draws()` method. For example, here is the code to extract the first five 
 iterations of the first two chains of the variable `mu`:
 
 ```{r subset}
@@ -123,6 +125,65 @@ subset_draws(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 
 The same call to `subset_draws()` can be used regardless of whether the object 
 is a `draws_df`, `draws_array`, `draws_list`, etc.
+
+#### Mutating and renaming draws
+
+The magic of having obtained draws from the joint posterior (or prior)
+distribution of a set of variables is that these draws can also be used
+to obtain draws from any other variable that is a function of the original variables.
+That is, if are interested in the posterior distribution of, say, 
+`phi = (mu + tau)^2` all we have to do is to perform the transformation for each
+of the individual draws to obtain draws from the posterior distribution of the
+transformed variable. This procedure is automated in the `mutate_variables` method:
+
+```{r}
+x <- mutate_variables(eight_schools_df, phi = (mu + tau)^2)
+x <- subset_draws(x, c("mu", "tau", "phi"))
+print(x)
+```
+
+When we do the math ourselves, we see that indeed for each draw, 
+`phi` resembles `(mu + tau)^2` (up to rounding two 2 digits 
+for the purpose of printing).
+
+We may also easily rename variables, or even entire vectors of variables via
+`rename_variables`, for example:
+
+```{r}
+x <- rename_variables(eight_schools_df, mean = mu, alpha = theta)
+variables(x)
+```
+
+As with all **posterior** methods, `mutate_variables` and `rename_variables` 
+can be used with all draws formats.
+
+#### Binding draws together
+
+Suppose we have multiple draws objects that we want to bind together:
+
+```{r}
+x1 <- draws_matrix(alpha = rnorm(5), beta = 1)
+x2 <- draws_matrix(alpha = rnorm(5), beta = 2)
+x3 <- draws_matrix(theta = rexp(5))
+```
+
+Then, we can use the `bind_draws` method to bind them along different dimensions.
+For example, we can bind `x1` and `x3` together along the `'variable'` dimension:
+
+```{r}
+x4 <- bind_draws(x1, x3, along = "variable")
+print(x4)
+```
+
+Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
+
+```{r}
+x5 <- bind_draws(x1, x2, along = "draw")
+print(x5)
+```
+
+As with all **posterior** methods, `bind_draws` can be used with all draws 
+formats.
 
 #### Converting from regular R objects to draws formats
 
@@ -148,7 +209,7 @@ this would result in a `draws_matrix` object either way.
 We welcome contributions! The **posterior** package is under active development.
 If you find bugs or have ideas for new features (for us or yourself to
 implement) please open an issue on GitHub
-(https://github.com/jgabry/posterior/issues).
+(https://github.com/stan-dev/posterior/issues).
 
 ### References
 

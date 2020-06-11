@@ -8,11 +8,11 @@
 [![CRAN
 status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.org/package=posterior)
 [![Travis Build
-Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travis-ci.org/jgabry/posterior)
+Status](https://travis-ci.org/stan-dev/posterior.svg?branch=master)](https://travis-ci.org/stan-dev/posterior)
 [![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/jgabry/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/jgabry/posterior)
+status](https://ci.appveyor.com/api/projects/status/github/stan-dev/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/stan-dev/posterior)
 [![Coverage
-Status](https://codecov.io/gh/jgabry/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/jgabry/posterior)
+Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
 <!-- badges: end -->
 
 The **posterior** R package is intended to provide useful tools for both
@@ -22,6 +22,8 @@ to:
 
   - Efficiently convert between many different useful formats of draws
     (samples) from posterior or prior distributions.
+  - Provide consistent methods for operations commonly performed on
+    draws, for example, subsetting, binding, or mutating draws.
   - Provide various summaries of draws in convenient formats.
   - Provide lightweight implementations of state of the art MCMC
     diagnostics.
@@ -34,14 +36,14 @@ official release.
 
 ``` r
 # install.packages("remotes")
-remotes::install_github("jgabry/posterior")
+remotes::install_github("stan-dev/posterior")
 ```
 
 ### Examples
 
 ``` r
 library("posterior")
-#> This is posterior version 0.0.1
+#> This is posterior version 0.0.4
 ```
 
 To demonstrate how to work with the **posterior** package, we will use
@@ -110,6 +112,7 @@ print(eight_schools_df)
 #> 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1
 #> 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5
 #> # ... with 390 more draws, and 2 more variables
+#> # ... hidden meta-columns {'.chain', '.iteration', '.draw'}
 ```
 
 Different formats are preferable in different situations and hence
@@ -119,7 +122,7 @@ the formats are essentially base R object classes and can be used as
 such. For example, a `draws_matrix` object is just a `matrix` with a
 little more consistency and additional methods.
 
-#### Draws summaries
+#### Summarising draws
 
 Computing summaries of posterior or prior draws and convergence
 diagnostics for posterior draws is one of the most common tasks when
@@ -176,9 +179,9 @@ named vector of numeric values.
 
 Another common task when working with posterior (or prior) draws, is
 subsetting according to various aspects of the draws (iterations,
-chains, or variables). **posterior** provides a convienent interface for
-this purpose via the `subset()` method. For example, here is the code to
-extract the first five iterations of the first two chains of the
+chains, or variables). **posterior** provides a convenient interface for
+this purpose via the `subset_draws()` method. For example, here is the
+code to extract the first five iterations of the first two chains of the
 variable `mu`:
 
 ``` r
@@ -195,10 +198,109 @@ subset_draws(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 #> 8  -1.2
 #> 9  10.9
 #> 10  9.8
+#> # ... hidden meta-columns {'.chain', '.iteration', '.draw'}
 ```
 
 The same call to `subset_draws()` can be used regardless of whether the
 object is a `draws_df`, `draws_array`, `draws_list`, etc.
+
+#### Mutating and renaming draws
+
+The magic of having obtained draws from the joint posterior (or prior)
+distribution of a set of variables is that these draws can also be used
+to obtain draws from any other variable that is a function of the
+original variables. That is, if are interested in the posterior
+distribution of, say, `phi = (mu + tau)^2` all we have to do is to
+perform the transformation for each of the individual draws to obtain
+draws from the posterior distribution of the transformed variable. This
+procedure is automated in the `mutate_variables` method:
+
+``` r
+x <- mutate_variables(eight_schools_df, phi = (mu + tau)^2)
+x <- subset_draws(x, c("mu", "tau", "phi"))
+print(x)
+#> # A draws_df: 100 iterations, 4 chains, and 3 variables
+#>      mu tau   phi
+#> 1  2.01 2.8  22.8
+#> 2  1.46 7.0  71.2
+#> 3  5.81 9.7 240.0
+#> 4  6.85 4.8 135.4
+#> 5  1.81 2.8  21.7
+#> 6  3.84 4.1  62.8
+#> 7  5.47 4.0  88.8
+#> 8  1.20 1.5   7.1
+#> 9  0.15 3.9  16.6
+#> 10 7.17 1.8  79.9
+#> # ... with 390 more draws
+#> # ... hidden meta-columns {'.chain', '.iteration', '.draw'}
+```
+
+When we do the math ourselves, we see that indeed for each draw, `phi`
+resembles `(mu + tau)^2` (up to rounding two 2 digits for the purpose of
+printing).
+
+We may also easily rename variables, or even entire vectors of variables
+via `rename_variables`, for example:
+
+``` r
+x <- rename_variables(eight_schools_df, mean = mu, alpha = theta)
+variables(x)
+#>  [1] "mean"     "tau"      "alpha[1]" "alpha[2]" "alpha[3]" "alpha[4]" "alpha[5]"
+#>  [8] "alpha[6]" "alpha[7]" "alpha[8]"
+```
+
+As with all **posterior** methods, `mutate_variables` and
+`rename_variables` can be used with all draws formats.
+
+#### Binding draws together
+
+Suppose we have multiple draws objects that we want to bind together:
+
+``` r
+x1 <- draws_matrix(alpha = rnorm(5), beta = 1)
+x2 <- draws_matrix(alpha = rnorm(5), beta = 2)
+x3 <- draws_matrix(theta = rexp(5))
+```
+
+Then, we can use the `bind_draws` method to bind them along different
+dimensions. For example, we can bind `x1` and `x3` together along the
+`'variable'` dimension:
+
+``` r
+x4 <- bind_draws(x1, x3, along = "variable")
+print(x4)
+#> # A draws_matrix: 5 draws, and 3 variables
+#>     variable
+#> draw  alpha beta theta
+#>    1 -0.332    1  0.28
+#>    2 -2.950    1  2.01
+#>    3 -0.429    1  0.53
+#>    4 -0.017    1  0.17
+#>    5  0.190    1  0.45
+```
+
+Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
+
+``` r
+x5 <- bind_draws(x1, x2, along = "draw")
+print(x5)
+#> # A draws_matrix: 10 draws, and 2 variables
+#>     variable
+#> draw  alpha beta
+#>   1  -0.332    1
+#>   2  -2.950    1
+#>   3  -0.429    1
+#>   4  -0.017    1
+#>   5   0.190    1
+#>   6   0.771    2
+#>   7  -0.510    2
+#>   8  -0.561    2
+#>   9   0.421    2
+#>   10  3.123    2
+```
+
+As with all **posterior** methods, `bind_draws` can be used with all
+draws formats.
 
 #### Converting from regular R objects to draws formats
 
@@ -213,27 +315,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 draws, and 5 variables
 #>     variable
-#> draw    V1     V2      V3    V4     V5
-#>   1  -0.43  0.582 -0.0269  0.65  0.393
-#>   2   0.98  1.077  0.2652 -1.34  0.461
-#>   3   0.17 -0.778 -1.3508  0.41 -0.099
-#>   4  -0.21  0.608 -2.1685 -0.36  2.660
-#>   5   0.87  1.810 -0.3891 -0.50 -0.481
-#>   6  -0.29  0.264 -0.0025 -0.30 -0.780
-#>   7   0.69  0.088  1.3062 -1.02  0.631
-#>   8   0.50  0.128  0.5418 -0.27  0.228
-#>   9   1.84  1.267  1.0108  1.91  0.138
-#>   10 -1.85 -0.600  0.8428  1.68 -0.243
+#> draw    V1     V2     V3     V4    V5
+#>   1  -0.51  0.276  1.001  0.660 -0.10
+#>   2   0.89  1.284 -0.356  0.073 -1.77
+#>   3  -0.24 -0.072  0.916 -0.665  0.58
+#>   4   0.92  0.055  0.537  0.028 -0.20
+#>   5  -1.69  0.632 -0.483  3.009  0.20
+#>   6  -0.54  0.305  1.519  1.157  0.50
+#>   7   1.89 -0.665 -0.096 -0.069  1.00
+#>   8  -1.00 -1.341  1.012 -0.994 -0.83
+#>   9   0.71 -1.121 -1.188 -0.722 -0.66
+#>   10  0.87 -0.163  0.942 -0.375  0.48
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 x 5
-#>   variable    mean    sd median   mad
-#>   <chr>      <dbl> <dbl>  <dbl> <dbl>
-#> 1 V1       0.227   1.00   0.334 0.866
-#> 2 V2       0.445   0.805  0.423 0.734
-#> 3 V3       0.00290 1.08   0.131 0.913
-#> 4 V4       0.0879  1.07  -0.284 1.06 
-#> 5 V5       0.291   0.941  0.183 0.524
+#>   variable    mean    sd   median   mad
+#>   <chr>      <dbl> <dbl>    <dbl> <dbl>
+#> 1 V1        0.130  1.09   0.234   1.06 
+#> 2 V2       -0.0809 0.795 -0.00858 0.707
+#> 3 V3        0.380  0.862  0.726   0.799
+#> 4 V4        0.210  1.18  -0.0205  0.982
+#> 5 V5       -0.0804 0.825  0.0472  0.733
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
@@ -246,7 +348,7 @@ either way.
 We welcome contributions\! The **posterior** package is under active
 development. If you find bugs or have ideas for new features (for us or
 yourself to implement) please open an issue on GitHub
-(<https://github.com/jgabry/posterior/issues>).
+(<https://github.com/stan-dev/posterior/issues>).
 
 ### References
 
