@@ -47,18 +47,25 @@ from \code{draws} objects.
 x <- example_draws()
 
 # sample some random weights for illustration
-weights <- rexp(ndraws(x))
+wts <- rexp(ndraws(x))
+head(wts)
 
 # add weights
-x <- weight_draws(x, weights = weights)
+x <- weight_draws(x, weights = wts)
+
 # extract weights
-head(weights(x))
+head(weights(x)) # defaults to normalized weights
+head(weights(x, normalize=FALSE)) # recover original weights
+head(weights(x, log=TRUE)) # get normalized log-weights
 
 # add weights which are already on the log scale
-log_weights <- log(weights)
-x <- weight_draws(x, weights = log_weights, log = TRUE)
+log_wts <- log(wts)
+head(log_wts)
+
+x <- weight_draws(x, weights = log_wts, log = TRUE)
 # extract weights
 head(weights(x))
+head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
 
 }
 \seealso{

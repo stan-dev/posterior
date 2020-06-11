@@ -24,18 +24,25 @@
 #' x <- example_draws()
 #'
 #' # sample some random weights for illustration
-#' weights <- rexp(ndraws(x))
+#' wts <- rexp(ndraws(x))
+#' head(wts)
 #'
 #' # add weights
-#' x <- weight_draws(x, weights = weights)
+#' x <- weight_draws(x, weights = wts)
+#'
 #' # extract weights
-#' head(weights(x))
+#' head(weights(x)) # defaults to normalized weights
+#' head(weights(x, normalize=FALSE)) # recover original weights
+#' head(weights(x, log=TRUE)) # get normalized log-weights
 #'
 #' # add weights which are already on the log scale
-#' log_weights <- log(weights)
-#' x <- weight_draws(x, weights = log_weights, log = TRUE)
+#' log_wts <- log(wts)
+#' head(log_wts)
+#'
+#' x <- weight_draws(x, weights = log_wts, log = TRUE)
 #' # extract weights
 #' head(weights(x))
+#' head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
 #'
 #' @export
 weight_draws <- function(x, weights, ...) {
@@ -112,22 +119,7 @@ weight_draws.draws_list <- function(x, weights, log = FALSE, ...) {
 #'
 #' @seealso [`weight_draws`], [`resample_draws`]
 #'
-#' @examples
-#' x <- example_draws()
-#'
-#' # sample some random weights for illustration
-#' weights <- rexp(ndraws(x))
-#'
-#' # add weights
-#' x <- weight_draws(x, weights = weights)
-#'
-#' # return normalized weights
-#' weights <- weights(x)
-#' head(weights)
-#'
-#' # return normalized log weights
-#' log_weights <- weights(x, log = TRUE)
-#' head(log_weights)
+#' @inherit weight_draws examples
 #'
 #' @export
 weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
