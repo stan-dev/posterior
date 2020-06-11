@@ -33,8 +33,8 @@
 #'
 #' # add weights which are already on the log scale
 #' log_weights <- log(weights)
+#' x <- weight_draws(x, weights = log_weights, log = TRUE)
 #' # extract weights
-#' x <- weight_draws(x, weights = weights, log = TRUE)
 #' head(weights(x))
 #'
 #' @export
