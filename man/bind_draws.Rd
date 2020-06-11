@@ -6,7 +6,7 @@
 \alias{bind_draws.draws_array}
 \alias{bind_draws.draws_df}
 \alias{bind_draws.draws_list}
-\title{Bind Draws Objects Together}
+\title{Bind \code{draws} objects together}
 \usage{
 bind_draws(x, ...)
 

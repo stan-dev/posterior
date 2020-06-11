@@ -4,7 +4,7 @@
 \alias{thin_draws}
 \alias{thin}
 \alias{thin_draws.draws}
-\title{Thin Draws Objects}
+\title{Thin \code{draws} objects}
 \usage{
 thin_draws(x, thin, ...)
 

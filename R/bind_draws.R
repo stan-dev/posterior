@@ -1,4 +1,4 @@
-#' Bind Draws Objects Together
+#' Bind `draws` objects together
 #'
 #' Bind multiple [`draws`] objects together to form a single
 #' `draws` object.

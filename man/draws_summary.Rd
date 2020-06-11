@@ -9,7 +9,7 @@
 \alias{default_summary_measures}
 \alias{default_convergence_measures}
 \alias{default_mcse_measures}
-\title{Summaries of draws objects}
+\title{Summaries of \code{draws} objects}
 \usage{
 summarise_draws(x, ...)
 

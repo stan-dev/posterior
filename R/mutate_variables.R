@@ -1,4 +1,4 @@
-#' Mutate Variables in Draws Objects
+#' Mutate variables in `draws` objects
 #'
 #' Mutate variables in a [`draws`] object.
 #'

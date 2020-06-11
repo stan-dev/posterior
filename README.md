@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# posterior
+# posterior <img src="man/figures/stanlogo.png" align="right" width="120" />
 
 <!-- badges: start -->
 
@@ -271,12 +271,12 @@ x4 <- bind_draws(x1, x3, along = "variable")
 print(x4)
 #> # A draws_matrix: 5 draws, and 3 variables
 #>     variable
-#> draw  alpha beta theta
-#>    1 -0.332    1  0.28
-#>    2 -2.950    1  2.01
-#>    3 -0.429    1  0.53
-#>    4 -0.017    1  0.17
-#>    5  0.190    1  0.45
+#> draw alpha beta theta
+#>    1 -0.44    1 0.956
+#>    2  0.28    1 6.927
+#>    3 -0.47    1 0.054
+#>    4  0.47    1 0.409
+#>    5 -0.61    1 0.694
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -286,17 +286,17 @@ x5 <- bind_draws(x1, x2, along = "draw")
 print(x5)
 #> # A draws_matrix: 10 draws, and 2 variables
 #>     variable
-#> draw  alpha beta
-#>   1  -0.332    1
-#>   2  -2.950    1
-#>   3  -0.429    1
-#>   4  -0.017    1
-#>   5   0.190    1
-#>   6   0.771    2
-#>   7  -0.510    2
-#>   8  -0.561    2
-#>   9   0.421    2
-#>   10  3.123    2
+#> draw alpha beta
+#>   1  -0.44    1
+#>   2   0.28    1
+#>   3  -0.47    1
+#>   4   0.47    1
+#>   5  -0.61    1
+#>   6  -1.54    2
+#>   7   0.98    2
+#>   8   1.34    2
+#>   9  -0.76    2
+#>   10  2.16    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -315,27 +315,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 draws, and 5 variables
 #>     variable
-#> draw    V1     V2     V3     V4    V5
-#>   1  -0.51  0.276  1.001  0.660 -0.10
-#>   2   0.89  1.284 -0.356  0.073 -1.77
-#>   3  -0.24 -0.072  0.916 -0.665  0.58
-#>   4   0.92  0.055  0.537  0.028 -0.20
-#>   5  -1.69  0.632 -0.483  3.009  0.20
-#>   6  -0.54  0.305  1.519  1.157  0.50
-#>   7   1.89 -0.665 -0.096 -0.069  1.00
-#>   8  -1.00 -1.341  1.012 -0.994 -0.83
-#>   9   0.71 -1.121 -1.188 -0.722 -0.66
-#>   10  0.87 -0.163  0.942 -0.375  0.48
+#> draw    V1     V2    V3    V4     V5
+#>   1  -1.62 -0.624 -1.11 -1.13  1.010
+#>   2  -0.73  1.461 -1.30 -0.57 -1.369
+#>   3  -1.64  0.965  0.41 -1.14 -0.073
+#>   4  -0.12  0.050 -0.53  1.28  1.414
+#>   5   1.19 -0.846 -0.31 -0.30 -1.167
+#>   6   1.70 -0.137 -0.28 -1.85 -1.219
+#>   7  -0.75 -0.695 -1.40  0.64 -0.869
+#>   8   0.82 -0.066  2.08 -0.33  0.491
+#>   9   0.74 -0.604  0.46 -0.13 -1.107
+#>   10 -2.08 -0.113  1.29 -1.77 -0.533
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 x 5
-#>   variable    mean    sd   median   mad
-#>   <chr>      <dbl> <dbl>    <dbl> <dbl>
-#> 1 V1        0.130  1.09   0.234   1.06 
-#> 2 V2       -0.0809 0.795 -0.00858 0.707
-#> 3 V3        0.380  0.862  0.726   0.799
-#> 4 V4        0.210  1.18  -0.0205  0.982
-#> 5 V5       -0.0804 0.825  0.0472  0.733
+#>   variable    mean    sd median   mad
+#>   <chr>      <dbl> <dbl>  <dbl> <dbl>
+#> 1 V1       -0.248  1.32  -0.421 1.79 
+#> 2 V2       -0.0608 0.747 -0.125 0.726
+#> 3 V3       -0.0681 1.14  -0.291 1.16 
+#> 4 V4       -0.530  0.995 -0.451 1.01 
+#> 5 V5       -0.342  1.00  -0.701 0.849
 ```
 
 Instead of `as_draws_matrix()` we also could have just used

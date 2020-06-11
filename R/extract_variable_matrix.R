@@ -1,8 +1,8 @@
-#' Extract Draws Matrix of a Single Variable
+#' Extract matrix of a single variable
 #'
 #' Extract a matrix of draws of a single variable with dimension
-#' #iterations x #chains primarily for use in convergence functions
-#' such as `\link{rhat}`.
+#' #iterations x #chains, primarily for use in convergence functions
+#' such as [rhat()].
 #'
 #' @template args-methods-x
 #' @param variable Name of a single variable to extract draws for.

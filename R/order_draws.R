@@ -1,6 +1,6 @@
-#' Order Draws Objects
+#' Order `draws` objects
 #'
-#' Order `draws` objects according to iteration and chain number. By default,
+#' Order [`draws`] objects according to iteration and chain number. By default,
 #' draws objects are ordered but subsetting or extracting parts of them may
 #' leave them in an unordered state.
 #'

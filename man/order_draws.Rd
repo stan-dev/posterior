@@ -6,7 +6,7 @@
 \alias{order_draws.draws_array}
 \alias{order_draws.draws_df}
 \alias{order_draws.draws_list}
-\title{Order Draws Objects}
+\title{Order \code{draws} objects}
 \usage{
 order_draws(x, ...)
 
@@ -24,7 +24,7 @@ order_draws(x, ...)
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \description{
-Order \code{draws} objects according to iteration and chain number. By default,
+Order \code{\link{draws}} objects according to iteration and chain number. By default,
 draws objects are ordered but subsetting or extracting parts of them may
 leave them in an unordered state.
 }

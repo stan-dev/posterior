@@ -3,7 +3,7 @@
 \name{resample_draws}
 \alias{resample_draws}
 \alias{resample_draws.draws}
-\title{Resample Draws Objects}
+\title{Resample \code{draws} objects}
 \usage{
 resample_draws(x, ...)
 

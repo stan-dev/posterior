@@ -6,7 +6,7 @@
 \alias{mutate_variables.draws_array}
 \alias{mutate_variables.draws_df}
 \alias{mutate_variables.draws_list}
-\title{Mutate Variables in Draws Objects}
+\title{Mutate variables in \code{draws} objects}
 \usage{
 mutate_variables(.x, ...)
 

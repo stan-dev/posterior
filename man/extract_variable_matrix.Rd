@@ -4,7 +4,7 @@
 \alias{extract_variable_matrix}
 \alias{extract_variable_matrix.default}
 \alias{extract_variable_matrix.draws}
-\title{Extract Draws Matrix of a Single Variable}
+\title{Extract matrix of a single variable}
 \usage{
 extract_variable_matrix(x, variable, ...)
 
@@ -24,8 +24,8 @@ An \code{matrix} with dimension #iterations x #chains.
 }
 \description{
 Extract a matrix of draws of a single variable with dimension
-#iterations x #chains primarily for use in convergence functions
-such as \verb{\link{rhat}}.
+#iterations x #chains, primarily for use in convergence functions
+such as \code{\link[=rhat]{rhat()}}.
 }
 \examples{
 x <- example_draws()

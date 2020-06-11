@@ -6,7 +6,7 @@
 \alias{merge_chains.draws_array}
 \alias{merge_chains.draws_df}
 \alias{merge_chains.draws_list}
-\title{Merge Chains of Draws Objects}
+\title{Merge chains of \code{draws} objects}
 \usage{
 merge_chains(x, ...)
 
@@ -31,6 +31,8 @@ Merge chains of \code{\link{draws}} objects into a single chain.
 }
 \examples{
 x <- example_draws()
-merge_chains(x)
+str(x)
+
+str(merge_chains(x))
 
 }
