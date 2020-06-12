@@ -25,8 +25,8 @@ to:
   - Provide consistent methods for operations commonly performed on
     draws, for example, subsetting, binding, or mutating draws.
   - Provide various summaries of draws in convenient formats.
-  - Provide lightweight implementations of state of the art MCMC
-    diagnostics.
+  - Provide lightweight implementations of state of the art posterior
+    inference diagnostics.
 
 ### Installation
 
@@ -149,10 +149,12 @@ summarise_draws(eight_schools_df)
 ```
 
 Basically, we get a data frame with one row per variable and one column
-per summary statistic or convergence diagnostic. We can choose which
-summaries to compute by passing additional arguments, either functions
-or names of functions. For instance, if we only wanted the mean and its
-corresponding Monte Carlo Standard Error (MCSE) we would use:
+per summary statistic or convergence diagnostic. The summaries `rhat`,
+`ess_bulk`, and `ess_tail` are described in Vehtari et al. (2020). We
+can choose which summaries to compute by passing additional arguments,
+either functions or names of functions. For instance, if we only wanted
+the mean and its corresponding Monte Carlo Standard Error (MCSE) we
+would use:
 
 ``` r
 summarise_draws(eight_schools_df, "mean", "mcse_mean")
@@ -236,8 +238,8 @@ print(x)
 ```
 
 When we do the math ourselves, we see that indeed for each draw, `phi`
-resembles `(mu + tau)^2` (up to rounding two 2 digits for the purpose of
-printing).
+is equal to `(mu + tau)^2` (up to rounding two 2 digits for the purpose
+of printing).
 
 We may also easily rename variables, or even entire vectors of variables
 via `rename_variables`, for example:
@@ -272,11 +274,11 @@ print(x4)
 #> # A draws_matrix: 5 draws, and 3 variables
 #>     variable
 #> draw  alpha beta theta
-#>    1 -0.099    1 0.593
-#>    2  0.730    1 0.188
-#>    3 -0.514    1 0.069
-#>    4 -0.355    1 1.016
-#>    5  0.348    1 1.170
+#>    1  0.569    1  0.63
+#>    2  0.783    1  0.51
+#>    3  1.265    1  1.62
+#>    4 -0.565    1  0.14
+#>    5  0.038    1  2.01
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -287,16 +289,16 @@ print(x5)
 #> # A draws_matrix: 10 draws, and 2 variables
 #>     variable
 #> draw  alpha beta
-#>   1  -0.099    1
-#>   2   0.730    1
-#>   3  -0.514    1
-#>   4  -0.355    1
-#>   5   0.348    1
-#>   6   0.134    2
-#>   7   0.263    2
-#>   8   0.060    2
-#>   9  -0.798    2
-#>   10  1.564    2
+#>   1   0.569    1
+#>   2   0.783    1
+#>   3   1.265    1
+#>   4  -0.565    1
+#>   5   0.038    1
+#>   6  -0.610    2
+#>   7   0.240    2
+#>   8  -1.246    2
+#>   9   1.481    2
+#>   10  0.821    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -315,27 +317,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 draws, and 5 variables
 #>     variable
-#> draw    V1    V2    V3    V4    V5
-#>   1  -0.77  0.49 -0.32  2.88  0.54
-#>   2   0.54 -0.37  1.32  0.36  2.24
-#>   3  -0.40 -1.50  0.34 -0.27 -1.87
-#>   4   0.22  1.40 -0.66 -0.79 -0.36
-#>   5   2.18  1.46  0.79 -0.66  0.83
-#>   6  -1.36 -0.41  0.43 -0.94  0.95
-#>   7  -0.26 -1.85 -0.17 -0.69 -1.35
-#>   8   0.45 -0.06  0.34 -0.46 -0.04
-#>   9   1.15  1.00 -0.92  0.25  0.48
-#>   10  1.24  0.55  0.31  0.67  0.42
+#> draw     V1    V2     V3     V4     V5
+#>   1  -1.443 -0.41  1.661  1.293 -0.416
+#>   2  -0.227 -0.69  0.011 -2.717  0.868
+#>   3   0.369  0.65 -1.334 -1.498  0.703
+#>   4  -1.623 -0.48  1.989 -1.726 -1.562
+#>   5   0.076 -0.16  0.924 -0.778 -0.520
+#>   6  -0.055  0.19  0.336 -0.343 -0.084
+#>   7  -1.165  0.38  0.487 -0.012 -0.710
+#>   8   1.080 -0.47  1.043 -0.167 -0.846
+#>   9  -0.943  0.66  0.258  0.576  0.132
+#>   10 -1.463  1.18 -1.935  0.614  1.166
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 x 5
-#>   variable   mean    sd median   mad
-#>   <chr>     <dbl> <dbl>  <dbl> <dbl>
-#> 1 V1       0.298  1.05   0.336 1.15 
-#> 2 V2       0.0706 1.14   0.214 1.05 
-#> 3 V3       0.148  0.673  0.324 0.714
-#> 4 V4       0.0333 1.14  -0.366 0.743
-#> 5 V5       0.184  1.18   0.452 0.734
+#>   variable    mean    sd  median   mad
+#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
+#> 1 V1       -0.539  0.916 -0.585  1.13 
+#> 2 V2        0.0842 0.621  0.0143 0.725
+#> 3 V3        0.344  1.22   0.412  0.847
+#> 4 V4       -0.476  1.22  -0.255  1.26 
+#> 5 V5       -0.127  0.855 -0.250  0.783
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
@@ -343,15 +345,42 @@ Instead of `as_draws_matrix()` we also could have just used
 input object. In this case this would result in a `draws_matrix` object
 either way.
 
-### Contributing
+### Contributing to posterior
 
 We welcome contributions\! The **posterior** package is under active
 development. If you find bugs or have ideas for new features (for us or
 yourself to implement) please open an issue on GitHub
 (<https://github.com/stan-dev/posterior/issues>).
 
+### Citing posterior
+
+Developing and maintaining open source software is an important yet
+often underappreciated contribution to scientific progress. Thus,
+whenever you are using open source software (or software in general),
+please make sure to cite it appropriately so that developers get credit
+for their work.
+
+When using **posterior**, please cite it as follows:
+
+  - Bürkner P. C., Gabry J., Kay M., & Vehtari A. (2020). “posterior:
+    Tools for Working with Posterior Distributions.” R package version
+    XXX, \<URL: <https://mc-stan.org/posterior>\>.
+
+When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or
+`ess_tail`, please also cite
+
+  - Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C.
+    (2020). Rank-normalization, folding, and localization: An improved
+    Rhat for assessing convergence of MCMC. *Bayesian Analysis*.
+
+The same information can be obtained by running `citation("posterior")`.
+
 ### References
 
-Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki
-Vehtari and Donald B. Rubin (2013). Bayesian Data Analysis, Third
-Edition. Chapman and Hall/CRC.
+Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki Vehtari
+A., & Rubin D. B. (2013). *Bayesian Data Analysis, Third Edition*.
+Chapman and Hall/CRC.
+
+Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
+Rank-normalization, folding, and localization: An improved Rhat for
+assessing convergence of MCMC. *Bayesian Analysis*.

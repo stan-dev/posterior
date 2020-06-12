@@ -39,7 +39,8 @@ from Bayesian models. The primary goals of the package are to:
 * Provide consistent methods for operations commonly performed on draws, 
   for example, subsetting, binding, or mutating draws.
 * Provide various summaries of draws in convenient formats.
-* Provide lightweight implementations of state of the art MCMC diagnostics.
+* Provide lightweight implementations of state of the art posterior inference 
+  diagnostics.
 
 ### Installation
 
@@ -98,10 +99,11 @@ summarise_draws(eight_schools_df)
 ```
 
 Basically, we get a data frame with one row per variable and one column per
-summary statistic or convergence diagnostic. We can choose which summaries to
-compute by passing additional arguments, either functions or names of functions.
-For instance, if we only wanted the mean and its corresponding Monte Carlo
-Standard Error (MCSE) we would use:
+summary statistic or convergence diagnostic. The summaries `rhat`, `ess_bulk`,
+and `ess_tail` are described in Vehtari et al. (2020). We can choose which
+summaries to compute by passing additional arguments, either functions or names
+of functions. For instance, if we only wanted the mean and its corresponding
+Monte Carlo Standard Error (MCSE) we would use:
 
 ```{r summary-with-measures}
 summarise_draws(eight_schools_df, "mean", "mcse_mean")
@@ -143,7 +145,7 @@ print(x)
 ```
 
 When we do the math ourselves, we see that indeed for each draw, 
-`phi` resembles `(mu + tau)^2` (up to rounding two 2 digits 
+`phi` is equal to `(mu + tau)^2` (up to rounding two 2 digits 
 for the purpose of printing).
 
 We may also easily rename variables, or even entire vectors of variables via
@@ -204,15 +206,41 @@ Instead of `as_draws_matrix()` we also could have just used `as_draws()`, which
 attempts to find the closest available format to the input object. In this case
 this would result in a `draws_matrix` object either way.
 
-### Contributing
+### Contributing to posterior
 
 We welcome contributions! The **posterior** package is under active development.
 If you find bugs or have ideas for new features (for us or yourself to
 implement) please open an issue on GitHub
 (https://github.com/stan-dev/posterior/issues).
 
+### Citing posterior
+
+Developing and maintaining open source software is an important yet often
+underappreciated contribution to scientific progress. Thus, whenever you are
+using open source software (or software in general), please make sure to cite it
+appropriately so that developers get credit for their work.
+
+When using **posterior**, please cite it as follows:
+
+* Bürkner P. C., Gabry J., Kay M., & Vehtari A. (2020). “posterior: Tools for
+Working with Posterior Distributions.” R package version XXX, <URL:
+https://mc-stan.org/posterior>.
+  
+When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or `ess_tail`,
+please also cite
+
+* Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
+Rank-normalization, folding, and localization: An improved Rhat for assessing
+convergence of MCMC. *Bayesian Analysis*.
+
+The same information can be obtained by running `citation("posterior")`.
+
 ### References
 
-Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
-Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
+Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki Vehtari A.,
+& Rubin D. B. (2013). *Bayesian Data Analysis, Third Edition*. Chapman and
 Hall/CRC.
+
+Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
+Rank-normalization, folding, and localization: An improved Rhat for assessing
+convergence of MCMC. *Bayesian Analysis*.

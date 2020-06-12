@@ -1,0 +1,26 @@
+year <- sub("-.*", "", meta$Date)
+note <- sprintf("R package version %s", meta$Version)
+authors <- as.personList(meta$Author)
+authors <- grep("\\[cre|\\[aut", authors, value = TRUE)
+
+bibentry(bibtype = "Misc",
+         title = "posterior: Tools for Working with Posterior Distributions",
+         author = authors,
+         year = year,
+         note = note,
+         url = "https://mc-stan.org/posterior",
+         header = "To cite the posterior R package:"
+)
+
+bibentry(bibtype = "Article",
+         title = "Rank-normalization, folding, and localization: An improved Rhat
+for assessing convergence of MCMC",
+         author = c(person("Aki", "Vehtari"),
+                    person("Andrew", "Gelman"),
+                    person("Daniel", "Simpson"),
+                    person("Bob", "Carpenter"),
+                    person("Paul-Christian", "Bürkner")),
+         year = "2020",
+         journal = "Bayesian Analysis",
+         header = "To cite the MCMC convergence diagnostics:"
+)
