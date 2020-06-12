@@ -12,6 +12,8 @@ template:
 navbar:
   title: "posterior"
   left:
+    - icon: fa-home fa-lg
+      href: index.html
     # - text: "Vignettes"
     #   href: articles/index.html
     - text: "Functions"
