@@ -44,10 +44,15 @@ from Bayesian models. The primary goals of the package are to:
 
 ### Installation
 
-The package is not released yet. Currently you can install the development
-version from GitHub, but expect frequent changes until an official release.
+The package is not on CRAN yet, but you can install the beta release via 
 
 ```{r install, eval=FALSE}
+install.packages("posterior", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+```
+
+or the latest development version from GitHub via 
+
+```{r install_github, eval=FALSE}
 # install.packages("remotes")
 remotes::install_github("stan-dev/posterior")
 ```
