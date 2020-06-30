@@ -42,6 +42,11 @@ variables <- function(x) {
 }
 
 #' @export
+variables.NULL <- function(x) {
+  NULL
+}
+
+#' @export
 variables.draws_matrix <- function(x) {
   colnames(x)
 }
@@ -109,6 +114,11 @@ iteration_ids <- function(x) {
 }
 
 #' @export
+iteration_ids.NULL <- function(x) {
+  NULL
+}
+
+#' @export
 iteration_ids.draws_matrix <- function(x) {
   out <- rownames(x) %||% seq_rows(x)
   as.integer(out)
@@ -137,6 +147,11 @@ chain_ids <- function(x) {
 }
 
 #' @export
+chain_ids.NULL <- function(x) {
+  NULL
+}
+
+#' @export
 chain_ids.draws_matrix <- function(x) {
   1L
 }
@@ -162,6 +177,11 @@ chain_ids.draws_list <- function(x) {
 #' @export
 draw_ids <- function(x) {
   UseMethod("draw_ids")
+}
+
+#' @export
+draw_ids.NULL <- function(x) {
+  NULL
 }
 
 #' @export
@@ -195,6 +215,10 @@ draw_ids.draws_list <- function(x) {
 nvariables <- function(x) {
   UseMethod("nvariables")
 }
+#' @export
+nvariables.NULL <- function(x) {
+  0
+}
 
 #' @export
 nvariables.draws_matrix <- function(x) {
@@ -223,6 +247,11 @@ nvariables.draws_list <- function(x) {
 #' @export
 niterations <- function(x) {
   UseMethod("niterations")
+}
+
+#' @export
+niterations.NULL <- function(x) {
+  0
 }
 
 #' @export
@@ -255,6 +284,11 @@ nchains <- function(x) {
 }
 
 #' @export
+nchains.NULL <- function(x) {
+  0
+}
+
+#' @export
 nchains.draws_matrix <- function(x) {
   1L
 }
@@ -278,6 +312,11 @@ nchains.draws_list <- function(x) {
 #' @export
 ndraws <- function(x) {
   UseMethod("ndraws")
+}
+
+#' @export
+ndraws.NULL <- function(x) {
+  0
 }
 
 #' @export
