@@ -105,7 +105,7 @@ format_rvar_draws.default <- function(draws, ...) {
 }
 
 format_rvar_draws.numeric <- function(draws, ..., color = FALSE) {
-  if (dim(draws)[length(dim(draws))] == 0) {
+  if (dim(draws)[length(dim(draws))] == 0 || prod(dim(draws)) == 0) {
     # NULL: no draws
     return(NULL)
   }

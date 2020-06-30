@@ -41,6 +41,7 @@ NULL
 #' @importFrom vctrs new_vctr
 new_rvar <- function(x = double()) {
   # TODO: decide on supported types and cast to them in here
+  .dim <- dim(x)
   if (length(x) == 0) {
     x <- double()
   }
@@ -51,12 +52,13 @@ new_rvar <- function(x = double()) {
     dimnames(x) <- list(NULL)
   }
 
-  .dim <- dim(x)
   if (length(x) == 0) {
     if (is.null(.dim)) {
       dim(x) <- c(0, 0)
-    } else {
+    } else if (length(.dim) == 1) {
       dim(x) <- c(.dim, 0)
+    } else {
+      dim(x) <- .dim
     }
   }
   else if (is.null(.dim) || length(.dim) == 1) {
@@ -69,7 +71,8 @@ new_rvar <- function(x = double()) {
   # it will not dispatch to S3 objects even if they have an S4 class
   # defined through setOldClass, they *must* also have isS4() return
   # TRUE, hence the need to set that flag here.
-  asS4(structure(rep.int(NA, NROW(x)), draws = x, class = c("rvar")))
+  ret = asS4(structure(rep.int(NA, NROW(x)), draws = x, class = c("rvar")))
+  ret
 }
 
 #' @rdname rvar
@@ -331,6 +334,7 @@ as.list.rvar <- function(x, ...) {
   index[seq(length(index) + 1, length(dim(.draws)))] = list(missing_arg())
 
   x = eval_tidy(expr(new_rvar(.draws[!!!index, drop = FALSE])))
+  #x = eval_tidy(expr(new_rvar(rray_subset(.draws, !!!index))))
 
   #print(expr(.draws[!!!indices]))
 
@@ -353,10 +357,21 @@ as.list.rvar <- function(x, ...) {
   }
 
   value <- vec_cast(value, x)
-  check_rvar_ndraws_first(value, x)
+  x <- check_rvar_ndraws_first(value, x)
   value <- check_rvar_dims_first(value, x[i, ...])
 
-  rray_subset(draws_of(x), i, ...) <- draws_of(value)
+  # TODO: this is a hack for assignment to empty vectors and needs to be fixed
+  x_draws = draws_of(x)
+  # if (diml(x) == 0) {
+  #   new_x_dim <- dim(draws_of(value))
+  #   new_x_dim[1] <- max(new_x_dim[1], max(i))
+  #   new_x_dim[length(new_x_dim)] <- 1
+  #   x_draws <- array(vec_ptype(x_draws), dim = new_x_dim)
+  # }
+
+  rray_subset(x_draws, i, ...) <- draws_of(value)
+
+  draws_of(x) <- x_draws
   x
 }
 
@@ -558,13 +573,23 @@ check_rvar_subset_indices = function(x, ...) {
 }
 
 # Check that the first rvar has a compatible number of draws to be used
-# with the second.
+# with the second. Returns a (possibly modified) form of `y` if
+# the number of draws needs to be conformed (when ndraws(y) == 0)
 check_rvar_ndraws_first <- function(x, y) {
   ndraws_x <- ndraws(x)
   ndraws_y <- ndraws(y)
 
   if (ndraws_x == 1 || ndraws_x == ndraws_y) {
-    ndraws_y
+    # ndraws_x == 1 => assigning a constant, which is fine
+    # ndraws_y
+    y
+  } else if (ndraws_y == 0) {
+    # ndraws_y == 0 => assigning to an empty vector, use ndraws_x
+    draws_y = draws_of(y)
+    new_dim = dim(draws_y)
+    new_dim[length(new_dim)] <- ndraws_x
+    draws_of(y) <- array(vec_ptype(draws_y), dim = new_dim)
+    y
   } else {
     stop(
       "Random variables have different number of draws (", ndraws_x,
@@ -589,7 +614,7 @@ check_rvar_ndraws_both <- function(x, y) {
   } else {
     stop(
       "Random variables have different number of draws (", ndraws_x,
-      " and ", ndraws_y, ") can cannot be used together."
+      " and ", ndraws_y, ") and cannot be used together."
     )
   }
 }
@@ -607,6 +632,9 @@ check_rvar_dims_first <- function(x, y) {
     dim(x) <- rep(1, length(dim(y)))
   } else if (identical(x_dim_dropped, y_dim_dropped)) {
     dim(x) <- dim(y)
+  } else if (y_dim == 0) {
+    # y_dim == 0 => assigning to an empty vector, can leave it as is
+    # TODO: this is a hack for assignment to empty vectors and needs to be fixed
   } else {
     stop2("Cannot assign an rvar with dimension ", paste0(x_dim, collapse = ","),
       " to an rvar with dimension ", paste0(y_dim, collapse = ","))
