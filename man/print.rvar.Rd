@@ -21,7 +21,7 @@
 \item{...}{Further arguments passed to other functions.}
 
 \item{color}{Whether or not to use color when formatting the output. If \code{TRUE},
-the \code{\link[pillar:style_num]{pillar::style_num()}} functions may be used to produce strings containing
+the \code{\link[pillar:style_subtle]{pillar::style_num()}} functions may be used to produce strings containing
 control sequences to produced colored output on the terminal.}
 
 \item{vec.len}{Numeric (>= 0) indicating how many ‘first few’ elements are

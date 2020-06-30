@@ -37,6 +37,10 @@
 #'
 NULL
 
+#' @import methods
+#' @export
+setClass("rvar", slots = representation(draws = "array"))
+
 #' @rdname rvar
 #' @importFrom vctrs new_vctr
 new_rvar <- function(x = double()) {
@@ -71,8 +75,7 @@ new_rvar <- function(x = double()) {
   # it will not dispatch to S3 objects even if they have an S4 class
   # defined through setOldClass, they *must* also have isS4() return
   # TRUE, hence the need to set that flag here.
-  ret = asS4(structure(rep.int(NA, NROW(x)), draws = x, class = c("rvar")))
-  ret
+  new("rvar", draws = x)
 }
 
 #' @rdname rvar
@@ -81,13 +84,10 @@ rvar <- function(x = double(), dim = NULL) {
   x <- new_rvar(x)
 
   if (!is.null(dim)) {
-    dim(x) <- dim
+   dim(x) <- dim
   }
   x
 }
-
-#' @importFrom methods setOldClass
-setOldClass(c("rvar"))
 
 #' Is `x` a random variables?
 #'
@@ -108,9 +108,9 @@ is_rvar <- function(x) {
 # length and dimensions ---------------------------------------------------
 
 #' @export
-length.rvar <- function(x) {
+setMethod("length", "rvar", function(x) {
   prod(diml(x))
-}
+})
 
 #' @export
 dim.rvar <- function(x) {
@@ -160,7 +160,6 @@ names.rvar <- function(x) {
   dimnames(draws_of(x))[[1]] <- value
   x
 }
-
 
 # other standard methods --------------------------------------------------
 
@@ -278,34 +277,35 @@ as.list.rvar <- function(x, ...) {
 
 #' @importFrom rray rray_slice
 #' @export
-`[[.rvar` <- function(x, i, ...) {
+setMethod("[[", "rvar", function(x, i, ...) {
   check_rvar_yank_index(x, i, ...)
 
   x <- new_rvar(rray_slice(draws_of(x), i, 1))
   dimnames(x) <- NULL
   x
-}
+})
 
 #' @importFrom rray rray_slice<-
 #' @export
-`[[<-.rvar` <- function(x, i, ..., value) {
+setMethod("[[<-", "rvar", function(x, i, ..., value) {
   value <- vec_cast(value, x)
   check_rvar_ndraws_first(value, x)
   value <- check_rvar_dims_first(value, x[[i, ...]])
 
   rray_slice(draws_of(x), i, 1) <- draws_of(value)
   x
-}
+})
 
 #' @importFrom rray rray_subset
 #' @importFrom rlang enquos eval_tidy quo is_missing missing_arg expr
 #' @export
-`[.rvar` <- function(x, ..., drop = FALSE) {
-  check_rvar_subset_indices(x, ...)
+setMethod("[", "rvar", function(x, i, j, ..., drop = FALSE) {
+  #TODO: fix this check
+  # check_rvar_subset_indices(x, i, j, ...)
   .draws = draws_of(x)
   .dim = dim(.draws)
 
-  index = as.list(enquos(...))
+  index = as.list(enquos(i, j, ...))
   for (i in seq_along(index)) {
     if (is_missing(quo_get_expr(index[[i]]))) {
       index[[i]] <- missing_arg()
@@ -331,7 +331,9 @@ as.list.rvar <- function(x, ...) {
   }
 
   # fill in final indices with missing arguments
-  index[seq(length(index) + 1, length(dim(.draws)))] = list(missing_arg())
+  if (length(index) < length(dim(.draws))) {
+    index[seq(length(index) + 1, length(dim(.draws)))] = list(missing_arg())
+  }
 
   x = eval_tidy(expr(new_rvar(.draws[!!!index, drop = FALSE])))
   #x = eval_tidy(expr(new_rvar(rray_subset(.draws, !!!index))))
@@ -345,11 +347,11 @@ as.list.rvar <- function(x, ...) {
   } else {
     x
   }
-}
+})
 
 #' @importFrom rray rray_subset<-
 #' @export
-`[<-.rvar` <- function(x, i, ..., value) {
+setMethod("[<-", "rvar", function(x, i, j, ..., value) {
   if (length(diml(x) == 1) && any(i > length(x), na.rm = TRUE)) {
     # unidimensional indexing allows array extension; extend the array
     # before we do the assignment
@@ -358,7 +360,7 @@ as.list.rvar <- function(x, ...) {
 
   value <- vec_cast(value, x)
   x <- check_rvar_ndraws_first(value, x)
-  value <- check_rvar_dims_first(value, x[i, ...])
+  value <- check_rvar_dims_first(value, x[i, j, ...])
 
   # TODO: this is a hack for assignment to empty vectors and needs to be fixed
   x_draws = draws_of(x)
@@ -369,11 +371,11 @@ as.list.rvar <- function(x, ...) {
   #   x_draws <- array(vec_ptype(x_draws), dim = new_x_dim)
   # }
 
-  rray_subset(x_draws, i, ...) <- draws_of(value)
+  rray_subset(x_draws, i, j, ...) <- draws_of(value)
 
   draws_of(x) <- x_draws
   x
-}
+})
 
 
 # manipulating raw draws array --------------------------------------------
@@ -414,6 +416,19 @@ draws_of <- function(x) {
 
 # vctrs stuff -------------------------------------------------------------
 
+#' @importFrom vctrs vec_proxy
+#' @export
+vec_proxy.rvar = function(x, ...) {
+  vec_chop(x@draws)
+}
+
+# #' @importFrom vctrs vec_restore
+# #' @export
+# vec_restore.rvar = function(x, to, ..., n = NULL) {
+#   rvar(vec_unchop(x))
+# }
+
+
 # #' @importFrom vctrs vec_proxy
 # #' @importFrom rray rray_split
 # #' @export
@@ -440,31 +455,29 @@ draws_of <- function(x) {
 # }
 #
 #
-# #' @importFrom vctrs vec_restore
-# #' @importFrom rray rray_rbind
-# #' @export
-# vec_restore.rvar <- function(x, ...) {
-#   if (length(x) > 0) {
-#     # need to handle the case of creating NAs from NULL entries so that
-#     # vec_init() works properly: vec_init requires vec_slice(x, NA_integer_)
-#     # to give you back NA values, but this breaks because we use lists as proxies.
-#     # When using a list as a proxy, a proxy entry in `x` that is equal to NULL
-#     # actually corresponds to an NA value due to the way that list indexing
-#     # works: when you do something like list()[c(NA_integer_,NA_integer_)]
-#     # you get back list(NULL, NULL), but when you do something like
-#     # double()[c(NA_integer_,NA_integer_)] you get back c(NA, NA).
-#     # So we have to make the NULL values be NA values to mimic vector indexing.
-#
-#     # N.B. could potentially do this with vec_cast as well (as long as the first
-#     # dimension is the slicing index)
-#     x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
-#
-#   }
-#   x_array <- do.call(rray_rbind, x)
-#   new_rvar(x_array)
-# }
+#' @importFrom vctrs vec_restore
+#' @importFrom rray rray_rbind
+#' @export
+vec_restore.rvar <- function(x, ...) {
+  if (length(x) > 0) {
+    # need to handle the case of creating NAs from NULL entries so that
+    # vec_init() works properly: vec_init requires vec_slice(x, NA_integer_)
+    # to give you back NA values, but this breaks because we use lists as proxies.
+    # When using a list as a proxy, a proxy entry in `x` that is equal to NULL
+    # actually corresponds to an NA value due to the way that list indexing
+    # works: when you do something like list()[c(NA_integer_,NA_integer_)]
+    # you get back list(NULL, NULL), but when you do something like
+    # double()[c(NA_integer_,NA_integer_)] you get back c(NA, NA).
+    # So we have to make the NULL values be NA values to mimic vector indexing.
 
+    # N.B. could potentially do this with vec_cast as well (as long as the first
+    # dimension is the slicing index)
+    x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
 
+  }
+  x_array <- do.call(rray_rbind, x)
+  new_rvar(x_array)
+}
 
 # concatenation -----------------------------------------------------------
 

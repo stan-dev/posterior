@@ -25,7 +25,7 @@ An \code{matrix} with dimension #iterations x #chains.
 \description{
 Extract a matrix of draws of a single variable with dimension
 #iterations x #chains primarily for use in convergence functions
-such as \code{\link{rhat}}.
+such as \verb{\link{rhat}}.
 }
 \examples{
 x <- example_draws()

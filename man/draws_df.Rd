@@ -16,8 +16,7 @@ as_draws_df(x, ...)
 
 \method{as_draws_df}{default}(x, ...)
 
-\method{as_draws_df}{data.frame}(x, .iteration = NULL, .chain = NULL,
-  ...)
+\method{as_draws_df}{data.frame}(x, .iteration = NULL, .chain = NULL, ...)
 
 \method{as_draws_df}{draws_df}(x, ...)
 
@@ -72,8 +71,10 @@ tail(x[, c(".iteration", ".chain", ".draw")])
 
 }
 \seealso{
-Other formats: \code{\link{draws_array}},
-  \code{\link{draws_list}}, \code{\link{draws_matrix}},
-  \code{\link{draws}}
+Other formats: 
+\code{\link{draws_array}},
+\code{\link{draws_list}},
+\code{\link{draws_matrix}},
+\code{\link{draws}}
 }
 \concept{formats}

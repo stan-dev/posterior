@@ -27,10 +27,15 @@ Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
 Hall/CRC.
 }
 \seealso{
-Other diagnostics: \code{\link{ess_basic}},
-  \code{\link{ess_bulk}}, \code{\link{ess_quantile}},
-  \code{\link{ess_sd}}, \code{\link{ess_tail}},
-  \code{\link{mcse_quantile}}, \code{\link{mcse_sd}},
-  \code{\link{rhat_basic}}, \code{\link{rhat}}
+Other diagnostics: 
+\code{\link{ess_basic}()},
+\code{\link{ess_bulk}()},
+\code{\link{ess_quantile}()},
+\code{\link{ess_sd}()},
+\code{\link{ess_tail}()},
+\code{\link{mcse_quantile}()},
+\code{\link{mcse_sd}()},
+\code{\link{rhat_basic}()},
+\code{\link{rhat}()}
 }
 \concept{diagnostics}

@@ -29,8 +29,10 @@ which also have their own subclasses of the form \code{"draws_{format}"} (e.g.
 \code{"draws_array"}).
 }
 \seealso{
-Other formats: \code{\link{draws_array}},
-  \code{\link{draws_df}}, \code{\link{draws_list}},
-  \code{\link{draws_matrix}}
+Other formats: 
+\code{\link{draws_array}},
+\code{\link{draws_df}},
+\code{\link{draws_list}},
+\code{\link{draws_matrix}}
 }
 \concept{formats}

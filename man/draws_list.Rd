@@ -50,8 +50,10 @@ class(x)
 str(x)
 }
 \seealso{
-Other formats: \code{\link{draws_array}},
-  \code{\link{draws_df}}, \code{\link{draws_matrix}},
-  \code{\link{draws}}
+Other formats: 
+\code{\link{draws_array}},
+\code{\link{draws_df}},
+\code{\link{draws_matrix}},
+\code{\link{draws}}
 }
 \concept{formats}

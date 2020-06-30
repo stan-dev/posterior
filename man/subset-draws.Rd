@@ -9,17 +9,13 @@
 \alias{subset.draws_list}
 \title{Subset Draws Objects}
 \usage{
-\method{subset}{draws_matrix}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, ...)
+\method{subset}{draws_matrix}(x, variable = NULL, iteration = NULL, chain = NULL, draw = NULL, ...)
 
-\method{subset}{draws_array}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, ...)
+\method{subset}{draws_array}(x, variable = NULL, iteration = NULL, chain = NULL, draw = NULL, ...)
 
-\method{subset}{draws_df}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, ...)
+\method{subset}{draws_df}(x, variable = NULL, iteration = NULL, chain = NULL, draw = NULL, ...)
 
-\method{subset}{draws_list}(x, variable = NULL, iteration = NULL,
-  chain = NULL, draw = NULL, ...)
+\method{subset}{draws_list}(x, variable = NULL, iteration = NULL, chain = NULL, draw = NULL, ...)
 }
 \arguments{
 \item{x}{An \R object for which the methods are defined.}
@@ -44,7 +40,7 @@ indices.
 \details{
 To ensure that multiple consequtive subsetting operations are working
 correctly, \code{subset} repairs \code{draws} objects before and after subsetting
-via \code{\link{repair_draws}}.
+via \verb{\link{repair_draws}}.
 }
 \examples{
 x <- example_draws()
