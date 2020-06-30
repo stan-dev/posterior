@@ -70,10 +70,6 @@ variables.draws_list <- function(x) {
   names(x[[1]])
 }
 
-variables.NULL <- function(x) {
-  NULL
-}
-
 #' @rdname draws-index
 #' @export
 `variables<-` <- function(x, value) {
