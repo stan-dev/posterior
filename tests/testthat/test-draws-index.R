@@ -1,3 +1,15 @@
+test_that("indices work for NULL", {
+   x <- NULL
+
+   expect_equal(iteration_ids(NULL), NULL)
+   expect_equal(chain_ids(NULL), NULL)
+   expect_equal(draw_ids(NULL), NULL)
+
+   expect_equal(niterations(NULL), 0)
+   expect_equal(nchains(NULL), 0)
+   expect_equal(ndraws(NULL), 0)
+})
+
 test_that("indices of draws_matrix objects are correct", {
    x <- as_draws_matrix(example_draws())
 

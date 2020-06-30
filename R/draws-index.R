@@ -38,7 +38,11 @@ NULL
 #' @rdname draws-index
 #' @export
 variables <- function(x) {
-  UseMethod("variables")
+  if (is.null(x)) {
+    NULL
+  } else {
+    UseMethod("variables")
+  }  
 }
 
 #' @export
@@ -64,6 +68,10 @@ variables.draws_list <- function(x) {
     return(character(0))
   }
   names(x[[1]])
+}
+
+variables.NULL <- function(x) {
+  NULL
 }
 
 #' @rdname draws-index
@@ -105,7 +113,11 @@ variables.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 iteration_ids <- function(x) {
-  UseMethod("iteration_ids")
+  if (is.null(x)) {
+    NULL
+  } else {
+    UseMethod("iteration_ids")
+  }
 }
 
 #' @export
@@ -133,7 +145,11 @@ iteration_ids.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 chain_ids <- function(x) {
-  UseMethod("chain_ids")
+  if (is.null(x)) {
+    NULL
+  } else {
+    UseMethod("chain_ids")
+  }
 }
 
 #' @export
@@ -161,7 +177,11 @@ chain_ids.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 draw_ids <- function(x) {
-  UseMethod("draw_ids")
+  if (is.null(x)) {
+    NULL
+  } else {
+    UseMethod("draw_ids")
+  }
 }
 
 #' @export
@@ -193,7 +213,11 @@ draw_ids.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 nvariables <- function(x) {
-  UseMethod("nvariables")
+  if (is.null(x)) {
+    0
+  } else {
+    UseMethod("nvariables")
+  }
 }
 
 #' @export
@@ -222,7 +246,11 @@ nvariables.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 niterations <- function(x) {
-  UseMethod("niterations")
+  if (is.null(x)) {
+    0
+  } else {
+    UseMethod("niterations")
+  }
 }
 
 #' @export
@@ -251,7 +279,11 @@ niterations.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 nchains <- function(x) {
-  UseMethod("nchains")
+  if (is.null(x)) {
+    0
+  } else {
+    UseMethod("nchains")
+  }
 }
 
 #' @export
@@ -277,7 +309,11 @@ nchains.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 ndraws <- function(x) {
-  UseMethod("ndraws")
+  if (is.null(x)) {
+    0
+  } else {
+    UseMethod("ndraws")
+  }
 }
 
 #' @export

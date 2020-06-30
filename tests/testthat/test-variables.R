@@ -8,7 +8,7 @@ test_that('duplicate variable names are not allowed', {
   expect_error(as_draws_array(x), err)
 })
 
-test_that("variables() and variables<-() work on draws_matrix", {
+test_that("variables() and variables<-() work on ", {
   x <- as_draws_matrix(matrix(11:20, ncol = 2, dimnames = list(NULL, c("a", "b"))))
 
   ref <- as_draws_matrix(matrix(11:20, ncol = 2, dimnames = list(NULL, c("x", "y[1]"))))
@@ -63,4 +63,8 @@ test_that("variables() works on draws_df with duplicate columns", {
   names(x)[names(x) == "b"] = "a"
 
   expect_equal(variables(x), c("a", "a"))
+})
+
+test_that("variables() works on NULL", {
+  expect_equal(variables(NULL), NULL)
 })
