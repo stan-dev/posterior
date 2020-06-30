@@ -38,11 +38,12 @@ NULL
 #' @rdname draws-index
 #' @export
 variables <- function(x) {
-  if (is.null(x)) {
-    NULL
-  } else {
-    UseMethod("variables")
-  }  
+  UseMethod("variables")
+}
+
+#' @export
+variables.NULL <- function(x) {
+  NULL
 }
 
 #' @export
@@ -109,11 +110,12 @@ variables.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 iteration_ids <- function(x) {
-  if (is.null(x)) {
-    NULL
-  } else {
-    UseMethod("iteration_ids")
-  }
+  UseMethod("iteration_ids")
+}
+
+#' @export
+iteration_ids.NULL <- function(x) {
+  NULL
 }
 
 #' @export
@@ -141,11 +143,12 @@ iteration_ids.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 chain_ids <- function(x) {
-  if (is.null(x)) {
-    NULL
-  } else {
-    UseMethod("chain_ids")
-  }
+  UseMethod("chain_ids")
+}
+
+#' @export
+chain_ids.NULL <- function(x) {
+  NULL
 }
 
 #' @export
@@ -173,11 +176,12 @@ chain_ids.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 draw_ids <- function(x) {
-  if (is.null(x)) {
-    NULL
-  } else {
-    UseMethod("draw_ids")
-  }
+  UseMethod("draw_ids")
+}
+
+#' @export
+draw_ids.NULL <- function(x) {
+  NULL
 }
 
 #' @export
@@ -209,11 +213,11 @@ draw_ids.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 nvariables <- function(x) {
-  if (is.null(x)) {
-    0
-  } else {
-    UseMethod("nvariables")
-  }
+  UseMethod("nvariables")
+}
+#' @export
+nvariables.NULL <- function(x) {
+  0
 }
 
 #' @export
@@ -242,11 +246,12 @@ nvariables.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 niterations <- function(x) {
-  if (is.null(x)) {
-    0
-  } else {
-    UseMethod("niterations")
-  }
+  UseMethod("niterations")
+}
+
+#' @export
+niterations.NULL <- function(x) {
+  0
 }
 
 #' @export
@@ -275,11 +280,12 @@ niterations.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 nchains <- function(x) {
-  if (is.null(x)) {
-    0
-  } else {
-    UseMethod("nchains")
-  }
+  UseMethod("nchains")
+}
+
+#' @export
+nchains.NULL <- function(x) {
+  0
 }
 
 #' @export
@@ -305,11 +311,12 @@ nchains.draws_list <- function(x) {
 #' @rdname draws-index
 #' @export
 ndraws <- function(x) {
-  if (is.null(x)) {
-    0
-  } else {
-    UseMethod("ndraws")
-  }
+  UseMethod("ndraws")
+}
+
+#' @export
+ndraws.NULL <- function(x) {
+  0
 }
 
 #' @export
