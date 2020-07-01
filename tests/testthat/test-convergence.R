@@ -86,3 +86,9 @@ test_that("convergence diagnostics handle special cases correctly", {
   expect_true(is.na(rhat_basic(x)))
   expect_true(is.na(ess_basic(x)))
 })
+
+test_that("convergence diagnostics throw correct errors", {
+  mu <- extract_variable_matrix(example_draws(), "mu")
+  expect_error(ess_quantile(mu, probs = 1.2), "'probs' must contain values between 0 and 1")
+  expect_error(mcse_quantile(mu, probs = 1.2), "'probs' must contain values between 0 and 1")
+})
