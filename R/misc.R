@@ -1,19 +1,3 @@
-# create a named list using object names
-nlist <- function(...) {
-  m <- match.call()
-  dots <- list(...)
-  no_names <- is.null(names(dots))
-  has_name <- if (no_names) FALSE else nzchar(names(dots))
-  if (all(has_name)) return(dots)
-  nms <- as.character(m)[-1]
-  if (no_names) {
-    names(dots) <- nms
-  } else {
-    names(dots)[!has_name] <- nms[!has_name]
-  }
-  dots
-}
-
 # initialize a named list
 # @param names names of the elements
 # @param values optional values of the elements
@@ -41,23 +25,6 @@ seq_rows <- function(x) {
 
 seq_cols <- function(x) {
   seq_len(NCOL(x))
-}
-
-seq_dim <- function(x, dim) {
-  dim <- as_one_numeric(dim)
-  if (dim == 1) {
-    len <- NROW(x)
-  } else if (dim == 2) {
-    len <- NCOL(x)
-  } else {
-    len <- dim(x)[dim]
-  }
-  if (length(len) == 1L && !isNA(len)) {
-    out <- seq_len(len)
-  } else {
-    out <- integer(0)
-  }
-  out
 }
 
 # selectively drop dimensions of arrays

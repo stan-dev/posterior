@@ -124,3 +124,14 @@ test_that("bind_draws works for draws_list objects", {
   expect_error(bind_draws(draws1, draws3, along = "draw"),
                "Cannot bind 'draws_list' objects along 'draw'")
 })
+
+test_that("bind_draws errors if all NULL", {
+  expect_error(bind_draws(NULL, NULL), "All objects passed to 'bind_draws' are NULL")
+})
+
+test_that("bind_draws errors for inputs with incompatible variables", {
+  x1 <- x2 <- example_draws()
+  variables(x1) <- gsub("theta", "beta", variables(x1))
+  expect_error(bind_draws(x1, x2, along = "chain"), "'variables' of bound objects do not match")
+})
+

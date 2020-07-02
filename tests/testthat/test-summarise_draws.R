@@ -33,3 +33,17 @@ test_that("summarise_draws errors if name 'variable' is used", {
     "Name 'variable' is reserved in 'summarise_draws'"
   )
 })
+
+test_that("summarise_draws default method works", {
+  expect_identical(
+    summarise_draws(matrix(1:20, 10, 2)),
+    summarise_draws(as_draws_matrix(matrix(1:20, 10, 2)))
+  )
+})
+
+test_that("summarise_draws doesn't error for empty draws", {
+  expect_identical(
+    summarise_draws(empty_draws_array()),
+    empty_draws_summary()
+  )
+})
