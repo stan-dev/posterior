@@ -52,10 +52,10 @@ Pr <- function(x, na.rm = FALSE) {
 #' @export
 Ops.rvar <- function(e1, e2) {
   e1 <- as_rvar(e1)
+  f <- get(.Generic)
 
   if (missing(e2)) {
     # unary operators
-    f <- get(.Generic)
     return(rvar_apply_vec_fun(f, e1))
   }
 
@@ -64,6 +64,7 @@ Ops.rvar <- function(e1, e2) {
 
   # if number of dimensions is not equal, pad with 1s before the
   # draws dimension so that broadcasting works with rray
+  # TODO: remove once we move draws dimension to front
   ndim_x <- length(dim(draws_x))
   ndim_y <- length(dim(draws_y))
   if (ndim_x < ndim_y) {
@@ -72,29 +73,12 @@ Ops.rvar <- function(e1, e2) {
     dim(draws_y) <- c(dim(draws_y)[-ndim_y], rep(1, ndim_x - ndim_y), dim(draws_y)[ndim_y])
   }
 
-  # TODO: unary ops
-  op_fun <- switch(.Generic,
-    `+` = rray::rray_add,
-    `-` = rray::rray_subtract,
-    `/` = rray::rray_divide,
-    `*` = rray::rray_multiply,
-    `^` = rray::rray_pow,
-    # `%%` = TODO,
-    # `%/%` = TODO,
-    `&` = rray::rray_logical_and,
-    `|` = rray::rray_logical_or,
+  # broadcast
+  new_dim <- pmax(dim(draws_x), dim(draws_y))
+  draws_x <- broadcast_array(draws_x, new_dim)
+  draws_y <- broadcast_array(draws_y, new_dim)
 
-    `==` = rray::rray_equal,
-    `!=` = rray::rray_not_equal,
-    `<` = rray::rray_lesser,
-    `<=` = rray::rray_lesser_equal,
-    `>=` = rray::rray_greater_equal,
-    `>` = rray::rray_greater,
-
-    stop_incompatible_op(.Generic, e1, e2)
-  )
-
-  new_rvar(op_fun(draws_x, draws_y))
+  new_rvar(f(draws_x, draws_y))
 }
 
 

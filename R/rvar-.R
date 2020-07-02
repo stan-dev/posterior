@@ -416,7 +416,7 @@ draws_of <- function(x) {
 
 # vctrs stuff -------------------------------------------------------------
 
-#' @importFrom vctrs vec_proxy
+#' @importFrom vctrs vec_proxy vec_chop
 #' @export
 vec_proxy.rvar = function(x, ...) {
   vec_chop(x@draws)
@@ -475,6 +475,7 @@ vec_restore.rvar <- function(x, ...) {
     x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
 
   }
+  # TODO: do this with unchop
   x_array <- do.call(rray_rbind, x)
   new_rvar(x_array)
 }
@@ -654,6 +655,47 @@ check_rvar_dims_first <- function(x, y) {
   }
 
   x
+}
+
+
+broadcast_array  <- function(x, dim) {
+  current_dim = dim(x)
+
+  if (length(current_dim) < length(dim)) {
+    # add dimensions of size 1 as necessary so we can broadcast those
+    current_dim[seq(length(current_dim) + 1, length(dim))] = 1
+    dim(x) = current_dim
+  } else if (length(current_dim) > length(dim)) {
+    stop(
+      "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "]",
+      "to array of shape [", paste(dim, collapse = ","), "]:\n",
+      "Desired shape has fewer dimensions than existing array."
+    )
+  }
+
+  dim_to_broadcast = which(current_dim != dim)
+
+  if (length(dim_to_broadcast) == 0) {
+    # quick exit: already has desired dim or just needed extra dims on the end
+    return(x)
+  }
+
+  if (any(current_dim[dim_to_broadcast] != 1)) {
+    stop(
+      "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "]",
+      "to array of shape [", paste(dim, collapse = ","), "]:\n",
+      "All dimensions must be 1 or equal."
+    )
+  }
+
+  # move the dims we aren't broadcasting to the front so they are recycled properly
+  perm = c(seq_along(dim)[-dim_to_broadcast], dim_to_broadcast)
+
+  # broadcast the other dims
+  x = array(aperm(x, perm), dim[perm])
+
+  # move dims back to their original order
+  aperm(x, order(perm))
 }
 
 # broadcast the draws dimension of an rvar to the requested size

@@ -16,6 +16,7 @@ test_that("indexing with [[ works on a vector", {
   expect_error(x[[NA_integer_]])
   expect_error(x[[6]])
   expect_error(x[[1,1]])
+  expect_error(x[[1,1,1]])
   expect_error(x[[NULL]])
 
   # different behavior from base vectors
@@ -125,14 +126,13 @@ test_that("rvars work in tibbles", {
   expect_identical(df$y, new_rvar(x_array + 1))
   expect_identical(dplyr::mutate(df, z = x)$z, x)
 
-  # TODO: fix
   expect_equal(dplyr::mutate(df, z = x * 2)$z, new_rvar(x_array * 2))
-  # expect_equal(
-  #   dplyr::mutate(dplyr::group_by(df, 1:4), z = x * 2)$z,
-  #   new_rvar(x_array * 2)
-  # )
+  expect_equal(
+    dplyr::mutate(dplyr::group_by(df, 1:4), z = x * 2)$z,
+    new_rvar(x_array * 2)
+  )
 
-  df = tibble::tibble(x, g = letters[1:4])
+  df = tibble::tibble(g = letters[1:4], x)
   ref = tibble::tibble(
     a = new_rvar(x_array[1,, drop = FALSE]),
     b = new_rvar(x_array[2,, drop = FALSE]),
@@ -140,8 +140,29 @@ test_that("rvars work in tibbles", {
     d = new_rvar(x_array[4,, drop = FALSE])
   )
   expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref)
+  expect_equal(tidyr::pivot_longer(ref, a:d, names_to = "g", values_to = "x"), df)
 
-  # TODO: fix (will crash R)
-  # df$y = df$x + 1
-  # tidyr::pivot_wider(df, names_from = g, values_from = x)
+  df$y = df$x + 1
+  ref2 = tibble::tibble(
+    y = df$y,
+    a = c(df$x[[1]], NA, NA, NA),
+    b = c(rvar(NA), df$x[[2]], NA, NA),
+    c = c(rvar(NA), NA, df$x[[3]], NA),
+    d = c(rvar(NA), NA, NA, df$x[[4]]),
+  )
+  expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref2)
+})
+
+# broadcasting ------------------------------------------------------------
+
+test_that("broadcast_array works", {
+  expect_equal(broadcast_array(5, c(1,2,3,1)), array(rep(5, 6), dim = c(1,2,3,1)))
+  expect_equal(
+    broadcast_array(array(1:4, c(1,4)), c(2,4)),
+    array(rep(1:4, each = 2), c(2,4))
+  )
+  expect_equal(
+    broadcast_array(array(1:4, c(4,1)), c(4,2)),
+    array(c(1:4, 1:4), c(4,2))
+  )
 })
