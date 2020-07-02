@@ -37,10 +37,6 @@
 #'
 NULL
 
-#' @import methods
-#' @export
-setClass("rvar", slots = representation(draws = "array"))
-
 #' @rdname rvar
 #' @importFrom vctrs new_vctr
 new_rvar <- function(x = double()) {
@@ -52,18 +48,13 @@ new_rvar <- function(x = double()) {
   x <- as.array(x)
 
   # ensure dimnames is set (makes comparison easier for tests)
-  if (is.null(dimnames(x))) {
+  if (length(dimnames(x)) == 0) {
     dimnames(x) <- list(NULL)
   }
 
   if (length(x) == 0) {
-    if (is.null(.dim)) {
-      dim(x) <- c(0, 0)
-    } else if (length(.dim) == 1) {
-      dim(x) <- c(.dim, 0)
-    } else {
-      dim(x) <- .dim
-    }
+    # canonical NULL rvar has 0 draws
+    dim(x) <- c(0, 0)
   }
   else if (is.null(.dim) || length(.dim) == 1) {
     # 1d vectors get treated as a single variable
@@ -75,7 +66,7 @@ new_rvar <- function(x = double()) {
   # it will not dispatch to S3 objects even if they have an S4 class
   # defined through setOldClass, they *must* also have isS4() return
   # TRUE, hence the need to set that flag here.
-  new("rvar", draws = x)
+  asS4(structure(list(), draws = x, class = "rvar"))
 }
 
 #' @rdname rvar
@@ -84,10 +75,13 @@ rvar <- function(x = double(), dim = NULL) {
   x <- new_rvar(x)
 
   if (!is.null(dim)) {
-   dim(x) <- dim
+    dim(x) <- dim
   }
   x
 }
+
+#' @importFrom methods setOldClass
+setOldClass(c("rvar"))
 
 #' Is `x` a random variables?
 #'
@@ -108,9 +102,9 @@ is_rvar <- function(x) {
 # length and dimensions ---------------------------------------------------
 
 #' @export
-setMethod("length", "rvar", function(x) {
+length.rvar <- function(x) {
   prod(diml(x))
-})
+}
 
 #' @export
 dim.rvar <- function(x) {
@@ -277,35 +271,34 @@ as.list.rvar <- function(x, ...) {
 
 #' @importFrom rray rray_slice
 #' @export
-setMethod("[[", "rvar", function(x, i, ...) {
+`[[.rvar` <- function(x, i, ...) {
   check_rvar_yank_index(x, i, ...)
 
-  x <- new_rvar(rray_slice(draws_of(x), i, 1))
-  dimnames(x) <- NULL
-  x
-})
+  draws <- rray_slice(draws_of(x), i, 1)
+  dimnames(draws) <- NULL
+  new_rvar(draws)
+}
 
 #' @importFrom rray rray_slice<-
 #' @export
-setMethod("[[<-", "rvar", function(x, i, ..., value) {
+`[[<-.rvar` <- function(x, i, ..., value) {
   value <- vec_cast(value, x)
   check_rvar_ndraws_first(value, x)
   value <- check_rvar_dims_first(value, x[[i, ...]])
 
   rray_slice(draws_of(x), i, 1) <- draws_of(value)
   x
-})
+}
 
 #' @importFrom rray rray_subset
 #' @importFrom rlang enquos eval_tidy quo is_missing missing_arg expr
 #' @export
-setMethod("[", "rvar", function(x, i, j, ..., drop = FALSE) {
-  #TODO: fix this check
-  # check_rvar_subset_indices(x, i, j, ...)
+`[.rvar` <- function(x, ..., drop = FALSE) {
+  check_rvar_subset_indices(x, ...)
   .draws = draws_of(x)
   .dim = dim(.draws)
 
-  index = as.list(enquos(i, j, ...))
+  index = as.list(enquos(...))
   for (i in seq_along(index)) {
     if (is_missing(quo_get_expr(index[[i]]))) {
       index[[i]] <- missing_arg()
@@ -336,6 +329,7 @@ setMethod("[", "rvar", function(x, i, j, ..., drop = FALSE) {
   }
 
   x = eval_tidy(expr(new_rvar(.draws[!!!index, drop = FALSE])))
+
   #x = eval_tidy(expr(new_rvar(rray_subset(.draws, !!!index))))
 
   #print(expr(.draws[!!!indices]))
@@ -347,11 +341,11 @@ setMethod("[", "rvar", function(x, i, j, ..., drop = FALSE) {
   } else {
     x
   }
-})
+}
 
 #' @importFrom rray rray_subset<-
 #' @export
-setMethod("[<-", "rvar", function(x, i, j, ..., value) {
+`[<-.rvar` <- function(x, i, ..., value) {
   if (length(diml(x) == 1) && any(i > length(x), na.rm = TRUE)) {
     # unidimensional indexing allows array extension; extend the array
     # before we do the assignment
@@ -360,7 +354,7 @@ setMethod("[<-", "rvar", function(x, i, j, ..., value) {
 
   value <- vec_cast(value, x)
   x <- check_rvar_ndraws_first(value, x)
-  value <- check_rvar_dims_first(value, x[i, j, ...])
+  value <- check_rvar_dims_first(value, x[i, ...])
 
   # TODO: this is a hack for assignment to empty vectors and needs to be fixed
   x_draws = draws_of(x)
@@ -375,7 +369,7 @@ setMethod("[<-", "rvar", function(x, i, j, ..., value) {
 
   draws_of(x) <- x_draws
   x
-})
+}
 
 
 # manipulating raw draws array --------------------------------------------
@@ -407,10 +401,8 @@ draws_of <- function(x) {
 #' @rdname draws_of
 #' @export
 `draws_of<-` <- function(x, value) {
-  # TODO: fix stopgap or at least make attrs stay
-  new_rvar(value)
-  # attr(x, "draws") <- value
-  # x
+  attr(x, "draws") <- value
+  x
 }
 
 
@@ -419,9 +411,10 @@ draws_of <- function(x) {
 #' @importFrom vctrs vec_proxy vec_chop
 #' @export
 vec_proxy.rvar = function(x, ...) {
-  vec_chop(x@draws)
+  vec_chop(draws_of(x))
 }
 
+# TODO: cleanup
 # #' @importFrom vctrs vec_restore
 # #' @export
 # vec_restore.rvar = function(x, to, ..., n = NULL) {
@@ -475,7 +468,7 @@ vec_restore.rvar <- function(x, ...) {
     x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
 
   }
-  # TODO: do this with unchop
+  # TODO: do this with unchop or abind with a broadcast
   x_array <- do.call(rray_rbind, x)
   new_rvar(x_array)
 }

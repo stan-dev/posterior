@@ -154,3 +154,24 @@ setMethod("%*%", c(x = "rvar"), `%*%.rvar`)
 #' @rdname rvar-matmult
 #' @export
 setMethod("%*%", c(y = "rvar"), `%*%.rvar`)
+
+
+
+# transpose and permutation -----------------------------------------------
+
+#' @export
+t.rvar = function(x) {
+  .draws = draws_of(x)
+  ndim = length(dim(.draws))
+
+  if (length(x) != 0 && ndim == 2) {
+    # vector
+    dim(.draws) = c(1, dim(.draws))
+    new_rvar(.draws)
+  } else if (ndim == 3) {
+    .draws <- aperm(.draws, c(2, 1, 3))
+    new_rvar(.draws)
+  } else {
+    stop("argument is not a random vector or matrix")
+  }
+}

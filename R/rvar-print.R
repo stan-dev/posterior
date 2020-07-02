@@ -64,10 +64,6 @@ pillar_shaft.rvar <- function(x, ...) {
   pillar::new_pillar_shaft_simple(out, align = "right")
 }
 
-#' @importFrom pillar is_vector_s3
-#' @export
-is_vector_s3.rvar <- function(x) TRUE
-
 
 # type summaries ----------------------------------------------------------
 
