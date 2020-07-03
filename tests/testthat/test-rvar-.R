@@ -2,18 +2,22 @@
 
 # function for making rvars from arrays that expects last index to be
 # draws (for testing so that when array structure changes tests don't have to)
-rvar_from_array = new_rvar
+rvar_from_array = function(x) {
+  .dim = dim(x)
+  last_dim = length(.dim)
+  new_rvar(aperm(x, c(last_dim, seq_len(last_dim - 1))))
+}
 
 test_that("indexing with [[ works on a vector", {
-  x_array <- array(1:20, dim = c(4,5), dimnames = list(A = paste0("a", 1:4), NULL))
-  x = rvar_from_array(x_array)
+  x_array <- array(1:20, dim = c(5,4), dimnames = list(NULL, A = paste0("a", 1:4)))
+  x = new_rvar(x_array)
 
   # [[ indexing should drop names (but not indices)
   x_array_ref = x_array
   dimnames(x_array_ref) <- NULL
 
-  expect_identical(x[[3]], rvar_from_array(x_array_ref[3,, drop = FALSE]))
-  expect_identical(x[["a2"]], rvar_from_array(x_array_ref[2,, drop = FALSE]))
+  expect_identical(x[[3]], new_rvar(x_array_ref[,3, drop = FALSE]))
+  expect_identical(x[["a2"]], new_rvar(x_array_ref[,2, drop = FALSE]))
 
   expect_error(x[[]])
   expect_error(x[[NA]])
@@ -22,11 +26,62 @@ test_that("indexing with [[ works on a vector", {
   expect_error(x[[1,1]])
   expect_error(x[[1,1,1]])
   expect_error(x[[NULL]])
+  expect_error(x[[-1]])
 
   # different behavior from base vectors
   # base vectors convert these to numeric
   expect_error(x[[TRUE]])
   expect_error(x[[FALSE]])
+})
+
+test_that("indexing with [[ works on a matrix", {
+  x_array = array(
+    1:24, dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x = new_rvar(x_array)
+
+  x_array_ref = x_array
+  dim(x_array_ref) <- c(2,12)
+
+  expect_identical(x[[2]], new_rvar(x_array_ref[,2, drop = TRUE]))
+  expect_identical(x[[12]], new_rvar(x_array_ref[,12, drop = TRUE]))
+  expect_identical(x[[2,3]], new_rvar(x_array[,2,3, drop = TRUE]))
+
+  # invalid indexing should result in errors
+  expect_error(x[[1,]])
+  expect_error(x[[1,1,1]])
+  expect_error(x[[13]])
+
+  # different from base vectors
+  # don't allow name-based [[ indexing on 2+D arrays
+  expect_error(x[["a2"]])
+})
+
+test_that("assignment with [[ works on a matrix", {
+  x_array = array(
+    1:24, dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x = new_rvar(x_array)
+
+  expect_identical(
+    {x2 <- x; x2[[2]] <- 1; x2},
+    new_rvar({xr <- x_array; xr[,2,1] <- 1; xr})
+  )
+  expect_identical(
+    {x2 <- x; x2[[12]] <- 1; x2},
+    new_rvar({xr <- x_array; xr[,4,3] <- 1; xr})
+  )
+  expect_identical(
+    {x2 <- x; x2[[12]] <- new_rvar(c(1,2)); x2},
+    new_rvar({xr <- x_array; xr[,4,3] <- c(1,2); xr})
+  )
+  expect_identical(
+    {x2 <- x; x2[["a2","b3"]] <- new_rvar(c(1,2)); x2},
+    new_rvar({xr <- x_array; xr[,2,3] <- c(1,2); xr})
+  )
+
 })
 
 test_that("indexing with [ works on a vector", {
@@ -107,8 +162,8 @@ test_that("indexing with [ works on a matrix", {
 # unique, duplicated, etc -------------------------------------------------
 
 test_that("unique.rvar and duplicated.rvar work", {
-  x <- rvar(matrix(c(1,2,1, 1,2,1, 3,3,3), nrow = 3))
-  unique_x <- rvar(matrix(c(1,2, 1,2, 3,3), nrow = 2))
+  x <- rvar_from_array(matrix(c(1,2,1, 1,2,1, 3,3,3), nrow = 3))
+  unique_x <- rvar_from_array(matrix(c(1,2, 1,2, 3,3), nrow = 2))
 
   expect_equal(unique(x), unique_x)
   expect_equal(as.vector(duplicated(x)), c(FALSE, FALSE, TRUE))
@@ -170,3 +225,22 @@ test_that("broadcast_array works", {
     array(c(1:4, 1:4), c(4,2))
   )
 })
+
+# rep ---------------------------------------------------------------------
+
+test_that("rep works", {
+  # TODO
+})
+
+# all.equal ---------------------------------------------------------------------
+
+test_that("all.equal works", {
+  # TODO
+})
+
+# as.list ---------------------------------------------------------------------
+
+test_that("as.list works", {
+  # TODO
+})
+

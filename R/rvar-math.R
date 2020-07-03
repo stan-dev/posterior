@@ -138,10 +138,14 @@ Ops.rvar <- function(e1, e2) {
   y <- broadcast_draws(y, .ndraws)
 
   # do a tensor multiplication equivalent of the requested matrix multiplication
-  result <- mul.tensor(as.tensor(draws_of(x)), 2, as.tensor(draws_of(y)), 1, by = 3)
+  result <- mul.tensor(as.tensor(draws_of(x)), 3, as.tensor(draws_of(y)), 2, by = 1)
 
   # restore names (as.tensor adds dummy names to dimensions)
   names(result) <- names(dimnames(draws_of(x)))
+
+  # move draws dimension back to the front
+  result <- aperm(result, c(3,1,2))
+
   new_rvar(unclass(result))
 }
 
@@ -169,7 +173,7 @@ t.rvar = function(x) {
     dim(.draws) = c(1, dim(.draws))
     new_rvar(.draws)
   } else if (ndim == 3) {
-    .draws <- aperm(.draws, c(2, 1, 3))
+    .draws <- aperm(.draws, c(1, 3, 2))
     new_rvar(.draws)
   } else {
     stop("argument is not a random vector or matrix")

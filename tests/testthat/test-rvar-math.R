@@ -1,6 +1,10 @@
 # function for making rvars from arrays that expects last index to be
 # draws (for testing so that when array structure changes tests don't have to)
-rvar_from_array = new_rvar
+rvar_from_array = function(x) {
+  .dim = dim(x)
+  last_dim = length(.dim)
+  new_rvar(aperm(x, c(last_dim, seq_len(last_dim - 1))))
+}
 
 test_that("arithmetic works", {
   x_array = array(1:24, dim = c(2,3,4))
@@ -121,4 +125,3 @@ test_that("matrix transpose works", {
   expect_equal(t(x), x_t)
   expect_equal(t(rvar_from_array(array(1:5, c(10,1)))), rvar_from_array(array(1:5, c(1,10,1))))
 })
-

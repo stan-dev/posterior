@@ -40,10 +40,10 @@ str.rvar <- function(object, ..., vec.len = NULL) {
 
   # flatten all the non-draws dimensions
   .dim <- dim(.draws)
-  dim(.draws) <- c(prod(.dim[-length(.dim)]), .dim[length(.dim)])
+  dim(.draws) <- c(dim[1], prod(.dim[-1]))
 
-  if (dim(.draws)[[1]] > vec.len) {
-    .draws <- .draws[1:vec.len, ]
+  if (dim(.draws)[[2]] > vec.len) {
+    .draws <- .draws[, 1:vec.len]
     ellipsis <- " ..."
   } else {
     ellipsis <- ""
@@ -79,9 +79,9 @@ rvar_type_abbr <- function(x, dim1 = TRUE) {
   .dim <- dim(draws_of(x))
 
   dim_str <- if (dim1) {
-    paste0("[", paste0(.dim[-length(.dim)], collapse = ","), "]")
+    paste0("[", paste0(.dim[-1], collapse = ","), "]")
   } else if (length(.dim) > 2) {
-    paste0("[,", paste0(.dim[-c(1,length(.dim))], collapse = ","), "]")
+    paste0("[,", paste0(.dim[-c(1,2)], collapse = ","), "]")
   } else {
     ""
   }
@@ -101,12 +101,12 @@ format_rvar_draws.default <- function(draws, ...) {
 }
 
 format_rvar_draws.numeric <- function(draws, ..., color = FALSE) {
-  if (dim(draws)[length(dim(draws))] == 0 || prod(dim(draws)) == 0) {
+  if (prod(dim(draws)) == 0) {
     # NULL: no draws
     return(NULL)
   }
 
-  summary_dimensions <- seq_len(length(dim(draws)) - 1)
+  summary_dimensions <- seq_len(length(dim(draws)) - 1) + 1
 
   .mean <- apply(draws, summary_dimensions, mean)
   .sd <- apply(draws, summary_dimensions, sd)

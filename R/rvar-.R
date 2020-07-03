@@ -47,18 +47,18 @@ new_rvar <- function(x = double()) {
   }
   x <- as.array(x)
 
-  # ensure dimnames is set (makes comparison easier for tests)
-  if (length(dimnames(x)) == 0) {
-    dimnames(x) <- list(NULL)
-  }
-
   if (length(x) == 0) {
     # canonical NULL rvar has 0 draws
     dim(x) <- c(0, 0)
   }
   else if (is.null(.dim) || length(.dim) == 1) {
     # 1d vectors get treated as a single variable
-    dim(x) <- c(1, length(x))
+    dim(x) <- c(length(x), 1)
+  }
+
+  # ensure dimnames is set (makes comparison easier for tests)
+  if (length(dimnames(x)) == 0) {
+    dimnames(x) <- list(NULL)
   }
 
   # setting the S4 flag on the object allows us to dispatch matrix
@@ -103,55 +103,46 @@ is_rvar <- function(x) {
 
 #' @export
 length.rvar <- function(x) {
-  prod(diml(x))
+  prod(dim(x))
 }
 
 #' @export
 dim.rvar <- function(x) {
-  .dim <- dim(draws_of(x))
-  ndim <- length(.dim)
-
-  if (ndim == 2) {
-    # just a vector
-    NULL
-  } else {
-    # everything except the draws dimension
-    .dim[-ndim]
-  }
+  dim(draws_of(x))[-1]
 }
 
 #' @export
 `dim<-.rvar` <- function(x, value) {
   if (length(value) == 0) {
     # vectors have NULL dim; for us that means
-    # dim of c(length(x), ndraws(x))
+    # dim of c(ndraws(x), length(x))
     value = length(x)
   }
-  dim(draws_of(x)) <- c(value, ndraws(x))
+  dim(draws_of(x)) <- c(ndraws(x), value)
   x
 }
 
 #' @export
 dimnames.rvar <- function(x) {
   .dimnames <- dimnames(draws_of(x))
-  .dimnames[-length(.dimnames)]
+  .dimnames[-1]
 }
 
 #' @export
 `dimnames<-.rvar` <- function(x, value) {
-  dimnames(draws_of(x)) <- value
+  dimnames(draws_of(x)) <- c(list(NULL), value)
   x
 }
 
 #' @export
 names.rvar <- function(x) {
   .dimnames <- dimnames(draws_of(x))
-  .dimnames[[1]]
+  .dimnames[[2]]
 }
 
 #' @export
 `names<-.rvar` <- function(x, value) {
-  dimnames(draws_of(x))[[1]] <- value
+  dimnames(draws_of(x))[[2]] <- value
   x
 }
 
@@ -169,6 +160,7 @@ is.array.rvar <- function(x) {
 
 #' @export
 levels.rvar <- function(x) {
+  # TODO: for factor-like rvars
   NULL
 }
 
@@ -184,13 +176,13 @@ rep.rvar <- function(x, ..., times = 1, length.out = NA, each = 1) {
     # use `times`
     rep_draws = rep(draws, times)
     dim = dim(draws)
-    dim[[1]] = dim[[1]] * times
+    dim[[2]] = dim[[2]] * times
     dim(rep_draws) = dim
     new_rvar(rep_draws)
   } else {
     # use `length.out`
     rep_draws = rep_len(draws, length.out * ndraws(x))
-    dim(rep_draws) = c(length(rep_draws) / ndraws(x), ndraws(x))
+    dim(rep_draws) = c(ndraws(x), length(rep_draws) / ndraws(x))
     new_rvar(rep_draws)
   }
 }
@@ -209,27 +201,30 @@ rep_len.rvar <- function(x, length.out) {
 
 #' @export
 unique.rvar <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
-  check_rvar_margin(x, MARGIN)
-  draws_of(x) <- unique(draws_of(x), incomparables = incomparables, MARGIN = MARGIN, ...)
+  draws_margin <- check_rvar_margin(x, MARGIN)
+  draws_of(x) <- unique(draws_of(x), incomparables = incomparables, MARGIN = draws_margin, ...)
   x
 }
 
 #' @export
 duplicated.rvar <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
-  check_rvar_margin(x, MARGIN)
-  duplicated(draws_of(x), incomparables = incomparables, MARGIN = MARGIN, ...)
+  draws_margin <- check_rvar_margin(x, MARGIN)
+  duplicated(draws_of(x), incomparables = incomparables, MARGIN = draws_margin, ...)
 }
 
 #' @export
 anyDuplicated.rvar <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
-  check_rvar_margin(x, MARGIN)
-  anyDuplicated(draws_of(x), incomparables = incomparables, MARGIN = MARGIN, ...)
+  draws_margin <- check_rvar_margin(x, MARGIN)
+  anyDuplicated(draws_of(x), incomparables = incomparables, MARGIN = draws_margin, ...)
 }
 
+# check that MARGIN is a valid margin for the dimensions of rvar x
+# then return the corresponding margin for draws_of(x)
 check_rvar_margin <- function(x, MARGIN) {
   if (!(1 <= MARGIN && MARGIN <= length(diml(x)))) {
     stop2("MARGIN = ", MARGIN, " is invalid for dim = ", paste0(diml(x), collapse = ","))
   }
+  MARGIN + 1
 }
 
 #' @export
@@ -262,21 +257,38 @@ as.vector.rvar <- function(x, mode = "any") {
 
 #' @export
 as.list.rvar <- function(x, ...) {
-  .draws = draws_of(x)
-  lapply(apply(.draws, length(dim(.draws)), list), function(x) new_rvar(x[[1]]))
+  apply(draws_of(x), 2, new_rvar)
 }
 
 
 # indexing ----------------------------------------------------------------
 
 #' @importFrom rray rray_slice
+#' @importFrom rlang eval_tidy is_missing missing_arg dots_list
 #' @export
 `[[.rvar` <- function(x, i, ...) {
-  check_rvar_yank_index(x, i, ...)
+  index <- check_rvar_yank_index(x, i, ...)
 
-  draws <- rray_slice(draws_of(x), i, 1)
-  dimnames(draws) <- NULL
-  new_rvar(draws)
+  if (length(index) == 1) {
+    # single element selection => collapse the dims so we can select directly using i
+    .dim = dim(x)
+    if (length(.dim) != 1) {
+      # we only collapse dims if necessary since this will drop dimnames (which
+      # would prevent single-element by-name selection for 1d rvars)
+      dim(x) <- prod(.dim)
+    }
+    .draws <- draws_of(x)[, i, drop = FALSE]
+    dimnames(.draws) <- NULL
+    new_rvar(.draws)
+  } else if (length(index) == length(dim(x))) {
+    # multiple element selection => must have exactly the right number of dims
+    .draws <- eval_tidy(expr(draws_of(x)[, !!!index, drop = FALSE]))
+    # must do drop manually in case the draws dimension has only 1 draw
+    dim(.draws) <- c(ndraws(x), 1)
+    new_rvar(.draws)
+  } else {
+    stop("subscript out of bounds")
+  }
 }
 
 #' @importFrom rray rray_slice<-
@@ -284,10 +296,31 @@ as.list.rvar <- function(x, ...) {
 `[[<-.rvar` <- function(x, i, ..., value) {
   value <- vec_cast(value, x)
   check_rvar_ndraws_first(value, x)
-  value <- check_rvar_dims_first(value, x[[i, ...]])
+  value <- check_rvar_dims_first(value, new_rvar(0))
+  index <- check_rvar_yank_index(x, i, ...)
 
-  rray_slice(draws_of(x), i, 1) <- draws_of(value)
-  x
+  if (length(index) == 1) {
+    # single element selection => collapse the dims so we can select directly using i
+    .dim = dim(x)
+    .dimnames = dimnames(draws_of(x)) # to restore later
+    if (length(.dim) != 1) {
+      # we only collapse dims if necessary since this will drop dimnames (which
+      # would prevent single-element by-name selection for 1d rvars)
+      dim(x) <- prod(.dim)
+    }
+    draws_of(x)[, i] <- draws_of(value)
+    dim(x) <- .dim
+    dimnames(draws_of(x)) <- .dimnames
+    x
+  } else if (length(index) == length(dim(x))) {
+    # multiple element selection => must have exactly the right number of dims
+    eval_tidy(expr({
+      draws_of(x)[, !!!index] <- draws_of(value)
+      x
+    }))
+  } else {
+    stop("subscript out of bounds")
+  }
 }
 
 #' @importFrom rray rray_subset
@@ -317,18 +350,18 @@ as.list.rvar <- function(x, ...) {
           # numeric indices outside the range of the corresponding dimension
           # should create NAs; but array indexing doesn't do this (it throws
           # an error), so we adjust the indices to do so.
-          index[[i]][index[[i]] > .dim[[i]]] <- NA_integer_
+          index[[i]][index[[i]] > .dim[[i + 1]]] <- NA_integer_
         }
       }
     }
   }
 
   # fill in final indices with missing arguments
-  if (length(index) < length(dim(.draws))) {
-    index[seq(length(index) + 1, length(dim(.draws)))] = list(missing_arg())
+  if (length(index) < length(dim(.draws)) - 1) {
+    index[seq(length(index) + 1, length(dim(.draws)) - 1)] = list(missing_arg())
   }
 
-  x = eval_tidy(expr(new_rvar(.draws[!!!index, drop = FALSE])))
+  x = eval_tidy(expr(new_rvar(.draws[, !!!index, drop = FALSE])))
 
   #x = eval_tidy(expr(new_rvar(rray_subset(.draws, !!!index))))
 
@@ -365,7 +398,8 @@ as.list.rvar <- function(x, ...) {
   #   x_draws <- array(vec_ptype(x_draws), dim = new_x_dim)
   # }
 
-  rray_subset(x_draws, i, j, ...) <- draws_of(value)
+  #TODO: make it so we don't have to use rray here
+  rray_subset(x_draws, , i, ...) <- draws_of(value)
 
   draws_of(x) <- x_draws
   x
@@ -411,7 +445,9 @@ draws_of <- function(x) {
 #' @importFrom vctrs vec_proxy vec_chop
 #' @export
 vec_proxy.rvar = function(x, ...) {
-  vec_chop(draws_of(x))
+  # TODO: probably could do something more efficient here
+  .draws = draws_of(x)
+  vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
 }
 
 # TODO: cleanup
@@ -469,8 +505,11 @@ vec_restore.rvar <- function(x, ...) {
 
   }
   # TODO: do this with unchop or abind with a broadcast
-  x_array <- do.call(rray_rbind, x)
-  new_rvar(x_array)
+  .draws <- do.call(rray_rbind, x)
+  if (!is.null(.draws)) {
+    .draws <- aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)]))
+  }
+  new_rvar(.draws)
 }
 
 # concatenation -----------------------------------------------------------
@@ -478,22 +517,22 @@ vec_restore.rvar <- function(x, ...) {
 #' @export
 #' @importFrom rray rray_bind
 c.rvar <- function(...) {
-  combine_rvar(c, list(...), .axis = 1)
+  combine_rvar(c, list(...))
 }
 
 #' @export
 #' @importFrom rray rray_bind
 rbind.rvar <- function(...) {
-  bind_rvar(rbind, list(...), .axis = 1)
+  bind_rvar(rbind, list(...))
 }
 
 #' @export
 #' @importFrom rray rray_bind
 cbind.rvar <- function(...) {
-  bind_rvar(cbind, list(...), .axis = 2)
+  bind_rvar(cbind, list(...), .axis = 3)
 }
 
-bind_rvar <- function(.f, args, .axis = 1) {
+bind_rvar <- function(.f, args, .axis = 2) {
   if (is.null(dim(args[[1]]))) {
     dim(args[[1]]) <- c(length(args[[1]]), 1)
   }
@@ -514,7 +553,7 @@ bind_rvar <- function(.f, args, .axis = 1) {
   combine_rvar(.f, args, .axis = .axis)
 }
 
-combine_rvar <- function(.f, args, .axis = 1) {
+combine_rvar <- function(.f, args, .axis = 2) {
   if (length(args) == 1) {
     return(args[[1]])
   }
@@ -535,20 +574,20 @@ combine_rvar <- function(.f, args, .axis = 1) {
 
 # chain / iteration / draw info -------------------------------------------
 
+#' @export
 ndraws.rvar <- function(x) {
-  .dim <- dim(draws_of(x))
-  .dim[length(.dim)]
+  dim(draws_of(x))[1]
 }
 
 
 # helpers -----------------------------------------------------------------
 
-# dim or length: nevers returns NULL except in cases where rvar is NULL
+# dim or length: never returns NULL except in cases where rvar is NULL
 # (unlike dim which will return NULL on single-dimensional vector)
 diml <- function(x) {
   .dim <- dim(draws_of(x))
   ndim <- length(.dim)
-  .dim[-ndim]
+  .dim[-1]
 }
 
 
@@ -562,12 +601,19 @@ list_of_draws <- function(x) {
 
 # Check the passed yank index (for x[[...]]) is valid
 check_rvar_yank_index = function(x, i, ...) {
-  if (length(i) != 1 || length(list(...)) != 0) {
-    stop2("You can only select one element with `[[` on rvar objects.")
+  index <- dots_list(i, ..., .preserve_empty = TRUE, .ignore_empty = "none")
+
+  if (any(lengths(index)) > 1) {
+    stop("Cannot select more than one element per index with `[[` in an rvar.")
+  } else if (any(sapply(index, function(x) is_missing(x) || is.na(x)))) {
+    stop("Missing indices not allowed with `[[` in an rvar.")
+  } else if (any(sapply(index, is.logical))) {
+    stop("Logical indices not allowed with `[[` in an rvar.")
+  } else if (any(sapply(index, function(x) x < 0))) {
+    stop("subscript out of bounds")
   }
-  if (is.logical(i)) {
-    stop2("logical indices are not supported with `[[` on rvar objects.")
-  }
+
+  index
 }
 
 # Check the passed subset indices (for x[...]) do not go beyond the end
@@ -600,7 +646,7 @@ check_rvar_ndraws_first <- function(x, y) {
   } else {
     stop(
       "Random variables have different number of draws (", ndraws_x,
-      " and ", ndraws_y, ") can cannot be used together."
+      " and ", ndraws_y, ") and cannot be used together."
     )
   }
 }
@@ -704,14 +750,14 @@ broadcast_draws <- function(x, .ndraws) {
 }
 
 drop_ <- function(x) {
-  .diml <- diml(x)
+  .dim <- dim(x)
 
-  if (!isTRUE(all.equal(.diml, 1))) {
+  if (!all(.dim == 1)) {
     # with exactly 1 element left we don't want to drop anything
     # (otherwise names get lost), so only do this with > 1 element
     .dimnames <- dimnames(x)
-    dim(x) <- .diml[.diml != 1]
-    dimnames(x) <- .dimnames[.diml != 1]
+    dim(x) <- .dim[.dim != 1]
+    dimnames(x) <- .dimnames[.dim != 1]
   }
 
   x
@@ -721,7 +767,7 @@ drop_ <- function(x) {
 summarise_rvar_within_draws <- function(x, .f, ...) {
   draws <- draws_of(x)
   dim <- dim(draws)
-  new_rvar(apply(draws, length(dim), .f, ...))
+  new_rvar(apply(draws, 1, .f, ...))
 }
 
 # apply vectorized function to an rvar's draws
@@ -734,5 +780,5 @@ rvar_apply_vec_fun <- function(.f, x, ...) {
 summarise_rvar_by_element <- function(x, .f, ...) {
   draws <- draws_of(x)
   dim <- dim(draws)
-  apply(draws, seq_len(length(dim) - 1), .f, ...)
+  apply(draws, seq_along(dim)[-1], .f, ...)
 }

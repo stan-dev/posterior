@@ -57,13 +57,16 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
     }
     # TODO: could speed this up if we assert all vectors must have same dimensions, then
     # it's a straigtforward concatenation + setting the dimensions to be the c(dim(vec[[1]]), length(vecs))
-    new_rvar(abind::abind(list_of_draws, rev.along = 0))
+    .draws <- abind::abind(list_of_draws, rev.along = 0)
+    .dim <- dim(.draws)
+    .draws <- aperm(.draws, c(length(.dim), seq_len(length(.dim) -1)))
+    new_rvar(.draws)
   }
   formals(FUNV) <- formals(.f)
   FUNV
 }
 
-rvar_r <- function(.f, n, ..., ndraws = 4000) {
+rvar_r <- function(.f, n, ..., ndraws = NULL) {
   ndraws <- ndraws %||% getOption("rvar.ndraws", 4000)
   args = list(...)
   is_rvar_arg <- as.logical(lapply(args, is_rvar))
@@ -77,7 +80,7 @@ rvar_r <- function(.f, n, ..., ndraws = 4000) {
     }
 
     rvar_args_ndims = sapply(rvar_args, function(x) length(dim(x)))
-    if (!all(rvar_args_ndims == 0)) {
+    if (!all(rvar_args_ndims == 1)) {
       stop2("All arguments must be single-dimensional rvars")
     }
 
@@ -88,5 +91,5 @@ rvar_r <- function(.f, n, ..., ndraws = 4000) {
   args = c(list(n = nd), args)
   result = do.call(.f, args)
   dim(result) = c(n, ndraws)
-  new_rvar(result)
+  new_rvar(t(result))
 }
