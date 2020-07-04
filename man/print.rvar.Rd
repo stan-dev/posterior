@@ -13,7 +13,7 @@
 
 \method{str}{rvar}(object, ..., vec.len = NULL)
 
-pillar_shaft.rvar(x, ...)
+\method{pillar_shaft}{rvar}(x, ...)
 }
 \arguments{
 \item{x, object}{An \link{rvar}.}

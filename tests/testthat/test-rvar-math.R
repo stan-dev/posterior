@@ -117,11 +117,14 @@ test_that("matrix multiplication works", {
 # array transpose and permutation -----------------------------------------
 
 test_that("matrix transpose works", {
-  x_array = array(1:24, dim = c(2,3,4))
-  x = rvar_from_array(x_array)
-  x_t = rvar_from_array(aperm(x_array, c(2,1,3)))
+  x_array = array(1:24, dim = c(4,3,2))
+  x = new_rvar(x_array)
+  x_t = new_rvar(aperm(x_array, c(1,3,2)))
 
   expect_error(t(rvar()))
   expect_equal(t(x), x_t)
-  expect_equal(t(rvar_from_array(array(1:5, c(10,1)))), rvar_from_array(array(1:5, c(1,10,1))))
+  expect_equal(t(new_rvar(array(1:10, c(1,10)))), new_rvar(array(1:10, c(1,1,10))))
+  expect_equal(t(new_rvar(array(1:10, c(2,1,5)))), new_rvar(array(1:10, c(2,5,1))))
+  expect_equal(t(new_rvar(array(1:10, c(2,1,5)))), new_rvar(array(1:10, c(2,5,1))))
+  expect_equal(t(new_rvar(array(1:10, c(2,5)))), new_rvar(array(1:10, c(2,1,5))))
 })

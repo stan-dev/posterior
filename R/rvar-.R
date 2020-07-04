@@ -263,7 +263,6 @@ as.list.rvar <- function(x, ...) {
 
 # indexing ----------------------------------------------------------------
 
-#' @importFrom rray rray_slice
 #' @importFrom rlang eval_tidy is_missing missing_arg dots_list
 #' @export
 `[[.rvar` <- function(x, i, ...) {
@@ -291,7 +290,6 @@ as.list.rvar <- function(x, ...) {
   }
 }
 
-#' @importFrom rray rray_slice<-
 #' @export
 `[[<-.rvar` <- function(x, i, ..., value) {
   value <- vec_cast(value, x)
@@ -323,7 +321,6 @@ as.list.rvar <- function(x, ...) {
   }
 }
 
-#' @importFrom rray rray_subset
 #' @importFrom rlang enquos eval_tidy quo is_missing missing_arg expr
 #' @export
 `[.rvar` <- function(x, ..., drop = FALSE) {
@@ -362,12 +359,6 @@ as.list.rvar <- function(x, ...) {
   }
 
   x = eval_tidy(expr(new_rvar(.draws[, !!!index, drop = FALSE])))
-
-  #x = eval_tidy(expr(new_rvar(rray_subset(.draws, !!!index))))
-
-  #print(expr(.draws[!!!indices]))
-
-  #x = new_rvar(rray_subset(draws_of(x), ...))
 
   if (drop) {
     drop_(x)
@@ -450,40 +441,6 @@ vec_proxy.rvar = function(x, ...) {
   vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
 }
 
-# TODO: cleanup
-# #' @importFrom vctrs vec_restore
-# #' @export
-# vec_restore.rvar = function(x, to, ..., n = NULL) {
-#   rvar(vec_unchop(x))
-# }
-
-
-# #' @importFrom vctrs vec_proxy
-# #' @importFrom rray rray_split
-# #' @export
-# vec_proxy.rvar <- function(x, ...) {
-#   draws_of(x)
-# }
-#
-# vec_restore.rvar <- function(x, ...) {
-#   new_rvar(x)
-# }
-
-# #' @importFrom vctrs vec_proxy
-# #' @importFrom rray rray_split
-# #' @export
-# vec_proxy.rvar <- function(x, ...) {
-#   .draws <- draws_of(x)
-#
-#   if (is.null(.draws)) {
-#     list()
-#   } else {
-#     # decompose into a list of lists by the first index
-#     rray_split(.draws, 1)
-#   }
-# }
-#
-#
 #' @importFrom vctrs vec_restore
 #' @importFrom rray rray_rbind
 #' @export
@@ -515,19 +472,16 @@ vec_restore.rvar <- function(x, ...) {
 # concatenation -----------------------------------------------------------
 
 #' @export
-#' @importFrom rray rray_bind
 c.rvar <- function(...) {
   combine_rvar(c, list(...))
 }
 
 #' @export
-#' @importFrom rray rray_bind
 rbind.rvar <- function(...) {
   bind_rvar(rbind, list(...))
 }
 
 #' @export
-#' @importFrom rray rray_bind
 cbind.rvar <- function(...) {
   bind_rvar(cbind, list(...), .axis = 3)
 }
@@ -558,9 +512,20 @@ combine_rvar <- function(.f, args, .axis = 2) {
     return(args[[1]])
   }
 
+  # broadcast each array to the desired dimensions
+  # (except along the axis we are binding along)
   draws1 <- draws_of(args[[1]])
   draws2 <- draws_of(as_rvar(args[[2]]))
-  result <- new_rvar(rray_bind(draws1, draws2, .axis = .axis))
+  new_dim <- array_dim_common(draws1, draws2)
+
+  new_dim[.axis] <- dim(draws1)[.axis]
+  draws1 <- broadcast_array(draws1, new_dim)
+
+  new_dim[.axis] <- dim(draws2)[.axis]
+  draws2 <- broadcast_array(draws2, new_dim)
+
+  # bind along desired axis
+  result <- new_rvar(abind(draws1, draws2, along = .axis))
 
   if (length(args) > 2) {
     args[[1]] <- result
@@ -697,6 +662,22 @@ check_rvar_dims_first <- function(x, y) {
 }
 
 
+array_dim_common <- function(x, y) {
+  # find common dim for two arrays to be broadcast to
+  dim_x <- dim(x)
+  dim_y <- dim(y)
+  ndim_x <- length(dim_x)
+  ndim_y <- length(dim_y)
+
+  if (ndim_x < ndim_y) {
+    dim_x <- c(dim_x, rep(1, ndim_y - ndim_x))
+  } else {
+    dim_y <- c(dim_y, rep(1, ndim_x - ndim_y))
+  }
+
+  pmax(dim_x, dim_y)
+}
+
 broadcast_array  <- function(x, dim) {
   current_dim = dim(x)
 
@@ -744,8 +725,8 @@ broadcast_draws <- function(x, .ndraws) {
   } else {
     draws <- draws_of(x)
     new_dim <- dim(draws)
-    new_dim[length(new_dim)] <- .ndraws
-    new_rvar(rray::rray_broadcast(draws, new_dim))
+    new_dim[1] <- .ndraws
+    new_rvar(broadcast_array(draws, new_dim))
   }
 }
 

@@ -62,19 +62,9 @@ Ops.rvar <- function(e1, e2) {
   draws_x <- draws_of(as_rvar(e1))
   draws_y <- draws_of(as_rvar(e2))
 
-  # if number of dimensions is not equal, pad with 1s before the
-  # draws dimension so that broadcasting works with rray
-  # TODO: remove once we move draws dimension to front
-  ndim_x <- length(dim(draws_x))
-  ndim_y <- length(dim(draws_y))
-  if (ndim_x < ndim_y) {
-    dim(draws_x) <- c(dim(draws_x)[-ndim_x], rep(1, ndim_y - ndim_x), dim(draws_x)[ndim_x])
-  } else if (ndim_y < ndim_x) {
-    dim(draws_y) <- c(dim(draws_y)[-ndim_y], rep(1, ndim_x - ndim_y), dim(draws_y)[ndim_y])
-  }
-
-  # broadcast
-  new_dim <- pmax(dim(draws_x), dim(draws_y))
+  # broadcast draws to common dimension
+  # TODO: skip broadcast for scalars
+  new_dim <- array_dim_common(draws_x, draws_y)
   draws_x <- broadcast_array(draws_x, new_dim)
   draws_y <- broadcast_array(draws_y, new_dim)
 
@@ -170,7 +160,7 @@ t.rvar = function(x) {
 
   if (length(x) != 0 && ndim == 2) {
     # vector
-    dim(.draws) = c(1, dim(.draws))
+    dim(.draws) = c(dim(.draws)[1], 1, dim(.draws)[2])
     new_rvar(.draws)
   } else if (ndim == 3) {
     .draws <- aperm(.draws, c(1, 3, 2))
