@@ -29,7 +29,8 @@ Imports:
   tibble,
   vctrs,
   tensorA,
-  pillar
+  pillar,
+  distributional
 Suggests: 
   testthat (>= 2.1.0),
   dplyr,

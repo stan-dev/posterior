@@ -29,7 +29,7 @@ is.infinite.rvar <- function(x, ...) rvar_apply_vec_fun(is.infinite, x, ...)
 #' @export
 is.nan.rvar <- function(x, ...) rvar_apply_vec_fun(is.nan, x, ...)
 #' @export
-is.na.rvar <- function(x, ...) rvar_apply_vec_fun(is.na, x, ...)
+is.na.rvar <- function(x, ...) summarise_rvar_by_element(x, function(x) any(is.na(x)))
 
 
 # Expectations and summaries of random variables --------------------------

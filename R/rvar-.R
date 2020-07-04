@@ -48,8 +48,10 @@ new_rvar <- function(x = double()) {
   x <- as.array(x)
 
   if (length(x) == 0) {
-    # canonical NULL rvar has 0 draws
-    dim(x) <- c(0, 0)
+    # canonical NULL rvar is 1 draw of nothing
+    # this ensures that (e.g.) extending a null rvar
+    # with x[1] = something works.
+    dim(x) <- c(1, 0)
   }
   else if (is.null(.dim) || length(.dim) == 1) {
     # 1d vectors get treated as a single variable
@@ -66,7 +68,7 @@ new_rvar <- function(x = double()) {
   # it will not dispatch to S3 objects even if they have an S4 class
   # defined through setOldClass, they *must* also have isS4() return
   # TRUE, hence the need to set that flag here.
-  asS4(structure(list(), draws = x, class = "rvar"))
+  structure(list(), draws = x, class = c("rvar", "vctrs_vctr", "list"))
 }
 
 #' @rdname rvar
@@ -298,18 +300,27 @@ as.list.rvar <- function(x, ...) {
   index <- check_rvar_yank_index(x, i, ...)
 
   if (length(index) == 1) {
-    # single element selection => collapse the dims so we can select directly using i
     .dim = dim(x)
-    .dimnames = dimnames(draws_of(x)) # to restore later
-    if (length(.dim) != 1) {
-      # we only collapse dims if necessary since this will drop dimnames (which
-      # would prevent single-element by-name selection for 1d rvars)
-      dim(x) <- prod(.dim)
+
+    if (length(.dim) == 1 && i > length(x)) {
+      # unidimensional indexing allows array extension; extend the array
+      # then do the assignment
+      x <- x[seq_len(max(i, na.rm = TRUE))]
+      draws_of(x)[, i] <- draws_of(value)
+      x
+    } else {
+      # single element selection => collapse the dims so we can select directly using i
+      .dimnames = dimnames(draws_of(x)) # to restore later
+      if (length(.dim) != 1) {
+        # we only collapse dims if necessary since this will drop dimnames (which
+        # would prevent single-element by-name selection for 1d rvars)
+        dim(x) <- prod(.dim)
+      }
+      draws_of(x)[, i] <- draws_of(value)
+      dim(x) <- .dim
+      dimnames(draws_of(x)) <- .dimnames
+      x
     }
-    draws_of(x)[, i] <- draws_of(value)
-    dim(x) <- .dim
-    dimnames(draws_of(x)) <- .dimnames
-    x
   } else if (length(index) == length(dim(x))) {
     # multiple element selection => must have exactly the right number of dims
     eval_tidy(expr({
@@ -468,6 +479,38 @@ vec_restore.rvar <- function(x, ...) {
     .draws <- aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)]))
   }
   new_rvar(.draws)
+}
+
+
+# distributional stuff ----------------------------------------------------
+
+#' @importFrom distributional cdf
+#' @export
+distributional::cdf
+
+#' @export
+cdf.rvar <- function(x, q, ...) {
+  if (length(x) != 1) {
+    stop("cdf() can currently only be used on single rvars")
+  }
+
+  ecdf(draws_of(x))(q)
+}
+
+#' @export
+quantile.rvar <- function(x, probs, ...) {
+  quantile(draws_of(x), probs, ...)
+}
+
+#' @export
+density.rvar <- function(x, at, ...) {
+  if (length(x) != 1) {
+    stop("density() can currently only be used on single rvars")
+  }
+
+  d <- density(draws_of(x), cut = 0, ...)
+  f <- approxfun(d$x, d$y, yleft = 0, yright = 0)
+  f(at)
 }
 
 # concatenation -----------------------------------------------------------

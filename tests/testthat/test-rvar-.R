@@ -56,6 +56,11 @@ test_that("indexing with [[ works on a matrix", {
   # different from base vectors
   # don't allow name-based [[ indexing on 2+D arrays
   expect_error(x[["a2"]])
+
+  # extending a NULL rvar should work...
+  x_null = rvar()
+  x_null[[1]] <- 5
+  expect_equal(x_null, rvar(5))
 })
 
 test_that("assignment with [[ works on a matrix", {
@@ -117,6 +122,11 @@ test_that("indexing with [ works on a vector", {
   expect_identical(x[NULL], new_rvar())
 
   expect_error(x[1,1])
+
+  # extending a NULL rvar should work...
+  x_null = rvar()
+  x_null[1] <- 5
+  expect_equal(x_null, rvar(5))
 })
 
 test_that("indexing with [ works on a matrix", {
@@ -247,3 +257,10 @@ test_that("as.list works", {
   # TODO
 })
 
+
+# is.na -------------------------------------------------------------------
+
+test_that("is.na works", {
+  x = c(rvar(NA), 1)
+  expect_equal(is.na(x), c(TRUE, FALSE))
+})
