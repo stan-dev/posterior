@@ -8,6 +8,8 @@
 \alias{as_draws_matrix.draws_array}
 \alias{as_draws_matrix.draws_df}
 \alias{as_draws_matrix.draws_list}
+\alias{as_draws_matrix.mcmc}
+\alias{as_draws_matrix.mcmc.list}
 \alias{is_draws_matrix}
 \title{The \code{draws_matrix} format}
 \usage{
@@ -23,12 +25,21 @@ as_draws_matrix(x, ...)
 
 \method{as_draws_matrix}{draws_list}(x, ...)
 
+\method{as_draws_matrix}{mcmc}(x, ...)
+
+\method{as_draws_matrix}{mcmc.list}(x, ...)
+
+draws_matrix(...)
+
 is_draws_matrix(x)
 }
 \arguments{
 \item{x}{An object to convert to a \code{draws_matrix} object.}
 
-\item{...}{Arguments passed to individual methods (if applicable).}
+\item{...}{For \code{as_draws_matrix()}:
+Arguments passed to individual methods (if applicable).
+For \code{draws_matrix()}: Named
+arguments containing numeric vectors each defining a separate variable.}
 }
 \value{
 A \code{draws_matrix} object, which has classes
@@ -36,7 +47,10 @@ A \code{draws_matrix} object, which has classes
 }
 \description{
 The \code{as_draws_matrix()} methods convert
-objects to the \code{draws_matrix} format. See \strong{Details}.
+objects to the \code{draws_matrix} format.
+The \code{draws_matrix()} function creates an object of the
+\code{draws_matrix} format based on a set of numeric vectors.
+See \strong{Details}.
 }
 \details{
 Objects of class \code{"draws_matrix"} are matrices (2-D arrays) with
@@ -46,15 +60,21 @@ refer to the rows as draws and not iterations (unlike for the
 \code{\link{draws_array}} format). See \strong{Examples}.
 }
 \examples{
-x <- as_draws_matrix(example_draws())
-class(x)
-str(x)
+x1 <- as_draws_matrix(example_draws())
+class(x1)
+print(x1)
+str(x1)
+
+x2 <- draws_matrix(a = rnorm(10), b = rnorm(10), c = 1)
+class(x2)
+print(x2)
+str(x2)
 }
 \seealso{
 Other formats: 
-\code{\link{draws_array}},
-\code{\link{draws_df}},
-\code{\link{draws_list}},
+\code{\link{draws_array}()},
+\code{\link{draws_df}()},
+\code{\link{draws_list}()},
 \code{\link{draws}}
 }
 \concept{formats}

@@ -1,20 +1,6 @@
-# This file is part of posterior
 # Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018 Trustees of Columbia University
 # Copyright (C) 2018, 2019 Aki Vehtari, Paul Bürkner
-#
-# posterior is free software; you can redistribute it and/or
-# modify it under the terms of the GNU General Public License
-# as published by the Free Software Foundation; either version 3
-# of the License, or (at your option) any later version.
-#
-# posterior is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+# See LICENSE.md for more details
 
 #' Basic version of the Rhat convergence diagnostic
 #'
@@ -30,7 +16,7 @@
 #' @template ref-gelman-bda-2013
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' rhat_basic(mu)
 #'
 #' @export
@@ -56,7 +42,7 @@ rhat_basic <- function(x, split = TRUE) {
 #' @template ref-gelman-bda-2013
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_basic(mu)
 #'
 #' @export
@@ -80,14 +66,13 @@ ess_basic <- function(x, split = TRUE) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' rhat(mu)
 #'
 #' @export
 rhat <- function(x) {
   rhat_bulk <- .rhat(z_scale(split_chains(x)))
-  sims_folded <- abs(x - median(x))
-  rhat_tail <- .rhat(z_scale(split_chains(sims_folded)))
+  rhat_tail <- .rhat(z_scale(split_chains(fold_draws(x))))
   max(rhat_bulk, rhat_tail)
 }
 
@@ -104,7 +89,7 @@ rhat <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_bulk(mu)
 #'
 #' @export
@@ -125,7 +110,7 @@ ess_bulk <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_tail(mu)
 #'
 #' @export
@@ -147,11 +132,11 @@ ess_tail <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_quantile(mu, probs = c(0.1, 0.9))
 #'
 #' @export
-ess_quantile <- function(x, probs, names = TRUE) {
+ess_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
   probs <- as.numeric(probs)
   if (any(probs < 0 | probs > 1)) {
     stop2("'probs' must contain values between 0 and 1.")
@@ -159,7 +144,7 @@ ess_quantile <- function(x, probs, names = TRUE) {
   names <- as_one_logical(names)
   out <- ulapply(probs, .ess_quantile, x = x)
   if (names) {
-    names(out) <- paste0("q", probs * 100)
+    names(out) <- paste0("ess_q", probs * 100)
   }
   out
 }
@@ -172,10 +157,13 @@ ess_median <- function(x) {
 
 # ESS of a single quantile
 .ess_quantile <- function(x, prob) {
+  if (should_return_NA(x)) {
+    return(NA_real_)
+  }
+  x <- as.matrix(x)
   I <- x <= quantile(x, prob)
   .ess(split_chains(I))
 }
-
 
 #' Effective sample size for the mean
 #'
@@ -187,7 +175,7 @@ ess_median <- function(x) {
 #' @template ref-gelman-bda-2013
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_mean(mu)
 #'
 #' @export
@@ -207,7 +195,7 @@ ess_mean <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_sd(mu)
 #'
 #' @export
@@ -227,11 +215,11 @@ ess_sd <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' mcse_quantile(mu, probs = c(0.1, 0.9))
 #'
 #' @export
-mcse_quantile <- function(x, probs, names = TRUE) {
+mcse_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
   probs <- as.numeric(probs)
   if (any(probs < 0 | probs > 1)) {
     stop2("'probs' must contain values between 0 and 1.")
@@ -239,7 +227,7 @@ mcse_quantile <- function(x, probs, names = TRUE) {
   names <- as_one_logical(names)
   out <- ulapply(probs, .mcse_quantile, x = x)
   if (names) {
-    names(out) <- paste0("q", probs * 100)
+    names(out) <- paste0("mcse_q", probs * 100)
   }
   out
 }
@@ -257,8 +245,8 @@ mcse_median <- function(x) {
   a <- qbeta(p, ess * prob + 1, ess * (1 - prob) + 1)
   ssims <- sort(x)
   S <- length(ssims)
-  th1 <- ssims[max(round(a[1] * S), 1)]
-  th2 <- ssims[min(round(a[2] * S), S)]
+  th1 <- ssims[max(floor(a[1] * S), 1)]
+  th2 <- ssims[min(ceiling(a[2] * S), S)]
   as.vector((th2 - th1) / 2)
 }
 
@@ -273,7 +261,7 @@ mcse_median <- function(x) {
 #' @template ref-gelman-bda-2013
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' mcse_mean(mu)
 #'
 #' @export
@@ -293,7 +281,7 @@ mcse_mean <- function(x) {
 #' @template ref-vehtari-rhat-2019
 #'
 #' @examples
-#' mu <- extract_one_variable_matrix(example_draws(), "mu")
+#' mu <- extract_variable_matrix(example_draws(), "mu")
 #' mcse_sd(mu)
 #'
 #' @export
@@ -303,7 +291,30 @@ mcse_sd <- function(x) {
   sd(x) * sqrt(exp(1) * (1 - 1 / ess_sd)^(ess_sd - 1) - 1)
 }
 
-
+#' Compute Quantiles
+#'
+#' Compute quantiles of a sample and return them in a format consistent
+#' with other summary functions of the \pkg{posterior} package.
+#'
+#' @template args-conv
+#' @template args-conv-quantile
+#' @param ... Further arguments passed to [quantile()].
+#'
+#' @examples
+#' mu <- extract_variable_matrix(example_draws(), "mu")
+#' quantile2(mu)
+#'
+#' @export
+quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
+  names <- as_one_logical(names)
+  out <- quantile(x, probs = probs, ...)
+  if (names) {
+    names(out) <- paste0("q", probs * 100)
+  } else {
+    names(out) <- NULL
+  }
+  out
+}
 
 # internal ----------------------------------------------------------------
 
@@ -334,7 +345,8 @@ fft_next_good_size <- function(N) {
 #'
 #' @template args-conv-seq
 #' @return A numeric vector of autocovariances at every lag (scaled by N-lag).
-#' @noRd
+#' @keywords internal
+#' @export
 autocovariance <- function(x) {
   N <- length(x)
   M <- fft_next_good_size(N)
@@ -356,7 +368,8 @@ autocovariance <- function(x) {
 #'
 #' @template args-conv-seq
 #' @return A numeric vector of autocorrelations at every lag (scaled by N-lag).
-#' @noRd
+#' @keywords internal
+#' @export
 autocorrelation <- function(x) {
   ac <- autocovariance(x)
   ac <- ac / ac[1]
@@ -372,10 +385,12 @@ autocorrelation <- function(x) {
 #' @template args-scale
 #' @return A numeric array of rank normalized values with the same size
 #'   and dimension as the input.
-#' @noRd
+#' @keywords internal
+#' @export
 z_scale <- function(x) {
   r <- rank(as.array(x), ties.method = 'average')
   z <- qnorm(backtransform_ranks(r))
+  z[is.na(x)] <- NA
   if (!is.null(dim(x))) {
     # output should have the input dimension
     z <- array(z, dim = dim(x), dimnames = dimnames(x))
@@ -394,10 +409,12 @@ z_scale <- function(x) {
 #' @template args-scale
 #' @return A numeric array of uniformized values with the same size
 #'   and dimension as the input.
-#' @noRd
+#' @keywords internal
+#' @export
 u_scale <- function(x) {
   r <- rank(as.array(x), ties.method = 'average')
   u <- backtransform_ranks(r)
+  u[is.na(x)] <- NA
   if (!is.null(dim(x))) {
     # output should have the input dimension
     u <- array(u, dim = dim(x), dimnames = dimnames(x))
@@ -415,9 +432,11 @@ u_scale <- function(x) {
 #' @template args-scale
 #' @return A numeric array of ranked values with the same size
 #'   and dimension as the input.
-#' @noRd
+#' @keywords internal
+#' @export
 r_scale <- function(x) {
   r <- rank(as.array(x), ties.method = 'average')
+  r[is.na(x)] <- NA
   if (!is.null(dim(x))) {
     # output should have the input dimension
     r <- array(r, dim = dim(x), dimnames = dimnames(x))
@@ -438,7 +457,8 @@ backtransform_ranks <- function(r, c = 3/8) {
 #' Split Markov chains in half
 #' @template args-conv
 #' @return A 2D array of draws with split chains.
-#' @noRd
+#' @keywords internal
+#' @export
 split_chains <- function(x) {
   x <- as.matrix(x)
   niter <- NROW(x)
@@ -449,17 +469,24 @@ split_chains <- function(x) {
   cbind(x[1:floor(half), ], x[ceiling(half + 1):niter, ])
 }
 
-#' Compute the Rhat converence diagnostic
+#' Fold draws around their median
+#' @template args-conv
+#' @return An array or vector of folded draws.
+#' @keywords internal
+#' @export
+fold_draws <- function(x) {
+  abs(x - median(x))
+}
+
+#' Compute the Rhat convergence diagnostic
 #' @template args-conv
 #' @template return-conv
-#' @noRd
+#' @keywords internal
+#' @export
 .rhat <- function(x) {
   x <- as.matrix(x)
-  if (any(!is.finite(x))) {
-    return(NaN)
-  }
-  else if (is_constant(x)) {
-    return(1)
+  if (should_return_NA(x)) {
+    return(NA_real_)
   }
   nchains <- NCOL(x)
   niterations <- NROW(x)
@@ -477,16 +504,14 @@ split_chains <- function(x) {
 #' Compute the effective sample size
 #' @template args-conv
 #' @template return-conv
-#' @noRd
+#' @keywords internal
+#' @export
 .ess <- function(x) {
   x <- as.matrix(x)
   nchains <- NCOL(x)
   niterations <- NROW(x)
-  if (any(!is.finite(x)) || niterations < 3L) {
-    return(NaN)
-  }
-  else if (is_constant(x)) {
-    return(nchains * niterations)
+  if (niterations < 3L || should_return_NA(x)) {
+    return(NA_real_)
   }
   acov_fun <- function(i) autocovariance(x[, i])
   acov <- lapply(seq_len(nchains), acov_fun)
@@ -539,4 +564,9 @@ split_chains <- function(x) {
   tau_hat <- max(tau_hat, 1/log10(ess))
   ess <- ess / tau_hat
   ess
+}
+
+# should NA be returned by a convergence diagnostic?
+should_return_NA <- function(x) {
+  anyNA(x) || checkmate::anyInfinite(x) || is_constant(x)
 }

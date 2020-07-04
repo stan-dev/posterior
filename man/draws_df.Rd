@@ -9,6 +9,8 @@
 \alias{as_draws_df.draws_matrix}
 \alias{as_draws_df.draws_array}
 \alias{as_draws_df.draws_list}
+\alias{as_draws_df.mcmc}
+\alias{as_draws_df.mcmc.list}
 \alias{is_draws_df}
 \title{The \code{draws_df} format}
 \usage{
@@ -26,12 +28,21 @@ as_draws_df(x, ...)
 
 \method{as_draws_df}{draws_list}(x, ...)
 
+\method{as_draws_df}{mcmc}(x, ...)
+
+\method{as_draws_df}{mcmc.list}(x, ...)
+
+draws_df(..., .nchains = 1)
+
 is_draws_df(x)
 }
 \arguments{
 \item{x}{An object to convert to a \code{draws_df} object.}
 
-\item{...}{Arguments passed to individual methods (if applicable).}
+\item{...}{For \code{as_draws_df()}:
+Arguments passed to individual methods (if applicable).
+For \code{draws_df()}: Named
+arguments containing numeric vectors each defining a separate variable.}
 
 \item{.iteration}{Optional name of a column in the supplied \code{data.frame}
 that contain iteration indices. If \code{NULL} (the default), the \code{.iteration}
@@ -42,6 +53,8 @@ index continuously from the first to the last row.}
 that contain chain indices. If \code{NULL} (the default), the \code{.chain}
 column is used if it exists. Otherwise, the input is treated as belonging
 to a single chain.}
+
+\item{.nchains}{Number of chains (default is \code{1}).}
 }
 \value{
 A \code{draws_df} object, which has classes
@@ -49,7 +62,10 @@ A \code{draws_df} object, which has classes
 }
 \description{
 The \code{as_draws_df()} methods convert
-objects to the \code{draws_df} format. See \strong{Details}.
+objects to the \code{draws_df} format.
+The \code{draws_df()} function creates an object of the
+\code{draws_df} format based on a set of numeric vectors.
+See \strong{Details}.
 }
 \details{
 Objects of class \code{"draws_df"} are \link[tibble:tibble]{tibble} data
@@ -60,21 +76,27 @@ the MCMC chain while the latter ignores the chain information and has all
 unique values. See \strong{Examples}.
 }
 \examples{
-x <- as_draws_df(example_draws())
-class(x)
-str(x)
+x1 <- as_draws_df(example_draws())
+class(x1)
+print(x1)
+str(x1)
+
+x2 <- draws_df(a = rnorm(10), b = rnorm(10), c = 1)
+class(x2)
+print(x2)
+str(x2)
 
 # the difference between iteration and draw is clearer when contrasting
 # the head and tail of the data frame
-head(x[, c(".iteration", ".chain", ".draw")])
-tail(x[, c(".iteration", ".chain", ".draw")])
+print(head(x1), meta_columns = TRUE, max_variables = 2)
+print(tail(x1), meta_columns = TRUE, max_variables = 2)
 
 }
 \seealso{
 Other formats: 
-\code{\link{draws_array}},
-\code{\link{draws_list}},
-\code{\link{draws_matrix}},
+\code{\link{draws_array}()},
+\code{\link{draws_list}()},
+\code{\link{draws_matrix}()},
 \code{\link{draws}}
 }
 \concept{formats}

@@ -1,19 +1,3 @@
-# create a named list using object names
-nlist <- function(...) {
-  m <- match.call()
-  dots <- list(...)
-  no_names <- is.null(names(dots))
-  has_name <- if (no_names) FALSE else nzchar(names(dots))
-  if (all(has_name)) return(dots)
-  nms <- as.character(m)[-1]
-  if (no_names) {
-    names(dots) <- nms
-  } else {
-    names(dots)[!has_name] <- nms[!has_name]
-  }
-  dots
-}
-
 # initialize a named list
 # @param names names of the elements
 # @param values optional values of the elements
@@ -41,23 +25,6 @@ seq_rows <- function(x) {
 
 seq_cols <- function(x) {
   seq_len(NCOL(x))
-}
-
-seq_dim <- function(x, dim) {
-  dim <- as_one_numeric(dim)
-  if (dim == 1) {
-    len <- NROW(x)
-  } else if (dim == 2) {
-    len <- NCOL(x)
-  } else {
-    len <- dim(x)[dim]
-  }
-  if (length(len) == 1L && !isNA(len)) {
-    out <- seq_len(len)
-  } else {
-    out <- integer(0)
-  }
-  out
 }
 
 # selectively drop dimensions of arrays
@@ -139,6 +106,7 @@ is_equal <- function(x, y, ...) {
 }
 
 # move elements to the start of a named object
+# TODO: remove this function as it is no longer needed to move meta-columns?
 move_to_start <- function(x, start) {
   assert_named(x)
   start <- intersect(names(x), start)
@@ -160,6 +128,11 @@ deparse2 <- function(x, max_chars = NULL, max_wsp = 1L) {
     out <- substr(out, 1L, max_chars)
   }
   out
+}
+
+# remove NULL elements from a list
+remove_null <- function(x) {
+  Filter(Negate(is.null), x)
 }
 
 # remove whitespaces from strings
@@ -258,4 +231,20 @@ warning2 <- function(...) {
 
 SW <- function(expr) {
   base::suppressWarnings(expr)
+}
+
+# escape all special characters in character strings
+escape_all <- function(x) {
+  specials <- c(".", "*", "+", "?", "^", "$", "(", ")", "[", "]", "|")
+  for (s in specials) {
+    x <- gsub(s, paste0("\\", s), x, fixed = TRUE)
+  }
+  x
+}
+
+# numerically stable version of log(sum(exp(x)))
+log_sum_exp <- function(x) {
+  max <- max(x)
+  sum <- sum(exp(x - max))
+  max + log(sum)
 }

@@ -6,6 +6,7 @@
 #' @templateVar draws_format draws_array
 #' @templateVar base_class "array"
 #' @template draws_format-skeleton
+#' @template args-format-nchains
 #'
 #' @details Objects of class `"draws_array"` are 3-D arrays with dimensions
 #'   `"iteration"`, `"chain"`, and `"variable"`. See **Examples**.
@@ -49,6 +50,9 @@ as_draws_array.draws_matrix <- function(x, ...) {
 #' @rdname draws_array
 #' @export
 as_draws_array.draws_df <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_array(variables(x)))
+  }
   iterations <- iteration_ids(x)
   chains <- chain_ids(x)
   variables <- setdiff(names(x), meta_columns())
@@ -58,9 +62,7 @@ as_draws_array.draws_df <- function(x, ...) {
     out[[i]] <- remove_meta_columns(out[[i]])
     out[[i]] <- as.matrix(out[[i]])
   }
-  # TODO: make the two lines below more efficient?
-  out <- abind::abind(out, along = 3L)
-  out <- aperm(out, c(1, 3, 2))
+  out <- as_array_matrix_list(out)
   dimnames(out) <- list(
     iteration = iterations,
     chain = chains,
@@ -75,6 +77,19 @@ as_draws_array.draws_df <- function(x, ...) {
 as_draws_array.draws_list <- function(x, ...) {
   x <- as_draws_df(x)
   as_draws_array(x, ...)
+}
+
+#' @rdname draws_array
+#' @export
+as_draws_array.mcmc <- function(x, ...) {
+  as_draws_array(as_draws_matrix(x), ...)
+}
+
+#' @rdname draws_array
+#' @export
+as_draws_array.mcmc.list <- function(x, ...) {
+  class(x) <- "list"
+  .as_draws_array(as_array_matrix_list(x))
 }
 
 # try to convert any R object into a 'draws_array' object
@@ -93,6 +108,26 @@ as_draws_array.draws_list <- function(x, ...) {
   dimnames(x) <- new_dimnames
   class(x) <- class_draws_array()
   x
+}
+
+#' @rdname draws_array
+#' @export
+draws_array <- function(..., .nchains = 1) {
+  out <- validate_draws_per_variable(...)
+  .nchains <- as_one_integer(.nchains)
+  if (.nchains < 1) {
+    stop2("Number of chains must be positive.")
+  }
+  ndraws <- length(out[[1]])
+  if (ndraws %% .nchains != 0) {
+    stop2("Number of chains does not divide the number of draws.")
+  }
+  niterations <- ndraws %/% .nchains
+  variables <- names(out)
+  out <- unlist(out)
+  out <- array(out, dim = c(niterations, .nchains, length(variables)))
+  dimnames(out) <- list(NULL, NULL, variables)
+  as_draws_array(out)
 }
 
 class_draws_array <- function() {
@@ -118,3 +153,28 @@ is_draws_array_like <- function(x) {
   out
 }
 
+# convert a list of matrices to an array
+as_array_matrix_list <- function(x) {
+  stopifnot(is.list(x))
+  x <- abind::abind(x, along = 3L)
+  x <- aperm(x, c(1, 3, 2))
+}
+
+# create an empty draws_array object
+empty_draws_array <- function(variables = character(0), nchains = 0,
+                              niterations = 0) {
+  assert_character(variables, null.ok = TRUE)
+  assert_number(nchains, lower = 0)
+  assert_number(niterations, lower = 0)
+  out <- array(
+    numeric(0),
+    dim = c(niterations, nchains, length(variables)),
+    dimnames = list(
+      iteration = seq_len(niterations),
+      chain = seq_len(nchains),
+      variable = variables
+    )
+  )
+  class(out) <- class_draws_array()
+  out
+}

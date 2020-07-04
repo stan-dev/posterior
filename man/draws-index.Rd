@@ -11,7 +11,7 @@
 \alias{niterations}
 \alias{nchains}
 \alias{ndraws}
-\title{Index Draws Objects}
+\title{Index \code{draws} objects}
 \usage{
 variables(x)
 

@@ -20,11 +20,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-# posterior
+# posterior <img src="man/figures/stanlogo.png" align="right" width="120" />
 
 <!-- badges: start -->
-[![Build Status](https://travis-ci.org/jgabry/posterior.svg?branch=master)](https://travis-ci.org/jgabry/posterior)
-[![Coverage Status](https://codecov.io/github/jgabry/posterior/coverage.svg?branch=master)](https://codecov.io/github/jgabry/posterior?branch=master)
+[![CRAN status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.org/package=posterior)
+[![Travis Build Status](https://travis-ci.org/stan-dev/posterior.svg?branch=master)](https://travis-ci.org/stan-dev/posterior)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/stan-dev/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/stan-dev/posterior)
+[![Coverage Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
 <!-- badges: end -->
 
 
@@ -34,20 +36,28 @@ from Bayesian models. The primary goals of the package are to:
 
 * Efficiently convert between many different useful formats of
   draws (samples) from posterior or prior distributions.
+* Provide consistent methods for operations commonly performed on draws, 
+  for example, subsetting, binding, or mutating draws.
 * Provide various summaries of draws in convenient formats.
-* Provide lightweight implementations of state of the art MCMC diagnostics.
+* Provide lightweight implementations of state of the art posterior inference 
+  diagnostics.
 
 ### Installation
 
-The package is not released yet. Currently you can install the development
-version from GitHub, but expect frequent changes until an official release.
+The package is not on CRAN yet, but you can install the beta release via 
 
 ```{r install, eval=FALSE}
-# install.packages("remotes")
-remotes::install_github("jgabry/posterior")
+install.packages("posterior", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
 ```
 
-### How to use **posterior**
+or the latest development version from GitHub via 
+
+```{r install_github, eval=FALSE}
+# install.packages("remotes")
+remotes::install_github("stan-dev/posterior")
+```
+
+### Examples
 
 ```{r load}
 library("posterior")
@@ -63,7 +73,7 @@ deviation across schools (`tau`).
 
 ```{r draws_array}
 eight_schools_array <- example_draws("eight_schools")
-str(eight_schools_array)
+print(eight_schools_array, max_variables = 3)
 ```
 
 The draws for this example come as a `draws_array` object, that is, an array
@@ -72,16 +82,16 @@ another format, for instance, a data frame with additional meta information.
 
 ```{r draws_df}
 eight_schools_df <- as_draws_df(eight_schools_array)
-str(eight_schools_df)
-
 print(eight_schools_df)
 ```
 
 Different formats are preferable in different situations and hence posterior
-supports multiple formats and easy conversion between them. For more details 
-on the available formats see `help("draws")`.
+supports multiple formats and easy conversion between them. For more details on
+the available formats see `help("draws")`. All of the formats are essentially
+base R object classes and can be used as such. For example, a `draws_matrix`
+object is just a `matrix` with a little more consistency and additional methods.
 
-#### Draws summaries
+#### Summarising draws
 
 Computing summaries of posterior or prior draws and convergence diagnostics for
 posterior draws is one of the most common tasks when working with Bayesian
@@ -94,27 +104,93 @@ summarise_draws(eight_schools_df)
 ```
 
 Basically, we get a data frame with one row per variable and one column per
-summary statistic or convergence diagnostic. We can choose which summaries to
-compute via the `measures` argument. For instance, if we only wanted the mean
-and its corresponding Monto Carlo Standard Error (MCSE) we would use:
+summary statistic or convergence diagnostic. The summaries `rhat`, `ess_bulk`,
+and `ess_tail` are described in Vehtari et al. (2020). We can choose which
+summaries to compute by passing additional arguments, either functions or names
+of functions. For instance, if we only wanted the mean and its corresponding
+Monte Carlo Standard Error (MCSE) we would use:
 
 ```{r summary-with-measures}
-summarise_draws(eight_schools_df, measures = c("mean", "mcse_mean"))
+summarise_draws(eight_schools_df, "mean", "mcse_mean")
 ```
 
-For a measure to work, there needs to be a function defined with the same name
-as the name specified in `measures` and that takes a vector or matrix of numeric
-values and returns a single numeric value or a named vector of numeric values.
+For a function to work with `summarise_draws`, it needs to take a vector or
+matrix of numeric values and returns a single numeric value or a named vector of
+numeric values.
+
+#### Subsetting draws 
 
 Another common task when working with posterior (or prior) draws, is subsetting
 according to various aspects of the draws (iterations, chains, or variables).
-**posterior** provides a convienent interface for this purpose via the
-`subset()` method. For example, here is the code to extract the first five 
+**posterior** provides a convenient interface for this purpose via the
+`subset_draws()` method. For example, here is the code to extract the first five 
 iterations of the first two chains of the variable `mu`:
 
 ```{r subset}
-subset(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
+subset_draws(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 ```
+
+The same call to `subset_draws()` can be used regardless of whether the object 
+is a `draws_df`, `draws_array`, `draws_list`, etc.
+
+#### Mutating and renaming draws
+
+The magic of having obtained draws from the joint posterior (or prior)
+distribution of a set of variables is that these draws can also be used
+to obtain draws from any other variable that is a function of the original variables.
+That is, if are interested in the posterior distribution of, say, 
+`phi = (mu + tau)^2` all we have to do is to perform the transformation for each
+of the individual draws to obtain draws from the posterior distribution of the
+transformed variable. This procedure is automated in the `mutate_variables` method:
+
+```{r}
+x <- mutate_variables(eight_schools_df, phi = (mu + tau)^2)
+x <- subset_draws(x, c("mu", "tau", "phi"))
+print(x)
+```
+
+When we do the math ourselves, we see that indeed for each draw, 
+`phi` is equal to `(mu + tau)^2` (up to rounding two 2 digits 
+for the purpose of printing).
+
+We may also easily rename variables, or even entire vectors of variables via
+`rename_variables`, for example:
+
+```{r}
+x <- rename_variables(eight_schools_df, mean = mu, alpha = theta)
+variables(x)
+```
+
+As with all **posterior** methods, `mutate_variables` and `rename_variables` 
+can be used with all draws formats.
+
+#### Binding draws together
+
+Suppose we have multiple draws objects that we want to bind together:
+
+```{r}
+x1 <- draws_matrix(alpha = rnorm(5), beta = 1)
+x2 <- draws_matrix(alpha = rnorm(5), beta = 2)
+x3 <- draws_matrix(theta = rexp(5))
+```
+
+Then, we can use the `bind_draws` method to bind them along different dimensions.
+For example, we can bind `x1` and `x3` together along the `'variable'` dimension:
+
+```{r}
+x4 <- bind_draws(x1, x3, along = "variable")
+print(x4)
+```
+
+Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
+
+```{r}
+x5 <- bind_draws(x1, x2, along = "draw")
+print(x5)
+```
+
+As with all **posterior** methods, `bind_draws` can be used with all draws 
+formats.
 
 #### Converting from regular R objects to draws formats
 
@@ -126,24 +202,50 @@ for example, from common base R objects:
 x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
-str(x)
+print(x)
 
-summarise_draws(x, c("mean", "sd", "median", "mad"))
+summarise_draws(x, "mean", "sd", "median", "mad")
 ```
 
 Instead of `as_draws_matrix()` we also could have just used `as_draws()`, which
 attempts to find the closest available format to the input object. In this case
 this would result in a `draws_matrix` object either way.
 
-### Contributing
+### Contributing to posterior
 
-The **posterior** package is under active development. If you find bugs or have
-ideas for new features (for us or yourself to implement) please open an issue on
-GitHub (https://github.com/jgabry/posterior/issues).
+We welcome contributions! The **posterior** package is under active development.
+If you find bugs or have ideas for new features (for us or yourself to
+implement) please open an issue on GitHub
+(https://github.com/stan-dev/posterior/issues).
 
+### Citing posterior
+
+Developing and maintaining open source software is an important yet often
+underappreciated contribution to scientific progress. Thus, whenever you are
+using open source software (or software in general), please make sure to cite it
+appropriately so that developers get credit for their work.
+
+When using **posterior**, please cite it as follows:
+
+* Bürkner P. C., Gabry J., Kay M., & Vehtari A. (2020). “posterior: Tools for
+Working with Posterior Distributions.” R package version XXX, <URL:
+https://mc-stan.org/posterior>.
+  
+When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or `ess_tail`,
+please also cite
+
+* Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
+Rank-normalization, folding, and localization: An improved Rhat for assessing
+convergence of MCMC. *Bayesian Analysis*.
+
+The same information can be obtained by running `citation("posterior")`.
 
 ### References
 
-Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
-Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
+Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki Vehtari A.,
+& Rubin D. B. (2013). *Bayesian Data Analysis, Third Edition*. Chapman and
 Hall/CRC.
+
+Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
+Rank-normalization, folding, and localization: An improved Rhat for assessing
+convergence of MCMC. *Bayesian Analysis*.

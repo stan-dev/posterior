@@ -11,10 +11,19 @@ test_that("rename_variables works on draws_matrix", {
   ref = as_draws_matrix(matrix(11:20, ncol = 2, dimnames = list(NULL, c("c", "d"))))
   expect_equal(rename_variables(x, c = a, d = `b[1]`), ref)
   expect_equal(rename_variables(x, c = a, d = "b[1]"), ref)
-  expect_equal(rename_variables(x, ignored = a, d = `b[1]`, c = a), ref)
 
-  # no op
+  # renaming can be chained
+  expect_equal(rename_variables(x, e = a, d = `b[1]`, c = e), ref)
+
+  # no renaming
   expect_equal(rename_variables(x), x)
+})
+
+test_that("rename_variables works for non-scalar variables", {
+  x <- example_draws()
+  x <- rename_variables(x, alpha = theta)
+  vars <- c("mu", "tau", paste0("alpha[", 1:8, "]"))
+  expect_equal(variables(x), vars)
 })
 
 test_that("cannot rename a variable to a reserved word", {
@@ -37,5 +46,5 @@ test_that("cannot rename a variable to an empty name", {
 
 test_that("cannot rename a non-existent variable", {
   x = as_draws_matrix(matrix(11:20, ncol = 2, dimnames = list(NULL, c("a", "b[1]"))))
-  expect_error(rename_variables(x, a = b), "The following variables are missing")
+  expect_error(rename_variables(x, a = c), "The following variables are missing")
 })

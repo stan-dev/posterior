@@ -6,7 +6,7 @@
 \alias{repair_draws.draws_array}
 \alias{repair_draws.draws_df}
 \alias{repair_draws.draws_list}
-\title{Repair Indices of Draws Objects}
+\title{Repair indices of \code{draws} objects}
 \usage{
 repair_draws(x, order = TRUE, ...)
 
@@ -22,12 +22,12 @@ repair_draws(x, order = TRUE, ...)
 \item{x}{An \R object for which the methods are defined.}
 
 \item{order}{Logical; Indicates if draws should be ordered (via
-\verb{\link{order_draws}}) before reparing indices. Defaults to \code{TRUE}.}
+\code{\link{order_draws}}) before reparing indices. Defaults to \code{TRUE}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \description{
-Repair indices of draws objects so that iterations, chains, and draws
+Repair indices of \code{draws} objects so that iterations, chains, and draws
 are continuously and consistently numbered.
 }
 \examples{

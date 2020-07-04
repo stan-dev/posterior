@@ -5,3 +5,7 @@
 ^\.travis\.yml$
 ^LICENSE\.md$
 ^README\.Rmd$
+^\.appveyor\.yml$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

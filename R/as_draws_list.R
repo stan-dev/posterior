@@ -6,6 +6,7 @@
 #' @templateVar draws_format draws_list
 #' @templateVar base_class "list"
 #' @template draws_format-skeleton
+#' @template args-format-nchains
 #'
 #' @details Objects of class `"draws_list"` are lists with one element per MCMC
 #'   chain. Each of these elements is itself a named list of numeric vectors
@@ -50,6 +51,9 @@ as_draws_list.draws_array <- function(x, ...) {
 #' @rdname draws_list
 #' @export
 as_draws_list.draws_df <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_list(variables(x)))
+  }
   out <- named_list(chain_ids(x))
   x <- x[order(x$.draw), ]
   for (i in seq_along(out)) {
@@ -59,6 +63,18 @@ as_draws_list.draws_df <- function(x, ...) {
   }
   class(out) <- class_draws_list()
   out
+}
+
+#' @rdname draws_list
+#' @export
+as_draws_list.mcmc <- function(x, ...) {
+  as_draws_list(as_draws_matrix(x), ...)
+}
+
+#' @rdname draws_list
+#' @export
+as_draws_list.mcmc.list <- function(x, ...) {
+  as_draws_list(as_draws_array(x), ...)
 }
 
 # try to convert any R object into a 'draws_list' object
@@ -99,6 +115,13 @@ as_draws_list.draws_df <- function(x, ...) {
   x
 }
 
+#' @rdname draws_list
+#' @export
+draws_list <- function(..., .nchains = 1) {
+  out <- draws_df(..., .nchains = .nchains)
+  as_draws_list(out)
+}
+
 class_draws_list <- function() {
   c("draws_list", "draws", "list")
 }
@@ -122,3 +145,15 @@ is_draws_list_like <- function(x) {
   out
 }
 
+# create an empty draws_list object
+empty_draws_list <- function(variables = character(0),
+                             nchains = 0) {
+  assert_character(variables, null.ok = TRUE)
+  assert_number(nchains, lower = 0)
+  out <- named_list(seq_len(nchains))
+  for (i in seq_along(out)) {
+    out[[i]] <- named_list(variables, numeric(0))
+  }
+  class(out) <- class_draws_list()
+  out
+}

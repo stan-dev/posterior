@@ -1,25 +1,32 @@
 Package: posterior
 Title: Tools for Working with Posterior Distributions
-Version: 0.0.0.9000
+Version: 0.1.0
+Date: 2020-06-11
 Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
-             person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")))
-Description: The posterior package is intended to provide useful tools for both
-  users and developers of packages for fitting Bayesian models or working with 
-  output from Bayesian models. The primary goals of the package are to: 
+             person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")),
+             person("Aki", "Vehtari", email = "Aki.Vehtari@aalto.fi", role = c("aut")),
+             person("Måns", "Magnusson", role = c("ctb")),
+             person("Rok", "Češnovar", role = c("ctb")))
+Description: Provides useful tools for both users and developers of packages 
+  for fitting Bayesian models or working with output from Bayesian models. 
+  The primary goals of the package are to: 
   (a) Efficiently convert between many different useful formats of
   draws (samples) from posterior or prior distributions.
-  (b) Provide various summaries of draws in convenient formats.
-  (c) Provide lightweight implementations of state of the art MCMC diagnostics.
+  (b) Provide consistent methods for operations commonly performed on draws, 
+  for example, subsetting, binding, or mutating draws.
+  (c) Provide various summaries of draws in convenient formats.
+  (d) Provide lightweight implementations of state of the art posterior 
+  inference diagnostics.
 Depends: 
   R (>= 3.2.0)
 Imports:
   methods,
-  stats,
-  rlang,
-  tibble,
   abind,
   checkmate,
+  rlang,
+  stats,
+  tibble,
   vctrs,
   rray,
   tensorA,
@@ -28,10 +35,10 @@ Suggests:
   testthat (>= 2.1.0),
   dplyr,
   tidyr
-License: BSD 3-clause License + file LICENSE
+License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/jgabry/posterior
-BugReports: https://github.com/jgabry/posterior/issues
+URL: https://mc-stan.org/posterior/, https://discourse.mc-stan.org/
+BugReports: https://github.com/stan-dev/posterior/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1

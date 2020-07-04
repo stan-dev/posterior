@@ -8,6 +8,8 @@
 \alias{as_draws_array.draws_matrix}
 \alias{as_draws_array.draws_df}
 \alias{as_draws_array.draws_list}
+\alias{as_draws_array.mcmc}
+\alias{as_draws_array.mcmc.list}
 \alias{is_draws_array}
 \title{The \code{draws_array} format}
 \usage{
@@ -23,12 +25,23 @@ as_draws_array(x, ...)
 
 \method{as_draws_array}{draws_list}(x, ...)
 
+\method{as_draws_array}{mcmc}(x, ...)
+
+\method{as_draws_array}{mcmc.list}(x, ...)
+
+draws_array(..., .nchains = 1)
+
 is_draws_array(x)
 }
 \arguments{
 \item{x}{An object to convert to a \code{draws_array} object.}
 
-\item{...}{Arguments passed to individual methods (if applicable).}
+\item{...}{For \code{as_draws_array()}:
+Arguments passed to individual methods (if applicable).
+For \code{draws_array()}: Named
+arguments containing numeric vectors each defining a separate variable.}
+
+\item{.nchains}{Number of chains (default is \code{1}).}
 }
 \value{
 A \code{draws_array} object, which has classes
@@ -36,22 +49,31 @@ A \code{draws_array} object, which has classes
 }
 \description{
 The \code{as_draws_array()} methods convert
-objects to the \code{draws_array} format. See \strong{Details}.
+objects to the \code{draws_array} format.
+The \code{draws_array()} function creates an object of the
+\code{draws_array} format based on a set of numeric vectors.
+See \strong{Details}.
 }
 \details{
 Objects of class \code{"draws_array"} are 3-D arrays with dimensions
 \code{"iteration"}, \code{"chain"}, and \code{"variable"}. See \strong{Examples}.
 }
 \examples{
-x <- as_draws_array(example_draws())
-class(x)
-str(x)
+x1 <- as_draws_array(example_draws())
+class(x1)
+print(x1)
+str(x1)
+
+x2 <- draws_array(a = rnorm(10), b = rnorm(10), c = 1)
+class(x2)
+print(x2)
+str(x2)
 }
 \seealso{
 Other formats: 
-\code{\link{draws_df}},
-\code{\link{draws_list}},
-\code{\link{draws_matrix}},
+\code{\link{draws_df}()},
+\code{\link{draws_list}()},
+\code{\link{draws_matrix}()},
 \code{\link{draws}}
 }
 \concept{formats}

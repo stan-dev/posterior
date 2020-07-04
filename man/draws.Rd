@@ -28,11 +28,26 @@ The class \code{"draws"} is the parent class of all supported formats,
 which also have their own subclasses of the form \code{"draws_{format}"} (e.g.
 \code{"draws_array"}).
 }
+\examples{
+# create some random draws
+x <- matrix(rnorm(30), nrow = 10)
+colnames(x) <- c("a", "b", "c")
+str(x)
+
+# transform to a draws object
+y <- as_draws(x)
+str(y)
+
+# remove the draws classes from the object
+class(y) <- class(y)[-(1:2)]
+str(y)
+
+}
 \seealso{
 Other formats: 
-\code{\link{draws_array}},
-\code{\link{draws_df}},
-\code{\link{draws_list}},
-\code{\link{draws_matrix}}
+\code{\link{draws_array}()},
+\code{\link{draws_df}()},
+\code{\link{draws_list}()},
+\code{\link{draws_matrix}()}
 }
 \concept{formats}

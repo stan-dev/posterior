@@ -14,6 +14,7 @@
 #' that contain chain indices. If `NULL` (the default), the `.chain`
 #' column is used if it exists. Otherwise, the input is treated as belonging
 #' to a single chain.
+#' @template args-format-nchains
 #'
 #' @details Objects of class `"draws_df"` are [tibble][tibble::tibble] data
 #'   frames. They have one column per variable as well as additional metadata
@@ -26,8 +27,8 @@
 #'
 #' # the difference between iteration and draw is clearer when contrasting
 #' # the head and tail of the data frame
-#' head(x[, c(".iteration", ".chain", ".draw")])
-#' tail(x[, c(".iteration", ".chain", ".draw")])
+#' print(head(x1), meta_columns = TRUE, max_variables = 2)
+#' print(tail(x1), meta_columns = TRUE, max_variables = 2)
 #'
 NULL
 
@@ -64,10 +65,9 @@ as_draws_df.draws_matrix <- function(x, ...) {
   draws <- as.integer(rownames(x))
   rownames(x) <- NULL
   x <- tibble::as_tibble(x)
-  x$.chain <- 1L
+  x$.chain <- rep(1L, nrow(x))
   x$.iteration <- draws
   x$.draw <- draws
-  x <- move_to_start(x, meta_columns())
   class(x) <- class_draws_df()
   x
 }
@@ -75,6 +75,9 @@ as_draws_df.draws_matrix <- function(x, ...) {
 #' @rdname draws_df
 #' @export
 as_draws_df.draws_array <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_df(variables(x)))
+  }
   iteration_ids <- iteration_ids(x)
   chain_ids <- chain_ids(x)
   rownames(x) <- NULL
@@ -85,10 +88,9 @@ as_draws_df.draws_array <- function(x, ...) {
     out[[i]] <- tibble::as_tibble(out[[i]])
     out[[i]]$.chain <- chain_ids[i]
     out[[i]]$.iteration <- iteration_ids
-    out[[i]]$.draw <- compute_draw_ids(iteration_ids, chain_ids[i])
+    out[[i]]$.draw <- compute_draw_ids(chain_ids[i], iteration_ids)
   }
   out <- do_call(rbind, out)
-  out <- move_to_start(out, meta_columns())
   class(out) <- class_draws_df()
   out
 }
@@ -96,6 +98,9 @@ as_draws_df.draws_array <- function(x, ...) {
 #' @rdname draws_df
 #' @export
 as_draws_df.draws_list <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_df(variables(x)))
+  }
   iteration_ids <- iteration_ids(x)
   chain_ids <- chain_ids(x)
   out <- named_list(chain_ids)
@@ -103,12 +108,23 @@ as_draws_df.draws_list <- function(x, ...) {
     out[[i]] <- tibble::as_tibble(x[[i]])
     out[[i]]$.chain <- chain_ids[i]
     out[[i]]$.iteration <- iteration_ids
-    out[[i]]$.draw <- compute_draw_ids(iteration_ids, chain_ids[i])
+    out[[i]]$.draw <- compute_draw_ids(chain_ids[i], iteration_ids)
   }
   out <- do_call(rbind, out)
-  out <- move_to_start(out, meta_columns())
   class(out) <- class_draws_df()
   out
+}
+
+#' @rdname draws_df
+#' @export
+as_draws_df.mcmc <- function(x, ...) {
+  as_draws_df(as_draws_matrix(x), ...)
+}
+
+#' @rdname draws_df
+#' @export
+as_draws_df.mcmc.list <- function(x, ...) {
+  as_draws_df(as_draws_array(x), ...)
 }
 
 #' Convert any \R object into a \code{draws_df} object
@@ -162,10 +178,28 @@ as_draws_df.draws_list <- function(x, ...) {
     x$.chain <- repair_chain_ids(x$.chain)
     x$.iteration <- repair_iteration_ids(x$.iteration, x$.chain)
   }
-  x$.draw <- compute_draw_ids(x$.iteration, x$.chain)
-  x <- move_to_start(x, meta_columns())
+  x$.draw <- compute_draw_ids(x$.chain, x$.iteration)
   class(x) <- class_draws_df()
   x
+}
+
+#' @rdname draws_df
+#' @export
+draws_df <- function(..., .nchains = 1) {
+  out <- validate_draws_per_variable(...)
+  .nchains <- as_one_integer(.nchains)
+  if (.nchains < 1) {
+    stop2("Number of chains must be positive.")
+  }
+  ndraws <- length(out[[1]])
+  if (ndraws %% .nchains != 0) {
+    stop2("Number of chains does not divide the number of draws.")
+  }
+  niterations <- ndraws %/% .nchains
+  out <- as.data.frame(out)
+  out$.iteration <- rep(1L:niterations, .nchains)
+  out$.chain <- rep(1L:.nchains, each = niterations)
+  as_draws_df(out)
 }
 
 class_draws_df <- function() {
@@ -201,4 +235,18 @@ remove_meta_columns <- function(x) {
     x[[col]] <- NULL
   }
   x
+}
+
+# create an empty draws_df object
+empty_draws_df <- function(variables = character(0)) {
+  assert_character(variables, null.ok = TRUE)
+  out <- tibble::tibble()
+  for (v in variables) {
+    out[[v]] <- numeric(0)
+  }
+  out$.chain <- integer(0)
+  out$.iteration <- integer(0)
+  out$.draw <- integer(0)
+  class(out) <- class_draws_df()
+  out
 }

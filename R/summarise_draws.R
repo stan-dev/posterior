@@ -1,4 +1,4 @@
-#' Summaries of draws objects
+#' Summaries of `draws` objects
 #'
 #' The `summarise_draws()` (and `summarize_draws()`) methods provide a quick way
 #' to get a table of summary statistics and diagnostics. These methods will
@@ -10,32 +10,35 @@
 #' @name draws_summary
 #'
 #' @param x,object A `draws` object or one coercible to a `draws` object.
-#' @param ... Optionally, arguments to pass to specific methods.
-#' @param measures A character vector containing the names of summary stats or
-#'   diagnostics to include. The convenience functions with names `default_*`
-#'   return character vectors with the names of the measures included by
-#'   default.
-#' @param probs A numeric vector of probabilities used to compute quantiles. In
-#'   the output any columns corresponding to quantiles will have names starting
-#'   with lowercase `"q"` (e.g. `"q95"`).
+#' @param ... Name-value pairs of summary functions.
+#'   The name will be the name of the variable in the result unless
+#'   the function returns a named vector in which case the latter names
+#'   are used. Functions can be passed in all formats supported by
+#'   [as_function()][rlang::as_function]. See the 'Examples' section below
+#'   for examples.
 #'
 #' @return
 #' The `summarise_draws()` methods return a [tibble][tibble::tibble] data frame.
 #' The first column, `"variable"`, contains the variable names and the remaining
 #' columns contain summary statistics and diagnostics.
 #'
+#' @details
+#' By default, the following summary functions are used: [mean()], [median()],
+#' [sd()], [mad()], [quantile2()], [rhat()], [ess_bulk()], and [ess_tail()].
 #' The functions `default_summary_measures()`, `default_convergence_measures()`,
 #' and `default_mcse_measures()` return character vectors of names of the
-#' default measures included.
+#' default measures included in the package.
 #'
 #' @examples
-#' x <- example_draws()
+#' x <- example_draws("eight_schools")
 #' class(x)
 #' str(x)
 #'
 #' summarise_draws(x)
-#' summarise_draws(x, "quantile", probs = c(0.1, 0.9))
-#' summarise_draws(x, c("mean", "median"))
+#' summarise_draws(x, "mean", "median")
+#' summarise_draws(x, default_convergence_measures())
+#' summarise_draws(x, mean, mcse = mcse_mean)
+#' summarise_draws(x, ~quantile(.x, probs = c(0.4, 0.6)))
 #'
 NULL
 
@@ -58,50 +61,81 @@ summarise_draws.default <- function(x, ...) {
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.draws <- function(x,
-                                  measures = NULL,
-                                  ...,
-                                  probs = c(0.05, 0.95)) {
-  variables <- variables(x)
-  if (is.null(measures)) {
-    measures <- c(
-      default_summary_measures(),
-      default_convergence_measures()
+summarise_draws.draws <- function(x, ...) {
+  funs <- as.list(c(...))
+  if (length(funs)) {
+    if (is.null(names(funs))) {
+      # ensure names are initialized properly
+      names(funs) <- rep("", length(funs))
+    }
+    calls <- substitute(list(...))[-1]
+    calls <- ulapply(calls, deparse2)
+    for (i in seq_along(funs)) {
+      fname <- NULL
+      if (is.character(funs[[i]])) {
+        fname <- as_one_character(funs[[i]])
+      }
+      # label unnamed arguments via their calls
+      if (!nzchar(names(funs)[i])) {
+        if (!is.null(fname)) {
+          names(funs)[i] <- fname
+        } else {
+          names(funs)[i] <- calls[i]
+        }
+      }
+      # get functions passed as stings from the right environments
+      if (!is.null(fname)) {
+        if (exists(fname, envir = caller_env())) {
+          env <- caller_env()
+        } else if (fname %in% getNamespaceExports("posterior")) {
+          env <- asNamespace("posterior")
+        } else {
+          stop2("Cannot find function '", fname, "'.")
+        }
+      }
+      funs[[i]] <- rlang::as_function(funs[[i]], env = env)
+    }
+  } else {
+    # default functions
+    funs <- list(
+      mean = base::mean,
+      median = stats::median,
+      sd = stats::sd,
+      mad = stats::mad,
+      quantile = quantile2,
+      rhat = rhat,
+      ess_bulk = ess_bulk,
+      ess_tail = ess_tail
     )
   }
-  measures <- as.character(measures)
-  if ("quantile" %in% measures) {
-    # ensure correct format for quantiles
-    .quantile <- function(x, ...) quantile2(x, probs, ...)
-    measures[measures == "quantile"] <- ".quantile"
+
+  # it is more efficient to repair and transform objects for all variables
+  # at once instead of doing it within the loop for each variable separately
+  if (ndraws(x) == 0L) {
+    return(empty_draws_summary())
   }
-  if ("mcse_quantile" %in% measures) {
-    .mcse_quantile <- function(x, ...) mcse_quantile2(x, probs, ...)
-    measures[measures == "mcse_quantile"] <- ".mcse_quantile"
-  }
-  if ("ess_quantile" %in% measures) {
-    .ess_quantile <- function(x, ...) ess_quantile2(x, probs, ...)
-    measures[measures == "ess_quantile"] <- ".ess_quantile"
-  }
-  out <- named_list(variables, values = list(named_list(measures)))
-  funs <- lapply(measures, get, environment())
-  names(funs) <- measures
+  x <- repair_draws(x)
+  x <- as_draws_array(x)
+  variables <- variables(x)
+  out <- named_list(variables, values = list(named_list(names(funs))))
   for (v in variables) {
-    draws <- extract_one_variable_matrix(x, variable = v)
-    for (m in measures) {
-      out[[v]][[m]] <- funs[[m]](draws, ...)
-      if (length(out[[v]][[m]]) > 1L) {
+    draws <- drop_dims(x[, , v], dims = 3)
+    for (m in names(funs)) {
+      out[[v]][[m]] <- funs[[m]](draws)
+      if (rlang::is_named(out[[v]][[m]])) {
+        # use returned names to label columns
         out[[v]][[m]] <- rbind(out[[v]][[m]])
       }
     }
     out[[v]] <- do_call(cbind, out[[v]])
   }
   out <- tibble::as_tibble(do_call(rbind, out))
-  if (any(names(out) == "variable")) {
+  if ("variable" %in% names(out)) {
     stop2("Name 'variable' is reserved in 'summarise_draws'.")
   }
   out$variable <- variables
   out <- move_to_start(out, "variable")
+  class(out) <- class_draws_summary()
   out
 }
 
@@ -114,7 +148,7 @@ summary.draws <- function(object, ...) {
 #' @rdname draws_summary
 #' @export
 default_summary_measures <- function() {
-  c("mean", "median", "sd", "mad", "quantile")
+  c("mean", "median", "sd", "mad", "quantile2")
 }
 
 #' @rdname draws_summary
@@ -129,23 +163,18 @@ default_mcse_measures <- function() {
   c("mcse_mean", "mcse_median", "mcse_sd", "mcse_quantile")
 }
 
-# ensure quantiles are returned with the right names
-quantile2 <- function(x, probs, ...) {
-  out <- quantile(x, probs = probs, ...)
-  names(out) <- paste0("q", probs * 100)
-  out
+class_draws_summary <- function() {
+  c("draws_summary", "tbl_df", "tbl", "data.frame")
 }
 
-# ensure MCSE of quantiles are returned with the right names
-mcse_quantile2 <- function(x, probs, ...) {
-  out <- mcse_quantile(x, probs = probs, ...)
-  names(out) <- paste0("mcse_q", probs * 100)
-  out
-}
-
-# ensure ESS of quantiles are returned with the right names
-ess_quantile2 <- function(x, probs, ...) {
-  out <- ess_quantile(x, probs = probs, ...)
-  names(out) <- paste0("ess_q", probs * 100)
+# empty draws_summary object
+# @param dimensions names of dimensions to be added as empty columns
+empty_draws_summary <- function(dimensions = "variable") {
+  assert_character(dimensions, null.ok = TRUE)
+  out <- tibble::tibble()
+  for (d in dimensions) {
+    out[[d]] <- character(0)
+  }
+  class(out) <- class_draws_summary()
   out
 }
