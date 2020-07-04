@@ -48,7 +48,6 @@ Pr <- function(x, na.rm = FALSE) {
 
 # Ops: math operators ---------------------------------------------------
 
-#' @importFrom vctrs stop_incompatible_op
 #' @export
 Ops.rvar <- function(e1, e2) {
   e1 <- as_rvar(e1)
@@ -69,6 +68,13 @@ Ops.rvar <- function(e1, e2) {
   draws_y <- broadcast_array(draws_y, new_dim)
 
   new_rvar(f(draws_x, draws_y))
+}
+
+#' @export
+Math.rvar <- function(x, ...) {
+  f <- get(.Generic)
+
+  new_rvar(f(draws_of(x)))
 }
 
 
