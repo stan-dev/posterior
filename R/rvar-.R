@@ -367,10 +367,10 @@ as.list.rvar <- function(x, ...) {
   }
 }
 
-#' @importFrom rray rray_subset<-
 #' @export
 `[<-.rvar` <- function(x, i, ..., value) {
-  if (length(diml(x) == 1) && any(i > length(x), na.rm = TRUE)) {
+  if (missing(i)) i = missing_arg()
+  if (length(dim(x)) == 1 && !missing(i) && any(i > length(x), na.rm = TRUE)) {
     # unidimensional indexing allows array extension; extend the array
     # before we do the assignment
     x <- x[seq_len(max(i, na.rm = TRUE))]
@@ -378,7 +378,8 @@ as.list.rvar <- function(x, ...) {
 
   value <- vec_cast(value, x)
   x <- check_rvar_ndraws_first(value, x)
-  value <- check_rvar_dims_first(value, x[i, ...])
+  #TODO: reinstate
+#  value <- check_rvar_dims_first(value, x[i, ...])
 
   # TODO: this is a hack for assignment to empty vectors and needs to be fixed
   x_draws = draws_of(x)
@@ -389,8 +390,7 @@ as.list.rvar <- function(x, ...) {
   #   x_draws <- array(vec_ptype(x_draws), dim = new_x_dim)
   # }
 
-  #TODO: make it so we don't have to use rray here
-  rray_subset(x_draws, , i, ...) <- draws_of(value)
+  x_draws[,i,...] <- draws_of(value)
 
   draws_of(x) <- x_draws
   x
@@ -436,13 +436,12 @@ draws_of <- function(x) {
 #' @importFrom vctrs vec_proxy vec_chop
 #' @export
 vec_proxy.rvar = function(x, ...) {
-  # TODO: probably could do something more efficient here
+  # TODO: probably could do something more efficient here and for restore
   .draws = draws_of(x)
   vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
 }
 
 #' @importFrom vctrs vec_restore
-#' @importFrom rray rray_rbind
 #' @export
 vec_restore.rvar <- function(x, ...) {
   if (length(x) > 0) {
@@ -461,8 +460,10 @@ vec_restore.rvar <- function(x, ...) {
     x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
 
   }
-  # TODO: do this with unchop or abind with a broadcast
-  .draws <- do.call(rray_rbind, x)
+  # broadcast dimensions and bind together
+  new_dim <- dim_common(lapply(x, dim))
+  .draws <- abind(lapply(x, broadcast_array, new_dim), along = 1)
+  # move draws dimension back to the front
   if (!is.null(.draws)) {
     .draws <- aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)]))
   }
@@ -516,7 +517,7 @@ combine_rvar <- function(.f, args, .axis = 2) {
   # (except along the axis we are binding along)
   draws1 <- draws_of(args[[1]])
   draws2 <- draws_of(as_rvar(args[[2]]))
-  new_dim <- array_dim_common(draws1, draws2)
+  new_dim <- dim2_common(dim(draws1), dim(draws2))
 
   new_dim[.axis] <- dim(draws1)[.axis]
   draws1 <- broadcast_array(draws1, new_dim)
@@ -550,6 +551,7 @@ ndraws.rvar <- function(x) {
 # dim or length: never returns NULL except in cases where rvar is NULL
 # (unlike dim which will return NULL on single-dimensional vector)
 diml <- function(x) {
+  # TODO: remove (deprecated: dim always returns values)
   .dim <- dim(draws_of(x))
   ndim <- length(.dim)
   .dim[-1]
@@ -640,9 +642,9 @@ check_rvar_ndraws_both <- function(x, y) {
 # Check that the first rvar can be conformed to the dimensions of the second,
 # ignoring 1s
 check_rvar_dims_first <- function(x, y) {
-  x_dim <- diml(x)
+  x_dim <- dim(x)
   x_dim_dropped <- as.integer(x_dim[x_dim != 1])
-  y_dim <- diml(y)
+  y_dim <- dim(y)
   y_dim_dropped <- as.integer(y_dim[y_dim != 1])
 
   if (length(x_dim_dropped) == 0) {
@@ -662,10 +664,8 @@ check_rvar_dims_first <- function(x, y) {
 }
 
 
-array_dim_common <- function(x, y) {
+dim2_common <- function(dim_x, dim_y) {
   # find common dim for two arrays to be broadcast to
-  dim_x <- dim(x)
-  dim_y <- dim(y)
   ndim_x <- length(dim_x)
   ndim_y <- length(dim_y)
 
@@ -676,6 +676,10 @@ array_dim_common <- function(x, y) {
   }
 
   pmax(dim_x, dim_y)
+}
+
+dim_common <- function(dims) {
+  Reduce(dim2_common, dims)
 }
 
 broadcast_array  <- function(x, dim) {

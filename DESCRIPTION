@@ -28,7 +28,6 @@ Imports:
   stats,
   tibble,
   vctrs,
-  rray,
   tensorA,
   pillar
 Suggests: 

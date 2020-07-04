@@ -64,7 +64,7 @@ Ops.rvar <- function(e1, e2) {
 
   # broadcast draws to common dimension
   # TODO: skip broadcast for scalars
-  new_dim <- array_dim_common(draws_x, draws_y)
+  new_dim <- dim2_common(dim(draws_x), dim(draws_y))
   draws_x <- broadcast_array(draws_x, new_dim)
   draws_y <- broadcast_array(draws_y, new_dim)
 

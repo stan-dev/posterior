@@ -158,6 +158,9 @@ test_that("indexing with [ works on a matrix", {
   expect_error(x[1,1,1])
 })
 
+test_that("assignment with [ works on a matrix", {
+  # TODO
+})
 
 # unique, duplicated, etc -------------------------------------------------
 
