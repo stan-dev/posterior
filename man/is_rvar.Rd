@@ -10,10 +10,10 @@ is_rvar(x)
 \item{x}{An object}
 }
 \value{
-\code{TRUE} if \code{x} is an \link{rvar}, \code{FALSE} otherwise.
+\code{TRUE} if \code{x} is an \code{\link[=rvar]{rvar()}}, \code{FALSE} otherwise.
 }
 \description{
-Test if \code{x} is an \link{rvar}.
+Test if \code{x} is an \code{\link[=rvar]{rvar()}}.
 }
 \seealso{
 \code{\link[=as_rvar]{as_rvar()}} to convert objects to \code{rvar}s.

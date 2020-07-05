@@ -93,5 +93,5 @@ rvar_r <- function(.f, n, ..., ndraws = 4000) {
   args = c(list(n = nd), args)
   result = do.call(.f, args)
   dim(result) = c(n, ndraws)
-  new_rvar(result)
+  new_rvar(t(result))
 }

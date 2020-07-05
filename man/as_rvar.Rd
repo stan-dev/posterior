@@ -17,16 +17,16 @@ or more giving the maximal indices in each dimension. If \code{NULL} (the defaul
 An object of class \code{"rvar"} representing a random variable.
 }
 \description{
-Convert \code{x} to an \link{rvar} object.
+Convert \code{x} to an \code{\link[=rvar]{rvar()}} object.
 }
 \details{
-For objects that are already \link{rvar}s, returns them (with modified dimensions)
+For objects that are already \link{rvar}s, returns them (with modified dimensions
 if \code{dim} is not \code{NULL}).
 
 For numeric or logical vectors or arrays, returns an \link{rvar} with a single draw and
 the same dimensions as \code{x}. This is in contrast to the \code{\link[=rvar]{rvar()}} constructor, which
-treats the last dimension of \code{x} as the draws dimension. As a result, \code{as_rvar()}
-is very useful for creating constants.
+treats the first dimension of \code{x} as the draws dimension. As a result, \code{as_rvar()}
+is useful for creating constants.
 }
 \seealso{
 \code{\link[=rvar]{rvar()}} to construct \link{rvar}s directly.

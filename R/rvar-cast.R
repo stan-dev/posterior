@@ -1,18 +1,18 @@
 #' Coerce to a random variable
 #'
-#' Convert `x` to an [rvar] object.
+#' Convert `x` to an [rvar()] object.
 #'
 #' @param x An object that can be converted to an [rvar], such as a vector or array
 #' (or an [rvar] itself).
 #' @template args-rvar-dim
 #'
-#' @details For objects that are already [rvar]s, returns them (with modified dimensions)
+#' @details For objects that are already [rvar]s, returns them (with modified dimensions
 #' if `dim` is not `NULL`).
 #'
 #' For numeric or logical vectors or arrays, returns an [rvar] with a single draw and
 #' the same dimensions as `x`. This is in contrast to the [rvar()] constructor, which
-#' treats the last dimension of `x` as the draws dimension. As a result, `as_rvar()`
-#' is very useful for creating constants.
+#' treats the first dimension of `x` as the draws dimension. As a result, `as_rvar()`
+#' is useful for creating constants.
 #'
 #' @seealso [rvar()] to construct [rvar]s directly.
 #'
@@ -53,7 +53,7 @@ as_rvar <- function(x, dim = NULL) {
 #' @seealso [vctrs::vec_cast()],[vctrs::vec_ptype2()],[vctrs::vec_arith()],
 #' [vctrs::vec_math()]
 #'
-#' @importFrom vctrs vec_ptype2 vec_default_ptype2
+#' @importFrom vctrs vec_ptype vec_ptype2 vec_default_ptype2
 #' @method vec_ptype2 rvar
 #' @export
 #' @export vec_ptype2.rvar

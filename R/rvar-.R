@@ -4,22 +4,28 @@
 #'
 #' @name rvar
 #'
-#' @param x A vector or array where the last dimension is draws from
-#' a distribution. The resulting [rvar] will have dimension `dim(x)[-length(dim(x))]`; that is,
-#' everything up to the last dimension is used for the shape of the variable, and the
-#' last dimension is used to index draws from the distribution.
+#' @param x A vector or array where the first dimension represents draws from
+#' a distribution. The resulting [rvar] will have dimension `dim(x)[-1]`; that is,
+#' everything except the first dimension is used for the shape of the variable, and the
+#' first dimension is used to index draws from the distribution.
 #' @template args-rvar-dim
 #'
-#' @details The `"rvar"` class represents random variables as arrays of arbitrary
-#' dimension, where the last dimension is used to index draws from the distribution.
-#
-#' `new_rvar()` is a low-level constructor; generally speaking you should use `rvar()`
-#' in most code. To convert other objects to `rvar`s or to easily create constants,
-#' use [as_rvar()].
+#' @details
+#'
+#' The `"rvar"` class internally represents random variables as arrays of arbitrary
+#' dimension, where the first dimension is used to index draws from the distribution.
 #
 #' Most mathmetical operators and functions are supported, including efficient matrix
 #' multiplication and vector and array-style indexing. The intent is that an `rvar`
-#' works as closely as possible to how a base vector/matrix/array does.
+#' works as closely as possible to how a base vector/matrix/array does, with a few
+#' differences:
+#'
+#' - The default behavior when subsetting is not to drop extra dimensions (i.e.
+#'   the default `drop` argument for `[` is `FALSE`, not `TRUE`).
+#' - Rather than base R-style recycling, `rvar`s use a limited form of broadcasting:
+#'   if an operation is being performed on two vectors with different size of the same
+#'   dimension, the smaller vector will be recycled up to the size of the larger one
+#'   along that dimension so long as it has size 1.
 #'
 #' For functions that expect base numeric arrays and for which `rvar`s cannot be
 #' used directly as arguments, you can use [rfun()] or [rdo()] to translate your
@@ -27,17 +33,23 @@
 #' and returns a random variable as output. Typically [rdo()] offers the most
 #' straightforward translation.
 #'
-#' For faster operation than is possible with [rfun()] or [rdo()] (if those functions
-#' are not sufficiently performant for your use case), you can also operate directly
+#' As [rfun()] and [rdo()] incur some performance cost, you can also operate directly
 #' on the underlying array using the [draws_of()] function.
 #'
 #' @seealso [as_rvar()] to convert objects to `rvar`s.
 #'
 #' @return An object of class `"rvar"` representing a random variable.
 #'
-NULL
+#' @export
+rvar <- function(x = double(), dim = NULL) {
+  x <- new_rvar(x)
 
-#' @rdname rvar
+  if (!is.null(dim)) {
+    dim(x) <- dim
+  }
+  x
+}
+
 #' @importFrom vctrs new_vctr
 new_rvar <- function(x = double()) {
   # TODO: decide on supported types and cast to them in here
@@ -66,27 +78,15 @@ new_rvar <- function(x = double()) {
   structure(list(), draws = x, class = c("rvar", "vctrs_vctr", "list"))
 }
 
-#' @rdname rvar
-#' @export
-rvar <- function(x = double(), dim = NULL) {
-  x <- new_rvar(x)
-
-  if (!is.null(dim)) {
-    dim(x) <- dim
-  }
-  x
-}
-
-
 #' Is `x` a random variables?
 #'
-#' Test if `x` is an [rvar].
+#' Test if `x` is an [rvar()].
 #'
 #' @param x An object
 #'
 #' @seealso [as_rvar()] to convert objects to `rvar`s.
 #'
-#' @return `TRUE` if `x` is an [rvar], `FALSE` otherwise.
+#' @return `TRUE` if `x` is an [rvar()], `FALSE` otherwise.
 #'
 #' @export
 is_rvar <- function(x) {
@@ -393,14 +393,14 @@ as.list.rvar <- function(x, ...) {
 
 #' Get/set array of draws underlying a random variable
 #'
-#' Gets/sets the array-representation that backs an [rvar]
+#' Gets/sets the array-representation that backs an [rvar()]. Should be used rarely.
 #'
-#' @param x An [rvar]
+#' @param x An [rvar()]
 #' @param value An array
 #'
 #' @details
 #'
-#' While [rvar]s implements fast versions of basic math operations (including
+#' While [rvar]s implement fast versions of basic math operations (including
 #' [matrix multiplication][rvar-matmult]), sometimes you may need to bypass
 #' the [rvar] abstraction to do what you need to do more efficiently.
 #' `draws_of()` allows you to get / set the underlying array of draws in
@@ -408,7 +408,7 @@ as.list.rvar <- function(x, ...) {
 #'
 #' [rvar]s represent draws internally using arrays of arbitrary dimension, which
 #' is returned by `draws_of(x)` and can be set using `draws_of(x) <- value`.
-#' The **last** dimension of these arrays is the index of the draws.
+#' The **first** dimension of these arrays is the index of the draws.
 #'
 #' @export
 draws_of <- function(x) {
@@ -465,34 +465,57 @@ vec_restore.rvar <- function(x, ...) {
 
 # distributional stuff ----------------------------------------------------
 
-#' @importFrom distributional cdf
-#' @export
-distributional::cdf
-
-#' @export
-cdf.rvar <- function(x, q, ...) {
-  if (length(x) != 1) {
-    stop("cdf() can currently only be used on single rvars")
-  }
-
-  ecdf(draws_of(x))(q)
-}
-
-#' @export
-quantile.rvar <- function(x, probs, ...) {
-  quantile(draws_of(x), probs, ...)
-}
-
+#' Density, CDF, and quantile functions of random variables
+#'
+#' The probability density function (`density()`), cumulative distribution
+#' function (`cdf()`), and quantile function / inverse CDF (`quantile()`) of
+#' an [rvar()].
+#'
+#' @param x an [rvar()]
+#' @param q,at vector of quantiles.
+#' @param probs vector of probabilities
+#' @param ... Additional arguments passed onto underlying methods:
+#'   - For `density()`, these are passed to [stats::density()].
+#'   - For `cdf()`, these are ignored.
+#'   - For `quantile()`, these are passed to [stats::quantile()].
+#'
+#' @return
+#'
+#' A vector of the same length as the input (`q`, `at`, or `probs`) containing
+#' values from the corresponding function of the given [rvar()].
+#'
+#' @name rvar-functions
 #' @export
 density.rvar <- function(x, at, ...) {
   if (length(x) != 1) {
-    stop("density() can currently only be used on single rvars")
+    stop("density() can currently only be used on scalar rvars")
   }
 
   d <- density(draws_of(x), cut = 0, ...)
   f <- approxfun(d$x, d$y, yleft = 0, yright = 0)
   f(at)
 }
+
+#' @importFrom distributional cdf
+#' @export
+distributional::cdf
+
+#' @rdname rvar-functions
+#' @export
+cdf.rvar <- function(x, q, ...) {
+  if (length(x) != 1) {
+    stop("cdf() can currently only be used on scalar rvars")
+  }
+
+  ecdf(draws_of(x))(q)
+}
+
+#' @rdname rvar-functions
+#' @export
+quantile.rvar <- function(x, probs, ...) {
+  quantile(draws_of(x), probs, ...)
+}
+
 
 # concatenation -----------------------------------------------------------
 

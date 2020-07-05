@@ -26,4 +26,7 @@ converted to a row vector and \code{y} to a column vector. Numerics and logicals
 by \link{rvar}s and are broadcasted across all draws of the \link{rvar} argument. Tensor multiplication
 is used to efficiently multiply matrices across draws, so if either \code{x} or \code{y} is an \link{rvar},
 \code{x \%**\% y} will be much faster than \code{rdo(x \%*\% y)}.
+
+Because \link{rvar} is an S3 class and S3 classes cannot properly override \code{\%*\%}, \link{rvar}s use
+\verb{\%**\%} for matrix multiplication.
 }

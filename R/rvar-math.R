@@ -1,3 +1,48 @@
+# Expectations and summaries of random variables --------------------------
+
+#' Expectations of random variables
+#'
+#' Compute expectations and probabilities of a random variable.
+#'
+#' @param x an [rvar()]
+#' @param na.rm Should `NA` values in the random variable be removed before
+#' computing expectations?
+#'
+#' Both `E()` and `Pr()` take means over the draws dimension of the provided
+#' random variable. `Pr()` additionally checks that the provided [rvar]
+#' is a logical variable (hence, taking its expectation results in a probability).
+#'
+#' @return
+#' A numeric vector with the same dimensions as the given random variable, where
+#' each entry in the vector is the mean of the corresponding entry in `x`.
+#'
+#' @examples
+#'
+#' x = rvar(rnorm(4000, mean = 1, sd = 2))
+#'
+#' E(x) # should be ~= 1
+#'
+#' Pr(x < 0.5)
+#' # is equivalent to this:
+#' cdf(x, 0.5)
+#' # and should be about the same as this:
+#' pnorm(0.5, mean = 1, sd = 2)
+#'
+#' @export
+E <- function(x, na.rm = FALSE) {
+  summarise_rvar_by_element(x, mean, na.rm = na.rm)
+}
+
+#' @rdname E
+#' @export
+Pr <- function(x, na.rm = FALSE) {
+  if (!all(is.logical(draws_of(x)))) {
+    stop2("Can only use `Pr(...)` on logical random variables.")
+  }
+  summarise_rvar_by_element(x, mean, na.rm = na.rm)
+}
+
+
 # Summary operations ---------------------------------------------------------
 
 #' @export
@@ -15,6 +60,7 @@ Summary.rvar <- function(..., na.rm = FALSE) {
   new_rvar(apply(all_draws, 2, f))
 }
 
+# TODO: should these return rvars or do the mean/median of the dist?
 #' @export
 mean.rvar <- function(x, ...) summarise_rvar_within_draws(x, mean, ...)
 #' @export
@@ -30,20 +76,6 @@ is.infinite.rvar <- function(x, ...) rvar_apply_vec_fun(is.infinite, x, ...)
 is.nan.rvar <- function(x, ...) rvar_apply_vec_fun(is.nan, x, ...)
 #' @export
 is.na.rvar <- function(x, ...) summarise_rvar_by_element(x, function(x) any(is.na(x)))
-
-
-# Expectations and summaries of random variables --------------------------
-
-E <- function(x, na.rm = FALSE) {
-  summarise_rvar_by_element(x, mean, na.rm = na.rm)
-}
-
-Pr <- function(x, na.rm = FALSE) {
-  if (!all(is.logical(draws_of(x)))) {
-    stop2("Can only use `Pr(...)` on logical random variables.")
-  }
-  summarise_rvar_by_element(x, mean, na.rm = na.rm)
-}
 
 
 # Ops: math operators ---------------------------------------------------
@@ -97,6 +129,9 @@ Math.rvar <- function(x, ...) {
 #' by [rvar]s and are broadcasted across all draws of the [rvar] argument. Tensor multiplication
 #' is used to efficiently multiply matrices across draws, so if either `x` or `y` is an [rvar],
 #' `x %**% y` will be much faster than `rdo(x %*% y)`.
+#'
+#' Because [rvar] is an S3 class and S3 classes cannot properly override `%*%`, [rvar]s use
+#' `%**%` for matrix multiplication.
 #'
 #' @return An [rvar] representing the matrix product of `x` and `y`.
 #'
