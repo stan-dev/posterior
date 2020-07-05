@@ -339,6 +339,16 @@ ndraws.draws_list <- function(x) {
   niterations(x) * nchains(x)
 }
 
+#' @export
+ndraws.rvar <- function(x) {
+  dim(draws_of(x))[1]
+}
+
+#' @export
+ndraws.draws_rvars <- function(x) {
+  ndraws(x[[1]])
+}
+
 # check validity of existing variable names: e.g., that
 # all `variables` exist in `x` and that no `variables`are reserved words
 # @param regex should 'variables' be treated as regular expressions?

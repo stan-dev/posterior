@@ -585,14 +585,6 @@ combine_rvar <- function(.f, args, .axis = 2) {
 }
 
 
-# chain / iteration / draw info -------------------------------------------
-
-#' @export
-ndraws.rvar <- function(x) {
-  dim(draws_of(x))[1]
-}
-
-
 # helpers -----------------------------------------------------------------
 
 # convert into a list of draws for applying a function draw-wise
@@ -801,4 +793,25 @@ summarise_rvar_by_element <- function(x, .f, ...) {
   draws <- draws_of(x)
   dim <- dim(draws)
   apply(draws, seq_along(dim)[-1], .f, ...)
+}
+
+# flatten dimensions and names of an array
+flatten_array = function(x) {
+  if(length(dim(x)) < 2) return(x)
+
+  # determine new dimension names in the form x,y,z
+  # start with numeric names
+  dimname_lists = lapply(dim(x), seq_len)
+  .dimnames = dimnames(x)
+  if (!is.null(.dimnames)) {
+    # where character names are provided, use those instead of the numeric names
+    dimname_lists = lapply(seq_along(dimname_lists), function(i) .dimnames[[i]] %||% dimname_lists[[i]])
+  }
+  # expand out the dimname lists into the appropriate combinations and assemble into new names
+  dimname_grid <- expand.grid(dimname_lists)
+  new_names <- apply(dimname_grid, 1, paste0, collapse = ",")
+
+  dim(x) <- prod(dim(x))
+  names(x) <- new_names
+  x
 }

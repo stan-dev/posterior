@@ -117,6 +117,12 @@ as_draws_df.draws_list <- function(x, ...) {
 
 #' @rdname draws_df
 #' @export
+as_draws_df.draws_rvars <- function(x, ...) {
+  stop("TODO: IMPLEMENT")
+}
+
+#' @rdname draws_df
+#' @export
 as_draws_df.mcmc <- function(x, ...) {
   as_draws_df(as_draws_matrix(x), ...)
 }

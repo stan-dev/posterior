@@ -81,6 +81,13 @@ as_draws_array.draws_list <- function(x, ...) {
 
 #' @rdname draws_array
 #' @export
+as_draws_array.draws_rvars <- function(x, ...) {
+  # TODO: should probably carry over chain info if draws_rvars keeps it
+  as_draws_array(as_draws_matrix(x), ...)
+}
+
+#' @rdname draws_array
+#' @export
 as_draws_array.mcmc <- function(x, ...) {
   as_draws_array(as_draws_matrix(x), ...)
 }

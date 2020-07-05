@@ -59,6 +59,8 @@ closest_draws_format <- function(x) {
     out <- "array"
   } else if (is_draws_df_like(x)) {
     out <- "df"
+  } else if (is_draws_rvars_like(x)) {
+    out <- "rvars"
   } else if (is_draws_list_like(x)) {
     out <- "list"
   }
