@@ -91,13 +91,7 @@ rvar_type_abbr <- function(x, dim1 = TRUE) {
 
 # formats a draws array for display as individual "variables" (i.e. maintaining
 # its dimensions except for the dimension representing draws)
-format_rvar_draws <- function(draws, ...) UseMethod("format_rvar_draws")
-
-format_rvar_draws.default <- function(draws, ...) {
-  stop("IMPLEMENT ME")
-}
-
-format_rvar_draws.numeric <- function(draws, ..., color = FALSE) {
+format_rvar_draws <- function(draws, ..., color = FALSE) {
   if (prod(dim(draws)) == 0) {
     # NULL: no draws
     return(NULL)
@@ -113,8 +107,6 @@ format_rvar_draws.numeric <- function(draws, ..., color = FALSE) {
   dimnames(out) <- dimnames(draws)[summary_dimensions]
   out
 }
-
-format_rvar_draws.logical <- format_rvar_draws.numeric
 
 format_mean <- function(x, color = FALSE) {
   format(x, justify = "right", digits = 2, scientific = 2)

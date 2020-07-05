@@ -117,7 +117,7 @@ Math.rvar <- function(x, ...) {
 
   ndim_y <- length(dim(y))
   if (ndim_y == 1) {
-    dim(y) <- c(diml(y), 1)
+    dim(y) <- c(dim(y), 1)
   } else if (ndim_y != 2) {
     stop("Second argument (`y`) is not a vector or matrix, cannot matrix-multiply")
   }

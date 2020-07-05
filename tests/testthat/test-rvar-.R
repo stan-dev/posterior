@@ -169,7 +169,28 @@ test_that("indexing with [ works on a matrix", {
 })
 
 test_that("assignment with [ works on a matrix", {
-  # TODO
+  x_array = array(
+    1:24, dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x = new_rvar(x_array)
+
+  expect_identical(
+    {x2 <- x; x2[2,1] <- 1; x2},
+    new_rvar({xr <- x_array; xr[,2,1] <- 1; xr})
+  )
+  expect_identical(
+    {x2 <- x; x2[2,] <- 1; x2},
+    new_rvar({xr <- x_array; xr[,2,] <- 1; xr})
+  )
+  expect_identical(
+    {x2 <- x; x2[,2] <- new_rvar(c(1,2)); x2},
+    new_rvar({xr <- x_array; xr[,,2] <- c(1,2); xr})
+  )
+  expect_identical(
+    {x2 <- x; x2["a2","b3"] <- new_rvar(c(1,2)); x2},
+    new_rvar({xr <- x_array; xr[,2,3] <- c(1,2); xr})
+  )
 })
 
 # unique, duplicated, etc -------------------------------------------------
@@ -242,19 +263,43 @@ test_that("broadcast_array works", {
 # rep ---------------------------------------------------------------------
 
 test_that("rep works", {
-  # TODO
+  x_array = array(1:10, dim = c(5,2))
+  x = rvar(x_array)
+
+  expect_equal(rep(x, times = 3), new_rvar(cbind(x_array, x_array, x_array)))
+  each_twice = cbind(x_array[,1], x_array[,1], x_array[,2], x_array[,2])
+  expect_equal(rep(x, each = 2), new_rvar(each_twice))
+  expect_equal(rep(x, each = 2, times = 3), new_rvar(cbind(each_twice, each_twice, each_twice)))
+  expect_equal(rep(x, length.out = 3), new_rvar(cbind(x_array, x_array[,1])))
 })
 
 # all.equal ---------------------------------------------------------------------
 
 test_that("all.equal works", {
-  # TODO
+  x_array = array(1:10, dim = c(5,2))
+  x = rvar(x_array)
+
+  expect_true(all.equal(x, x))
+  expect_true(!isTRUE(all.equal(x, x + 1)))
 })
 
 # as.list ---------------------------------------------------------------------
 
 test_that("as.list works", {
-  # TODO
+  x_array = array(
+    1:24, dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x = new_rvar(x_array)
+
+  expect_equal(as.list(x),
+    list(
+      a1 = new_rvar(x_array[,1,]),
+      a2 = new_rvar(x_array[,2,]),
+      a3 = new_rvar(x_array[,3,]),
+      a4 = new_rvar(x_array[,4,])
+    )
+  )
 })
 
 

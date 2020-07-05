@@ -160,10 +160,9 @@ levels.rvar <- function(x) {
 }
 
 #' @export
-rep.rvar <- function(x, ..., times = 1, length.out = NA, each = 1) {
+rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
   if (each != 1) {
-    # TODO: implement
-    stop2("rep(each = ) is not yet implemented for `rvar`s.")
+    x = vec_restore(rep(vec_proxy(x), each = each), x)
   }
 
   draws = draws_of(x)
@@ -573,21 +572,9 @@ ndraws.rvar <- function(x) {
 
 # helpers -----------------------------------------------------------------
 
-# dim or length: never returns NULL except in cases where rvar is NULL
-# (unlike dim which will return NULL on single-dimensional vector)
-diml <- function(x) {
-  # TODO: remove (deprecated: dim always returns values)
-  .dim <- dim(draws_of(x))
-  ndim <- length(.dim)
-  .dim[-1]
-}
-
-
 # convert into a list of draws for applying a function draw-wise
 list_of_draws <- function(x) {
-  .draws <- draws_of(x)
-
-  lapply(apply(.draws, length(dim(.draws)), list), `[[`, 1)
+  lapply(apply(draws_of(x), 1, list), `[[`, 1)
 }
 
 
