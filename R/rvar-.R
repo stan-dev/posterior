@@ -63,11 +63,6 @@ new_rvar <- function(x = double()) {
     dimnames(x) <- list(NULL)
   }
 
-  # setting the S4 flag on the object allows us to dispatch matrix
-  # multiplication correctly --- %*% does its own dispatching where
-  # it will not dispatch to S3 objects even if they have an S4 class
-  # defined through setOldClass, they *must* also have isS4() return
-  # TRUE, hence the need to set that flag here.
   structure(list(), draws = x, class = c("rvar", "vctrs_vctr", "list"))
 }
 
@@ -82,8 +77,6 @@ rvar <- function(x = double(), dim = NULL) {
   x
 }
 
-#' @importFrom methods setOldClass
-setOldClass(c("rvar"))
 
 #' Is `x` a random variables?
 #'
@@ -223,8 +216,8 @@ anyDuplicated.rvar <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
 # check that MARGIN is a valid margin for the dimensions of rvar x
 # then return the corresponding margin for draws_of(x)
 check_rvar_margin <- function(x, MARGIN) {
-  if (!(1 <= MARGIN && MARGIN <= length(diml(x)))) {
-    stop2("MARGIN = ", MARGIN, " is invalid for dim = ", paste0(diml(x), collapse = ","))
+  if (!(1 <= MARGIN && MARGIN <= length(dim(x)))) {
+    stop2("MARGIN = ", MARGIN, " is invalid for dim = ", paste0(dim(x), collapse = ","))
   }
   MARGIN + 1
 }
@@ -392,18 +385,7 @@ as.list.rvar <- function(x, ...) {
   #TODO: reinstate
 #  value <- check_rvar_dims_first(value, x[i, ...])
 
-  # TODO: this is a hack for assignment to empty vectors and needs to be fixed
-  x_draws = draws_of(x)
-  # if (diml(x) == 0) {
-  #   new_x_dim <- dim(draws_of(value))
-  #   new_x_dim[1] <- max(new_x_dim[1], max(i))
-  #   new_x_dim[length(new_x_dim)] <- 1
-  #   x_draws <- array(vec_ptype(x_draws), dim = new_x_dim)
-  # }
-
-  x_draws[,i,...] <- draws_of(value)
-
-  draws_of(x) <- x_draws
+  draws_of(x)[,i,...] <- draws_of(value)
   x
 }
 

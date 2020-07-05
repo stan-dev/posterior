@@ -91,7 +91,7 @@ test_that("matrix multiplication works", {
     x_array[,,3] %*% y_array[,,3],
     x_array[,,4] %*% y_array[,,4]
   ))
-  expect_identical(x %*% y, xy_ref)
+  expect_identical(x %**% y, xy_ref)
 
 
   x_array = array(1:6, dim = c(3,2))
@@ -103,14 +103,14 @@ test_that("matrix multiplication works", {
     x_array[,1] %*% y_array[,1],
     x_array[,2] %*% y_array[,2]
   ))
-  expect_identical(x %*% y, xy_ref)
+  expect_identical(x %**% y, xy_ref)
 
 
   x_array = array(1:24, dim = c(1,2,3,4))
   x = rvar_from_array(x_array)
 
-  expect_error(x %*% 1, "not a vector or matrix")
-  expect_error(1 %*% x, "not a vector or matrix")
+  expect_error(x %**% 1, "not a vector or matrix")
+  expect_error(1 %**% x, "not a vector or matrix")
 })
 
 

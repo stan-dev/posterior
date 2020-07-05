@@ -23,10 +23,6 @@ print.rvar <- function(x, ...) {
   invisible(x)
 }
 
-# TODO: drop S4 stuff
-#' @importFrom methods setMethod
-setMethod("show", "rvar", function(object) print.rvar(object))
-
 #' @rdname print.rvar
 #' @export
 format.rvar <- function(x, ..., color = FALSE) {

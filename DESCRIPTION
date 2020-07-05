@@ -21,7 +21,6 @@ Description: Provides useful tools for both users and developers of packages
 Depends: 
   R (>= 3.2.0)
 Imports:
-  methods,
   abind,
   checkmate,
   rlang,

@@ -4,7 +4,7 @@
 Summary.rvar <- function(..., na.rm = FALSE) {
   args <- lapply(list(...), function(arg) {
     arg <- as_rvar(arg)
-    dim(arg) <- prod(diml(arg))
+    dim(arg) <- prod(dim(arg))
     arg
   })
 
@@ -82,10 +82,10 @@ Math.rvar <- function(x, ...) {
 
 #' Matrix multiplication of random variables
 #'
-#' Efficient matrix multiplication of random variables.
+#' Matrix multiplication of random variables.
 #'
 #' @name rvar-matmult
-#' @aliases %*%
+#' @aliases %**%
 #' @param x An [rvar], [numeric], or [logical]. Must be 1 or 2-dimensional. If it is a vector,
 #' it is treated as a row vector.
 #' @param y An [rvar], [numeric], or [logical]. Must be 1 or 2-dimensional. If it is a vector,
@@ -96,30 +96,29 @@ Math.rvar <- function(x, ...) {
 #' converted to a row vector and `y` to a column vector. Numerics and logicals can be multiplied
 #' by [rvar]s and are broadcasted across all draws of the [rvar] argument. Tensor multiplication
 #' is used to efficiently multiply matrices across draws, so if either `x` or `y` is an [rvar],
-#' `x %*% y` will be much faster than `rdo(x %*% y)`.
+#' `x %**% y` will be much faster than `rdo(x %*% y)`.
 #'
 #' @return An [rvar] representing the matrix product of `x` and `y`.
 #'
 #' @importFrom tensorA mul.tensor as.tensor
-#' @method %*% rvar
 #' @export
-`%*%.rvar` <- function(x, y) {
+`%**%` <- function(x, y) {
   # TODO: get someone else to double-check this
   # Fast version of rdo(x %*% y)
 
   # ensure everything is a matrix by adding dimensions as necessary to make `x`
   # a row vector and `y` a column vector
-  ndiml_x <- length(diml(x))
-  if (ndiml_x == 1) {
-    dim(x) <- c(1, diml(x))
-  } else if (ndiml_x != 2) {
+  ndim_x <- length(dim(x))
+  if (ndim_x == 1) {
+    dim(x) <- c(1, dim(x))
+  } else if (ndim_x != 2) {
     stop("First argument (`x`) is not a vector or matrix, cannot matrix-multiply")
   }
 
-  ndiml_y <- length(diml(y))
-  if (ndiml_y == 1) {
+  ndim_y <- length(dim(y))
+  if (ndim_y == 1) {
     dim(y) <- c(diml(y), 1)
-  } else if (ndiml_y != 2) {
+  } else if (ndim_y != 2) {
     stop("Second argument (`y`) is not a vector or matrix, cannot matrix-multiply")
   }
 
@@ -144,17 +143,6 @@ Math.rvar <- function(x, ...) {
 
   new_rvar(unclass(result))
 }
-
-#' @rdname rvar-matmult
-#' @export
-setMethod("%*%", c(x = "rvar", y = "rvar"), `%*%.rvar`)
-#' @rdname rvar-matmult
-#' @export
-setMethod("%*%", c(x = "rvar"), `%*%.rvar`)
-#' @rdname rvar-matmult
-#' @export
-setMethod("%*%", c(y = "rvar"), `%*%.rvar`)
-
 
 
 # transpose and permutation -----------------------------------------------
