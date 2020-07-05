@@ -96,8 +96,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
     out
   })
   names(rvars_list) <- var_names
-  #as_draws_rvars(rvars_list)
-  rvars_list
+  as_draws_rvars(rvars_list)
 }
 
 #' @rdname draws_rvars
