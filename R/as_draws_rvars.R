@@ -40,7 +40,64 @@ as_draws_rvars.list <- function(x, ...) {
 #' @rdname draws_rvars
 #' @export
 as_draws_rvars.draws_matrix <- function(x, ...) {
-  stop("TODO: IMPLEMENT")
+  # split x[y,z] names into base name and indices
+  vars_indices <- strsplit(variables(x), "(\\[|\\])")
+  vars <- sapply(vars_indices, `[[`, 1)
+
+  # pull out each var into its own rvar
+  var_names <- unique(vars)
+  rvars_list <- lapply(var_names, function (var) {
+    var_i <- vars == var
+    var_matrix <- x[, var_i, drop = FALSE]
+
+    if (ncol(var_matrix) == 1) {
+      # single variable, no indices
+      out <- rvar(var_matrix)
+      dimnames(out) <- NULL
+    } else {
+      # variable with indices => we need to reshape the array
+      # basically, we're going to do a bunch of work up front to figure out
+      # a single array slice that does most of the work for us.
+
+      # first, pull out the list of indices into a data frame
+      # where each column is an index variable
+      indices <- sapply(vars_indices[var_i], `[[`, 2)
+      indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")))
+      # for numeric indices, we need to convert them to numerics
+      # so that we can sort them in numerical order (not string order)
+      for (i in seq_along(indices)) {
+        numeric_index <- suppressWarnings(as.numeric(indices[[i]]))
+        if (!anyNA(numeric_index)) indices[[i]] = numeric_index
+      }
+
+      # sort indices and fill in missing indices as NA to ensure
+      # (1) even if the order of the variables is something weird (like the
+      # column for x[2,2] comes before x[1,1] in the matrix) the result
+      # places those columns in the correct cells of the array
+      # (2) if some combination of indices is missing (say x[2,1] isn't
+      # in the input) that cell in the array gets an NA
+      unique_indices <- lapply(indices, function(x) sort(unique(x)))
+      # reverse indices here because merge() will do a sort automatically
+      # and we need it to sort in reverse order of the indices (because
+      # the value of the last index should move slowest)
+      all_indices <- expand.grid(rev(unique_indices))
+      # merge with all.x = TRUE (left join) to fill in missing cells with NA
+      indices <- merge(all_indices, cbind(indices, index = seq_len(nrow(indices))), all.x = TRUE)
+
+      # re-sort the array and fill in missing cells with NA
+      var_matrix <- var_matrix[, indices$index, drop = FALSE]
+
+      #convert to rvar and adjust dimensions
+      out <- rvar(var_matrix)
+      .dimnames <- unname(unique_indices)
+      dim(out) <- c(lengths(.dimnames))
+      dimnames(out) <- .dimnames
+    }
+    out
+  })
+  names(rvars_list) <- var_names
+  #as_draws_rvars(rvars_list)
+  rvars_list
 }
 
 #' @rdname draws_rvars
