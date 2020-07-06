@@ -63,11 +63,23 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
       # where each column is an index variable
       indices <- sapply(vars_indices[var_i], `[[`, 2)
       indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")))
-      # for numeric indices, we need to convert them to numerics
-      # so that we can sort them in numerical order (not string order)
+      unique_indices <- vector("list", length(indices))
+      names(unique_indices) <- names(indices)
       for (i in seq_along(indices)) {
         numeric_index <- suppressWarnings(as.numeric(indices[[i]]))
-        if (!anyNA(numeric_index)) indices[[i]] = numeric_index
+        if (!anyNA(numeric_index)) {
+          # for numeric indices, we need to convert them to numerics
+          # so that we can sort them in numerical order (not string order)
+          indices[[i]] <- numeric_index
+          unique_indices[[i]] <- sort(unique(numeric_index))
+        } else {
+          # we convert non-numeric indices to factors so that we can force them
+          # to be ordered as they appear in the data (rather than in alphabetical order)
+          factor_levels <- unique(indices[[i]])
+          indices[[i]] <- factor(indices[[i]], levels = factor_levels)
+          # these aren't sorted so they appear in original order
+          unique_indices[[i]] <- factor(factor_levels, levels = factor_levels)
+        }
       }
 
       # sort indices and fill in missing indices as NA to ensure
@@ -76,13 +88,17 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
       # places those columns in the correct cells of the array
       # (2) if some combination of indices is missing (say x[2,1] isn't
       # in the input) that cell in the array gets an NA
-      unique_indices <- lapply(indices, function(x) sort(unique(x)))
-      # reverse indices here because merge() will do a sort automatically
-      # and we need it to sort in reverse order of the indices (because
+
+      # Use expand.grid to get all cells in output array. We reverse indices
+      # here because it helps use do the sort after the merge, where
+      # we need to sort in reverse order of the indices (because
       # the value of the last index should move slowest)
       all_indices <- expand.grid(rev(unique_indices))
       # merge with all.x = TRUE (left join) to fill in missing cells with NA
-      indices <- merge(all_indices, cbind(indices, index = seq_len(nrow(indices))), all.x = TRUE)
+      indices <- merge(all_indices, cbind(indices, index = seq_len(nrow(indices))), all.x = TRUE, sort = FALSE)
+      # need to do the sort manually after merge because when sort = TRUE, merge
+      # sorts factors as if they were strings, and we need factors to be sorted as factors
+      indices <- indices[do.call(order, indices[, -ncol(indices), drop = FALSE]),]
 
       # re-sort the array and fill in missing cells with NA
       var_matrix <- var_matrix[, indices$index, drop = FALSE]
@@ -96,7 +112,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
     out
   })
   names(rvars_list) <- var_names
-  as_draws_rvars(rvars_list)
+  as_draws_rvars(rvars_list, ...)
 }
 
 #' @rdname draws_rvars
