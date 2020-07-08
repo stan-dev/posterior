@@ -6,7 +6,7 @@
 #' supports [quasiquotation].
 #' @param ndraws When no [rvar]s are supplied in `expr`, this is the number
 #' of draws that will be used to construct new random variables. If `NULL`,
-#' getOption("rvar.ndraws") is used (default 4000).
+#' getOption("rvar_ndraws") is used (default 4000).
 #' @template args-rvar-dim
 #'
 #' @details This function evaluates `expr` possibly multiple times, once for each draw of
@@ -34,7 +34,7 @@
 #' @importFrom rlang eval_tidy quo_get_env enquo missing_arg quo_get_expr
 #' @export
 rdo <- function(expr, dim = NULL, ndraws = NULL) {
-  ndraws <- ndraws %||% getOption("rvar.ndraws", 4000)
+  ndraws <- ndraws %||% getOption("rvar_ndraws", 4000)
 
   # basic idea here is to find all the variables that are used in the expression
   # and which are also random variables in the expression's environment, then

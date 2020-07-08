@@ -16,7 +16,7 @@ If \code{NULL} (the default), all arguments to \code{.f} are turned into argumen
 
 \item{ndraws}{When no \link{rvar}s are supplied as arguments to the new function, this is the number
 of draws that will be used to construct new random variables. If \code{NULL},
-getOption("rvar.ndraws") is used (default 4000).}
+getOption("rvar_ndraws") is used (default 4000).}
 }
 \value{
 A function with the same argument specification as \code{.f}, but which can accept and return
