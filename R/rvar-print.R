@@ -2,36 +2,65 @@
 #'
 #' Printing and formatting methods for [rvar]s.
 #'
+#' @encoding UTF-8
 #' @param x,object An [rvar].
 #' @param color Whether or not to use color when formatting the output. If `TRUE`,
 #' the [pillar::style_num()] functions may be used to produce strings containing
-#' control sequences to produced colored output on the terminal.
-#' @param vec.len Numeric (>= 0) indicating how many ‘first few’ elements are
+#' control sequences to produce colored output on the terminal.
+#' @param vec.len Numeric (>= 0) indicating how many 'first few' elements are
 #' displayed of each vector. If `NULL`, defaults to `getOption("str")$vec.len`,
 #' which defaults to 4.
+#' @param summary What style of summary to display: `"mean_sd"` displays `mean±sd`,
+#' `"median_mad"` displays `median±mad`. If `NULL`, `getOption("rvar_summary")` is
+#' used (default `"mean_sd`).
 #' @param ... Further arguments passed to other functions.
 #'
-#' @details The `"rvar"` class represents random variables of arbitrary objects.
+#' @details
+#' `print()` and `str()` print out [rvar()] objects by summarizing each element
+#' in the random variable with either its mean±sd or median±mad, depending on
+#' the value of `summary`. Both functions use the `format()` implementation for
+#' [rvar()] objects under the hood, which returns a character vector in the
+#' mean±sd or median±mad form.
 #'
-#' @return An object of class `"rvar"` representing a random variable.
+#' @return
+#' An invisible character vector (for `print()` and `str()`). For `format()`, a
+#' character vector of the same dimensions as `x` where each entry is of the
+#' form mean±sd or median±mad, depending on the value of `summary`.
+#'
+#' @examples
+#'
+#' set.seed(5678)
+#' x = rbind(
+#'   cbind(rvar(rnorm(1000, 1)), rvar(rnorm(1000, 2))),
+#'   cbind(rvar(rnorm(1000, 3)), rvar(rnorm(1000, 4)))
+#' )
+#'
+#' print(x)
+#' print(x, summary = "median_mad")
+#'
+#' str(x)
+#'
+#' format(x)
 #'
 #' @export
-print.rvar <- function(x, ...) {
+print.rvar <- function(x, ..., summary = NULL) {
   # \u00b1 = plus/minus sign
-  cat0(rvar_type_abbr(x), " ", pillar::style_subtle("mean\u00b1sd:"), "\n")
-  print(format(x, color = FALSE), quote = FALSE)
+  summary_functions <- get_summary_functions(summary)
+  summary_string <- paste(summary_functions, collapse = "\u00b1")
+  cat0(rvar_type_abbr(x), " ", pillar::style_subtle(paste0(summary_string, ":")), "\n")
+  print(format(x, summary = summary, color = FALSE), quote = FALSE)
   invisible(x)
 }
 
 #' @rdname print.rvar
 #' @export
-format.rvar <- function(x, ..., color = FALSE) {
-  format_rvar_draws(draws_of(x), ..., color = color)
+format.rvar <- function(x, ..., summary = NULL, color = FALSE) {
+  format_rvar_draws(draws_of(x), ..., summary = summary, color = color)
 }
 
 #' @rdname print.rvar
 #' @export
-str.rvar <- function(object, ..., vec.len = NULL) {
+str.rvar <- function(object, ..., summary = NULL, vec.len = NULL) {
   .draws <- draws_of(object)
   vec.len <- vec.len %||% getOption("str")$vec.len %||% 4
 
@@ -46,19 +75,11 @@ str.rvar <- function(object, ..., vec.len = NULL) {
     ellipsis <- ""
   }
 
-  cat0(" ", rvar_type_abbr(object), " " , paste(format_rvar_draws(.draws), collapse = " "), ellipsis, "\n")
+  cat0(" ", rvar_type_abbr(object), " " ,
+    paste(format_rvar_draws(.draws, summary = summary), collapse = " "),
+    ellipsis, "\n"
+  )
   invisible(object)
-}
-
-
-# pillar methods (for printing in tibbles) --------------------------------
-
-#' @importFrom pillar pillar_shaft
-#' @rdname print.rvar
-#' @export
-pillar_shaft.rvar <- function(x, ...) {
-  out <- format(x, color = TRUE)
-  pillar::new_pillar_shaft_simple(out, align = "right")
 }
 
 
@@ -91,16 +112,18 @@ rvar_type_abbr <- function(x, dim1 = TRUE) {
 
 # formats a draws array for display as individual "variables" (i.e. maintaining
 # its dimensions except for the dimension representing draws)
-format_rvar_draws <- function(draws, ..., color = FALSE) {
+format_rvar_draws <- function(draws, ..., summary = NULL, color = FALSE) {
   if (prod(dim(draws)) == 0) {
     # NULL: no draws
     return(NULL)
   }
+  summary_functions = get_summary_functions(summary)
 
   summary_dimensions <- seq_len(length(dim(draws)) - 1) + 1
 
-  .mean <- apply(draws, summary_dimensions, mean)
-  .sd <- apply(draws, summary_dimensions, sd)
+  # these will be mean/sd or median/mad depending on `summary`
+  .mean <- apply(draws, summary_dimensions, summary_functions[[1]])
+  .sd <- apply(draws, summary_dimensions, summary_functions[[2]])
   out <- format_mean_sd(.mean, .sd, color = color)
 
   dim(out) <- dim(draws)[summary_dimensions]
@@ -126,3 +149,14 @@ format_mean_sd <- function(.mean, .sd, color = FALSE) {
   format(paste0(format_mean(.mean, color = color), format_sd(.sd, color = color)), justify = "left")
 }
 
+# check that summary is a valid name of the type of summary to do and
+# return a vector of two elements, where the first is mean or median and the
+# second is sd or mad
+get_summary_functions <- function(summary = NULL) {
+  if (is.null(summary)) summary <- getOption("rvar_summary", "mean_sd")
+  switch(summary,
+    mean_sd = c("mean", "sd"),
+    median_mad = c("median", "mad"),
+    stop2('`summary` must be one of "mean_sd" or "median_mad"')
+  )
+}

@@ -9,7 +9,7 @@
 #' [rvar]s.
 #' @param ndraws When no [rvar]s are supplied as arguments to the new function, this is the number
 #' of draws that will be used to construct new random variables. If `NULL`,
-#' getOption("rvar_ndraws") is used (default 4000).
+#' `getOption("rvar_ndraws")` is used (default 4000).
 #'
 #' @details This function wraps an existing funtion (`.f`) such that it returns [rvar]s containing
 #' whatever type of data `.f` would normally return.
