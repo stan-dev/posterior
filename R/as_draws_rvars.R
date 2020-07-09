@@ -64,14 +64,23 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
       indices <- sapply(vars_indices[var_i], `[[`, 2)
       indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")))
       unique_indices <- vector("list", length(indices))
+      .dimnames <- vector("list", length(indices))
       names(unique_indices) <- names(indices)
       for (i in seq_along(indices)) {
         numeric_index <- suppressWarnings(as.numeric(indices[[i]]))
-        if (!anyNA(numeric_index)) {
-          # for numeric indices, we need to convert them to numerics
+        if (!anyNA(numeric_index) && rlang::is_integerish(numeric_index)) {
+          # for integer indices, we need to convert them to integers
           # so that we can sort them in numerical order (not string order)
-          indices[[i]] <- numeric_index
-          unique_indices[[i]] <- sort(unique(numeric_index))
+          if (min(numeric_index) >= 1) {
+            # integer indices >= 1 are forced to lower bound of 1 + no dimnames
+            indices[[i]] <- as.integer(numeric_index)
+            unique_indices[[i]] <- seq.int(1, max(numeric_index))
+          } else {
+            # indices with values < 1 are sorted but otherwise left as-is, and will create dimnames
+            indices[[i]] <- numeric_index
+            unique_indices[[i]] <- sort(unique(numeric_index))
+            .dimnames[[i]] <- unique_indices[[i]]
+          }
         } else {
           # we convert non-numeric indices to factors so that we can force them
           # to be ordered as they appear in the data (rather than in alphabetical order)
@@ -79,6 +88,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
           indices[[i]] <- factor(indices[[i]], levels = factor_levels)
           # these aren't sorted so they appear in original order
           unique_indices[[i]] <- factor(factor_levels, levels = factor_levels)
+          .dimnames[[i]] <- unique_indices[[i]]
         }
       }
 
@@ -105,8 +115,8 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
       #convert to rvar and adjust dimensions
       out <- rvar(var_matrix)
-      .dimnames <- unname(unique_indices)
-      dim(out) <- c(lengths(.dimnames))
+      #.dimnames <- unname(unique_indices)
+      dim(out) <- c(lengths(unique_indices))
       dimnames(out) <- .dimnames
     }
     out
