@@ -90,7 +90,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
       # in the input) that cell in the array gets an NA
 
       # Use expand.grid to get all cells in output array. We reverse indices
-      # here because it helps use do the sort after the merge, where
+      # here because it helps us do the sort after the merge, where
       # we need to sort in reverse order of the indices (because
       # the value of the last index should move slowest)
       all_indices <- expand.grid(rev(unique_indices))
@@ -112,7 +112,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
     out
   })
   names(rvars_list) <- var_names
-  as_draws_rvars(rvars_list, ...)
+  .as_draws_rvars(rvars_list, ...)
 }
 
 #' @rdname draws_rvars
@@ -140,7 +140,7 @@ as_draws_rvars.mcmc.list <- function(x, ...) {
 }
 
 # try to convert any R object into a 'draws_rvars' object
-.as_draws_rvars <- function(x) {
+.as_draws_rvars <- function(x, ...) {
   x <- as.list(x)
   # convert all elements to rvars
   x <- lapply(x, as_rvar)

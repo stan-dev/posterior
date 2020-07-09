@@ -2,10 +2,16 @@
 % Please edit documentation in R/rvar-math.R
 \name{E}
 \alias{E}
+\alias{mean.rvar}
+\alias{median.rvar}
 \alias{Pr}
-\title{Expectations of random variables}
+\title{Summaries and expectations of random variables}
 \usage{
 E(x, na.rm = FALSE)
+
+\method{mean}{rvar}(x, ...)
+
+\method{median}{rvar}(x, ...)
 
 Pr(x, na.rm = FALSE)
 }
@@ -13,29 +19,38 @@ Pr(x, na.rm = FALSE)
 \item{x}{an \code{\link[=rvar]{rvar()}}}
 
 \item{na.rm}{Should \code{NA} values in the random variable be removed before
-computing expectations?
+computing summaries?
 
-Both \code{E()} and \code{Pr()} take means over the draws dimension of the provided
+Both \code{E()}, \code{mean()}, and \code{Pr()} take means over the draws dimension of the provided
 random variable. \code{Pr()} additionally checks that the provided \link{rvar}
-is a logical variable (hence, taking its expectation results in a probability).}
+is a logical variable (hence, taking its expectation results in a probability).
+\code{median()} takes medians.}
 }
 \value{
 A numeric vector with the same dimensions as the given random variable, where
-each entry in the vector is the mean of the corresponding entry in \code{x}.
+each entry in the vector is the mean or median of the corresponding entry in \code{x}.
 }
 \description{
-Compute expectations and probabilities of a random variable.
+Compute expectations (\code{E()} or \code{mean()}), probabilities (\code{Pr()}), and
+medians (\code{median()}) from a random variable.
 }
 \examples{
 
-x = rvar(rnorm(4000, mean = 1, sd = 2))
+set.seed(5678)
+x = rdo(rnorm(4, mean = 1:4, sd = 2))
 
-E(x) # should be ~= 1
+# These should all be ~= c(1, 2, 3, 4)
+E(x)
+mean(x)
+median(x)
 
-Pr(x < 0.5)
-# is equivalent to this:
-cdf(x, 0.5)
-# and should be about the same as this:
-pnorm(0.5, mean = 1, sd = 2)
+# This ...
+Pr(x < 1.5)
+# ... should be about the same as this:
+pnorm(1.5, mean = 1:4, sd = 2)
 
+}
+\seealso{
+\link{Summary.rvar} for summary functions within draws.
+\link{rvar-functions} for density, CDF, and quantile functions of random variables.
 }

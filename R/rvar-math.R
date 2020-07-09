@@ -1,36 +1,55 @@
 # Expectations and summaries of random variables --------------------------
 
-#' Expectations of random variables
+#' Summaries and expectations of random variables
 #'
-#' Compute expectations and probabilities of a random variable.
+#' Compute expectations (`E()` or `mean()`), probabilities (`Pr()`), and
+#' medians (`median()`) from a random variable.
 #'
 #' @param x an [rvar()]
 #' @param na.rm Should `NA` values in the random variable be removed before
-#' computing expectations?
+#' computing summaries?
 #'
-#' Both `E()` and `Pr()` take means over the draws dimension of the provided
+#' Both `E()`, `mean()`, and `Pr()` take means over the draws dimension of the provided
 #' random variable. `Pr()` additionally checks that the provided [rvar]
 #' is a logical variable (hence, taking its expectation results in a probability).
+#' `median()` takes medians.
 #'
 #' @return
 #' A numeric vector with the same dimensions as the given random variable, where
-#' each entry in the vector is the mean of the corresponding entry in `x`.
+#' each entry in the vector is the mean or median of the corresponding entry in `x`.
 #'
 #' @examples
 #'
-#' x = rvar(rnorm(4000, mean = 1, sd = 2))
+#' set.seed(5678)
+#' x = rdo(rnorm(4, mean = 1:4, sd = 2))
 #'
-#' E(x) # should be ~= 1
+#' # These should all be ~= c(1, 2, 3, 4)
+#' E(x)
+#' mean(x)
+#' median(x)
 #'
-#' Pr(x < 0.5)
-#' # is equivalent to this:
-#' cdf(x, 0.5)
-#' # and should be about the same as this:
-#' pnorm(0.5, mean = 1, sd = 2)
+#' # This ...
+#' Pr(x < 1.5)
+#' # ... should be about the same as this:
+#' pnorm(1.5, mean = 1:4, sd = 2)
 #'
+#' @seealso [Summary.rvar] for summary functions within draws.
+#' [rvar-functions] for density, CDF, and quantile functions of random variables.
 #' @export
 E <- function(x, na.rm = FALSE) {
   summarise_rvar_by_element(x, mean, na.rm = na.rm)
+}
+
+#' @rdname E
+#' @export
+mean.rvar <- function(x, ...) {
+  summarise_rvar_by_element(x, mean, ...)
+}
+
+#' @rdname E
+#' @export
+median.rvar <- function(x, ...) {
+  summarise_rvar_by_element(x, median, ...)
 }
 
 #' @rdname E
@@ -45,8 +64,57 @@ Pr <- function(x, na.rm = FALSE) {
 
 # Summary operations ---------------------------------------------------------
 
+#' Within-draw summaries of random variables
+#'
+#' Compute summaries of random variables within draws, producing a new random variable.
+#'
+#' @param x an [rvar()]
+#' @param na.rm Should `NA` values in the random variable be removed before
+#' computing summaries?
+#'
+#' @details
+#'
+#' These functions compute statistics within each draw of the random variable.
+#' For summaries over draws (such as expectations), see [E()].
+#'
+#' Besides `rvar_mean()` and `rvar_median()`, these standard generics are supported:
+#'
+#' - `all()`, `any()`
+#' - `sum()`, `prod()`
+#' - `min()`, `max()`
+#' - `range()`
+#'
+#' @return
+#' An [rvar()] of length 1 (or in the case of `range()`, length 2) with the same number
+#' of draws as the input rvar(s) containing the summary statistic computed within
+#' each draw of the input rvar(s).
+#'
+#' @examples
+#'
+#' set.seed(5678)
+#' x = rdo(rnorm(4, mean = 1:4, sd = 2))
+#'
+#' # These will give similar results to mean(1:4),
+#' # median(1:4), sum(1:4), prod(1:4), etc
+#' rvar_mean(x)
+#' rvar_median(x)
+#' sum(x)
+#' prod(x)
+#'
+#' @seealso [E()] for summary functions across draws (e.g. expectations).
+#' [rvar-functions] for density, CDF, and quantile functions of random variables.
 #' @export
 Summary.rvar <- function(..., na.rm = FALSE) {
+  f <- get(.Generic)
+  new_rvar(.Summary.rvar(f, ..., na.rm = na.rm))
+}
+
+#' @rdname Summary.rvar
+#' @export
+range.rvar <- function(..., na.rm = FALSE) {
+  new_rvar(t(.Summary.rvar(base::range, ..., na.rm = na.rm)))
+}
+.Summary.rvar <- function(f, ..., na.rm = FALSE) {
   args <- lapply(list(...), function(arg) {
     arg <- as_rvar(arg)
     dim(arg) <- prod(dim(arg))
@@ -56,17 +124,20 @@ Summary.rvar <- function(..., na.rm = FALSE) {
   # bind all args into a single matrix of draws to perform the summary over
   all_draws <- draws_of(do.call(c, args))
 
-  f <- get(.Generic)
-  new_rvar(apply(all_draws, 2, f))
+  apply(all_draws, 1, f, na.rm = na.rm)
 }
 
-# TODO: should these return rvars or do the mean/median of the dist?
+#' @rdname Summary.rvar
 #' @export
-mean.rvar <- function(x, ...) summarise_rvar_within_draws(x, mean, ...)
+rvar_mean <- function(x, ...) summarise_rvar_within_draws(x, mean, ...)
+
+#' @rdname Summary.rvar
 #' @export
-median.rvar <- function(x, ...) summarise_rvar_within_draws(x, median, ...)
+rvar_median <- function(x, ...) summarise_rvar_within_draws(x, median, ...)
+
+
 #' @export
-anyNA.rvar <- function(x, ...) summarise_rvar_within_draws(x, anyNA, ...)
+anyNA.rvar <- function(x, ...) anyNA(draws_of(x, ...))
 
 #' @export
 is.finite.rvar <- function(x, ...) rvar_apply_vec_fun(is.finite, x, ...)
@@ -75,7 +146,7 @@ is.infinite.rvar <- function(x, ...) rvar_apply_vec_fun(is.infinite, x, ...)
 #' @export
 is.nan.rvar <- function(x, ...) rvar_apply_vec_fun(is.nan, x, ...)
 #' @export
-is.na.rvar <- function(x, ...) summarise_rvar_by_element(x, function(x) any(is.na(x)))
+is.na.rvar <- function(x, ...) summarise_rvar_by_element(x, function(x) anyNA(x))
 
 
 # Ops: math operators ---------------------------------------------------

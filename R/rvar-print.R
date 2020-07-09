@@ -37,7 +37,7 @@ str.rvar <- function(object, ..., vec.len = NULL) {
 
   # flatten all the non-draws dimensions
   .dim <- dim(.draws)
-  dim(.draws) <- c(dim[1], prod(.dim[-1]))
+  dim(.draws) <- c(.dim[1], prod(.dim[-1]))
 
   if (dim(.draws)[[2]] > vec.len) {
     .draws <- .draws[, 1:vec.len]
