@@ -7,6 +7,7 @@
 \alias{as_draws_rvars.draws_rvars}
 \alias{as_draws_rvars.list}
 \alias{as_draws_rvars.draws_matrix}
+\alias{as_draws_rvars.draws_array}
 \alias{as_draws_rvars.draws_df}
 \alias{as_draws_rvars.draws_list}
 \alias{as_draws_rvars.mcmc}
@@ -23,6 +24,8 @@ as_draws_rvars(x, ...)
 \method{as_draws_rvars}{list}(x, ...)
 
 \method{as_draws_rvars}{draws_matrix}(x, ...)
+
+\method{as_draws_rvars}{draws_array}(x, ...)
 
 \method{as_draws_rvars}{draws_df}(x, ...)
 

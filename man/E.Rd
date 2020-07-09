@@ -19,7 +19,10 @@ Pr(x, na.rm = FALSE)
 \item{x}{an \code{\link{rvar}}}
 
 \item{na.rm}{Should \code{NA} values in the random variable be removed before
-computing summaries?
+computing summaries?}
+
+\item{...}{further arguments passed to underlying functions (e.g., \code{base::mean()}
+or \code{base::median()}).
 
 Both \code{E()}, \code{mean()}, and \code{Pr()} take means over the draws dimension of the provided
 random variable. \code{Pr()} additionally checks that the provided \code{\link{rvar}}

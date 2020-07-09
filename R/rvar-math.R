@@ -8,6 +8,8 @@
 #' @param x an [`rvar`]
 #' @param na.rm Should `NA` values in the random variable be removed before
 #' computing summaries?
+#' @param ... further arguments passed to underlying functions (e.g., `base::mean()`
+#' or `base::median()`).
 #'
 #' Both `E()`, `mean()`, and `Pr()` take means over the draws dimension of the provided
 #' random variable. `Pr()` additionally checks that the provided [`rvar`]
@@ -71,6 +73,8 @@ Pr <- function(x, na.rm = FALSE) {
 #' @param x an [`rvar`]
 #' @param na.rm Should `NA` values in the random variable be removed before
 #' computing summaries?
+#' @param ... further arguments passed to underlying functions (e.g., `base::mean()`
+#' or `base::median()`).
 #'
 #' @details
 #'

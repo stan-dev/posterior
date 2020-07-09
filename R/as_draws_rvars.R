@@ -117,6 +117,13 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
 #' @rdname draws_rvars
 #' @export
+as_draws_rvars.draws_array <- function(x, ...) {
+  # TODO: put chain info back in after converting
+  as_draws_rvars(as_draws_matrix(x), ...)
+}
+
+#' @rdname draws_rvars
+#' @export
 as_draws_rvars.draws_df <- function(x, ...) {
   stop("TODO: IMPLEMENT")
 }

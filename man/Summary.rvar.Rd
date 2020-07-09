@@ -16,6 +16,9 @@ rvar_mean(x, ...)
 rvar_median(x, ...)
 }
 \arguments{
+\item{...}{further arguments passed to underlying functions (e.g., \code{base::mean()}
+or \code{base::median()}).}
+
 \item{na.rm}{Should \code{NA} values in the random variable be removed before
 computing summaries?}
 
