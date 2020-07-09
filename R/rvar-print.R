@@ -4,16 +4,15 @@
 #'
 #' @encoding UTF-8
 #' @param x,object An [`rvar`].
+#' @template args-print-digits
+#' @template args-print-summary
+#' @template args-print-dots
 #' @param color Whether or not to use color when formatting the output. If `TRUE`,
 #' the [pillar::style_num()] functions may be used to produce strings containing
 #' control sequences to produce colored output on the terminal.
 #' @param vec.len Numeric (>= 0) indicating how many 'first few' elements are
 #' displayed of each vector. If `NULL`, defaults to `getOption("str")$vec.len`,
 #' which defaults to 4.
-#' @param summary What style of summary to display: `"mean_sd"` displays `mean±sd`,
-#' `"median_mad"` displays `median±mad`. If `NULL`, `getOption("rvar_summary")` is
-#' used (default `"mean_sd`).
-#' @param ... Further arguments passed to other functions.
 #'
 #' @details
 #' `print()` and `str()` print out [`rvar`] objects by summarizing each element
@@ -23,9 +22,11 @@
 #' mean±sd or median±mad form.
 #'
 #' @return
-#' An invisible character vector (for `print()` and `str()`). For `format()`, a
-#' character vector of the same dimensions as `x` where each entry is of the
-#' form mean±sd or median±mad, depending on the value of `summary`.
+#' For `print()` and `str()`, an invisible version of the input object.
+#'
+#' For `format()`, a character vector of the same dimensions as `x` where each
+#' entry is of the form `"mean±sd"` or `"median±mad"`, depending on the value
+#' of `summary`.
 #'
 #' @examples
 #'
@@ -43,19 +44,19 @@
 #' format(x)
 #'
 #' @export
-print.rvar <- function(x, ..., summary = NULL) {
+print.rvar <- function(x, ..., summary = NULL, digits = 2) {
   # \u00b1 = plus/minus sign
   summary_functions <- get_summary_functions(summary)
   summary_string <- paste(summary_functions, collapse = "\u00b1")
   cat0(rvar_type_abbr(x), " ", pillar::style_subtle(paste0(summary_string, ":")), "\n")
-  print(format(x, summary = summary, color = FALSE), quote = FALSE)
+  print(format(x, summary = summary, digits = digits, color = FALSE), quote = FALSE)
   invisible(x)
 }
 
 #' @rdname print.rvar
 #' @export
-format.rvar <- function(x, ..., summary = NULL, color = FALSE) {
-  format_rvar_draws(draws_of(x), ..., summary = summary, color = color)
+format.rvar <- function(x, ..., summary = NULL, digits = 2, color = FALSE) {
+  format_rvar_draws(draws_of(x), ..., summary = summary, digits = digits, color = color)
 }
 
 #' @rdname print.rvar
@@ -112,7 +113,7 @@ rvar_type_abbr <- function(x, dim1 = TRUE) {
 
 # formats a draws array for display as individual "variables" (i.e. maintaining
 # its dimensions except for the dimension representing draws)
-format_rvar_draws <- function(draws, ..., summary = NULL, color = FALSE) {
+format_rvar_draws <- function(draws, ..., summary = NULL, digits = 2, color = FALSE) {
   if (prod(dim(draws)) == 0) {
     # NULL: no draws
     return(NULL)
@@ -124,20 +125,20 @@ format_rvar_draws <- function(draws, ..., summary = NULL, color = FALSE) {
   # these will be mean/sd or median/mad depending on `summary`
   .mean <- apply(draws, summary_dimensions, summary_functions[[1]])
   .sd <- apply(draws, summary_dimensions, summary_functions[[2]])
-  out <- format_mean_sd(.mean, .sd, color = color)
+  out <- format_mean_sd(.mean, .sd, digits = digits, color = color)
 
   dim(out) <- dim(draws)[summary_dimensions]
   dimnames(out) <- dimnames(draws)[summary_dimensions]
   out
 }
 
-format_mean <- function(x, color = FALSE) {
-  format(x, justify = "right", digits = 2, scientific = 2)
+format_mean <- function(x, digits = 2, color = FALSE) {
+  format(x, justify = "right", digits = digits, scientific = 2)
 }
 
-format_sd <- function(x, color = FALSE) {
+format_sd <- function(x, digits = 2, color = FALSE) {
   # \u00b1 = plus/minus sign
-  sd_string <- paste0("\u00b1", format(x, justify = "left", trim = TRUE, digits = 2, scientific = 2))
+  sd_string <- paste0("\u00b1", format(x, justify = "left", trim = TRUE, digits = digits, scientific = 2))
   if (color) {
     pillar::style_subtle(sd_string)
   } else {
@@ -145,8 +146,11 @@ format_sd <- function(x, color = FALSE) {
   }
 }
 
-format_mean_sd <- function(.mean, .sd, color = FALSE) {
-  format(paste0(format_mean(.mean, color = color), format_sd(.sd, color = color)), justify = "left")
+format_mean_sd <- function(.mean, .sd, digits = 2, color = FALSE) {
+  format(paste0(
+    format_mean(.mean, digits = digits, color = color),
+    format_sd(.sd, digits = digits, color = color)),
+  justify = "left")
 }
 
 # check that summary is a valid name of the type of summary to do and

@@ -7,20 +7,22 @@
 \alias{str.rvar}
 \title{Print or format a random variable}
 \usage{
-\method{print}{rvar}(x, ..., summary = NULL)
+\method{print}{rvar}(x, ..., summary = NULL, digits = 2)
 
-\method{format}{rvar}(x, ..., summary = NULL, color = FALSE)
+\method{format}{rvar}(x, ..., summary = NULL, digits = 2, color = FALSE)
 
 \method{str}{rvar}(object, ..., summary = NULL, vec.len = NULL)
 }
 \arguments{
 \item{x, object}{An \code{\link{rvar}}.}
 
-\item{...}{Further arguments passed to other functions.}
+\item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}
 
 \item{summary}{What style of summary to display: \code{"mean_sd"} displays \verb{mean±sd},
 \code{"median_mad"} displays \verb{median±mad}. If \code{NULL}, \code{getOption("rvar_summary")} is
 used (default \verb{"mean_sd}).}
+
+\item{digits}{Minimum number of significant digits to print.}
 
 \item{color}{Whether or not to use color when formatting the output. If \code{TRUE},
 the \code{\link[pillar:style_subtle]{pillar::style_num()}} functions may be used to produce strings containing
@@ -31,9 +33,11 @@ displayed of each vector. If \code{NULL}, defaults to \code{getOption("str")$vec
 which defaults to 4.}
 }
 \value{
-An invisible character vector (for \code{print()} and \code{str()}). For \code{format()}, a
-character vector of the same dimensions as \code{x} where each entry is of the
-form mean±sd or median±mad, depending on the value of \code{summary}.
+For \code{print()} and \code{str()}, an invisible version of the input object.
+
+For \code{format()}, a character vector of the same dimensions as \code{x} where each
+entry is of the form \code{"mean±sd"} or \code{"median±mad"}, depending on the value
+of \code{summary}.
 }
 \description{
 Printing and formatting methods for \code{\link{rvar}}s.
