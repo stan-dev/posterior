@@ -584,13 +584,7 @@ combine_rvar <- function(.f, args, .axis = 2) {
 }
 
 
-# helpers -----------------------------------------------------------------
-
-# convert into a list of draws for applying a function draw-wise
-list_of_draws <- function(x) {
-  lapply(apply(draws_of(x), 1, list), `[[`, 1)
-}
-
+# helpers: validation -----------------------------------------------------------------
 
 # Check the passed yank index (for x[[...]]) is valid
 check_rvar_yank_index = function(x, i, ...) {
@@ -690,6 +684,13 @@ check_rvar_dims_first <- function(x, y) {
 }
 
 
+# helpers: arrays/lists -----------------------------------------------------------------
+
+# convert into a list of draws for applying a function draw-wise
+list_of_draws <- function(x) {
+  lapply(apply(draws_of(x), 1, list), `[[`, 1)
+}
+
 dim2_common <- function(dim_x, dim_y) {
   # find common dim for two arrays to be broadcast to
   ndim_x <- length(dim_x)
@@ -774,26 +775,6 @@ drop_ <- function(x) {
   x
 }
 
-# apply a summary function within each draw of the rvar (dropping other dimensions)
-summarise_rvar_within_draws <- function(x, .f, ...) {
-  draws <- draws_of(x)
-  dim <- dim(draws)
-  new_rvar(apply(draws, 1, .f, ...))
-}
-
-# apply vectorized function to an rvar's draws
-rvar_apply_vec_fun <- function(.f, x, ...) {
-  draws_of(x) <- .f(draws_of(x), ...)
-  x
-}
-
-# apply a summary function across draws of the rvar (i.e., by each element)
-summarise_rvar_by_element <- function(x, .f, ...) {
-  draws <- draws_of(x)
-  dim <- dim(draws)
-  apply(draws, seq_along(dim)[-1], .f, ...)
-}
-
 # flatten dimensions and names of an array
 flatten_array = function(x) {
   if(length(dim(x)) < 2) return(x)
@@ -813,4 +794,27 @@ flatten_array = function(x) {
   dim(x) <- prod(dim(x))
   names(x) <- new_names
   x
+}
+
+
+# helpers: applying functions over rvars ----------------------------------
+
+# apply a summary function within each draw of the rvar (dropping other dimensions)
+summarise_rvar_within_draws <- function(x, .f, ...) {
+  draws <- draws_of(x)
+  dim <- dim(draws)
+  new_rvar(apply(draws, 1, .f, ...))
+}
+
+# apply vectorized function to an rvar's draws
+rvar_apply_vec_fun <- function(.f, x, ...) {
+  draws_of(x) <- .f(draws_of(x), ...)
+  x
+}
+
+# apply a summary function across draws of the rvar (i.e., by each element)
+summarise_rvar_by_element <- function(x, .f, ...) {
+  draws <- draws_of(x)
+  dim <- dim(draws)
+  apply(draws, seq_along(dim)[-1], .f, ...)
 }
