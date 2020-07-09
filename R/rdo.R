@@ -2,27 +2,27 @@
 #'
 #' Execute an expression to create a random variable.
 #'
-#' @param expr A bare expression that can (optionally) contain [rvar]s. The expression
+#' @param expr A bare expression that can (optionally) contain [`rvar`]s. The expression
 #' supports [quasiquotation].
-#' @param ndraws When no [rvar]s are supplied in `expr`, this is the number
+#' @param ndraws When no [`rvar`]s are supplied in `expr`, this is the number
 #' of draws that will be used to construct new random variables. If `NULL`,
 #' getOption("rvar_ndraws") is used (default 4000).
 #' @template args-rvar-dim
 #'
 #' @details This function evaluates `expr` possibly multiple times, once for each draw of
-#' the [rvar]s it contains, then returns a new [rvar] representing the output of those
-#' expressions. To identify [rvar]s, `rdo()` searches the calling environment for any variables
-#' named in `expr` for which [is_rvar()] evaluates to `TRUE`. If `expr` contains no [rvar]s,
-#' then it will be executed `ndraws` times and an [rvar] with that many draws returned.
+#' the [`rvar`]s it contains, then returns a new [`rvar`] representing the output of those
+#' expressions. To identify [`rvar`]s, `rdo()` searches the calling environment for any variables
+#' named in `expr` for which [is_rvar()] evaluates to `TRUE`. If `expr` contains no [`rvar`]s,
+#' then it will be executed `ndraws` times and an [`rvar`] with that many draws returned.
 #'
 #' `rdo()` is not necessarily *fast* (in fact in some cases it may be very slow), but
-#' it has the advantage of allowing nearly arbitrary R code to be executed against [rvar]s
+#' it has the advantage of allowing nearly arbitrary R code to be executed against [`rvar`]s
 #' simply by wrapping it with `rdo( ... )`. This makes it especially useful as a prototyping
 #' tool. If you create code with `rdo()` and it is unacceptably slow for your application,
-#' consider rewriting it in terms of math operations directly on [rvar]s (which should be fast),
-#' or in terms of operations directly on the arrays that back the [rvar]s, using [draws_of()].
+#' consider rewriting it in terms of math operations directly on [`rvar`]s (which should be fast),
+#' or in terms of operations directly on the arrays that back the [`rvar`]s, using [draws_of()].
 #'
-#' @return An [rvar].
+#' @return An [`rvar`].
 #'
 #' @examples
 #'

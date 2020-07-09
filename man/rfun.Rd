@@ -10,22 +10,22 @@ rfun(.f, rvar_args = NULL, ndraws = NULL)
 \item{.f}{A function (or a one-sided formula representing a function that can be parsed by
 \code{\link[rlang:as_function]{rlang::as_function()}}) to turn into a function that accepts and/or produces random variables.}
 
-\item{rvar_args}{The arguments of \code{.f} that should be allowed to accept \link{rvar}s as arguments.
+\item{rvar_args}{The arguments of \code{.f} that should be allowed to accept \code{\link{rvar}}s as arguments.
 If \code{NULL} (the default), all arguments to \code{.f} are turned into arguments that accept
-\link{rvar}s.}
+\code{\link{rvar}}s.}
 
-\item{ndraws}{When no \link{rvar}s are supplied as arguments to the new function, this is the number
+\item{ndraws}{When no \code{\link{rvar}}s are supplied as arguments to the new function, this is the number
 of draws that will be used to construct new random variables. If \code{NULL},
 \code{getOption("rvar_ndraws")} is used (default 4000).}
 }
 \value{
 A function with the same argument specification as \code{.f}, but which can accept and return
-\link{rvar}s.
+\code{\link{rvar}}s.
 }
 \description{
 Function that create functions that can accept and/or produce random variables.
 }
 \details{
-This function wraps an existing funtion (\code{.f}) such that it returns \link{rvar}s containing
+This function wraps an existing funtion (\code{.f}) such that it returns \code{\link{rvar}}s containing
 whatever type of data \code{.f} would normally return.
 }

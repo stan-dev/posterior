@@ -8,14 +8,14 @@
 x \%**\% y
 }
 \arguments{
-\item{x}{An \link{rvar}, \link{numeric}, or \link{logical}. Must be 1 or 2-dimensional. If it is a vector,
+\item{x}{An \code{\link{rvar}}, \code{\link{numeric}}, or \code{\link{logical}}. Must be 1 or 2-dimensional. If it is a vector,
 it is treated as a row vector.}
 
-\item{y}{An \link{rvar}, \link{numeric}, or \link{logical}. Must be 1 or 2-dimensional. If it is a vector,
+\item{y}{An \code{\link{rvar}}, \code{\link{numeric}}, or \code{\link{logical}}. Must be 1 or 2-dimensional. If it is a vector,
 it is treated as a column vector.}
 }
 \value{
-An \link{rvar} representing the matrix product of \code{x} and \code{y}.
+An \code{\link{rvar}} representing the matrix product of \code{x} and \code{y}.
 }
 \description{
 Matrix multiplication of random variables.
@@ -23,10 +23,10 @@ Matrix multiplication of random variables.
 \details{
 If \code{x} or \code{y} are vectors, they are converted into matrices prior to multiplication, with \code{x}
 converted to a row vector and \code{y} to a column vector. Numerics and logicals can be multiplied
-by \link{rvar}s and are broadcasted across all draws of the \link{rvar} argument. Tensor multiplication
-is used to efficiently multiply matrices across draws, so if either \code{x} or \code{y} is an \link{rvar},
+by \code{\link{rvar}}s and are broadcasted across all draws of the \code{\link{rvar}} argument. Tensor multiplication
+is used to efficiently multiply matrices across draws, so if either \code{x} or \code{y} is an \code{\link{rvar}},
 \code{x \%**\% y} will be much faster than \code{rdo(x \%*\% y)}.
 
-Because \link{rvar} is an S3 class and S3 classes cannot properly override \code{\%*\%}, \link{rvar}s use
+Because \code{\link{rvar}} is an S3 class and S3 classes cannot properly override \code{\%*\%}, \code{\link{rvar}}s use
 \verb{\%**\%} for matrix multiplication.
 }

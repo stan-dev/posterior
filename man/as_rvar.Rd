@@ -7,27 +7,27 @@
 as_rvar(x, dim = NULL)
 }
 \arguments{
-\item{x}{An object that can be converted to an \link{rvar}, such as a vector or array
-(or an \link{rvar} itself).}
+\item{x}{An object that can be converted to an \code{\link{rvar}}, such as a vector or array
+(or an \code{\link{rvar}} itself).}
 
-\item{dim}{Override for the dimensions of the \link{rvar} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
+\item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
 or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
 }
 \value{
 An object of class \code{"rvar"} representing a random variable.
 }
 \description{
-Convert \code{x} to an \code{\link[=rvar]{rvar()}} object.
+Convert \code{x} to an \code{\link{rvar}} object.
 }
 \details{
-For objects that are already \link{rvar}s, returns them (with modified dimensions
+For objects that are already \code{\link{rvar}}s, returns them (with modified dimensions
 if \code{dim} is not \code{NULL}).
 
-For numeric or logical vectors or arrays, returns an \link{rvar} with a single draw and
+For numeric or logical vectors or arrays, returns an \code{\link{rvar}} with a single draw and
 the same dimensions as \code{x}. This is in contrast to the \code{\link[=rvar]{rvar()}} constructor, which
 treats the first dimension of \code{x} as the draws dimension. As a result, \code{as_rvar()}
 is useful for creating constants.
 }
 \seealso{
-\code{\link[=rvar]{rvar()}} to construct \link{rvar}s directly.
+\code{\link[=rvar]{rvar()}} to construct \code{\link{rvar}}s directly.
 }

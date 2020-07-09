@@ -5,7 +5,7 @@
 #' @name rvar
 #'
 #' @param x A vector or array where the first dimension represents draws from
-#' a distribution. The resulting [rvar] will have dimension `dim(x)[-1]`; that is,
+#' a distribution. The resulting [`rvar`] will have dimension `dim(x)[-1]`; that is,
 #' everything except the first dimension is used for the shape of the variable, and the
 #' first dimension is used to index draws from the distribution.
 #' @template args-rvar-dim
@@ -80,13 +80,13 @@ new_rvar <- function(x = double()) {
 
 #' Is `x` a random variables?
 #'
-#' Test if `x` is an [rvar()].
+#' Test if `x` is an [`rvar`].
 #'
 #' @param x An object
 #'
 #' @seealso [as_rvar()] to convert objects to `rvar`s.
 #'
-#' @return `TRUE` if `x` is an [rvar()], `FALSE` otherwise.
+#' @return `TRUE` if `x` is an [`rvar`], `FALSE` otherwise.
 #'
 #' @export
 is_rvar <- function(x) {
@@ -393,20 +393,20 @@ as.list.rvar <- function(x, ...) {
 
 #' Get/set array of draws underlying a random variable
 #'
-#' Gets/sets the array-representation that backs an [rvar()]. Should be used rarely.
+#' Gets/sets the array-representation that backs an [`rvar`]. Should be used rarely.
 #'
-#' @param x An [rvar()]
+#' @param x An [`rvar`]
 #' @param value An array
 #'
 #' @details
 #'
-#' While [rvar]s implement fast versions of basic math operations (including
+#' While [`rvar`]s implement fast versions of basic math operations (including
 #' [matrix multiplication][rvar-matmult]), sometimes you may need to bypass
-#' the [rvar] abstraction to do what you need to do more efficiently.
+#' the [`rvar`] abstraction to do what you need to do more efficiently.
 #' `draws_of()` allows you to get / set the underlying array of draws in
 #' order to do that.
 #'
-#' [rvar]s represent draws internally using arrays of arbitrary dimension, which
+#' [`rvar`]s represent draws internally using arrays of arbitrary dimension, which
 #' is returned by `draws_of(x)` and can be set using `draws_of(x) <- value`.
 #' The **first** dimension of these arrays is the index of the draws.
 #'
@@ -469,9 +469,9 @@ vec_restore.rvar <- function(x, ...) {
 #'
 #' The probability density function (`density()`), cumulative distribution
 #' function (`cdf()`), and quantile function / inverse CDF (`quantile()`) of
-#' an [rvar()].
+#' an [`rvar`].
 #'
-#' @param x an [rvar()]
+#' @param x an [`rvar`]
 #' @param q,at vector of quantiles.
 #' @param probs vector of probabilities
 #' @param ... Additional arguments passed onto underlying methods:
@@ -482,7 +482,7 @@ vec_restore.rvar <- function(x, ...) {
 #' @return
 #'
 #' A vector of the same length as the input (`q`, `at`, or `probs`) containing
-#' values from the corresponding function of the given [rvar()].
+#' values from the corresponding function of the given [`rvar`].
 #'
 #' @name rvar-functions
 #' @export
@@ -543,8 +543,7 @@ bind_rvar <- function(.f, args, .axis = 2) {
   }
 
   if (is.data.frame(args[[2]])) {
-    # TODO
-    stop2("not implemented")
+    stop2("TODO: IMPLEMENT")
   }
 
   args[[2]] <- as_rvar(args[[2]])

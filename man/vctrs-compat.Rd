@@ -59,7 +59,7 @@
 \item{to}{Type to cast to}
 }
 \description{
-These functions implement compatibility with \link{vctrs-package} for \link{rvar}s.
+These functions implement compatibility with \link{vctrs-package} for \code{\link{rvar}}s.
 }
 \details{
 See the corresponding functions in \link{vctrs-package} for more information.

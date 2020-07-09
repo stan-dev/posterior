@@ -10,21 +10,21 @@ draws_of(x)
 draws_of(x) <- value
 }
 \arguments{
-\item{x}{An \code{\link[=rvar]{rvar()}}}
+\item{x}{An \code{\link{rvar}}}
 
 \item{value}{An array}
 }
 \description{
-Gets/sets the array-representation that backs an \code{\link[=rvar]{rvar()}}. Should be used rarely.
+Gets/sets the array-representation that backs an \code{\link{rvar}}. Should be used rarely.
 }
 \details{
-While \link{rvar}s implement fast versions of basic math operations (including
+While \code{\link{rvar}}s implement fast versions of basic math operations (including
 \link[=rvar-matmult]{matrix multiplication}), sometimes you may need to bypass
-the \link{rvar} abstraction to do what you need to do more efficiently.
+the \code{\link{rvar}} abstraction to do what you need to do more efficiently.
 \code{draws_of()} allows you to get / set the underlying array of draws in
 order to do that.
 
-\link{rvar}s represent draws internally using arrays of arbitrary dimension, which
+\code{\link{rvar}}s represent draws internally using arrays of arbitrary dimension, which
 is returned by \code{draws_of(x)} and can be set using \code{draws_of(x) <- value}.
 The \strong{first} dimension of these arrays is the index of the draws.
 }

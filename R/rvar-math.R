@@ -5,12 +5,12 @@
 #' Compute expectations (`E()` or `mean()`), probabilities (`Pr()`), and
 #' medians (`median()`) from a random variable.
 #'
-#' @param x an [rvar()]
+#' @param x an [`rvar`]
 #' @param na.rm Should `NA` values in the random variable be removed before
 #' computing summaries?
 #'
 #' Both `E()`, `mean()`, and `Pr()` take means over the draws dimension of the provided
-#' random variable. `Pr()` additionally checks that the provided [rvar]
+#' random variable. `Pr()` additionally checks that the provided [`rvar`]
 #' is a logical variable (hence, taking its expectation results in a probability).
 #' `median()` takes medians.
 #'
@@ -68,7 +68,7 @@ Pr <- function(x, na.rm = FALSE) {
 #'
 #' Compute summaries of random variables within draws, producing a new random variable.
 #'
-#' @param x an [rvar()]
+#' @param x an [`rvar`]
 #' @param na.rm Should `NA` values in the random variable be removed before
 #' computing summaries?
 #'
@@ -85,7 +85,7 @@ Pr <- function(x, na.rm = FALSE) {
 #' - `range()`
 #'
 #' @return
-#' An [rvar()] of length 1 (or in the case of `range()`, length 2) with the same number
+#' An [`rvar`] of length 1 (or in the case of `range()`, length 2) with the same number
 #' of draws as the input rvar(s) containing the summary statistic computed within
 #' each draw of the input rvar(s).
 #'
@@ -189,22 +189,22 @@ Math.rvar <- function(x, ...) {
 #'
 #' @name rvar-matmult
 #' @aliases %**%
-#' @param x An [rvar], [numeric], or [logical]. Must be 1 or 2-dimensional. If it is a vector,
+#' @param x An [`rvar`], [`numeric`], or [`logical`]. Must be 1 or 2-dimensional. If it is a vector,
 #' it is treated as a row vector.
-#' @param y An [rvar], [numeric], or [logical]. Must be 1 or 2-dimensional. If it is a vector,
+#' @param y An [`rvar`], [`numeric`], or [`logical`]. Must be 1 or 2-dimensional. If it is a vector,
 #' it is treated as a column vector.
 #'
 #' @details
 #' If `x` or `y` are vectors, they are converted into matrices prior to multiplication, with `x`
 #' converted to a row vector and `y` to a column vector. Numerics and logicals can be multiplied
-#' by [rvar]s and are broadcasted across all draws of the [rvar] argument. Tensor multiplication
-#' is used to efficiently multiply matrices across draws, so if either `x` or `y` is an [rvar],
+#' by [`rvar`]s and are broadcasted across all draws of the [`rvar`] argument. Tensor multiplication
+#' is used to efficiently multiply matrices across draws, so if either `x` or `y` is an [`rvar`],
 #' `x %**% y` will be much faster than `rdo(x %*% y)`.
 #'
-#' Because [rvar] is an S3 class and S3 classes cannot properly override `%*%`, [rvar]s use
+#' Because [`rvar`] is an S3 class and S3 classes cannot properly override `%*%`, [`rvar`]s use
 #' `%**%` for matrix multiplication.
 #'
-#' @return An [rvar] representing the matrix product of `x` and `y`.
+#' @return An [`rvar`] representing the matrix product of `x` and `y`.
 #'
 #' @importFrom tensorA mul.tensor as.tensor
 #' @export

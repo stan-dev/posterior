@@ -14,7 +14,7 @@
 \method{quantile}{rvar}(x, probs, ...)
 }
 \arguments{
-\item{x}{an \code{\link[=rvar]{rvar()}}}
+\item{x}{an \code{\link{rvar}}}
 
 \item{...}{Additional arguments passed onto underlying methods:
 \itemize{
@@ -29,10 +29,10 @@
 }
 \value{
 A vector of the same length as the input (\code{q}, \code{at}, or \code{probs}) containing
-values from the corresponding function of the given \code{\link[=rvar]{rvar()}}.
+values from the corresponding function of the given \code{\link{rvar}}.
 }
 \description{
 The probability density function (\code{density()}), cumulative distribution
 function (\code{cdf()}), and quantile function / inverse CDF (\code{quantile()}) of
-an \code{\link[=rvar]{rvar()}}.
+an \code{\link{rvar}}.
 }

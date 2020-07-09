@@ -1,20 +1,20 @@
 #' Coerce to a random variable
 #'
-#' Convert `x` to an [rvar()] object.
+#' Convert `x` to an [`rvar`] object.
 #'
-#' @param x An object that can be converted to an [rvar], such as a vector or array
-#' (or an [rvar] itself).
+#' @param x An object that can be converted to an [`rvar`], such as a vector or array
+#' (or an [`rvar`] itself).
 #' @template args-rvar-dim
 #'
-#' @details For objects that are already [rvar]s, returns them (with modified dimensions
+#' @details For objects that are already [`rvar`]s, returns them (with modified dimensions
 #' if `dim` is not `NULL`).
 #'
-#' For numeric or logical vectors or arrays, returns an [rvar] with a single draw and
+#' For numeric or logical vectors or arrays, returns an [`rvar`] with a single draw and
 #' the same dimensions as `x`. This is in contrast to the [rvar()] constructor, which
 #' treats the first dimension of `x` as the draws dimension. As a result, `as_rvar()`
 #' is useful for creating constants.
 #'
-#' @seealso [rvar()] to construct [rvar]s directly.
+#' @seealso [rvar()] to construct [`rvar`]s directly.
 #'
 #' @return An object of class `"rvar"` representing a random variable.
 #'
@@ -37,7 +37,7 @@ as_rvar <- function(x, dim = NULL) {
 
 #' rvar vctrs compatibility
 #'
-#' These functions implement compatibility with [vctrs-package] for [rvar]s.
+#' These functions implement compatibility with [vctrs-package] for [`rvar`]s.
 #'
 #' @name vctrs-compat
 #'

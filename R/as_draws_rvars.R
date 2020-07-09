@@ -8,7 +8,7 @@
 #' @template draws_format-skeleton
 #' @template args-format-nchains
 #'
-#' @details Objects of class `"draws_rvars"` are lists of [rvar] objects. See **Examples**.
+#' @details Objects of class `"draws_rvars"` are lists of [`rvar`] objects. See **Examples**.
 #'
 NULL
 
@@ -164,21 +164,27 @@ as_draws_rvars.mcmc.list <- function(x, ...) {
 #' @rdname draws_rvars
 #' @export
 draws_rvars <- function(..., .nchains = 1) {
-  # TODO: should this be as_rvar or rvar? depends on desired constructor...
-  out <- lapply(list(...), as_rvar)
+  out <- lapply(list(...), function(x) {
+    if (is_rvar(x)) x
+    else rvar(x)
+  })
+
   if (!rlang::is_named(out)) {
     stop2("All variables must be named.")
   }
+
   .nchains <- as_one_integer(.nchains)
   if (.nchains < 1) {
     stop2("Number of chains must be positive.")
   }
+
   .ndraws <- ndraws(out[[1]])
   if (.ndraws %% .nchains != 0) {
     stop2("Number of chains does not divide the number of draws.")
   }
+
   # TODO: store nchains somewhere, maybe as an attribute
-  as_draws_rvars(out)
+  .as_draws_rvars(out)
 }
 
 class_draws_rvars <- function() {

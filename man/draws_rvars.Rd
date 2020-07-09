@@ -58,7 +58,7 @@ The \code{draws_rvars()} function creates an object of the
 See \strong{Details}.
 }
 \details{
-Objects of class \code{"draws_rvars"} are lists of \link{rvar} objects. See \strong{Examples}.
+Objects of class \code{"draws_rvars"} are lists of \code{\link{rvar}} objects. See \strong{Examples}.
 }
 \examples{
 x1 <- as_draws_rvars(example_draws())

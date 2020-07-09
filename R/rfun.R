@@ -4,18 +4,18 @@
 #'
 #' @param .f A function (or a one-sided formula representing a function that can be parsed by
 #' [rlang::as_function()]) to turn into a function that accepts and/or produces random variables.
-#' @param rvar_args The arguments of `.f` that should be allowed to accept [rvar]s as arguments.
+#' @param rvar_args The arguments of `.f` that should be allowed to accept [`rvar`]s as arguments.
 #' If `NULL` (the default), all arguments to `.f` are turned into arguments that accept
-#' [rvar]s.
-#' @param ndraws When no [rvar]s are supplied as arguments to the new function, this is the number
+#' [`rvar`]s.
+#' @param ndraws When no [`rvar`]s are supplied as arguments to the new function, this is the number
 #' of draws that will be used to construct new random variables. If `NULL`,
 #' `getOption("rvar_ndraws")` is used (default 4000).
 #'
-#' @details This function wraps an existing funtion (`.f`) such that it returns [rvar]s containing
+#' @details This function wraps an existing funtion (`.f`) such that it returns [`rvar`]s containing
 #' whatever type of data `.f` would normally return.
 #'
 #' @return A function with the same argument specification as `.f`, but which can accept and return
-#' [rvar]s.
+#' [`rvar`]s.
 #'
 #' @export
 rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {

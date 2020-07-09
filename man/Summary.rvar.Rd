@@ -19,10 +19,10 @@ rvar_median(x, ...)
 \item{na.rm}{Should \code{NA} values in the random variable be removed before
 computing summaries?}
 
-\item{x}{an \code{\link[=rvar]{rvar()}}}
+\item{x}{an \code{\link{rvar}}}
 }
 \value{
-An \code{\link[=rvar]{rvar()}} of length 1 (or in the case of \code{range()}, length 2) with the same number
+An \code{\link{rvar}} of length 1 (or in the case of \code{range()}, length 2) with the same number
 of draws as the input rvar(s) containing the summary statistic computed within
 each draw of the input rvar(s).
 }

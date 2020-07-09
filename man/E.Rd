@@ -16,13 +16,13 @@ E(x, na.rm = FALSE)
 Pr(x, na.rm = FALSE)
 }
 \arguments{
-\item{x}{an \code{\link[=rvar]{rvar()}}}
+\item{x}{an \code{\link{rvar}}}
 
 \item{na.rm}{Should \code{NA} values in the random variable be removed before
 computing summaries?
 
 Both \code{E()}, \code{mean()}, and \code{Pr()} take means over the draws dimension of the provided
-random variable. \code{Pr()} additionally checks that the provided \link{rvar}
+random variable. \code{Pr()} additionally checks that the provided \code{\link{rvar}}
 is a logical variable (hence, taking its expectation results in a probability).
 \code{median()} takes medians.}
 }

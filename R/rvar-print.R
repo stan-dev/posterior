@@ -1,9 +1,9 @@
 #' Print or format a random variable
 #'
-#' Printing and formatting methods for [rvar]s.
+#' Printing and formatting methods for [`rvar`]s.
 #'
 #' @encoding UTF-8
-#' @param x,object An [rvar].
+#' @param x,object An [`rvar`].
 #' @param color Whether or not to use color when formatting the output. If `TRUE`,
 #' the [pillar::style_num()] functions may be used to produce strings containing
 #' control sequences to produce colored output on the terminal.
@@ -16,10 +16,10 @@
 #' @param ... Further arguments passed to other functions.
 #'
 #' @details
-#' `print()` and `str()` print out [rvar()] objects by summarizing each element
+#' `print()` and `str()` print out [`rvar`] objects by summarizing each element
 #' in the random variable with either its mean±sd or median±mad, depending on
 #' the value of `summary`. Both functions use the `format()` implementation for
-#' [rvar()] objects under the hood, which returns a character vector in the
+#' [`rvar`] objects under the hood, which returns a character vector in the
 #' mean±sd or median±mad form.
 #'
 #' @return

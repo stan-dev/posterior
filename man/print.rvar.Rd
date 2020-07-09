@@ -14,7 +14,7 @@
 \method{str}{rvar}(object, ..., summary = NULL, vec.len = NULL)
 }
 \arguments{
-\item{x, object}{An \link{rvar}.}
+\item{x, object}{An \code{\link{rvar}}.}
 
 \item{...}{Further arguments passed to other functions.}
 
@@ -36,13 +36,13 @@ character vector of the same dimensions as \code{x} where each entry is of the
 form mean±sd or median±mad, depending on the value of \code{summary}.
 }
 \description{
-Printing and formatting methods for \link{rvar}s.
+Printing and formatting methods for \code{\link{rvar}}s.
 }
 \details{
-\code{print()} and \code{str()} print out \code{\link[=rvar]{rvar()}} objects by summarizing each element
+\code{print()} and \code{str()} print out \code{\link{rvar}} objects by summarizing each element
 in the random variable with either its mean±sd or median±mad, depending on
 the value of \code{summary}. Both functions use the \code{format()} implementation for
-\code{\link[=rvar]{rvar()}} objects under the hood, which returns a character vector in the
+\code{\link{rvar}} objects under the hood, which returns a character vector in the
 mean±sd or median±mad form.
 }
 \examples{

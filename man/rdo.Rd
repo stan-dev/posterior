@@ -7,35 +7,35 @@
 rdo(expr, dim = NULL, ndraws = NULL)
 }
 \arguments{
-\item{expr}{A bare expression that can (optionally) contain \link{rvar}s. The expression
+\item{expr}{A bare expression that can (optionally) contain \code{\link{rvar}}s. The expression
 supports \link{quasiquotation}.}
 
-\item{dim}{Override for the dimensions of the \link{rvar} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
+\item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
 or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
 
-\item{ndraws}{When no \link{rvar}s are supplied in \code{expr}, this is the number
+\item{ndraws}{When no \code{\link{rvar}}s are supplied in \code{expr}, this is the number
 of draws that will be used to construct new random variables. If \code{NULL},
 getOption("rvar_ndraws") is used (default 4000).}
 }
 \value{
-An \link{rvar}.
+An \code{\link{rvar}}.
 }
 \description{
 Execute an expression to create a random variable.
 }
 \details{
 This function evaluates \code{expr} possibly multiple times, once for each draw of
-the \link{rvar}s it contains, then returns a new \link{rvar} representing the output of those
-expressions. To identify \link{rvar}s, \code{rdo()} searches the calling environment for any variables
-named in \code{expr} for which \code{\link[=is_rvar]{is_rvar()}} evaluates to \code{TRUE}. If \code{expr} contains no \link{rvar}s,
-then it will be executed \code{ndraws} times and an \link{rvar} with that many draws returned.
+the \code{\link{rvar}}s it contains, then returns a new \code{\link{rvar}} representing the output of those
+expressions. To identify \code{\link{rvar}}s, \code{rdo()} searches the calling environment for any variables
+named in \code{expr} for which \code{\link[=is_rvar]{is_rvar()}} evaluates to \code{TRUE}. If \code{expr} contains no \code{\link{rvar}}s,
+then it will be executed \code{ndraws} times and an \code{\link{rvar}} with that many draws returned.
 
 \code{rdo()} is not necessarily \emph{fast} (in fact in some cases it may be very slow), but
-it has the advantage of allowing nearly arbitrary R code to be executed against \link{rvar}s
+it has the advantage of allowing nearly arbitrary R code to be executed against \code{\link{rvar}}s
 simply by wrapping it with \code{rdo( ... )}. This makes it especially useful as a prototyping
 tool. If you create code with \code{rdo()} and it is unacceptably slow for your application,
-consider rewriting it in terms of math operations directly on \link{rvar}s (which should be fast),
-or in terms of operations directly on the arrays that back the \link{rvar}s, using \code{\link[=draws_of]{draws_of()}}.
+consider rewriting it in terms of math operations directly on \code{\link{rvar}}s (which should be fast),
+or in terms of operations directly on the arrays that back the \code{\link{rvar}}s, using \code{\link[=draws_of]{draws_of()}}.
 }
 \examples{
 

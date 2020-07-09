@@ -8,11 +8,11 @@ rvar(x = double(), dim = NULL)
 }
 \arguments{
 \item{x}{A vector or array where the first dimension represents draws from
-a distribution. The resulting \link{rvar} will have dimension \code{dim(x)[-1]}; that is,
+a distribution. The resulting \code{\link{rvar}} will have dimension \code{dim(x)[-1]}; that is,
 everything except the first dimension is used for the shape of the variable, and the
 first dimension is used to index draws from the distribution.}
 
-\item{dim}{Override for the dimensions of the \link{rvar} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
+\item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
 or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
 }
 \value{
