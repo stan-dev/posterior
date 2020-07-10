@@ -7,9 +7,9 @@
 \method{print}{draws_array}(
   x,
   digits = 2,
-  max_iterations = getOption("max_iterations", 5),
-  max_chains = getOption("max_chains", 8),
-  max_variables = getOption("max_variables", 4),
+  max_iterations = getOption("posterior.max_iterations", 5),
+  max_chains = getOption("posterior.max_chains", 8),
+  max_variables = getOption("posterior.max_variables", 4),
   ...
 )
 }
@@ -19,15 +19,15 @@
 \item{digits}{Minimum number of significant digits to print.}
 
 \item{max_iterations}{Maximum number of iterations to print.
-Can be controlled globally via the \code{"max_iterations"} option
+Can be controlled globally via the \code{"posterior.max_iterations"} option
 (see \code{\link{options}} for details).}
 
 \item{max_chains}{Maximum number of chains to print.
-Can be controlled globally via the \code{"max_chains"} option
+Can be controlled globally via the \code{"posterior.max_chains"} option
 (see \code{\link{options}} details).}
 
 \item{max_variables}{Maximum number of variables to print.
-Can be controlled globally via the \code{"max_variables"} option
+Can be controlled globally via the \code{"posterior.max_variables"} option
 (see \code{\link{options}} for details).}
 
 \item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}

@@ -7,8 +7,8 @@
 \method{print}{draws_matrix}(
   x,
   digits = 2,
-  max_draws = getOption("max_draws", 10),
-  max_variables = getOption("max_variables", 8),
+  max_draws = getOption("posterior.max_draws", 10),
+  max_variables = getOption("posterior.max_variables", 8),
   ...
 )
 }
@@ -18,11 +18,11 @@
 \item{digits}{Minimum number of significant digits to print.}
 
 \item{max_draws}{Maximum number of draws to print.
-Can be controlled globally via the \code{"max_draws"} option
+Can be controlled globally via the \code{"posterior.max_draws"} option
 (see \code{\link{options}} details).}
 
 \item{max_variables}{Maximum number of variables to print.
-Can be controlled globally via the \code{"max_variables"} option
+Can be controlled globally via the \code{"posterior.max_variables"} option
 (see \code{\link{options}} for details).}
 
 \item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}

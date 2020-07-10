@@ -25,4 +25,15 @@
 #' * Provide lightweight implementations of state of the art posterior inference
 #' diagnostics.
 #'
+#' @section Package options:
+#'
+#' The following options are used to format and print [draws] objects,
+#' as in `print.draws_array()`, `print.draws_df()`, `print.draws_list()`,
+#' and `print.draws_matrix()`:
+#'
+#' * `posterior.max_draws`: Maximum number of draws to print.
+#' * `posterior.max_iterations`: Maximum number of iterations to print.
+#' * `posterior.max_chains`: Maximum number of chains to print.
+#' * `posterior.max_variables`: Maximum number of variables to print.
+#'
 NULL
