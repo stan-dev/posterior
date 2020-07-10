@@ -116,7 +116,7 @@ Summary.rvar <- function(..., na.rm = FALSE) {
 #' @rdname Summary.rvar
 #' @export
 range.rvar <- function(..., na.rm = FALSE) {
-  .Summary.rvar(base::range, rvars, na.rm = na.rm, transpose = TRUE)
+  .Summary.rvar(base::range, ..., na.rm = na.rm, transpose = TRUE)
 }
 .Summary.rvar <- function(f, ..., na.rm = FALSE, transpose = FALSE) {
   rvars <- lapply(list(...), function(arg) {
