@@ -2,7 +2,7 @@
 % Please edit documentation in R/rvar-.R
 \name{is_rvar}
 \alias{is_rvar}
-\title{Is \code{x} a random variables?}
+\title{Is \code{x} a random variable?}
 \usage{
 is_rvar(x)
 }

@@ -63,7 +63,7 @@ test_that("indexing with [[ works on a matrix", {
   expect_equal(x_null, rvar(5))
 })
 
-test_that("assignment with [[ works on a matrix", {
+test_that("assignment with [[ works", {
   x_array = array(
     1:24, dim = c(2,4,3),
     dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
@@ -87,6 +87,12 @@ test_that("assignment with [[ works on a matrix", {
     new_rvar({xr <- x_array; xr[,2,3] <- c(1,2); xr})
   )
 
+  # constant should have ndraws increased to value when assigned to
+  x = new_rvar(array(1:2, dim = c(1,2)))
+  expect_equal(
+    {x[[1]] <- new_rvar(array(1:2, dim = c(2,1))); x},
+    new_rvar(array(c(1,2,2,2), dim = c(2,2)))
+  )
 })
 
 test_that("indexing with [ works on a vector", {
@@ -168,7 +174,7 @@ test_that("indexing with [ works on a matrix", {
   expect_error(x[1,1,1])
 })
 
-test_that("assignment with [ works on a matrix", {
+test_that("assignment with [ works", {
   x_array = array(
     1:24, dim = c(2,4,3),
     dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
@@ -190,6 +196,13 @@ test_that("assignment with [ works on a matrix", {
   expect_identical(
     {x2 <- x; x2["a2","b3"] <- new_rvar(c(1,2)); x2},
     new_rvar({xr <- x_array; xr[,2,3] <- c(1,2); xr})
+  )
+
+  # constant should have ndraws increased to value when assigned to
+  x = new_rvar(array(1:2, dim = c(1,2)))
+  expect_equal(
+    {x[1] <- new_rvar(array(1:2, dim = c(2,1))); x},
+    new_rvar(array(c(1,2,2,2), dim = c(2,2)))
   )
 })
 

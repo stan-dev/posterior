@@ -340,8 +340,7 @@ nchains.draws_list <- function(x) {
 
 #' @export
 nchains.rvar <- function(x) {
-  # TODO: implement
-  1L
+  attr(x, "nchains") %||% 1L
 }
 
 #' @export

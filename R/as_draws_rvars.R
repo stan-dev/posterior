@@ -128,21 +128,23 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 #' @rdname draws_rvars
 #' @export
 as_draws_rvars.draws_array <- function(x, ...) {
-  # TODO: put chain info back in after converting
-  as_draws_rvars(as_draws_matrix(x), ...)
+  out <- as_draws_rvars(as_draws_matrix(x), ...)
+
+  .nchains <- nchains(x)
+  for (i in seq_along(out)) {
+    attr(out[[i]], "nchains") <- .nchains
+  }
+
+  out
 }
 
 #' @rdname draws_rvars
 #' @export
-as_draws_rvars.draws_df <- function(x, ...) {
-  stop("TODO: IMPLEMENT")
-}
+as_draws_rvars.draws_df <- as_draws_rvars.draws_array
 
 #' @rdname draws_rvars
 #' @export
-as_draws_rvars.draws_list <- function(x, ...) {
-  stop("TODO: IMPLEMENT")
-}
+as_draws_rvars.draws_list <- as_draws_rvars.draws_array
 
 #' @rdname draws_rvars
 #' @export
@@ -159,8 +161,10 @@ as_draws_rvars.mcmc.list <- function(x, ...) {
 # try to convert any R object into a 'draws_rvars' object
 .as_draws_rvars <- function(x, ...) {
   x <- as.list(x)
+
   # convert all elements to rvars
   x <- lapply(x, as_rvar)
+
   # replace blank variable names with defaults
   if (is.null(names(x))) {
     names(x) <- default_variables(length(x))
@@ -168,11 +172,10 @@ as_draws_rvars.mcmc.list <- function(x, ...) {
     blank_names <- nchar(names(x)) == 0
     names(x)[blank_names] <- default_variables(length(x))[blank_names]
   }
+
   check_new_variables(names(x))
-  if (length(unique(sapply(x, ndraws))) != 1L)  {
-    stop2("All variables must have the same number of draws.")
-  }
-  # TODO: check nchains is it was set
+
+  x <- conform_rvar_ndraws_nchains(x)
 
   class(x) <- class_draws_rvars()
   x
@@ -183,24 +186,13 @@ as_draws_rvars.mcmc.list <- function(x, ...) {
 draws_rvars <- function(..., .nchains = 1) {
   out <- lapply(list(...), function(x) {
     if (is_rvar(x)) x
-    else rvar(x)
+    else rvar(x, .nchains = .nchains)
   })
 
   if (!rlang::is_named(out)) {
     stop2("All variables must be named.")
   }
 
-  .nchains <- as_one_integer(.nchains)
-  if (.nchains < 1) {
-    stop2("Number of chains must be positive.")
-  }
-
-  .ndraws <- ndraws(out[[1]])
-  if (.ndraws %% .nchains != 0) {
-    stop2("Number of chains does not divide the number of draws.")
-  }
-
-  # TODO: store nchains somewhere, maybe as an attribute
   .as_draws_rvars(out)
 }
 

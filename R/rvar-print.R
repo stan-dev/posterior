@@ -105,7 +105,11 @@ rvar_type_abbr <- function(x, dim1 = TRUE) {
     ""
   }
 
-  paste0("rvar<", ndraws(x), ">", dim_str)
+  chain_str <- if (nchains(x) > 1) {
+    paste0(",", nchains(x))
+  }
+
+  paste0("rvar<", niterations(x), chain_str, ">", dim_str)
 }
 
 

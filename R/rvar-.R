@@ -9,6 +9,7 @@
 #' everything except the first dimension is used for the shape of the variable, and the
 #' first dimension is used to index draws from the distribution.
 #' @template args-rvar-dim
+#' @template args-format-nchains
 #'
 #' @details
 #'
@@ -41,8 +42,8 @@
 #' @return An object of class `"rvar"` representing a random variable.
 #'
 #' @export
-rvar <- function(x = double(), dim = NULL) {
-  x <- new_rvar(x)
+rvar <- function(x = double(), dim = NULL, .nchains = 1L) {
+  x <- new_rvar(x, .nchains = .nchains)
 
   if (!is.null(dim)) {
     dim(x) <- dim
@@ -51,7 +52,7 @@ rvar <- function(x = double(), dim = NULL) {
 }
 
 #' @importFrom vctrs new_vctr
-new_rvar <- function(x = double()) {
+new_rvar <- function(x = double(), .nchains = 1L) {
   # TODO: decide on supported types and cast to them in here
   .dim <- dim(x)
   if (length(x) == 0) {
@@ -75,10 +76,25 @@ new_rvar <- function(x = double()) {
     dimnames(x) <- list(NULL)
   }
 
-  structure(list(), draws = x, class = c("rvar", "vctrs_vctr", "list"))
+  # except with constants, .nchains must divide the number of draws
+  .ndraws <- dim(x)[[1]]
+  .nchains <- as_one_integer(.nchains)
+  if (.ndraws != 1 && .ndraws %% .nchains != 0) {
+    stop2("Number of chains does not divide the number of draws.")
+  }
+  if (.nchains < 1) {
+
+  }
+
+  structure(
+    list(),
+    draws = x,
+    nchains = .nchains,
+    class = c("rvar", "vctrs_vctr", "list")
+  )
 }
 
-#' Is `x` a random variables?
+#' Is `x` a random variable?
 #'
 #' Test if `x` is an [`rvar`].
 #'
@@ -172,12 +188,12 @@ rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
     dim = dim(draws)
     dim[[2]] = dim[[2]] * times
     dim(rep_draws) = dim
-    new_rvar(rep_draws)
+    new_rvar(rep_draws, .nchains = nchains(x))
   } else {
     # use `length.out`
     rep_draws = rep_len(draws, length.out * ndraws(x))
     dim(rep_draws) = c(ndraws(x), length(rep_draws) / ndraws(x))
-    new_rvar(rep_draws)
+    new_rvar(rep_draws, .nchains = nchains(x))
   }
 }
 
@@ -251,7 +267,7 @@ as.vector.rvar <- function(x, mode = "any") {
 
 #' @export
 as.list.rvar <- function(x, ...) {
-  apply(draws_of(x), 2, new_rvar)
+  apply(draws_of(x), 2, new_rvar, .nchains = nchains(x))
 }
 
 
@@ -272,22 +288,22 @@ as.list.rvar <- function(x, ...) {
     }
     .draws <- draws_of(x)[, i, drop = FALSE]
     dimnames(.draws) <- NULL
-    new_rvar(.draws)
+    new_rvar(.draws, .nchains = nchains(x))
   } else if (length(index) == length(dim(x))) {
     # multiple element selection => must have exactly the right number of dims
     .draws <- eval_tidy(expr(draws_of(x)[, !!!index, drop = FALSE]))
     # must do drop manually in case the draws dimension has only 1 draw
     dim(.draws) <- c(ndraws(x), 1)
-    new_rvar(.draws)
+    new_rvar(.draws, .nchains = nchains(x))
   } else {
-    stop("subscript out of bounds")
+    stop2("subscript out of bounds")
   }
 }
 
 #' @export
 `[[<-.rvar` <- function(x, i, ..., value) {
   value <- vec_cast(value, x)
-  check_rvar_ndraws_first(value, x)
+  c(x, value) %<-% conform_rvar_ndraws_nchains(list(x, value))
   value <- check_rvar_dims_first(value, new_rvar(0))
   index <- check_rvar_yank_index(x, i, ...)
 
@@ -320,7 +336,7 @@ as.list.rvar <- function(x, ...) {
       x
     }))
   } else {
-    stop("subscript out of bounds")
+    stop2("subscript out of bounds")
   }
 }
 
@@ -361,7 +377,9 @@ as.list.rvar <- function(x, ...) {
     index[seq(length(index) + 1, length(dim(.draws)) - 1)] = list(missing_arg())
   }
 
-  x = eval_tidy(expr(new_rvar(.draws[, !!!index, drop = FALSE])))
+  x = eval_tidy(expr(
+    new_rvar(.draws[, !!!index, drop = FALSE], .nchains = nchains(x))
+  ))
 
   if (drop) {
     drop_(x)
@@ -380,7 +398,7 @@ as.list.rvar <- function(x, ...) {
   }
 
   value <- vec_cast(value, x)
-  x <- check_rvar_ndraws_first(value, x)
+  c(x, value) %<-% conform_rvar_ndraws_nchains(list(x, value))
   #TODO: reinstate
 #  value <- check_rvar_dims_first(value, x[i, ...])
 
@@ -430,7 +448,11 @@ draws_of <- function(x) {
 vec_proxy.rvar = function(x, ...) {
   # TODO: probably could do something more efficient here and for restore
   .draws = draws_of(x)
-  vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
+  out <- vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
+  for (i in seq_along(out)) {
+    attr(out[[i]], "nchains") <- nchains(x)
+  }
+  out
 }
 
 #' @importFrom vctrs vec_restore
@@ -459,7 +481,11 @@ vec_restore.rvar <- function(x, ...) {
   if (!is.null(.draws)) {
     .draws <- aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)]))
   }
-  new_rvar(.draws)
+  # determine the number of chains
+  nchains_or_null <- lapply(x, function(x) if (dim(x)[[2]] %||% 1 == 1) NULL else attr(x, "nchains"))
+  .nchains <- Reduce(nchains2_common, nchains_or_null) %||% 1L
+
+  new_rvar(.draws, .nchains = .nchains)
 }
 
 
@@ -488,7 +514,7 @@ vec_restore.rvar <- function(x, ...) {
 #' @export
 density.rvar <- function(x, at, ...) {
   if (length(x) != 1) {
-    stop("density() can currently only be used on scalar rvars")
+    stop2("density() can currently only be used on scalar rvars")
   }
 
   d <- density(draws_of(x), cut = 0, ...)
@@ -504,7 +530,7 @@ distributional::cdf
 #' @export
 cdf.rvar <- function(x, q, ...) {
   if (length(x) != 1) {
-    stop("cdf() can currently only be used on scalar rvars")
+    stop2("cdf() can currently only be used on scalar rvars")
   }
 
   ecdf(draws_of(x))(q)
@@ -559,20 +585,27 @@ combine_rvar <- function(.f, args, .axis = 2) {
     return(args[[1]])
   }
 
+  x <- args[[1]]
+  y <- as_rvar(args[[2]])
+
+  # conform nchains
+  # (don't need to do draws here since that's part of the broadcast below)
+  c(x, y) %<-% conform_rvar_nchains(list(x, y))
+
   # broadcast each array to the desired dimensions
   # (except along the axis we are binding along)
-  draws1 <- draws_of(args[[1]])
-  draws2 <- draws_of(as_rvar(args[[2]]))
-  new_dim <- dim2_common(dim(draws1), dim(draws2))
+  draws_x <- draws_of(x)
+  draws_y <- draws_of(y)
+  new_dim <- dim2_common(dim(draws_x), dim(draws_y))
 
-  new_dim[.axis] <- dim(draws1)[.axis]
-  draws1 <- broadcast_array(draws1, new_dim)
+  new_dim[.axis] <- dim(draws_x)[.axis]
+  draws_x <- broadcast_array(draws_x, new_dim)
 
-  new_dim[.axis] <- dim(draws2)[.axis]
-  draws2 <- broadcast_array(draws2, new_dim)
+  new_dim[.axis] <- dim(draws_y)[.axis]
+  draws_y <- broadcast_array(draws_y, new_dim)
 
   # bind along desired axis
-  result <- new_rvar(abind(draws1, draws2, along = .axis))
+  result <- new_rvar(abind(draws_x, draws_y, along = .axis), .nchains = nchains(x))
 
   if (length(args) > 2) {
     args[[1]] <- result
@@ -591,13 +624,13 @@ check_rvar_yank_index = function(x, i, ...) {
   index <- dots_list(i, ..., .preserve_empty = TRUE, .ignore_empty = "none")
 
   if (any(lengths(index)) > 1) {
-    stop("Cannot select more than one element per index with `[[` in an rvar.")
+    stop2("Cannot select more than one element per index with `[[` in an rvar.")
   } else if (any(sapply(index, function(x) is_missing(x) || is.na(x)))) {
-    stop("Missing indices not allowed with `[[` in an rvar.")
+    stop2("Missing indices not allowed with `[[` in an rvar.")
   } else if (any(sapply(index, is.logical))) {
-    stop("Logical indices not allowed with `[[` in an rvar.")
+    stop2("Logical indices not allowed with `[[` in an rvar.")
   } else if (any(sapply(index, function(x) x < 0))) {
-    stop("subscript out of bounds")
+    stop2("subscript out of bounds")
   }
 
   index
@@ -612,39 +645,8 @@ check_rvar_subset_indices = function(x, ...) {
   }
 }
 
-# Check that the first rvar has a compatible number of draws to be used
-# with the second. Returns a (possibly modified) form of `y` if
-# the number of draws needs to be conformed (when ndraws(y) == 0)
-check_rvar_ndraws_first <- function(x, y) {
-  ndraws_x <- ndraws(x)
-  ndraws_y <- ndraws(y)
-
-  if (ndraws_x == 1 || ndraws_x == ndraws_y) {
-    # ndraws_x == 1 => assigning a constant, which is fine
-    # ndraws_y
-    y
-  } else if (ndraws_y == 0) {
-    # ndraws_y == 0 => assigning to an empty vector, use ndraws_x
-    draws_y = draws_of(y)
-    new_dim = dim(draws_y)
-    new_dim[length(new_dim)] <- ndraws_x
-    draws_of(y) <- array(vec_ptype(draws_y), dim = new_dim)
-    y
-  } else {
-    stop(
-      "Random variables have different number of draws (", ndraws_x,
-      " and ", ndraws_y, ") and cannot be used together."
-    )
-  }
-}
-
-# Check that two rvars have a compatible number of draws and
-# return an appropriate number of draws that both objects could be broadcasted
-# to, or throw an error if there is no such number of draws.
-check_rvar_ndraws_both <- function(x, y) {
-  ndraws_x <- ndraws(x)
-  ndraws_y <- ndraws(y)
-
+# find common ndraws for the ndraws of two rvars to be broadcast to
+ndraws2_common <- function(ndraws_x, ndraws_y) {
   if (ndraws_x == 1) {
     ndraws_y
   } else if (ndraws_y == 1) {
@@ -652,11 +654,64 @@ check_rvar_ndraws_both <- function(x, y) {
   } else if (ndraws_x == ndraws_y) {
     ndraws_x
   } else {
-    stop(
+    stop2(
       "Random variables have different number of draws (", ndraws_x,
       " and ", ndraws_y, ") and cannot be used together."
     )
   }
+}
+
+# find common nchains for the nchains of two rvars to be set to
+# nchains_x or nchains_y may be NULL to indicate they are constants
+# and take the nchains of the other
+nchains2_common <- function(nchains_x, nchains_y) {
+  # constants should give nchains of NULL for input to this function
+  # so they are treated as having any number of chains
+  if (is.null(nchains_x)) {
+    nchains_y
+  } else if (is.null(nchains_y)) {
+    nchains_x
+  } else if (nchains_x == nchains_y) {
+    nchains_x
+  } else {
+    warning2(
+      "Random variables do not have the same number of chains (", nchains_x, " and ", nchains_y, "),\n",
+      "so chains were dropped.\n",
+      "Use merge_chains() to collapse chains before combining rvars with\n",
+      "a different number of chains to avoid this warning."
+    )
+    1L
+  }
+}
+
+# given two rvars, conform their number of chains
+# so they can be used together (or throw an error if they can't be)
+conform_rvar_nchains <- function(rvars) {
+  # find the number of chains to use, treating constants as having any number of chains
+  nchains_or_null <- lapply(rvars, function(x) if (ndraws(x) == 1) NULL else nchains(x))
+  .nchains <- Reduce(nchains2_common, nchains_or_null) %||% 1L
+
+  for (i in seq_along(rvars)) {
+    attr(rvars[[i]], "nchains") <- .nchains
+  }
+
+  rvars
+}
+
+# given two rvars, conform their number of draws and chains
+# so they can be used together (or throw an error if they can't be)
+# @param keep_constants keep constants as 1-draw rvars
+conform_rvar_ndraws_nchains <- function(rvars, keep_constants = FALSE) {
+  rvars <- conform_rvar_nchains(rvars)
+
+  # broadcast to a common number of chains. If keep_constants = TRUE,
+  # constants will not be broadcast.
+  .ndraws = Reduce(ndraws2_common, lapply(rvars, ndraws))
+  for (i in seq_along(rvars)) {
+    rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws, keep_constants)
+  }
+
+  rvars
 }
 
 # Check that the first rvar can be conformed to the dimensions of the second,
@@ -717,7 +772,7 @@ broadcast_array  <- function(x, dim) {
     current_dim[seq(length(current_dim) + 1, length(dim))] = 1
     dim(x) = current_dim
   } else if (length(current_dim) > length(dim)) {
-    stop(
+    stop2(
       "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "]",
       "to array of shape [", paste(dim, collapse = ","), "]:\n",
       "Desired shape has fewer dimensions than existing array."
@@ -732,7 +787,7 @@ broadcast_array  <- function(x, dim) {
   }
 
   if (any(current_dim[dim_to_broadcast] != 1)) {
-    stop(
+    stop2(
       "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "]",
       "to array of shape [", paste(dim, collapse = ","), "]:\n",
       "All dimensions must be 1 or equal."
@@ -750,14 +805,19 @@ broadcast_array  <- function(x, dim) {
 }
 
 # broadcast the draws dimension of an rvar to the requested size
-broadcast_draws <- function(x, .ndraws) {
-  if (.ndraws == ndraws(x)) {
+broadcast_draws <- function(x, .ndraws, keep_constants = FALSE) {
+  ndraws_x = ndraws(x)
+  if (
+    (ndraws_x == 1 && keep_constants) ||
+    (ndraws_x == .ndraws)
+  ) {
     x
   } else {
     draws <- draws_of(x)
     new_dim <- dim(draws)
     new_dim[1] <- .ndraws
-    new_rvar(broadcast_array(draws, new_dim))
+
+    new_rvar(broadcast_array(draws, new_dim), .nchains = nchains(x))
   }
 }
 
@@ -803,7 +863,7 @@ flatten_array = function(x) {
 summarise_rvar_within_draws <- function(x, .f, ...) {
   draws <- draws_of(x)
   dim <- dim(draws)
-  new_rvar(apply(draws, 1, .f, ...))
+  new_rvar(apply(draws, 1, .f, ...), .nchains = nchains(x))
 }
 
 # apply vectorized function to an rvar's draws

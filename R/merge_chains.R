@@ -52,3 +52,19 @@ merge_chains.draws_list <- function(x, ...) {
   }
   out
 }
+
+#' @rdname merge_chains
+#' @export
+merge_chains.rvar <- function(x, ...) {
+  attr(x, "nchains") <- 1L
+  x
+}
+
+#' @rdname merge_chains
+#' @export
+merge_chains.draws_rvars <- function(x, ...) {
+  for (i in seq_along(x)) {
+    x[[i]] <- merge_chains(x[[i]])
+  }
+  x
+}
