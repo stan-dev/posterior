@@ -258,8 +258,8 @@ print.draws_list <- function(x, digits = 2,
 #' @export
 print.draws_rvars <- function(x,
   digits = 2,
-  max_variables = getOption("max_variables", 8),
-  summary = getOption("rvar_summary", "mean_sd"),
+  max_variables = getOption("posterior.max_variables", 8),
+  summary = getOption("posterior.rvar_summary", "mean_sd"),
   ...
 ) {
   max_variables <- as_one_integer(max_variables)

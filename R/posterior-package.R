@@ -27,13 +27,26 @@
 #'
 #' @section Package options:
 #'
-#' The following options are used to format and print [draws] objects,
+#' The following options are used to format and print [`draws`] objects,
 #' as in `print.draws_array()`, `print.draws_df()`, `print.draws_list()`,
-#' and `print.draws_matrix()`:
+#' `print.draws_matrix()`, and `print.draws_rvars()`:
 #'
 #' * `posterior.max_draws`: Maximum number of draws to print.
 #' * `posterior.max_iterations`: Maximum number of iterations to print.
 #' * `posterior.max_chains`: Maximum number of chains to print.
 #' * `posterior.max_variables`: Maximum number of variables to print.
+#'
+#' The following option is used to format and print [`rvar`] objects,
+#' as in `print.rvar()` and `print.draws_rvars()`:
+#'
+#' * `posterior.rvar_summary`: What style of summary to display:
+#' `"mean_sd"` displays `mean±sd`, `"median_mad"` displays `median±mad`.
+#'
+#' The following option is used to construct new [`rvar`] objects,
+#' as in `rfun()` and `rdo()`:
+#'
+#' * `posterior.rvar_ndraws`: The number of draws used to construct
+#' new random variables when this number cannot be determined
+#' from existing arguments (e.g., other [`rvar`]s passed to a function).
 #'
 NULL

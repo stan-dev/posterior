@@ -161,7 +161,7 @@ format_mean_sd <- function(.mean, .sd, digits = 2, color = FALSE) {
 # return a vector of two elements, where the first is mean or median and the
 # second is sd or mad
 get_summary_functions <- function(summary = NULL) {
-  if (is.null(summary)) summary <- getOption("rvar_summary", "mean_sd")
+  if (is.null(summary)) summary <- getOption("posterior.rvar_summary", "mean_sd")
   switch(summary,
     mean_sd = c("mean", "sd"),
     median_mad = c("median", "mad"),

@@ -8,8 +8,8 @@
 \method{print}{draws_rvars}(
   x,
   digits = 2,
-  max_variables = getOption("max_variables", 8),
-  summary = getOption("rvar_summary", "mean_sd"),
+  max_variables = getOption("posterior.max_variables", 8),
+  summary = getOption("posterior.rvar_summary", "mean_sd"),
   ...
 )
 }
@@ -19,11 +19,11 @@
 \item{digits}{Minimum number of significant digits to print.}
 
 \item{max_variables}{Maximum number of variables to print.
-Can be controlled globally via the \code{"max_variables"} option
+Can be controlled globally via the \code{"posterior.max_variables"} option
 (see \code{\link{options}} for details).}
 
 \item{summary}{What style of summary to display: \code{"mean_sd"} displays \verb{mean±sd},
-\code{"median_mad"} displays \verb{median±mad}. If \code{NULL}, \code{getOption("rvar_summary")} is
+\code{"median_mad"} displays \verb{median±mad}. If \code{NULL}, \code{getOption("posterior.rvar_summary")} is
 used (default \verb{"mean_sd}).}
 
 \item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}

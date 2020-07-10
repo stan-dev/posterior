@@ -28,14 +28,29 @@ diagnostics.
 \section{Package options}{
 
 
-The following options are used to format and print \link{draws} objects,
+The following options are used to format and print \code{\link{draws}} objects,
 as in \code{print.draws_array()}, \code{print.draws_df()}, \code{print.draws_list()},
-and \code{print.draws_matrix()}:
+\code{print.draws_matrix()}, and \code{print.draws_rvars()}:
 \itemize{
 \item \code{posterior.max_draws}: Maximum number of draws to print.
 \item \code{posterior.max_iterations}: Maximum number of iterations to print.
 \item \code{posterior.max_chains}: Maximum number of chains to print.
 \item \code{posterior.max_variables}: Maximum number of variables to print.
+}
+
+The following option is used to format and print \code{\link{rvar}} objects,
+as in \code{print.rvar()} and \code{print.draws_rvars()}:
+\itemize{
+\item \code{posterior.rvar_summary}: What style of summary to display:
+\code{"mean_sd"} displays \verb{mean±sd}, \code{"median_mad"} displays \verb{median±mad}.
+}
+
+The following option is used to construct new \code{\link{rvar}} objects,
+as in \code{rfun()} and \code{rdo()}:
+\itemize{
+\item \code{posterior.rvar_ndraws}: The number of draws used to construct
+new random variables when this number cannot be determined
+from existing arguments (e.g., other \code{\link{rvar}}s passed to a function).
 }
 }
 

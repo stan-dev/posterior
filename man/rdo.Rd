@@ -15,7 +15,7 @@ or more giving the maximal indices in each dimension. If \code{NULL} (the defaul
 
 \item{ndraws}{When no \code{\link{rvar}}s are supplied in \code{expr}, this is the number
 of draws that will be used to construct new random variables. If \code{NULL},
-getOption("rvar_ndraws") is used (default 4000).}
+\code{getOption("posterior.rvar_ndraws")} is used (default 4000).}
 }
 \value{
 An \code{\link{rvar}}.

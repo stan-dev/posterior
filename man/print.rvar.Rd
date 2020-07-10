@@ -19,7 +19,7 @@
 \item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}
 
 \item{summary}{What style of summary to display: \code{"mean_sd"} displays \verb{mean±sd},
-\code{"median_mad"} displays \verb{median±mad}. If \code{NULL}, \code{getOption("rvar_summary")} is
+\code{"median_mad"} displays \verb{median±mad}. If \code{NULL}, \code{getOption("posterior.rvar_summary")} is
 used (default \verb{"mean_sd}).}
 
 \item{digits}{Minimum number of significant digits to print.}
