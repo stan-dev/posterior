@@ -15,8 +15,8 @@
 #'
 #' @export
 print.draws_matrix <- function(x, digits = 2,
-                               max_draws = getOption("max_draws", 10),
-                               max_variables = getOption("max_variables", 8),
+                               max_draws = getOption("posterior.max_draws", 10),
+                               max_variables = getOption("posterior.max_variables", 8),
                                ...) {
   max_draws <- as_one_integer(max_draws)
   max_variables <- as_one_integer(max_variables)
@@ -67,9 +67,9 @@ print.draws_matrix <- function(x, digits = 2,
 #'
 #' @export
 print.draws_array <- function(x, digits = 2,
-                              max_iterations = getOption("max_iterations", 5),
-                              max_chains = getOption("max_chains", 8),
-                              max_variables = getOption("max_variables", 4),
+                              max_iterations = getOption("posterior.max_iterations", 5),
+                              max_chains = getOption("posterior.max_chains", 8),
+                              max_variables = getOption("posterior.max_variables", 4),
                               ...) {
   max_iterations <- as_one_integer(max_iterations)
   max_chains <- as_one_integer(max_chains)
@@ -128,8 +128,8 @@ print.draws_array <- function(x, digits = 2,
 #'
 #' @export
 print.draws_df <- function(x, digits = 2,
-                           max_draws = getOption("max_draws", 10),
-                           max_variables = getOption("max_variables", 8),
+                           max_draws = getOption("posterior.max_draws", 10),
+                           max_variables = getOption("posterior.max_variables", 8),
                            meta_columns = FALSE, ...) {
   max_draws <- as_one_integer(max_draws)
   max_variables <- as_one_integer(max_variables)
@@ -191,9 +191,9 @@ print.draws_df <- function(x, digits = 2,
 #'
 #' @export
 print.draws_list <- function(x, digits = 2,
-                             max_iterations = getOption("max_iterations", 10),
-                             max_chains = getOption("max_chains", 2),
-                             max_variables = getOption("max_variables", 4),
+                             max_iterations = getOption("posterior.max_iterations", 10),
+                             max_chains = getOption("posterior.max_chains", 2),
+                             max_variables = getOption("posterior.max_variables", 4),
                              ...) {
   max_iterations <- as_one_integer(max_iterations)
   max_chains <- as_one_integer(max_chains)
