@@ -25,3 +25,17 @@ for example, subsetting, binding, or mutating draws.
 diagnostics.
 }
 }
+\section{Package options}{
+
+
+The following options are used to format and print \link{draws} objects,
+as in \code{print.draws_array()}, \code{print.draws_df()}, \code{print.draws_list()},
+and \code{print.draws_matrix()}:
+\itemize{
+\item \code{posterior.max_draws}: Maximum number of draws to print.
+\item \code{posterior.max_iterations}: Maximum number of iterations to print.
+\item \code{posterior.max_chains}: Maximum number of chains to print.
+\item \code{posterior.max_variables}: Maximum number of variables to print.
+}
+}
+
