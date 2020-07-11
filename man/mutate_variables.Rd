@@ -6,6 +6,7 @@
 \alias{mutate_variables.draws_array}
 \alias{mutate_variables.draws_df}
 \alias{mutate_variables.draws_list}
+\alias{mutate_variables.draws_rvars}
 \title{Mutate variables in \code{draws} objects}
 \usage{
 mutate_variables(.x, ...)
@@ -17,6 +18,8 @@ mutate_variables(.x, ...)
 \method{mutate_variables}{draws_df}(.x, ...)
 
 \method{mutate_variables}{draws_list}(.x, ...)
+
+\method{mutate_variables}{draws_rvars}(.x, ...)
 }
 \arguments{
 \item{.x}{A \code{\link{draws}} object.}
@@ -35,11 +38,14 @@ according to the expressions provided in \code{...}.
 Mutate variables in a \code{\link{draws}} object.
 }
 \details{
-In order to mutate variables in \code{draws_matrix} and \code{draws_array} objects,
-they are transformed to \code{draws_df} objects first and then transformed back
+In order to mutate variables in \code{\link{draws_matrix}} and \code{\link{draws_array}} objects,
+they are transformed to \code{\link{draws_df}} objects first and then transformed back
 after mutation. As those transformations are quite expensive for larger
-number of draws, we recommend using \code{mutate_variables} on \code{draws_df} and
-\code{draws_list} objects if speed is an issue.
+number of draws, we recommend using \code{mutate_variables} on \code{\link{draws_df}} and
+\code{\link{draws_list}} objects if speed is an issue.
+
+In \code{\link{draws_rvars}} objects, the output of each expression in \code{...} is
+coerced to an \code{\link{rvar}} object if it is not already one using \code{as_rvar()}.
 }
 \examples{
 x <- as_draws_df(example_draws())

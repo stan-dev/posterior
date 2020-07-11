@@ -46,6 +46,11 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
     # convert arguments that are rvars into draws the function can be applied over
     is_rvar_arg <- (arg_names %in% rvar_args) & as.logical(lapply(args, is_rvar))
     rvar_args <- conform_rvar_ndraws_nchains(args[is_rvar_arg])
+    .nchains <- if (length(rvar_args) < 1) {
+      1
+    } else {
+      nchains(rvar_args[[1]])
+    }
     rvar_args <- lapply(rvar_args, list_of_draws)
 
     if (length(rvar_args) == 0) {
@@ -64,7 +69,7 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
       dim(x) <- c(1, dim(x))
       x
     })
-    new_rvar(vctrs::vec_unchop(list_of_draws))
+    new_rvar(vctrs::vec_unchop(list_of_draws), .nchains = .nchains)
   }
   formals(FUNV) <- formals(.f)
   FUNV
@@ -140,6 +145,11 @@ rvar_r <- function(.f, n, ..., ndraws = 4000) {
   args = list(...)
   is_rvar_arg <- as.logical(lapply(args, is_rvar))
   rvar_args = conform_rvar_ndraws_nchains(args[is_rvar_arg])
+  .nchains <- if (length(rvar_args) < 1) {
+    1
+  } else {
+    nchains(rvar_args[[1]])
+  }
 
   rvar_args_ndraws = sapply(rvar_args, ndraws)
   if (length(rvar_args_ndraws) != 0) {
@@ -156,5 +166,5 @@ rvar_r <- function(.f, n, ..., ndraws = 4000) {
   args = c(list(n = nd), args)
   result = do.call(.f, args)
   dim(result) = c(n, ndraws)
-  new_rvar(t(result))
+  new_rvar(t(result), .nchains = .nchains)
 }
