@@ -18,6 +18,7 @@
 #'
 #' @return An object of class `"rvar"` representing a random variable.
 #'
+#' @export
 as_rvar <- function(x, dim = NULL) {
   x <-
     if (is_rvar(x)) x
