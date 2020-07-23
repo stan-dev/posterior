@@ -1,7 +1,7 @@
 Package: posterior
 Title: Tools for Working with Posterior Distributions
-Version: 0.1.0
-Date: 2020-06-11
+Version: 0.1.1
+Date: 2020-07-22
 Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
              person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")),
@@ -23,9 +23,9 @@ Depends:
 Imports:
   abind,
   checkmate,
-  rlang,
+  rlang (>= 0.4.7),
   stats,
-  tibble
+  tibble (>= 3.0.0)
 Suggests: 
   testthat (>= 2.1.0)
 License: BSD_3_clause + file LICENSE
