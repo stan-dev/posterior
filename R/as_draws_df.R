@@ -118,7 +118,7 @@ as_draws_df.draws_list <- function(x, ...) {
 #' @rdname draws_df
 #' @export
 as_draws_df.draws_rvars <- function(x, ...) {
-  stop("TODO: IMPLEMENT")
+  as_draws_df(as_draws_array(x), ...)
 }
 
 #' @rdname draws_df
