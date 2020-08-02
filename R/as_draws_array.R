@@ -82,8 +82,20 @@ as_draws_array.draws_list <- function(x, ...) {
 #' @rdname draws_array
 #' @export
 as_draws_array.draws_rvars <- function(x, ...) {
-  # TODO: should probably carry over chain info if draws_rvars keeps it
-  as_draws_array(as_draws_matrix(x), ...)
+  draws <- do.call(cbind, lapply(seq_along(x), function(i) {
+    # flatten each rvar so it only has two dimensions: draws and variables
+    # this also collapses indices into variable names in the format "var[i,j,k,...]"
+    x_i <- flatten_array(x[[i]], names(x)[[i]])
+    draws_of(x_i)
+  }))
+
+  # add chain info back into the draws array
+  # ([draws, variables] -> [iterations, chains, variables])
+  .dimnames <- dimnames(draws)
+  dim(draws) <- c(niterations(x), nchains(x), dim(draws)[-1])
+  dimnames(draws) <- c(list(NULL, NULL), .dimnames[-1])
+
+  as_draws_array(draws, ...)
 }
 
 #' @rdname draws_array

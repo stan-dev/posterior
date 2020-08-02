@@ -75,20 +75,14 @@ as_draws_matrix.draws_list <- function(x, ...) {
 #' @rdname draws_matrix
 #' @export
 as_draws_matrix.draws_rvars <- function(x, ...) {
-  do.call(bind_draws, lapply(seq_along(x), function(i) {
+  draws <- do.call(cbind, lapply(seq_along(x), function(i) {
     # flatten each rvar so it only has two dimensions: draws and variables
-    x_i <- flatten_array(x[[i]])
-
-    # rename the variables with their indices in brackets as needed
-    name_i <- names(x)[[i]]
-    if (length(x_i) > 1) {
-      names(x_i) <- paste0(name_i, "[", names(x_i) %||% seq_len(length(x_i)), "]")
-    } else {
-      names(x_i) <- name_i
-    }
-
-    as_draws_matrix(draws_of(x_i))
+    # this also collapses indices into variable names in the format "var[i,j,k,...]"
+    x_i <- flatten_array(x[[i]], names(x)[[i]])
+    draws_of(x_i)
   }))
+
+  as_draws_matrix(draws, ...)
 }
 
 #' @rdname draws_matrix

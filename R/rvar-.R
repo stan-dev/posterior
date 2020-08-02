@@ -836,9 +836,7 @@ drop_ <- function(x) {
 }
 
 # flatten dimensions and names of an array
-flatten_array = function(x) {
-  if(length(dim(x)) < 2) return(x)
-
+flatten_array = function(x, x_name = NULL) {
   # determine new dimension names in the form x,y,z
   # start with numeric names
   dimname_lists = lapply(dim(x), seq_len)
@@ -852,7 +850,19 @@ flatten_array = function(x) {
   new_names <- apply(dimname_grid, 1, paste0, collapse = ",")
 
   dim(x) <- prod(dim(x))
-  names(x) <- new_names
+
+  # update variable names
+  if (is.null(x_name)) {
+    # no base name for x provided, just use index names
+    names(x) <- new_names
+  } else if (length(x) > 1) {
+    # rename the variables with their indices in brackets
+    names(x) <- paste0(x_name, "[", new_names %||% seq_along(x), "]")
+  } else {
+    # just one variable, use the provided base name
+    names(x) <- x_name
+  }
+
   x
 }
 
