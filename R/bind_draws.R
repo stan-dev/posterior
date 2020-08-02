@@ -162,6 +162,33 @@ bind_draws.draws_list <- function(x, ..., along = "variable") {
   as_draws_list(out)
 }
 
+#' @rdname bind_draws
+#' @export
+bind_draws.draws_rvars <- function(x, ..., along = "variable") {
+  along <- validate_along(along)
+  dots <- list(...)
+  if (!length(dots)) {
+    return(as_draws_rvars(x))
+  }
+  dots <- c(list(x), dots)
+  dots <- remove_null(dots)
+  dots <- lapply(dots, as_draws_rvars)
+  dots <- lapply(dots, repair_draws)
+  if (along == "variable") {
+    # TODO: depending on resolution of #81, update check here
+    check_same_fun_output(dots, chain_ids)
+    check_same_fun_output(dots, iteration_ids)
+    out <- do.call(c, dots)
+  } else if (along == "chain") {
+    stop2("TODO: implement")
+  } else if (along == "iteration") {
+    stop2("TODO: implement")
+  } else if (along == "draw") {
+    stop2("TODO: implement")
+  }
+  as_draws_rvars(out)
+}
+
 #' @export
 bind_draws.NULL <- function(x, ..., along = "variable") {
   dots <- list(...)

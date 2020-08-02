@@ -155,6 +155,12 @@ iteration_ids.draws_list <- function(x) {
   seq_along(x[[1]][[1]])
 }
 
+#' @export
+iteration_ids.draws_rvars <- function(x) {
+  # TODO: update after #81 is resolved.
+  seq_len(niterations(x))
+}
+
 #' @rdname draws-index
 #' @export
 chain_ids <- function(x) {
@@ -186,6 +192,12 @@ chain_ids.draws_df <- function(x) {
 chain_ids.draws_list <- function(x) {
   out <- names(x) %||% seq_rows(x)
   as.integer(out)
+}
+
+#' @export
+chain_ids.draws_rvars <- function(x) {
+  # TODO: update after #81 is resolved.
+  seq_len(nchains(x))
 }
 
 #' @rdname draws-index
@@ -223,6 +235,12 @@ draw_ids.draws_list <- function(x) {
   niterations <- niterations(x)
   chain_ids <- chain_ids(x)
   ulapply(chain_ids, function(c) niterations * (c - 1L) + iteration_ids)
+}
+
+#' @export
+draw_ids.draws_rvars <- function(x) {
+  # TODO: update after #81 is resolved.
+  seq_len(ndraws(x))
 }
 
 #' @rdname draws-index
