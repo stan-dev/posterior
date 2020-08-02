@@ -12,6 +12,10 @@ test_that("transformations to and from draws_matrix objects work", {
   draws_list <- as_draws_list(draws_matrix)
   draws_matrix2 <- as_draws_matrix(draws_list)
   expect_equal(draws_matrix, draws_matrix2)
+
+  draws_rvars <- as_draws_rvars(draws_matrix)
+  draws_matrix2 <- as_draws_matrix(draws_rvars)
+  expect_equal(draws_matrix, draws_matrix2)
 })
 
 test_that("transformations to and from draws_array objects work", {
@@ -31,6 +35,10 @@ test_that("transformations to and from draws_array objects work", {
 
   draws_list <- as_draws_list(draws_array)
   draws_array2 <- as_draws_array(draws_list)
+  expect_equal(draws_array, draws_array2)
+
+  draws_rvars <- as_draws_rvars(draws_array)
+  draws_array2 <- as_draws_array(draws_rvars)
   expect_equal(draws_array, draws_array2)
 })
 
@@ -52,6 +60,10 @@ test_that("transformations to and from draws_df objects work", {
   draws_list <- as_draws_list(draws_df)
   draws_df2 <- as_draws_df(draws_list)
   expect_equal(draws_df, draws_df2)
+
+  draws_rvars <- as_draws_rvars(draws_df)
+  draws_df2 <- as_draws_df(draws_rvars)
+  expect_equal(draws_df, draws_df2)
 })
 
 test_that("transformations to and from draws_list objects work", {
@@ -72,6 +84,34 @@ test_that("transformations to and from draws_list objects work", {
   draws_df <- as_draws_df(draws_list)
   draws_list2 <- as_draws_list(draws_df)
   expect_equal(draws_list, draws_list2)
+
+  draws_rvars <- as_draws_rvars(draws_list)
+  draws_list2 <- as_draws_list(draws_rvars)
+  expect_equal(draws_list, draws_list2)
+})
+
+test_that("transformations to and from draws_rvars objects work", {
+  draws_rvars <- as_draws_rvars(example_draws())
+
+  draws_matrix <- as_draws_matrix(draws_rvars)
+  draws_rvars2 <- as_draws_rvars(draws_matrix)
+  # cannot check equality as draws_matrix objects loose chain information
+  expect_equal(
+    summarise_draws(draws_rvars, default_summary_measures()),
+    summarise_draws(draws_rvars2, default_summary_measures())
+  )
+
+  draws_array <- as_draws_array(draws_rvars)
+  draws_rvars2 <- as_draws_rvars(draws_array)
+  expect_equal(draws_rvars, draws_rvars2)
+
+  draws_df <- as_draws_df(draws_rvars)
+  draws_rvars2 <- as_draws_rvars(draws_df)
+  expect_equal(draws_rvars, draws_rvars2)
+
+  draws_list <- as_draws_list(draws_rvars)
+  draws_rvars2 <- as_draws_rvars(draws_list)
+  expect_equal(draws_rvars, draws_rvars2)
 })
 
 test_that("matrices can be transformed to draws_matrix objects", {
