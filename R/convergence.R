@@ -447,7 +447,7 @@ r_scale <- function(x) {
 #' Backtransformation of ranks
 #'
 #' @param r array of ranks
-#' @param c fractional offset; defaults to c = 3/8 as recommend by Bloom (1985)
+#' @param c fractional offset; defaults to c = 3/8 as recommend by Blom (1958)
 #' @noRd
 backtransform_ranks <- function(r, c = 3/8) {
   S <- length(r)
