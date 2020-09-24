@@ -237,6 +237,17 @@ remove_meta_columns <- function(x) {
   x
 }
 
+#' @export
+`[.draws_df` <- function(x, i, j, ..., drop = FALSE, keep_meta = FALSE) {
+  keep_meta <- as_one_logical(keep_meta)
+  out <- NextMethod("[")
+  if (keep_meta) {
+    meta_columns <- meta_columns(x)
+    out[, meta_columns] <- x[, meta_columns, keep_meta = FALSE]
+  }
+  out
+}
+
 # create an empty draws_df object
 empty_draws_df <- function(variables = character(0)) {
   assert_character(variables, null.ok = TRUE)

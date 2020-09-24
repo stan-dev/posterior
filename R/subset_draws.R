@@ -98,7 +98,7 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
   draw <- check_draw_ids(draw, x, unique = unique)
   x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(variable)) {
-    x <- x[, c(variable, meta_columns(x))]
+    x <- x[, variable, keep_meta = TRUE]
   }
   if (!is.null(draw)) {
     # each x$.draw is unique so using 'match' is valid here
