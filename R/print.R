@@ -146,7 +146,9 @@ print.draws_df <- function(x, digits = 2,
   meta_cols <- intersect(names(x), meta_columns())
   sel_draws <- seq_len(min(max_draws, ndraws))
   sel_variables <- seq_len(min(max_variables, nvariables))
-  y <- x[sel_variables]
+  y <- x
+  y[meta_cols] <- NULL
+  y <- y[sel_variables]
   if (meta_columns) {
     y <- cbind(y, x[, meta_cols])
   }
