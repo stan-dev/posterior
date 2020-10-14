@@ -227,7 +227,7 @@ subset_dims <- function(x, ...) {
   if (!reserved) {
     new_vars <- variables(x, reserved = TRUE)
     reserved_vars <- setdiff(reserved_variables(x), new_vars)
-    x <- remove_reserved_variables(x, reserved_vars)
+    x <- remove_variables(x, reserved_vars)
   }
   x
 }
