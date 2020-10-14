@@ -170,11 +170,12 @@ subset_dims <- function(x, ...) {
                                        reserved = FALSE, ...) {
   out <- subset_dims(x, draw, variable)
   if (reserved && !is.null(variable)) {
-    new_vars <- variables(x, reserved = TRUE)
+    new_vars <- variables(out, reserved = TRUE)
     reserved_vars <- setdiff(reserved_variables(x), new_vars)
     if (length(reserved_vars)) {
       x_reserved <- subset_dims(x, draw, reserved_vars)
       out <- cbind(out, x_reserved)
+      class(out) <- class(x)
     }
   }
   out
@@ -185,11 +186,12 @@ subset_dims <- function(x, ...) {
                                       variable = NULL, reserved = FALSE, ...) {
   out <- subset_dims(x, iteration, chain, variable)
   if (reserved && !is.null(variable)) {
-    new_vars <- variables(x, reserved = TRUE)
+    new_vars <- variables(out, reserved = TRUE)
     reserved_vars <- setdiff(reserved_variables(x), new_vars)
     if (length(reserved_vars)) {
-      x_reserved <- subset_dims(x, iteration, chain, reserved_variables)
+      x_reserved <- subset_dims(x, iteration, chain, reserved_vars)
       out <- abind(out, x_reserved, along = 3L)
+      class(out) <- class(x)
     }
   }
   out
@@ -224,9 +226,9 @@ subset_dims <- function(x, ...) {
       x <- as_draws_df(x)
     }
   }
-  if (!reserved) {
-    new_vars <- variables(x, reserved = TRUE)
-    reserved_vars <- setdiff(reserved_variables(x), new_vars)
+  if (!reserved && !is.null(variable)) {
+    # remove reserved variables which were not selected
+    reserved_vars <- setdiff(reserved_variables(x), variable)
     x <- remove_variables(x, reserved_vars)
   }
   x
@@ -247,7 +249,7 @@ subset_dims <- function(x, ...) {
     }
     if (reserved) {
       new_vars <- variables(x, reserved = TRUE)
-      reserved_vars <- setdiff(reserved_variables(x), new_vars)
+      reserved_vars <- setdiff(reserved_variables(z), new_vars)
       if (length(reserved_vars)) {
         for (i in seq_along(x)) {
           x[[i]] <- c(x[[i]], z[[i]][reserved_vars])
