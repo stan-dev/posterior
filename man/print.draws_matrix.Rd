@@ -9,6 +9,7 @@
   digits = 2,
   max_draws = getOption("posterior.max_draws", 10),
   max_variables = getOption("posterior.max_variables", 8),
+  reserved = FALSE,
   ...
 )
 }
@@ -24,6 +25,9 @@ Can be controlled globally via the \code{"posterior.max_draws"} option
 \item{max_variables}{Maximum number of variables to print.
 Can be controlled globally via the \code{"posterior.max_variables"} option
 (see \code{\link{options}} for details).}
+
+\item{reserved}{Logical. Indicates whether reserved variables should be
+included in the output. Defaults to \code{FALSE}.}
 
 \item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}
 }

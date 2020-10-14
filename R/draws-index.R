@@ -4,6 +4,7 @@
 #'
 #' @name draws-index
 #' @template args-methods-x
+#' @template args-methods-dots
 #' @param value For `variables(x) <- value`, a character vector of new variable names.
 #'
 #' @details
@@ -37,38 +38,47 @@ NULL
 
 #' @rdname draws-index
 #' @export
-variables <- function(x) {
+variables <- function(x, ...) {
   UseMethod("variables")
 }
 
 #' @export
-variables.NULL <- function(x) {
+variables.NULL <- function(x, ...) {
   NULL
 }
 
 #' @export
-variables.draws_matrix <- function(x) {
-  colnames(x)
+variables.draws_matrix <- function(x, reserved = FALSE, ...) {
+  remove_reserved_variable_names(colnames(x), reserved)
 }
 
 #' @export
-variables.draws_array <- function(x) {
-  dimnames(x)[[3L]]
+variables.draws_array <- function(x, reserved = FALSE, ...) {
+  remove_reserved_variable_names(dimnames(x)[[3L]], reserved)
 }
 
 #' @export
-variables.draws_df <- function(x) {
-  # can't use setdiff() here as in the corner case where someone
-  # manually creates duplicate columns it will give incorrect results
-  names(x)[!names(x) %in% meta_columns(x)]
+variables.draws_df <- function(x, reserved = FALSE, ...) {
+  remove_reserved_variable_names(names(x), reserved)
 }
 
 #' @export
-variables.draws_list <- function(x) {
+variables.draws_list <- function(x, reserved = FALSE, ...) {
   if (!length(x)) {
     return(character(0))
   }
-  names(x[[1]])
+  remove_reserved_variable_names(names(x[[1]]), reserved)
+}
+
+# remove reserved variable names
+remove_reserved_variable_names <- function(variables, reserved) {
+  reserved <- as_one_logical(reserved)
+  if (!reserved && length(variables)) {
+    # can't use setdiff() here as in the edge case where someone
+    # manually creates duplicate columns it will give incorrect results
+    variables <- variables[!variables %in% all_reserved_variables()]
+  }
+  variables
 }
 
 #' @rdname draws-index
@@ -94,7 +104,7 @@ variables.draws_list <- function(x) {
 #' @export
 `variables<-.draws_df` <- function(x, value) {
   check_new_variables(value)
-  names(x)[!names(x) %in% meta_columns(x)] <- value
+  names(x)[!names(x) %in% reserved_df_variables()] <- value
   x
 }
 
@@ -221,26 +231,8 @@ nvariables.NULL <- function(x) {
 }
 
 #' @export
-nvariables.draws_matrix <- function(x) {
-  NCOL(x)
-}
-
-#' @export
-nvariables.draws_array <- function(x) {
-  dim(x)[3]
-}
-
-#' @export
-nvariables.draws_df <- function(x) {
+nvariables.draws <- function(x) {
   length(variables(x))
-}
-
-#' @export
-nvariables.draws_list <- function(x) {
-  if (!length(x)) {
-    return(0)
-  }
-  length(x[[1]])
 }
 
 #' @rdname draws-index
@@ -352,7 +344,7 @@ check_existing_variables <- function(variables, x, regex = FALSE,
   regex <- as_one_logical(regex)
   scalar_only <- as_one_logical(scalar_only)
   variables <- unique(as.character(variables))
-  all_variables <- variables(x)
+  all_variables <- variables(x, reserved = TRUE)
   if (regex) {
     tmp <- named_list(variables)
     for (i in seq_along(variables)) {
@@ -403,9 +395,12 @@ check_new_variables <- function(variables) {
 # check variables do not make use of reserved words
 check_reserved_variables <- function(variables) {
   assert_character(variables)
-  used_meta_columns <- intersect(meta_columns(), variables)
-  if (length(used_meta_columns)) {
-    stop2("Variable names ", comma(used_meta_columns), " are reserved.")
+  # for now only check reserved columns used in 'draws_df' objects
+  # other reserved variables such as '.log_weight' may be overwritten
+  # this has the advantage that power users can directly add such variables
+  used_reserved_variables <- intersect(reserved_df_variables(), variables)
+  if (length(used_reserved_variables)) {
+    stop2("Variable names ", comma(used_reserved_variables), " are reserved.")
   }
   variables
 }

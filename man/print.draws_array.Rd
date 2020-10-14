@@ -10,6 +10,7 @@
   max_iterations = getOption("posterior.max_iterations", 5),
   max_chains = getOption("posterior.max_chains", 8),
   max_variables = getOption("posterior.max_variables", 4),
+  reserved = FALSE,
   ...
 )
 }
@@ -29,6 +30,9 @@ Can be controlled globally via the \code{"posterior.max_chains"} option
 \item{max_variables}{Maximum number of variables to print.
 Can be controlled globally via the \code{"posterior.max_variables"} option
 (see \code{\link{options}} for details).}
+
+\item{reserved}{Logical. Indicates whether reserved variables should be
+included in the output. Defaults to \code{FALSE}.}
 
 \item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}
 }

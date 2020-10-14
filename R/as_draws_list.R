@@ -58,7 +58,7 @@ as_draws_list.draws_df <- function(x, ...) {
   x <- x[order(x$.draw), ]
   for (i in seq_along(out)) {
     out[[i]] <- subset(x, chain = i)
-    out[[i]] <- remove_meta_columns(out[[i]])
+    out[[i]] <- remove_reserved_df_variables(out[[i]])
     out[[i]] <- as.list(out[[i]])
   }
   class(out) <- class_draws_list()

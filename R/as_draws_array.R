@@ -55,18 +55,17 @@ as_draws_array.draws_df <- function(x, ...) {
   }
   iterations <- iteration_ids(x)
   chains <- chain_ids(x)
-  variables <- setdiff(names(x), meta_columns())
   out <- vector("list", length(chains))
   for (i in seq_along(out)) {
     out[[i]] <- x[x$.chain == i, ]
-    out[[i]] <- remove_meta_columns(out[[i]])
+    out[[i]] <- remove_reserved_df_variables(out[[i]])
     out[[i]] <- as.matrix(out[[i]])
   }
   out <- as_array_matrix_list(out)
   dimnames(out) <- list(
     iteration = iterations,
     chain = chains,
-    variable = variables
+    variable = dimnames(out)[[3]]
   )
   class(out) <- class_draws_array()
   out
@@ -148,6 +147,8 @@ is_draws_array_like <- function(x) {
 #' @export
 `[.draws_array` <- function(x, i, j, ..., drop = FALSE) {
   # TODO: add a warning that 'drop' is ignored?
+  # TODO: allow for argument 'reserved' as in '[.draws_df'
+  #   right now this fails because NextMethod() cannot ignore arguments
   out <- NextMethod("[", drop = FALSE)
   class(out) <- class(x)
   out
