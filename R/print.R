@@ -6,6 +6,7 @@
 #' @template args-print-digits
 #' @template args-print-max_draws
 #' @template args-print-max_variables
+#' @template args-methods-reserved
 #' @template args-print-dots
 #' @template return-draws
 #'
@@ -17,9 +18,10 @@
 print.draws_matrix <- function(x, digits = 2,
                                max_draws = getOption("posterior.max_draws", 10),
                                max_variables = getOption("posterior.max_variables", 8),
-                               ...) {
+                               reserved = FALSE, ...) {
   max_draws <- as_one_integer(max_draws)
   max_variables <- as_one_integer(max_variables)
+  reserved <- as_one_logical(reserved)
   nvariables <- nvariables(x)
   ndraws <- ndraws(x)
   header <- paste0(
@@ -29,7 +31,7 @@ print.draws_matrix <- function(x, digits = 2,
   cat(header)
   sel_draws <- seq_len(min(max_draws, ndraws))
   sel_variables <- seq_len(min(max_variables, nvariables))
-  y <- x[sel_draws, sel_variables]
+  y <- .subset_draws(x, sel_draws, sel_variables, reserved = reserved)
   class(y) <- "matrix"
   print(y, digits = digits, ...)
   more_iterations <- ndraws -  max_draws
@@ -46,6 +48,10 @@ print.draws_matrix <- function(x, digits = 2,
     comment <- paste0("# ... with ", comment, "\n")
     cat(comment)
   }
+  reserved_variables <- reserved_variables(x)
+  if (!reserved && length(reserved_variables)) {
+    cat0("# ... hidden reserved variables ", comma(reserved_variables), "\n")
+  }
   invisible(x)
 }
 
@@ -58,6 +64,7 @@ print.draws_matrix <- function(x, digits = 2,
 #' @template args-print-max_iterations
 #' @template args-print-max_chains
 #' @template args-print-max_variables
+#' @template args-methods-reserved
 #' @template args-print-dots
 #' @template return-draws
 #'
@@ -70,10 +77,11 @@ print.draws_array <- function(x, digits = 2,
                               max_iterations = getOption("posterior.max_iterations", 5),
                               max_chains = getOption("posterior.max_chains", 8),
                               max_variables = getOption("posterior.max_variables", 4),
-                              ...) {
+                              reserved = FALSE, ...) {
   max_iterations <- as_one_integer(max_iterations)
   max_chains <- as_one_integer(max_chains)
   max_variables <- as_one_integer(max_variables)
+  reserved <- as_one_logical(reserved)
   niterations <- niterations(x)
   nchains <- nchains(x)
   nvariables <- nvariables(x)
@@ -85,7 +93,10 @@ print.draws_array <- function(x, digits = 2,
   sel_iterations <- seq_len(min(max_iterations, niterations))
   sel_chains <- seq_len(min(max_chains, nchains))
   sel_variables <- seq_len(min(max_variables, nvariables))
-  y <- x[sel_iterations, sel_chains, sel_variables]
+  y <- .subset_draws(
+    x, sel_iterations, sel_chains, sel_variables,
+    reserved = reserved
+  )
   class(y) <- "array"
   print(y, digits = digits, ...)
   more_iterations <- niterations - max_iterations
@@ -106,6 +117,10 @@ print.draws_array <- function(x, digits = 2,
     comment <- paste0("# ... with ", comment, "\n")
     cat(comment)
   }
+  reserved_variables <- reserved_variables(x)
+  if (!reserved && length(reserved_variables)) {
+    cat0("# ... hidden reserved variables ", comma(reserved_variables), "\n")
+  }
   invisible(x)
 }
 
@@ -117,8 +132,7 @@ print.draws_array <- function(x, digits = 2,
 #' @template args-print-digits
 #' @template args-print-max_draws
 #' @template args-print-max_variables
-#' @param meta_columns Logical. Show the meta-columns `.chain`,
-#' `.iteration`, and `.draw` in printed output? Defaults to `FALSE`.
+#' @template args-methods-reserved
 #' @template args-print-dots
 #' @template return-draws
 #'
@@ -130,10 +144,10 @@ print.draws_array <- function(x, digits = 2,
 print.draws_df <- function(x, digits = 2,
                            max_draws = getOption("posterior.max_draws", 10),
                            max_variables = getOption("posterior.max_variables", 8),
-                           meta_columns = FALSE, ...) {
+                           reserved = FALSE, ...) {
   max_draws <- as_one_integer(max_draws)
   max_variables <- as_one_integer(max_variables)
-  meta_columns <- as_one_logical(meta_columns)
+  reserved <- as_one_logical(reserved)
   niterations <- niterations(x)
   nchains <- nchains(x)
   ndraws <- ndraws(x)
@@ -143,16 +157,15 @@ print.draws_df <- function(x, digits = 2,
     nchains, " chains, and ", nvariables, " variables\n"
   )
   cat(header)
-  meta_cols <- intersect(names(x), meta_columns())
   sel_draws <- seq_len(min(max_draws, ndraws))
   sel_variables <- seq_len(min(max_variables, nvariables))
-  y <- x
-  y[meta_cols] <- NULL
-  y <- y[sel_variables]
-  if (meta_columns) {
-    y <- cbind(y, x[, meta_cols])
+  y <- .subset_draws(
+    x, draw = sel_draws, variable = sel_variables,
+    reserved = reserved
+  )
+  if (!reserved) {
+    y <- remove_reserved_df_variables(y)
   }
-  y <- y[sel_draws, ]
   class(y) <- "data.frame"
   print(y, digits = digits, ...)
   more_iterations <- ndraws - max_draws
@@ -169,8 +182,9 @@ print.draws_df <- function(x, digits = 2,
     comment <- paste0("# ... with ", comment, "\n")
     cat(comment)
   }
-  if (!meta_columns) {
-    cat0("# ... hidden meta-columns ", comma(meta_cols), "\n")
+  reserved_variables <- all_reserved_variables(x)
+  if (!reserved && length(reserved_variables)) {
+    cat0("# ... hidden reserved variables ", comma(reserved_variables), "\n")
   }
   invisible(x)
 }
@@ -184,6 +198,7 @@ print.draws_df <- function(x, digits = 2,
 #' @template args-print-max_iterations
 #' @template args-print-max_chains
 #' @template args-print-max_variables
+#' @template args-methods-reserved
 #' @template args-print-dots
 #' @template return-draws
 #'
@@ -196,10 +211,11 @@ print.draws_list <- function(x, digits = 2,
                              max_iterations = getOption("posterior.max_iterations", 10),
                              max_chains = getOption("posterior.max_chains", 2),
                              max_variables = getOption("posterior.max_variables", 4),
-                             ...) {
+                             reserved = FALSE, ...) {
   max_iterations <- as_one_integer(max_iterations)
   max_chains <- as_one_integer(max_chains)
   max_variables <- as_one_integer(max_variables)
+  reserved <- as_one_logical(reserved)
   niterations <- niterations(x)
   nchains <- nchains(x)
   nvariables <- nvariables(x)
@@ -211,12 +227,11 @@ print.draws_list <- function(x, digits = 2,
   sel_iterations <- seq_len(min(max_iterations, niterations))
   sel_chains <- seq_len(min(max_chains, nchains))
   sel_variables <- seq_len(min(max_variables, nvariables))
-  y <- x[sel_chains]
+  y <- .subset_draws(
+    x, sel_iterations, sel_chains, sel_variables,
+    reserved = reserved
+  )
   for (i in seq_along(y)) {
-    y[[i]] <- y[[i]][sel_variables]
-    for (j in seq_along(y[[i]])) {
-      y[[i]][[j]] <- y[[i]][[j]][sel_iterations]
-    }
     cat0("\n[chain = ", i, "]\n")
     print(y[[i]], digits = digits, ...)
   }
@@ -237,6 +252,10 @@ print.draws_list <- function(x, digits = 2,
     comment <- paste0(comment, collapse = ", and ")
     comment <- paste0("# ... with ", comment, "\n")
     cat(comment)
+  }
+  reserved_variables <- reserved_variables(x)
+  if (!reserved && length(reserved_variables)) {
+    cat0("# ... hidden reserved variables ", comma(reserved_variables), "\n")
   }
   invisible(x)
 }

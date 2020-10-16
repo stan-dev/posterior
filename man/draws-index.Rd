@@ -13,7 +13,7 @@
 \alias{ndraws}
 \title{Index \code{draws} objects}
 \usage{
-variables(x)
+variables(x, ...)
 
 variables(x) <- value
 
@@ -23,7 +23,7 @@ chain_ids(x)
 
 draw_ids(x)
 
-nvariables(x)
+nvariables(x, ...)
 
 niterations(x)
 
@@ -33,6 +33,8 @@ ndraws(x)
 }
 \arguments{
 \item{x}{An \R object for which the methods are defined.}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 
 \item{value}{For \code{variables(x) <- value}, a character vector of new variable names.}
 }

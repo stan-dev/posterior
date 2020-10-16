@@ -7,6 +7,10 @@ test_that("subset_draws works correctly for draws_matrix objects", {
   x_sub <- subset_draws(x, draw = c(2, 2, 4, 4), unique = FALSE)
   expect_equal(niterations(x_sub), 4)
   expect_equivalent(x_sub[1, ], x_sub[2, ])
+
+  x <- weight_draws(x, rep(1, ndraws(x)))
+  x_sub <- subset_draws(x, variable = "mu")
+  expect_equal(variables(x_sub, reserved = TRUE), c("mu", ".log_weight"))
 })
 
 test_that("subset_draws works correctly for draws_array objects", {
@@ -26,6 +30,10 @@ test_that("subset_draws works correctly for draws_array objects", {
     "Merging chains in order to subset via 'draw'"
   )
   expect_equal(niterations(x_sub), 3)
+
+  x <- weight_draws(x, rep(1, ndraws(x)))
+  x_sub <- subset_draws(x, variable = "mu")
+  expect_equal(variables(x_sub, reserved = TRUE), c("mu", ".log_weight"))
 })
 
 test_that("subset works correctly for draws_df objects", {
@@ -38,6 +46,10 @@ test_that("subset works correctly for draws_df objects", {
   x_sub <- subset_draws(x, draw = c(5, 5, 6), unique = FALSE)
   expect_equal(ndraws(x_sub), 3)
   expect_equal(x_sub$mu[1], x_sub$mu[2])
+
+  x <- weight_draws(x, rep(1, ndraws(x)))
+  x_sub <- subset_draws(x, variable = "mu")
+  expect_equal(names(x_sub), c("mu", ".log_weight", ".chain", ".iteration", ".draw"))
 })
 
 test_that("subset_draws works correctly for draws_list objects", {
@@ -56,6 +68,10 @@ test_that("subset_draws works correctly for draws_list objects", {
     "Merging chains in order to subset via 'draw'"
   )
   expect_equal(niterations(x_sub), 3)
+
+  x <- weight_draws(x, rep(1, ndraws(x)))
+  x_sub <- subset_draws(x, variable = "mu")
+  expect_equal(variables(x_sub, reserved = TRUE), c("mu", ".log_weight"))
 })
 
 test_that("variables can be subsetted via regular expressions", {

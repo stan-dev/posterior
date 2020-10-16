@@ -58,7 +58,7 @@ as_draws_matrix.draws_df <- function(x, ...) {
     return(empty_draws_matrix(variables(x)))
   }
   draws <- x$.draw
-  x <- remove_meta_columns(x)
+  x <- remove_reserved_df_variables(x)
   class(x) <- class(x)[-1L]
   x <- .as_draws_matrix(x)
   rownames(x) <- draws
@@ -127,6 +127,8 @@ is_draws_matrix_like <- function(x) {
 #' @export
 `[.draws_matrix` <- function(x, i, j, ..., drop = FALSE) {
   # TODO: add a warning that 'drop' is ignored?
+  # TODO: allow for argument 'reserved' as in '[.draws_df'
+  #   right now this fails because NextMethod() cannot ignore arguments
   out <- NextMethod("[", drop = FALSE)
   class(out) <- class(x)
   out

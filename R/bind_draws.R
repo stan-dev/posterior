@@ -86,10 +86,10 @@ bind_draws.draws_df <- function(x, ..., along = "variable") {
   if (along == "variable") {
     check_same_fun_output(dots, chain_ids)
     check_same_fun_output(dots, iteration_ids)
-    meta_columns <- dots[[1]][, c(".chain", ".iteration")]
-    dots <- lapply(dots, remove_meta_columns)
+    reserved_df_values <- dots[[1]][, c(".chain", ".iteration")]
+    dots <- lapply(dots, remove_reserved_df_variables)
     out <- do_call(cbind, dots)
-    out <- cbind(meta_columns, out)
+    out <- cbind(out, reserved_df_values)
   } else if (along == "chain") {
     check_same_fun_output(dots, variables)
     check_same_fun_output(dots, iteration_ids)
