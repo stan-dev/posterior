@@ -23,7 +23,7 @@ chain_ids(x)
 
 draw_ids(x)
 
-nvariables(x)
+nvariables(x, ...)
 
 niterations(x)
 

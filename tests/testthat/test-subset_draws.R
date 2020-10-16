@@ -49,8 +49,7 @@ test_that("subset works correctly for draws_df objects", {
 
   x <- weight_draws(x, rep(1, ndraws(x)))
   x_sub <- subset_draws(x, variable = "mu")
-  expect_equal(variables(x_sub, reserved = TRUE),
-               c("mu", ".log_weight", ".chain", ".iteration", ".draw"))
+  expect_equal(names(x_sub), c("mu", ".log_weight", ".chain", ".iteration", ".draw"))
 })
 
 test_that("subset_draws works correctly for draws_list objects", {

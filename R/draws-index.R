@@ -59,7 +59,10 @@ variables.draws_array <- function(x, reserved = FALSE, ...) {
 
 #' @export
 variables.draws_df <- function(x, reserved = FALSE, ...) {
-  remove_reserved_variable_names(names(x), reserved)
+  # reserved_df_variables are special data.frame columns
+  # which should never be included as variables
+  out <- names(x)[!names(x) %in% reserved_df_variables()]
+  remove_reserved_variable_names(out, reserved)
 }
 
 #' @export
@@ -76,7 +79,7 @@ remove_reserved_variable_names <- function(variables, reserved) {
   if (!reserved && length(variables)) {
     # can't use setdiff() here as in the edge case where someone
     # manually creates duplicate columns it will give incorrect results
-    variables <- variables[!variables %in% all_reserved_variables()]
+    variables <- variables[!variables %in% reserved_variables()]
   }
   variables
 }
@@ -222,17 +225,17 @@ draw_ids.draws_list <- function(x) {
 
 #' @rdname draws-index
 #' @export
-nvariables <- function(x) {
+nvariables <- function(x, ...) {
   UseMethod("nvariables")
 }
 #' @export
-nvariables.NULL <- function(x) {
+nvariables.NULL <- function(x, ...) {
   0
 }
 
 #' @export
-nvariables.draws <- function(x) {
-  length(variables(x))
+nvariables.draws <- function(x, ...) {
+  length(variables(x, ...))
 }
 
 #' @rdname draws-index

@@ -220,7 +220,6 @@ subset_dims <- function(x, ...) {
       x <- repair_draws(x, order = FALSE)
     } else {
       # non-unique subsetting is conceptually easier in 'draws_list' objects
-      # TODO: perform non-unique subsetting directly in the 'draws_df' object
       x <- as_draws_list(x)
       x <- subset_draws(x, chain = chain, iteration = iteration, unique = FALSE)
       x <- as_draws_df(x)
