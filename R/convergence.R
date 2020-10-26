@@ -316,39 +316,66 @@ quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
   out
 }
 
-#' Calculate R star
+#' Calculate R star convergence diagnostic
 #'
-#' Compute R* using a machine learning classifier
+#' The `rstar` function generates a measure of convergence for MCMC based on
+#' whether it is possible to determine the Markov chain that generated a draw with
+#' probability greater than chance. To do so, it fits a machine learning classifier
+#' to a training set of MCMC draws and evalutes its predictive accuracy on a testing
+#' set.
 #'
-#' @param x a `draws_df`` object
+#' @param x a `draws_df` object or one coercible to a `draws_df` object.
 #'
-#' @param split_chains a Boolean (defaults to true) indicating whether to split
-#' chains into two equal halves
+#' @param split_chains a Boolean indicating whether to split
+#' chains into two equal halves.
 #'
-#' @param uncertainty whether to provide a list of R* values (if true) or a single value (if false) (defaults to false)
+#' @param uncertainty whether to provide a list of R* values (if true) or a single value (if false).
 #'
-#' @param method ML classifer available in Caret R package (defaults to rf model)
+#' @param method machine learning classifer available in Caret R package.
 #'
-#' @param hyperparameters hyperparameter settings for ML classifier given as a list (defaults
-#' to NULL)
+#' @param hyperparameters hyperparameter settings for ML classifier given as a list.
 #'
-#' @param nsim number of R* values in returned list if uncertainty=T (defaults to 1000)
+#' @param nsim number of R* values in returned vector if uncertainty=T.
 #'
-#' @param training_percent proportion of iterations used to train GBM model
-#' (default is 0.7)
+#' @param training_percent proportion of iterations used to train GBM model.
 #'
-#' @return R* value(s)
+#' @details `rstar` provides a measure of MCMC convergence based on whether it is possible
+#' to determine the chain that generated a particular draw with a probability greater than
+#' chance. To do so, it fits a machine learning classifier to a subset of the original
+#' MCMC draws (the training set) and evaluates its predictive accuracy on the remaining
+#' draws (the testing set). If predictive accuracy exceeds chance (i.e. predicting a
+#' the chain that generated a draw uniformly at random), the diagnostic measure, R* > 1,
+#' indicating that convergence has yet to occur. The statistic, R*, is stochastic,
+#' meaning that each time the test is run, unless the random seed is fixed, it will
+#' generally produce a different result. To minimise the implications of this
+#' stochasticity, it is recommended to repeatedly run this function to calculate a
+#' distribution of R*; alternatively, an approximation to this distribution can be
+#' obtained by setting uncertainty = T.
+#'
+#' @return A single numeric R* value by default or a vector of values if uncertainty=T.
 #'
 #' @references Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
 #' diagnostic with uncertainty using gradient-boosted machines
 #' \emph{arXiv preprint} \code{arXiv:TBD}
-r_star <- function(x, split_chains=T, uncertainty=F, method=NULL, hyperparameters=NULL,
+#'
+#' @examples
+#' x <- example_draws("eight_schools")
+#' rstar(x)
+#' rstar(x, split_chains = F)
+#' rstar(x, method = "gbm")
+#'
+#' # with uncertainty, returns a vector of R* values.
+#' hist(rstar(x, uncertainty = T))
+#' hist(rstar(x, uncertainty = T, nsim = 100))
+#'
+rstar <- function(x, split_chains=T, uncertainty=F, method=NULL, hyperparameters=NULL,
                             training_percent=0.7, nsim=1000, ...){
 
+  x <- as_draws_df(x)
   if(split_chains)
     x <- split_chains_draws_df(x)
 
-  # if only 1 param, add in a column of random noise for classifiers
+  # if only 1 param, add in a column of random noise
   nparams <- nvariables(x)
   if(nparams==1)
     x$V_new <- rnorm(nrow(x))
