@@ -316,6 +316,92 @@ quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
   out
 }
 
+#' Calculate R star
+#'
+#' Compute R* using a machine learning classifier
+#'
+#' @param x a `draws_df`` object
+#'
+#' @param split_chains a Boolean (defaults to true) indicating whether to split
+#' chains into two equal halves
+#'
+#' @param uncertainty whether to provide a list of R* values (if true) or a single value (if false) (defaults to false)
+#'
+#' @param method ML classifer available in Caret R package (defaults to rf model)
+#'
+#' @param hyperparameters hyperparameter settings for ML classifier given as a list (defaults
+#' to NULL)
+#'
+#' @param nsim number of R* values in returned list if uncertainty=T (defaults to 1000)
+#'
+#' @param training_percent proportion of iterations used to train GBM model
+#' (default is 0.7)
+#'
+#' @return R* value(s)
+#'
+#' @references Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
+#' diagnostic with uncertainty using gradient-boosted machines
+#' \emph{arXiv preprint} \code{arXiv:TBD}
+r_star <- function(x, split_chains=T, uncertainty=F, method=NULL, hyperparameters=NULL,
+                            training_percent=0.7, nsim=1000, ...){
+
+  if(split_chains)
+    x <- split_chains_draws_df(x)
+
+  # if only 1 param, add in a column of random noise for classifiers
+  nparams <- nvariables(x)
+  if(nparams==1)
+    x$V_new <- rnorm(nrow(x))
+
+  # create training / testing sets
+  x$.chain <- as.factor(x$.chain)
+  rand_samples <- sample(1:nrow(x), training_percent * nrow(x))
+  training_data <- x[rand_samples, ]
+  testing_data <- x[-rand_samples, ]
+
+  # choose hyperparameters
+  if(is.null(method)) {
+    method <- "rf"
+  } else if(is.null(hyperparameters) && method=="gbm") {
+    caret_grid <- tibble(interaction.depth=c(3),
+                         n.trees = 50,
+                         shrinkage=c(0.1),
+                         n.minobsinnode=10)
+  } else if(is.null(hyperparameters)) {
+    caret_grid <- tibble(mtry=floor(sqrt(nparams)))
+  } else {
+    caret_grid <- hyperparameters
+  }
+
+  # remove iteration / draws columns and fit classifier
+  training_data <- training_data[, c(variables(training_data), ".chain")]
+  fit <- train(.chain ~ .,
+               data = training_data,
+               method = method,
+               trControl = trainControl(method = 'none'),
+               tuneGrid = caret_grid,
+               ...)
+
+  # calculate classification accuracy then R*
+  nchains <- length(unique(testing_data$.chain))
+  if(uncertainty){
+    probs <- predict(object=fit, newdata=testing_data, type = "prob")
+    m_accuracy <- matrix(nrow = nrow(probs),
+                         ncol = nsim)
+    for(j in 1:nrow(probs)){
+      vals <- rmultinom(nsim, 1, prob = probs[j, ])
+      test <- apply(vals, 2, function(x) which(x==1))
+      m_accuracy[j, ] <- if_else(test == testing_data$.chain[j], 1, 0)
+    }
+    return(colMeans(m_accuracy) * nchains)
+  } else{
+    plda <- predict(object=fit, newdata=testing_data)
+    res <- tibble(predicted=plda, actual=testing_data$.chain)
+    accuracy <- mean(res$predicted == res$actual)
+    return(accuracy * nchains)
+  }
+}
+
 # internal ----------------------------------------------------------------
 
 #' Find the optimal next size for the FFT so that a minimum number of zeros
@@ -569,4 +655,27 @@ fold_draws <- function(x) {
 # should NA be returned by a convergence diagnostic?
 should_return_NA <- function(x) {
   anyNA(x) || checkmate::anyInfinite(x) || is_constant(x)
+}
+
+# splits chains into halves within a `draws_df` object
+split_chains_draws_df <- function(x) {
+  nchain <- nchains(x)
+  k <- 1
+  for(i in 1:nchain) {
+    tmp <- x$.chain[x$.chain == i]
+    niter <- length(tmp)
+    if(niter > 1) {
+      half <- niter / 2
+      tmp[1:floor(half)] <- k
+      k <- k + 1
+      tmp[ceiling(half + 1):niter] <- k
+      k <- k + 1
+    }
+    if(i == 1)
+      chains <- tmp
+    else
+      chains <- c(chains, tmp)
+  }
+  x$.chain <- chains
+  return(x)
 }
