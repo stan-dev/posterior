@@ -126,8 +126,7 @@ weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
   log <- as_one_logical(log)
   normalize <- as_one_logical(normalize)
   if (!".log_weight" %in% variables(object, reserved = TRUE)) {
-    stop2("No weights found in the draws object. ",
-          "You can add weights via 'weight_draws'.")
+    return(NULL)
   }
   out <- extract_variable(object, ".log_weight")
   if (normalize) {
