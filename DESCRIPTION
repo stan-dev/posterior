@@ -27,7 +27,10 @@ Imports:
   stats,
   tibble (>= 3.0.0)
 Suggests: 
-  testthat (>= 2.1.0)
+  testthat (>= 2.1.0),
+  caret (>= 6.0.84),
+  gbm (>= 2.1.8),
+  randomForest (>= randomForest 4.6.14)
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
