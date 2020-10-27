@@ -8,7 +8,7 @@ rstar(
   x,
   split_chains = TRUE,
   uncertainty = FALSE,
-  method = NULL,
+  method = "rf",
   hyperparameters = NULL,
   training_proportion = 0.7,
   nsimulations = 1000,
@@ -98,5 +98,5 @@ rstar(x, method = "knn")
 \references{
 Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
 diagnostic with uncertainty using gradient-boosted machines \emph{arXiv
-preprint} \code{arXiv:TBD}.
+preprint} \code{arXiv:2003.07900}.
 }
