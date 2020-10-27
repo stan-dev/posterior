@@ -61,13 +61,11 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
   assert_choice(method, supported_resample_methods())
   assert_number(ndraws, null.ok = TRUE, lower = 0)
   if (is.null(weights)) {
-    tryCatch(
-      weights <- weights(x, normalize = TRUE),
-      error = function(e) stop2(
-        "No weights are provided and none can ",
-        "be found within the draws object."
-      )
-    )
+    weights <- weights(x, normalize = TRUE)
+    if (is.null(weights)) {
+      stop2("No weights are provided and none can ",
+            "be found within the draws object.")
+    }
   } else {
     weights <- weights / sum(weights)
   }
