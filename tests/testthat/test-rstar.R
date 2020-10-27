@@ -20,6 +20,7 @@ test_that("incorrect nsimulations values throws error", {
 test_that("rstar with uncertainty returns reasonable values", {
   x <- example_draws()
   val <- rstar(x, method = "gbm", uncertainty = T, verbose = F)
+  print(val)
   expect_true(max(val) > 0.3 & min(val) < 10)
 })
 
