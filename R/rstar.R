@@ -66,7 +66,7 @@
 #'
 #' @references Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
 #'   diagnostic with uncertainty using gradient-boosted machines \emph{arXiv
-#'   preprint} \code{arXiv:TBD}.
+#'   preprint} \code{arXiv:2003.07900}.
 #'
 #' @examples
 #' x <- example_draws("eight_schools")
