@@ -356,7 +356,7 @@ quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
 #'
 #' By default, a random forest classifier is used, which tends to perform best for
 #' target distribution dimensionalities of around 4 and above. For lower dimensional
-#' targets, gradient boosted models (called via `method=\"gbm\") tend to have a
+#' targets, gradient boosted models (called via `method=\"gbm\"`) tend to have a
 #' higher classification accuracy. On a given MCMC sample, it is recommended to
 #' try both of these classifiers.
 #'
