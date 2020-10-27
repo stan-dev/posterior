@@ -372,13 +372,14 @@ quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
 #' rstar(x)
 #' rstar(x, split_chains = F)
 #' rstar(x, method = "gbm")
+#' # can pass additional arguments to methods
 #' rstar(x, method = "gbm", verbose = F)
 #'
-#' # with uncertainty, returns a vector of R* values.
+#' # with uncertainty, returns a vector of R* values
 #' hist(rstar(x, uncertainty = T))
 #' hist(rstar(x, uncertainty = T, nsim = 100))
 #'
-#' # can use other classification methods in Caret library
+#' # can use other classification methods in caret library
 #' rstar(x, method = "knn")
 #'
 #' @export
