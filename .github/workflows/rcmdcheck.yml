@@ -8,7 +8,7 @@ on:
       - main
       - master
 
-name: rcmdcheck
+name: R-CMD-check
 
 jobs:
   R-CMD-check:
