@@ -94,10 +94,9 @@ rstar <-
            nsimulations = 1000,
            ...) {
 
-  if (!requireNamespace("caret", quietly = TRUE)) {
-    stop("Package \"caret\" needed for this function to work. Please install it.")
+  if (!"caret" %in% (.packages())) {
+    stop("Package \"caret\" needed for this function to work. Please load it.")
   }
-  require(caret)
 
   nsimulations <- round(nsimulations)
   if (nsimulations < 1) {
