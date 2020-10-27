@@ -318,41 +318,50 @@ quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
 
 #' Calculate R star convergence diagnostic
 #'
-#' The `rstar` function generates a measure of convergence for MCMC based on
+#' The `rstar` function generates a measure of convergence for MCMC draws based on
 #' whether it is possible to determine the Markov chain that generated a draw with
 #' probability greater than chance. To do so, it fits a machine learning classifier
 #' to a training set of MCMC draws and evalutes its predictive accuracy on a testing
-#' set.
+#' set: giving the ratio of accuracy to predicting a chain uniformly at random.
 #'
 #' @param x a `draws_df` object or one coercible to a `draws_df` object.
 #'
-#' @param split_chains a Boolean indicating whether to split
-#' chains into two equal halves.
+#' @param split_chains a Boolean indicating whether to split chains into two equal
+#' halves.
 #'
-#' @param uncertainty whether to provide a list of R* values (if true) or a single value (if false).
+#' @param uncertainty whether to provide a vector of R* values (if true) or a single
+#' value (if false).
 #'
-#' @param method machine learning classifer available in Caret R package.
+#' @param method machine learning classifer available in caret R package.
 #'
-#' @param hyperparameters hyperparameter settings for ML classifier given as a list.
+#' @param hyperparameters hyperparameter settings for classifier given as a list.
 #'
-#' @param nsim number of R* values in returned vector if uncertainty=T.
+#' @param nsim number of R* values in returned vector if uncertainty is true.
 #'
-#' @param training_proportion proportion of iterations used to train GBM model.
+#' @param training_proportion proportion of iterations used to train classifier.
 #'
-#' @details `rstar` provides a measure of MCMC convergence based on whether it is possible
-#' to determine the chain that generated a particular draw with a probability greater than
-#' chance. To do so, it fits a machine learning classifier to a subset of the original
-#' MCMC draws (the training set) and evaluates its predictive accuracy on the remaining
-#' draws (the testing set). If predictive accuracy exceeds chance (i.e. predicting a
-#' the chain that generated a draw uniformly at random), the diagnostic measure, R* > 1,
-#' indicating that convergence has yet to occur. The statistic, R*, is stochastic,
-#' meaning that each time the test is run, unless the random seed is fixed, it will
-#' generally produce a different result. To minimise the implications of this
-#' stochasticity, it is recommended to repeatedly run this function to calculate a
-#' distribution of R*; alternatively, an approximation to this distribution can be
-#' obtained by setting uncertainty = T.
+#' @details `rstar` provides a measure of MCMC convergence based on whether it is
+#' possible to determine the chain that generated a particular draw with a probability
+#' greater than chance. To do so, it fits a machine learning classifier to a subset of
+#' the original MCMC draws (the training set) and evaluates its predictive accuracy on
+#' the remaining draws (the testing set). If predictive accuracy exceeds chance (i.e.
+#' predicting the chain that generated a draw uniformly at random), the diagnostic
+#' measure, R* > 1, indicating that convergence has yet to occur.
 #'
-#' @return A single numeric R* value by default or a vector of values if uncertainty=T.
+#' The statistic, R*, is stochastic, meaning that each time the test is run, unless
+#' the random seed is fixed, it will generally produce a different result. To minimise
+#' the implications of this stochasticity, it is recommended to repeatedly run this
+#' function to calculate a distribution of R*; alternatively, an approximation to this
+#' distribution can be obtained by setting uncertainty = T.
+#'
+#' By default, a random forest classifier is used, which tends to perform best for
+#' target distribution dimensionalities of around 4 and above. For lower dimensional
+#' targets, gradient boosted models (called via `method=\"gbm\") tend to have a
+#' higher classification accuracy. On a given MCMC sample, it is recommended to
+#' try both of these classifiers.
+#'
+#' @return A single numeric R* value (by default) or a vector of values (if
+#' uncertainty is true).
 #'
 #' @references Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
 #' diagnostic with uncertainty using gradient-boosted machines
@@ -375,6 +384,10 @@ quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
 #' @export
 rstar <- function(x, split_chains=T, uncertainty=F, method=NULL, hyperparameters=NULL,
                             training_proportion=0.7, nsim=1000, ...){
+
+  if(!requireNamespace("caret", quietly = T))
+    stop("Package \"caret\" needed for this function to work. Please install it.")
+  require(caret)
 
   nsim <- round(nsim)
   if(nsim < 1)
@@ -401,11 +414,11 @@ rstar <- function(x, split_chains=T, uncertainty=F, method=NULL, hyperparameters
   # choose hyperparameters
   if(is.null(method)) {
     method <- "rf"
-    caret_grid <- tibble(mtry=floor(sqrt(nparams)))
+    caret_grid <- data.frame(mtry=floor(sqrt(nparams)))
   } else if(is.null(hyperparameters) && method=="gbm") {
-    caret_grid <- tibble(interaction.depth=c(3),
+    caret_grid <- data.frame(interaction.depth=3,
                          n.trees = 50,
-                         shrinkage=c(0.1),
+                         shrinkage=0.1,
                          n.minobsinnode=10)
   } else {
     caret_grid <- hyperparameters
@@ -434,7 +447,7 @@ rstar <- function(x, split_chains=T, uncertainty=F, method=NULL, hyperparameters
     return(colMeans(m_accuracy) * nchains)
   } else{
     plda <- predict(object=fit, newdata=testing_data)
-    res <- tibble(predicted=plda, actual=testing_data$.chain)
+    res <- data.frame(predicted=plda, actual=testing_data$.chain)
     accuracy <- mean(res$predicted == res$actual)
     return(accuracy * nchains)
   }
