@@ -4,6 +4,22 @@ test_that("rstar returns reasonable values", {
   expect_true(val > 0.8 & val < 10)
 })
 
+test_that("rstar works with 1d example", {
+  x <- example_draws()
+  x <- as_draws_df(x)
+  # remove all bar one variable
+  x <- x[, c(variables(x)[1], ".chain", ".iteration", ".draw")]
+  val <- rstar(x)
+  expect_true(val > 0.5 & val < 10)
+})
+
+test_that("rstar works with draws_df example", {
+  x <- example_draws()
+  x <- as_draws_df(x)
+  val <- rstar(x)
+  expect_true(val > 0.5 & val < 10)
+})
+
 test_that("rstar with uncertainty returns vectors of correct length", {
   x <- example_draws()
   val <- rstar(x, method = "gbm", uncertainty = T, verbose = F)
@@ -80,7 +96,7 @@ test_that("rstar throws error when passed invalid training_proportion", {
 
 test_that("split-chain R* returns generally higher values", {
   x <- example_draws()
-  n <- 5
+  n <- 10
   vals_split <- vector(length = n)
   vals_unsplit <- vector(length = n)
   for(i in 1:n) {

@@ -88,7 +88,7 @@ rstar <-
   function(x,
            split_chains = TRUE,
            uncertainty = FALSE,
-           method = NULL,
+           method = "rf",
            hyperparameters = NULL,
            training_proportion = 0.7,
            nsimulations = 1000,
@@ -126,10 +126,9 @@ rstar <-
   testing_data <- x[-rand_samples, ]
 
   # choose hyperparameters
-  if (is.null(method)) {
-    method <- "rf"
+  if (method=="rf" && is.null(hyperparameters)) {
     caret_grid <- data.frame(mtry=floor(sqrt(nvars)))
-  } else if(is.null(hyperparameters) && method=="gbm") {
+  } else if(method=="gbm" && is.null(hyperparameters)) {
     caret_grid <- data.frame(interaction.depth=3,
                              n.trees = 50,
                              shrinkage=0.1,
