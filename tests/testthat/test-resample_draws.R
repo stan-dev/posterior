@@ -48,14 +48,14 @@ test_that("Resampling algorithms return the correct result in expectation", {
   # method 'simple_no_replace' will be biased for weights with large variance
 })
 
-test_that("resample_draws uses stored weights when available", {
-  x <- example_draws()
-  expect_error(resample_draws(x),
-    "No weights are provided and none can be found within the draws object"
-  )
-  w <- runif(ndraws(x), 0, 10)
-  x <- weight_draws(x, w)
-  x_rs <- resample_draws(x)
-  expect_true(is_draws_array(x_rs))
-  expect_equal(ndraws(x_rs), ndraws(x))
-})
+# test_that("resample_draws uses stored weights when available", {
+#   x <- example_draws()
+#   expect_error(resample_draws(x),
+#     "No weights are provided and none can be found within the draws object"
+#   )
+#   w <- runif(ndraws(x), 0, 10)
+#   x <- weight_draws(x, w)
+#   x_rs <- resample_draws(x)
+#   expect_true(is_draws_array(x_rs))
+#   expect_equal(ndraws(x_rs), ndraws(x))
+# })
