@@ -1,4 +1,3 @@
-# Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018 Trustees of Columbia University
 # Copyright (C) 2020 Ben Lambert, Aki Vehtari
 # See LICENSE.md for more details
 
