@@ -139,12 +139,14 @@ rstar <-
   # remove iteration / draws columns and fit classifier
   training_data$.iteration <- training_data$.draw <- NULL
   class(training_data) <- class(training_data)[-(1:2)]
-  fit <- train(.chain ~ .,
-               data = training_data,
-               method = method,
-               trControl = trainControl(method = 'none'),
-               tuneGrid = caret_grid,
-               ...)
+  fit <- caret::train(
+    .chain ~ .,
+    data = training_data,
+    method = method,
+    trControl = caret::trainControl(method = 'none'),
+    tuneGrid = caret_grid,
+    ...
+  )
 
   # calculate classification accuracy then R*
   nchains <- length(unique(testing_data$.chain))
