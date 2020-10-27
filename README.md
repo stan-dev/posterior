@@ -7,10 +7,7 @@
 
 [![CRAN
 status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.org/package=posterior)
-[![Travis Build
-Status](https://travis-ci.org/stan-dev/posterior.svg?branch=master)](https://travis-ci.org/stan-dev/posterior)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/stan-dev/posterior?branch=master&svg=true)](https://ci.appveyor.com/project/jgabry/posterior)
+[![R-CMD-check](https://github.com/stan-dev/posterior/workflows/R-CMD-check/badge.svg)](https://github.com/stan-dev/posterior/actions?workflow=R-CMD-check)
 [![Coverage
 Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
 <!-- badges: end -->
