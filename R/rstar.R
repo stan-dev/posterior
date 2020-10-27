@@ -1,5 +1,5 @@
 # Copyright (C) 2012, 2013, 2014, 2015, 2016, 2017, 2018 Trustees of Columbia University
-# Copyright (C) 2018, 2019 Aki Vehtari, Paul Bürkner
+# Copyright (C) 2020 Ben Lambert, Aki Vehtari
 # See LICENSE.md for more details
 
 #' Calculate R star convergence diagnostic
@@ -62,14 +62,14 @@
 #' @examples
 #' x <- example_draws("eight_schools")
 #' rstar(x)
-#' rstar(x, split_chains = F)
+#' rstar(x, split_chains = FALSE)
 #' rstar(x, method = "gbm")
 #' # can pass additional arguments to methods
-#' rstar(x, method = "gbm", verbose = F)
+#' rstar(x, method = "gbm", verbose = FALSE)
 #'
 #' # with uncertainty, returns a vector of R* values
-#' hist(rstar(x, uncertainty = T))
-#' hist(rstar(x, uncertainty = T, nsimulations = 100))
+#' hist(rstar(x, uncertainty = TRUE))
+#' hist(rstar(x, uncertainty = TRUE, nsimulations = 100))
 #'
 #' # can use other classification methods in caret library
 #' rstar(x, method = "knn")
@@ -78,7 +78,7 @@
 rstar <- function(x, split_chains=TRUE, uncertainty=FALSE, method=NULL, hyperparameters=NULL,
                   training_proportion=0.7, nsimulations=1000, ...){
 
-  if(!requireNamespace("caret", quietly = T))
+  if(!requireNamespace("caret", quietly = TRUE))
     stop("Package \"caret\" needed for this function to work. Please install it.")
   require(caret)
 
@@ -94,8 +94,8 @@ rstar <- function(x, split_chains=TRUE, uncertainty=FALSE, method=NULL, hyperpar
     x <- split_chains_draws_df(x)
 
   # if only 1 param, add in a column of random noise
-  nparams <- nvariables(x)
-  if(nparams==1)
+  nvars <- nvariables(x)
+  if(nvars==1)
     x$V_new <- rnorm(nrow(x))
 
   # create training / testing sets
@@ -107,7 +107,7 @@ rstar <- function(x, split_chains=TRUE, uncertainty=FALSE, method=NULL, hyperpar
   # choose hyperparameters
   if(is.null(method)) {
     method <- "rf"
-    caret_grid <- data.frame(mtry=floor(sqrt(nparams)))
+    caret_grid <- data.frame(mtry=floor(sqrt(nvars)))
   } else if(is.null(hyperparameters) && method=="gbm") {
     caret_grid <- data.frame(interaction.depth=3,
                              n.trees = 50,
