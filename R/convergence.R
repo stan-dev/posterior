@@ -337,7 +337,7 @@ quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
 #'
 #' @param nsim number of R* values in returned vector if uncertainty=T.
 #'
-#' @param training_percent proportion of iterations used to train GBM model.
+#' @param training_proportion proportion of iterations used to train GBM model.
 #'
 #' @details `rstar` provides a measure of MCMC convergence based on whether it is possible
 #' to determine the chain that generated a particular draw with a probability greater than
@@ -363,13 +363,25 @@ quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
 #' rstar(x)
 #' rstar(x, split_chains = F)
 #' rstar(x, method = "gbm")
+#' rstar(x, method = "gbm", verbose = F)
 #'
 #' # with uncertainty, returns a vector of R* values.
 #' hist(rstar(x, uncertainty = T))
 #' hist(rstar(x, uncertainty = T, nsim = 100))
 #'
+#' # can use other classification methods in Caret library
+#' rstar(x, method = "knn")
+#'
+#' @export
 rstar <- function(x, split_chains=T, uncertainty=F, method=NULL, hyperparameters=NULL,
-                            training_percent=0.7, nsim=1000, ...){
+                            training_proportion=0.7, nsim=1000, ...){
+
+  nsim <- round(nsim)
+  if(nsim < 1)
+    stop("nsim must exceed 1.")
+
+  if(training_proportion <= 0 || training_proportion >= 1)
+    stop("training_proportion must be greater than zero and less than 1.")
 
   x <- as_draws_df(x)
   if(split_chains)
@@ -382,20 +394,19 @@ rstar <- function(x, split_chains=T, uncertainty=F, method=NULL, hyperparameters
 
   # create training / testing sets
   x$.chain <- as.factor(x$.chain)
-  rand_samples <- sample(1:nrow(x), training_percent * nrow(x))
+  rand_samples <- sample(1:nrow(x), training_proportion * nrow(x))
   training_data <- x[rand_samples, ]
   testing_data <- x[-rand_samples, ]
 
   # choose hyperparameters
   if(is.null(method)) {
     method <- "rf"
+    caret_grid <- tibble(mtry=floor(sqrt(nparams)))
   } else if(is.null(hyperparameters) && method=="gbm") {
     caret_grid <- tibble(interaction.depth=c(3),
                          n.trees = 50,
                          shrinkage=c(0.1),
                          n.minobsinnode=10)
-  } else if(is.null(hyperparameters)) {
-    caret_grid <- tibble(mtry=floor(sqrt(nparams)))
   } else {
     caret_grid <- hyperparameters
   }
@@ -418,7 +429,7 @@ rstar <- function(x, split_chains=T, uncertainty=F, method=NULL, hyperparameters
     for(j in 1:nrow(probs)){
       vals <- rmultinom(nsim, 1, prob = probs[j, ])
       test <- apply(vals, 2, function(x) which(x==1))
-      m_accuracy[j, ] <- if_else(test == testing_data$.chain[j], 1, 0)
+      m_accuracy[j, ] <- ifelse(test == testing_data$.chain[j], 1, 0)
     }
     return(colMeans(m_accuracy) * nchains)
   } else{
