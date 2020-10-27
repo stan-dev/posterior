@@ -133,12 +133,11 @@ rstar <- function(x, split_chains=TRUE, uncertainty=FALSE, method=NULL, hyperpar
     probs <- predict(object=fit, newdata=testing_data, type = "prob")
     m_accuracy <- matrix(nrow = nrow(probs),
                          ncol = nsimulations)
-    for(j in 1:seq_len(NROW(probs)) ){
+    for(j in seq_len(NROW(probs)) ){
       vals <- rmultinom(nsimulations, 1, prob = probs[j, ])
       test <- apply(vals, 2, function(x) which(x == 1))
       m_accuracy[j, ] <- ifelse(test == testing_data$.chain[j], 1, 0)
     }
-    print(m_accuracy)
     return(colMeans(m_accuracy) * nchains)
   } else{
     plda <- predict(object=fit, newdata=testing_data)
