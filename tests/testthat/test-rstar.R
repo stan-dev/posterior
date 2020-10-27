@@ -20,7 +20,7 @@ test_that("incorrect nsimulations values throws error", {
 test_that("rstar with uncertainty returns reasonable values", {
   x <- example_draws()
   val <- rstar(x, method = "gbm", uncertainty = T, verbose = F)
-  expect_true(median(val) > 0.8 & median(val) < 10)
+  expect_true(max(val) > 0.3 & min(val) < 10)
 })
 
 test_that("rstar accepts different classifiers", {
