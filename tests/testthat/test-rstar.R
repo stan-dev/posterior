@@ -9,7 +9,6 @@ test_that("rstar with uncertainty returns vectors of correct length", {
   val <- rstar(x, method = "gbm", uncertainty = T, verbose = F)
   expect_equal(length(val), 1000)
   val <- rstar(x, method = "knn", uncertainty = T, nsimulations = 10)
-  print(val)
   expect_equal(length(val), 10)
 })
 
