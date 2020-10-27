@@ -7,7 +7,8 @@ Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.c
              person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")),
              person("Aki", "Vehtari", email = "Aki.Vehtari@aalto.fi", role = c("aut")),
              person("Måns", "Magnusson", role = c("ctb")),
-             person("Rok", "Češnovar", role = c("ctb")))
+             person("Rok", "Češnovar", role = c("ctb")),
+             person("Ben", "Lambert", role = c("ctb")))
 Description: Provides useful tools for both users and developers of packages 
   for fitting Bayesian models or working with output from Bayesian models. 
   The primary goals of the package are to: 
