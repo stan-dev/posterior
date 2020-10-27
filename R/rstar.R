@@ -34,6 +34,8 @@
 #' @param training_proportion Proportion of iterations used to train the
 #'   classifier. Default is 0.7.
 #'
+#' @param ... Other arguments passed to `caret::train()`.
+#'
 #' @details The `rstar()` function provides a measure of MCMC convergence based
 #'   on whether it is possible to determine the chain that generated a
 #'   particular draw with a probability greater than chance. To do so, it fits a

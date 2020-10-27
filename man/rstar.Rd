@@ -38,6 +38,8 @@ classifier. Default is 0.7.}
 
 \item{nsimulations}{Number of R* values in the returned vector if
 \code{uncertainty} is \code{TRUE}. Default is 1000.}
+
+\item{...}{Other arguments passed to \code{caret::train()}.}
 }
 \value{
 A numeric vector of length 1 (by default) or length \code{nsimulations}
