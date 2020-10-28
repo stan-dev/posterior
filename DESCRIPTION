@@ -7,7 +7,8 @@ Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.c
              person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")),
              person("Aki", "Vehtari", email = "Aki.Vehtari@aalto.fi", role = c("aut")),
              person("Måns", "Magnusson", role = c("ctb")),
-             person("Rok", "Češnovar", role = c("ctb")))
+             person("Rok", "Češnovar", role = c("ctb")),
+             person("Ben", "Lambert", role = c("ctb")))
 Description: Provides useful tools for both users and developers of packages 
   for fitting Bayesian models or working with output from Bayesian models. 
   The primary goals of the package are to: 
@@ -27,7 +28,11 @@ Imports:
   stats,
   tibble (>= 3.0.0)
 Suggests: 
-  testthat (>= 2.1.0)
+  testthat (>= 2.1.0),
+  caret (>= 6.0.84),
+  gbm (>= 2.1.8),
+  randomForest (>= 4.6.14),
+  e1071 (>= 1.7.3)
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
