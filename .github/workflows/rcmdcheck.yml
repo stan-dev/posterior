@@ -74,7 +74,7 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
-          remotes::install_cran("rcmdcheck")
+          remotes::install_cran(c("rcmdcheck", "caret", "gbm", "randomForest", "e1071"))
         shell: Rscript {0}
 
       - name: Session info
