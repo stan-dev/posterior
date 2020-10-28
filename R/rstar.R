@@ -69,6 +69,7 @@
 #'   preprint} \code{arXiv:2003.07900}.
 #'
 #' @examples
+#' library(caret)
 #' x <- example_draws("eight_schools")
 #' rstar(x)
 #' rstar(x, split_chains = FALSE)
