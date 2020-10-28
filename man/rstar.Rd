@@ -80,6 +80,7 @@ For lower dimensional targets, gradient boosted models (called via
 MCMC sample, it is recommended to try both of these classifiers.
 }
 \examples{
+library(caret)
 x <- example_draws("eight_schools")
 rstar(x)
 rstar(x, split_chains = FALSE)
