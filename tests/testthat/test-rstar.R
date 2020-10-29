@@ -99,7 +99,7 @@ test_that("split-chain R* returns generally higher values", {
   vals_unsplit <- vector(length = n)
   for(i in 1:n) {
     vals_split[i] <- rstar(x, method = "knn")
-    vals_unsplit[i] <- rstar(x, method = "knn", split_chains = FALSE)
+    vals_unsplit[i] <- rstar(x, method = "knn", split = FALSE)
   }
   expect_true(median(vals_split) > median(vals_unsplit))
 })
