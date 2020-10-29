@@ -12,7 +12,7 @@
 #'
 #' @param x A [`draws_df`] object or one coercible to a `draws_df` object.
 #'
-#' @param split_chains Logical. Indicaters whether to split chains into two
+#' @param split_chains Logical. Indicates whether to split chains into two
 #'   equal halves. Default is `TRUE`.
 #'
 #' @param uncertainty Logical. Indicates whether to provide a vector of R*
@@ -24,9 +24,10 @@
 #'   forest classifier.
 #'
 #' @param hyperparameters A named list of hyperparameter settings passed to the
-#'   classifier. Default for `"rf"` classifier is `mtry=floor(sqt(nvariables))`;
-#'   default for gradient-based model (`method="gbm"`) is `interaction.depth=3,
-#'   n.trees = 50, shrinkage=0.1, n.minobsinnode=10`.
+#'   classifier. Default for random forest classifier (`method = "rf"`) is
+#'   `mtry = floor(sqt(nvariables))`;
+#'   default for gradient-based model (`method = "gbm"`) is
+#'   `interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10`.
 #'
 #' @param nsimulations Number of R* values in the returned vector if
 #'   `uncertainty` is `TRUE`. Default is 1000.
@@ -55,14 +56,14 @@
 #'   setting `uncertainty = TRUE`, although this approximation of uncertainty
 #'   will generally have a lower mean.
 #'
-#'   By default, a random forest classifier is used (`method="rf"`), which tends
+#'   By default, a random forest classifier is used (`method = "rf"`), which tends
 #'   to perform best for target distributions of around 4 dimensions and above.
 #'   For lower dimensional targets, gradient boosted models (called via
-#'   `method="gbm"`) tend to have a higher classification accuracy. On a given
+#'   `method = "gbm"`) tend to have a higher classification accuracy. On a given
 #'   MCMC sample, it is recommended to try both of these classifiers.
 #'
 #' @return A numeric vector of length 1 (by default) or length `nsimulations`
-#'   (if `uncertainty=TRUE`).
+#'   (if `uncertainty = TRUE`).
 #'
 #' @references Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
 #'   diagnostic with uncertainty using gradient-boosted machines \emph{arXiv
@@ -85,27 +86,29 @@
 #' rstar(x, method = "knn")
 #'
 #' @export
-rstar <-
-  function(x,
-           split_chains = TRUE,
-           uncertainty = FALSE,
-           method = "rf",
-           hyperparameters = NULL,
-           training_proportion = 0.7,
-           nsimulations = 1000,
-           ...) {
+rstar <- function(x, split_chains = TRUE,
+                  uncertainty = FALSE,
+                  method = "rf",
+                  hyperparameters = NULL,
+                  training_proportion = 0.7,
+                  nsimulations = 1000,
+                  ...) {
 
-  if (!"caret" %in% (.packages())) {
-    stop("Package \"caret\" needed for this function to work. Please load it.")
+  if (!"caret" %in% .packages()) {
+    stop2("Package 'caret' is required for 'rstar' to work. ",
+          "Please use library(caret) to load the package.")
   }
 
-  nsimulations <- round(nsimulations)
+  split_chains <- as_one_logical(split_chains)
+  uncertainty <- as_one_logical(uncertainty)
+  method <- as_one_character(method)
+  nsimulations <- as_one_integer(nsimulations)
   if (nsimulations < 1) {
-    stop("nsimulations must exceed 1.")
+    stop2("'nsimulations' must be greater than or equal to 1.")
   }
-
+  training_proportion <- as_one_numeric(training_proportion)
   if (training_proportion <= 0 || training_proportion >= 1) {
-    stop("training_proportion must be greater than zero and less than 1.")
+    stop2("'training_proportion' must be greater than 0 and less than 1.")
   }
 
   x <- as_draws_df(x)
@@ -115,7 +118,7 @@ rstar <-
 
   # if only 1 param, add in a column of random noise
   nvars <- nvariables(x)
-  if (nvars==1) {
+  if (nvars == 1) {
     x$V_new <- rnorm(nrow(x))
   }
 
@@ -126,18 +129,23 @@ rstar <-
   testing_data <- x[-rand_samples, ]
 
   # choose hyperparameters
-  if (method=="rf" && is.null(hyperparameters)) {
-    caret_grid <- data.frame(mtry=floor(sqrt(nvars)))
-  } else if(method=="gbm" && is.null(hyperparameters)) {
-    caret_grid <- data.frame(interaction.depth=3,
-                             n.trees = 50,
-                             shrinkage=0.1,
-                             n.minobsinnode=10)
+  if (method == "rf" && is.null(hyperparameters)) {
+    caret_grid <- data.frame(mtry = floor(sqrt(nvars)))
+  } else if (method == "gbm" && is.null(hyperparameters)) {
+    caret_grid <- data.frame(
+      interaction.depth = 3,
+      n.trees = 50,
+      shrinkage = 0.1,
+      n.minobsinnode = 10
+    )
   } else {
+    if (!(is.null(hyperparameters) || is.list(hyperparameters))) {
+      stop2("'hyperparameters' must be a list or NULL.")
+    }
     caret_grid <- hyperparameters
   }
 
-  # remove iteration / draws columns and fit classifier
+  # remove iteration / draw columns and fit classifier
   training_data$.iteration <- training_data$.draw <- NULL
   class(training_data) <- class(training_data)[-(1:2)]
   fit <- caret::train(
@@ -152,25 +160,22 @@ rstar <-
   # calculate classification accuracy then R*
   nchains <- length(unique(testing_data$.chain))
   if (uncertainty) {
-    probs <- predict(object=fit, newdata=testing_data, type = "prob")
-    m_accuracy <- matrix(nrow = nrow(probs),
-                         ncol = nsimulations)
+    probs <- predict(object = fit, newdata = testing_data, type = "prob")
+    m_accuracy <- matrix(nrow = nrow(probs), ncol = nsimulations)
     for (j in seq_len(NROW(probs))) {
       vals <- rmultinom(nsimulations, 1, prob = probs[j, ])
       test <- apply(vals, 2, function(x) which(x == 1))
       m_accuracy[j, ] <- ifelse(test == testing_data$.chain[j], 1, 0)
     }
-    return(colMeans(m_accuracy) * nchains)
+    out <- colMeans(m_accuracy) * nchains
   } else {
-    plda <- predict(object=fit, newdata=testing_data)
-    res <- data.frame(predicted=plda, actual=testing_data$.chain)
+    plda <- predict(object = fit, newdata = testing_data)
+    res <- data.frame(predicted = plda, actual = testing_data$.chain)
     accuracy <- mean(res$predicted == res$actual)
-    return(accuracy * nchains)
+    out <- accuracy * nchains
   }
+  out
 }
-
-
-# internal ----------------------------------------------------------------
 
 # splits chains into halves within a `draws_df` object
 split_chains_draws_df <- function(x) {

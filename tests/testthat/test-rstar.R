@@ -1,3 +1,5 @@
+require(caret)
+
 test_that("rstar returns reasonable values", {
   x <- example_draws()
   val <- rstar(x)
@@ -30,7 +32,8 @@ test_that("rstar with uncertainty returns vectors of correct length", {
 
 test_that("incorrect nsimulations values throws error", {
   x <- example_draws()
-  expect_error(rstar(x, method = "knn", nsimulations = 0), "nsimulations must exceed 1.")
+  expect_error(rstar(x, method = "knn", nsimulations = 0),
+               "'nsimulations' must be greater than or equal to 1.")
 })
 
 test_that("rstar with uncertainty returns reasonable values", {
@@ -45,12 +48,6 @@ test_that("rstar accepts different classifiers", {
   expect_true(is.numeric(val))
   val <- rstar(x, method = "knn")
   expect_true(is.numeric(val))
-})
-
-test_that("rstar throws error when using invalid classifier", {
-  x <- example_draws()
-  expect_error(rstar(x, method = "gbmnn"),
-               "Model gbmnn is not in caret's built-in library")
 })
 
 test_that("rstar accepts different hyperparameters", {
@@ -89,19 +86,20 @@ test_that("rstar accepts different training proportion", {
 test_that("rstar throws error when passed invalid training_proportion", {
   x <- example_draws()
   expect_error(rstar(x, method = "knn", training_proportion = 0),
-               "training_proportion must be greater than zero and less than 1.")
+               "'training_proportion' must be greater than 0 and less than 1")
   expect_error(rstar(x, method = "knn", training_proportion = 1),
-               "training_proportion must be greater than zero and less than 1.")
+               "'training_proportion' must be greater than 0 and less than 1")
 })
 
 test_that("split-chain R* returns generally higher values", {
+  skip_on_cran()  # reduces test time
   x <- example_draws()
   n <- 10
   vals_split <- vector(length = n)
   vals_unsplit <- vector(length = n)
   for(i in 1:n) {
     vals_split[i] <- rstar(x, method = "knn")
-    vals_unsplit[i] <- rstar(x, method = "knn", split_chains = F)
+    vals_unsplit[i] <- rstar(x, method = "knn", split_chains = FALSE)
   }
   expect_true(median(vals_split) > median(vals_unsplit))
 })

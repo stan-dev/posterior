@@ -18,7 +18,7 @@ rstar(
 \arguments{
 \item{x}{A \code{\link{draws_df}} object or one coercible to a \code{draws_df} object.}
 
-\item{split_chains}{Logical. Indicaters whether to split chains into two
+\item{split_chains}{Logical. Indicates whether to split chains into two
 equal halves. Default is \code{TRUE}.}
 
 \item{uncertainty}{Logical. Indicates whether to provide a vector of R*
@@ -30,8 +30,10 @@ the \pkg{caret} package). The default is \code{"rf"}, which calls the random
 forest classifier.}
 
 \item{hyperparameters}{A named list of hyperparameter settings passed to the
-classifier. Default for \code{"rf"} classifier is \code{mtry=floor(sqt(nvariables))};
-default for gradient-based model (\code{method="gbm"}) is \verb{interaction.depth=3, n.trees = 50, shrinkage=0.1, n.minobsinnode=10}.}
+classifier. Default for random forest classifier (\code{method = "rf"}) is
+\code{mtry = floor(sqt(nvariables))};
+default for gradient-based model (\code{method = "gbm"}) is
+\verb{interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10}.}
 
 \item{training_proportion}{Proportion of iterations used to train the
 classifier. Default is 0.7.}
@@ -43,7 +45,7 @@ classifier. Default is 0.7.}
 }
 \value{
 A numeric vector of length 1 (by default) or length \code{nsimulations}
-(if \code{uncertainty=TRUE}).
+(if \code{uncertainty = TRUE}).
 }
 \description{
 The \code{rstar()} function generates a measure of convergence for MCMC draws
@@ -73,10 +75,10 @@ R*; alternatively, an approximation to this distribution can be obtained by
 setting \code{uncertainty = TRUE}, although this approximation of uncertainty
 will generally have a lower mean.
 
-By default, a random forest classifier is used (\code{method="rf"}), which tends
+By default, a random forest classifier is used (\code{method = "rf"}), which tends
 to perform best for target distributions of around 4 dimensions and above.
 For lower dimensional targets, gradient boosted models (called via
-\code{method="gbm"}) tend to have a higher classification accuracy. On a given
+\code{method = "gbm"}) tend to have a higher classification accuracy. On a given
 MCMC sample, it is recommended to try both of these classifiers.
 }
 \examples{
