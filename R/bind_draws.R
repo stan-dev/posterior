@@ -116,7 +116,7 @@ bind_draws.draws_df <- function(x, ..., along = "variable") {
     out$.iteration <- seq_rows(out)
   }
   out$.draw <- NULL
-  as_draws_df(out)
+  .as_draws_df(out)
 }
 
 #' @rdname bind_draws

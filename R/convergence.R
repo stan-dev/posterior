@@ -23,7 +23,7 @@
 rhat_basic <- function(x, split = TRUE) {
   split <- as_one_logical(split)
   if (split) {
-    x <- split_chains(x)
+    x <- .split_chains(x)
   }
   .rhat(x)
 }
@@ -49,7 +49,7 @@ rhat_basic <- function(x, split = TRUE) {
 ess_basic <- function(x, split = TRUE) {
   split <- as_one_logical(split)
   if (split) {
-    x <- split_chains(x)
+    x <- .split_chains(x)
   }
   .ess(x)
 }
@@ -71,8 +71,8 @@ ess_basic <- function(x, split = TRUE) {
 #'
 #' @export
 rhat <- function(x) {
-  rhat_bulk <- .rhat(z_scale(split_chains(x)))
-  rhat_tail <- .rhat(z_scale(split_chains(fold_draws(x))))
+  rhat_bulk <- .rhat(z_scale(.split_chains(x)))
+  rhat_tail <- .rhat(z_scale(.split_chains(fold_draws(x))))
   max(rhat_bulk, rhat_tail)
 }
 
@@ -94,7 +94,7 @@ rhat <- function(x) {
 #'
 #' @export
 ess_bulk <- function(x) {
-  .ess(z_scale(split_chains(x)))
+  .ess(z_scale(.split_chains(x)))
 }
 
 #' Tail effective sample size (tail-ESS)
@@ -162,7 +162,7 @@ ess_median <- function(x) {
   }
   x <- as.matrix(x)
   I <- x <= quantile(x, prob)
-  .ess(split_chains(I))
+  .ess(.split_chains(I))
 }
 
 #' Effective sample size for the mean
@@ -180,7 +180,7 @@ ess_median <- function(x) {
 #'
 #' @export
 ess_mean <- function(x) {
-  .ess(split_chains(x))
+  .ess(.split_chains(x))
 }
 
 #' Effective sample size for the standard deviation
@@ -200,7 +200,7 @@ ess_mean <- function(x) {
 #'
 #' @export
 ess_sd <- function(x) {
-  min(.ess(split_chains(x)), .ess(split_chains(x^2)))
+  min(.ess(.split_chains(x)), .ess(.split_chains(x^2)))
 }
 
 #' Monte Carlo standard error for quantiles
@@ -454,26 +454,10 @@ backtransform_ranks <- function(r, c = 3/8) {
   (r - c) / (S - 2 * c + 1)
 }
 
-#' Split Markov chains in half
-#' @template args-conv
-#' @return A 2D array of draws with split chains.
-#' @keywords internal
-#' @export
-split_chains <- function(x) {
-  x <- as.matrix(x)
-  niter <- NROW(x)
-  if (niter == 1L) {
-    return(x)
-  }
-  half <- niter / 2
-  cbind(x[1:floor(half), ], x[ceiling(half + 1):niter, ])
-}
-
 #' Fold draws around their median
 #' @template args-conv
 #' @return An array or vector of folded draws.
-#' @keywords internal
-#' @export
+#' @noRd
 fold_draws <- function(x) {
   abs(x - median(x))
 }
@@ -481,8 +465,7 @@ fold_draws <- function(x) {
 #' Compute the Rhat convergence diagnostic
 #' @template args-conv
 #' @template return-conv
-#' @keywords internal
-#' @export
+#' @noRd
 .rhat <- function(x) {
   x <- as.matrix(x)
   if (should_return_NA(x)) {
@@ -504,8 +487,7 @@ fold_draws <- function(x) {
 #' Compute the effective sample size
 #' @template args-conv
 #' @template return-conv
-#' @keywords internal
-#' @export
+#' @noRd
 .ess <- function(x) {
   x <- as.matrix(x)
   nchains <- NCOL(x)
