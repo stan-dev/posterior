@@ -6,7 +6,7 @@
 \usage{
 rstar(
   x,
-  split_chains = TRUE,
+  split = TRUE,
   uncertainty = FALSE,
   method = "rf",
   hyperparameters = NULL,
@@ -18,8 +18,7 @@ rstar(
 \arguments{
 \item{x}{A \code{\link{draws_df}} object or one coercible to a \code{draws_df} object.}
 
-\item{split_chains}{Logical. Indicates whether to split chains into two
-equal halves. Default is \code{TRUE}.}
+\item{split}{Logical. If \code{TRUE}, compute estimate on split chains.}
 
 \item{uncertainty}{Logical. Indicates whether to provide a vector of R*
 values representing uncertainty in the calculated value (if \code{TRUE}) or a
@@ -31,7 +30,7 @@ forest classifier.}
 
 \item{hyperparameters}{A named list of hyperparameter settings passed to the
 classifier. Default for random forest classifier (\code{method = "rf"}) is
-\code{mtry = floor(sqt(nvariables))};
+\code{mtry = floor(sqt(nvariables(x)))};
 default for gradient-based model (\code{method = "gbm"}) is
 \verb{interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10}.}
 
@@ -85,7 +84,7 @@ MCMC sample, it is recommended to try both of these classifiers.
 library(caret)
 x <- example_draws("eight_schools")
 rstar(x)
-rstar(x, split_chains = FALSE)
+rstar(x, split = FALSE)
 rstar(x, method = "gbm")
 # can pass additional arguments to methods
 rstar(x, method = "gbm", verbose = FALSE)

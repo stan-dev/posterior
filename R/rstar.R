@@ -11,9 +11,7 @@
 #' predicting a chain uniformly at random.
 #'
 #' @param x A [`draws_df`] object or one coercible to a `draws_df` object.
-#'
-#' @param split_chains Logical. Indicates whether to split chains into two
-#'   equal halves. Default is `TRUE`.
+#' @template args-conv-split
 #'
 #' @param uncertainty Logical. Indicates whether to provide a vector of R*
 #'   values representing uncertainty in the calculated value (if `TRUE`) or a
@@ -25,7 +23,7 @@
 #'
 #' @param hyperparameters A named list of hyperparameter settings passed to the
 #'   classifier. Default for random forest classifier (`method = "rf"`) is
-#'   `mtry = floor(sqt(nvariables))`;
+#'   `mtry = floor(sqt(nvariables(x)))`;
 #'   default for gradient-based model (`method = "gbm"`) is
 #'   `interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10`.
 #'
@@ -73,7 +71,7 @@
 #' library(caret)
 #' x <- example_draws("eight_schools")
 #' rstar(x)
-#' rstar(x, split_chains = FALSE)
+#' rstar(x, split = FALSE)
 #' rstar(x, method = "gbm")
 #' # can pass additional arguments to methods
 #' rstar(x, method = "gbm", verbose = FALSE)
@@ -86,7 +84,7 @@
 #' rstar(x, method = "knn")
 #'
 #' @export
-rstar <- function(x, split_chains = TRUE,
+rstar <- function(x, split = TRUE,
                   uncertainty = FALSE,
                   method = "rf",
                   hyperparameters = NULL,
@@ -99,7 +97,7 @@ rstar <- function(x, split_chains = TRUE,
           "Please use library(caret) to load the package.")
   }
 
-  split_chains <- as_one_logical(split_chains)
+  split <- as_one_logical(split)
   uncertainty <- as_one_logical(uncertainty)
   method <- as_one_character(method)
   nsimulations <- as_one_integer(nsimulations)
@@ -111,26 +109,20 @@ rstar <- function(x, split_chains = TRUE,
     stop2("'training_proportion' must be greater than 0 and less than 1.")
   }
 
+  # caret requires data.frame like objects
   x <- as_draws_df(x)
-  if (split_chains) {
-    x <- split_chains_draws_df(x)
+  if (split) {
+    x <- split_chains(x)
   }
 
-  # if only 1 param, add in a column of random noise
-  nvars <- nvariables(x)
-  if (nvars == 1) {
-    x$V_new <- rnorm(nrow(x))
+  # caret requires at least two variables to work
+  if (nvariables(x) == 1) {
+    x$.random <- rnorm(ndraws(x))
   }
-
-  # create training / testing sets
-  x$.chain <- as.factor(x$.chain)
-  rand_samples <- sample(1:nrow(x), training_proportion * nrow(x))
-  training_data <- x[rand_samples, ]
-  testing_data <- x[-rand_samples, ]
 
   # choose hyperparameters
   if (method == "rf" && is.null(hyperparameters)) {
-    caret_grid <- data.frame(mtry = floor(sqrt(nvars)))
+    caret_grid <- data.frame(mtry = floor(sqrt(nvariables(x))))
   } else if (method == "gbm" && is.null(hyperparameters)) {
     caret_grid <- data.frame(
       interaction.depth = 3,
@@ -145,9 +137,20 @@ rstar <- function(x, split_chains = TRUE,
     caret_grid <- hyperparameters
   }
 
-  # remove iteration / draw columns and fit classifier
-  training_data$.iteration <- training_data$.draw <- NULL
-  class(training_data) <- class(training_data)[-(1:2)]
+  # reserved variables should not be used for classification
+  reserved_vars <- all_reserved_variables(x)
+  reserved_vars <- setdiff(reserved_vars, ".chain")
+  x <- remove_variables(x, reserved_vars)
+  ndraws <- ndraws(x)
+  class(x) <- "data.frame"
+  x$.chain <- as.factor(x$.chain)
+
+  # create training / testing sets
+  random_draws <- sample(seq_len(ndraws), training_proportion * ndraws)
+  training_data <- x[random_draws, ]
+  testing_data <- x[-random_draws, ]
+
+  # predict chain index using all other variables
   fit <- caret::train(
     .chain ~ .,
     data = training_data,
@@ -157,14 +160,15 @@ rstar <- function(x, split_chains = TRUE,
     ...
   )
 
-  # calculate classification accuracy then R*
+  # calculate classification accuracy and then R*
+  # not all chains may be represented in testing_data
   nchains <- length(unique(testing_data$.chain))
   if (uncertainty) {
     probs <- predict(object = fit, newdata = testing_data, type = "prob")
     m_accuracy <- matrix(nrow = nrow(probs), ncol = nsimulations)
     for (j in seq_len(NROW(probs))) {
       vals <- rmultinom(nsimulations, 1, prob = probs[j, ])
-      test <- apply(vals, 2, function(x) which(x == 1))
+      test <- apply(vals, 2, function(v) which(v == 1))
       m_accuracy[j, ] <- ifelse(test == testing_data$.chain[j], 1, 0)
     }
     out <- colMeans(m_accuracy) * nchains
@@ -175,27 +179,4 @@ rstar <- function(x, split_chains = TRUE,
     out <- accuracy * nchains
   }
   out
-}
-
-# splits chains into halves within a `draws_df` object
-split_chains_draws_df <- function(x) {
-  nchain <- nchains(x)
-  k <- 1
-  for (i in 1:nchain) {
-    tmp <- x$.chain[x$.chain == i]
-    niter <- length(tmp)
-    if(niter > 1) {
-      half <- niter / 2
-      tmp[1:floor(half)] <- k
-      k <- k + 1
-      tmp[ceiling(half + 1):niter] <- k
-      k <- k + 1
-    }
-    if (i == 1)
-      chains <- tmp
-    else
-      chains <- c(chains, tmp)
-  }
-  x$.chain <- chains
-  return(x)
 }
