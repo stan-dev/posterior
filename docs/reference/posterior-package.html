@@ -40,15 +40,19 @@
 
 
 <meta property="og:title" content="Tools for working with posterior (and prior) distributions — posterior-package" />
-<meta property="og:description" content="The posterior package is intended to provide useful tools
+<meta property="og:description" content="
+   https://mc-stan.org/posterior
+The posterior package is intended to provide useful tools
 for both users and developers of packages for fitting Bayesian models or
-working with output from Bayesian models. The primary goals of the
-package are to:
+working with output from Bayesian models. The primary goals of the package
+are to:
 Efficiently convert between many different useful formats of
 draws (samples) from posterior or prior distributions.
+Provide consistent methods for operations commonly performed on draws,
+for example, subsetting, binding, or mutating draws.
 Provide various summaries of draws in convenient formats.
-Provide implementations of state of the art MCMC diagnostics without
-requiring a dependency on packages like rstan.
+Provide lightweight implementations of state of the art posterior inference
+diagnostics.
 
 " />
 
@@ -82,13 +86,19 @@ requiring a dependency on packages like rstan.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Functions</a>
 </li>
 <li>
@@ -169,20 +179,38 @@ requiring a dependency on packages like rstan.
     </div>
 
     <div class="ref-description">
-    <p>The <span class="pkg">posterior</span> package is intended to provide useful tools
+    <p><img src='figures/stanlogo.png' width="50" />
+   <a href='https://mc-stan.org/posterior'>https://mc-stan.org/posterior</a></p>
+<p>The <span class="pkg">posterior</span> package is intended to provide useful tools
 for both users and developers of packages for fitting Bayesian models or
-working with output from Bayesian models. The primary goals of the
-package are to:</p><ul>
+working with output from Bayesian models. The primary goals of the package
+are to:</p><ul>
 <li><p>Efficiently convert between many different useful formats of
 draws (samples) from posterior or prior distributions.</p></li>
+<li><p>Provide consistent methods for operations commonly performed on draws,
+for example, subsetting, binding, or mutating draws.</p></li>
 <li><p>Provide various summaries of draws in convenient formats.</p></li>
-<li><p>Provide implementations of state of the art MCMC diagnostics without
-requiring a dependency on packages like <span class="pkg">rstan</span>.</p></li>
+<li><p>Provide lightweight implementations of state of the art posterior inference
+diagnostics.</p></li>
 </ul>
 
     </div>
 
 
+
+    <h2 class="hasAnchor" id="package-options"><a class="anchor" href="#package-options"></a>Package options</h2>
+
+    
+
+
+<p>The following options are used to format and print <a href='draws.html'>draws</a> objects,
+as in <code><a href='print.draws_array.html'>print.draws_array()</a></code>, <code><a href='print.draws_df.html'>print.draws_df()</a></code>, <code><a href='print.draws_list.html'>print.draws_list()</a></code>,
+and <code><a href='print.draws_matrix.html'>print.draws_matrix()</a></code>:</p><ul>
+<li><p><code>posterior.max_draws</code>: Maximum number of draws to print.</p></li>
+<li><p><code>posterior.max_iterations</code>: Maximum number of iterations to print.</p></li>
+<li><p><code>posterior.max_chains</code>: Maximum number of chains to print.</p></li>
+<li><p><code>posterior.max_variables</code>: Maximum number of variables to print.</p></li>
+</ul>
 
 
   </div>

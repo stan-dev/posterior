@@ -72,13 +72,19 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Functions</a>
 </li>
 <li>
@@ -213,32 +219,32 @@ number of draws, we recommend using <code>mutate_variables</code> on <code>draws
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span>(<span class='no'>x</span>, <span class='kw'>variable</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mu"</span>, <span class='st'>"tau"</span>))
 
 <span class='fu'>mutate_variables</span>(<span class='no'>x</span>, <span class='kw'>tau2</span> <span class='kw'>=</span> <span class='no'>tau</span>^<span class='fl'>2</span>)</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 3 variables
-#&gt;      mu tau .chain
-#&gt; 1  2.01 2.8      1
-#&gt; 2  1.46 7.0      1
-#&gt; 3  5.81 9.7      1
-#&gt; 4  6.85 4.8      1
-#&gt; 5  1.81 2.8      1
-#&gt; 6  3.84 4.1      1
-#&gt; 7  5.47 4.0      1
-#&gt; 8  1.20 1.5      1
-#&gt; 9  0.15 3.9      1
-#&gt; 10 7.17 1.8      1
+#&gt;      mu tau
+#&gt; 1  2.01 2.8
+#&gt; 2  1.46 7.0
+#&gt; 3  5.81 9.7
+#&gt; 4  6.85 4.8
+#&gt; 5  1.81 2.8
+#&gt; 6  3.84 4.1
+#&gt; 7  5.47 4.0
+#&gt; 8  1.20 1.5
+#&gt; 9  0.15 3.9
+#&gt; 10 7.17 1.8
 #&gt; # ... with 390 more draws
-#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'>mutate_variables</span>(<span class='no'>x</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>1.96</span> * <span class='no'>tau</span>, <span class='kw'>lower</span> <span class='kw'>=</span> <span class='no'>mu</span> - <span class='no'>scale</span>)</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 4 variables
-#&gt;      mu tau .chain .iteration
-#&gt; 1  2.01 2.8      1          1
-#&gt; 2  1.46 7.0      1          2
-#&gt; 3  5.81 9.7      1          3
-#&gt; 4  6.85 4.8      1          4
-#&gt; 5  1.81 2.8      1          5
-#&gt; 6  3.84 4.1      1          6
-#&gt; 7  5.47 4.0      1          7
-#&gt; 8  1.20 1.5      1          8
-#&gt; 9  0.15 3.9      1          9
-#&gt; 10 7.17 1.8      1         10
+#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'>mutate_variables</span>(<span class='no'>x</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>1.96</span> * <span class='no'>tau</span>, <span class='kw'>lower</span> <span class='kw'>=</span> <span class='no'>mu</span> - <span class='no'>scale</span>)</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 4 variables
+#&gt;      mu tau
+#&gt; 1  2.01 2.8
+#&gt; 2  1.46 7.0
+#&gt; 3  5.81 9.7
+#&gt; 4  6.85 4.8
+#&gt; 5  1.81 2.8
+#&gt; 6  3.84 4.1
+#&gt; 7  5.47 4.0
+#&gt; 8  1.20 1.5
+#&gt; 9  0.15 3.9
+#&gt; 10 7.17 1.8
 #&gt; # ... with 390 more draws
-#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</div><div class='input'>
+#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

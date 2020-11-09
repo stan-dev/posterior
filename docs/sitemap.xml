@@ -13,12 +13,6 @@
     <loc>https://mc-stan.org/posterior/reference/bind_draws.html</loc>
   </url>
   <url>
-    <loc>https://mc-stan.org/posterior/reference/dot-ess.html</loc>
-  </url>
-  <url>
-    <loc>https://mc-stan.org/posterior/reference/dot-rhat.html</loc>
-  </url>
-  <url>
     <loc>https://mc-stan.org/posterior/reference/draws-index.html</loc>
   </url>
   <url>
@@ -65,9 +59,6 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/extract_variable_matrix.html</loc>
-  </url>
-  <url>
-    <loc>https://mc-stan.org/posterior/reference/fold_draws.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/mcse_mean.html</loc>
@@ -118,10 +109,16 @@
     <loc>https://mc-stan.org/posterior/reference/resample_draws.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/reserved-variables.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/rhat.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rhat_basic.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rstar.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/split_chains.html</loc>

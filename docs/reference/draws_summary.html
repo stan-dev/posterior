@@ -77,13 +77,19 @@ object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Functions</a>
 </li>
 <li>
@@ -177,7 +183,7 @@ object.</p>
 <span class='fu'>summarize_draws</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='co'># S3 method for draws</span>
-<span class='fu'>summarise_draws</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>summarise_draws</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>())
 
 <span class='co'># S3 method for draws</span>
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span>(<span class='no'>object</span>, <span class='no'>...</span>)
@@ -203,6 +209,11 @@ the function returns a named vector in which case the latter names
 are used. Functions can be passed in all formats supported by
 <a href='https://rlang.r-lib.org/reference/as_function.html'>as_function()</a>. See the 'Examples' section below
 for examples.</p></td>
+    </tr>
+    <tr>
+      <th>.args</th>
+      <td><p>Optional <code>list</code> of additional arguments passed to the summary
+functions.</p></td>
     </tr>
     </table>
 
@@ -287,6 +298,21 @@ default measures included in the package.</p>
 #&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  2.92  5.47
 #&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  4.81  7.33
 #&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  3.50  5.92</div><div class='input'>
+<span class='co'># illustrate use of '.args'</span>
+<span class='no'>ws</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Exponential.html'>rexp</a></span>(<span class='fu'><a href='draws-index.html'>ndraws</a></span>(<span class='no'>x</span>))
+<span class='fu'>summarise_draws</span>(<span class='no'>x</span>, <span class='no'>weighted.mean</span>, <span class='kw'>.args</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>w</span> <span class='kw'>=</span> <span class='no'>ws</span>))</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 10 x 2</span><span>
+#&gt;    variable weighted.mean
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu                4.24
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau               4.28
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]          6.85
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]          5.13
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]          3.28
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]          5.09
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]          3.66
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]          3.66
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]          6.21
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]          4.17</div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

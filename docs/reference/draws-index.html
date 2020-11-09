@@ -72,13 +72,19 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Functions</a>
 </li>
 <li>
@@ -162,7 +168,7 @@
     <p>Index variables, iterations, chains, and draws.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>variables</span>(<span class='no'>x</span>)
+    <pre class="usage"><span class='fu'>variables</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='fu'>variables</span>(<span class='no'>x</span>) <span class='kw'>&lt;-</span> <span class='no'>value</span>
 
@@ -172,7 +178,7 @@
 
 <span class='fu'>draw_ids</span>(<span class='no'>x</span>)
 
-<span class='fu'>nvariables</span>(<span class='no'>x</span>)
+<span class='fu'>nvariables</span>(<span class='no'>x</span>, <span class='no'>...</span>)
 
 <span class='fu'>niterations</span>(<span class='no'>x</span>)
 
@@ -186,6 +192,10 @@
     <tr>
       <th>x</th>
       <td><p>An <span style="R">R</span> object for which the methods are defined.</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Arguments passed to individual methods (if applicable).</p></td>
     </tr>
     <tr>
       <th>value</th>

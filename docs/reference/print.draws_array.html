@@ -72,13 +72,19 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Functions</a>
 </li>
 <li>
@@ -166,9 +172,10 @@
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(
   <span class='no'>x</span>,
   <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>max_iterations</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"max_iterations"</span>, <span class='fl'>5</span>),
-  <span class='kw'>max_chains</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"max_chains"</span>, <span class='fl'>8</span>),
-  <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"max_variables"</span>, <span class='fl'>4</span>),
+  <span class='kw'>max_iterations</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"posterior.max_iterations"</span>, <span class='fl'>5</span>),
+  <span class='kw'>max_chains</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"posterior.max_chains"</span>, <span class='fl'>8</span>),
+  <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"posterior.max_variables"</span>, <span class='fl'>4</span>),
+  <span class='kw'>reserved</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='no'>...</span>
 )</pre>
 
@@ -186,20 +193,27 @@
     <tr>
       <th>max_iterations</th>
       <td><p>Maximum number of iterations to print.
-Can be controlled globally via the <code>"max_iterations"</code> option
+Can be controlled globally via the <code>"posterior.max_iterations"</code> option
 (see <code><a href='https://rdrr.io/r/base/options.html'>options</a></code> for details).</p></td>
     </tr>
     <tr>
       <th>max_chains</th>
       <td><p>Maximum number of chains to print.
-Can be controlled globally via the <code>"max_chains"</code> option
+Can be controlled globally via the <code>"posterior.max_chains"</code> option
 (see <code><a href='https://rdrr.io/r/base/options.html'>options</a></code> details).</p></td>
     </tr>
     <tr>
       <th>max_variables</th>
       <td><p>Maximum number of variables to print.
-Can be controlled globally via the <code>"max_variables"</code> option
+Can be controlled globally via the <code>"posterior.max_variables"</code> option
 (see <code><a href='https://rdrr.io/r/base/options.html'>options</a></code> for details).</p></td>
+    </tr>
+    <tr>
+      <th>reserved</th>
+      <td><p>Logical. Indicates whether reserved variables should be
+included in the output. Defaults to <code>FALSE</code>.
+See <code><a href='reserved-variables.html'>reserved-variables</a></code> for an overview of currently reserved
+variable names.</p></td>
     </tr>
     <tr>
       <th>...</th>

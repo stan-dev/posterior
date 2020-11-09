@@ -12,13 +12,16 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Tools for Working with Posterior Distributions">
-<meta property="og:description" content="The posterior package is intended to provide useful tools for both
-  users and developers of packages for fitting Bayesian models or working with 
-  output from Bayesian models. The primary goals of the package are to: 
+<meta property="og:description" content="Provides useful tools for both users and developers of packages 
+  for fitting Bayesian models or working with output from Bayesian models. 
+  The primary goals of the package are to: 
   (a) Efficiently convert between many different useful formats of
   draws (samples) from posterior or prior distributions.
-  (b) Provide various summaries of draws in convenient formats.
-  (c) Provide lightweight implementations of state of the art MCMC diagnostics.">
+  (b) Provide consistent methods for operations commonly performed on draws, 
+  for example, subsetting, binding, or mutating draws.
+  (c) Provide various summaries of draws in convenient formats.
+  (d) Provide lightweight implementations of state of the art posterior 
+  inference diagnostics.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -37,12 +40,18 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
+<li>
+  <a href="index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
 <li>
   <a href="reference/index.html">Functions</a>
 </li>
@@ -424,8 +433,7 @@
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=posterior"><img src="https://www.r-pkg.org/badges/version/posterior" alt="CRAN status"></a></li>
-<li><a href="https://travis-ci.org/stan-dev/posterior"><img src="https://travis-ci.org/stan-dev/posterior.svg?branch=master" alt="Travis Build Status"></a></li>
-<li><a href="https://ci.appveyor.com/project/stan-dev/posterior"><img src="https://ci.appveyor.com/api/projects/status/github/stan-dev/posterior?branch=master&amp;svg=true" alt="AppVeyor build status"></a></li>
+<li><a href="https://github.com/stan-dev/posterior/actions?workflow=R-CMD-check"><img src="https://github.com/stan-dev/posterior/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://codecov.io/gh/stan-dev/posterior"><img src="https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg" alt="Coverage Status"></a></li>
 </ul>
 </div>

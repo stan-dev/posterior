@@ -73,13 +73,19 @@ See weight_draws for details how to add weights to draws objects." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Functions</a>
 </li>
 <li>
@@ -202,18 +208,20 @@ in order to sum to 1 on the standard scale. Defaults to <code>TRUE</code>.</p></
 
 <span class='co'># sample some random weights for illustration</span>
 <span class='no'>wts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Exponential.html'>rexp</a></span>(<span class='fu'><a href='draws-index.html'>ndraws</a></span>(<span class='no'>x</span>))
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>wts</span>)</div><div class='output co'>#&gt; [1] 0.5412084 1.3364026 0.8500321 3.0426663 2.7600211 1.0899849</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>wts</span>)</div><div class='output co'>#&gt; [1] 0.3197296 0.4452720 2.8554173 0.9889693 1.7038562 3.0441637</div><div class='input'>
 <span class='co'># add weights</span>
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='weight_draws.html'>weight_draws</a></span>(<span class='no'>x</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>wts</span>)
 
 <span class='co'># extract weights</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>x</span>)) <span class='co'># defaults to normalized weights</span></div><div class='output co'>#&gt; [1] 0.001454518 0.003591632 0.002284493 0.008177280 0.007417661 0.002929375</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>x</span>, <span class='kw'>normalize</span><span class='kw'>=</span><span class='fl'>FALSE</span>)) <span class='co'># recover original weights</span></div><div class='output co'>#&gt; [1] 0.5412084 1.3364026 0.8500321 3.0426663 2.7600211 1.0899849</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>x</span>, <span class='kw'>log</span><span class='kw'>=</span><span class='fl'>TRUE</span>)) <span class='co'># get normalized log-weights</span></div><div class='output co'>#&gt; [1] -6.533081 -5.629148 -6.081611 -4.806396 -4.903892 -5.832966</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>x</span>)) <span class='co'># defaults to normalized weights</span></div><div class='output co'>#&gt; [1] 0.0007764945 0.0010813864 0.0069346595 0.0024018083 0.0041379810
+#&gt; [6] 0.0073930485</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>x</span>, <span class='kw'>normalize</span><span class='kw'>=</span><span class='fl'>FALSE</span>)) <span class='co'># recover original weights</span></div><div class='output co'>#&gt; [1] 0.3197296 0.4452720 2.8554173 0.9889693 1.7038562 3.0441637</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>x</span>, <span class='kw'>log</span><span class='kw'>=</span><span class='fl'>TRUE</span>)) <span class='co'># get normalized log-weights</span></div><div class='output co'>#&gt; [1] -7.160721 -6.829511 -4.971223 -6.031533 -5.487547 -4.907215</div><div class='input'>
 <span class='co'># add weights which are already on the log scale</span>
 <span class='no'>log_wts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span>(<span class='no'>wts</span>)
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>log_wts</span>)</div><div class='output co'>#&gt; [1] -0.6139508  0.2899814 -0.1624812  1.1127342  1.0152383  0.0861638</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>log_wts</span>)</div><div class='output co'>#&gt; [1] -1.14027973 -0.80907001  1.04921799 -0.01109203  0.53289404  1.11322621</div><div class='input'>
 <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='weight_draws.html'>weight_draws</a></span>(<span class='no'>x</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>log_wts</span>, <span class='kw'>log</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 <span class='co'># extract weights</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt; [1] 0.001454518 0.003591632 0.002284493 0.008177280 0.007417661 0.002929375</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>x</span>, <span class='kw'>log</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>normalize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)) <span class='co'># recover original log_wts</span></div><div class='output co'>#&gt; [1] -0.6139508  0.2899814 -0.1624812  1.1127342  1.0152383  0.0861638</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>x</span>))</div><div class='output co'>#&gt; [1] 0.0007764945 0.0010813864 0.0069346595 0.0024018083 0.0041379810
+#&gt; [6] 0.0073930485</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span>(<span class='no'>x</span>, <span class='kw'>log</span><span class='kw'>=</span><span class='fl'>TRUE</span>, <span class='kw'>normalize</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)) <span class='co'># recover original log_wts</span></div><div class='output co'>#&gt; [1] -1.14027973 -0.80907001  1.04921799 -0.01109203  0.53289404  1.11322621</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
