@@ -57,7 +57,11 @@ as_draws_array.draws_df <- function(x, ...) {
   chains <- chain_ids(x)
   out <- vector("list", length(chains))
   for (i in seq_along(out)) {
-    out[[i]] <- x[x$.chain == i, ]
+    if (length(chains) == 1) {
+      out[[i]] <- x
+    } else {
+      out[[i]] <- x[x$.chain == i, ]      
+    }
     out[[i]] <- remove_reserved_df_variables(out[[i]])
     out[[i]] <- as.matrix(out[[i]])
   }
@@ -157,7 +161,12 @@ is_draws_array_like <- function(x) {
 # convert a list of matrices to an array
 as_array_matrix_list <- function(x) {
   stopifnot(is.list(x))
-  x <- abind::abind(x, along = 3L)
+  if (length(x) == 1) {
+    x <- x[[1]]
+    dim(x) <- c(dim(x), 1)
+  } else {
+    x <- abind::abind(x, along = 3L)
+  }  
   x <- aperm(x, c(1, 3, 2))
 }
 
