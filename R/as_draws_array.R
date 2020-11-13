@@ -161,12 +161,7 @@ is_draws_array_like <- function(x) {
 # convert a list of matrices to an array
 as_array_matrix_list <- function(x) {
   stopifnot(is.list(x))
-  if (length(x) == 1) {
-    x <- x[[1]]
-    dim(x) <- c(dim(x), 1)
-  } else {
-    x <- abind::abind(x, along = 3L)
-  }  
+  x <- abind::abind(x, along = 3L)
   x <- aperm(x, c(1, 3, 2))
 }
 
