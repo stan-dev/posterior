@@ -221,11 +221,15 @@ is_draws_df_like <- function(x) {
 #' @export
 `[.draws_df` <- function(x, i, j, drop = FALSE, ..., reserved = FALSE) {
   reserved <- as_one_logical(reserved)
-  out <- NextMethod("[", drop = FALSE)
+  # draws_df is a tibble so drop = FALSE by default anyway
+  out <- NextMethod("[")
   if (reserved) {
     reserved_vars <- all_reserved_variables(x)
     reserved_vars <- setdiff(reserved_vars, names(out))
     out[, reserved_vars] <- NextMethod("[", j = reserved_vars, drop = FALSE)
+  } else if (!all(reserved_df_variables() %in% names(out))) {
+    warning2("Dropping 'draws_df' class as required metadata was removed.")
+    class(out) <- setdiff(class(out), c("draws_df", "draws"))
   }
   out
 }
