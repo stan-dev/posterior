@@ -27,6 +27,8 @@
 #'
 #' @details Upon usage of `resample_draws`, chains will be automatically merged
 #'   due to subsetting of individual draws (see [`subset_draws`] for details).
+#'   Also, weights stored in the `draws` object will be removed in the process,
+#'   as resampling invalidates existing weights.
 #'
 #' @references
 #' Kitagawa, G., Monte Carlo Filter and Smoother for Non-Gaussian Nonlinear '
@@ -66,6 +68,8 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
       stop2("No weights are provided and none can ",
             "be found within the draws object.")
     }
+    # resampling invalidates stored weights
+    x <- remove_variables(x, ".log_weight")
   } else {
     weights <- weights / sum(weights)
   }
