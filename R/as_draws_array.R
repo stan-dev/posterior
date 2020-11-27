@@ -153,8 +153,10 @@ is_draws_array_like <- function(x) {
   # TODO: add a warning that 'drop' can lead to also dropping the class?
   # TODO: allow for argument 'reserved' as in '[.draws_df'
   #   right now this fails because NextMethod() cannot ignore arguments
-  out <- NextMethod("[")
-  class(out) <- class(x)
+  out <- NextMethod("[", drop = drop)
+  if (length(dim(out)) == 3) {
+    class(out) <- class(x)
+  }
   out
 }
 
