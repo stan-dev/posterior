@@ -154,7 +154,7 @@ is_draws_array_like <- function(x) {
   # TODO: allow for argument 'reserved' as in '[.draws_df'
   #   right now this fails because NextMethod() cannot ignore arguments
   out <- NextMethod("[", drop = drop)
-  if (length(dim(out)) == 3) {
+  if (length(dim(out)) == length(dim(x))) {
     class(out) <- class(x)
   }
   out
