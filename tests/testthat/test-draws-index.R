@@ -69,3 +69,18 @@ test_that("indices of draws_list objects are correct", {
   expect_equal(chain_ids(x), 1:length(x))
 })
 
+test_that("indexing draws_array with [ and drop works correctly", {
+  x <- example_draws()
+  x1 <- x[,,1]
+  x2 <- x[,,1, drop=TRUE]
+  expect_s3_class(x1, "draws_array")
+  expect_equal(class(x2), c("matrix", "array"))
+  expect_length(dim(x1), 3)
+  expect_length(dim(x2), 2)
+  expect_equal(x2, extract_variable_matrix(x, "mu"))
+
+  # drop=TRUE shouldn't do anything if multiple parameters selected
+  x3 <- x[,,1:2, drop=TRUE]
+  expect_s3_class(x3, "draws_array")
+})
+
