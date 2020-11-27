@@ -150,10 +150,10 @@ is_draws_array_like <- function(x) {
 
 #' @export
 `[.draws_array` <- function(x, i, j, ..., drop = FALSE) {
-  # TODO: add a warning that 'drop' is ignored?
+  # TODO: add a warning that 'drop' can lead to also dropping the class?
   # TODO: allow for argument 'reserved' as in '[.draws_df'
   #   right now this fails because NextMethod() cannot ignore arguments
-  out <- NextMethod("[", drop = FALSE)
+  out <- NextMethod("[")
   class(out) <- class(x)
   out
 }
