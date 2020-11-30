@@ -88,3 +88,16 @@ test_that("indexing draws_array with [ and drop works correctly", {
   expect_s3_class(x3, "draws_array")
 })
 
+test_that("indexing draws_matrix with [ and drop works correctly", {
+  x <- as_draws_matrix(example_draws())
+  x1 <- x[,1]
+  x2 <- x[,1, drop=TRUE]
+  expect_s3_class(x1, "draws_matrix")
+  expect_equal(class(x2), "numeric")
+  expect_length(dim(x1), 2)
+  expect_null(dim(x2))
+
+  # drop=TRUE shouldn't do anything if multiple parameters selected
+  x3 <- x[,1:2, drop=TRUE]
+  expect_s3_class(x3, "draws_matrix")
+})
