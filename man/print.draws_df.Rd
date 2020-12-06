@@ -9,7 +9,7 @@
   digits = 2,
   max_draws = getOption("posterior.max_draws", 10),
   max_variables = getOption("posterior.max_variables", 8),
-  meta_columns = FALSE,
+  reserved = FALSE,
   ...
 )
 }
@@ -26,8 +26,10 @@ Can be controlled globally via the \code{"posterior.max_draws"} option
 Can be controlled globally via the \code{"posterior.max_variables"} option
 (see \code{\link{options}} for details).}
 
-\item{meta_columns}{Logical. Show the meta-columns \code{.chain},
-\code{.iteration}, and \code{.draw} in printed output? Defaults to \code{FALSE}.}
+\item{reserved}{Logical. Indicates whether reserved variables should be
+included in the output. Defaults to \code{FALSE}.
+See \code{\link{reserved-variables}} for an overview of currently reserved
+variable names.}
 
 \item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}
 }

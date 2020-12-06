@@ -16,6 +16,8 @@
 #'   are used. Functions can be passed in all formats supported by
 #'   [as_function()][rlang::as_function]. See the 'Examples' section below
 #'   for examples.
+#' @param .args Optional `list` of additional arguments passed to the summary
+#'   functions.
 #'
 #' @return
 #' The `summarise_draws()` methods return a [tibble][tibble::tibble] data frame.
@@ -40,6 +42,10 @@
 #' summarise_draws(x, mean, mcse = mcse_mean)
 #' summarise_draws(x, ~quantile(.x, probs = c(0.4, 0.6)))
 #'
+#' # illustrate use of '.args'
+#' ws <- rexp(ndraws(x))
+#' summarise_draws(x, weighted.mean, .args = list(w = ws))
+#'
 NULL
 
 #' @rdname draws_summary
@@ -61,8 +67,9 @@ summarise_draws.default <- function(x, ...) {
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.draws <- function(x, ...) {
+summarise_draws.draws <- function(x, ..., .args = list()) {
   funs <- as.list(c(...))
+  .args <- as.list(.args)
   if (length(funs)) {
     if (is.null(names(funs))) {
       # ensure names are initialized properly
@@ -120,8 +127,9 @@ summarise_draws.draws <- function(x, ...) {
   out <- named_list(variables, values = list(named_list(names(funs))))
   for (v in variables) {
     draws <- drop_dims(x[, , v], dims = 3)
+    args <- c(list(draws), .args)
     for (m in names(funs)) {
-      out[[v]][[m]] <- funs[[m]](draws)
+      out[[v]][[m]] <- do_call(funs[[m]], args)
       if (rlang::is_named(out[[v]][[m]])) {
         # use returned names to label columns
         out[[v]][[m]] <- rbind(out[[v]][[m]])

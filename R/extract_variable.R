@@ -28,7 +28,7 @@ extract_variable.default <- function(x, variable, ...) {
 #' @export
 extract_variable.draws <- function(x, variable, ...) {
   variable <- as_one_character(variable)
-  out <- subset_draws(x, variable = variable)
+  out <- .subset_draws(x, variable = variable, reserved = FALSE)
   out <- as_draws_matrix(out)
   as.vector(out)
 }

@@ -73,13 +73,19 @@ for instance, through importance sampling." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Functions</a>
 </li>
 <li>
@@ -230,32 +236,32 @@ State Space Models, <em>Journal of Computational and Graphical Statistics</em>,
 
 <span class='co'># use default stratified sampling</span>
 <span class='no'>x_rs</span> <span class='kw'>&lt;-</span> <span class='fu'>resample_draws</span>(<span class='no'>x</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>w</span>)</div><div class='output co'>#&gt; <span class='message'>Merging chains in order to subset via 'draw'.</span></div><div class='input'><span class='fu'><a href='draws_summary.html'>summarise_draws</a></span>(<span class='no'>x_rs</span>, <span class='fu'><a href='draws_summary.html'>default_summary_measures</a></span>())</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 7</span><span>
-#&gt;    variable  mean median    sd   mad     q5   q95
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        4.33   4.66  3.46  3.73 -</span><span style='color: #BB0000;'>0.862</span><span>  9.39
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       4.06   3.03  3.45  2.70  0.331 10.6 
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  6.81   6.08  6.41  4.79 -</span><span style='color: #BB0000;'>1.23</span><span>  18.9 
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  5.40   5.69  4.50  4.10 -</span><span style='color: #BB0000;'>2.28</span><span>  12.5 
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  3.31   4.34  6.82  4.95 -</span><span style='color: #BB0000;'>8.46</span><span>  11.5 
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  4.92   5.44  5.03  4.84 -</span><span style='color: #BB0000;'>4.01</span><span>  12.3 
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  3.32   3.86  5.19  4.53 -</span><span style='color: #BB0000;'>6.55</span><span>  10.6 
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  4.00   4.67  5.10  4.79 -</span><span style='color: #BB0000;'>3.81</span><span>  11.1 
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  6.47   6.01  5.10  4.33 -</span><span style='color: #BB0000;'>0.689</span><span> 14.8 
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  5.12   5.28  4.95  4.73 -</span><span style='color: #BB0000;'>2.98</span><span>  13.2 </div><div class='input'>
+#&gt;    variable  mean median    sd   mad      q5   q95
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        4.29   4.38  3.39  3.45  -</span><span style='color: #BB0000;'>0.701</span><span>  9.73
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       3.99   2.92  3.41  2.76   0.309 11.0 
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  6.55   6.05  5.81  4.57  -</span><span style='color: #BB0000;'>0.982</span><span> 17.3 
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  5.04   5.03  4.82  4.35  -</span><span style='color: #BB0000;'>2.87</span><span>  12.3 
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  3.03   4.14  6.97  4.93 -</span><span style='color: #BB0000;'>10.8</span><span>   11.5 
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  4.89   5.26  4.78  4.70  -</span><span style='color: #BB0000;'>2.71</span><span>  12.2 
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  3.34   3.61  5.13  4.51  -</span><span style='color: #BB0000;'>5.93</span><span>  11.2 
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  4.23   4.34  5.01  4.99  -</span><span style='color: #BB0000;'>3.49</span><span>  10.7 
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  6.65   6.43  5.11  4.59  -</span><span style='color: #BB0000;'>1.19</span><span>  14.5 
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  4.83   4.84  4.55  4.59  -</span><span style='color: #BB0000;'>3.25</span><span>  11.8 </div><div class='input'>
 <span class='co'># use simple random sampling</span>
 <span class='no'>x_rs</span> <span class='kw'>&lt;-</span> <span class='fu'>resample_draws</span>(<span class='no'>x</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>w</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"simple"</span>)</div><div class='output co'>#&gt; <span class='message'>Merging chains in order to subset via 'draw'.</span></div><div class='input'><span class='fu'><a href='draws_summary.html'>summarise_draws</a></span>(<span class='no'>x_rs</span>, <span class='fu'><a href='draws_summary.html'>default_summary_measures</a></span>())</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 10 x 7</span><span>
-#&gt;    variable  mean median    sd   mad     q5   q95
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        4.24   4.47  3.40  3.39 -</span><span style='color: #BB0000;'>0.633</span><span>  9.13
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       4.02   3.07  3.40  2.82  0.410 10.1 
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  6.39   6.08  6.07  4.81 -</span><span style='color: #BB0000;'>2.64</span><span>  18.5 
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  5.28   5.69  4.14  3.95 -</span><span style='color: #BB0000;'>1.56</span><span>  11.6 
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  3.60   4.77  6.45  4.79 -</span><span style='color: #BB0000;'>6.93</span><span>  11.5 
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  4.85   5.18  4.87  4.74 -</span><span style='color: #BB0000;'>2.93</span><span>  12.2 
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  3.45   4.15  5.22  4.26 -</span><span style='color: #BB0000;'>6.55</span><span>  11.5 
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  3.83   4.68  5.23  4.82 -</span><span style='color: #BB0000;'>4.80</span><span>  11.0 
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  6.38   6.10  5.41  4.02 -</span><span style='color: #BB0000;'>1.44</span><span>  15.5 
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  5.30   5.58  5.41  4.28 -</span><span style='color: #BB0000;'>4.16</span><span>  14.1 </div><div class='input'>
+#&gt;    variable  mean median    sd   mad      q5   q95
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        4.21   4.27  3.33  3.30  -</span><span style='color: #BB0000;'>0.854</span><span>  9.15
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       3.81   2.76  3.28  2.58   0.332 10.2 
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  6.42   5.61  5.58  4.74  -</span><span style='color: #BB0000;'>1.75</span><span>  17.3 
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  5.16   4.98  4.61  3.79  -</span><span style='color: #BB0000;'>2.78</span><span>  12.3 
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  3.36   4.16  6.55  4.60 -</span><span style='color: #BB0000;'>10.3</span><span>   11.5 
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  4.27   4.47  4.71  4.76  -</span><span style='color: #BB0000;'>4.40</span><span>  11.9 
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  3.19   3.75  4.88  4.09  -</span><span style='color: #BB0000;'>6.54</span><span>  11.2 
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  4.27   4.33  4.83  4.60  -</span><span style='color: #BB0000;'>3.49</span><span>  10.7 
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  5.76   5.13  4.54  3.88  -</span><span style='color: #BB0000;'>1.19</span><span>  13.0 
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  4.66   4.79  5.03  4.62  -</span><span style='color: #BB0000;'>3.44</span><span>  12.2 </div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

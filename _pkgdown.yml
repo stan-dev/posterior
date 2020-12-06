@@ -62,6 +62,7 @@ reference:
       - starts_with("print")
       - variables # will include everything from draws-index.R
       - example_draws
+      - reserved-variables
   - title: "Working with draws objects"
     desc: >
       Functions for modifying `draws` objects and extracting their contents
@@ -71,6 +72,7 @@ reference:
       - merge_chains
       - mutate_variables
       - order_draws
+      - split_chains
       - subset_draws
       - rename_variables
       - repair_draws
@@ -87,4 +89,5 @@ reference:
       - starts_with("rhat")
       - starts_with("mcse")
       - quantile2
+      - rstar
 

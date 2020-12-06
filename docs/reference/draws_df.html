@@ -76,13 +76,19 @@ See Details." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Functions</a>
 </li>
 <li>
@@ -269,7 +275,7 @@ unique values. See <strong>Examples</strong>.</p>
 #&gt; 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1
 #&gt; 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5
 #&gt; # ... with 390 more draws, and 2 more variables
-#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>x1</span>)</div><div class='output co'>#&gt; tibble [400 × 13] (S3: draws_df/draws/tbl_df/tbl/data.frame)
+#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>x1</span>)</div><div class='output co'>#&gt; tibble [400 × 13] (S3: draws_df/draws/tbl_df/tbl/data.frame)
 #&gt;  $ mu        : num [1:400] 2.01 1.46 5.81 6.85 1.81 ...
 #&gt;  $ tau       : num [1:400] 2.77 6.98 9.68 4.79 2.85 ...
 #&gt;  $ theta[1]  : num [1:400] 3.962 0.124 21.251 14.7 5.96 ...
@@ -296,7 +302,7 @@ unique values. See <strong>Examples</strong>.</p>
 #&gt; 8   2.683  0.13 1
 #&gt; 9  -0.361  0.49 1
 #&gt; 10  0.213 -1.70 1
-#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>x2</span>)</div><div class='output co'>#&gt; tibble [10 × 6] (S3: draws_df/draws/tbl_df/tbl/data.frame)
+#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>x2</span>)</div><div class='output co'>#&gt; tibble [10 × 6] (S3: draws_df/draws/tbl_df/tbl/data.frame)
 #&gt;  $ a         : num [1:10] 0.8621 -0.2432 -0.2061 0.0192 0.0296 ...
 #&gt;  $ b         : num [1:10] 1.074 -0.665 1.114 -0.246 -1.178 ...
 #&gt;  $ c         : num [1:10] 1 1 1 1 1 1 1 1 1 1
@@ -305,7 +311,7 @@ unique values. See <strong>Examples</strong>.</p>
 #&gt;  $ .draw     : int [1:10] 1 2 3 4 5 6 7 8 9 10</div><div class='input'>
 <span class='co'># the difference between iteration and draw is clearer when contrasting</span>
 <span class='co'># the head and tail of the data frame</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>x1</span>), <span class='kw'>meta_columns</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; # A draws_df: 6 iterations, 1 chains, and 10 variables
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>x1</span>), <span class='kw'>reserved</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; # A draws_df: 6 iterations, 1 chains, and 10 variables
 #&gt;    mu tau .chain .iteration .draw
 #&gt; 1 2.0 2.8      1          1     1
 #&gt; 2 1.5 7.0      1          2     2
@@ -313,14 +319,14 @@ unique values. See <strong>Examples</strong>.</p>
 #&gt; 4 6.8 4.8      1          4     4
 #&gt; 5 1.8 2.8      1          5     5
 #&gt; 6 3.8 4.1      1          6     6
-#&gt; # ... with 8 more variables</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span>(<span class='no'>x1</span>), <span class='kw'>meta_columns</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; # A draws_df: 6 iterations, 1 chains, and 10 variables
-#&gt;     mu tau .chain .iteration .draw
-#&gt; 1 5.69 2.2      4         95   395
-#&gt; 2 3.28 3.3      4         96   396
-#&gt; 3 5.04 3.6      4         97   397
-#&gt; 4 2.73 6.8      4         98   398
-#&gt; 5 0.48 1.8      4         99   399
-#&gt; 6 7.05 4.8      4        100   400
+#&gt; # ... with 8 more variables</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span>(<span class='no'>x1</span>), <span class='kw'>reserved</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; # A draws_df: 6 iterations, 1 chains, and 10 variables
+#&gt;   mu tau .chain .iteration .draw
+#&gt; 1 NA  NA     NA          1     1
+#&gt; 2 NA  NA     NA          2     2
+#&gt; 3 NA  NA     NA          3     3
+#&gt; 4 NA  NA     NA          4     4
+#&gt; 5 NA  NA     NA          5     5
+#&gt; 6 NA  NA     NA          6     6
 #&gt; # ... with 8 more variables</div><div class='input'>
 </div></pre>
   </div>

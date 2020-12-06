@@ -72,13 +72,19 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Functions</a>
 </li>
 <li>
@@ -166,9 +172,9 @@
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(
   <span class='no'>x</span>,
   <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>max_draws</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"max_draws"</span>, <span class='fl'>10</span>),
-  <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"max_variables"</span>, <span class='fl'>8</span>),
-  <span class='kw'>meta_columns</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>max_draws</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"posterior.max_draws"</span>, <span class='fl'>10</span>),
+  <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"posterior.max_variables"</span>, <span class='fl'>8</span>),
+  <span class='kw'>reserved</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
   <span class='no'>...</span>
 )</pre>
 
@@ -186,19 +192,21 @@
     <tr>
       <th>max_draws</th>
       <td><p>Maximum number of draws to print.
-Can be controlled globally via the <code>"max_draws"</code> option
+Can be controlled globally via the <code>"posterior.max_draws"</code> option
 (see <code><a href='https://rdrr.io/r/base/options.html'>options</a></code> details).</p></td>
     </tr>
     <tr>
       <th>max_variables</th>
       <td><p>Maximum number of variables to print.
-Can be controlled globally via the <code>"max_variables"</code> option
+Can be controlled globally via the <code>"posterior.max_variables"</code> option
 (see <code><a href='https://rdrr.io/r/base/options.html'>options</a></code> for details).</p></td>
     </tr>
     <tr>
-      <th>meta_columns</th>
-      <td><p>Logical. Show the meta-columns <code>.chain</code>,
-<code>.iteration</code>, and <code>.draw</code> in printed output? Defaults to <code>FALSE</code>.</p></td>
+      <th>reserved</th>
+      <td><p>Logical. Indicates whether reserved variables should be
+included in the output. Defaults to <code>FALSE</code>.
+See <code><a href='reserved-variables.html'>reserved-variables</a></code> for an overview of currently reserved
+variable names.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -225,7 +233,7 @@ Can be controlled globally via the <code>"max_variables"</code> option
 #&gt; 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1
 #&gt; 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5
 #&gt; # ... with 390 more draws, and 2 more variables
-#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</div><div class='input'>
+#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

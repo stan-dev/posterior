@@ -45,6 +45,8 @@ for instance, through importance sampling.
 \details{
 Upon usage of \code{resample_draws}, chains will be automatically merged
 due to subsetting of individual draws (see \code{\link{subset_draws}} for details).
+Also, weights stored in the \code{draws} object will be removed in the process,
+as resampling invalidates existing weights.
 }
 \examples{
 x <- as_draws_df(example_draws())

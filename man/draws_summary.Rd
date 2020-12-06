@@ -15,7 +15,7 @@ summarise_draws(x, ...)
 
 summarize_draws(x, ...)
 
-\method{summarise_draws}{draws}(x, ...)
+\method{summarise_draws}{draws}(x, ..., .args = list())
 
 \method{summary}{draws}(object, ...)
 
@@ -34,6 +34,9 @@ the function returns a named vector in which case the latter names
 are used. Functions can be passed in all formats supported by
 \link[rlang:as_function]{as_function()}. See the 'Examples' section below
 for examples.}
+
+\item{.args}{Optional \code{list} of additional arguments passed to the summary
+functions.}
 }
 \value{
 The \code{summarise_draws()} methods return a \link[tibble:tibble]{tibble} data frame.
@@ -65,5 +68,9 @@ summarise_draws(x, "mean", "median")
 summarise_draws(x, default_convergence_measures())
 summarise_draws(x, mean, mcse = mcse_mean)
 summarise_draws(x, ~quantile(.x, probs = c(0.4, 0.6)))
+
+# illustrate use of '.args'
+ws <- rexp(ndraws(x))
+summarise_draws(x, weighted.mean, .args = list(w = ws))
 
 }

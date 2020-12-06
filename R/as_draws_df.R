@@ -27,8 +27,8 @@
 #'
 #' # the difference between iteration and draw is clearer when contrasting
 #' # the head and tail of the data frame
-#' print(head(x1), meta_columns = TRUE, max_variables = 2)
-#' print(tail(x1), meta_columns = TRUE, max_variables = 2)
+#' print(head(x1), reserved = TRUE, max_variables = 2)
+#' print(tail(x1), reserved = TRUE, max_variables = 2)
 #'
 NULL
 
@@ -176,7 +176,7 @@ as_draws_df.mcmc.list <- function(x, ...) {
     chain_ids <- rep(1L, NROW(x))
   }
 
-  # add meta columns to the data
+  # add reserved variables to the data
   check_new_variables(names(x))
   x$.chain <- chain_ids
   x$.iteration <- iteration_ids
@@ -224,23 +224,20 @@ is_draws_df_like <- function(x) {
   is.data.frame(x)
 }
 
-# meta column names
-# @param x a named object from which to extract existing meta column names
-meta_columns <- function(x = NULL) {
-  out <- c(".chain", ".iteration", ".draw")
-  if (!is.null(x)) {
-    out <- intersect(out, names(x))
+#' @export
+`[.draws_df` <- function(x, i, j, drop = FALSE, ..., reserved = FALSE) {
+  reserved <- as_one_logical(reserved)
+  # draws_df is a tibble so drop = FALSE by default anyway
+  out <- NextMethod("[")
+  if (reserved) {
+    reserved_vars <- all_reserved_variables(x)
+    reserved_vars <- setdiff(reserved_vars, names(out))
+    out[, reserved_vars] <- NextMethod("[", j = reserved_vars, drop = FALSE)
+  } else if (!all(reserved_df_variables() %in% names(out))) {
+    warning2("Dropping 'draws_df' class as required metadata was removed.")
+    class(out) <- setdiff(class(out), c("draws_df", "draws"))
   }
   out
-}
-
-# remove meta columns
-remove_meta_columns <- function(x) {
-  assert_true(is.list(x))
-  for (col in meta_columns()) {
-    x[[col]] <- NULL
-  }
-  x
 }
 
 # create an empty draws_df object

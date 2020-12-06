@@ -58,4 +58,6 @@ test_that("resample_draws uses stored weights when available", {
   x_rs <- resample_draws(x)
   expect_true(is_draws_array(x_rs))
   expect_equal(ndraws(x_rs), ndraws(x))
+  # .log_weight variable has been dropped
+  expect_true(!".log_weight" %in% variables(x_rs, reserved = TRUE))
 })

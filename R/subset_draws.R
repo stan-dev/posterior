@@ -57,7 +57,7 @@ subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
   if (!is.null(iteration)) {
     draw <- iteration
   }
-  x <- subset_dims(x, draw, variable)
+  x <- .subset_draws(x, draw, variable, reserved = TRUE)
   if (!is.null(draw)) {
     x <- repair_draws(x, order = FALSE)
   }
@@ -78,7 +78,7 @@ subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
   if (!is.null(draw)) {
     iteration <- draw
   }
-  x <- subset_dims(x, iteration, chain, variable)
+  x <- .subset_draws(x, iteration, chain, variable, reserved = TRUE)
   if (!is.null(chain) || !is.null(iteration)) {
     x <- repair_draws(x, order = FALSE)
   }
@@ -97,31 +97,10 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
   chain <- check_chain_ids(chain, x, unique = unique)
   draw <- check_draw_ids(draw, x, unique = unique)
   x <- prepare_subsetting(x, iteration, chain, draw)
-  if (!is.null(variable)) {
-    x <- x[, c(variable, meta_columns(x))]
-  }
-  if (!is.null(draw)) {
-    # each x$.draw is unique so using 'match' is valid here
-    x <- x[match(draw, x$.draw), ]
-    x$.draw <- repair_iteration_ids(x$.draw)
-    x$.iteration <- x$.draw
-  } else if (!is.null(chain) || !is.null(iteration)) {
-    if (unique) {
-      if (!is.null(chain)) {
-        x <- x[x$.chain %in% chain, ]
-      }
-      if (!is.null(iteration)) {
-        x <- x[x$.iteration %in% iteration, ]
-      }
-      x <- repair_draws(x, order = FALSE)
-    } else {
-      # non-unique subsetting is conceptually easier in 'draws_list' objects
-      # TODO: perform non-unique subsetting directly in the 'draws_df' object
-      x <- as_draws_list(x)
-      x <- subset_draws(x, chain = chain, iteration = iteration, unique = FALSE)
-      x <- as_draws_df(x)
-    }
-  }
+  x <- .subset_draws(
+    x, iteration, chain, draw, variable,
+    unique = unique, reserved = TRUE
+  )
   x
 }
 
@@ -139,21 +118,7 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
   if (!is.null(draw)) {
     iteration <- draw
   }
-  if (!is.null(chain)) {
-    x <- x[chain]
-  }
-  if (!is.null(variable)) {
-    for (i in seq_along(x)) {
-      x[[i]] <- x[[i]][variable]
-    }
-  }
-  if (!is.null(iteration)) {
-    for (i in seq_along(x)) {
-      for (j in seq_along(x[[i]])) {
-        x[[i]][[j]] <- x[[i]][[j]][iteration]
-      }
-    }
-  }
+  x <- .subset_draws(x, iteration, chain, variable, reserved = TRUE)
   if (!is.null(chain) || !is.null(iteration)) {
     x <- repair_draws(x, order = FALSE)
   }
@@ -193,6 +158,113 @@ subset_dims <- function(x, ...) {
   call <- paste0("x[", args, "]")
   dots$x <- x
   eval2(call, dots)
+}
+
+# internal method for subset_draws
+.subset_draws <- function(x, ...) {
+  UseMethod(".subset_draws")
+}
+
+#' @export
+.subset_draws.draws_matrix <- function(x, draw = NULL, variable = NULL,
+                                       reserved = FALSE, ...) {
+  out <- subset_dims(x, draw, variable)
+  if (reserved && !is.null(variable)) {
+    new_vars <- variables(out, reserved = TRUE)
+    reserved_vars <- setdiff(reserved_variables(x), new_vars)
+    if (length(reserved_vars)) {
+      x_reserved <- subset_dims(x, draw, reserved_vars)
+      out <- cbind(out, x_reserved)
+      class(out) <- class(x)
+    }
+  }
+  out
+}
+
+#' @export
+.subset_draws.draws_array <- function(x, iteration = NULL, chain = NULL,
+                                      variable = NULL, reserved = FALSE, ...) {
+  out <- subset_dims(x, iteration, chain, variable)
+  if (reserved && !is.null(variable)) {
+    new_vars <- variables(out, reserved = TRUE)
+    reserved_vars <- setdiff(reserved_variables(x), new_vars)
+    if (length(reserved_vars)) {
+      x_reserved <- subset_dims(x, iteration, chain, reserved_vars)
+      out <- abind(out, x_reserved, along = 3L)
+      class(out) <- class(x)
+    }
+  }
+  out
+}
+
+#' @export
+.subset_draws.draws_df <- function(x, iteration = NULL, chain = NULL,
+                                   draw = NULL, variable = NULL,
+                                   unique = TRUE, reserved = FALSE, ...) {
+  if (!is.null(variable)) {
+    x <- x[, variable, reserved = TRUE]
+  }
+  if (!is.null(draw)) {
+    # each x$.draw is unique so using 'match' is valid here
+    x <- x[match(draw, x$.draw), ]
+    x$.draw <- repair_iteration_ids(x$.draw)
+    x$.iteration <- x$.draw
+  } else if (!is.null(chain) || !is.null(iteration)) {
+    if (unique) {
+      if (!is.null(chain)) {
+        x <- x[x$.chain %in% chain, ]
+      }
+      if (!is.null(iteration)) {
+        x <- x[x$.iteration %in% iteration, ]
+      }
+      x <- repair_draws(x, order = FALSE)
+    } else {
+      # non-unique subsetting is conceptually easier in 'draws_list' objects
+      x <- as_draws_list(x)
+      x <- subset_draws(x, chain = chain, iteration = iteration, unique = FALSE)
+      x <- as_draws_df(x)
+    }
+  }
+  if (!reserved && !is.null(variable)) {
+    # remove reserved variables which were not selected
+    reserved_vars <- setdiff(reserved_variables(x), variable)
+    x <- remove_variables(x, reserved_vars)
+  }
+  x
+}
+
+#' @export
+.subset_draws.draws_list <- function(x, iteration = NULL, chain = NULL,
+                                     variable = NULL, reserved = FALSE, ...) {
+  if (!is.null(chain)) {
+    x <- x[chain]
+  }
+  if (!is.null(variable)) {
+    if (reserved) {
+      z <- x
+    }
+    for (i in seq_along(x)) {
+      x[[i]] <- x[[i]][variable]
+    }
+    if (reserved) {
+      new_vars <- variables(x, reserved = TRUE)
+      reserved_vars <- setdiff(reserved_variables(z), new_vars)
+      if (length(reserved_vars)) {
+        for (i in seq_along(x)) {
+          x[[i]] <- c(x[[i]], z[[i]][reserved_vars])
+        }
+      }
+      remove(z)
+    }
+  }
+  if (!is.null(iteration)) {
+    for (i in seq_along(x)) {
+      for (j in seq_along(x[[i]])) {
+        x[[i]][[j]] <- x[[i]][[j]][iteration]
+      }
+    }
+  }
+  x
 }
 
 # prepare object to be subsetted via 'subset_draws'

@@ -54,7 +54,7 @@ weight_draws <- function(x, weights, ...) {
 weight_draws.draws_matrix <- function(x, weights, log = FALSE, ...) {
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
-  if (".log_weight" %in% variables(x)) {
+  if (".log_weight" %in% variables(x, reserved = TRUE)) {
     # overwrite existing weights
     x[, ".log_weight"] <- log_weights
   } else {
@@ -70,7 +70,7 @@ weight_draws.draws_matrix <- function(x, weights, log = FALSE, ...) {
 weight_draws.draws_array <- function(x, weights, log = FALSE, ...) {
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
-  if (".log_weight" %in% variables(x)) {
+  if (".log_weight" %in% variables(x, reserved = TRUE)) {
     # overwrite existing weights
     x[, , ".log_weight"] <- log_weights
   } else {
@@ -125,9 +125,8 @@ weight_draws.draws_list <- function(x, weights, log = FALSE, ...) {
 weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
   log <- as_one_logical(log)
   normalize <- as_one_logical(normalize)
-  if (!".log_weight" %in% variables(object)) {
-    stop2("No weights found in the draws object. ",
-          "You can add weights via 'weight_draws'.")
+  if (!".log_weight" %in% variables(object, reserved = TRUE)) {
+    return(NULL)
   }
   out <- extract_variable(object, ".log_weight")
   if (normalize) {

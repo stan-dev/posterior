@@ -1,13 +1,14 @@
 Package: posterior
 Title: Tools for Working with Posterior Distributions
-Version: 0.1.0
-Date: 2020-06-11
+Version: 0.1.3
+Date: 2020-11-23
 Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
              person("Matthew", "Kay", email = "mjskay@umich.edu", role = c("aut")),
              person("Aki", "Vehtari", email = "Aki.Vehtari@aalto.fi", role = c("aut")),
              person("Måns", "Magnusson", role = c("ctb")),
-             person("Rok", "Češnovar", role = c("ctb")))
+             person("Rok", "Češnovar", role = c("ctb")),
+             person("Ben", "Lambert", role = c("ctb")))
 Description: Provides useful tools for both users and developers of packages 
   for fitting Bayesian models or working with output from Bayesian models. 
   The primary goals of the package are to: 
@@ -23,15 +24,19 @@ Depends:
 Imports:
   abind,
   checkmate,
-  rlang,
+  rlang (>= 0.4.7),
   stats,
-  tibble,
+  tibble (>= 3.0.0),
   vctrs,
   tensorA,
   pillar,
   distributional
 Suggests: 
   testthat (>= 2.1.0),
+  caret (>= 6.0.84),
+  gbm (>= 2.1.8),
+  randomForest (>= 4.6.14),
+  e1071 (>= 1.7.3),
   dplyr,
   tidyr
 License: BSD_3_clause + file LICENSE
