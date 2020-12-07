@@ -95,7 +95,7 @@ test_that("transformations to and from draws_rvars objects work", {
 
   draws_matrix <- as_draws_matrix(draws_rvars)
   draws_rvars2 <- as_draws_rvars(draws_matrix)
-  # cannot check equality as draws_matrix objects loose chain information
+  # cannot check equality as draws_matrix objects lose chain information
   expect_equal(
     summarise_draws(draws_rvars, default_summary_measures()),
     summarise_draws(draws_rvars2, default_summary_measures())

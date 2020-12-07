@@ -124,6 +124,28 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
   }
   x
 }
+
+#' @rdname subset_draws
+#' @export
+subset_draws.draws_rvars <- function(x, variable = NULL, iteration = NULL,
+                                     chain = NULL, draw = NULL, regex = FALSE,
+                                     unique = TRUE, ...) {
+  x <- repair_draws(x)
+  variable <- check_existing_variables(variable, x, regex = regex)
+  iteration <- check_iteration_ids(iteration, x, unique = unique)
+  chain <- check_chain_ids(chain, x, unique = unique)
+  draw <- check_draw_ids(draw, x, unique = unique)
+  x <- prepare_subsetting(x, iteration, chain, draw)
+  if (!is.null(draw)) {
+    iteration <- draw
+  }
+  x <- .subset_draws(x, iteration, chain, variable, reserved = TRUE)
+  if (!is.null(chain) || !is.null(iteration)) {
+    x <- repair_draws(x, order = FALSE)
+  }
+  x
+}
+
 #' @rdname subset_draws
 #' @export
 subset.draws <- function(x, ...) {
@@ -265,6 +287,12 @@ subset_dims <- function(x, ...) {
     }
   }
   x
+}
+
+#' @export
+.subset_draws.draws_rvars <- function(x, iteration = NULL, chain = NULL,
+                                      variable = NULL, reserved = FALSE, ...) {
+  stop("TODO: implement")
 }
 
 # prepare object to be subsetted via 'subset_draws'

@@ -177,7 +177,7 @@ Ops.rvar <- function(e1, e2) {
   draws_y <- draws_of(e2)
 
   # broadcast draws to common dimension
-  # TODO: skip broadcast for scalars
+  # TODO: skip broadcast for scalars (for speed)
   new_dim <- dim2_common(dim(draws_x), dim(draws_y))
   draws_x <- broadcast_array(draws_x, new_dim)
   draws_y <- broadcast_array(draws_y, new_dim)
@@ -221,7 +221,6 @@ Math.rvar <- function(x, ...) {
 #' @importFrom tensorA mul.tensor as.tensor
 #' @export
 `%**%` <- function(x, y) {
-  # TODO: get someone else to double-check this
   # Fast version of rdo(x %*% y)
 
   # ensure everything is a matrix by adding dimensions as necessary to make `x`

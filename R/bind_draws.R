@@ -175,9 +175,9 @@ bind_draws.draws_rvars <- function(x, ..., along = "variable") {
   dots <- lapply(dots, as_draws_rvars)
   dots <- lapply(dots, repair_draws)
   if (along == "variable") {
-    # TODO: depending on resolution of #81, update check here
     check_same_fun_output(dots, chain_ids)
     check_same_fun_output(dots, iteration_ids)
+    check_same_fun_output(dots, draw_ids)
     out <- do.call(c, dots)
   } else if (along == "chain") {
     stop2("TODO: implement")

@@ -83,7 +83,12 @@ new_rvar <- function(x = double(), .nchains = 1L) {
     stop2("Number of chains does not divide the number of draws.")
   }
   if (.nchains < 1) {
+    stop2("Number of chains must be >= 1")
+  }
 
+  # ensure we have an index for draws
+  if (length(rownames(x)) == 0) {
+    rownames(x) <- as.character(seq_rows(x))
   }
 
   structure(
@@ -129,7 +134,10 @@ dim.rvar <- function(x) {
     # dim of c(ndraws(x), length(x))
     value = length(x)
   }
+  # must keep old rowname around and restore them, since changing dim will drop them
+  old_rownames <- rownames(draws_of(x))
   dim(draws_of(x)) <- c(ndraws(x), value)
+  rownames(draws_of(x)) <- old_rownames
   x
 }
 
@@ -141,7 +149,7 @@ dimnames.rvar <- function(x) {
 
 #' @export
 `dimnames<-.rvar` <- function(x, value) {
-  dimnames(draws_of(x)) <- c(list(NULL), value)
+  dimnames(draws_of(x)) <- c(list(rownames(draws_of(x))), value)
   x
 }
 
@@ -172,6 +180,7 @@ is.array.rvar <- function(x) {
 #' @export
 levels.rvar <- function(x) {
   # TODO: for factor-like rvars
+  stop("Factor support in rvars is not yet implemented.")
   NULL
 }
 
@@ -569,7 +578,7 @@ bind_rvar <- function(.f, args, .axis = 2) {
   }
 
   if (is.data.frame(args[[2]])) {
-    stop2("TODO: IMPLEMENT")
+    stop2("TODO: implement")
   }
 
   args[[2]] <- as_rvar(args[[2]])

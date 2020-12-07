@@ -213,8 +213,7 @@ is_draws_rvars_like <- function(x) {
 
 #' @export
 `[.draws_rvars` <- function(x, i, j, ..., drop = FALSE) {
-  # TODO: add a warning that 'drop' is ignored?
-  out <- NextMethod("[", drop = FALSE)
+  out <- NextMethod("[", drop = drop)
   class(out) <- class(x)
   out
 }

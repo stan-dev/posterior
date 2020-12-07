@@ -65,7 +65,18 @@ repair_draws.draws_list <- function(x, order = TRUE, ...) {
 #' @rdname repair_draws
 #' @export
 repair_draws.draws_rvars <- function(x, order = TRUE, ...) {
-  warning("repair_draws.draws_rvars() is currently ignored. TODO: implement")
+  for (i in seq_along(x)) {
+    x[[i]] <- repair_draws(x[[i]])
+  }
+  x
+}
+
+#' @rdname repair_draws
+#' @export
+repair_draws.rvar <- function(x, order = TRUE, ...) {
+  rownames(draws_of(x)) <- repair_ids(rownames(draws_of(x)))
+  x <- do_ordering(x, order)
+  rownames(draws_of(x)) <- as.character(seq_rows(draws_of(x)))
   x
 }
 
