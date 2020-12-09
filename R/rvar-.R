@@ -248,20 +248,16 @@ check_rvar_margin <- function(x, MARGIN) {
 
 #' @export
 all.equal.rvar <- function(target, current, ...) {
-  if (!inherits(target, "rvar")) {
-    return("'target' is not an rvar")
-  }
-  if (!inherits(current, "rvar")) {
-    return("'current' is not a rvar")
-  }
-  result = NULL
+  result <- NULL
 
-  class_result = all.equal(class(current), class(target), ...)
-  if (!isTRUE(class_result)) {
-    result = c(result, paste("Class: <", class_result, ">"))
+  if (data.class(target) != data.class(current)) {
+    result <- c(result, paste0(
+      "target is ", data.class(target),
+      ", current is ", data.class(current)
+    ))
   }
 
-  object_result = all.equal(unclass(target), unclass(current), ...)
+  object_result <- all.equal(unclass(target), unclass(current), ...)
   if (!isTRUE(object_result)) {
     result = c(result, object_result)
   }
@@ -271,6 +267,8 @@ all.equal.rvar <- function(target, current, ...) {
 
 #' @export
 as.vector.rvar <- function(x, mode = "any") {
+  dim(x) <- NULL
+  names(x) <- NULL
   x
 }
 
@@ -561,15 +559,23 @@ c.rvar <- function(...) {
 
 #' @export
 rbind.rvar <- function(...) {
-  bind_rvar(rbind, list(...))
+  # not sure why deparse.level is not passed here correctly...
+  deparse.level <- rlang::caller_env()$deparse.level %||% 1
+  bind_rvar("rbind", list(...), as.list(substitute(list(...))[-1]), deparse.level)
 }
 
 #' @export
 cbind.rvar <- function(...) {
-  bind_rvar(cbind, list(...), .axis = 3)
+  # not sure why deparse.level is not passed here correctly...
+  deparse.level <- rlang::caller_env()$deparse.level %||% 1
+  bind_rvar("cbind", list(...), as.list(substitute(list(...))[-1]), deparse.level, .axis = 3)
 }
 
-bind_rvar <- function(.f, args, .axis = 2) {
+#' @importFrom utils getS3method
+bind_rvar <- function(.f_name, args, arg_exprs, deparse.level = 1, .axis = 2) {
+  args = deparse_names(args, arg_exprs, deparse.level)
+
+  # ensure first argument has dimensions (for binding)
   if (is.null(dim(args[[1]]))) {
     dim(args[[1]]) <- c(length(args[[1]]), 1)
   }
@@ -578,7 +584,9 @@ bind_rvar <- function(.f, args, .axis = 2) {
   }
 
   if (is.data.frame(args[[2]])) {
-    stop2("TODO: implement")
+    # for data frames, need to deparse arg names at level 2
+    args = deparse_names(args, arg_exprs, deparse.level = 2)
+    return(do.call(getS3method(.f_name, "data.frame"), args))
   }
 
   args[[2]] <- as_rvar(args[[2]])
@@ -586,7 +594,32 @@ bind_rvar <- function(.f, args, .axis = 2) {
     dim(args[[2]]) <- c(length(args[[2]]), 1)
   }
 
-  combine_rvar(.f, args, .axis = .axis)
+  combine_rvar(get(.f_name), args, .axis = .axis)
+}
+
+#' @importFrom rlang as_name as_label
+deparse_names <- function(args, arg_exprs, deparse.level) {
+  # give arguments names if needed
+  if (deparse.level > 0) {
+    if (is.null(names(args))) {
+      names(args) <- rep("", length(args))
+    }
+    for (i in seq_along(arg_exprs)) {
+      arg_name <- names(args)[[i]]
+      arg_expr <- arg_exprs[[i]]
+      if (!isTRUE(nchar(arg_name) > 0)) {
+        if (deparse.level == 1 && is.name(arg_expr)) {
+          names(args)[[i]] <- as_name(arg_expr)
+        } else if (deparse.level > 1) {
+          names(args)[[i]] <- as_label(arg_expr)
+        }
+      }
+    }
+    if (all(names(args) == "")) {
+      names(args) = NULL
+    }
+  }
+  args
 }
 
 combine_rvar <- function(.f, args, .axis = 2) {
@@ -607,11 +640,20 @@ combine_rvar <- function(.f, args, .axis = 2) {
   draws_y <- draws_of(y)
   new_dim <- dim2_common(dim(draws_x), dim(draws_y))
 
-  new_dim[.axis] <- dim(draws_x)[.axis]
-  draws_x <- broadcast_array(draws_x, new_dim)
-
-  new_dim[.axis] <- dim(draws_y)[.axis]
-  draws_y <- broadcast_array(draws_y, new_dim)
+  .broadcast = function(draws, arg_name) {
+    new_dim[.axis] <- dim(draws)[.axis]
+    draws <- broadcast_array(draws, new_dim)
+    if (length(arg_name) && nchar(arg_name) > 0 && is.na(new_dim[.axis])) {
+      # cbind/rbind were called with a name for this var and draws being a vector
+      # (which will result in new_dim[.axis] being NA), which implies we can
+      # replace the existing dimension name with the provided name
+      # as in something like cbind(a = x, ...) where x is a vector-like rvar
+      dimnames(draws)[[.axis]] = arg_name
+    }
+    draws
+  }
+  draws_x <- .broadcast(draws_x, names(args)[[1]])
+  draws_y <- .broadcast(draws_y, names(args)[[2]])
 
   # bind along desired axis
   result <- new_rvar(abind(draws_x, draws_y, along = .axis), .nchains = nchains(x))

@@ -1,5 +1,3 @@
-# indexing ----------------------------------------------------------------
-
 # function for making rvars from arrays that expects last index to be
 # draws (for testing so that when array structure changes tests don't have to)
 rvar_from_array = function(x) {
@@ -7,6 +5,26 @@ rvar_from_array = function(x) {
   last_dim = length(.dim)
   new_rvar(aperm(x, c(last_dim, seq_len(last_dim - 1))))
 }
+
+# creating rvars ----------------------------------------------------------
+
+test_that("rvar creation with custom dim works", {
+  x_matrix <- array(1:24, dim = c(2,12))
+  x_array <- array(1:24, dim = c(2,3,4))
+
+  expect_equal(rvar(x_matrix, dim = c(3,4)), rvar(x_array))
+})
+
+test_that("rvar can be created with specified number of chains", {
+  x_array <- array(1:20, dim = c(4,5))
+
+  expect_error(rvar(x_array, .nchains = 0))
+  expect_equal(rvar(x_array, .nchains = 1), rvar(x_array))
+  expect_equal(nchains(rvar(x_array, .nchains = 2)), 2)
+  expect_error(rvar(x_array, .nchains = 3), "Number of chains does not divide the number of draws")
+})
+
+# indexing ----------------------------------------------------------------
 
 test_that("indexing with [[ works on a vector", {
   x_array <- array(1:20, dim = c(5,4), dimnames = list(NULL, A = paste0("a", 1:4)))
@@ -93,6 +111,8 @@ test_that("assignment with [[ works", {
     {x[[1]] <- new_rvar(array(1:2, dim = c(2,1))); x},
     new_rvar(array(c(1,2,2,2), dim = c(2,2)))
   )
+
+  expect_error({x2 <- x; x2[[-1]] <- 1})
 })
 
 test_that("indexing with [ works on a vector", {
@@ -206,6 +226,28 @@ test_that("assignment with [ works", {
   )
 })
 
+
+# dim ---------------------------------------------------------------------
+
+test_that("assigning NULL dim to rvar works", {
+  x <- rvar(array(1:20, dim = c(2,2,5)))
+  dim(x) <- NULL
+  expect_equal(x, rvar(array(1:20, dim = c(2,10))))
+})
+
+
+# is.matrix/array ---------------------------------------------------------
+
+test_that("is.matrix/array on rvar works", {
+  x_mat <- rvar(array(1:24, dim = c(2,2,6)))
+  x_arr <- rvar(array(1:24, dim = c(2,2,3,2)))
+
+  expect_true(is.matrix(x_mat))
+  expect_true(is.array(x_mat))
+  expect_false(is.matrix(x_arr))
+  expect_true(is.array(x_arr))
+})
+
 # unique, duplicated, etc -------------------------------------------------
 
 test_that("unique.rvar and duplicated.rvar work", {
@@ -215,6 +257,12 @@ test_that("unique.rvar and duplicated.rvar work", {
   expect_equal(unique(x), unique_x)
   expect_equal(as.vector(duplicated(x)), c(FALSE, FALSE, TRUE))
   expect_equal(anyDuplicated(x), 3)
+
+  x <- rvar(array(c(1,2, 2,3, 1,2, 3,3, 1,2, 2,3), dim = c(2, 2, 3)))
+  unique_x <- x
+  unique_x_2 <- rvar(array(c(1,2, 2,3, 1,2, 3,3), dim = c(2, 2, 2)))
+  expect_equal(unique(x), unique_x)
+  expect_equal(unique(x, MARGIN = 2), unique_x_2)
 })
 
 
@@ -280,10 +328,12 @@ test_that("rep works", {
   x = rvar(x_array)
 
   expect_equal(rep(x, times = 3), new_rvar(cbind(x_array, x_array, x_array)))
+  expect_equal(rep.int(x, 3), new_rvar(cbind(x_array, x_array, x_array)))
   each_twice = cbind(x_array[,1], x_array[,1], x_array[,2], x_array[,2])
   expect_equal(rep(x, each = 2), new_rvar(each_twice))
   expect_equal(rep(x, each = 2, times = 3), new_rvar(cbind(each_twice, each_twice, each_twice)))
   expect_equal(rep(x, length.out = 3), new_rvar(cbind(x_array, x_array[,1])))
+  expect_equal(rep_len(x, 3), new_rvar(cbind(x_array, x_array[,1])))
 })
 
 # all.equal ---------------------------------------------------------------------
@@ -294,9 +344,10 @@ test_that("all.equal works", {
 
   expect_true(all.equal(x, x))
   expect_true(!isTRUE(all.equal(x, x + 1)))
+  expect_true(!isTRUE(all.equal(x, "a")))
 })
 
-# as.list ---------------------------------------------------------------------
+# as.list / as.vector -----------------------------------------------------------
 
 test_that("as.list works", {
   x_array = array(
@@ -315,10 +366,69 @@ test_that("as.list works", {
   )
 })
 
+test_that("as.vector works", {
+  x = rvar(array(1:12, dim = c(2, 2, 3)))
+  dimnames(x) <- list(c("a","b"), c("c","d","e"))
+
+  expect_equal(as.vector(x), rvar(array(1:12, dim = c(2, 6))))
+})
+
 
 # is.na -------------------------------------------------------------------
 
 test_that("is.na works", {
   x = c(rvar(NA), 1)
   expect_equal(is.na(x), c(TRUE, FALSE))
+})
+
+
+# density / cdf / quantile ------------------------------------------------
+
+test_that("distributional functions work", {
+  x_values = c(2,4,3,5)
+  x = rvar(x_values)
+
+  x_density = density(x_values, cut = 0)
+  expect_equal(density(x, at = x_density$x), x_density$y)
+
+  x_cdf = ecdf(x_values)(x_values)
+  expect_equal(cdf(x, x_values), x_cdf)
+
+  expect_equal(quantile(x, 1:4/4), quantile(x_values, 1:4/4))
+})
+
+
+# rbind / cbind -----------------------------------------------------------
+
+test_that("cbind works on rvar", {
+  x = rvar(array(1:9, dim = c(3,3)))
+  y = rvar(array(2:10, dim = c(3,3)))
+
+  expect_equal(cbind(x, y, deparse.level = 0), rvar(array(c(1:9, 2:10), dim = c(3,3,2))))
+  expect_equal(cbind(a = x, y, deparse.level = 0),
+    rvar(array(c(1:9, 2:10), dim = c(3,3,2), dimnames = list(NULL, NULL, c("a", ""))))
+  )
+  expect_equal(cbind(a = x, y),
+    rvar(array(c(1:9, 2:10), dim = c(3,3,2), dimnames = list(NULL, NULL, c("a", "y"))))
+  )
+  expect_equal(cbind(x, b = y, deparse.level = 0),
+    rvar(array(c(1:9, 2:10), dim = c(3,3,2), dimnames = list(NULL, NULL, c("", "b"))))
+  )
+  expect_equal(cbind(x, y + 1, deparse.level = 2),
+    rvar(array(c(1:9, 2:10 + 1), dim = c(3,3,2), dimnames = list(NULL, NULL, c("x", "y + 1"))))
+  )
+
+  x_col <- x
+  dim(x_col) <- c(3,1)
+  expect_equal(cbind(x_col, y, deparse.level = 0), rvar(array(c(1:9, 2:10), dim = c(3,3,2))))
+  expect_equal(cbind(a = x_col, y),
+    rvar(array(c(1:9, 2:10), dim = c(3,3,2), dimnames = list(NULL, NULL, c("", "y"))))
+  )
+  dimnames(x_col)[[2]] = "b"
+  expect_equal(cbind(a = x_col, y),
+    rvar(array(c(1:9, 2:10), dim = c(3,3,2), dimnames = list(NULL, NULL, c("b", "y"))))
+  )
+
+  expect_equal(cbind(data.frame(x), y + 1), data.frame(x = x, `y + 1` = y + 1, check.names = FALSE))
+  expect_equal(cbind(x + 1, data.frame(y)), data.frame(`x + 1` = x + 1, y = y, check.names = FALSE))
 })
