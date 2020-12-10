@@ -20,9 +20,13 @@
 #'
 #' @export
 as_rvar <- function(x, dim = NULL) {
-  x <-
-    if (is_rvar(x)) x
-  else vec_cast(x, new_rvar())
+  if (!is_rvar(x)) {
+    x <- vec_cast(x, new_rvar())
+  }
+
+  if (is.null(x)) {
+    x <- rvar()
+  }
 
   if (!is.null(dim)) {
     dim(x) <- dim

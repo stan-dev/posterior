@@ -4,7 +4,7 @@
 \alias{rvar}
 \title{Random variables of arbitrary dimension}
 \usage{
-rvar(x = double(), dim = NULL, .nchains = 1L)
+rvar(x = double(), dim = NULL, dimnames = NULL, .nchains = 1L)
 }
 \arguments{
 \item{x}{A vector or array where the first dimension represents draws from
@@ -14,6 +14,9 @@ first dimension is used to index draws from the distribution.}
 
 \item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
 or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
+
+\item{dimnames}{Override for the names of the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dimnames]{dimnames()}}): a list of character
+vectors giving names of the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
 
 \item{.nchains}{Number of chains (default is \code{1}).}
 }

@@ -9,6 +9,7 @@
 #' everything except the first dimension is used for the shape of the variable, and the
 #' first dimension is used to index draws from the distribution.
 #' @template args-rvar-dim
+#' @template args-rvar-dimnames
 #' @template args-format-nchains
 #'
 #' @details
@@ -42,12 +43,16 @@
 #' @return An object of class `"rvar"` representing a random variable.
 #'
 #' @export
-rvar <- function(x = double(), dim = NULL, .nchains = 1L) {
+rvar <- function(x = double(), dim = NULL, dimnames = NULL, .nchains = 1L) {
   x <- new_rvar(x, .nchains = .nchains)
 
   if (!is.null(dim)) {
     dim(x) <- dim
   }
+  if (!is.null(dimnames)) {
+    dimnames(x) <- dimnames
+  }
+
   x
 }
 
@@ -165,7 +170,7 @@ names.rvar <- function(x) {
   x
 }
 
-# other standard methods --------------------------------------------------
+# type predicates --------------------------------------------------
 
 #' @export
 is.matrix.rvar <- function(x) {
@@ -177,10 +182,43 @@ is.array.rvar <- function(x) {
   length(dim(draws_of(x))) > 0
 }
 
+
+# type conversion ---------------------------------------------------------
+
+#' @export
+as.vector.rvar <- function(x, mode = "any") {
+  dim(x) <- NULL
+  names(x) <- NULL
+  x
+}
+
+#' @export
+as.list.rvar <- function(x, ...) {
+  apply(draws_of(x), 2, new_rvar, .nchains = nchains(x))
+}
+
+#' @export
+#' @importFrom rlang as_label
+as.data.frame.rvar <- function(x, ..., optional = FALSE) {
+  if (length(dim(x)) == 2) {
+    # x is matrix-like, convert it into a data frame of the same shape
+    as.data.frame.matrix(x, ..., optional = optional)
+  } else if (length(dim(x)) <= 1) {
+    out <- NextMethod()
+    if (!optional) {
+      names(out) <- as_label(substitute(x))
+    }
+    out
+  } else {
+    NextMethod()
+  }
+}
+
+# other standard methods --------------------------------------------------
+
 #' @export
 levels.rvar <- function(x) {
-  # TODO: for factor-like rvars
-  stop("Factor support in rvars is not yet implemented.")
+  # TODO: implement for factor-like rvars
   NULL
 }
 
@@ -263,18 +301,6 @@ all.equal.rvar <- function(target, current, ...) {
   }
 
   if (is.null(result)) TRUE else result
-}
-
-#' @export
-as.vector.rvar <- function(x, mode = "any") {
-  dim(x) <- NULL
-  names(x) <- NULL
-  x
-}
-
-#' @export
-as.list.rvar <- function(x, ...) {
-  apply(draws_of(x), 2, new_rvar, .nchains = nchains(x))
 }
 
 
@@ -554,50 +580,103 @@ quantile.rvar <- function(x, probs, ...) {
 
 #' @export
 c.rvar <- function(...) {
-  combine_rvar(c, list(...))
+  args <- list(...)
+
+  if (any(sapply(args, function(arg) !is_rvar(arg) && is.list(arg)))) {
+    # if there is a data frame in args, we should just make the first arg
+    # into a list and then use the list c() implementation
+    args[[1]] <- as.list(args[[1]])
+    return(do.call(c, args))
+  }
+
+  out <- make_1d(args[[1]], names(args)[[1]])
+
+  # process remaining args in succession, binding them to the output
+  for (i in seq_along(args)[-1]) {
+    arg_name <- names(args)[[i]]
+    arg <- make_1d(as_rvar(args[[i]]), arg_name)
+    out <- broadcast_and_bind_rvars(out, arg)
+  }
+
+  out
 }
 
 #' @export
 rbind.rvar <- function(...) {
   # not sure why deparse.level is not passed here correctly...
   deparse.level <- rlang::caller_env()$deparse.level %||% 1
-  bind_rvar("rbind", list(...), as.list(substitute(list(...))[-1]), deparse.level)
+  bind_rvars(list(...), as.list(substitute(list(...))[-1]), deparse.level)
 }
 
 #' @export
 cbind.rvar <- function(...) {
   # not sure why deparse.level is not passed here correctly...
   deparse.level <- rlang::caller_env()$deparse.level %||% 1
-  bind_rvar("cbind", list(...), as.list(substitute(list(...))[-1]), deparse.level, .axis = 3)
+  bind_rvars(list(...), as.list(substitute(list(...))[-1]), deparse.level, axis = 2)
 }
 
+#' bind a list of objects together, as in cbind or rbind (depending on `axis`),
+#' converting to rvars as needed
 #' @importFrom utils getS3method
-bind_rvar <- function(.f_name, args, arg_exprs, deparse.level = 1, .axis = 2) {
-  args = deparse_names(args, arg_exprs, deparse.level)
+#' @noRd
+bind_rvars <- function(args, arg_exprs, deparse.level = 1, axis = 1) {
+  if (any(sapply(args, is.data.frame))) {
+    # if there is a data frame in args, we should just make the first arg
+    # into a data frame and then use the data frame bind implementation
 
-  # ensure first argument has dimensions (for binding)
-  if (is.null(dim(args[[1]]))) {
-    dim(args[[1]]) <- c(length(args[[1]]), 1)
-  }
-  if (length(args) == 1) {
-    return(args[[1]])
-  }
-
-  if (is.data.frame(args[[2]])) {
-    # for data frames, need to deparse arg names at level 2
-    args = deparse_names(args, arg_exprs, deparse.level = 2)
-    return(do.call(getS3method(.f_name, "data.frame"), args))
+    # data frames always deparse at level 2 (expressions get named)
+    args <- deparse_names(args, arg_exprs, deparse.level = 2)
+    args[[1]] <- as.data.frame(make_at_least_2d(args[[1]], axis, names(args)[[1]]))
+    bind <- if (axis == 1) rbind else cbind
+    return(do.call(bind, args))
   }
 
-  args[[2]] <- as_rvar(args[[2]])
-  if (is.null(dim(args[[2]]))) {
-    dim(args[[2]]) <- c(length(args[[2]]), 1)
+  args <- deparse_names(args, arg_exprs, deparse.level)
+
+  out <- make_at_least_2d(as_rvar(args[[1]]), axis, names(args)[[1]])
+
+  # process remaining args in succession, binding them to the output
+  for (i in seq_along(args)[-1]) {
+    arg_name <- names(args)[[i]]
+    arg <- make_at_least_2d(as_rvar(args[[i]]), axis, arg_name)
+    out <- broadcast_and_bind_rvars(out, arg, axis)
   }
 
-  combine_rvar(get(.f_name), args, .axis = .axis)
+  out
 }
 
+#' broadcast two rvars to compatible dimensions and bind along the `axis` dimension
+#' @noRd
+broadcast_and_bind_rvars <- function(x, y, axis = 1) {
+  if (!length(x)) return(y)
+  if (!length(y)) return(x)
+
+  draws_axis <- axis + 1 # because first dim is draws
+
+  # conform nchains
+  # (don't need to do draws here since that's part of the broadcast below)
+  c(x, y) %<-% conform_rvar_nchains(list(x, y))
+
+  # broadcast each array to the desired dimensions
+  # (except along the axis we are binding along)
+  draws_x <- draws_of(x)
+  draws_y <- draws_of(y)
+  new_dim <- dim2_common(dim(draws_x), dim(draws_y))
+
+  new_dim[draws_axis] <- dim(draws_x)[draws_axis]
+  draws_x <- broadcast_array(draws_x, new_dim)
+
+  new_dim[draws_axis] <- dim(draws_y)[draws_axis]
+  draws_y <- broadcast_array(draws_y, new_dim)
+
+  # bind along desired axis
+  result <- new_rvar(abind(draws_x, draws_y, along = draws_axis), .nchains = nchains(x))
+}
+
+#' Deparse argument names roughly following the rules of the deparse.level
+#' argument to cbind / rbind
 #' @importFrom rlang as_name as_label
+#' @noRd
 deparse_names <- function(args, arg_exprs, deparse.level) {
   # give arguments names if needed
   if (deparse.level > 0) {
@@ -607,7 +686,7 @@ deparse_names <- function(args, arg_exprs, deparse.level) {
     for (i in seq_along(arg_exprs)) {
       arg_name <- names(args)[[i]]
       arg_expr <- arg_exprs[[i]]
-      if (!isTRUE(nchar(arg_name) > 0)) {
+      if (!isTRUE(nzchar(arg_name))) {
         if (deparse.level == 1 && is.name(arg_expr)) {
           names(args)[[i]] <- as_name(arg_expr)
         } else if (deparse.level > 1) {
@@ -622,49 +701,46 @@ deparse_names <- function(args, arg_exprs, deparse.level) {
   args
 }
 
-combine_rvar <- function(.f, args, .axis = 2) {
-  if (length(args) == 1) {
-    return(args[[1]])
+#' restructure a variable for concatenation with `c()` by ensuring that `x` has
+#' only 1 dimension and merging the high-level `name` with names in `x`
+#' @noRd
+make_1d <- function(x, name) {
+  if (length(dim(x)) > 1) {
+    dim(x) <- length(x)
   }
-
-  x <- args[[1]]
-  y <- as_rvar(args[[2]])
-
-  # conform nchains
-  # (don't need to do draws here since that's part of the broadcast below)
-  c(x, y) %<-% conform_rvar_nchains(list(x, y))
-
-  # broadcast each array to the desired dimensions
-  # (except along the axis we are binding along)
-  draws_x <- draws_of(x)
-  draws_y <- draws_of(y)
-  new_dim <- dim2_common(dim(draws_x), dim(draws_y))
-
-  .broadcast = function(draws, arg_name) {
-    new_dim[.axis] <- dim(draws)[.axis]
-    draws <- broadcast_array(draws, new_dim)
-    if (length(arg_name) && nchar(arg_name) > 0 && is.na(new_dim[.axis])) {
-      # cbind/rbind were called with a name for this var and draws being a vector
-      # (which will result in new_dim[.axis] being NA), which implies we can
-      # replace the existing dimension name with the provided name
-      # as in something like cbind(a = x, ...) where x is a vector-like rvar
-      dimnames(draws)[[.axis]] = arg_name
+  if (isTRUE(nzchar(name))) {
+    # name provided, merge with names in the vector
+    if (length(x) > 1) {
+      if (!length(names(x))) names(x) <- rep("", length(x))
+      empty_names <- !nzchar(names(x))
+      names(x)[empty_names] <- seq_along(x)[empty_names]
+      names(x)[!empty_names] <- paste0(".", names(x)[!empty_names])
+      names(x) <- paste0(name, names(x))
+    } else {
+      names(x) <- name
     }
-    draws
   }
-  draws_x <- .broadcast(draws_x, names(args)[[1]])
-  draws_y <- .broadcast(draws_y, names(args)[[2]])
+  x
+}
 
-  # bind along desired axis
-  result <- new_rvar(abind(draws_x, draws_y, along = .axis), .nchains = nchains(x))
-
-  if (length(args) > 2) {
-    args[[1]] <- result
-    args[[2]] <- NULL
-    do.call(.f, args)
-  } else {
-    result
+#' restructure a variable for binding along `axis` with rbind (axis = 1) or
+#' cbind (axis = 2). Ensures that `x` has at least two dimensions (filling
+#' setting extra dimension `axis` to 1 if needed) and if `x` is vector-like
+#' (is 1-dimensional), sets the name of the newly-added dimension to `axis_name`
+#' @noRd
+make_at_least_2d <- function(x, axis, axis_name) {
+  if (length(dim(x)) <= 1) {
+    # input is a vector, turn it into a matrix
+    if (axis == 1) { # rbind
+      dim(x) = c(1, length(x))
+    } else {         # cbind
+      dim(x) = c(length(x), 1)
+    }
+    if (isTRUE(nchar(axis_name) > 0)) {
+      dimnames(x)[[axis]] <- axis_name
+    }
   }
+  x
 }
 
 
