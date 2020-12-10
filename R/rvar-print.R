@@ -44,11 +44,14 @@
 #' format(x)
 #'
 #' @export
-print.rvar <- function(x, ..., summary = NULL, digits = 2) {
+print.rvar <- function(x, ..., summary = NULL, digits = 2, color = TRUE) {
   # \u00b1 = plus/minus sign
   summary_functions <- get_summary_functions(summary)
-  summary_string <- paste(summary_functions, collapse = "\u00b1")
-  cat0(rvar_type_abbr(x), " ", pillar::style_subtle(paste0(summary_string, ":")), "\n")
+  summary_string <- paste0(paste(summary_functions, collapse = "\u00b1"), ":")
+  if (color) {
+    summary_string <- pillar::style_subtle(summary_string)
+  }
+  cat0(rvar_type_abbr(x), " ", summary_string, "\n")
   print(format(x, summary = summary, digits = digits, color = FALSE), quote = FALSE)
   invisible(x)
 }
@@ -88,11 +91,15 @@ str.rvar <- function(object, ..., summary = NULL, vec.len = NULL) {
 
 #' @importFrom vctrs vec_ptype_abbr
 #' @export
-vec_ptype_abbr.rvar <- function(x, ...) "rvar"
+vec_ptype_abbr.rvar <- function(x, ...) {
+  "rvar"
+}
 
 #' @importFrom vctrs vec_ptype_full
 #' @export
-vec_ptype_full.rvar <- function(x, ...) rvar_type_abbr(x, dim1 = FALSE)
+vec_ptype_full.rvar <- function(x, ...) {
+  rvar_type_abbr(x, dim1 = FALSE)
+}
 
 rvar_type_abbr <- function(x, dim1 = TRUE) {
   .dim <- dim(draws_of(x))

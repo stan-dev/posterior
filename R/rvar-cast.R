@@ -5,6 +5,8 @@
 #' @param x An object that can be converted to an [`rvar`], such as a vector or array
 #' (or an [`rvar`] itself).
 #' @template args-rvar-dim
+#' @template args-rvar-dimnames
+#' @template args-format-nchains
 #'
 #' @details For objects that are already [`rvar`]s, returns them (with modified dimensions
 #' if `dim` is not `NULL`).
@@ -19,17 +21,25 @@
 #' @return An object of class `"rvar"` representing a random variable.
 #'
 #' @export
-as_rvar <- function(x, dim = NULL) {
+as_rvar <- function(x, dim = NULL, dimnames = NULL, .nchains = NULL) {
   if (!is_rvar(x)) {
     x <- vec_cast(x, new_rvar())
   }
-
   if (is.null(x)) {
     x <- rvar()
   }
 
   if (!is.null(dim)) {
     dim(x) <- dim
+  }
+  if (!is.null(dimnames)) {
+    dimnames(x) <- dimnames
+  }
+  if (!is.null(.nchains)) {
+    .ndraws <- ndraws(x)
+    .nchains <- as_one_integer(.nchains)
+    check_nchains_compat_with_ndraws(.nchains, .ndraws)
+    attr(x, "nchains") <- .nchains
   }
 
   x

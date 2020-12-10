@@ -4,7 +4,7 @@
 \alias{as_rvar}
 \title{Coerce to a random variable}
 \usage{
-as_rvar(x, dim = NULL)
+as_rvar(x, dim = NULL, dimnames = NULL, .nchains = NULL)
 }
 \arguments{
 \item{x}{An object that can be converted to an \code{\link{rvar}}, such as a vector or array
@@ -12,6 +12,11 @@ as_rvar(x, dim = NULL)
 
 \item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
 or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
+
+\item{dimnames}{Override for the names of the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dimnames]{dimnames()}}): a list of character
+vectors giving names of the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
+
+\item{.nchains}{Number of chains (default is \code{1}).}
 }
 \value{
 An object of class \code{"rvar"} representing a random variable.

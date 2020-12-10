@@ -81,15 +81,9 @@ new_rvar <- function(x = double(), .nchains = 1L) {
     dimnames(x) <- list(NULL)
   }
 
-  # except with constants, .nchains must divide the number of draws
   .ndraws <- dim(x)[[1]]
   .nchains <- as_one_integer(.nchains)
-  if (.ndraws != 1 && .ndraws %% .nchains != 0) {
-    stop2("Number of chains does not divide the number of draws.")
-  }
-  if (.nchains < 1) {
-    stop2("Number of chains must be >= 1")
-  }
+  check_nchains_compat_with_ndraws(.nchains, .ndraws)
 
   # ensure we have an index for draws
   if (length(rownames(x)) == 0) {
@@ -808,6 +802,17 @@ nchains2_common <- function(nchains_x, nchains_y) {
       "a different number of chains to avoid this warning."
     )
     1L
+  }
+}
+
+# check that the given number of chains is compatible with the given number of draws
+check_nchains_compat_with_ndraws <- function(nchains, ndraws) {
+  # except with constants, nchains must divide the number of draws
+  if (ndraws != 1 && ndraws %% nchains != 0) {
+    stop2("Number of chains does not divide the number of draws.")
+  }
+  if (nchains < 1) {
+    stop2("Number of chains must be >= 1")
   }
 }
 
