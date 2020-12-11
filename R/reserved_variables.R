@@ -50,6 +50,11 @@ reserved_variables.draws_list <- function(x, ...) {
   intersect(reserved_variables(), names(x[[1]]))
 }
 
+#' @export
+reserved_variables.draws_rvars <- function(x, ...) {
+  intersect(reserved_variables(), names(x))
+}
+
 # reserved variables specific for the 'draws_df' format
 reserved_df_variables <- function() {
   c(".chain", ".iteration", ".draw")

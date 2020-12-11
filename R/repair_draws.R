@@ -66,7 +66,7 @@ repair_draws.draws_list <- function(x, order = TRUE, ...) {
 #' @export
 repair_draws.draws_rvars <- function(x, order = TRUE, ...) {
   for (i in seq_along(x)) {
-    x[[i]] <- repair_draws(x[[i]])
+    x[[i]] <- repair_draws(x[[i]], order = order, ...)
   }
   x
 }
@@ -75,7 +75,18 @@ repair_draws.draws_rvars <- function(x, order = TRUE, ...) {
 #' @export
 repair_draws.rvar <- function(x, order = TRUE, ...) {
   rownames(draws_of(x)) <- repair_ids(rownames(draws_of(x)))
-  x <- do_ordering(x, order)
+  order <- as_one_logical(order)
+  if (order) {
+    x <- order_draws(x)
+  } else if (nchains(x) > 1) {
+    # even if we aren't asked to order draws, still need to check on the order
+    # because if the draws are out of order we have to drop chain info (it would
+    # no longer be guaranteed to be correct)
+    draw_order <- order(draw_ids(x))
+    if (needs_ordering(draw_order)) {
+      x <- merge_chains(x)
+    }
+  }
   rownames(draws_of(x)) <- as.character(seq_rows(draws_of(x)))
   x
 }

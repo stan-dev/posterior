@@ -48,7 +48,9 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
   var_names <- unique(vars)
   rvars_list <- lapply(var_names, function (var) {
     var_i <- vars == var
-    var_matrix <- x[, var_i, drop = FALSE]
+    # reset class here as otherwise the draws arrays in the output rvars
+    # have type draws_matrix, which makes inspecting them hard
+    var_matrix <- unclass(x[, var_i, drop = FALSE])
 
     if (ncol(var_matrix) == 1) {
       # single variable, no indices
@@ -213,7 +215,7 @@ is_draws_rvars_like <- function(x) {
 
 #' @export
 `[.draws_rvars` <- function(x, i, j, ..., drop = FALSE) {
-  out <- NextMethod("[", drop = drop)
+  out <- NextMethod("[")
   class(out) <- class(x)
   out
 }

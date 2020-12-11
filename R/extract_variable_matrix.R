@@ -36,3 +36,19 @@ extract_variable_matrix.draws <- function(x, variable, ...) {
   class(out) <- "matrix"
   out
 }
+
+#' @rdname extract_variable_matrix
+#' @export
+extract_variable_matrix.draws_rvars <- function(x, variable, ...) {
+  variable <- as_one_character(variable)
+  variable_regex <- regexec("^(.*)\\[.*\\]$", variable)
+  if (!isTRUE(variable_regex[[1]] == -1)) {
+    # regex match => variable with indices in the name ("x[1]", etc), which
+    # can't be subset from draws_rvars directly, so we'll convert to a
+    # draws_array first. root_variable is "x" when variable is "x[...]"
+    root_variable <- regmatches(variable, variable_regex)[[1]][[2]]
+    extract_variable_matrix(as_draws_array(x[root_variable]), variable, ...)
+  } else {
+    NextMethod()
+  }
+}

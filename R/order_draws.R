@@ -71,6 +71,7 @@ order_draws.draws_rvars <- function(x, ...) {
 
 #' @rdname order_draws
 #' @importFrom rlang missing_arg
+#' @importFrom vctrs vec_slice
 #' @export
 order_draws.rvar <- function(x, ...) {
   draw_order <- order(draw_ids(x))
@@ -80,10 +81,7 @@ order_draws.rvar <- function(x, ...) {
     if (nchains(x) > 1) {
       x <- merge_chains(x)
     }
-    draws <- draws_of(x)
-    index <- list(draw_order)
-    index[seq(length(index) + 1, length(dim(draws)))] = list(missing_arg())
-    draws_of(x) <- do.call(`[`, c(list(draws), index, drop = FALSE))
+    draws_of(x) <- vec_slice(draws_of(x), draw_order)
   }
   x
 }

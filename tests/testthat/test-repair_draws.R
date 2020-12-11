@@ -54,3 +54,36 @@ test_that("repair_draws works correctly on draws_list objects", {
   expect_equal(x, x_rep, check.attributes = FALSE)
   expect_equal(names(x_rep), as.character(1:2))
 })
+
+test_that("repair_draws works correctly on draws_rvars objects", {
+  x <- as_draws_rvars(example_draws())
+  draws_of(x$mu) <- draws_of(x$mu)[c(16, 11, 8, 2),, drop = FALSE]
+  draws_of(x$tau) <- draws_of(x$tau)[c(16, 11, 8, 2),, drop = FALSE]
+  draws_of(x$theta) <- draws_of(x$theta)[c(16, 11, 8, 2),, drop = FALSE]
+
+  x_rep <- repair_draws(x, order = TRUE)
+  expect_equal(
+    draws_of(x_rep$mu),
+    draws_of(x$mu)[order(as.integer(rownames(draws_of(x$mu)))),],
+    check.attributes = FALSE
+  )
+  expect_equal(niterations(x_rep), 4)
+  expect_equal(nchains(x_rep), 1)
+
+  x_rep <- repair_draws(x, order = FALSE)
+  expect_equal(draws_of(x$mu), draws_of(x_rep$mu), check.attributes = FALSE)
+  expect_equal(niterations(x_rep), 4)
+  expect_equal(nchains(x_rep), 1)
+
+  x_ord <- order_draws(x)
+  expect_equal(
+    draws_of(x_ord$mu),
+    draws_of(x$mu)[order(as.integer(rownames(draws_of(x$mu)))),],
+    check.attributes = FALSE
+  )
+  expect_equal(
+    draws_of(x_ord$theta),
+    draws_of(x$theta)[order(as.integer(rownames(draws_of(x$theta)))),],
+    check.attributes = FALSE
+  )
+})

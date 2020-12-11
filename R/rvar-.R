@@ -859,9 +859,6 @@ check_rvar_dims_first <- function(x, y) {
     dim(x) <- rep(1, length(dim(y)))
   } else if (identical(x_dim_dropped, y_dim_dropped)) {
     dim(x) <- dim(y)
-  } else if (y_dim == 0) {
-    # y_dim == 0 => assigning to an empty vector, can leave it as is
-    # TODO: this is a hack for assignment to empty vectors and needs to be fixed
   } else {
     stop2("Cannot assign an rvar with dimension ", paste0(x_dim, collapse = ","),
       " to an rvar with dimension ", paste0(y_dim, collapse = ","))
@@ -905,7 +902,7 @@ broadcast_array  <- function(x, dim) {
     dim(x) = current_dim
   } else if (length(current_dim) > length(dim)) {
     stop2(
-      "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "]",
+      "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "] ",
       "to array of shape [", paste(dim, collapse = ","), "]:\n",
       "Desired shape has fewer dimensions than existing array."
     )

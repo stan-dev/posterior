@@ -35,3 +35,13 @@ test_that("print.draws_list runs without errors", {
   x <- weight_draws(x, rep(1, ndraws(x)))
   expect_output(print(x), "hidden reserved variables \\{'\\.log_weight'\\}")
 })
+
+test_that("print.draws_rvars runs without errors", {
+  x <- as_draws_rvars(example_draws())
+  expect_output(print(x),
+    "A draws_rvars: 100 iterations, 4 chains, and 3 variables"
+  )
+
+  x <- weight_draws(x, rep(1, ndraws(x)))
+  expect_output(print(x), "hidden reserved variables \\{'\\.log_weight'\\}")
+})

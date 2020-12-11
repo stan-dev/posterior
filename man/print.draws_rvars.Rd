@@ -10,6 +10,7 @@
   digits = 2,
   max_variables = getOption("posterior.max_variables", 8),
   summary = getOption("posterior.rvar_summary", "mean_sd"),
+  reserved = FALSE,
   ...
 )
 }

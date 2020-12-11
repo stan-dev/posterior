@@ -289,10 +289,36 @@ subset_dims <- function(x, ...) {
   x
 }
 
+#' @importFrom vctrs vec_slice
 #' @export
 .subset_draws.draws_rvars <- function(x, iteration = NULL, chain = NULL,
                                       variable = NULL, reserved = FALSE, ...) {
-  stop("TODO: implement")
+  if (!is.null(variable)) {
+    if (reserved) {
+      reserved_vars <- setdiff(reserved_variables(x), variable)
+      x <- x[c(variable, reserved_vars)]
+    } else{
+      x <- x[variable]
+    }
+  }
+  if (!is.null(chain)) {
+    chain <- unique(chain)
+    nchains <- length(chain)
+    chain_ids <- rep(chain_ids(x), each = niterations(x))
+    slice_index <- chain_ids %in% chain
+    for (i in seq_along(x)) {
+      draws_of(x[[i]]) <- vec_slice(draws_of(x[[i]]), slice_index)
+      attr(x[[i]], "nchains") <- nchains
+    }
+  }
+  if (!is.null(iteration)) {
+    niterations <- length(iteration)
+    slice_index <- iteration + (rep(chain_ids(x), each = length(iteration)) - 1) * niterations(x)
+    for (i in seq_along(x)) {
+      draws_of(x[[i]]) <- vec_slice(draws_of(x[[i]]), slice_index)
+    }
+  }
+  x
 }
 
 # prepare object to be subsetted via 'subset_draws'

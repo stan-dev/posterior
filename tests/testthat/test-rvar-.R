@@ -113,6 +113,7 @@ test_that("assignment with [[ works", {
   )
 
   expect_error({x2 <- x; x2[[-1]] <- 1})
+  expect_error({x2 <- rvar(1:10); x2[[2]] <- c(4,5,6)})
 })
 
 test_that("indexing with [ works on a vector", {
@@ -319,6 +320,9 @@ test_that("broadcast_array works", {
     broadcast_array(array(1:4, c(4,1)), c(4,2)),
     array(c(1:4, 1:4), c(4,2))
   )
+
+  expect_error(broadcast_array(array(1:9, dim = c(3,3)), c(1,9)))
+  expect_error(broadcast_array(array(1:9, dim = c(3,3)), c(9)))
 })
 
 # rep ---------------------------------------------------------------------
@@ -421,6 +425,7 @@ test_that("c works on rvar", {
 
   expect_equal(c(x), x)
   expect_equal(c(x, NULL), x)
+  expect_equal(c(x, list(b = 1)), c(as.list(x), list(b = 1)))
   expect_equal(c(x, y), x_y)
   expect_equal(c(x, NULL, y), x_y)
   expect_equal(c(x, x), rvar(array(c(1:9, 1:9), dim = c(3,6))))
