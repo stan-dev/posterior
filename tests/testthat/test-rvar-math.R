@@ -1,8 +1,12 @@
-test_that("arithmetic works", {
+test_that("math operators works", {
   x_array = array(1:24, dim = c(4,2,3))
   x = new_rvar(x_array)
   y_array = array(c(2:13,12:1), dim = c(4,2,3))
   y = new_rvar(y_array)
+
+  expect_identical(log(x), new_rvar(log(x_array)))
+
+  expect_identical(-x, new_rvar(-x_array))
 
   expect_identical(x + 2, new_rvar(x_array + 2))
   expect_identical(2 + x, new_rvar(x_array + 2))
@@ -69,6 +73,32 @@ test_that("comparison operators work", {
   expect_identical(x != 5, new_rvar(x_array != 5))
   expect_identical(5 != x, new_rvar(5 != x_array))
   expect_identical(x != y, new_rvar(x_array != y_array))
+})
+
+test_that("summary functions work", {
+  x_array = array(1:24, dim = c(4,2,3))
+  x = new_rvar(x_array)
+
+  expect_equal(Pr(x < 2), apply(x_array < 2, c(2,3), mean), check.attributes = FALSE)
+  expect_equal(E(x), apply(x_array, c(2,3), mean), check.attributes = FALSE)
+  expect_equal(mean(x), apply(x_array, c(2,3), mean), check.attributes = FALSE)
+  expect_equal(median(x), apply(x_array, c(2,3), median), check.attributes = FALSE)
+
+  expect_equal(draws_of(rvar_mean(x)), apply(x_array, 1, mean), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_median(x)), apply(x_array, 1, median), check.attributes = FALSE)
+  expect_equal(draws_of(min(x)), apply(x_array, 1, min), check.attributes = FALSE)
+  expect_equal(draws_of(max(x)), apply(x_array, 1, max), check.attributes = FALSE)
+  expect_equal(draws_of(range(x)), t(apply(x_array, 1, range)), check.attributes = FALSE)
+
+  expect_equal(anyNA(x), FALSE)
+  x_with_na <- x
+  x_with_na[2,1] <- NA
+  expect_equal(anyNA(x_with_na), TRUE)
+  expect_equal(is.na(x_with_na), array(c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE), dim = c(2,3)), check.attributes = FALSE)
+
+  expect_equal(draws_of(is.finite(x)), is.finite(x_array), check.attributes = FALSE)
+  expect_equal(draws_of(is.infinite(x)), is.infinite(x_array), check.attributes = FALSE)
+  expect_equal(draws_of(is.nan(x)), is.nan(x_array), check.attributes = FALSE)
 })
 
 test_that("matrix multiplication works", {

@@ -325,6 +325,26 @@ test_that("broadcast_array works", {
   expect_error(broadcast_array(array(1:9, dim = c(3,3)), c(9)))
 })
 
+
+# conforming chains / draws -----------------------------------------------
+
+test_that("warnings for unequal draws/chains are correct", {
+  expect_warning(
+    expect_equal(rvar(1:10) + rvar(1:10, .nchains = 2), rvar(1:10 + 1:10)),
+    "chains were dropped"
+  )
+
+  expect_error(
+    draws_rvars(x = rvar(1:10), y = rvar(1:11)),
+    "variables have different number of draws"
+  )
+
+  expect_error(
+    rvar(1:10, .nchains = 0),
+    "chains must be >= 1"
+  )
+})
+
 # rep ---------------------------------------------------------------------
 
 test_that("rep works", {

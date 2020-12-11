@@ -140,7 +140,8 @@ rdo <- function(expr, dim = NULL, ndraws = NULL) {
   result
 }
 
-rvar_r <- function(.f, n, ..., ndraws = 4000) {
+rvar_r <- function(.f, n, ..., ndraws = NULL) {
+  # TODO: finish and test this, maybe export?
   ndraws <- ndraws %||% getOption("posterior.rvar_ndraws", 4000)
   args = list(...)
   is_rvar_arg <- as.logical(lapply(args, is_rvar))

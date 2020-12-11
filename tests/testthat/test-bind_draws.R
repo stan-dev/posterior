@@ -125,6 +125,37 @@ test_that("bind_draws works for draws_list objects", {
                "Cannot bind 'draws_list' objects along 'draw'")
 })
 
+test_that("bind_draws works for draws_rvars objects", {
+  draws1 <- as_draws_rvars(example_draws())
+  draws2 <- subset_draws(draws1, chain = 2)
+  draws3 <- subset_draws(draws1, iteration = 10:20)
+  draws4 <- as_draws_list(data.frame(
+    nu = rnorm(ndraws(draws1)),
+    .chain = rep(chain_ids(draws1), each = niterations(draws1))
+  ))
+
+  draws_new <- bind_draws(draws1, draws4, along = "variable")
+  expect_equal(
+    variables(draws_new),
+    c(variables(draws1), variables(draws4))
+  )
+  expect_equal(ndraws(draws_new), ndraws(draws1))
+
+  draws_new <- bind_draws(draws1, draws2, along = "chain")
+  expect_equal(nchains(draws_new), nchains(draws1) + nchains(draws2))
+  expect_equal(variables(draws_new), variables(draws1))
+
+  expect_error(bind_draws(draws1, draws3, along = "iteration"),
+    "Cannot bind 'draws_rvars' objects along 'iteration'")
+
+  draws_new <- bind_draws(draws1, draws3, along = "draw")
+  expect_equal(ndraws(draws_new), ndraws(draws1) + ndraws(draws3))
+  expect_equal(nchains(draws_new), 1L)
+
+  draws_new <- bind_draws(NULL, draws1)
+  expect_equal(draws_new, draws1)
+})
+
 test_that("bind_draws errors if all NULL", {
   expect_error(bind_draws(NULL, NULL), "All objects passed to 'bind_draws' are NULL")
 })

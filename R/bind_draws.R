@@ -177,14 +177,28 @@ bind_draws.draws_rvars <- function(x, ..., along = "variable") {
   if (along == "variable") {
     check_same_fun_output(dots, chain_ids)
     check_same_fun_output(dots, iteration_ids)
-    check_same_fun_output(dots, draw_ids)
     out <- do.call(c, dots)
-  } else if (along == "chain") {
-    stop2("TODO: implement")
   } else if (along == "iteration") {
-    stop2("TODO: implement")
-  } else if (along == "draw") {
-    stop2("TODO: implement")
+    # TODO: implement?
+    stop2("Cannot bind 'draws_rvars' objects along 'iteration'.")
+  } else if (along %in% c("chain", "draw")) {
+    check_same_fun_output(dots, variables)
+    if (along == "chain") {
+      check_same_fun_output(dots, iteration_ids)
+      nchains <- sum(sapply(dots, nchains))
+    } else {
+      # binding along 'draw' implies dropping chain information
+      dots <- lapply(dots, merge_chains)
+      nchains <- 1
+    }
+    # bind all the corresponding variables together along draws
+    out <- lapply(seq_along(dots[[1]]), function(var_i) {
+      vars <- lapply(dots, `[[`, var_i)
+      var_draws <- lapply(vars, draws_of)
+      out <- rvar(do.call(rbind, var_draws), .nchains = nchains)
+      out
+    })
+    names(out) <- names(dots[[1]])
   }
   as_draws_rvars(out)
 }

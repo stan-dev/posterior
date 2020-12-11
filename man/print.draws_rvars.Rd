@@ -27,6 +27,11 @@ Can be controlled globally via the \code{"posterior.max_variables"} option
 \code{"median_mad"} displays \verb{median±mad}. If \code{NULL}, \code{getOption("posterior.rvar_summary")} is
 used (default \verb{"mean_sd}).}
 
+\item{reserved}{Logical. Indicates whether reserved variables should be
+included in the output. Defaults to \code{FALSE}.
+See \code{\link{reserved-variables}} for an overview of currently reserved
+variable names.}
+
 \item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}
 }
 \value{

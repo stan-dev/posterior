@@ -808,7 +808,7 @@ nchains2_common <- function(nchains_x, nchains_y) {
 # check that the given number of chains is compatible with the given number of draws
 check_nchains_compat_with_ndraws <- function(nchains, ndraws) {
   # except with constants, nchains must divide the number of draws
-  if (ndraws != 1 && ndraws %% nchains != 0) {
+  if (ndraws != 1 && isTRUE(ndraws %% nchains != 0)) {
     stop2("Number of chains does not divide the number of draws.")
   }
   if (nchains < 1) {

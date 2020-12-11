@@ -269,6 +269,7 @@ print.draws_list <- function(x, digits = 2,
 #' @template args-print-digits
 #' @template args-print-max_variables
 #' @template args-print-summary
+#' @template args-methods-reserved
 #' @template args-print-dots
 #' @template return-draws
 #'
