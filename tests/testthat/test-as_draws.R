@@ -305,7 +305,7 @@ test_that("as_draws_rvars correctly reshapes missing, out-of-order, and string a
   x_rvars2$var[2,3] <- NA
   expect_equal(as_draws_rvars(x_array2), x_rvars2)
 
-  x_array2 <- as_draws_rvars(subset_draws(x_array, variable = c("var[1,4]", "var[2,3]")))
+  x_array2 <- subset_draws(x_array, variable = c("var[1,4]", "var[2,3]"))
   x_rvars2 <- x_rvars
   x_rvars2$var <- x_rvars2$var[1:2,1:4]
   x_rvars2$var[1,1:3] <- NA
