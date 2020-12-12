@@ -500,6 +500,15 @@ test_that("cbind works on rvar", {
 
   expect_equal(cbind(NULL, x), cbind(x))
   expect_equal(cbind(x, NULL, y), cbind(x, y))
+})
+
+test_that("cbind works on rvar with data frames", {
+  # these do not work on R < 4 for some reason related to how data frames
+  # handle binding (so, not much we can do about it?)
+  skip_if_not(R.version$major >= 4)
+
+  x = rvar(array(1:9, dim = c(3,3)))
+  y = rvar(array(2:10, dim = c(3,3)))
 
   expect_equal(cbind(data.frame(x), y + 1), data.frame(x = x, `y + 1` = y + 1, check.names = FALSE))
   expect_equal(cbind(x + 1, data.frame(y)), data.frame(`x + 1` = x + 1, y = y, check.names = FALSE))
