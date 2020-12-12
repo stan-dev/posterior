@@ -409,7 +409,8 @@ ndraws.draws_rvars <- function(x) {
 
 #' @export
 ndraws.rvar <- function(x) {
-  NROW(draws_of(x))
+  # as.vector() to drop names in case there are index names
+  as.vector(NROW(draws_of(x)))
 }
 
 # check validity of existing variable names: e.g., that

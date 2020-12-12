@@ -85,6 +85,10 @@ as_draws_array.draws_list <- function(x, ...) {
 #' @rdname draws_array
 #' @export
 as_draws_array.draws_rvars <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_array(variables(x)))
+  }
+
   draws <- do.call(cbind, lapply(seq_along(x), function(i) {
     # flatten each rvar so it only has two dimensions: draws and variables
     # this also collapses indices into variable names in the format "var[i,j,k,...]"

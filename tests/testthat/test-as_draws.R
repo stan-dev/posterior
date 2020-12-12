@@ -208,6 +208,14 @@ test_that("numeric vectors can be transformed to draws_list objects", {
   expect_equivalent(draws_list, draws_list2)
 })
 
+test_that("numeric vectors can be transformed to draws_rvars objects", {
+  draws_rvars <- draws_rvars(a = 1:10, b = 11:20, c = 1, .nchains = 2)
+  draws_array <- array(c(1:10, 11:20, rep(1, 10)), c(5, 2, 3))
+  dimnames(draws_array)[[3]] <- c("a", "b", "c")
+  draws_rvars2 <- as_draws_rvars(draws_array)
+  expect_equivalent(draws_rvars, draws_rvars2)
+})
+
 test_that("mcmc and mcmc.list objects can be transformed to draws objects", {
   # don't want to add coda as dependency so construct equivalent of
   # mcmc and mcmc.list objects
@@ -222,13 +230,15 @@ test_that("mcmc and mcmc.list objects can be transformed to draws objects", {
     as_draws_matrix(x1),
     as_draws_array(x1),
     as_draws_df(x1),
-    as_draws_list(x1)
+    as_draws_list(x1),
+    as_draws_rvars(x1)
   )
   mcmc_list_draws <- list(
     as_draws_matrix(xlist),
     as_draws_array(xlist),
     as_draws_df(xlist),
-    as_draws_list(xlist)
+    as_draws_list(xlist),
+    as_draws_rvars(xlist)
   )
   for (j in seq_along(mcmc_draws)) {
     xj <- mcmc_draws[[j]]
@@ -250,7 +260,8 @@ test_that("empty draws objects can be converted", {
     empty_draws_matrix(),
     empty_draws_array(),
     empty_draws_list(),
-    empty_draws_df()
+    empty_draws_df(),
+    empty_draws_rvars()
   )
   for (j in seq_along(empty_draws)) {
     # basically just check they don't error and preserve 0 draws
@@ -259,6 +270,7 @@ test_that("empty draws objects can be converted", {
     expect_equal(ndraws(as_draws_array(empty_j)), 0)
     expect_equal(ndraws(as_draws_df(empty_j)), 0)
     expect_equal(ndraws(as_draws_list(empty_j)), 0)
+    expect_equal(ndraws(as_draws_rvars(empty_j)), 0)
   }
 })
 
@@ -281,4 +293,27 @@ test_that("draws_* constructors throw correct errors", {
   expect_error(draws_array(a = 1, .nchains = 2), "Number of chains does not divide the number of draws")
   expect_error(draws_df(a = 1, .nchains = 2), "Number of chains does not divide the number of draws")
   expect_error(draws_list(a = 1, .nchains = 2), "Number of chains does not divide the number of draws")
+})
+
+test_that("as_draws_rvars correctly reshapes missing, out-of-order, and string array indices", {
+  x_array <- as_draws_array(example_draws())
+  variables(x_array) <- paste0("var[", rep(1:2, each = 5), ",", rep(1:5, 2), "]")
+  x_rvars <- as_draws_rvars(x_array)
+
+  x_array2 <- remove_variables(x_array, "var[2,3]")
+  x_rvars2 <- x_rvars
+  x_rvars2$var[2,3] <- NA
+  expect_equal(as_draws_rvars(x_array2), x_rvars2)
+
+  x_array2 <- as_draws_rvars(subset_draws(x_array, variable = c("var[1,4]", "var[2,3]")))
+  x_rvars2 <- x_rvars
+  x_rvars2$var <- x_rvars2$var[1:2,1:4]
+  x_rvars2$var[1,1:3] <- NA
+  x_rvars2$var[2,c(1:2,4)] <- NA
+  expect_equal(as_draws_rvars(x_array2), x_rvars2)
+
+  x_rvars2 <- x_rvars
+  rownames(x_rvars2$var) <- letters[1:2]
+  colnames(x_rvars2$var) <- rev(letters[1:5])
+  expect_equal(as_draws_rvars(as_draws_array(x_rvars2)), x_rvars2)
 })

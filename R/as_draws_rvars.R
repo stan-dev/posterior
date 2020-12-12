@@ -40,6 +40,10 @@ as_draws_rvars.list <- function(x, ...) {
 #' @rdname draws_rvars
 #' @export
 as_draws_rvars.draws_matrix <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_rvars(variables(x)))
+  }
+
   # split x[y,z] names into base name and indices
   vars_indices <- strsplit(variables(x), "(\\[|\\])")
   vars <- sapply(vars_indices, `[[`, 1)
