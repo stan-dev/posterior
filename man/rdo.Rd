@@ -15,13 +15,16 @@ or more giving the maximal indices in each dimension. If \code{NULL} (the defaul
 
 \item{ndraws}{When no \code{\link{rvar}}s are supplied in \code{expr}, this is the number
 of draws that will be used to construct new random variables. If \code{NULL},
-\code{getOption("posterior.rvar_ndraws")} is used (default 4000).}
+\code{getOption("posterior.rvar_ndraws")} is used (default 4000). If \code{expr} contains
+\code{\link{rvar}}s, the number of draws in the provided \code{\link{rvar}}s is used instead of
+the value of this argument.}
 }
 \value{
 An \code{\link{rvar}}.
 }
 \description{
-Execute an expression to create a random variable.
+Execute (nearly) arbitrary R expressions that may include \code{\link{rvar}}s,
+producing a new \code{\link{rvar}}.
 }
 \details{
 This function evaluates \code{expr} possibly multiple times, once for each draw of
@@ -31,17 +34,24 @@ named in \code{expr} for which \code{\link[=is_rvar]{is_rvar()}} evaluates to \c
 then it will be executed \code{ndraws} times and an \code{\link{rvar}} with that many draws returned.
 
 \code{rdo()} is not necessarily \emph{fast} (in fact in some cases it may be very slow), but
-it has the advantage of allowing nearly arbitrary R code to be executed against \code{\link{rvar}}s
+it has the advantage of allowing a nearly arbitrary R expression to be executed against \code{\link{rvar}}s
 simply by wrapping it with \code{rdo( ... )}. This makes it especially useful as a prototyping
 tool. If you create code with \code{rdo()} and it is unacceptably slow for your application,
-consider rewriting it in terms of math operations directly on \code{\link{rvar}}s (which should be fast),
-or in terms of operations directly on the arrays that back the \code{\link{rvar}}s, using \code{\link[=draws_of]{draws_of()}}.
+consider rewriting it using math operations directly on \code{\link{rvar}}s (which should be fast),
+using \code{\link[=rvar_r]{rvar_r()}}, and/or using operations directly on the arrays that back the \code{\link{rvar}}s
+(via \code{\link[=draws_of]{draws_of()}}).
 }
 \examples{
 
-mu <- rdo(rnorm(1, 0, 1))
-sigma <- rdo(rgamma(1, 1, 1))
+mu <- rdo(rnorm(10, mean = 1:10, sd = 1))
+sigma <- rdo(rgamma(1, shape = 1, rate = 1))
 x <- rdo(rnorm(10, mu, sigma))
 x
 
 }
+\seealso{
+Other rfun: 
+\code{\link{rfun}()},
+\code{\link{rvar_r}()}
+}
+\concept{rfun}

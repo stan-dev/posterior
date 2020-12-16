@@ -14,18 +14,50 @@ rfun(.f, rvar_args = NULL, ndraws = NULL)
 If \code{NULL} (the default), all arguments to \code{.f} are turned into arguments that accept
 \code{\link{rvar}}s.}
 
-\item{ndraws}{When no \code{\link{rvar}}s are supplied as arguments to the new function, this is the number
+\item{ndraws}{When no \code{\link{rvar}}s are supplied as arguments to the returned function, this is the number
 of draws that will be used to construct new random variables. If \code{NULL},
-\code{getOption("posterior.rvar_ndraws")} is used (default 4000).}
+\code{getOption("posterior.rvar_ndraws")} is used (default 4000). If any arguments to the returned function contain
+\code{\link{rvar}}s, the number of draws in the provided \code{\link{rvar}}s is used instead of
+the value of this argument.}
 }
 \value{
 A function with the same argument specification as \code{.f}, but which can accept and return
 \code{\link{rvar}}s.
 }
 \description{
-Function that create functions that can accept and/or produce random variables.
+Function that create functions that can accept and/or produce \code{\link{rvar}}s.
 }
 \details{
 This function wraps an existing funtion (\code{.f}) such that it returns \code{\link{rvar}}s containing
 whatever type of data \code{.f} would normally return.
+
+The returned function, when called, executes \code{.f} possibly multiple times, once for each draw of
+the \code{\link{rvar}}s passed to it, then returns a new
+\code{\link{rvar}} representing the output of those function evaluations. If the arguments contain no \code{\link{rvar}}s,
+then \code{.f} will be executed \code{ndraws} times and an \code{\link{rvar}} with that many draws returned.
+
+Functions created by \code{rfun()} are not necessarily \emph{fast} (in fact in some cases they may be very slow), but
+they have the advantage of allowing a nearly arbitrary R functions to be executed against \code{\link{rvar}}s
+simply by wrapping them with \code{rfun()}. This makes it especially useful as a prototyping
+tool. If you create code with \code{rfun()} and it is unacceptably slow for your application,
+consider rewriting it using math operations directly on \code{\link{rvar}}s (which should be fast),
+using \code{\link[=rvar_r]{rvar_r()}}, and/or using operations directly on the arrays that back the \code{\link{rvar}}s
+(via \code{\link[=draws_of]{draws_of()}}).
 }
+\examples{
+
+rvar_norm <- rfun(rnorm)
+rvar_gamma <- rfun(rgamma)
+
+mu <- rvar_norm(10, mean = 1:10, sd = 1)
+sigma <- rvar_gamma(1, shape = 1, rate = 1)
+x <- rvar_norm(10, mu, sigma)
+x
+
+}
+\seealso{
+Other rfun: 
+\code{\link{rdo}()},
+\code{\link{rvar_r}()}
+}
+\concept{rfun}

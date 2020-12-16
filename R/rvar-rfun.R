@@ -1,22 +1,49 @@
 #' Create functions of random variables
 #'
-#' Function that create functions that can accept and/or produce random variables.
+#' Function that create functions that can accept and/or produce [`rvar`]s.
 #'
 #' @param .f A function (or a one-sided formula representing a function that can be parsed by
 #' [rlang::as_function()]) to turn into a function that accepts and/or produces random variables.
 #' @param rvar_args The arguments of `.f` that should be allowed to accept [`rvar`]s as arguments.
 #' If `NULL` (the default), all arguments to `.f` are turned into arguments that accept
 #' [`rvar`]s.
-#' @param ndraws When no [`rvar`]s are supplied as arguments to the new function, this is the number
+#' @param ndraws When no [`rvar`]s are supplied as arguments to the returned function, this is the number
 #' of draws that will be used to construct new random variables. If `NULL`,
-#' `getOption("posterior.rvar_ndraws")` is used (default 4000).
+#' `getOption("posterior.rvar_ndraws")` is used (default 4000). If any arguments to the returned function contain
+#' [`rvar`]s, the number of draws in the provided [`rvar`]s is used instead of
+#' the value of this argument.
 #'
 #' @details This function wraps an existing funtion (`.f`) such that it returns [`rvar`]s containing
 #' whatever type of data `.f` would normally return.
 #'
+#' The returned function, when called, executes `.f` possibly multiple times, once for each draw of
+#' the [`rvar`]s passed to it, then returns a new
+#' [`rvar`] representing the output of those function evaluations. If the arguments contain no [`rvar`]s,
+#' then `.f` will be executed `ndraws` times and an [`rvar`] with that many draws returned.
+#'
+#' Functions created by `rfun()` are not necessarily *fast* (in fact in some cases they may be very slow), but
+#' they have the advantage of allowing a nearly arbitrary R functions to be executed against [`rvar`]s
+#' simply by wrapping them with `rfun()`. This makes it especially useful as a prototyping
+#' tool. If you create code with `rfun()` and it is unacceptably slow for your application,
+#' consider rewriting it using math operations directly on [`rvar`]s (which should be fast),
+#' using [rvar_r()], and/or using operations directly on the arrays that back the [`rvar`]s
+#' (via [draws_of()]).
+#'
+#'
 #' @return A function with the same argument specification as `.f`, but which can accept and return
 #' [`rvar`]s.
 #'
+#' @examples
+#'
+#' rvar_norm <- rfun(rnorm)
+#' rvar_gamma <- rfun(rgamma)
+#'
+#' mu <- rvar_norm(10, mean = 1:10, sd = 1)
+#' sigma <- rvar_gamma(1, shape = 1, rate = 1)
+#' x <- rvar_norm(10, mu, sigma)
+#' x
+#'
+#' @family rfun
 #' @export
 rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
   # based loosely on base::Vectorize
@@ -77,13 +104,16 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
 
 #' Execute expressions of random variables
 #'
-#' Execute an expression to create a random variable.
+#' Execute (nearly) arbitrary R expressions that may include [`rvar`]s,
+#' producing a new [`rvar`].
 #'
 #' @param expr A bare expression that can (optionally) contain [`rvar`]s. The expression
 #' supports [quasiquotation].
 #' @param ndraws When no [`rvar`]s are supplied in `expr`, this is the number
 #' of draws that will be used to construct new random variables. If `NULL`,
-#' `getOption("posterior.rvar_ndraws")` is used (default 4000).
+#' `getOption("posterior.rvar_ndraws")` is used (default 4000). If `expr` contains
+#' [`rvar`]s, the number of draws in the provided [`rvar`]s is used instead of
+#' the value of this argument.
 #' @template args-rvar-dim
 #'
 #' @details This function evaluates `expr` possibly multiple times, once for each draw of
@@ -93,21 +123,23 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
 #' then it will be executed `ndraws` times and an [`rvar`] with that many draws returned.
 #'
 #' `rdo()` is not necessarily *fast* (in fact in some cases it may be very slow), but
-#' it has the advantage of allowing nearly arbitrary R code to be executed against [`rvar`]s
+#' it has the advantage of allowing a nearly arbitrary R expression to be executed against [`rvar`]s
 #' simply by wrapping it with `rdo( ... )`. This makes it especially useful as a prototyping
 #' tool. If you create code with `rdo()` and it is unacceptably slow for your application,
-#' consider rewriting it in terms of math operations directly on [`rvar`]s (which should be fast),
-#' or in terms of operations directly on the arrays that back the [`rvar`]s, using [draws_of()].
+#' consider rewriting it using math operations directly on [`rvar`]s (which should be fast),
+#' using [rvar_r()], and/or using operations directly on the arrays that back the [`rvar`]s
+#' (via [draws_of()]).
 #'
 #' @return An [`rvar`].
 #'
 #' @examples
 #'
-#' mu <- rdo(rnorm(1, 0, 1))
-#' sigma <- rdo(rgamma(1, 1, 1))
+#' mu <- rdo(rnorm(10, mean = 1:10, sd = 1))
+#' sigma <- rdo(rgamma(1, shape = 1, rate = 1))
 #' x <- rdo(rnorm(10, mu, sigma))
 #' x
 #'
+#' @family rfun
 #' @importFrom rlang eval_tidy quo_get_env enquo missing_arg quo_get_expr
 #' @export
 rdo <- function(expr, dim = NULL, ndraws = NULL) {
@@ -140,32 +172,79 @@ rdo <- function(expr, dim = NULL, ndraws = NULL) {
   result
 }
 
+#' Create random variables from existing random number generators
+#'
+#' Specialized alternative to `rdo()` or `rfun()` for creating [`rvar`]s from
+#' existing random-number generator functions (such as `rnorm()`, `rbinom()`, etc).
+#'
+#' @param .f A function (or character vector) representing a random-number
+#' generating function that follows the pattern of base random number generators
+#' (like `rnorm()`, `rbinom()`, etc).
+#' It must:
+#'   - Have a first argument, `n`, giving the number of draws to take from the
+#'     distribution
+#'   - Have vectorized parameter arguments
+#'   - Return a single vector of length `n`
+#' @param n The length of the output [`rvar`] vector (**not** the number of draws)
+#' @param ... arguments passed to `.f`. These arguments may include [`rvar`]s, so
+#' long as they are vectors only (no multidimensional [`rvar`]s are allowed).
+#' @param ndraws When no [`rvar`]s are supplied in `...`, this is the number
+#' of draws that will be used to construct the returned random variable. If `NULL`,
+#' `getOption("posterior.rvar_ndraws")` is used (default 4000). If `...` contains
+#' [`rvar`]s, the number of draws in the provided [`rvar`]s is used instead of
+#' the value of this argument.
+#'
+#' @details This function unwraps the arrays underlying the input [`rvar`]s in
+#' `...` and then passes them to `.f`, relying on the vectorization of `.f`
+#' to evaluate it across draws from the input [`rvar`]s. This is why the arguments
+#' of `.f` **must** be vectorized. It asks for `n` $\times$ the number of draws
+#' in the input [`rvar`]s (or `ndraws` if none are given) draws from the
+#' random number generator `.f`, then reshapes the output from `.f` into an
+#' [`rvar`] with length `n`.
+#'
+#' `rvar_r()` is a fast alternative to `rdo()` or `rfun()`, but you **must**
+#' ensure that `.f` satisfies the preconditions described above for the result
+#' to be correct. Most base random number generators satisfy these conditions.
+#' It is advisable to test against `rdo()` or `rfun()` (which should be correct,
+#' but slower) if you are uncertain.
+#'
+#' @return A single-dimensional [`rvar`] of length `n`.
+#'
+#' @examples
+#'
+#' mu <- rvar_r(rnorm, 10, mean = 1:10, sd = 1)
+#' sigma <- rvar_r(rgamma, 1, shape = 1, rate = 1)
+#' x <- rvar_r(rnorm, 10, mu, sigma)
+#' x
+#'
+#' @family rfun
+#' @export
 rvar_r <- function(.f, n, ..., ndraws = NULL) {
-  # TODO: finish and test this, maybe export?
-  ndraws <- ndraws %||% getOption("posterior.rvar_ndraws", 4000)
   args = list(...)
+
   is_rvar_arg <- as.logical(lapply(args, is_rvar))
   rvar_args = conform_rvar_ndraws_nchains(args[is_rvar_arg])
-  .nchains <- if (length(rvar_args) < 1) {
-    1
+
+  if (length(rvar_args) < 1) {
+    nchains <- 1
+    ndraws <- ndraws %||% getOption("posterior.rvar_ndraws", 4000)
   } else {
-    nchains(rvar_args[[1]])
-  }
+    # we have some arguments that are rvars. We require them to be single-dimensional
+    # (vectors) so that R's vector recycling will work correctly.
+    nchains <- nchains(rvar_args[[1]])
+    ndraws <- ndraws(rvar_args[[1]])
 
-  rvar_args_ndraws = sapply(rvar_args, ndraws)
-  if (length(rvar_args_ndraws) != 0) {
-
-    rvar_args_ndims = sapply(rvar_args, function(x) length(dim(x)))
-    if (!all(rvar_args_ndims == 0)) {
-      stop2("All arguments must be single-dimensional rvars")
+    rvar_args_ndims = lengths(lapply(rvar_args, dim))
+    if (!all(rvar_args_ndims == 1)) {
+      stop2("All arguments to rvar_r() that are rvars must be single-dimensional (vectors).")
     }
 
-    args[is_rvar_arg] <- lapply(rvar_args, draws_of)
+    args[is_rvar_arg] <- lapply(rvar_args, function(x) t(draws_of(x)))
   }
 
   nd = n * ndraws
-  args = c(list(n = nd), args)
+  args = c(n = nd, args)
   result = do.call(.f, args)
   dim(result) = c(n, ndraws)
-  new_rvar(t(result), .nchains = .nchains)
+  new_rvar(t(result), .nchains = nchains)
 }
