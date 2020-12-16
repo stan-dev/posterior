@@ -197,7 +197,7 @@ rdo <- function(expr, dim = NULL, ndraws = NULL) {
 #' @details This function unwraps the arrays underlying the input [`rvar`]s in
 #' `...` and then passes them to `.f`, relying on the vectorization of `.f`
 #' to evaluate it across draws from the input [`rvar`]s. This is why the arguments
-#' of `.f` **must** be vectorized. It asks for `n` $\times$ the number of draws
+#' of `.f` **must** be vectorized. It asks for `n` times the number of draws
 #' in the input [`rvar`]s (or `ndraws` if none are given) draws from the
 #' random number generator `.f`, then reshapes the output from `.f` into an
 #' [`rvar`] with length `n`.
@@ -220,10 +220,10 @@ rdo <- function(expr, dim = NULL, ndraws = NULL) {
 #' @family rfun
 #' @export
 rvar_r <- function(.f, n, ..., ndraws = NULL) {
-  args = list(...)
+  args <- list(...)
 
   is_rvar_arg <- as.logical(lapply(args, is_rvar))
-  rvar_args = conform_rvar_ndraws_nchains(args[is_rvar_arg])
+  rvar_args <- conform_rvar_ndraws_nchains(args[is_rvar_arg])
 
   if (length(rvar_args) < 1) {
     nchains <- 1
@@ -234,7 +234,7 @@ rvar_r <- function(.f, n, ..., ndraws = NULL) {
     nchains <- nchains(rvar_args[[1]])
     ndraws <- ndraws(rvar_args[[1]])
 
-    rvar_args_ndims = lengths(lapply(rvar_args, dim))
+    rvar_args_ndims <- lengths(lapply(rvar_args, dim))
     if (!all(rvar_args_ndims == 1)) {
       stop2("All arguments to rvar_r() that are rvars must be single-dimensional (vectors).")
     }
@@ -242,9 +242,9 @@ rvar_r <- function(.f, n, ..., ndraws = NULL) {
     args[is_rvar_arg] <- lapply(rvar_args, function(x) t(draws_of(x)))
   }
 
-  nd = n * ndraws
-  args = c(n = nd, args)
-  result = do.call(.f, args)
-  dim(result) = c(n, ndraws)
+  nd <- n * ndraws
+  args <- c(n = nd, args)
+  result <- do.call(.f, args)
+  dim(result) <- c(n, ndraws)
   new_rvar(t(result), .nchains = nchains)
 }

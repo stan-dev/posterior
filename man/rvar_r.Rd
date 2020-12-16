@@ -40,7 +40,7 @@ existing random-number generator functions (such as \code{rnorm()}, \code{rbinom
 This function unwraps the arrays underlying the input \code{\link{rvar}}s in
 \code{...} and then passes them to \code{.f}, relying on the vectorization of \code{.f}
 to evaluate it across draws from the input \code{\link{rvar}}s. This is why the arguments
-of \code{.f} \strong{must} be vectorized. It asks for \code{n} $\times$ the number of draws
+of \code{.f} \strong{must} be vectorized. It asks for \code{n} times the number of draws
 in the input \code{\link{rvar}}s (or \code{ndraws} if none are given) draws from the
 random number generator \code{.f}, then reshapes the output from \code{.f} into an
 \code{\link{rvar}} with length \code{n}.
