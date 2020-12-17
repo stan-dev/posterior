@@ -917,7 +917,7 @@ broadcast_array  <- function(x, dim) {
 
   if (any(current_dim[dim_to_broadcast] != 1)) {
     stop2(
-      "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "]",
+      "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "] ",
       "to array of shape [", paste(dim, collapse = ","), "]:\n",
       "All dimensions must be 1 or equal."
     )
@@ -993,6 +993,34 @@ flatten_array = function(x, x_name = NULL) {
   }
 
   x
+}
+
+#' copy the dimension names (and name of the dimension) from dimension src_i
+#' in array src to dimension dst_i in array dst
+#' @noRd
+copy_dimnames <- function(src, src_i, dst, dst_i) {
+  if (is.null(dimnames(dst))) {
+    if (is.null(dimnames(src))) {
+      return(dst)
+    }
+    dimnames(dst) <- list(NULL)
+  }
+
+  if (is.null(dimnames(src))) {
+    dimnames(src) <- list(NULL)
+  }
+  if (is.null(names(dimnames(src)))) {
+    names(dimnames(src)) <- rep("", length(dim(src)))
+  }
+
+  dimnames(dst)[dst_i] <- dimnames(src)[src_i]
+  names(dimnames(dst))[dst_i] <- names(dimnames(src))[src_i]
+  names(dimnames(dst))[is.na(names(dimnames(dst)))] <- ""
+  if (all(names(dimnames(dst)) == "")) {
+    names(dimnames(dst)) <- NULL
+  }
+
+  dst
 }
 
 

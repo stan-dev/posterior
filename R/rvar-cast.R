@@ -22,27 +22,37 @@
 #'
 #' @export
 as_rvar <- function(x, dim = NULL, dimnames = NULL, .nchains = NULL) {
-  if (!is_rvar(x)) {
-    x <- vec_cast(x, new_rvar())
+  out <- x
+
+  if (!is_rvar(out)) {
+    out <- vec_cast(out, new_rvar())
   }
-  if (is.null(x)) {
-    x <- rvar()
+  if (!length(out)) {
+    out <- rvar()
   }
 
   if (!is.null(dim)) {
-    dim(x) <- dim
+    dim(out) <- dim
+  } else if (is.null(dimnames)) {
+    # can only re-use names/dimnames of x if we didn't change dim
+    if (is.vector(x)) {
+      names(out) <- names(x)
+    } else {
+      dimnames(out) <- dimnames(x)
+    }
   }
   if (!is.null(dimnames)) {
-    dimnames(x) <- dimnames
-  }
-  if (!is.null(.nchains)) {
-    .ndraws <- ndraws(x)
-    .nchains <- as_one_integer(.nchains)
-    check_nchains_compat_with_ndraws(.nchains, .ndraws)
-    attr(x, "nchains") <- .nchains
+    dimnames(out) <- dimnames
   }
 
-  x
+  if (!is.null(.nchains)) {
+    .ndraws <- ndraws(out)
+    .nchains <- as_one_integer(.nchains)
+    check_nchains_compat_with_ndraws(.nchains, .ndraws)
+    attr(out, "nchains") <- .nchains
+  }
+
+  out
 }
 
 

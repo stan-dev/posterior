@@ -247,16 +247,25 @@ Math.rvar <- function(x, ...) {
   # conform the draws dimension in both variables
   c(x, y) %<-% conform_rvar_ndraws_nchains(list(x, y))
 
-  # do a tensor multiplication equivalent of the requested matrix multiplication
-  result <- mul.tensor(as.tensor(draws_of(x)), 3, as.tensor(draws_of(y)), 2, by = 1)
+  # drop the names of the dimensions (mul.tensor gets uppity if dimension names
+  # are duplicated, but we don't care about that)
+  x_tensor <- as.tensor(draws_of(x))
+  y_tensor <- as.tensor(draws_of(y))
+  names(dim(x_tensor)) <- NULL
+  names(dim(y_tensor)) <- NULL
 
-  # restore names (as.tensor adds dummy names to dimensions)
-  names(result) <- names(dimnames(draws_of(x)))
+  # do a tensor multiplication equivalent of the requested matrix multiplication
+  result <- unclass(mul.tensor(x_tensor, 3, y_tensor, 2, by = 1))
 
   # move draws dimension back to the front
   result <- aperm(result, c(3,1,2))
 
-  new_rvar(unclass(result), .nchains = nchains(x))
+  # restore dimension names (as.tensor adds dummy names to dimensions)
+  names(dim(result)) <- NULL
+  result <- copy_dimnames(draws_of(x), 1:2, result, 1:2)
+  result <- copy_dimnames(draws_of(y), 3, result, 3)
+
+  new_rvar(result, .nchains = nchains(x))
 }
 
 

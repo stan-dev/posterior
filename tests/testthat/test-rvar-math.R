@@ -128,11 +128,21 @@ test_that("matrix multiplication works", {
   expect_identical(x %**% y, xy_ref)
 
 
+  # dimension name preservation
+  m1 <- as_rvar(diag(1:3))
+  dimnames(m1) <- list(a = paste0("a", 1:3), b = paste0("b", 1:3))
+  m2 <- as_rvar(diag(1:3)[,1:2])
+  dimnames(m2) <- list(c = paste0("c", 1:3), d = paste0("d", 1:2))
+  expect_equal(dimnames(m1 %**% m2), list(a = paste0("a", 1:3), d = paste0("d", 1:2)))
+
+
+  # errors
   x_array = array(1:24, dim = c(4,1,2,3))
   x = new_rvar(x_array)
 
   expect_error(x %**% 1, "not a vector or matrix")
   expect_error(1 %**% x, "not a vector or matrix")
+
 })
 
 
