@@ -121,8 +121,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
       #convert to rvar and adjust dimensions
       out <- rvar(var_matrix)
-      #.dimnames <- unname(unique_indices)
-      dim(out) <- c(lengths(unique_indices))
+      dim(out) <- unname(lengths(unique_indices))
       dimnames(out) <- .dimnames
     }
     out

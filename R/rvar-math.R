@@ -193,7 +193,7 @@ Math.rvar <- function(x, ...) {
 }
 
 
-# matrix multiplication ---------------------------------------------------
+# matrix stuff ---------------------------------------------------
 
 #' Matrix multiplication of random variables
 #'
@@ -268,6 +268,49 @@ Math.rvar <- function(x, ...) {
   new_rvar(result, .nchains = nchains(x))
 }
 
+#' Cholesky decomposition of random matrix
+#'
+#' Cholesky decomposition of an [`rvar`] containing a matrix.
+#'
+#' @param x An [`rvar`].
+#' @param ... Additional parameters passed on to `chol.tensor()`
+#'
+#' @details
+#' If `x` or `y` are vectors, they are converted into matrices prior to multiplication, with `x`
+#' converted to a row vector and `y` to a column vector. Numerics and logicals can be multiplied
+#' by [`rvar`]s and are broadcasted across all draws of the [`rvar`] argument. Tensor multiplication
+#' is used to efficiently multiply matrices across draws, so if either `x` or `y` is an [`rvar`],
+#' `x %**% y` will be much faster than `rdo(x %*% y)`.
+#'
+#' Because [`rvar`] is an S3 class and S3 classes cannot properly override `%*%`, [`rvar`]s use
+#' `%**%` for matrix multiplication.
+#'
+#' @return An [`rvar`] containing the upper triangular factor of the Cholesky
+#' decomposition, i.e., the matrix $R$ such that $R'R = x$
+#'
+#' @importFrom tensorA chol.tensor as.tensor
+#' @export
+chol.rvar <- function(x, ...) {
+  # ensure x is a matrix
+  if (length(dim(x)) != 2) {
+    stop2("`x` must be a random matrix")
+  }
+
+  # must re-order draws dimension to the end, as chol.tensor expects it there
+  x_tensor <- as.tensor(aperm(draws_of(x), c(2,3,1)))
+
+  # do a the cholesky decomp
+  result <- unclass(chol.tensor(x_tensor, 1, 2, ...))
+
+  # move draws dimension back to the front
+  result <- aperm(result, c(3,1,2))
+
+  # restore dimension names (chol.tensor screws them around)
+  names(dim(result)) <- NULL
+  result <- copy_dimnames(draws_of(x), 1:3, result, 1:3)
+
+  new_rvar(result, .nchains = nchains(x))
+}
 
 # transpose and permutation -----------------------------------------------
 

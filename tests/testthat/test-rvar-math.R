@@ -145,6 +145,11 @@ test_that("matrix multiplication works", {
 
 })
 
+test_that("Cholesky decomposition works", {
+  x <- as_draws_rvars(example_draws("multi_normal"))
+
+  expect_equal(mean(chol(x$Sigma)), chol(mean(x$Sigma)), tolerance = 0.02)
+})
 
 # array transpose and permutation -----------------------------------------
 
