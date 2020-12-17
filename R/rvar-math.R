@@ -283,21 +283,11 @@ Math.rvar <- function(x, ...) {
 #'
 #' Cholesky decomposition of an [`rvar`] containing a matrix.
 #'
-#' @param x An [`rvar`].
+#' @param x A 2-dimensional [`rvar`].
 #' @param ... Additional parameters passed on to `chol.tensor()`
 #'
-#' @details
-#' If `x` or `y` are vectors, they are converted into matrices prior to multiplication, with `x`
-#' converted to a row vector and `y` to a column vector. Numerics and logicals can be multiplied
-#' by [`rvar`]s and are broadcasted across all draws of the [`rvar`] argument. Tensor multiplication
-#' is used to efficiently multiply matrices across draws, so if either `x` or `y` is an [`rvar`],
-#' `x %**% y` will be much faster than `rdo(x %*% y)`.
-#'
-#' Because [`rvar`] is an S3 class and S3 classes cannot properly override `%*%`, [`rvar`]s use
-#' `%**%` for matrix multiplication.
-#'
 #' @return An [`rvar`] containing the upper triangular factor of the Cholesky
-#' decomposition, i.e., the matrix $R$ such that $R'R = x$
+#' decomposition, i.e., the matrix \eqn{R} such that \eqn{R'R = x}.
 #'
 #' @importFrom tensorA chol.tensor as.tensor
 #' @export

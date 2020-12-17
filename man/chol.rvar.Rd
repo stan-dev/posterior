@@ -7,24 +7,14 @@
 \method{chol}{rvar}(x, ...)
 }
 \arguments{
-\item{x}{An \code{\link{rvar}}.}
+\item{x}{A 2-dimensional \code{\link{rvar}}.}
 
 \item{...}{Additional parameters passed on to \code{chol.tensor()}}
 }
 \value{
 An \code{\link{rvar}} containing the upper triangular factor of the Cholesky
-decomposition, i.e., the matrix $R$ such that $R'R = x$
+decomposition, i.e., the matrix \eqn{R} such that \eqn{R'R = x}.
 }
 \description{
 Cholesky decomposition of an \code{\link{rvar}} containing a matrix.
-}
-\details{
-If \code{x} or \code{y} are vectors, they are converted into matrices prior to multiplication, with \code{x}
-converted to a row vector and \code{y} to a column vector. Numerics and logicals can be multiplied
-by \code{\link{rvar}}s and are broadcasted across all draws of the \code{\link{rvar}} argument. Tensor multiplication
-is used to efficiently multiply matrices across draws, so if either \code{x} or \code{y} is an \code{\link{rvar}},
-\code{x \%**\% y} will be much faster than \code{rdo(x \%*\% y)}.
-
-Because \code{\link{rvar}} is an S3 class and S3 classes cannot properly override \code{\%*\%}, \code{\link{rvar}}s use
-\verb{\%**\%} for matrix multiplication.
 }
