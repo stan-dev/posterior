@@ -3,17 +3,20 @@
 \name{E}
 \alias{E}
 \alias{mean.rvar}
-\alias{median.rvar}
 \alias{Pr}
-\title{Summaries and expectations of random variables}
+\alias{median.rvar}
+\alias{variance.rvar}
+\title{Summaries, expectations, and variances of random variables}
 \usage{
 E(x, na.rm = FALSE)
 
 \method{mean}{rvar}(x, ...)
 
+Pr(x, na.rm = FALSE)
+
 \method{median}{rvar}(x, ...)
 
-Pr(x, na.rm = FALSE)
+\method{variance}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{an \code{\link{rvar}}}
@@ -27,15 +30,15 @@ or \code{base::median()}).
 Both \code{E()}, \code{mean()}, and \code{Pr()} take means over the draws dimension of the provided
 random variable. \code{Pr()} additionally checks that the provided \code{\link{rvar}}
 is a logical variable (hence, taking its expectation results in a probability).
-\code{median()} takes medians.}
+\code{median()} takes medians, and \code{variance()} takes variances.}
 }
 \value{
 A numeric vector with the same dimensions as the given random variable, where
-each entry in the vector is the mean or median of the corresponding entry in \code{x}.
+each entry in the vector is the mean, median, or variance of the corresponding entry in \code{x}.
 }
 \description{
-Compute expectations (\code{E()} or \code{mean()}), probabilities (\code{Pr()}), and
-medians (\code{median()}) from a random variable.
+Compute expectations (\code{E()} or \code{mean()}), probabilities (\code{Pr()}),
+medians (\code{median()}), and variances (\code{variance()}) from a random variable.
 }
 \examples{
 

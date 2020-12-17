@@ -1,9 +1,9 @@
 # Expectations and summaries of random variables --------------------------
 
-#' Summaries and expectations of random variables
+#' Summaries, expectations, and variances of random variables
 #'
-#' Compute expectations (`E()` or `mean()`), probabilities (`Pr()`), and
-#' medians (`median()`) from a random variable.
+#' Compute expectations (`E()` or `mean()`), probabilities (`Pr()`),
+#' medians (`median()`), and variances (`variance()`) from a random variable.
 #'
 #' @param x an [`rvar`]
 #' @param na.rm Should `NA` values in the random variable be removed before
@@ -14,11 +14,11 @@
 #' Both `E()`, `mean()`, and `Pr()` take means over the draws dimension of the provided
 #' random variable. `Pr()` additionally checks that the provided [`rvar`]
 #' is a logical variable (hence, taking its expectation results in a probability).
-#' `median()` takes medians.
+#' `median()` takes medians, and `variance()` takes variances.
 #'
 #' @return
 #' A numeric vector with the same dimensions as the given random variable, where
-#' each entry in the vector is the mean or median of the corresponding entry in `x`.
+#' each entry in the vector is the mean, median, or variance of the corresponding entry in `x`.
 #'
 #' @examples
 #'
@@ -50,18 +50,29 @@ mean.rvar <- function(x, ...) {
 
 #' @rdname E
 #' @export
-median.rvar <- function(x, ...) {
-  summarise_rvar_by_element(x, median, ...)
-}
-
-#' @rdname E
-#' @export
 Pr <- function(x, na.rm = FALSE) {
   if (!all(is.logical(draws_of(x)))) {
     stop2("Can only use `Pr(...)` on logical random variables.")
   }
   summarise_rvar_by_element(x, mean, na.rm = na.rm)
 }
+
+#' @rdname E
+#' @export
+median.rvar <- function(x, ...) {
+  summarise_rvar_by_element(x, median, ...)
+}
+
+#' @importFrom distributional variance
+#' @export
+distributional::variance
+
+#' @rdname E
+#' @export
+variance.rvar <- function(x, ...) {
+  summarise_rvar_by_element(x, var, ...)
+}
+
 
 
 # Summary operations ---------------------------------------------------------
@@ -299,15 +310,14 @@ chol.rvar <- function(x, ...) {
   # must re-order draws dimension to the end, as chol.tensor expects it there
   x_tensor <- as.tensor(aperm(draws_of(x), c(2,3,1)))
 
-  # do a the cholesky decomp
+  # do the cholesky decomp
   result <- unclass(chol.tensor(x_tensor, 1, 2, ...))
 
   # move draws dimension back to the front
   result <- aperm(result, c(3,1,2))
 
-  # restore dimension names (chol.tensor screws them around)
+  # drop dimension names (chol.tensor screws them around)
   names(dim(result)) <- NULL
-  result <- copy_dimnames(draws_of(x), 1:3, result, 1:3)
 
   new_rvar(result, .nchains = nchains(x))
 }

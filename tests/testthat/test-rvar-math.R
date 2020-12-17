@@ -83,6 +83,7 @@ test_that("summary functions work", {
   expect_equal(E(x), apply(x_array, c(2,3), mean), check.attributes = FALSE)
   expect_equal(mean(x), apply(x_array, c(2,3), mean), check.attributes = FALSE)
   expect_equal(median(x), apply(x_array, c(2,3), median), check.attributes = FALSE)
+  expect_equal(variance(x), apply(x_array, c(2,3), var), check.attributes = FALSE)
 
   expect_equal(draws_of(rvar_mean(x)), apply(x_array, 1, mean), check.attributes = FALSE)
   expect_equal(draws_of(rvar_median(x)), apply(x_array, 1, median), check.attributes = FALSE)
@@ -146,9 +147,15 @@ test_that("matrix multiplication works", {
 })
 
 test_that("Cholesky decomposition works", {
-  x <- as_draws_rvars(example_draws("multi_normal"))
+  Sigma <- as_draws_rvars(example_draws("multi_normal"))$Sigma
 
-  expect_equal(mean(chol(x$Sigma)), chol(mean(x$Sigma)), tolerance = 0.02)
+  # adding dimensions because we should expect these to be dropped
+  dimnames(Sigma) <- list(
+    a = paste0("a", 1:3),
+    b = paste0("b", 1:3)
+  )
+
+  expect_equal(chol(Sigma), rdo(chol(Sigma)))
 })
 
 # array transpose and permutation -----------------------------------------
