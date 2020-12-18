@@ -218,6 +218,9 @@ levels.rvar <- function(x) {
 
 #' @export
 rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
+  # flatten before rep()ing
+  dim(x) <- length(x)
+
   if (each != 1) {
     x = vec_restore(rep(vec_proxy(x), each = each), x)
   }
