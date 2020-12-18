@@ -1,0 +1,351 @@
+---
+title: "The Random Variable Datatype"
+author: "Matthew Kay"
+date: "`r Sys.Date()`"
+output: 
+  html_vignette:
+    toc: yes
+vignette: >
+  %\VignetteIndexEntry{rvar: The Random Variable Datatype}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+This vignette describes the `rvar()` datatype, a multidimensional, sample-based
+representation of random variables designed to act as much like base R arrays
+as possible (e.g., by supporting many math operators and functions). This format
+is also the basis of the `draws_rvars()` format.
+
+The `rvar()` is inspired by the [rv](https://cran.r-project.org/package=rv)
+package and [Kerman and Gelman (2007)](https://doi.org/10.1007%2Fs11222-007-9020-4),
+though with a slightly different backing format (multidimensional arrays). It is
+also designed to interoperate with vectorized distributions in the
+[distributional](https://pkg.mitchelloharawild.com/distributional/) package
+and with distribution visualizations in the [ggdist](https://mjskay.github.io/ggdist/) package.
+
+```{r setup, include = FALSE}
+library(posterior)
+
+set.seed(1234)
+```
+
+## The `rvars` datatype
+
+The `rvar()` datatype is a wrapper around a multidimensional array where the
+first dimension is the number of draws in the random variable. The most direct
+way to create a random variable is to pass such an array to the `rvar()` function.
+
+For example, to create a "scalar" `rvar`, one would pass a one-dimensional array
+or a vector whose length (here `4000`) is the desired number of draws:
+
+```{r x_rvar_rnorm}
+x <- rvar(rnorm(4000, mean = 1, sd = 1))
+x
+```
+
+The default display of an `rvar` shows the mean and standard deviation of
+each element of the array.
+
+We can create random vectors by adding an additional dimension beyond just the
+draws dimension to the input array:
+
+```{r x_rvar_array}
+n <- 4   # length of output vector
+x <- rvar(array(rnorm(4000*n, mean = 1, sd = 1), dim = c(4000, n)))
+x
+```
+
+Or we can create a random matrix:
+
+```{r x_matrix}
+rows <- 4
+cols <- 3
+x <- rvar(array(rnorm(4000*(rows + cols), mean = 1, sd = 1), dim = c(4000, rows, cols)))
+x
+```
+
+Or any array up to an arbitrary number of dimensions. The array backing an `rvar`
+can be accessed (and modified, with caution) via `draws_of()`:
+
+```{r str_draws}
+str(draws_of(x))
+```
+
+Manual construction and modification of `rvar`s in this way is not recommended
+unless you need it for performance reasons: several other higher-level interfaces
+to constructing and manipulating `rvar`s are described below.
+
+## The `draws_rvars` datatype
+
+The `draws_rvars()` datatype, like all `draws` datatypes in posterior, contains
+multiple variables in a joint sample from some distribution (e.g. a posterior or 
+prior distribution). 
+
+Below is the `example_draws("multi_normal")` dataset
+converted into the `draws_rvars()` format. This dataset has 100 iterations from 
+4 chains from the posterior of a a 3-dimensional multivariate normal model. The 
+`mu` variable is a mean vector of length 3 and the `Sigma` variable is a $3 \times 3$
+covariance matrix:
+
+```{r post}
+post <- as_draws_rvars(example_draws("multi_normal"))
+post
+```
+
+The `draws_rvars()` datatype works much the same way that other `draws` formats
+do; see **TODO: INSERT LINK** for an introduction to `draws` objects. One difference is that
+`draws_rvars` counts variables differently, because it allows variables to be multidimensional.
+For example, the `post` object above contains two variables, `mu` and `Sigma`:
+
+```{r variables_draws_rvars}
+variables(post)
+```
+
+But converted to a `draws_list()`, it contains one variable for each
+combination of the dimensions of its variables:
+
+```{r variables_draws_list}
+variables(as_draws_list(post))
+```
+
+## Math with `rvar`s
+
+The `rvar()` datatype implements most math operations, including basic arithmetic,
+functions in the *Math* and *Summary* groups, like `log()` and `exp()` (see 
+`help("groupGeneric")` for a list), and more. Binary operators can be performed
+between multiple `rvar`s or between `rvar`s and `numeric`s. A simple example:
+
+```{r mu_plus_1}
+mu <- post$mu
+Sigma <- post$Sigma
+
+mu + 1
+```
+
+Matrix multiplication is also implemented (using a tensor product under the hood).
+Because the normal matrix multiplication operator in R (`%*%`) cannot be properly
+implemented for S3 datatypes, `rvar` uses `%**%` instead. A trivial example:
+
+```{r matrix_mult}
+Sigma %**% diag(1:3)
+```
+
+## Expectations and summaries
+
+The `E()` and `mean()` functions are aliases of each other, producing means
+within each cell of an `rvar`. For example:
+
+```{r E}
+E(mu)
+```
+
+You can similarly obtain the `median()` or `variance()` of `rvar` cells:
+
+```{r variance}
+variance(mu)
+```
+
+Expectations of logical expressions are probabilities, and can be computed either
+with `E()` / `mean()` or with `Pr()` (which is purely notational sugar):
+
+```{r Pr}
+Pr(mu > 0)
+```
+
+## Constants
+
+Constant `rvar`s can be constructed by converting numeric vectors or arrays into `rvar`s
+using `as_rvar()`, which will return an `rvar` with one draw and the same dimensions as its
+input:
+
+```{r const}
+const <- as_rvar(1:3)
+const
+```
+
+While normally `rvar`s must have the same number of draws to be used in the
+same expression, `rvar`s with one draw are treated like constants, and 
+can be combined with other `rvar`s:
+
+```{r mu_plus_const}
+mu + const
+```
+
+## Using existing R functions and expressions with `rvar`s
+
+While `rvar`s attempt to emulate as much of the functionality of base R arrays
+as possible, there are situations in which an existing R function may not 
+work directly with an `rvar`. There are several approaches to solving this
+problem.
+
+For example, say you wish to generate samples from the
+following expression for $\mu$, $\sigma$, and $x$:
+
+$$
+\begin{align}
+\left[\begin{matrix}\mu_1 \\ \vdots \\ \mu_4 \end{matrix}\right] &\sim \textrm{Normal}\left(\left[\begin{matrix}1 \\ \vdots \\ 4 \end{matrix}\right],1\right)\\
+\sigma &\sim \textrm{Gamma}(1,1)\\
+\left[\begin{matrix}x_1 \\ \vdots \\ x_4 \end{matrix}\right] &\sim \textrm{Normal}\left(\left[\begin{matrix}\mu_1 \\ \vdots \\ \mu_4 \end{matrix}\right], \sigma\right)
+\end{align}
+$$
+
+There are three different approaches you might take to doing this: converting
+existing R functions with `rfun()`, executing expressions of
+random variables with `rdo()`, or evaluating random number generator functions
+using `rvar_r()`.
+
+### Converting functions with `rfun()`
+
+The `rfun()` wrapper converts an existing R function into a new function 
+that `rvar`s can be passed to it as arguments, and which
+will return `rvar`s. 
+We can use `rfun()` to convert the base `rnorm()` and `rgamma()` 
+random number generating functions into functions that accept and return `rvar`s:
+
+```{r rfun_defs}
+rvar_norm <- rfun(rnorm)
+rvar_gamma <- rfun(rgamma)
+```
+
+Then we can translate the above example into code using those functions:
+
+```{r rfun_ex}
+mu <- rvar_norm(4, mean = 1:4, sd = 1)
+sigma <- rvar_gamma(1, shape = 1, rate = 1)
+x <- rvar_norm(4, mu, sigma)
+x
+```
+
+While `rfun()`-converted functions work well for prototyping, they will generally
+speaking be slower than functions designed specifically for `rvar`s. Thus, you
+may find you need to adopt other strategies (like `rvar_r()`, described below;
+or re-writing functions to support `rvar` directly using math operators and/or the
+`draws_of()` function).
+
+### Evaluating expressions with `rdo()`
+
+An alternative to `rfun()` is to use `rdo()`, which can be passed nearly-arbitrary
+R expressions. The expression will be executed
+multiple times to construct an `rvar`. E.g., we can write an expression for
+`mu` like in the above example:
+
+```{r mu_rdo}
+mu <- rdo(rnorm(4, mean = 1:4, sd = 1))
+mu
+```
+
+We can also control the number of draws using the `ndraws` argument:
+
+```{r mu_rdo_ndraws}
+mu <- rdo(rnorm(4, mean = 1:4, sd = 1), ndraws = 1000)
+mu
+```
+
+`rdo()` expressions can also contain other `rvar`s, so long as all `rvar`s in
+the expression have the same number of draws. Thus, we can re-write the
+example above that used `rfun()` as follows:
+
+```{r rdo_ex}
+mu <- rdo(rnorm(4, mean = 1:4, sd = 1))
+sigma <- rdo(rgamma(1, shape = 1, rate = 1))
+x <- rdo(rnorm(4, mu, sigma))
+x
+```
+
+Like `rfun()`, `rdo()` is not necessarily fast, so you may find it more useful
+for prototyping than production code.
+
+### Evaluating random number generators with `rvar_r()`
+
+`rvar_r()` is an alternative to `rfun()`/`rdo()` designed specifically to work
+with random number generating functions that follow the typical API of such
+functions in base R. Such functions, like `rnorm()`, `rgamma()`, `rbinom()`, etc 
+all following this interface:
+
+- They have a first argument, `n`, giving the number of draws to take from the distribution.
+- Their arguments for distribution parameters (`mean`, `sd`, `shape`, `rate`, etc.) are vectorized.
+- They return a single vector of length `n`, representing `n` draws from the distribution.
+
+You can use any function with this interface with `rvar_r()`, and it will adapt
+it to be able to take `rvar` arguments and return an `rvar`, as follows:
+
+```{r rvar_r_ex}
+mu <- rvar_r(rnorm, 4, mean = 1:4, sd = 1)
+sigma <- rvar_r(rgamma, 1, shape = 1, rate = 1)
+x <- rvar_r(rnorm, 4, mu, sigma)
+x
+```
+
+In contrast to the `rfun()` and `rdo()` examples above, `rvar_r()` takes 
+advantage of the existing vectorization of the underlying random number generating
+function to execute quickly.
+
+## Broadcasting
+
+Broadcasting for `rvar`s does not follow R's vector recycling rules. Instead,
+when two variables with different dimensions are being used with basic arithmetic
+functions, dimensions are added until both variables have the same number of dimensions.
+If two variables $x$ and $y$ differ on the length of dimension $d$, they can
+be broadcast to the same size so long as one of the variables has dimension $d$
+of size 1. Then that variable will be broadcast up to the same size as the
+other variable along that dimension. If two variables disagree on the size of 
+a dimension and neither has size 1, it is an error.
+
+For example, consider this random matrix:
+
+```{r X_matrix}
+X <- rdo(rnorm(12, 1:12), dim = c(4,3))
+X
+```
+
+And this vector of length 3:
+
+```{r y_vector}
+y <- rdo(rnorm(3, 3:1))
+y
+```
+
+If we attempt to add `X` and `y`, it will produce an error as vectors are 
+by default treated as column vectors, and `y` has length 3 while columns of 
+`X` have length 4:
+
+```{r X_plus_y, error = TRUE}
+X + y
+```
+
+By contrast, R arrays of the same shape will simply recycle `y` until it is the
+same length as `X` (regardless of the dimensions). Thus will produce a result,
+though likely not the intended result:
+
+```{r mean_X_plus_y}
+mean(X) + mean(y)
+```
+
+On the other hand, if y were a row vector...
+
+```{r row_y}
+row_y = t(y)
+row_y
+```
+
+...it would have the same number of
+columns as `X` and contain only one row, so it can be broadcast along rows of `X`:
+
+```{r X_plus_row_y}
+X + row_y
+```
+
+## Using `rvar`s in data frames
+
+`rvar`s can be used as columns in `data.frame()` or `tibble()` objects:
+
+```{r data_frame_with_y}
+data.frame(x = c("a","b","c"), y)
+```
+
+This makes them convenient for adding predictions to a data frame alongside
+the data used to generate the predictions. `rvar`s can then be visualized
+using the `stat_dist_...` family of geometries in the [ggdist](https://mjskay.github.io/ggdist/)
+package.

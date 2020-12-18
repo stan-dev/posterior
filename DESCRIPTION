@@ -38,7 +38,9 @@ Suggests:
   randomForest (>= 4.6.14),
   e1071 (>= 1.7.3),
   dplyr,
-  tidyr
+  tidyr,
+  knitr,
+  rmarkdown
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -46,3 +48,4 @@ URL: https://mc-stan.org/posterior/, https://discourse.mc-stan.org/
 BugReports: https://github.com/stan-dev/posterior/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr
