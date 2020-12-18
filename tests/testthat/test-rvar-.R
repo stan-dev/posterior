@@ -192,6 +192,16 @@ test_that("indexing with [ works on a matrix", {
 
   expect_identical(x[NULL], new_rvar())
 
+  # logical index the length of the array works
+  flat_index <- c(
+    TRUE,FALSE,FALSE,
+    FALSE,TRUE,FALSE,
+    TRUE,TRUE, FALSE,
+    FALSE,TRUE,TRUE)
+  x_array_flat <- x_array
+  dim(x_array_flat) <- c(12,2)
+  expect_equal(x[flat_index], rvar_from_array(x_array_flat[flat_index,]))
+
   expect_error(x[1,1,1])
 })
 
@@ -220,11 +230,28 @@ test_that("assignment with [ works", {
   )
 
   # constant should have ndraws increased to value when assigned to
-  x = new_rvar(array(1:2, dim = c(1,2)))
+  x2 = new_rvar(array(1:2, dim = c(1,2)))
   expect_equal(
-    {x[1] <- new_rvar(array(1:2, dim = c(2,1))); x},
+    {x2[1] <- new_rvar(array(1:2, dim = c(2,1))); x2},
     new_rvar(array(c(1,2,2,2), dim = c(2,2)))
   )
+
+  # logical index the length of the array works
+  flat_index <- c(
+    TRUE,FALSE,FALSE,
+    FALSE,TRUE,FALSE,
+    TRUE,TRUE, FALSE,
+    FALSE,TRUE,TRUE)
+  x_array_flat <- x_array
+  dim(x_array_flat) <- c(2,12)
+  x_array_flat[,flat_index] <- rep(1:6, each = 2)
+  dim(x_array_flat) <- c(2,4,3)
+  dimnames(x_array_flat) <- list(NULL, a = 1:4, b = 1:3)
+  expect_equal(
+    {x2 <- x; dimnames(x2) <- list(a = 1:4, b = 1:3); x2[flat_index] <- 1:6; x2},
+    new_rvar(x_array_flat)
+  )
+
 })
 
 

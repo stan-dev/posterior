@@ -399,9 +399,15 @@ all.equal.rvar <- function(target, current, ...) {
     }
   }
 
-  # fill in final indices with missing arguments
   if (length(index) < length(dim(.draws)) - 1) {
-    index[seq(length(index) + 1, length(dim(.draws)) - 1)] = list(missing_arg())
+    if (length(index) == 1 && is.logical(index[[1]]) && length(index[[1]]) == length(x)) {
+      # logical index over entire array: flatten array so that the logical index
+      # can be applied along all the elements of the array
+      dim(.draws) <- c(dim(.draws)[[1]], length(x))
+    } else {
+      # fill in final indices with missing arguments
+      index[seq(length(index) + 1, length(dim(.draws)) - 1)] = list(missing_arg())
+    }
   }
 
   x = eval_tidy(expr(
@@ -426,10 +432,20 @@ all.equal.rvar <- function(target, current, ...) {
 
   value <- vec_cast(value, x)
   c(x, value) %<-% conform_rvar_ndraws_nchains(list(x, value))
-  #TODO: reinstate
-#  value <- check_rvar_dims_first(value, x[i, ...])
 
-  draws_of(x)[,i,...] <- draws_of(value)
+  if (missing(...) && is.logical(i) && length(i) == length(x)) {
+    # logical index over entire array: flatten array so that the logical index
+    # can be applied along all the elements of the array, then invert after assignment
+    original_dim <- dim(draws_of(x))
+    original_dimnames <- dimnames(draws_of(x))
+    dim(x) <- length(x)
+    draws_of(x)[,i] <- draws_of(value)
+    dim(draws_of(x)) <- original_dim
+    dimnames(draws_of(x)) <- original_dimnames
+  } else {
+    draws_of(x)[,i,...] <- draws_of(value)
+  }
+
   x
 }
 
