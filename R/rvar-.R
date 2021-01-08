@@ -17,7 +17,7 @@
 #' The `"rvar"` class internally represents random variables as arrays of arbitrary
 #' dimension, where the first dimension is used to index draws from the distribution.
 #
-#' Most mathmetical operators and functions are supported, including efficient matrix
+#' Most mathemetical operators and functions are supported, including efficient matrix
 #' multiplication and vector and array-style indexing. The intent is that an `rvar`
 #' works as closely as possible to how a base vector/matrix/array does, with a few
 #' differences:
@@ -196,16 +196,16 @@ as.list.rvar <- function(x, ...) {
 as.data.frame.rvar <- function(x, ..., optional = FALSE) {
   if (length(dim(x)) == 2) {
     # x is matrix-like, convert it into a data frame of the same shape
-    as.data.frame.matrix(x, ..., optional = optional)
+    out <- as.data.frame.matrix(x, ..., optional = optional)
   } else if (length(dim(x)) <= 1) {
     out <- NextMethod()
     if (!optional) {
       names(out) <- as_label(substitute(x))
     }
-    out
   } else {
-    NextMethod()
+    out <- NextMethod()
   }
+  out
 }
 
 # other standard methods --------------------------------------------------
@@ -232,13 +232,14 @@ rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
     dim = dim(draws)
     dim[[2]] = dim[[2]] * times
     dim(rep_draws) = dim
-    new_rvar(rep_draws, .nchains = nchains(x))
+    out <- new_rvar(rep_draws, .nchains = nchains(x))
   } else {
     # use `length.out`
     rep_draws = rep_len(draws, length.out * ndraws(x))
     dim(rep_draws) = c(ndraws(x), length(rep_draws) / ndraws(x))
-    new_rvar(rep_draws, .nchains = nchains(x))
+    out <- new_rvar(rep_draws, .nchains = nchains(x))
   }
+  out
 }
 
 #' @method rep.int rvar
@@ -318,16 +319,17 @@ all.equal.rvar <- function(target, current, ...) {
     }
     .draws <- draws_of(x)[, i, drop = FALSE]
     dimnames(.draws) <- NULL
-    new_rvar(.draws, .nchains = nchains(x))
+    out <- new_rvar(.draws, .nchains = nchains(x))
   } else if (length(index) == length(dim(x))) {
     # multiple element selection => must have exactly the right number of dims
     .draws <- eval_tidy(expr(draws_of(x)[, !!!index, drop = FALSE]))
     # must do drop manually in case the draws dimension has only 1 draw
     dim(.draws) <- c(ndraws(x), 1)
-    new_rvar(.draws, .nchains = nchains(x))
+    out <- new_rvar(.draws, .nchains = nchains(x))
   } else {
     stop2("subscript out of bounds")
   }
+  out
 }
 
 #' @export
@@ -345,7 +347,6 @@ all.equal.rvar <- function(target, current, ...) {
       # then do the assignment
       x <- x[seq_len(max(i, na.rm = TRUE))]
       draws_of(x)[, i] <- draws_of(value)
-      x
     } else {
       # single element selection => collapse the dims so we can select directly using i
       .dimnames = dimnames(draws_of(x)) # to restore later
@@ -357,17 +358,17 @@ all.equal.rvar <- function(target, current, ...) {
       draws_of(x)[, i] <- draws_of(value)
       dim(x) <- .dim
       dimnames(draws_of(x)) <- .dimnames
-      x
     }
   } else if (length(index) == length(dim(x))) {
     # multiple element selection => must have exactly the right number of dims
-    eval_tidy(expr({
+    x <- eval_tidy(expr({
       draws_of(x)[, !!!index] <- draws_of(value)
       x
     }))
   } else {
     stop2("subscript out of bounds")
   }
+  x
 }
 
 #' @importFrom rlang enquos eval_tidy quo is_missing missing_arg expr
@@ -413,7 +414,7 @@ all.equal.rvar <- function(target, current, ...) {
     }
   }
 
-  x = eval_tidy(expr(
+  x <- eval_tidy(expr(
     new_rvar(.draws[, !!!index, drop = FALSE], .nchains = nchains(x))
   ))
 

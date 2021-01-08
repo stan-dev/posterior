@@ -129,6 +129,7 @@ Summary.rvar <- function(..., na.rm = FALSE) {
 range.rvar <- function(..., na.rm = FALSE) {
   .Summary.rvar(base::range, ..., na.rm = na.rm, transpose = TRUE)
 }
+
 .Summary.rvar <- function(f, ..., na.rm = FALSE, transpose = FALSE) {
   rvars <- lapply(list(...), function(arg) {
     arg <- as_rvar(arg)
@@ -322,11 +323,12 @@ t.rvar = function(x) {
   if (length(x) != 0 && ndim == 2) {
     # vector
     dim(.draws) = c(dim(.draws)[1], 1, dim(.draws)[2])
-    new_rvar(.draws, .nchains = nchains(x))
+    result <- new_rvar(.draws, .nchains = nchains(x))
   } else if (ndim == 3) {
     .draws <- aperm(.draws, c(1, 3, 2))
-    new_rvar(.draws, .nchains = nchains(x))
+    result <- new_rvar(.draws, .nchains = nchains(x))
   } else {
     stop2("argument is not a random vector or matrix")
   }
+  result
 }

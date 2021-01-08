@@ -28,7 +28,7 @@ A function with the same argument specification as \code{.f}, but which can acce
 Function that create functions that can accept and/or produce \code{\link{rvar}}s.
 }
 \details{
-This function wraps an existing funtion (\code{.f}) such that it returns \code{\link{rvar}}s containing
+This function wraps an existing function (\code{.f}) such that it returns \code{\link{rvar}}s containing
 whatever type of data \code{.f} would normally return.
 
 The returned function, when called, executes \code{.f} possibly multiple times, once for each draw of

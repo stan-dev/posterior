@@ -8,7 +8,8 @@
 #' @template draws_format-skeleton
 #' @template args-format-nchains
 #'
-#' @details Objects of class `"draws_rvars"` are lists of [`rvar`] objects. See **Examples**.
+#' @details Objects of class `"draws_rvars"` are lists of [`rvar`] objects.
+#' See **Examples**.
 #'
 NULL
 
@@ -68,7 +69,8 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
       # first, pull out the list of indices into a data frame
       # where each column is an index variable
       indices <- sapply(vars_indices[var_i], `[[`, 2)
-      indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")), stringsAsFactors = FALSE)
+      indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")),
+                               stringsAsFactors = FALSE)
       unique_indices <- vector("list", length(indices))
       .dimnames <- vector("list", length(indices))
       names(unique_indices) <- names(indices)
@@ -111,7 +113,8 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
       # the value of the last index should move slowest)
       all_indices <- expand.grid(rev(unique_indices))
       # merge with all.x = TRUE (left join) to fill in missing cells with NA
-      indices <- merge(all_indices, cbind(indices, index = seq_len(nrow(indices))), all.x = TRUE, sort = FALSE)
+      indices <- merge(all_indices, cbind(indices, index = seq_len(nrow(indices))),
+                       all.x = TRUE, sort = FALSE)
       # need to do the sort manually after merge because when sort = TRUE, merge
       # sorts factors as if they were strings, and we need factors to be sorted as factors
       indices <- indices[do.call(order, indices[, -ncol(indices), drop = FALSE]),]
@@ -119,7 +122,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
       # re-sort the array and fill in missing cells with NA
       var_matrix <- var_matrix[, indices$index, drop = FALSE]
 
-      #convert to rvar and adjust dimensions
+      # convert to rvar and adjust dimensions
       out <- rvar(var_matrix)
       dim(out) <- unname(lengths(unique_indices))
       dimnames(out) <- .dimnames

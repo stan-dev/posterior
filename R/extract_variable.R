@@ -43,8 +43,9 @@ extract_variable.draws_rvars <- function(x, variable, ...) {
     # can't be subset from draws_rvars directly, so we'll convert to a
     # draws_array first. root_variable is "x" when variable is "x[...]"
     root_variable <- regmatches(variable, variable_regex)[[1]][[2]]
-    extract_variable(as_draws_array(x[root_variable]), variable, ...)
+    out <- extract_variable(as_draws_array(x[root_variable]), variable, ...)
   } else {
-    NextMethod()
+    out <- NextMethod()
   }
+  out
 }

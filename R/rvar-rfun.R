@@ -13,7 +13,7 @@
 #' [`rvar`]s, the number of draws in the provided [`rvar`]s is used instead of
 #' the value of this argument.
 #'
-#' @details This function wraps an existing funtion (`.f`) such that it returns [`rvar`]s containing
+#' @details This function wraps an existing function (`.f`) such that it returns [`rvar`]s containing
 #' whatever type of data `.f` would normally return.
 #'
 #' The returned function, when called, executes `.f` possibly multiple times, once for each draw of

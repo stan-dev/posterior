@@ -129,7 +129,7 @@ format_rvar_draws <- function(draws, ..., summary = NULL, digits = 2, color = FA
     # NULL: no draws
     return(NULL)
   }
-  summary_functions = get_summary_functions(summary)
+  summary_functions <- get_summary_functions(summary)
 
   summary_dimensions <- seq_len(length(dim(draws)) - 1) + 1
 
