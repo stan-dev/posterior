@@ -569,9 +569,11 @@ density.rvar <- function(x, at, ...) {
   f(at)
 }
 
-#' @rdname rvar-functions
 #' @importFrom distributional cdf
-#' @export cdf
+#' @export
+distributional::cdf
+
+#' @rdname rvar-functions
 #' @export
 cdf.rvar <- function(x, q, ...) {
   if (length(x) != 1) {
