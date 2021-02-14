@@ -63,11 +63,9 @@ median.rvar <- function(x, ...) {
   summarise_rvar_by_element(x, median, ...)
 }
 
-#' @importFrom distributional variance
-#' @export
-distributional::variance
-
 #' @rdname E
+#' @importFrom distributional variance
+#' @export variance
 #' @export
 variance.rvar <- function(x, ...) {
   summarise_rvar_by_element(x, var, ...)
