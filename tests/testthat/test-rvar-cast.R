@@ -4,7 +4,7 @@ test_that("as_rvar works", {
   expect_equal(draws_of(as_rvar(1:3L)), matrix(1:3L, nrow = 1, dimnames = list("1", NULL)))
   expect_equal(draws_of(as_rvar(1:3L)), matrix(1:3L, nrow = 1, dimnames = list("1", NULL)))
 
-  expect_equal(nchains(as_rvar(1, .nchains = 2)), 2)
+  expect_equal(nchains(as_rvar(1, nchains = 2)), 2)
 
   expect_equal(draws_of(as_rvar(1:6, dim = c(2,3))), array(1:6, dim = c(1,2,3), dimnames = list("1", NULL, NULL)))
   expect_equal(

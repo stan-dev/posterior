@@ -1,6 +1,6 @@
 test_that("basic print.rvar works", {
   x <- rvar(array(1:12, dim = c(2,2,3)))
-  x_with_chains <- rvar(array(1:12, dim = c(2,2,3)), .nchains = 2)
+  x_with_chains <- rvar(array(1:12, dim = c(2,2,3)), nchains = 2)
 
   expect_output(print(rvar(), color = FALSE),
 "rvar<1>[0] mean±sd:
@@ -27,7 +27,7 @@ NULL",
 
 test_that("basic str.rvar works", {
   x <- rvar(array(1:24, dim = c(2,3,4)))
-  x_with_chains <- rvar(array(1:24, dim = c(2,3,4)), .nchains = 2)
+  x_with_chains <- rvar(array(1:24, dim = c(2,3,4)), nchains = 2)
 
   # calling str.rvar directly here because for some reason (weird dispatching
   # rules?) code coverage doesn't capture when we call str() instead
@@ -59,7 +59,7 @@ test_that("format summary arg works", {
 
 test_that("vec_ptype_abbr and vec_ptype_full work", {
   x <- rvar(array(1:24, dim = c(2,3,4)))
-  x_with_chains <- rvar(array(1:24, dim = c(2,3,4)), .nchains = 2)
+  x_with_chains <- rvar(array(1:24, dim = c(2,3,4)), nchains = 2)
 
   expect_equal(vec_ptype_abbr(x), "rvar")
   expect_equal(vec_ptype_full(rvar(1:3)), "rvar<3>")

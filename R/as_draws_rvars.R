@@ -194,7 +194,7 @@ as_draws_rvars.mcmc.list <- function(x, ...) {
 draws_rvars <- function(..., .nchains = 1) {
   out <- lapply(list(...), function(x) {
     if (is_rvar(x)) x
-    else rvar(x, .nchains = .nchains)
+    else rvar(x, nchains = .nchains)
   })
 
   if (!rlang::is_named(out)) {

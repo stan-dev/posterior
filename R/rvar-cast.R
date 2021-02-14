@@ -21,7 +21,7 @@
 #' @return An object of class `"rvar"` representing a random variable.
 #'
 #' @export
-as_rvar <- function(x, dim = NULL, dimnames = NULL, .nchains = NULL) {
+as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
   out <- x
 
   if (!is_rvar(out)) {
@@ -45,11 +45,11 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, .nchains = NULL) {
     dimnames(out) <- dimnames
   }
 
-  if (!is.null(.nchains)) {
+  if (!is.null(nchains)) {
     .ndraws <- ndraws(out)
-    .nchains <- as_one_integer(.nchains)
-    check_nchains_compat_with_ndraws(.nchains, .ndraws)
-    attr(out, "nchains") <- .nchains
+    nchains <- as_one_integer(nchains)
+    check_nchains_compat_with_ndraws(nchains, .ndraws)
+    attr(out, "nchains") <- nchains
   }
 
   out

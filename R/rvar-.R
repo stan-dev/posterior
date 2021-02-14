@@ -10,7 +10,7 @@
 #' first dimension is used to index draws from the distribution.
 #' @template args-rvar-dim
 #' @template args-rvar-dimnames
-#' @template args-format-nchains
+#' @param nchains Number of chains (default is `1`).
 #'
 #' @details
 #'
@@ -43,8 +43,8 @@
 #' @return An object of class `"rvar"` representing a random variable.
 #'
 #' @export
-rvar <- function(x = double(), dim = NULL, dimnames = NULL, .nchains = 1L) {
-  x <- new_rvar(x, .nchains = .nchains)
+rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = 1L) {
+  x <- new_rvar(x, .nchains = nchains)
 
   if (!is.null(dim)) {
     dim(x) <- dim

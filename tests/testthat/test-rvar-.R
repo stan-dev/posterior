@@ -18,10 +18,10 @@ test_that("rvar creation with custom dim works", {
 test_that("rvar can be created with specified number of chains", {
   x_array <- array(1:20, dim = c(4,5))
 
-  expect_error(rvar(x_array, .nchains = 0))
-  expect_equal(rvar(x_array, .nchains = 1), rvar(x_array))
-  expect_equal(nchains(rvar(x_array, .nchains = 2)), 2)
-  expect_error(rvar(x_array, .nchains = 3), "Number of chains does not divide the number of draws")
+  expect_error(rvar(x_array, nchains = 0))
+  expect_equal(rvar(x_array, nchains = 1), rvar(x_array))
+  expect_equal(nchains(rvar(x_array, nchains = 2)), 2)
+  expect_error(rvar(x_array, nchains = 3), "Number of chains does not divide the number of draws")
 })
 
 # indexing ----------------------------------------------------------------
@@ -357,7 +357,7 @@ test_that("broadcast_array works", {
 
 test_that("warnings for unequal draws/chains are correct", {
   expect_warning(
-    expect_equal(rvar(1:10) + rvar(1:10, .nchains = 2), rvar(1:10 + 1:10)),
+    expect_equal(rvar(1:10) + rvar(1:10, nchains = 2), rvar(1:10 + 1:10)),
     "chains were dropped"
   )
 
@@ -367,7 +367,7 @@ test_that("warnings for unequal draws/chains are correct", {
   )
 
   expect_error(
-    rvar(1:10, .nchains = 0),
+    rvar(1:10, nchains = 0),
     "chains must be >= 1"
   )
 })

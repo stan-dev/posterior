@@ -4,7 +4,7 @@
 \alias{as_rvar}
 \title{Coerce to a random variable}
 \usage{
-as_rvar(x, dim = NULL, dimnames = NULL, .nchains = NULL)
+as_rvar(x, dim = NULL, dimnames = NULL, nchains = NULL)
 }
 \arguments{
 \item{x}{An object that can be converted to an \code{\link{rvar}}, such as a vector or array

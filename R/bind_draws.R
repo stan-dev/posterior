@@ -195,7 +195,7 @@ bind_draws.draws_rvars <- function(x, ..., along = "variable") {
     out <- lapply(seq_along(dots[[1]]), function(var_i) {
       vars <- lapply(dots, `[[`, var_i)
       var_draws <- lapply(vars, draws_of)
-      out <- rvar(abind(var_draws, along = 1), .nchains = nchains)
+      out <- rvar(abind(var_draws, along = 1), nchains = nchains)
       out
     })
     names(out) <- names(dots[[1]])
