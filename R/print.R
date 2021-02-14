@@ -302,7 +302,7 @@ print.draws_rvars <- function(x,
     y <- x
   }
   sel_variables <- seq_len(min(max_variables, nvariables(y)))
-  if (!reserved)
+
   for (i in seq_along(y)) {
     cat0("$", names(y)[[i]], ": ")
     print(y[[i]], summary = summary, digits = digits, ...)
