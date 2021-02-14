@@ -180,7 +180,6 @@ bind_draws.draws_rvars <- function(x, ..., along = "variable") {
     check_same_fun_output(dots, iteration_ids)
     out <- do_call(c, dots)
   } else if (along == "iteration") {
-    # TODO: implement?
     stop2("Cannot bind 'draws_rvars' objects along 'iteration'.")
   } else if (along %in% c("chain", "draw")) {
     check_same_fun_output(dots, variables)
