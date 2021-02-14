@@ -28,12 +28,12 @@ test_that("rfun works", {
   expect_identical(rfun(function(a,b) a %*% b)(x, y), xy_ref)
 })
 
-test_that("rvar_r works", {
+test_that("rvar_rng works", {
   set.seed(1234)
 
-  mu <- rvar_r(rnorm, 10, mean = 1:10, sd = 1)
-  sigma <- rvar_r(rgamma, 1, shape = 1, rate = 1)
-  x <- rvar_r(rnorm, 10, mu, sigma)
+  mu <- rvar_rng(rnorm, 10, mean = 1:10, sd = 1)
+  sigma <- rvar_rng(rgamma, 1, shape = 1, rate = 1)
+  x <- rvar_rng(rnorm, 10, mu, sigma)
 
   expect_equal(mean(x), 1:10, tolerance = 0.1)
   expect_equal(apply(draws_of(x), 2, sd), rep(1.7, 10), tolerance = 0.1)

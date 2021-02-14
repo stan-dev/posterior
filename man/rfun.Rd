@@ -41,7 +41,7 @@ they have the advantage of allowing a nearly arbitrary R functions to be execute
 simply by wrapping them with \code{rfun()}. This makes it especially useful as a prototyping
 tool. If you create code with \code{rfun()} and it is unacceptably slow for your application,
 consider rewriting it using math operations directly on \code{\link{rvar}}s (which should be fast),
-using \code{\link[=rvar_r]{rvar_r()}}, and/or using operations directly on the arrays that back the \code{\link{rvar}}s
+using \code{\link[=rvar_rng]{rvar_rng()}}, and/or using operations directly on the arrays that back the \code{\link{rvar}}s
 (via \code{\link[=draws_of]{draws_of()}}).
 }
 \examples{
@@ -58,6 +58,6 @@ x
 \seealso{
 Other rfun: 
 \code{\link{rdo}()},
-\code{\link{rvar_r}()}
+\code{\link{rvar_rng}()}
 }
 \concept{rfun}

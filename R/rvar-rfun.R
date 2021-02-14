@@ -26,7 +26,7 @@
 #' simply by wrapping them with `rfun()`. This makes it especially useful as a prototyping
 #' tool. If you create code with `rfun()` and it is unacceptably slow for your application,
 #' consider rewriting it using math operations directly on [`rvar`]s (which should be fast),
-#' using [rvar_r()], and/or using operations directly on the arrays that back the [`rvar`]s
+#' using [rvar_rng()], and/or using operations directly on the arrays that back the [`rvar`]s
 #' (via [draws_of()]).
 #'
 #'
@@ -127,7 +127,7 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
 #' simply by wrapping it with `rdo( ... )`. This makes it especially useful as a prototyping
 #' tool. If you create code with `rdo()` and it is unacceptably slow for your application,
 #' consider rewriting it using math operations directly on [`rvar`]s (which should be fast),
-#' using [rvar_r()], and/or using operations directly on the arrays that back the [`rvar`]s
+#' using [rvar_rng()], and/or using operations directly on the arrays that back the [`rvar`]s
 #' (via [draws_of()]).
 #'
 #' @return An [`rvar`].
@@ -202,7 +202,7 @@ rdo <- function(expr, dim = NULL, ndraws = NULL) {
 #' random number generator `.f`, then reshapes the output from `.f` into an
 #' [`rvar`] with length `n`.
 #'
-#' `rvar_r()` is a fast alternative to `rdo()` or `rfun()`, but you **must**
+#' `rvar_rng()` is a fast alternative to `rdo()` or `rfun()`, but you **must**
 #' ensure that `.f` satisfies the preconditions described above for the result
 #' to be correct. Most base random number generators satisfy these conditions.
 #' It is advisable to test against `rdo()` or `rfun()` (which should be correct,
@@ -212,14 +212,14 @@ rdo <- function(expr, dim = NULL, ndraws = NULL) {
 #'
 #' @examples
 #'
-#' mu <- rvar_r(rnorm, 10, mean = 1:10, sd = 1)
-#' sigma <- rvar_r(rgamma, 1, shape = 1, rate = 1)
-#' x <- rvar_r(rnorm, 10, mu, sigma)
+#' mu <- rvar_rng(rnorm, 10, mean = 1:10, sd = 1)
+#' sigma <- rvar_rng(rgamma, 1, shape = 1, rate = 1)
+#' x <- rvar_rng(rnorm, 10, mu, sigma)
 #' x
 #'
 #' @family rfun
 #' @export
-rvar_r <- function(.f, n, ..., ndraws = NULL) {
+rvar_rng <- function(.f, n, ..., ndraws = NULL) {
   args <- list(...)
 
   is_rvar_arg <- as.logical(lapply(args, is_rvar))
@@ -236,7 +236,7 @@ rvar_r <- function(.f, n, ..., ndraws = NULL) {
 
     rvar_args_ndims <- lengths(lapply(rvar_args, dim))
     if (!all(rvar_args_ndims == 1)) {
-      stop2("All arguments to rvar_r() that are rvars must be single-dimensional (vectors).")
+      stop2("All arguments to rvar_rng() that are rvars must be single-dimensional (vectors).")
     }
 
     args[is_rvar_arg] <- lapply(rvar_args, function(x) t(draws_of(x)))

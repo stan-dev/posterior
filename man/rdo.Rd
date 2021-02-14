@@ -38,7 +38,7 @@ it has the advantage of allowing a nearly arbitrary R expression to be executed 
 simply by wrapping it with \code{rdo( ... )}. This makes it especially useful as a prototyping
 tool. If you create code with \code{rdo()} and it is unacceptably slow for your application,
 consider rewriting it using math operations directly on \code{\link{rvar}}s (which should be fast),
-using \code{\link[=rvar_r]{rvar_r()}}, and/or using operations directly on the arrays that back the \code{\link{rvar}}s
+using \code{\link[=rvar_rng]{rvar_rng()}}, and/or using operations directly on the arrays that back the \code{\link{rvar}}s
 (via \code{\link[=draws_of]{draws_of()}}).
 }
 \examples{
@@ -52,6 +52,6 @@ x
 \seealso{
 Other rfun: 
 \code{\link{rfun}()},
-\code{\link{rvar_r}()}
+\code{\link{rvar_rng}()}
 }
 \concept{rfun}

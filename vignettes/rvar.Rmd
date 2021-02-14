@@ -194,7 +194,7 @@ $$
 There are three different approaches you might take to doing this: converting
 existing R functions with `rfun()`, executing expressions of
 random variables with `rdo()`, or evaluating random number generator functions
-using `rvar_r()`.
+using `rvar_rng()`.
 
 ### Converting functions with `rfun()`
 
@@ -220,7 +220,7 @@ x
 
 While `rfun()`-converted functions work well for prototyping, they will generally
 speaking be slower than functions designed specifically for `rvar`s. Thus, you
-may find you need to adopt other strategies (like `rvar_r()`, described below;
+may find you need to adopt other strategies (like `rvar_rng()`, described below;
 or re-writing functions to support `rvar` directly using math operators and/or the
 `draws_of()` function).
 
@@ -257,9 +257,9 @@ x
 Like `rfun()`, `rdo()` is not necessarily fast, so you may find it more useful
 for prototyping than production code.
 
-### Evaluating random number generators with `rvar_r()`
+### Evaluating random number generators with `rvar_rng()`
 
-`rvar_r()` is an alternative to `rfun()`/`rdo()` designed specifically to work
+`rvar_rng()` is an alternative to `rfun()`/`rdo()` designed specifically to work
 with random number generating functions that follow the typical API of such
 functions in base R. Such functions, like `rnorm()`, `rgamma()`, `rbinom()`, etc 
 all following this interface:
@@ -268,17 +268,17 @@ all following this interface:
 - Their arguments for distribution parameters (`mean`, `sd`, `shape`, `rate`, etc.) are vectorized.
 - They return a single vector of length `n`, representing `n` draws from the distribution.
 
-You can use any function with this interface with `rvar_r()`, and it will adapt
+You can use any function with this interface with `rvar_rng()`, and it will adapt
 it to be able to take `rvar` arguments and return an `rvar`, as follows:
 
 ```{r rvar_r_ex}
-mu <- rvar_r(rnorm, 4, mean = 1:4, sd = 1)
-sigma <- rvar_r(rgamma, 1, shape = 1, rate = 1)
-x <- rvar_r(rnorm, 4, mu, sigma)
+mu <- rvar_rng(rnorm, 4, mean = 1:4, sd = 1)
+sigma <- rvar_rng(rgamma, 1, shape = 1, rate = 1)
+x <- rvar_rng(rnorm, 4, mu, sigma)
 x
 ```
 
-In contrast to the `rfun()` and `rdo()` examples above, `rvar_r()` takes 
+In contrast to the `rfun()` and `rdo()` examples above, `rvar_rng()` takes 
 advantage of the existing vectorization of the underlying random number generating
 function to execute quickly.
 
