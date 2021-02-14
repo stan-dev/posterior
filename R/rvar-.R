@@ -58,7 +58,6 @@ rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = 1L) {
 
 #' @importFrom vctrs new_vctr
 new_rvar <- function(x = double(), .nchains = 1L) {
-  # TODO: decide on supported types and cast to them in here
   .dim <- dim(x)
   if (length(x) == 0) {
     x <- double()
