@@ -36,7 +36,7 @@
 #' pnorm(1.5, mean = 1:4, sd = 2)
 #'
 #' @name rvar-summaries
-#' @seealso [Summary.rvar] for summary functions within draws.
+#' @seealso [rvar-summaries-by-draw] for summary functions within draws.
 #' [rvar-functions] for density, CDF, and quantile functions of random variables.
 #' @export
 E <- function(x, na.rm = FALSE) {
@@ -91,7 +91,7 @@ variance.rvar <- function(x, ...) {
 #' @details
 #'
 #' These functions compute statistics within each draw of the random variable.
-#' For summaries over draws (such as expectations), see [E()].
+#' For summaries over draws (such as expectations), see [rvar-summaries].
 #'
 #' Besides `rvar_mean()` and `rvar_median()`, these standard generics are supported:
 #'
@@ -117,15 +117,16 @@ variance.rvar <- function(x, ...) {
 #' sum(x)
 #' prod(x)
 #'
-#' @seealso [E()] for summary functions across draws (e.g. expectations).
+#' @seealso [rvar-summaries] for summary functions across draws (e.g. expectations).
 #' [rvar-functions] for density, CDF, and quantile functions of random variables.
+#' @name rvar-summaries-by-draw
 #' @export
 Summary.rvar <- function(..., na.rm = FALSE) {
   f <- get(.Generic)
   .Summary.rvar(f, ..., na.rm = na.rm)
 }
 
-#' @rdname Summary.rvar
+#' @rdname rvar-summaries-by-draw
 #' @export
 range.rvar <- function(..., na.rm = FALSE) {
   .Summary.rvar(base::range, ..., na.rm = na.rm, transpose = TRUE)
@@ -151,11 +152,11 @@ range.rvar <- function(..., na.rm = FALSE) {
   new_rvar(.draws, .nchains = nchains(rvars[[1]]))
 }
 
-#' @rdname Summary.rvar
+#' @rdname rvar-summaries-by-draw
 #' @export
 rvar_mean <- function(x, ...) summarise_rvar_within_draws(x, mean, ...)
 
-#' @rdname Summary.rvar
+#' @rdname rvar-summaries-by-draw
 #' @export
 rvar_median <- function(x, ...) summarise_rvar_within_draws(x, median, ...)
 

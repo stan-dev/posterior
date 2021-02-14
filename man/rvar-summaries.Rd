@@ -58,6 +58,6 @@ pnorm(1.5, mean = 1:4, sd = 2)
 
 }
 \seealso{
-\link{Summary.rvar} for summary functions within draws.
+\link{rvar-summaries-by-draw} for summary functions within draws.
 \link{rvar-functions} for density, CDF, and quantile functions of random variables.
 }
