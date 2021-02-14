@@ -256,4 +256,5 @@ log_sum_exp <- function(x) {
   for (i in seq_along(vars)) {
     assign(vars[[i]], values[[i]], envir = envir)
   }
+  invisible(NULL)
 }
