@@ -35,6 +35,7 @@
 #' # ... should be about the same as this:
 #' pnorm(1.5, mean = 1:4, sd = 2)
 #'
+#' @name rvar-summaries
 #' @seealso [Summary.rvar] for summary functions within draws.
 #' [rvar-functions] for density, CDF, and quantile functions of random variables.
 #' @export
@@ -42,13 +43,13 @@ E <- function(x, na.rm = FALSE) {
   summarise_rvar_by_element(x, mean, na.rm = na.rm)
 }
 
-#' @rdname E
+#' @rdname rvar-summaries
 #' @export
 mean.rvar <- function(x, ...) {
   summarise_rvar_by_element(x, mean, ...)
 }
 
-#' @rdname E
+#' @rdname rvar-summaries
 #' @export
 Pr <- function(x, na.rm = FALSE) {
   if (!all(is.logical(draws_of(x)))) {
@@ -57,13 +58,13 @@ Pr <- function(x, na.rm = FALSE) {
   summarise_rvar_by_element(x, mean, na.rm = na.rm)
 }
 
-#' @rdname E
+#' @rdname rvar-summaries
 #' @export
 median.rvar <- function(x, ...) {
   summarise_rvar_by_element(x, median, ...)
 }
 
-#' @rdname E
+#' @rdname rvar-summaries
 #' @importFrom distributional variance
 #' @export variance
 #' @export
