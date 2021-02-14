@@ -3,8 +3,8 @@
 #' The `summarise_draws()` (and `summarize_draws()`) methods provide a quick way
 #' to get a table of summary statistics and diagnostics. These methods will
 #' convert an object to a `draws` object if it isn't already. For convenience, a
-#' [summary()][base::summary] method for `draws` objects is also provided as an
-#' alias for `summarise_draws()` if the input object is already a `draws`
+#' [summary()][base::summary] method for `draws` and `rvar` objects are also provided as an
+#' alias for `summarise_draws()` if the input object is a `draws` or `rvar`
 #' object.
 #'
 #' @name draws_summary
@@ -151,6 +151,14 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
 #' @export
 summary.draws <- function(object, ...) {
   summarise_draws(object, ...)
+}
+
+#' @rdname draws_summary
+#' @export
+summary.rvar <- function(object, ...) {
+  x <- draws_rvars(x = object)
+  names(x) <- deparse2(substitute(object))
+  summarise_draws(x, ...)
 }
 
 #' @rdname draws_summary

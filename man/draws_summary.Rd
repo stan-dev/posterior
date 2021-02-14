@@ -6,6 +6,7 @@
 \alias{summarize_draws}
 \alias{summarise_draws.draws}
 \alias{summary.draws}
+\alias{summary.rvar}
 \alias{default_summary_measures}
 \alias{default_convergence_measures}
 \alias{default_mcse_measures}
@@ -18,6 +19,8 @@ summarize_draws(x, ...)
 \method{summarise_draws}{draws}(x, ..., .args = list())
 
 \method{summary}{draws}(object, ...)
+
+\method{summary}{rvar}(object, ...)
 
 default_summary_measures()
 
@@ -47,8 +50,8 @@ columns contain summary statistics and diagnostics.
 The \code{summarise_draws()} (and \code{summarize_draws()}) methods provide a quick way
 to get a table of summary statistics and diagnostics. These methods will
 convert an object to a \code{draws} object if it isn't already. For convenience, a
-\link[base:summary]{summary()} method for \code{draws} objects is also provided as an
-alias for \code{summarise_draws()} if the input object is already a \code{draws}
+\link[base:summary]{summary()} method for \code{draws} and \code{rvar} objects are also provided as an
+alias for \code{summarise_draws()} if the input object is a \code{draws} or \code{rvar}
 object.
 }
 \details{
