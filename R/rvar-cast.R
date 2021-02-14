@@ -6,7 +6,7 @@
 #' (or an [`rvar`] itself).
 #' @template args-rvar-dim
 #' @template args-rvar-dimnames
-#' @template args-format-nchains
+#' @param nchains Number of chains (default is `1`).
 #'
 #' @details For objects that are already [`rvar`]s, returns them (with modified dimensions
 #' if `dim` is not `NULL`).

@@ -16,7 +16,7 @@ or more giving the maximal indices in each dimension. If \code{NULL} (the defaul
 \item{dimnames}{Override for the names of the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dimnames]{dimnames()}}): a list of character
 vectors giving names of the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
 
-\item{.nchains}{Number of chains (default is \code{1}).}
+\item{nchains}{Number of chains (default is \code{1}).}
 }
 \value{
 An object of class \code{"rvar"} representing a random variable.
