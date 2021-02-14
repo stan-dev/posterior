@@ -232,6 +232,20 @@ Math.rvar <- function(x, ...) {
 #'
 #' @return An [`rvar`] representing the matrix product of `x` and `y`.
 #'
+#' @examples
+#'
+#' # d has mu (mean vector of length 3) and Sigma (3x3 covariance matrix)
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' d$Sigma
+#'
+#' # trivial example: multiplication by a non-random matrix
+#' d$Sigma %**% diag(1:3)
+#'
+#' # Decompose Sigma into R s.t. R'R = Sigma ...
+#' R <- chol(d$Sigma)
+#' # ... and recreate Sigma using matrix multiplication
+#' t(R) %**% R
+#'
 #' @importFrom tensorA mul.tensor as.tensor
 #' @export
 `%**%` <- function(x, y) {

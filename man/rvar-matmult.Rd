@@ -30,3 +30,18 @@ is used to efficiently multiply matrices across draws, so if either \code{x} or 
 Because \code{\link{rvar}} is an S3 class and S3 classes cannot properly override \code{\%*\%}, \code{\link{rvar}}s use
 \verb{\%**\%} for matrix multiplication.
 }
+\examples{
+
+# d has mu (mean vector of length 3) and Sigma (3x3 covariance matrix)
+d <- as_draws_rvars(example_draws("multi_normal"))
+d$Sigma
+
+# trivial example: multiplication by a non-random matrix
+d$Sigma \%**\% diag(1:3)
+
+# Decompose Sigma into R s.t. R'R = Sigma ...
+R <- chol(d$Sigma)
+# ... and recreate Sigma using matrix multiplication
+t(R) \%**\% R
+
+}
