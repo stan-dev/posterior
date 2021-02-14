@@ -600,7 +600,7 @@ c.rvar <- function(...) {
     # if there is a data frame in args, we should just make the first arg
     # into a list and then use the list c() implementation
     args[[1]] <- as.list(args[[1]])
-    return(do.call(c, args))
+    return(do_call(c, args))
   }
 
   out <- make_1d(args[[1]], names(args)[[1]])
@@ -642,7 +642,7 @@ bind_rvars <- function(args, arg_exprs, deparse.level = 1, axis = 1) {
     args <- deparse_names(args, arg_exprs, deparse.level = 2)
     args[[1]] <- as.data.frame(make_at_least_2d(args[[1]], axis, names(args)[[1]]))
     bind <- if (axis == 1) rbind else cbind
-    return(do.call(bind, args))
+    return(do_call(bind, args))
   }
 
   args <- deparse_names(args, arg_exprs, deparse.level)

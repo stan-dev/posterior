@@ -178,7 +178,7 @@ bind_draws.draws_rvars <- function(x, ..., along = "variable") {
   if (along == "variable") {
     check_same_fun_output(dots, chain_ids)
     check_same_fun_output(dots, iteration_ids)
-    out <- do.call(c, dots)
+    out <- do_call(c, dots)
   } else if (along == "iteration") {
     # TODO: implement?
     stop2("Cannot bind 'draws_rvars' objects along 'iteration'.")

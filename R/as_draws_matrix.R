@@ -78,7 +78,7 @@ as_draws_matrix.draws_rvars <- function(x, ...) {
   if (ndraws(x) == 0) {
     return(empty_draws_matrix(variables(x)))
   }
-  draws <- do.call(cbind, lapply(seq_along(x), function(i) {
+  draws <- do_call(cbind, lapply(seq_along(x), function(i) {
     # flatten each rvar so it only has two dimensions: draws and variables
     # this also collapses indices into variable names in the format "var[i,j,k,...]"
     x_i <- flatten_array(x[[i]], names(x)[[i]])
