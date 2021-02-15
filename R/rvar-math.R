@@ -191,10 +191,16 @@ Ops.rvar <- function(e1, e2) {
   draws_y <- draws_of(e2)
 
   # broadcast draws to common dimension
-  # TODO: skip broadcast for scalars (for speed)
   new_dim <- dim2_common(dim(draws_x), dim(draws_y))
-  draws_x <- broadcast_array(draws_x, new_dim)
-  draws_y <- broadcast_array(draws_y, new_dim)
+  # Most of the time we don't broadcast scalars (constant rvars of length 1).
+  # With broadcast_scalars = FALSE broadcast_array will return a vector (no dims)
+  # version of the input, which works unless *both* x and y are constants
+  # (because then the correct output shape is lost; in this case we do need to
+  # broadcast both x and y in case their dimensions are not equal; e.g. if x is
+  # 1x1 and y is 1x1x1x1 we must broadcast both to 1x1x1x1)
+  broadcast_scalars = length(draws_x) == 1 && length(draws_y) == 1
+  draws_x <- broadcast_array(draws_x, new_dim, broadcast_scalars = broadcast_scalars)
+  draws_y <- broadcast_array(draws_y, new_dim, broadcast_scalars = broadcast_scalars)
 
   new_rvar(f(draws_x, draws_y), .nchains = nchains(e1))
 }

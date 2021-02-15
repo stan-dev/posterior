@@ -1,5 +1,5 @@
 test_that("math operators works", {
-  x_array = array(1:24, dim = c(4,2,3))
+  x_array = array(1:24, dim = c(4,2,3), dimnames = list(NULL,letters[1:2],letters[3:5]))
   x = new_rvar(x_array)
   y_array = array(c(2:13,12:1), dim = c(4,2,3))
   y = new_rvar(y_array)
@@ -27,6 +27,11 @@ test_that("math operators works", {
   expect_identical(x ^ 2, new_rvar((x_array) ^ 2))
   expect_identical(2 ^ x, new_rvar(2 ^ (x_array)))
   expect_identical(x ^ y, new_rvar(x_array ^ y_array))
+
+  # ensure broadcasting of constants retains shape
+  z2 <- new_rvar(array(1, dim = c(1,1)))
+  z4 <- new_rvar(array(2, dim = c(1,1,1,1)))
+  expect_equal(z2 + z4, new_rvar(array(3, dim = c(1,1,1,1))))
 })
 
 test_that("logical operators work", {

@@ -381,7 +381,13 @@ dim_common <- function(dims) {
   Reduce(dim2_common, dims)
 }
 
-broadcast_array  <- function(x, dim) {
+broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
+  if (!broadcast_scalars && length(x) == 1) {
+    # quick exit: not broadcasting scalars; return them as vectors
+    dim(x) <- NULL
+    return(x)
+  }
+
   current_dim = dim(x)
 
   if (length(current_dim) < length(dim)) {
