@@ -237,7 +237,7 @@ vec_ptype2.rvar.double <- function(x, y, ...) new_rvar()
 #' @rdname vctrs-compat
 #' @method vec_cast.rvar double
 #' @export
-vec_cast.rvar.double <- function(x, to, ...) rdo(x, ndraws = 1)
+vec_cast.rvar.double <- function(x, to, ...) new_constant_rvar(x)
 
 #' @rdname vctrs-compat
 #' @importFrom vctrs vec_ptype2.integer
@@ -251,7 +251,7 @@ vec_ptype2.rvar.integer <- function(x, y, ...) new_rvar()
 #' @rdname vctrs-compat
 #' @method vec_cast.rvar integer
 #' @export
-vec_cast.rvar.integer <- function(x, to, ...) rdo(x, ndraws = 1)
+vec_cast.rvar.integer <- function(x, to, ...) new_constant_rvar(x)
 
 #' @rdname vctrs-compat
 #' @importFrom vctrs vec_ptype2.logical
@@ -265,4 +265,21 @@ vec_ptype2.rvar.logical <- function(x, y, ...) new_rvar()
 #' @rdname vctrs-compat
 #' @method vec_cast.rvar logical
 #' @export
-vec_cast.rvar.logical <- function(x, to, ...) rdo(x, ndraws = 1)
+vec_cast.rvar.logical <- function(x, to, ...) new_constant_rvar(x)
+
+
+# helpers: casting --------------------------------------------------------
+
+# create a constant rvar based on x (a double, logical, or integer)
+new_constant_rvar <- function(x) {
+  out <- x
+  dim_x <- dim(x)
+  if (length(dim_x) == 0) {
+    dim(out) <- c(1, length(x))
+  } else {
+    dim(out) <- c(1, dim_x)
+    dim_i <- seq_along(dim_x)
+    out <- copy_dimnames(x, dim_i, out, dim_i + 1)
+  }
+  new_rvar(out)
+}
