@@ -18,12 +18,13 @@ representation of random variables designed to act as much like base R arrays
 as possible (e.g., by supporting many math operators and functions). This format
 is also the basis of the `draws_rvars()` format.
 
-The `rvar()` is inspired by the [rv](https://cran.r-project.org/package=rv)
+The `rvar()` datatype is inspired by the [rv](https://cran.r-project.org/package=rv)
 package and [Kerman and Gelman (2007)](https://doi.org/10.1007%2Fs11222-007-9020-4),
 though with a slightly different backing format (multidimensional arrays). It is
 also designed to interoperate with vectorized distributions in the
-[distributional](https://pkg.mitchelloharawild.com/distributional/) package
-and with distribution visualizations in the [ggdist](https://mjskay.github.io/ggdist/) package.
+[distributional](https://pkg.mitchelloharawild.com/distributional/) package,
+to be able to be used inside `data.frame()`s and `tibble()`s, and to be used
+with distribution visualizations in the [ggdist](https://mjskay.github.io/ggdist/) package.
 
 ```{r setup, include = FALSE}
 library(posterior)
@@ -62,7 +63,7 @@ Or we can create a random matrix:
 ```{r x_matrix}
 rows <- 4
 cols <- 3
-x <- rvar(array(rnorm(4000*(rows + cols), mean = 1, sd = 1), dim = c(4000, rows, cols)))
+x <- rvar(array(rnorm(4000 * rows * cols, mean = 1, sd = 1), dim = c(4000, rows, cols)))
 x
 ```
 
