@@ -56,7 +56,115 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 }
 
 
-# double-dispatch boilerplate ---------------------------------------------
+# type predicates --------------------------------------------------
+
+#' Is `x` a random variable?
+#'
+#' Test if `x` is an [`rvar`].
+#'
+#' @param x An object
+#'
+#' @seealso [as_rvar()] to convert objects to `rvar`s.
+#'
+#' @return `TRUE` if `x` is an [`rvar`], `FALSE` otherwise.
+#'
+#' @export
+is_rvar <- function(x) {
+  inherits(x, "rvar")
+}
+
+#' @export
+is.matrix.rvar <- function(x) {
+  length(dim(draws_of(x))) == 3
+}
+
+#' @export
+is.array.rvar <- function(x) {
+  length(dim(draws_of(x))) > 0
+}
+
+
+# type conversion ---------------------------------------------------------
+
+#' @export
+as.vector.rvar <- function(x, mode = "any") {
+  dim(x) <- NULL
+  names(x) <- NULL
+  x
+}
+
+#' @export
+as.list.rvar <- function(x, ...) {
+  apply(draws_of(x), 2, new_rvar, .nchains = nchains(x))
+}
+
+#' @export
+#' @importFrom rlang as_label
+as.data.frame.rvar <- function(x, ..., optional = FALSE) {
+  if (length(dim(x)) == 2) {
+    # x is matrix-like, convert it into a data frame of the same shape
+    out <- as.data.frame.matrix(x, ..., optional = optional)
+  } else if (length(dim(x)) <= 1) {
+    out <- NextMethod()
+    if (!optional) {
+      names(out) <- as_label(substitute(x))
+    }
+  } else {
+    out <- NextMethod()
+  }
+  out
+}
+
+
+# vctrs proxy / restore --------------------------------------------------------
+
+#' @importFrom vctrs vec_proxy vec_chop
+#' @export
+vec_proxy.rvar = function(x, ...) {
+  # TODO: probably could do something more efficient here and for restore
+  .draws = draws_of(x)
+  out <- vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
+  for (i in seq_along(out)) {
+    attr(out[[i]], "nchains") <- nchains(x)
+  }
+  out
+}
+
+#' @importFrom vctrs vec_restore
+#' @export
+vec_restore.rvar <- function(x, ...) {
+  if (length(x) > 0) {
+    # need to handle the case of creating NAs from NULL entries so that
+    # vec_init() works properly: vec_init requires vec_slice(x, NA_integer_)
+    # to give you back NA values, but this breaks because we use lists as proxies.
+    # When using a list as a proxy, a proxy entry in `x` that is equal to NULL
+    # actually corresponds to an NA value due to the way that list indexing
+    # works: when you do something like list()[c(NA_integer_,NA_integer_)]
+    # you get back list(NULL, NULL), but when you do something like
+    # double()[c(NA_integer_,NA_integer_)] you get back c(NA, NA).
+    # So we have to make the NULL values be NA values to mimic vector indexing.
+
+    # N.B. could potentially do this with vec_cast as well (as long as the first
+    # dimension is the slicing index)
+    x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
+
+  }
+  # broadcast dimensions and bind together
+  new_dim <- dim_common(lapply(x, dim))
+  .draws <- abind(lapply(x, broadcast_array, new_dim), along = 1)
+  # move draws dimension back to the front
+  if (!is.null(.draws)) {
+    .draws <- aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)]))
+  }
+  # determine the number of chains
+  nchains_or_null <- lapply(x, function(x) if (dim(x)[[2]] %||% 1 == 1) NULL else attr(x, "nchains"))
+  .nchains <- Reduce(nchains2_common, nchains_or_null) %||% 1L
+
+  new_rvar(.draws, .nchains = .nchains)
+}
+
+
+# vctrs double-dispatch casting boilerplate ------------------------------------
 # the extra roxygen @method and @export bits in here are necessary for
 # S3 double dispatch. See vignette("s3-vector").
 
