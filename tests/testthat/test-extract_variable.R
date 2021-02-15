@@ -26,6 +26,8 @@ test_that("extract_variable works for draws_rvars on an indexed variable", {
   draws_rvars <- as_draws_rvars(example_draws())
   theta1_matrix <- extract_variable(draws_rvars, "theta[1]")
   expect_equal(as.vector(theta1_matrix), as.vector(theta1_array))
+
+  expect_error(extract_variable(draws_rvars, "theta"), "Cannot extract non-scalar value")
 })
 
 test_that("extract_variable default method works", {
