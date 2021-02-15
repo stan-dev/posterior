@@ -47,12 +47,12 @@
 print.rvar <- function(x, ..., summary = NULL, digits = 2, color = TRUE) {
   # \u00b1 = plus/minus sign
   summary_functions <- get_summary_functions(summary)
-  summary_string <- paste0(paste(summary_functions, collapse = "\u00b1"), ":")
+  summary_string <- paste0(paste(summary_functions, collapse = " \u00b1 "), ":")
   if (color) {
     summary_string <- pillar::style_subtle(summary_string)
   }
   cat0(rvar_type_abbr(x), " ", summary_string, "\n")
-  print(format(x, summary = summary, digits = digits, color = FALSE), quote = FALSE)
+  print(format(x, summary = summary, digits = digits, color = FALSE, pad_right = " "), quote = FALSE)
   invisible(x)
 }
 
@@ -79,13 +79,18 @@ str.rvar <- function(object, ..., summary = NULL, vec.len = NULL) {
     ellipsis <- ""
   }
 
-  cat0(" ", rvar_type_abbr(object), " " ,
-    paste(format_rvar_draws(.draws, summary = summary), collapse = " "),
+  cat0(" ", rvar_type_abbr(object), "  ",
+    paste(format_rvar_draws(.draws, summary = summary), collapse = "  "),
     ellipsis, "\n"
   )
   invisible(object)
 }
 
+#' @importFrom pillar pillar_shaft new_pillar_shaft_simple
+#' @export
+pillar_shaft.rvar <- function(x, ...) {
+  new_pillar_shaft_simple(format(x, color = TRUE, pad_left = " "), align = "right", ...)
+}
 
 # type summaries ----------------------------------------------------------
 
@@ -124,7 +129,7 @@ rvar_type_abbr <- function(x, dim1 = TRUE) {
 
 # formats a draws array for display as individual "variables" (i.e. maintaining
 # its dimensions except for the dimension representing draws)
-format_rvar_draws <- function(draws, ..., summary = NULL, digits = 2, color = FALSE) {
+format_rvar_draws <- function(draws, ..., pad_left = "", pad_right = "", summary = NULL, digits = 2, color = FALSE) {
   if (prod(dim(draws)) == 0) {
     # NULL: no draws
     return(NULL)
@@ -136,7 +141,7 @@ format_rvar_draws <- function(draws, ..., summary = NULL, digits = 2, color = FA
   # these will be mean/sd or median/mad depending on `summary`
   .mean <- apply(draws, summary_dimensions, summary_functions[[1]])
   .sd <- apply(draws, summary_dimensions, summary_functions[[2]])
-  out <- format_mean_sd(.mean, .sd, digits = digits, color = color)
+  out <- paste0(pad_left, format_mean_sd(.mean, .sd, digits = digits, color = color), pad_right)
 
   dim(out) <- dim(draws)[summary_dimensions]
   dimnames(out) <- dimnames(draws)[summary_dimensions]
@@ -149,7 +154,7 @@ format_mean <- function(x, digits = 2, color = FALSE) {
 
 format_sd <- function(x, digits = 2, color = FALSE) {
   # \u00b1 = plus/minus sign
-  sd_string <- paste0("\u00b1", format(x, justify = "left", trim = TRUE, digits = digits, scientific = 2))
+  sd_string <- paste0("\u00b1 ", format(x, justify = "left", trim = TRUE, digits = digits, scientific = 2))
   if (color) {
     pillar::style_subtle(sd_string)
   } else {
@@ -159,7 +164,7 @@ format_sd <- function(x, digits = 2, color = FALSE) {
 
 format_mean_sd <- function(.mean, .sd, digits = 2, color = FALSE) {
   format(paste0(
-    format_mean(.mean, digits = digits, color = color),
+    format_mean(.mean, digits = digits, color = color), " ",
     format_sd(.sd, digits = digits, color = color)),
   justify = "left")
 }
