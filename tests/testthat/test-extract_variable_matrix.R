@@ -30,10 +30,6 @@ test_that("extract_variable_matrix works for draws_rvars on an indexed variable"
   expect_error(extract_variable_matrix(draws_rvars, "theta"), "Cannot extract non-scalar value")
 })
 
-test_that("extract_variable throws an error for draws_rvars on a non-scalar variable", {
-  draws_rvars <- as_draws_rvars(example_draws())
-})
-
 test_that("extract_variable_matrix default method works", {
   # it should convert matrix to draws object
   x <- matrix(1:20, nrow = 10, ncol = 2)
