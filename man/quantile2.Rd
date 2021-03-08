@@ -4,7 +4,7 @@
 \alias{quantile2}
 \title{Compute Quantiles}
 \usage{
-quantile2(x, probs = c(0.05, 0.95), names = TRUE, ...)
+quantile2(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{A 2D array of draws (iterations x chains).}
@@ -13,6 +13,9 @@ quantile2(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
 \item{names}{Logical. If \code{TRUE}, the result has a names attribute. Set to
 \code{FALSE} for speedup with many probs.}
+
+\item{na.rm}{Logical. If \code{TRUE}, any \code{NA} and \code{NaN}'s are removed from \code{x}
+before the quantiles are computed.}
 
 \item{...}{Further arguments passed to \code{\link[=quantile]{quantile()}}.}
 }
