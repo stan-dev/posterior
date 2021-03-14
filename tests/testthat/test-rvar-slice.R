@@ -136,7 +136,7 @@ test_that("indexing with [ works on a vector", {
   expect_equal(x_null, rvar(5))
 })
 
-test_that("indexing with [ works on a matrix", {
+test_that("indexing with [ works on an array", {
   x_array = array(
     1:24, dim = c(4,3,2),
     dimnames = list(A = paste0("a", 1:4), B = paste0("b", 1:3))
@@ -145,30 +145,40 @@ test_that("indexing with [ works on a matrix", {
 
   expect_identical(x[], x)
 
-  expect_identical(x[2], rvar_from_array(x_array[2,,, drop = FALSE]))
-  expect_identical(x["a2"], rvar_from_array(x_array["a2",,, drop = FALSE]))
-  expect_identical(x[c(1,2)], rvar_from_array(x_array[c(1,2),,, drop = FALSE]))
+  expect_identical(x[2], rvar_from_array(array(x_array[2,1,], dim = c(1,2))))
+  expect_identical(x[2,], rvar_from_array(x_array[2,,, drop = FALSE]))
+  expect_identical(x["a2",], rvar_from_array(x_array["a2",,, drop = FALSE]))
+  expect_identical(x[c(1,2)], rvar_from_array(array(x_array[c(1,2),1,], dim = c(2,2))))
+  expect_identical(x[c(1,2),], rvar_from_array(x_array[c(1,2),,, drop = FALSE]))
   expect_identical(x[,c(1,3)], rvar_from_array(x_array[,c(1,3),, drop = FALSE]))
   expect_identical(x[,c("b2","b3")], rvar_from_array(x_array[,c("b2","b3"),, drop = FALSE]))
 
   expect_identical(x[,c(-1,-3)], rvar_from_array(x_array[,c(-1,-3),, drop = FALSE]))
 
-  expect_identical(x[TRUE], rvar_from_array(x_array[TRUE,,, drop = FALSE]))
-  expect_identical(x[c(TRUE,FALSE)], rvar_from_array(x_array[c(TRUE,FALSE),,, drop = FALSE]))
-  expect_identical(x[c(TRUE,FALSE,TRUE)], rvar_from_array(x_array[c(TRUE,FALSE,TRUE),,, drop = FALSE]))
-  expect_identical(x[c(TRUE,FALSE,FALSE,TRUE)], rvar_from_array(x_array[c(TRUE,FALSE,FALSE,TRUE),,, drop = FALSE]))
+  expect_identical(x[TRUE], rvar_from_array(array(x_array, dim = c(12,2))))
+  expect_identical(x[c(TRUE,FALSE)], rvar_from_array(array(x_array, dim = c(12,2))[c(TRUE,FALSE),]))
+  expect_identical(x[c(TRUE,FALSE,TRUE)], rvar_from_array(array(x_array, dim = c(12,2))[c(TRUE,FALSE,TRUE),]))
+  expect_identical(x[c(TRUE,FALSE,FALSE,TRUE)], rvar_from_array(array(x_array, dim = c(12,2))[c(TRUE,FALSE,FALSE,TRUE),]))
+
+  expect_identical(x[TRUE,], rvar_from_array(x_array[TRUE,,, drop = FALSE]))
+  expect_identical(x[c(TRUE,FALSE),], rvar_from_array(x_array[c(TRUE,FALSE),,, drop = FALSE]))
+  expect_identical(x[c(TRUE,FALSE,TRUE),], rvar_from_array(x_array[c(TRUE,FALSE,TRUE),,, drop = FALSE]))
+  expect_identical(x[c(TRUE,FALSE,FALSE,TRUE),], rvar_from_array(x_array[c(TRUE,FALSE,FALSE,TRUE),,, drop = FALSE]))
 
   # dropping works
-  expect_identical(x["a1", drop = TRUE], rvar_from_array(drop(x_array["a1",,, drop = TRUE])))
-  expect_identical(x[1:2, drop = TRUE], rvar_from_array(x_array[1:2,,, drop = TRUE]))
+  expect_identical(x["a1",, drop = TRUE], rvar_from_array(x_array["a1",,, drop = TRUE]))
+  expect_identical(x[1:2,, drop = TRUE], rvar_from_array(x_array[1:2,,, drop = TRUE]))
 
   # indexing beyond the end of the array should result in NAs, to mimic normal vector indexing
-  expect_identical(x[c(4,5)], rvar_from_array(x_array[c(4,NA_integer_),,, drop = FALSE]))
-  expect_identical(x[c(8,9)], rvar_from_array(x_array[c(NA_integer_,NA_integer_),,, drop = FALSE]))
+  expect_identical(x[c(4,25)], rvar_from_array(array(x_array[c(4,NA_integer_),1,], dim = c(2,2))))
+  expect_identical(x[c(4,5),], rvar_from_array(x_array[c(4,NA_integer_),,, drop = FALSE]))
+  expect_identical(x[c(8,9),], rvar_from_array(x_array[c(NA_integer_,NA_integer_),,, drop = FALSE]))
 
-  expect_identical(x[NA], rvar_from_array(x_array[NA,,, drop = FALSE]))
-  expect_identical(x[NA_integer_], rvar_from_array(x_array[NA_integer_,,, drop = FALSE]))
-  expect_identical(x[rep(NA_integer_,7)], rvar_from_array(x_array[rep(NA_integer_,7),,, drop = FALSE]))
+  expect_identical(x[NA], rvar_from_array(array(x_array[NA,,], dim = c(12,2))))
+  expect_identical(x[NA,], rvar_from_array(x_array[NA,,, drop = FALSE]))
+  expect_identical(x[NA_integer_], rvar_from_array(array(c(NA_integer_,NA_integer_), dim = c(1,2))))
+  expect_identical(x[NA_integer_,], rvar_from_array(x_array[NA_integer_,,, drop = FALSE]))
+  expect_identical(x[rep(NA_integer_,7)], rvar_from_array(array(rep(NA_integer_,14), dim = c(7,2))))
 
   expect_identical(x[NULL], new_rvar())
 
@@ -183,6 +193,11 @@ test_that("indexing with [ works on a matrix", {
   expect_equal(x[flat_index], rvar_from_array(x_array_flat[flat_index,]))
 
   expect_error(x[1,1,1])
+
+  # matrix indexing with an array
+  x_array <- array(1:24, dim = c(2,2,3,2))
+  x <- rvar_from_array(x_array)
+  expect_equal(x[rbind(c(1,2,3),c(2,2,3),c(2,1,1))], x[c(11,12,2)])
 })
 
 test_that("assignment with [ works", {
@@ -232,4 +247,22 @@ test_that("assignment with [ works", {
     new_rvar(x_array_flat)
   )
 
+  # matrix indexing assignment and unidimensional index assignment with an array works
+  x_array <- array(
+    1:24, dim = c(2,2,3,2),
+    dimnames = list(A = paste0("a", 1:2), B = paste0("b", 1:2), C = paste0("c", 1:3))
+  )
+
+  x_ref <- rvar_from_array(x_array)
+  x_ref[1,2,3] <- 2
+  x_ref[2,2,3] <- 3
+  x_ref[2,1,1] <- 4
+
+  x <- rvar_from_array(x_array)
+  x[rbind(c(1,2,3),c(2,2,3),c(2,1,1))] <- 2:4
+  expect_equal(x, x_ref)
+
+  x <- rvar_from_array(x_array)
+  x[c(11,12,2)] <- 2:4
+  expect_equal(x, x_ref)
 })

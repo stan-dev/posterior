@@ -65,47 +65,59 @@
   x
 }
 
-#' @importFrom rlang enquos eval_tidy quo is_missing missing_arg expr
+#' @importFrom rlang dots_list eval_tidy is_missing missing_arg expr
 #' @export
 `[.rvar` <- function(x, ..., drop = FALSE) {
   check_rvar_subset_indices(x, ...)
   .draws = draws_of(x)
   .dim = dim(.draws)
 
-  index = as.list(enquos(...))
+  # clean up the indices: because we have to index using the multi-index
+  # notation x[,...] (to account for draws) and this notation has slightly
+  # different semantics for NAs from the way that x[i] works, have to do a bit
+  # of translation here
+  index = dots_list(..., .ignore_empty = "none", .preserve_empty = TRUE)
   for (i in seq_along(index)) {
-    if (is_missing(quo_get_expr(index[[i]]))) {
-      index[[i]] <- missing_arg()
-    } else {
-      index_i <- eval_tidy(index[[i]])
+    if (is.numeric(index[[i]])) {
+      # numeric indices outside the range of the corresponding dimension
+      # should create NAs; but array indexing doesn't do this (it throws
+      # an error), so we adjust the indices to do so.
 
-      if (length(index_i) == 0) {
-        # need to do this in a second step just in case index_i evaluate to
-        # NULL (which would cause assignment to this list to remove the
-        # index at i rather than setting it to NULL)
-        index[[i]] <- integer(0)
+      dim_i_length <- if (i == 1 && length(index) == 1) {
+        # for x[i] style indexing of multidimensional arrays we will flatten
+        # the array before indexing, so the max of the dim length will be
+        # the length of x
+        length(x)
       } else {
-        index[[i]] <- index_i
-
-        if (is.numeric(index[[i]])) {
-          # numeric indices outside the range of the corresponding dimension
-          # should create NAs; but array indexing doesn't do this (it throws
-          # an error), so we adjust the indices to do so.
-          index[[i]][index[[i]] > .dim[[i + 1]]] <- NA_integer_
-        }
+        .dim[[i + 1]]
       }
+
+      index[[i]][index[[i]] > dim_i_length] <- NA_integer_
     }
   }
 
-  if (length(index) < length(dim(.draws)) - 1) {
-    if (length(index) == 1 && is.logical(index[[1]]) && length(index[[1]]) == length(x)) {
-      # logical index over entire array: flatten array so that the logical index
-      # can be applied along all the elements of the array
-      dim(.draws) <- c(dim(.draws)[[1]], length(x))
-    } else {
-      # fill in final indices with missing arguments
-      index[seq(length(index) + 1, length(dim(.draws)) - 1)] = list(missing_arg())
+  if (length(index) == 1) {
+    # indexing by a single dimension, (could be numerical indexing along one
+    # dimension --- even for multidimensional arrays; logical indexing; or matrix indexing)
+
+    if (is.matrix(index[[1]]) && ncol(index[[1]]) == length(.dim) - 1) {
+      # matrix-based indexing, like x[cbind(2,1,2)]
+      # => translate matrix-based indices into unidimensional indices
+      index[[1]] <- matrix_to_index(index[[1]], .dim[-1])
     }
+
+    if (is_missing(index[[1]])) {
+      # if we only have one index and it is missing entirely, the call must
+      # have been for x[], which actually means no index at all
+      index <- list()
+    } else if (length(dim(.draws)) > 2) {
+      # draws have > 2 dims => array has > 1 dimension => must flatten array so
+      # that the index can be applied along all the elements of the array
+      dim(.draws) <- c(dim(.draws)[[1]], length(x))
+    }
+  } else if (length(index) < length(dim(.draws)) - 1) {
+    # fill in final indices with missing arguments
+    index[seq(length(index) + 1, length(dim(.draws)) - 1)] = list(missing_arg())
   }
 
   x <- eval_tidy(expr(
@@ -131,13 +143,23 @@
   value <- vec_cast(value, x)
   c(x, value) %<-% conform_rvar_ndraws_nchains(list(x, value))
 
-  if (missing(...) && is.logical(i) && length(i) == length(x)) {
-    # logical index over entire array: flatten array so that the logical index
+  if (missing(...)) {
+    # index over entire array: flatten array so that the  index
     # can be applied along all the elements of the array, then invert after assignment
     original_dim <- dim(draws_of(x))
     original_dimnames <- dimnames(draws_of(x))
+
+    if (is.matrix(i) && ncol(i) == length(original_dim) - 1) {
+      # matrix-based indexing, like x[cbind(2,1,2)] <- y
+      # => translate matrix-based indices into unidimensional indices
+      i <- matrix_to_index(i, original_dim[-1])
+    }
+
+    #flatten and assign
     dim(x) <- length(x)
     draws_of(x)[,i] <- draws_of(value)
+
+    # unflatten and restore dimnames
     dim(draws_of(x)) <- original_dim
     dimnames(draws_of(x)) <- original_dimnames
   } else {
@@ -145,4 +167,21 @@
   }
 
   x
+}
+
+
+
+# slicing helpers ---------------------------------------------------------
+
+# Given m, a matrix with ncol(m) == length(dim), where each row specifies the
+# index of a single cell from an array of shape == dim, return a vector of
+# length nrow(m) giving the unidimensional indices of that array corresponding
+# to the cells specified by each row in m
+# e.g. if we have an array x with dim(x) = c(2,3,4), we might want to
+# translate an index of style x[cbind(2,1,2)] into x[i] so that we can index
+# index x using the single index i instead of cbind(2,1,2).
+# matrix_to_index(cbind(2,1,2), dim(x)) does that translation.
+matrix_to_index <- function(m, dim) {
+  cumdim <- cumprod(c(1, dim[-length(dim)]))
+  as.vector((m - 1) %*% cumdim + 1)
 }

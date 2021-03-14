@@ -151,6 +151,21 @@ test_that("matrix multiplication works", {
 
 })
 
+test_that("diag works", {
+  Sigma <- as_draws_rvars(example_draws("multi_normal"))$Sigma
+
+  expect_equal(diag(Sigma), c(Sigma[1,1], Sigma[2,2], Sigma[3,3]))
+
+  Sigma_ref <- Sigma
+  Sigma_ref[1,1] <- 2
+  Sigma_ref[2,2] <- 3
+  Sigma_ref[3,3] <- 4
+
+  Sigma_test <- Sigma
+  diag(Sigma_test) <- 2:4
+  expect_equal(Sigma_test, Sigma_ref)
+})
+
 test_that("Cholesky decomposition works", {
   Sigma <- as_draws_rvars(example_draws("multi_normal"))$Sigma
 
