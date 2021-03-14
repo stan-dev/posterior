@@ -168,6 +168,8 @@ test_that("indexing with [ works on an array", {
   # dropping works
   expect_identical(x["a1",, drop = TRUE], rvar_from_array(x_array["a1",,, drop = TRUE]))
   expect_identical(x[1:2,, drop = TRUE], rvar_from_array(x_array[1:2,,, drop = TRUE]))
+  expect_identical(x[1,2, drop = TRUE], rvar_from_array(array(x_array[1,2,], dim = c(1,2))))
+  expect_identical(x[1,1:2, drop = TRUE], rvar_from_array(x_array[1,1:2,, drop = TRUE]))
 
   # indexing beyond the end of the array should result in NAs, to mimic normal vector indexing
   expect_identical(x[c(4,25)], rvar_from_array(array(x_array[c(4,NA_integer_),1,], dim = c(2,2))))
