@@ -254,15 +254,15 @@ test_that("assignment with [ works", {
   )
 
   x_ref <- rvar_from_array(x_array)
-  x_ref[1,2,3] <- 2
-  x_ref[2,2,3] <- 3
-  x_ref[2,1,1] <- 4
+  x_ref[1,2,3] <- rvar(1:2)
+  x_ref[2,2,3] <- rvar(3:4)
+  x_ref[2,1,1] <- rvar(5:6)
 
   x <- rvar_from_array(x_array)
-  x[rbind(c(1,2,3),c(2,2,3),c(2,1,1))] <- 2:4
+  x[rbind(c(1,2,3),c(2,2,3),c(2,1,1))] <- rvar(matrix(1:6, nrow = 2))
   expect_equal(x, x_ref)
 
   x <- rvar_from_array(x_array)
-  x[c(11,12,2)] <- 2:4
+  x[c(11,12,2)] <- rvar(matrix(1:6, nrow = 2))
   expect_equal(x, x_ref)
 })
