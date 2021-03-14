@@ -192,3 +192,14 @@ test_that("matrix transpose works", {
   expect_equal(t(new_rvar(array(1:10, c(2,1,5)))), new_rvar(array(1:10, c(2,5,1))))
   expect_equal(t(new_rvar(array(1:10, c(2,5)))), new_rvar(array(1:10, c(2,1,5))))
 })
+
+test_that("array permutation works", {
+  x_array = array(
+    1:24, dim = c(2,2,3,2),
+    dimnames = list(NULL, A = paste0("a", 1:2), B = paste0("b", 1:3), C = paste0("c", 1:2))
+  )
+  x = new_rvar(x_array)
+  x_perm = new_rvar(aperm(x_array, c(1,2,4,3)))
+
+  expect_equal(aperm(x, c(1,3,2)), x_perm)
+})

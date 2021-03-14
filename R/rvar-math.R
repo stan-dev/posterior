@@ -354,3 +354,9 @@ t.rvar = function(x) {
   }
   result
 }
+
+#' @export
+aperm.rvar = function(a, perm, ...) {
+  .draws <- aperm(draws_of(a), c(1, perm + 1), ...)
+  new_rvar(.draws, .nchains = nchains(a))
+}
