@@ -180,6 +180,26 @@ test_that("Cholesky decomposition works", {
 
 # array transpose and permutation -----------------------------------------
 
+test_that("vector transpose works", {
+  x_array = array(1:6, dim = c(2,3), dimnames = list(NULL, c("a","b","c")))
+  x = new_rvar(x_array)
+  x_array_t = array(1:6, dim = c(2,1,3), dimnames = list(NULL, NULL, c("a","b","c")))
+  x_t = new_rvar(x_array_t)
+  x_array_t_t = array(1:6, dim = c(2,3,1), dimnames = list(NULL, c("a","b","c"), NULL))
+  x_t_t = new_rvar(x_array_t_t)
+
+  # ensure it works with dimnames...
+  expect_equal(t(x), x_t)
+  expect_equal(t(t(x)), x_t_t)
+
+  # ... and without dimnames
+  dimnames(x) = NULL
+  dimnames(x_t) = NULL
+  dimnames(x_t_t) = NULL
+  expect_equal(t(x), x_t)
+  expect_equal(t(t(x)), x_t_t)
+})
+
 test_that("matrix transpose works", {
   x_array = array(1:24, dim = c(4,3,2))
   x = new_rvar(x_array)
