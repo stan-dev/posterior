@@ -242,3 +242,8 @@ test_that("draws_* constructors throw correct errors", {
   expect_error(draws_df(a = 1, .nchains = 2), "Number of chains does not divide the number of draws")
   expect_error(draws_list(a = 1, .nchains = 2), "Number of chains does not divide the number of draws")
 })
+
+test_that("draws_df does not munge variable names", {
+  draws_df <- draws_df(`x[1]` = 1:2, `x[2]` = 3:4)
+  expect_equal(variables(draws_df), c("x[1]", "x[2]"))
+})

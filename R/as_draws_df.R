@@ -196,7 +196,7 @@ draws_df <- function(..., .nchains = 1) {
     stop2("Number of chains does not divide the number of draws.")
   }
   niterations <- ndraws %/% .nchains
-  out <- as.data.frame(out)
+  out <- as.data.frame(out, optional = TRUE)
   out$.iteration <- rep(1L:niterations, .nchains)
   out$.chain <- rep(1L:.nchains, each = niterations)
   as_draws_df(out)
