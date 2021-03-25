@@ -6,6 +6,7 @@
 \alias{summarize_draws}
 \alias{summarise_draws.draws}
 \alias{summary.draws}
+\alias{summarise_draws.rvar}
 \alias{summary.rvar}
 \alias{default_summary_measures}
 \alias{default_convergence_measures}
@@ -19,6 +20,8 @@ summarize_draws(x, ...)
 \method{summarise_draws}{draws}(x, ..., .args = list())
 
 \method{summary}{draws}(object, ...)
+
+\method{summarise_draws}{rvar}(object, ...)
 
 \method{summary}{rvar}(object, ...)
 

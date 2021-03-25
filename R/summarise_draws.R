@@ -155,11 +155,15 @@ summary.draws <- function(object, ...) {
 
 #' @rdname draws_summary
 #' @export
-summary.rvar <- function(object, ...) {
+summarise_draws.rvar <- function(object, ...) {
   x <- draws_rvars(x = object)
   names(x) <- deparse2(substitute(object))
   summarise_draws(x, ...)
 }
+
+#' @rdname draws_summary
+#' @export
+summary.rvar <- summarise_draws.rvar
 
 #' @rdname draws_summary
 #' @export
