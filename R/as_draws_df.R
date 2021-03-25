@@ -169,6 +169,8 @@ as_draws_df.mcmc.list <- function(x, ...) {
   } else {
     chain_ids <- rep(1L, NROW(x))
   }
+  # prepare draw indices --- i.e. drop them, since they are regenerated below
+  x[[".draw"]] <- NULL
 
   # add reserved variables to the data
   check_new_variables(names(x))

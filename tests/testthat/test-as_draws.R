@@ -247,3 +247,12 @@ test_that("draws_df does not munge variable names", {
   draws_df <- draws_df(`x[1]` = 1:2, `x[2]` = 3:4)
   expect_equal(variables(draws_df), c("x[1]", "x[2]"))
 })
+
+test_that("draws_df can roundtrip through data.frame", {
+  draws_df <- draws_df(`x[1]` = 1:2, `x[2]` = 3:4)
+  expect_equal(as_draws_df(as.data.frame(draws_df)), draws_df)
+  expect_equal(as_draws_df(tibble::as_tibble(draws_df)), draws_df)
+  draws_dataframe <- as.data.frame(draws_df)
+  draws_dataframe$.draw <- NULL
+  expect_equal(as_draws_df(draws_dataframe), draws_df)
+})
