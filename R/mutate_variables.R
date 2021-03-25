@@ -14,11 +14,14 @@
 #' according to the expressions provided in `...`.
 #'
 #' @details
-#' In order to mutate variables in `draws_matrix` and `draws_array` objects,
-#' they are transformed to `draws_df` objects first and then transformed back
+#' In order to mutate variables in [`draws_matrix`] and [`draws_array`] objects,
+#' they are transformed to [`draws_df`] objects first and then transformed back
 #' after mutation. As those transformations are quite expensive for larger
-#' number of draws, we recommend using `mutate_variables` on `draws_df` and
-#' `draws_list` objects if speed is an issue.
+#' number of draws, we recommend using `mutate_variables` on [`draws_df`] and
+#' [`draws_list`] objects if speed is an issue.
+#'
+#' In [`draws_rvars`] objects, the output of each expression in `...` is
+#' coerced to an [`rvar`] object if it is not already one using `as_rvar()`.
 #'
 #' @seealso [`variables`], [`rename_variables`]
 #'
@@ -72,6 +75,18 @@ mutate_variables.draws_list <- function(.x, ...) {
     }
   }
   .x
+}
+
+#' @rdname mutate_variables
+#' @export
+mutate_variables.draws_rvars <- function(.x, ...) {
+  dots <- enquos(..., .named = TRUE)
+  names(dots) <- check_reserved_variables(names(dots))
+  env <- caller_env()
+  for (var in names(dots)) {
+    .x[[var]] <- as_rvar(eval_tidy(dots[[var]], .x, env))
+  }
+  conform_rvar_ndraws_nchains(.x)
 }
 
 # evaluate an expression passed to 'mutate_variables' and check its validity

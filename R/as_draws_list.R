@@ -67,6 +67,12 @@ as_draws_list.draws_df <- function(x, ...) {
 
 #' @rdname draws_list
 #' @export
+as_draws_list.draws_rvars <- function(x, ...) {
+  as_draws_list(as_draws_array(x), ...)
+}
+
+#' @rdname draws_list
+#' @export
 as_draws_list.mcmc <- function(x, ...) {
   as_draws_list(as_draws_matrix(x), ...)
 }

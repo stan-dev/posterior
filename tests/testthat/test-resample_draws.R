@@ -25,6 +25,11 @@ test_that("resample_draws returns expected format", {
     resample_draws(x, w, method = "simple_no_replace"),
     "Argument 'ndraws' is required"
   )
+
+  x <- as_draws_rvars(x)
+  x_rs <- resample_draws(x, weights = w, method = "simple")
+  expect_true(is_draws_rvars(x_rs))
+  expect_equal(ndraws(x_rs), ndraws(x))
 })
 
 test_that("Resampling algorithms return the correct result in expectation", {

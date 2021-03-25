@@ -73,6 +73,11 @@ variables.draws_list <- function(x, reserved = FALSE, ...) {
   remove_reserved_variable_names(names(x[[1]]), reserved)
 }
 
+#' @export
+variables.draws_rvars <- function(x, reserved = FALSE, ...) {
+  remove_reserved_variable_names(names(x), reserved)
+}
+
 # remove reserved variable names
 remove_reserved_variable_names <- function(variables, reserved) {
   reserved <- as_one_logical(reserved)
@@ -120,6 +125,13 @@ remove_reserved_variable_names <- function(variables, reserved) {
   x
 }
 
+#' @export
+`variables<-.draws_rvars` <- function(x, value) {
+  check_new_variables(value)
+  names(x) <- value
+  x
+}
+
 #' @rdname draws-index
 #' @export
 iteration_ids <- function(x) {
@@ -153,6 +165,20 @@ iteration_ids.draws_list <- function(x) {
   seq_along(x[[1]][[1]])
 }
 
+#' @export
+iteration_ids.draws_rvars <- function(x) {
+  iteration_ids(x[[1]])
+}
+
+#' @export
+iteration_ids.rvar <- function(x) {
+  if (nchains(x) > 1) {
+    seq_len(niterations(x))
+  } else {
+    draw_ids(x)
+  }
+}
+
 #' @rdname draws-index
 #' @export
 chain_ids <- function(x) {
@@ -184,6 +210,16 @@ chain_ids.draws_df <- function(x) {
 chain_ids.draws_list <- function(x) {
   out <- names(x) %||% seq_rows(x)
   as.integer(out)
+}
+
+#' @export
+chain_ids.draws_rvars <- function(x) {
+  chain_ids(x[[1]])
+}
+
+#' @export
+chain_ids.draws_rvars <- function(x) {
+  seq_len(nchains(x))
 }
 
 #' @rdname draws-index
@@ -221,6 +257,18 @@ draw_ids.draws_list <- function(x) {
   niterations <- niterations(x)
   chain_ids <- chain_ids(x)
   ulapply(chain_ids, function(c) niterations * (c - 1L) + iteration_ids)
+}
+
+#' @export
+draw_ids.draws_rvars <- function(x) {
+  draw_ids(x[[1]])
+}
+
+#' @export
+draw_ids.rvar <- function(x) {
+  draws <- draws_of(x)
+  out <- rownames(draws) %||% seq_rows(draws)
+  as.integer(out)
 }
 
 #' @rdname draws-index
@@ -272,6 +320,16 @@ niterations.draws_list <- function(x) {
   length(x[[1]][[1]])
 }
 
+#' @export
+niterations.draws_rvars <- function(x) {
+  if (!length(x)) 0 else niterations(x[[1]])
+}
+
+#' @export
+niterations.rvar <- function(x) {
+  ndraws(x) / nchains(x)
+}
+
 #' @rdname draws-index
 #' @export
 nchains <- function(x) {
@@ -303,6 +361,16 @@ nchains.draws_list <- function(x) {
   length(x)
 }
 
+#' @export
+nchains.draws_rvars <- function(x) {
+  if (!length(x)) 0 else nchains(x[[1]])
+}
+
+#' @export
+nchains.rvar <- function(x) {
+  attr(x, "nchains") %||% 1L
+}
+
 #' @rdname draws-index
 #' @export
 ndraws <- function(x) {
@@ -332,6 +400,17 @@ ndraws.draws_df <- function(x) {
 #' @export
 ndraws.draws_list <- function(x) {
   niterations(x) * nchains(x)
+}
+
+#' @export
+ndraws.draws_rvars <- function(x) {
+  if (!length(x)) 0 else ndraws(x[[1]])
+}
+
+#' @export
+ndraws.rvar <- function(x) {
+  # as.vector() to drop names in case there are index names
+  as.vector(NROW(draws_of(x)))
 }
 
 # check validity of existing variable names: e.g., that

@@ -36,7 +36,7 @@ test_that("subset_draws works correctly for draws_array objects", {
   expect_equal(variables(x_sub, reserved = TRUE), c("mu", ".log_weight"))
 })
 
-test_that("subset works correctly for draws_df objects", {
+test_that("subset_draws works correctly for draws_df objects", {
   x <- as_draws_df(example_draws())
   x_sub <- subset_draws(x, variable = c("mu", "tau"), iteration = 5:10, chain = 3:4)
   expect_equal(x$mu[x$.iteration %in% 5:10 & x$.chain %in% 3:4], x_sub$mu)
@@ -62,6 +62,28 @@ test_that("subset_draws works correctly for draws_list objects", {
   x_sub <- subset_draws(x, iteration = c(1, 1, 2), unique = FALSE)
   expect_equal(niterations(x_sub), 3)
   expect_equal(x_sub[[1]]$mu[1], x_sub[[1]]$mu[2])
+
+  expect_message(
+    x_sub <- subset_draws(x, draw = c(1, 200, 10)),
+    "Merging chains in order to subset via 'draw'"
+  )
+  expect_equal(niterations(x_sub), 3)
+
+  x <- weight_draws(x, rep(1, ndraws(x)))
+  x_sub <- subset_draws(x, variable = "mu")
+  expect_equal(variables(x_sub, reserved = TRUE), c("mu", ".log_weight"))
+})
+
+test_that("subset_draws works correctly for draws_rvars objects", {
+  x <- as_draws_rvars(example_draws())
+  x_sub <- subset_draws(x, variable = c("mu"), iteration = 5:10, chain = 3:4)
+  expect_equal(variables(x_sub), "mu")
+  expect_equal(iteration_ids(x_sub), 1:6)
+  expect_equal(chain_ids(x_sub), 1:2)
+
+  x_sub <- subset_draws(x, iteration = c(1, 1, 2), unique = FALSE)
+  expect_equal(niterations(x_sub), 3)
+  expect_equal(draws_of(x_sub[[1]]$mu)[1], draws_of(x_sub[[1]]$mu)[2])
 
   expect_message(
     x_sub <- subset_draws(x, draw = c(1, 200, 10)),

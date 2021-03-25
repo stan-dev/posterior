@@ -259,3 +259,65 @@ print.draws_list <- function(x, digits = 2,
   }
   invisible(x)
 }
+
+#' Print `draws_rvars` objects
+#'
+#' Pretty printing for [`draws_rvars`] objects.
+#'
+#' @encoding UTF-8
+#' @template args-methods-x
+#' @template args-print-digits
+#' @template args-print-max_variables
+#' @template args-print-summary
+#' @template args-methods-reserved
+#' @template args-print-dots
+#' @template return-draws
+#'
+#' @examples
+#' x <- as_draws_rvars(example_draws())
+#' print(x)
+#'
+#' @export
+print.draws_rvars <- function(x,
+  digits = 2,
+  max_variables = getOption("posterior.max_variables", 8),
+  summary = getOption("posterior.rvar_summary", "mean_sd"),
+  reserved = FALSE,
+  ...
+) {
+  max_variables <- as_one_integer(max_variables)
+  niterations <- niterations(x)
+  nchains <- nchains(x)
+  nvariables <- nvariables(x)
+  header <- paste0(
+    "# A draws_rvars: ", niterations, " iterations, ",
+    nchains, " chains, and ", nvariables, " variables\n"
+  )
+  cat(header)
+
+  if (!reserved) {
+    reserved_variables <- reserved_variables(x)
+    y <- x[!names(x) %in% reserved_variables]
+  } else {
+    y <- x
+  }
+  sel_variables <- seq_len(min(max_variables, nvariables(y)))
+
+  for (i in seq_along(y)) {
+    cat0("$", names(y)[[i]], ": ")
+    print(y[[i]], summary = summary, digits = digits, ...)
+    cat("\n")
+  }
+
+  more_variables <- nvariables - max_variables
+  if (more_variables > 0) {
+    comment <- paste0(more_variables, " more variables")
+    comment <- paste0("# ... with ", comment, "\n")
+    cat(comment)
+  }
+  if (!reserved && length(reserved_variables)) {
+    cat0("# ... hidden reserved variables ", comma(reserved_variables), "\n")
+  }
+
+  invisible(x)
+}

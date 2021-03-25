@@ -49,3 +49,16 @@ test_that("weight_draws works on draws_list", {
   weights2 <- weights(x2, normalize = FALSE)
   expect_equal(weights2, weights)
 })
+
+test_that("weight_draws works on draws_rvars", {
+  x <- as_draws_rvars(example_draws())
+  weights <- rexp(ndraws(x))
+
+  x1 <- weight_draws(x, weights)
+  weights1 <- weights(x1)
+  expect_equal(weights1, weights / sum(weights))
+
+  x2 <- weight_draws(x, log(weights), log = TRUE)
+  weights2 <- weights(x2, normalize = FALSE)
+  expect_equal(weights2, weights)
+})

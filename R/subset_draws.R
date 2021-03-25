@@ -124,6 +124,28 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
   }
   x
 }
+
+#' @rdname subset_draws
+#' @export
+subset_draws.draws_rvars <- function(x, variable = NULL, iteration = NULL,
+                                     chain = NULL, draw = NULL, regex = FALSE,
+                                     unique = TRUE, ...) {
+  x <- repair_draws(x)
+  variable <- check_existing_variables(variable, x, regex = regex)
+  iteration <- check_iteration_ids(iteration, x, unique = unique)
+  chain <- check_chain_ids(chain, x, unique = unique)
+  draw <- check_draw_ids(draw, x, unique = unique)
+  x <- prepare_subsetting(x, iteration, chain, draw)
+  if (!is.null(draw)) {
+    iteration <- draw
+  }
+  x <- .subset_draws(x, iteration, chain, variable, reserved = TRUE)
+  if (!is.null(chain) || !is.null(iteration)) {
+    x <- repair_draws(x, order = FALSE)
+  }
+  x
+}
+
 #' @rdname subset_draws
 #' @export
 subset.draws <- function(x, ...) {
@@ -262,6 +284,38 @@ subset_dims <- function(x, ...) {
       for (j in seq_along(x[[i]])) {
         x[[i]][[j]] <- x[[i]][[j]][iteration]
       }
+    }
+  }
+  x
+}
+
+#' @importFrom vctrs vec_slice
+#' @export
+.subset_draws.draws_rvars <- function(x, iteration = NULL, chain = NULL,
+                                      variable = NULL, reserved = FALSE, ...) {
+  if (!is.null(variable)) {
+    if (reserved) {
+      reserved_vars <- setdiff(reserved_variables(x), variable)
+      x <- x[c(variable, reserved_vars)]
+    } else{
+      x <- x[variable]
+    }
+  }
+  if (!is.null(chain)) {
+    chain <- unique(chain)
+    nchains <- length(chain)
+    chain_ids <- rep(chain_ids(x), each = niterations(x))
+    slice_index <- chain_ids %in% chain
+    for (i in seq_along(x)) {
+      draws_of(x[[i]]) <- vec_slice(draws_of(x[[i]]), slice_index)
+      attr(x[[i]], "nchains") <- nchains
+    }
+  }
+  if (!is.null(iteration)) {
+    niterations <- length(iteration)
+    slice_index <- iteration + (rep(chain_ids(x), each = length(iteration)) - 1) * niterations(x)
+    for (i in seq_along(x)) {
+      draws_of(x[[i]]) <- vec_slice(draws_of(x[[i]]), slice_index)
     }
   }
   x

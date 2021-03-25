@@ -60,6 +60,32 @@ order_draws.draws_list <- function(x, ...) {
   x
 }
 
+#' @rdname order_draws
+#' @export
+order_draws.draws_rvars <- function(x, ...) {
+  for (i in seq_along(x)) {
+    x[[i]] <- order_draws(x[[i]])
+  }
+  x
+}
+
+#' @rdname order_draws
+#' @importFrom rlang missing_arg
+#' @importFrom vctrs vec_slice
+#' @export
+order_draws.rvar <- function(x, ...) {
+  draw_order <- order(draw_ids(x))
+  if (needs_ordering(draw_order)) {
+    # if ordering is needed, must also merge chains (as out-of-order draws
+    # imply chain information is no longer meaningful)
+    if (nchains(x) > 1) {
+      x <- merge_chains(x)
+    }
+    draws_of(x) <- vec_slice(draws_of(x), draw_order)
+  }
+  x
+}
+
 #' Order draws if told to do so
 #' @param x draws object to be ordered
 #' @param order should the draws object be ordered?

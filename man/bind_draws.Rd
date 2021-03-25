@@ -6,6 +6,7 @@
 \alias{bind_draws.draws_array}
 \alias{bind_draws.draws_df}
 \alias{bind_draws.draws_list}
+\alias{bind_draws.draws_rvars}
 \title{Bind \code{draws} objects together}
 \usage{
 bind_draws(x, ...)
@@ -17,6 +18,8 @@ bind_draws(x, ...)
 \method{bind_draws}{draws_df}(x, ..., along = "variable")
 
 \method{bind_draws}{draws_list}(x, ..., along = "variable")
+
+\method{bind_draws}{draws_rvars}(x, ..., along = "variable")
 }
 \arguments{
 \item{x}{A \code{\link{draws}} object. The draws format of \code{x} will define the format

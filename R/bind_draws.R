@@ -162,6 +162,47 @@ bind_draws.draws_list <- function(x, ..., along = "variable") {
   as_draws_list(out)
 }
 
+#' @rdname bind_draws
+#' @importFrom abind abind
+#' @export
+bind_draws.draws_rvars <- function(x, ..., along = "variable") {
+  along <- validate_along(along)
+  dots <- list(...)
+  if (!length(dots)) {
+    return(as_draws_rvars(x))
+  }
+  dots <- c(list(x), dots)
+  dots <- remove_null(dots)
+  dots <- lapply(dots, as_draws_rvars)
+  dots <- lapply(dots, repair_draws)
+  if (along == "variable") {
+    check_same_fun_output(dots, chain_ids)
+    check_same_fun_output(dots, iteration_ids)
+    out <- do_call(c, dots)
+  } else if (along == "iteration") {
+    stop2("Cannot bind 'draws_rvars' objects along 'iteration'.")
+  } else if (along %in% c("chain", "draw")) {
+    check_same_fun_output(dots, variables)
+    if (along == "chain") {
+      check_same_fun_output(dots, iteration_ids)
+      nchains <- sum(sapply(dots, nchains))
+    } else {
+      # binding along 'draw' implies dropping chain information
+      dots <- lapply(dots, merge_chains)
+      nchains <- 1
+    }
+    # bind all the corresponding variables together along draws
+    out <- lapply(seq_along(dots[[1]]), function(var_i) {
+      vars <- lapply(dots, `[[`, var_i)
+      var_draws <- lapply(vars, draws_of)
+      out <- rvar(abind(var_draws, along = 1), nchains = nchains)
+      out
+    })
+    names(out) <- names(dots[[1]])
+  }
+  as_draws_rvars(out)
+}
+
 #' @export
 bind_draws.NULL <- function(x, ..., along = "variable") {
   dots <- list(...)

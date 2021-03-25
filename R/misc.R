@@ -167,12 +167,13 @@ eval2 <- function(expr, envir = parent.frame(), ...) {
 #   \code{args} gives the argument names.
 # @param pkg Optional name of the package in which to search for the
 #   function if \code{what} is a character string.
+# @param enclos an environment within which to evaluate the call.
 #
 # @return The result of the (evaluated) function call.
 #
 # @keywords internal
 # @export
-do_call <- function(what, args, pkg = NULL) {
+do_call <- function(what, args, pkg = NULL, enclos = parent.frame()) {
   call <- ""
   if (length(args)) {
     if (!is.list(args)) {
@@ -200,7 +201,7 @@ do_call <- function(what, args, pkg = NULL) {
     }
   }
   call <- paste0(what, "(", call, ")")
-  eval2(call, envir = args, enclos = parent.frame())
+  eval2(call, envir = args, enclos = enclos)
 }
 
 # wrapper around replicate but without simplifying
@@ -247,4 +248,13 @@ log_sum_exp <- function(x) {
   max <- max(x)
   sum <- sum(exp(x - max))
   max + log(sum)
+}
+
+# simple version of destructuring assignment
+`%<-%` <- function(vars, values, envir = parent.frame()) {
+  vars <- as.character(substitute(vars)[-1])
+  for (i in seq_along(vars)) {
+    assign(vars[[i]], values[[i]], envir = envir)
+  }
+  invisible(NULL)
 }

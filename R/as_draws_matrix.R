@@ -74,6 +74,22 @@ as_draws_matrix.draws_list <- function(x, ...) {
 
 #' @rdname draws_matrix
 #' @export
+as_draws_matrix.draws_rvars <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_matrix(variables(x)))
+  }
+  draws <- do_call(cbind, lapply(seq_along(x), function(i) {
+    # flatten each rvar so it only has two dimensions: draws and variables
+    # this also collapses indices into variable names in the format "var[i,j,k,...]"
+    x_i <- flatten_array(x[[i]], names(x)[[i]])
+    draws_of(x_i)
+  }))
+
+  as_draws_matrix(draws, ...)
+}
+
+#' @rdname draws_matrix
+#' @export
 as_draws_matrix.mcmc <- function(x, ...) {
   class(x) <- "matrix"
   attributes(x)[c("title", "mcpar")] <- NULL

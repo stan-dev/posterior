@@ -8,6 +8,7 @@
 \alias{as_draws_array.draws_matrix}
 \alias{as_draws_array.draws_df}
 \alias{as_draws_array.draws_list}
+\alias{as_draws_array.draws_rvars}
 \alias{as_draws_array.mcmc}
 \alias{as_draws_array.mcmc.list}
 \alias{is_draws_array}
@@ -24,6 +25,8 @@ as_draws_array(x, ...)
 \method{as_draws_array}{draws_df}(x, ...)
 
 \method{as_draws_array}{draws_list}(x, ...)
+
+\method{as_draws_array}{draws_rvars}(x, ...)
 
 \method{as_draws_array}{mcmc}(x, ...)
 
@@ -74,6 +77,7 @@ Other formats:
 \code{\link{draws_df}()},
 \code{\link{draws_list}()},
 \code{\link{draws_matrix}()},
+\code{\link{draws_rvars}()},
 \code{\link{draws}}
 }
 \concept{formats}

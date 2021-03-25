@@ -52,3 +52,13 @@ test_that("summarise_draws doesn't error for empty draws", {
     empty_draws_summary()
   )
 })
+
+test_that("summarise_draws and summary work for rvars", {
+  d <- as_draws_rvars(example_draws())
+  d_theta <- draws_rvars(x = d$theta)
+  names(d_theta) <- "d$theta"
+  ref <- summarise_draws(d_theta)
+
+  expect_identical(summarise_draws(d$theta), ref)
+  expect_identical(summary(d$theta), ref)
+})

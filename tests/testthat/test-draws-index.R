@@ -69,6 +69,18 @@ test_that("indices of draws_list objects are correct", {
   expect_equal(chain_ids(x), 1:length(x))
 })
 
+test_that("indices of draws_rvars objects are correct", {
+  x <- as_draws_rvars(example_draws())
+
+  expect_equal(iteration_ids(x), 1:(length(draws_of(x[[1]]))/4))
+  expect_equal(chain_ids(x), 1:4)
+  expect_equal(draw_ids(x), 1:length(draws_of(x[[1]])))
+
+  expect_equal(niterations(x), length(draws_of(x[[1]]))/4)
+  expect_equal(nchains(x), 4)
+  expect_equal(ndraws(x), length(draws_of(x[[1]])))
+})
+
 test_that("indexing draws_array with [ and drop works correctly", {
   x <- example_draws()
   x1 <- x[,,1]

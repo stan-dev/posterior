@@ -26,13 +26,21 @@ Imports:
   checkmate,
   rlang (>= 0.4.7),
   stats,
-  tibble (>= 3.0.0)
+  tibble (>= 3.0.0),
+  vctrs,
+  tensorA,
+  pillar,
+  distributional
 Suggests: 
   testthat (>= 2.1.0),
   caret (>= 6.0.84),
   gbm (>= 2.1.8),
   randomForest (>= 4.6.14),
-  e1071 (>= 1.7.3)
+  e1071 (>= 1.7.3),
+  dplyr,
+  tidyr,
+  knitr,
+  rmarkdown
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -40,3 +48,4 @@ URL: https://mc-stan.org/posterior/, https://discourse.mc-stan.org/
 BugReports: https://github.com/stan-dev/posterior/issues
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr

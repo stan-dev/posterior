@@ -103,6 +103,15 @@ weight_draws.draws_list <- function(x, weights, log = FALSE, ...) {
   x
 }
 
+#' @rdname weight_draws
+#' @export
+weight_draws.draws_rvars <- function(x, weights, log = FALSE, ...) {
+  log <- as_one_logical(log)
+  log_weights <- validate_weights(weights, x, log = log)
+  x$.log_weight <- rvar(log_weights)
+  x
+}
+
 #' Extract Weights from Draws Objects
 #'
 #' Extract weights from [`draws`] objects, with one weight per draw.
