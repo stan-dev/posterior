@@ -21,7 +21,7 @@ summarize_draws(x, ...)
 
 \method{summary}{draws}(object, ...)
 
-\method{summarise_draws}{rvar}(object, ...)
+\method{summarise_draws}{rvar}(x, ...)
 
 \method{summary}{rvar}(object, ...)
 
