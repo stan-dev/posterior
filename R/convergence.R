@@ -298,6 +298,8 @@ mcse_sd <- function(x) {
 #'
 #' @template args-conv
 #' @template args-conv-quantile
+#' @param na.rm Logical. If `TRUE`, any `NA` and `NaN`'s are removed from `x`
+#'   before the quantiles are computed.
 #' @param ... Further arguments passed to [quantile()].
 #'
 #' @examples
@@ -305,9 +307,16 @@ mcse_sd <- function(x) {
 #' quantile2(mu)
 #'
 #' @export
-quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
+quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE,
+                      ...) {
   names <- as_one_logical(names)
-  out <- quantile(x, probs = probs, ...)
+  na.rm <- as_one_logical(na.rm)
+  if (!na.rm && anyNA(x)) {
+    # quantile itself doesn't handle this case (#110)
+    out <- rep(NA_real_, length(probs))
+  } else {
+    out <- quantile(x, probs = probs, na.rm = na.rm, ...)
+  }
   if (names) {
     names(out) <- paste0("q", probs * 100)
   } else {
