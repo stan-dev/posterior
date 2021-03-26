@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Resample <code>draws</code> objects — resample_draws • posterior</title>
+<title>Resample draws objects — resample_draws • posterior</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Resample <code>draws</code> objects — resample_draws" />
+<meta property="og:title" content="Resample draws objects — resample_draws" />
 <meta property="og:description" content="Resample draws objects according to given weights obtained,
 for instance, through importance sampling." />
 
@@ -73,7 +73,7 @@ for instance, through importance sampling." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -170,10 +170,10 @@ for instance, through importance sampling." />
 for instance, through importance sampling.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>resample_draws</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>resample_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws</span>
-<span class='fu'>resample_draws</span>(<span class='no'>x</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"stratified"</span>, <span class='kw'>ndraws</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>resample_draws</span><span class='op'>(</span><span class='va'>x</span>, weights <span class='op'>=</span> <span class='cn'>NULL</span>, method <span class='op'>=</span> <span class='st'>"stratified"</span>, ndraws <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -221,7 +221,9 @@ is set internally to the total number of draws in <code>x</code> if sensible.</p
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Upon usage of <code>resample_draws</code>, chains will be automatically merged
-due to subsetting of individual draws (see <code><a href='subset_draws.html'>subset_draws</a></code> for details).</p>
+due to subsetting of individual draws (see <code><a href='subset_draws.html'>subset_draws</a></code> for details).
+Also, weights stored in the <code>draws</code> object will be removed in the process,
+as resampling invalidates existing weights.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Kitagawa, G., Monte Carlo Filter and Smoother for Non-Gaussian Nonlinear '
@@ -229,39 +231,43 @@ State Space Models, <em>Journal of Computational and Graphical Statistics</em>,
 5(1):1-25, 1996.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='draws_df.html'>as_draws_df</a></span>(<span class='fu'><a href='example_draws.html'>example_draws</a></span>())
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='draws_df.html'>as_draws_df</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># random weights for illustrationary purposes</span>
-<span class='no'>w</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span>(<span class='fu'><a href='draws-index.html'>ndraws</a></span>(<span class='no'>x</span>), <span class='fl'>0</span>, <span class='fl'>10</span>)
+<span class='va'>w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fu'><a href='draws-index.html'>ndraws</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='fl'>0</span>, <span class='fl'>10</span><span class='op'>)</span>
 
 <span class='co'># use default stratified sampling</span>
-<span class='no'>x_rs</span> <span class='kw'>&lt;-</span> <span class='fu'>resample_draws</span>(<span class='no'>x</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>w</span>)</div><div class='output co'>#&gt; <span class='message'>Merging chains in order to subset via 'draw'.</span></div><div class='input'><span class='fu'><a href='draws_summary.html'>summarise_draws</a></span>(<span class='no'>x_rs</span>, <span class='fu'><a href='draws_summary.html'>default_summary_measures</a></span>())</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 7</span><span>
+<span class='va'>x_rs</span> <span class='op'>&lt;-</span> <span class='fu'>resample_draws</span><span class='op'>(</span><span class='va'>x</span>, weights <span class='op'>=</span> <span class='va'>w</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Merging chains in order to subset via 'draw'.</span></div><div class='input'><span class='fu'><a href='draws_summary.html'>summarise_draws</a></span><span class='op'>(</span><span class='va'>x_rs</span>, <span class='fu'><a href='draws_summary.html'>default_summary_measures</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 7</span><span>
 #&gt;    variable  mean median    sd   mad      q5   q95
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        4.29   4.38  3.39  3.45  -</span><span style='color: #BB0000;'>0.701</span><span>  9.73
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       3.99   2.92  3.41  2.76   0.309 11.0 
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  6.55   6.05  5.81  4.57  -</span><span style='color: #BB0000;'>0.982</span><span> 17.3 
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  5.04   5.03  4.82  4.35  -</span><span style='color: #BB0000;'>2.87</span><span>  12.3 
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  3.03   4.14  6.97  4.93 -</span><span style='color: #BB0000;'>10.8</span><span>   11.5 
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  4.89   5.26  4.78  4.70  -</span><span style='color: #BB0000;'>2.71</span><span>  12.2 
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  3.34   3.61  5.13  4.51  -</span><span style='color: #BB0000;'>5.93</span><span>  11.2 
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  4.23   4.34  5.01  4.99  -</span><span style='color: #BB0000;'>3.49</span><span>  10.7 
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  6.65   6.43  5.11  4.59  -</span><span style='color: #BB0000;'>1.19</span><span>  14.5 
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  4.83   4.84  4.55  4.59  -</span><span style='color: #BB0000;'>3.25</span><span>  11.8 </div><div class='input'>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        4.24   4.59  3.45  3.25  -</span><span style='color: #BB0000;'>1.17</span><span>   9.48
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       4.54   3.49  3.81  3.29   0.307 11.7 
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  7.08   6.23  6.51  5.22  -</span><span style='color: #BB0000;'>1.16</span><span>  19.3 
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  5.37   5.13  4.94  4.03  -</span><span style='color: #BB0000;'>2.32</span><span>  14.2 
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  2.96   4.13  7.31  5.22 -</span><span style='color: #BB0000;'>11.1</span><span>   12.0 
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  5.10   5.24  5.01  4.32  -</span><span style='color: #BB0000;'>3.63</span><span>  12.3 
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  2.89   3.57  5.35  4.54  -</span><span style='color: #BB0000;'>7.60</span><span>  10.8 
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  3.88   4.34  5.34  5.00  -</span><span style='color: #BB0000;'>6.04</span><span>  11.1 
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  6.88   6.73  5.29  4.60  -</span><span style='color: #BB0000;'>1.15</span><span>  15.4 
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  4.60   4.73  5.71  5.23  -</span><span style='color: #BB0000;'>5.31</span><span>  14.5 </div><div class='input'>
 <span class='co'># use simple random sampling</span>
-<span class='no'>x_rs</span> <span class='kw'>&lt;-</span> <span class='fu'>resample_draws</span>(<span class='no'>x</span>, <span class='kw'>weights</span> <span class='kw'>=</span> <span class='no'>w</span>, <span class='kw'>method</span> <span class='kw'>=</span> <span class='st'>"simple"</span>)</div><div class='output co'>#&gt; <span class='message'>Merging chains in order to subset via 'draw'.</span></div><div class='input'><span class='fu'><a href='draws_summary.html'>summarise_draws</a></span>(<span class='no'>x_rs</span>, <span class='fu'><a href='draws_summary.html'>default_summary_measures</a></span>())</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 10 x 7</span><span>
+<span class='va'>x_rs</span> <span class='op'>&lt;-</span> <span class='fu'>resample_draws</span><span class='op'>(</span><span class='va'>x</span>, weights <span class='op'>=</span> <span class='va'>w</span>, method <span class='op'>=</span> <span class='st'>"simple"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Merging chains in order to subset via 'draw'.</span></div><div class='input'><span class='fu'><a href='draws_summary.html'>summarise_draws</a></span><span class='op'>(</span><span class='va'>x_rs</span>, <span class='fu'><a href='draws_summary.html'>default_summary_measures</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 10 x 7</span><span>
 #&gt;    variable  mean median    sd   mad      q5   q95
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        4.21   4.27  3.33  3.30  -</span><span style='color: #BB0000;'>0.854</span><span>  9.15
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       3.81   2.76  3.28  2.58   0.332 10.2 
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  6.42   5.61  5.58  4.74  -</span><span style='color: #BB0000;'>1.75</span><span>  17.3 
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  5.16   4.98  4.61  3.79  -</span><span style='color: #BB0000;'>2.78</span><span>  12.3 
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  3.36   4.16  6.55  4.60 -</span><span style='color: #BB0000;'>10.3</span><span>   11.5 
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  4.27   4.47  4.71  4.76  -</span><span style='color: #BB0000;'>4.40</span><span>  11.9 
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  3.19   3.75  4.88  4.09  -</span><span style='color: #BB0000;'>6.54</span><span>  11.2 
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  4.27   4.33  4.83  4.60  -</span><span style='color: #BB0000;'>3.49</span><span>  10.7 
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  5.76   5.13  4.54  3.88  -</span><span style='color: #BB0000;'>1.19</span><span>  13.0 
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  4.66   4.79  5.03  4.62  -</span><span style='color: #BB0000;'>3.44</span><span>  12.2 </div><div class='input'>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        3.95   4.08  3.51  4.00  -</span><span style='color: #BB0000;'>1.16</span><span>   8.74
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       4.25   3.18  3.66  2.66   0.332 11.4 
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  7.04   6.06  6.71  5.72  -</span><span style='color: #BB0000;'>1.19</span><span>  20.1 
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  4.66   4.73  4.68  4.51  -</span><span style='color: #BB0000;'>2.60</span><span>  12.4 
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  2.77   4.16  7.50  5.46 -</span><span style='color: #BB0000;'>11.1</span><span>   11.6 
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  4.99   5.50  4.89  4.49  -</span><span style='color: #BB0000;'>2.65</span><span>  12.2 
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  2.66   3.49  5.34  4.86  -</span><span style='color: #BB0000;'>6.86</span><span>  10.6 
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  3.71   4.07  5.14  4.92  -</span><span style='color: #BB0000;'>4.98</span><span>  10.8 
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  6.45   5.92  5.34  4.60  -</span><span style='color: #BB0000;'>1.43</span><span>  14.8 
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  4.34   4.76  5.56  5.22  -</span><span style='color: #BB0000;'>5.29</span><span>  13.2 </div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -278,7 +284,7 @@ State Space Models, <em>Journal of Computational and Graphical Statistics</em>,
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

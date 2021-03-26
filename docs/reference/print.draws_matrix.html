@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Print <code>draws_matrix</code> objects — print.draws_matrix • posterior</title>
+<title>Print draws_matrix objects — print.draws_matrix • posterior</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Print <code>draws_matrix</code> objects — print.draws_matrix" />
+<meta property="og:title" content="Print draws_matrix objects — print.draws_matrix" />
 <meta property="og:description" content="Pretty printing for draws_matrix objects." />
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -169,14 +169,14 @@
     </div>
 
     <pre class="usage"><span class='co'># S3 method for draws_matrix</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(
-  <span class='no'>x</span>,
-  <span class='kw'>digits</span> <span class='kw'>=</span> <span class='fl'>2</span>,
-  <span class='kw'>max_draws</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"posterior.max_draws"</span>, <span class='fl'>10</span>),
-  <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span>(<span class='st'>"posterior.max_variables"</span>, <span class='fl'>8</span>),
-  <span class='kw'>reserved</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='no'>...</span>
-)</pre>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span>
+  <span class='va'>x</span>,
+  digits <span class='op'>=</span> <span class='fl'>2</span>,
+  max_draws <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"posterior.max_draws"</span>, <span class='fl'>10</span><span class='op'>)</span>,
+  max_variables <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/options.html'>getOption</a></span><span class='op'>(</span><span class='st'>"posterior.max_variables"</span>, <span class='fl'>8</span><span class='op'>)</span>,
+  reserved <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -219,8 +219,9 @@ variable names.</p></td>
     <p>A <code>draws</code> object of the same class as <code>x</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='draws_matrix.html'>as_draws_matrix</a></span>(<span class='fu'><a href='example_draws.html'>example_draws</a></span>())
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x</span>)</div><div class='output co'>#&gt; # A draws_matrix: 400 draws, and 10 variables
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='draws_matrix.html'>as_draws_matrix</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; # A draws_matrix: 400 draws, and 10 variables
 #&gt;     variable
 #&gt; draw   mu tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6]
 #&gt;   1  2.01 2.8     3.96    0.271    -0.74      2.1    0.923      1.7
@@ -250,7 +251,7 @@ variable names.</p></td>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

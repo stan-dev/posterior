@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Example <code>draws</code> objects — example_draws • posterior</title>
+<title>Example draws objects — example_draws • posterior</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Example <code>draws</code> objects — example_draws" />
+<meta property="og:title" content="Example draws objects — example_draws" />
 <meta property="og:description" content="Objects for use in examples, vignettes, and tests." />
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -168,7 +168,7 @@
     <p>Objects for use in examples, vignettes, and tests.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>example_draws</span>(<span class='kw'>example</span> <span class='kw'>=</span> <span class='st'>"eight_schools"</span>)</pre>
+    <pre class="usage"><span class='fu'>example_draws</span><span class='op'>(</span>example <span class='op'>=</span> <span class='st'>"eight_schools"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -214,8 +214,9 @@ Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
 Hall/CRC.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>draws_eight_schools</span> <span class='kw'>&lt;-</span> <span class='fu'>example_draws</span>(<span class='st'>"eight_schools"</span>)
-<span class='fu'><a href='draws_summary.html'>summarise_draws</a></span>(<span class='no'>draws_eight_schools</span>)</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 10</span><span>
+    <pre class="examples"><div class='input'><span class='va'>draws_eight_schools</span> <span class='op'>&lt;-</span> <span class='fu'>example_draws</span><span class='op'>(</span><span class='st'>"eight_schools"</span><span class='op'>)</span>
+<span class='fu'><a href='draws_summary.html'>summarise_draws</a></span><span class='op'>(</span><span class='va'>draws_eight_schools</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 10</span><span>
 #&gt;    variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        4.18   4.16  3.40  3.57  -</span><span style='color: #BB0000;'>0.854</span><span>  9.39  1.02     558.     322.
@@ -228,8 +229,9 @@ Hall/CRC.</p>
 #&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  3.99   4.14  5.16  4.81  -</span><span style='color: #BB0000;'>4.32</span><span>  11.5   1.02     548.     205.
 #&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  6.50   5.90  5.26  4.54  -</span><span style='color: #BB0000;'>1.19</span><span>  15.4   1.00     434.     308.
 #&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  4.57   4.64  5.25  4.89  -</span><span style='color: #BB0000;'>3.79</span><span>  12.2   1.02     355.     146.</div><div class='input'>
-<span class='no'>draws_multi_normal</span> <span class='kw'>&lt;-</span> <span class='fu'>example_draws</span>(<span class='st'>"multi_normal"</span>)
-<span class='fu'><a href='draws_summary.html'>summarise_draws</a></span>(<span class='no'>draws_multi_normal</span>)</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 12 x 10</span><span>
+<span class='va'>draws_multi_normal</span> <span class='op'>&lt;-</span> <span class='fu'>example_draws</span><span class='op'>(</span><span class='st'>"multi_normal"</span><span class='op'>)</span>
+<span class='fu'><a href='draws_summary.html'>summarise_draws</a></span><span class='op'>(</span><span class='va'>draws_multi_normal</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 12 x 10</span><span>
 #&gt;    variable      mean  median    sd   mad     q5     q95  rhat ess_bulk ess_tail
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu[1]       0.051</span><span style='text-decoration: underline;'>4</span><span>  0.057</span><span style='text-decoration: underline;'>5</span><span> 0.112 0.131 -</span><span style='color: #BB0000;'>0.130</span><span>  0.225  1.01      677.     356.
@@ -260,7 +262,7 @@ Hall/CRC.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

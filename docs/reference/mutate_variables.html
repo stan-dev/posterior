@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Mutate variables in <code>draws</code> objects — mutate_variables • posterior</title>
+<title>Mutate variables in draws objects — mutate_variables • posterior</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Mutate variables in <code>draws</code> objects — mutate_variables" />
+<meta property="og:title" content="Mutate variables in draws objects — mutate_variables" />
 <meta property="og:description" content="Mutate variables in a draws object." />
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -168,19 +168,22 @@
     <p>Mutate variables in a <code><a href='draws.html'>draws</a></code> object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>mutate_variables</span>(<span class='no'>.x</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>mutate_variables</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_matrix</span>
-<span class='fu'>mutate_variables</span>(<span class='no'>.x</span>, <span class='no'>...</span>)
+<span class='fu'>mutate_variables</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_array</span>
-<span class='fu'>mutate_variables</span>(<span class='no'>.x</span>, <span class='no'>...</span>)
+<span class='fu'>mutate_variables</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_df</span>
-<span class='fu'>mutate_variables</span>(<span class='no'>.x</span>, <span class='no'>...</span>)
+<span class='fu'>mutate_variables</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_list</span>
-<span class='fu'>mutate_variables</span>(<span class='no'>.x</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>mutate_variables</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for draws_rvars</span>
+<span class='fu'>mutate_variables</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -205,20 +208,23 @@ variable. New variables overwrite existing variables of the same name.</p></td>
 according to the expressions provided in <code>...</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>In order to mutate variables in <code>draws_matrix</code> and <code>draws_array</code> objects,
-they are transformed to <code>draws_df</code> objects first and then transformed back
+    <p>In order to mutate variables in <code><a href='draws_matrix.html'>draws_matrix</a></code> and <code><a href='draws_array.html'>draws_array</a></code> objects,
+they are transformed to <code><a href='draws_df.html'>draws_df</a></code> objects first and then transformed back
 after mutation. As those transformations are quite expensive for larger
-number of draws, we recommend using <code>mutate_variables</code> on <code>draws_df</code> and
-<code>draws_list</code> objects if speed is an issue.</p>
+number of draws, we recommend using <code>mutate_variables</code> on <code><a href='draws_df.html'>draws_df</a></code> and
+<code><a href='draws_list.html'>draws_list</a></code> objects if speed is an issue.</p>
+<p>In <code><a href='draws_rvars.html'>draws_rvars</a></code> objects, the output of each expression in <code>...</code> is
+coerced to an <code><a href='rvar.html'>rvar</a></code> object if it is not already one using <code><a href='as_rvar.html'>as_rvar()</a></code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='draws-index.html'>variables</a></code>, <code><a href='rename_variables.html'>rename_variables</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='draws_df.html'>as_draws_df</a></span>(<span class='fu'><a href='example_draws.html'>example_draws</a></span>())
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span>(<span class='no'>x</span>, <span class='kw'>variable</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"mu"</span>, <span class='st'>"tau"</span>))
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='draws_df.html'>as_draws_df</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/subset.html'>subset</a></span><span class='op'>(</span><span class='va'>x</span>, variable <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"mu"</span>, <span class='st'>"tau"</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='fu'>mutate_variables</span>(<span class='no'>x</span>, <span class='kw'>tau2</span> <span class='kw'>=</span> <span class='no'>tau</span>^<span class='fl'>2</span>)</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 3 variables
+<span class='fu'>mutate_variables</span><span class='op'>(</span><span class='va'>x</span>, tau2 <span class='op'>=</span> <span class='va'>tau</span><span class='op'>^</span><span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 3 variables
 #&gt;      mu tau
 #&gt; 1  2.01 2.8
 #&gt; 2  1.46 7.0
@@ -231,7 +237,8 @@ number of draws, we recommend using <code>mutate_variables</code> on <code>draws
 #&gt; 9  0.15 3.9
 #&gt; 10 7.17 1.8
 #&gt; # ... with 390 more draws
-#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'>mutate_variables</span>(<span class='no'>x</span>, <span class='kw'>scale</span> <span class='kw'>=</span> <span class='fl'>1.96</span> * <span class='no'>tau</span>, <span class='kw'>lower</span> <span class='kw'>=</span> <span class='no'>mu</span> - <span class='no'>scale</span>)</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 4 variables
+#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'>mutate_variables</span><span class='op'>(</span><span class='va'>x</span>, scale <span class='op'>=</span> <span class='fl'>1.96</span> <span class='op'>*</span> <span class='va'>tau</span>, lower <span class='op'>=</span> <span class='va'>mu</span> <span class='op'>-</span> <span class='va'>scale</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 4 variables
 #&gt;      mu tau
 #&gt; 1  2.01 2.8
 #&gt; 2  1.46 7.0
@@ -261,7 +268,7 @@ number of draws, we recommend using <code>mutate_variables</code> on <code>draws
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

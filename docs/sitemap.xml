@@ -4,6 +4,9 @@
     <loc>https://mc-stan.org/posterior/index.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/as_rvar.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/autocorrelation.html</loc>
   </url>
   <url>
@@ -11,6 +14,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/bind_draws.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/chol.rvar.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/draws-index.html</loc>
@@ -29,6 +35,12 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/draws_matrix.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/draws_of.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/draws_rvars.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/draws_summary.html</loc>
@@ -59,6 +71,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/extract_variable_matrix.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/is_rvar.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/mcse_mean.html</loc>
@@ -94,10 +109,22 @@
     <loc>https://mc-stan.org/posterior/reference/print.draws_matrix.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/print.draws_rvars.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/print.rvar.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/quantile2.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/r_scale.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rdo.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/reexports.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rename_variables.html</loc>
@@ -112,6 +139,9 @@
     <loc>https://mc-stan.org/posterior/reference/reserved-variables.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/rfun.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/rhat.html</loc>
   </url>
   <url>
@@ -119,6 +149,24 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rstar.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar-functions.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar-matmult.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar-summaries-by-draw.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar-summaries.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar_rng.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/split_chains.html</loc>
@@ -133,6 +181,9 @@
     <loc>https://mc-stan.org/posterior/reference/u_scale.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/vctrs-compat.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/weight_draws.html</loc>
   </url>
   <url>
@@ -140,5 +191,8 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/z_scale.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/articles/rvar.html</loc>
   </url>
 </urlset>
