@@ -14,7 +14,7 @@ as_rvar(x, dim = NULL, dimnames = NULL, nchains = NULL)
 or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
 
 \item{dimnames}{Override for the names of the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dimnames]{dimnames()}}): a list of character
-vectors giving names of the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
+vectors giving the names in each dimension. If \code{NULL} (the default), this is determined by the input.}
 
 \item{nchains}{Number of chains (default is \code{1}).}
 }
