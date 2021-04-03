@@ -31,10 +31,10 @@ bind_draws.draws_matrix <- function(x, ..., along = "variable") {
   dots <- lapply(dots, repair_draws)
   if (along == "variable") {
     check_same_fun_output(dots, draw_ids)
-    out <- do_call(abind, c(dots, along = 2L))
+    out <- do.call(abind, c(dots, along = 2L))
   } else if (along %in% c("iteration", "draw")) {
     check_same_fun_output(dots, variables)
-    out <- do_call(abind, c(dots, along = 1L))
+    out <- do.call(abind, c(dots, along = 1L))
   } else if (along == "chain") {
     stop2("Cannot bind 'draws_matrix' objects along 'chain'.")
   }
@@ -56,15 +56,15 @@ bind_draws.draws_array <- function(x, ..., along = "variable") {
   if (along == "variable") {
     check_same_fun_output(dots, chain_ids)
     check_same_fun_output(dots, iteration_ids)
-    out <- do_call(abind, c(dots, along = 3L))
+    out <- do.call(abind, c(dots, along = 3L))
   } else if (along == "chain") {
     check_same_fun_output(dots, variables)
     check_same_fun_output(dots, iteration_ids)
-    out <- do_call(abind, c(dots, along = 2L))
+    out <- do.call(abind, c(dots, along = 2L))
   } else if (along == "iteration") {
     check_same_fun_output(dots, variables)
     check_same_fun_output(dots, chain_ids)
-    out <- do_call(abind, c(dots, along = 1L))
+    out <- do.call(abind, c(dots, along = 1L))
   } else if (along == "draw") {
     stop2("Cannot bind 'draws_array' objects along 'draw'.")
   }
@@ -86,9 +86,9 @@ bind_draws.draws_df <- function(x, ..., along = "variable") {
   if (along == "variable") {
     check_same_fun_output(dots, chain_ids)
     check_same_fun_output(dots, iteration_ids)
-    reserved_df_values <- dots[[1]][, c(".chain", ".iteration")]
+    reserved_df_values <- as.data.frame(dots[[1]])[, c(".chain", ".iteration")]
     dots <- lapply(dots, remove_reserved_df_variables)
-    out <- do_call(cbind, dots)
+    out <- do.call(cbind, dots)
     out <- cbind(out, reserved_df_values)
   } else if (along == "chain") {
     check_same_fun_output(dots, variables)
@@ -98,7 +98,7 @@ bind_draws.draws_df <- function(x, ..., along = "variable") {
       dots[[i]]$.chain <- sum(nchains[i - 1]) + dots[[i]]$.chain
       dots[[i]]$.chain <- as.integer(dots[[i]]$.chain)
     }
-    out <- do_call(rbind, dots)
+    out <- do.call(rbind, dots)
   } else if (along == "iteration") {
     check_same_fun_output(dots, variables)
     check_same_fun_output(dots, chain_ids)
@@ -107,10 +107,10 @@ bind_draws.draws_df <- function(x, ..., along = "variable") {
       dots[[i]]$.iteration <- sum(niterations[i - 1]) + dots[[i]]$.iteration
       dots[[i]]$.iteration <- as.integer(dots[[i]]$.iteration)
     }
-    out <- do_call(rbind, dots)
+    out <- do.call(rbind, dots)
   } else if (along == "draw") {
     check_same_fun_output(dots, variables)
-    out <- do_call(rbind, dots)
+    out <- do.call(rbind, dots)
     # binding along 'draw' implies dropping chain information
     out$.chain <- 1L
     out$.iteration <- seq_rows(out)
@@ -142,7 +142,7 @@ bind_draws.draws_list <- function(x, ..., along = "variable") {
   } else if (along == "chain") {
     check_same_fun_output(dots, variables)
     check_same_fun_output(dots, iteration_ids)
-    out <- do_call(c, dots)
+    out <- do.call(c, dots)
   } else if (along == "iteration") {
     check_same_fun_output(dots, variables)
     check_same_fun_output(dots, chain_ids)
@@ -178,7 +178,7 @@ bind_draws.draws_rvars <- function(x, ..., along = "variable") {
   if (along == "variable") {
     check_same_fun_output(dots, chain_ids)
     check_same_fun_output(dots, iteration_ids)
-    out <- do_call(c, dots)
+    out <- do.call(c, dots)
   } else if (along == "iteration") {
     stop2("Cannot bind 'draws_rvars' objects along 'iteration'.")
   } else if (along %in% c("chain", "draw")) {
@@ -210,7 +210,7 @@ bind_draws.NULL <- function(x, ..., along = "variable") {
   if (!length(dots)) {
     stop2("All objects passed to 'bind_draws' are NULL.")
   }
-  do_call(bind_draws, dots)
+  do.call(bind_draws, dots)
 }
 
 # check if function output is the same across objects

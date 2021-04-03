@@ -129,15 +129,15 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
     draws <- drop_dims(x[, , v], dims = 3)
     args <- c(list(draws), .args)
     for (m in names(funs)) {
-      out[[v]][[m]] <- do_call(funs[[m]], args)
+      out[[v]][[m]] <- do.call(funs[[m]], args)
       if (rlang::is_named(out[[v]][[m]])) {
         # use returned names to label columns
         out[[v]][[m]] <- rbind(out[[v]][[m]])
       }
     }
-    out[[v]] <- do_call(cbind, out[[v]])
+    out[[v]] <- do.call(cbind, out[[v]])
   }
-  out <- tibble::as_tibble(do_call(rbind, out))
+  out <- tibble::as_tibble(do.call(rbind, out))
   if ("variable" %in% names(out)) {
     stop2("Name 'variable' is reserved in 'summarise_draws'.")
   }

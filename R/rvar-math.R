@@ -141,7 +141,7 @@ range.rvar <- function(..., na.rm = FALSE) {
   rvars <- conform_rvar_nchains(rvars)
 
   # bind all args into a single matrix of draws to perform the summary over
-  all_draws <- draws_of(do_call(c, rvars))
+  all_draws <- draws_of(do.call(c, rvars))
 
   # perform summary
   .draws <- apply(all_draws, 1, f, na.rm = na.rm)
