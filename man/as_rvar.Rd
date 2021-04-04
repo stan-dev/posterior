@@ -11,10 +11,13 @@ as_rvar(x, dim = NULL, dimnames = NULL, nchains = NULL)
 (or an \code{\link{rvar}} itself).}
 
 \item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
-or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
+or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.
+\strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the underlying array, so you cannot
+change the number of draws using this argument.}
 
 \item{dimnames}{Override for the names of the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dimnames]{dimnames()}}): a list of character
-vectors giving the names in each dimension. If \code{NULL} (the default), this is determined by the input.}
+vectors giving the names in each dimension. If \code{NULL} (the default), this is determined by the input.
+\strong{NOTE:} This argument controls the names of the dimensions of the \code{\link{rvar}}, not the underlying array.}
 
 \item{nchains}{Number of chains (default is \code{1}).}
 }

@@ -11,7 +11,9 @@ rdo(expr, dim = NULL, ndraws = NULL)
 supports \link{quasiquotation}.}
 
 \item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
-or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
+or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.
+\strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the underlying array, so you cannot
+change the number of draws using this argument.}
 
 \item{ndraws}{When no \code{\link{rvar}}s are supplied in \code{expr}, this is the number
 of draws that will be used to construct new random variables. If \code{NULL},
