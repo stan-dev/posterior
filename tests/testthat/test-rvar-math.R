@@ -124,7 +124,13 @@ test_that("summary functions work", {
   x = new_rvar(x_array)
 
   expect_equal(Pr(x < 2), apply(x_array < 2, c(2,3), mean), check.attributes = FALSE)
+  expect_error(Pr(x))
   expect_equal(E(x), apply(x_array, c(2,3), mean), check.attributes = FALSE)
+  # E() and Pr() should also work on base arrays
+  expect_equal(Pr(x_array < 2), mean(x_array < 2))
+  expect_error(Pr(x_array))
+  expect_equal(E(x_array), mean(x_array))
+
   expect_equal(mean(x), apply(x_array, c(2,3), mean), check.attributes = FALSE)
   expect_equal(median(x), apply(x_array, c(2,3), median), check.attributes = FALSE)
   expect_equal(variance(x), apply(x_array, c(2,3), var), check.attributes = FALSE)

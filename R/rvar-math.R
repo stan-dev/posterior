@@ -16,6 +16,9 @@
 #' is a logical variable (hence, taking its expectation results in a probability).
 #' `median()` takes medians, and `variance()` takes variances.
 #'
+#' For consistency, `E()` and `Pr()` are also defined for base arrays so that
+#' they can be used as summary functions in `summarise_draws()`.
+#'
 #' @return
 #' A numeric vector with the same dimensions as the given random variable, where
 #' each entry in the vector is the mean, median, or variance of the corresponding entry in `x`.
@@ -39,8 +42,8 @@
 #' @seealso [rvar-summaries-by-draw] for summary functions within draws.
 #' [rvar-functions] for density, CDF, and quantile functions of random variables.
 #' @export
-E <- function(x, na.rm = FALSE) {
-  summarise_rvar_by_element(x, mean, na.rm = na.rm)
+E <- function(x, ...) {
+  mean(x, ...)
 }
 
 #' @rdname rvar-summaries
@@ -51,11 +54,27 @@ mean.rvar <- function(x, ...) {
 
 #' @rdname rvar-summaries
 #' @export
-Pr <- function(x, na.rm = FALSE) {
-  if (!all(is.logical(draws_of(x)))) {
-    stop2("Can only use `Pr(...)` on logical random variables.")
+Pr <- function(x, ...) UseMethod("Pr")
+
+#' @rdname rvar-summaries
+#' @export
+Pr.default <- function(x, ...) {
+  stop2("Can only use `Pr()` on logical variables.")
+}
+
+#' @rdname rvar-summaries
+#' @export
+Pr.logical <- function(x, ...) {
+  mean(x, ...)
+}
+
+#' @rdname rvar-summaries
+#' @export
+Pr.rvar <- function(x, ...) {
+  if (!is.logical(draws_of(x))) {
+    stop2("Can only use `Pr()` on logical random variables.")
   }
-  summarise_rvar_by_element(x, mean, na.rm = na.rm)
+  mean(x, ...)
 }
 
 #' @rdname rvar-summaries
