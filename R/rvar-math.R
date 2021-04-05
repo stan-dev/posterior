@@ -5,12 +5,6 @@
 #' Compute expectations (`E()` or `mean()`), probabilities (`Pr()`),
 #' medians (`median()`), and variances (`variance()`) from a random variable.
 #'
-#' @param x an [`rvar`]
-#' @param na.rm Should `NA` values in the random variable be removed before
-#' computing summaries?
-#' @param ... further arguments passed to underlying functions (e.g., `base::mean()`
-#' or `base::median()`).
-#'
 #' Both `E()`, `mean()`, and `Pr()` take means over the draws dimension of the provided
 #' random variable. `Pr()` additionally checks that the provided [`rvar`]
 #' is a logical variable (hence, taking its expectation results in a probability).
@@ -18,6 +12,10 @@
 #'
 #' For consistency, `E()` and `Pr()` are also defined for base arrays so that
 #' they can be used as summary functions in `summarise_draws()`.
+#'
+#' @param x an [`rvar`]
+#' @param ... further arguments passed to underlying functions (e.g., `base::mean()`
+#' or `base::median()`), such as `na.rm`.
 #'
 #' @return
 #' A numeric vector with the same dimensions as the given random variable, where

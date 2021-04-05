@@ -32,18 +32,7 @@ Pr(x, ...)
 \item{x}{an \code{\link{rvar}}}
 
 \item{...}{further arguments passed to underlying functions (e.g., \code{base::mean()}
-or \code{base::median()}).
-
-Both \code{E()}, \code{mean()}, and \code{Pr()} take means over the draws dimension of the provided
-random variable. \code{Pr()} additionally checks that the provided \code{\link{rvar}}
-is a logical variable (hence, taking its expectation results in a probability).
-\code{median()} takes medians, and \code{variance()} takes variances.
-
-For consistency, \code{E()} and \code{Pr()} are also defined for base arrays so that
-they can be used as summary functions in \code{summarise_draws()}.}
-
-\item{na.rm}{Should \code{NA} values in the random variable be removed before
-computing summaries?}
+or \code{base::median()}), such as \code{na.rm}.}
 }
 \value{
 A numeric vector with the same dimensions as the given random variable, where
@@ -52,6 +41,15 @@ each entry in the vector is the mean, median, or variance of the corresponding e
 \description{
 Compute expectations (\code{E()} or \code{mean()}), probabilities (\code{Pr()}),
 medians (\code{median()}), and variances (\code{variance()}) from a random variable.
+}
+\details{
+Both \code{E()}, \code{mean()}, and \code{Pr()} take means over the draws dimension of the provided
+random variable. \code{Pr()} additionally checks that the provided \code{\link{rvar}}
+is a logical variable (hence, taking its expectation results in a probability).
+\code{median()} takes medians, and \code{variance()} takes variances.
+
+For consistency, \code{E()} and \code{Pr()} are also defined for base arrays so that
+they can be used as summary functions in \code{summarise_draws()}.
 }
 \examples{
 
