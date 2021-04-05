@@ -13,10 +13,13 @@ everything except the first dimension is used for the shape of the variable, and
 first dimension is used to index draws from the distribution.}
 
 \item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
-or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
+or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.
+\strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the underlying array, so you cannot
+change the number of draws using this argument.}
 
 \item{dimnames}{Override for the names of the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dimnames]{dimnames()}}): a list of character
-vectors giving the names in each dimension. If \code{NULL} (the default), this is determined by the input.}
+vectors giving the names in each dimension. If \code{NULL} (the default), this is determined by the input.
+\strong{NOTE:} This argument controls the names of the dimensions of the \code{\link{rvar}}, not the underlying array.}
 
 \item{nchains}{Number of chains (default is \code{1}).}
 }
@@ -49,8 +52,29 @@ and returns a random variable as output. Typically \code{\link[=rdo]{rdo()}} off
 straightforward translation.
 
 As \code{\link[=rfun]{rfun()}} and \code{\link[=rdo]{rdo()}} incur some performance cost, you can also operate directly
-on the underlying array using the \code{\link[=draws_of]{draws_of()}} function.
+on the underlying array using the \code{\link[=draws_of]{draws_of()}} function. To re-use existing
+random number generator functions to efficiently create \code{rvar}s, use \code{\link[=rvar_rng]{rvar_rng()}}.
+}
+\examples{
+
+# To create a "scalar" `rvar`, pass a one-dimensional array or a vector
+# whose length (here `4000`) is the desired number of draws:
+x <- rvar(rnorm(4000, mean = 1, sd = 1))
+x
+
+# Create random vectors by adding an additional dimension:
+n <- 4   # length of output vector
+x <- rvar(array(rnorm(4000 * n, mean = rep(1:n, each = 4000), sd = 1), dim = c(4000, n)))
+x
+
+# Create a random matrix:
+rows <- 4
+cols <- 3
+x <- rvar(array(rnorm(4000 * rows * cols, mean = 1, sd = 1), dim = c(4000, rows, cols)))
+x
+
 }
 \seealso{
-\code{\link[=as_rvar]{as_rvar()}} to convert objects to \code{rvar}s.
+\code{\link[=as_rvar]{as_rvar()}} to convert objects to \code{rvar}s. See \code{\link[=rdo]{rdo()}}, \code{\link[=rfun]{rfun()}}, and
+\code{\link[=rvar_rng]{rvar_rng()}} for higher-level interfaces for creating \code{rvar}s.
 }

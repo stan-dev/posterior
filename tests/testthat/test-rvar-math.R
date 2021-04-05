@@ -1,3 +1,5 @@
+# basic operators ---------------------------------------------------------
+
 test_that("math operators works", {
   x_array = array(1:24, dim = c(4,2,3), dimnames = list(NULL,letters[1:2],letters[3:5]))
   x = new_rvar(x_array)
@@ -80,12 +82,55 @@ test_that("comparison operators work", {
   expect_identical(x != y, new_rvar(x_array != y_array))
 })
 
+test_that("functions in the Math generic with extra arguments work", {
+  expect_equal(round(rvar(11), -1), rvar(10))
+  expect_equal(signif(rvar(11), 1), rvar(10))
+  expect_equal(log(rvar(c(2,4,8)), base = 2), rvar(1:3))
+})
+
+test_that("cumulative functions work", {
+  x_array = array(1:12, dim = c(2,2,3))
+  x = new_rvar(x_array)
+
+  cumsum_ref = new_rvar(rbind(
+    cumsum(draws_of(x)[1,,]),
+    cumsum(draws_of(x)[2,,])
+  ))
+  expect_equal(cumsum(x), cumsum_ref)
+
+  cumprod_ref = new_rvar(rbind(
+    cumprod(draws_of(x)[1,,]),
+    cumprod(draws_of(x)[2,,])
+  ))
+  expect_equal(cumprod(x), cumprod_ref)
+
+  cummax_ref = new_rvar(rbind(
+    cummax(draws_of(x)[1,,]),
+    cummax(draws_of(x)[2,,])
+  ))
+  expect_equal(cummax(x), cummax_ref)
+
+  cummin_ref = new_rvar(rbind(
+    cummin(draws_of(x)[1,,]),
+    cummin(draws_of(x)[2,,])
+  ))
+  expect_equal(cummin(x), cummin_ref)
+})
+
+# summary functions -------------------------------------------------------
+
 test_that("summary functions work", {
   x_array = array(1:24, dim = c(4,2,3))
   x = new_rvar(x_array)
 
   expect_equal(Pr(x < 2), apply(x_array < 2, c(2,3), mean), check.attributes = FALSE)
+  expect_error(Pr(x))
   expect_equal(E(x), apply(x_array, c(2,3), mean), check.attributes = FALSE)
+  # E() and Pr() should also work on base arrays
+  expect_equal(Pr(x_array < 2), mean(x_array < 2))
+  expect_error(Pr(x_array))
+  expect_equal(E(x_array), mean(x_array))
+
   expect_equal(mean(x), apply(x_array, c(2,3), mean), check.attributes = FALSE)
   expect_equal(median(x), apply(x_array, c(2,3), median), check.attributes = FALSE)
   expect_equal(variance(x), apply(x_array, c(2,3), var), check.attributes = FALSE)
@@ -106,6 +151,8 @@ test_that("summary functions work", {
   expect_equal(draws_of(is.infinite(x)), is.infinite(x_array), check.attributes = FALSE)
   expect_equal(draws_of(is.nan(x)), is.nan(x_array), check.attributes = FALSE)
 })
+
+# matrix stuff ------------------------------------------------------------
 
 test_that("matrix multiplication works", {
   x_array = array(1:24, dim = c(4,2,3))
