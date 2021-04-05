@@ -209,7 +209,13 @@ Ops.rvar <- function(e1, e2) {
 Math.rvar <- function(x, ...) {
   f <- get(.Generic)
 
-  new_rvar(f(draws_of(x), ...), .nchains = nchains(x))
+  if (.Generic %in% c("cumsum", "cumprod", "cummax", "cummin")) {
+    # cumulative functions need to be handled differently
+    # from other functions in this generic
+    new_rvar(t(apply(draws_of(x), 1, f)), .nchains = nchains(x))
+  } else {
+    new_rvar(f(draws_of(x), ...), .nchains = nchains(x))
+  }
 }
 
 
