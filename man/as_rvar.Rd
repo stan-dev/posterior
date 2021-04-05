@@ -36,6 +36,19 @@ the same dimensions as \code{x}. This is in contrast to the \code{\link[=rvar]{r
 treats the first dimension of \code{x} as the draws dimension. As a result, \code{as_rvar()}
 is useful for creating constants.
 }
+\examples{
+
+# You can use as_rvar() to create "constant" rvars (having only one draw):
+x <- as_rvar(1)
+x
+
+# Such constants can be of arbitrary shape:
+as_rvar(1:4)
+as_rvar(matrix(1:10, nrow = 5))
+as_rvar(array(1:12, dim = c(2, 3, 2)))
+
+}
 \seealso{
-\code{\link[=rvar]{rvar()}} to construct \code{\link{rvar}}s directly.
+\code{\link[=rvar]{rvar()}} to construct \code{\link{rvar}}s directly.  See \code{\link[=rdo]{rdo()}}, \code{\link[=rfun]{rfun()}}, and
+\code{\link[=rvar_rng]{rvar_rng()}} for higher-level interfaces for creating \code{rvar}s.
 }
