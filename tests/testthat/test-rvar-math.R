@@ -1,3 +1,5 @@
+# basic operators ---------------------------------------------------------
+
 test_that("math operators works", {
   x_array = array(1:24, dim = c(4,2,3), dimnames = list(NULL,letters[1:2],letters[3:5]))
   x = new_rvar(x_array)
@@ -80,6 +82,12 @@ test_that("comparison operators work", {
   expect_identical(x != y, new_rvar(x_array != y_array))
 })
 
+test_that("functions in the Math generic with extra arguments work", {
+  expect_equal(log(rvar(c(2,4,8)), base = 2), rvar(1:3))
+})
+
+# summary functions -------------------------------------------------------
+
 test_that("summary functions work", {
   x_array = array(1:24, dim = c(4,2,3))
   x = new_rvar(x_array)
@@ -106,6 +114,8 @@ test_that("summary functions work", {
   expect_equal(draws_of(is.infinite(x)), is.infinite(x_array), check.attributes = FALSE)
   expect_equal(draws_of(is.nan(x)), is.nan(x_array), check.attributes = FALSE)
 })
+
+# matrix stuff ------------------------------------------------------------
 
 test_that("matrix multiplication works", {
   x_array = array(1:24, dim = c(4,2,3))

@@ -209,7 +209,7 @@ Ops.rvar <- function(e1, e2) {
 Math.rvar <- function(x, ...) {
   f <- get(.Generic)
 
-  new_rvar(f(draws_of(x)), .nchains = nchains(x))
+  new_rvar(f(draws_of(x), ...), .nchains = nchains(x))
 }
 
 
