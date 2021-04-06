@@ -199,13 +199,13 @@ Here is a table of both types of summary functions:
 |                          | 1. Summarise *within* draws,<br>*over* elements | 2. Summarise *over* draws,<br>*within* elements<br> |
 |--------------------------|:------------------------------------------------|:----------------------------------------------------|
 | **Output format**<br>of `res = f(x)` | `rvar` of length 1 | `array` of same shape as input `rvar` |
-| **Help page**            | `help("rvar-summaries-by-draw")` | `help("rvar-summaries")` |
+| **Help page**            | `help("rvar-summaries-within-draws")` | `help("rvar-summaries-over-draws")` |
 | Numeric summaries        | `rvar_median()`<br>`rvar_sum()`, `rvar_prod()`<br>`rvar_min()`, `rvar_max()`| `median()`<br>`sum()`, `prod()`<br>`min()`, `max()`|
 | Mean                     | `rvar_mean()`<br>*N/A* | `mean()`, `E()`<br>`Pr()`: enforces that input is `logical` |
 | Spread                   | `rvar_sd()` <br>`rvar_var()` <br> `rvar_mad()` | `sd()`<br>`var()`, `variance()`<br> `mad()`|
 | Range                    | `rvar_range()`<br>**Note:** `length(res) = 2` | `range()`<br>**Note:** `dim(res) = c(dim(x), 2)` |
 | Logical summaries        | `rvar_all()`, `rvar_any()` | `all()`, `any()` |
-| Special value predicates | `rvar_is_finite()`<br>`rvar_is_infinite()`<br>`rvar_is_nan()`<br>`rvar_is_na()`<br>&nbsp;        | `is.finite()`<br>`is.infinite()`<br>`is.nan()`<br>`is.na()`<br>**Note:** `res[i] == TRUE` if `x[i]` has any draws matching predicate (except for `is.finite()`, where all draws must match) |
+| Special value predicates | `rvar_is_finite()`<br>`rvar_is_infinite()`<br>`rvar_is_nan()`<br>`rvar_is_na()`<br>**Note:** These functions act within draws but do not summarise over elements, and are listed here for reference.        | `is.finite()`<br>`is.infinite()`<br>`is.nan()`<br>`is.na()`<br>**Note:** `res[i] == TRUE` if `x[i]` has any draws matching predicate (except for `is.finite()`, where all draws must match) |
 | Diagnostics              | *N/A* | `ess_basic()`, `ess_bulk()`, `ess_quantile()`, `ess_sd()`, `ess_tail()`,<br>`mcse_mean()`, `mcse_quantile()`, `mcse_sd()`<br>`rhat()`, `rhat_basic()`|
 
 ## Constants
