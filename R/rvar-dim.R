@@ -42,6 +42,6 @@ names.rvar <- function(x) {
 
 #' @export
 `names<-.rvar` <- function(x, value) {
-  dimnames(draws_of(x))[[2]] <- value
+  dimnames(draws_of(x))[2] <- list(value)
   x
 }
