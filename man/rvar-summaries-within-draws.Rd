@@ -70,7 +70,8 @@ each draw of the input rvar(s).
 }
 \description{
 Compute summaries of random variables over array elements and within draws,
-producing a new random variable of length 1 (except in the case of \code{rvar_range()}).
+producing a new random variable of length 1 (except in the case of
+\code{rvar_range()}, see 'Details').
 }
 \details{
 These functions compute statistics within each draw of the random variable.

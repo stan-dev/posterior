@@ -35,18 +35,35 @@ Pr(x, ...)
 or \code{base::median()}), such as \code{na.rm}.}
 }
 \value{
-A numeric vector with the same dimensions as the given random variable, where
+A numeric or logical vector with the same dimensions as the given random variable, where
 each entry in the vector is the mean, median, or variance of the corresponding entry in \code{x}.
 }
 \description{
-Compute expectations (\code{E()} or \code{mean()}), probabilities (\code{Pr()}),
-medians (\code{median()}), and variances (\code{variance()}) from a random variable.
+Compute summaries within elements of an \code{\link{rvar}} and over draws of each element,
+producing an array of the same shape as the input random variable (except in
+the case of \code{range()}, see 'Details').
 }
 \details{
-Both \code{E()}, \code{mean()}, and \code{Pr()} take means over the draws dimension of the provided
-random variable. \code{Pr()} additionally checks that the provided \code{\link{rvar}}
+Summaries include expectations (\code{E()} or \code{mean()}), probabilities (\code{Pr()}),
+medians (\code{median()}), spread (\code{variance()}, \code{sd()}, \code{mad()}), sums and
+products (\code{sum()}, \code{prod()}), extrema and ranges (\code{min()}, \code{max()}, \code{range()}),
+logical summaries (\code{all()}, \code{any()}), and special value predicates (\code{is.finite()},
+\code{is.infinite()}, \code{is.nan()}, \code{is.na()}).
+
+Unless otherwise stated, these functions return a numeric array with the same shape
+(same dimensions) as the input \code{\link{rvar}}, \code{x}.
+
+\code{range(x)} return an array with dimensions \code{c(dim(x), 2)}, where the last
+dimension contains the minimum and maximum values.
+
+\code{is.infinite(x)}, \code{is.nan(x)}, and \code{is.na(x)} return logical arrays, where each
+element is \code{TRUE} if \strong{any} draws in its corresponding element in \code{x} match
+the predicate. Each elements in the result of \code{is.finite(x)} is \code{TRUE} if
+\strong{all} draws in the corresponding element in \code{x} are finite.
+
+Both \code{E()}, \code{mean()}, and \code{Pr()} return the means of each element in the input.
+\code{Pr()} additionally checks that the provided \code{\link{rvar}}
 is a logical variable (hence, taking its expectation results in a probability).
-\code{median()} takes medians, and \code{variance()} takes variances.
 
 For consistency, \code{E()} and \code{Pr()} are also defined for base arrays so that
 they can be used as summary functions in \code{summarise_draws()}.

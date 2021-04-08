@@ -22,6 +22,14 @@ each other, otherwise the resulting \code{\link{rvar}} cannot be simplified. See
 }
 \value{
 An \code{\link{rvar}}.
+
+If each call to \code{.f} returns an \code{\link{rvar}} of dimension \code{d}, then \code{rvar_apply()}
+returns an \code{\link{rvar}} of dimension \code{c(d, dim(.x)[.margin])} if \code{d != 1}.
+If \code{d} equals \code{1}, \code{rvar_apply()} returns an \code{\link{rvar}} of dimension \code{dim(.x)[.margin]}
+otherwise. If \code{d} is \code{0}, the result has length \code{0} but not necessarily the 'correct' dimension.
+
+The calls to \code{.f} must return \code{\link{rvar}}s of the same shape; otherwise \code{rvar_apply()}
+returns an error.
 }
 \description{
 Returns an \code{\link{rvar}} obtained by applying a function to margins of an array or \code{\link{rvar}}.
@@ -30,7 +38,9 @@ and the final result is always an \code{\link{rvar}}.
 }
 \details{
 This function acts much like \code{apply()}, except that the function passed to it (\code{.f})
-must return \code{\link{rvar}}s, and the result is simplified into an \code{\link{rvar}}.
+must return \code{\link{rvar}}s, and the result is simplified into an \code{\link{rvar}}. Unlike
+\code{apply()}, it also keeps the dimensions of the returned values along each margin,
+rather than simplifying each margin to a vector.
 
 If you wish to apply functions over \code{\link{rvar}}s where the result is not intended to
 be simplified into an \code{\link{rvar}}, you can use the standard \code{apply()}, \code{lapply()},
@@ -38,21 +48,14 @@ be simplified into an \code{\link{rvar}}, you can use the standard \code{apply()
 }
 \examples{
 
-# To create a "scalar" `rvar`, pass a one-dimensional array or a vector
-# whose length (here `4000`) is the desired number of draws:
-x <- rvar(rnorm(4000, mean = 1, sd = 1))
-x
+set.seed(3456)
+x <- rvar_rng(rnorm, 24, mean = 1:24)
+dim(x) <- c(2,3,4)
 
-# Create random vectors by adding an additional dimension:
-n <- 4   # length of output vector
-x <- rvar(array(rnorm(4000 * n, mean = rep(1:n, each = 4000), sd = 1), dim = c(4000, n)))
-x
-
-# Create a random matrix:
-rows <- 4
-cols <- 3
-x <- rvar(array(rnorm(4000 * rows * cols, mean = 1, sd = 1), dim = c(4000, rows, cols)))
-x
+# we can find the distributions of marginal means of the above array
+# using rvar_mean along with rvar_apply
+rvar_apply(x, 1, rvar_mean)
+rvar_apply(x, 2:3, rvar_mean)
 
 }
 \seealso{

@@ -2,13 +2,30 @@
 
 #' Summaries of random variables within array elements, over draws
 #'
-#' Compute expectations (`E()` or `mean()`), probabilities (`Pr()`),
-#' medians (`median()`), and variances (`variance()`) from a random variable.
+#' Compute summaries within elements of an [`rvar`] and over draws of each element,
+#' producing an array of the same shape as the input random variable (except in
+#' the case of `range()`, see 'Details').
 #'
-#' Both `E()`, `mean()`, and `Pr()` take means over the draws dimension of the provided
-#' random variable. `Pr()` additionally checks that the provided [`rvar`]
+#' Summaries include expectations (`E()` or `mean()`), probabilities (`Pr()`),
+#' medians (`median()`), spread (`variance()`, `sd()`, `mad()`), sums and
+#' products (`sum()`, `prod()`), extrema and ranges (`min()`, `max()`, `range()`),
+#' logical summaries (`all()`, `any()`), and special value predicates (`is.finite()`,
+#' `is.infinite()`, `is.nan()`, `is.na()`).
+#'
+#' Unless otherwise stated, these functions return a numeric array with the same shape
+#' (same dimensions) as the input [`rvar`], `x`.
+#'
+#' `range(x)` return an array with dimensions `c(dim(x), 2)`, where the last
+#' dimension contains the minimum and maximum values.
+#'
+#' `is.infinite(x)`, `is.nan(x)`, and `is.na(x)` return logical arrays, where each
+#' element is `TRUE` if **any** draws in its corresponding element in `x` match
+#' the predicate. Each elements in the result of `is.finite(x)` is `TRUE` if
+#' **all** draws in the corresponding element in `x` are finite.
+#'
+#' Both `E()`, `mean()`, and `Pr()` return the means of each element in the input.
+#' `Pr()` additionally checks that the provided [`rvar`]
 #' is a logical variable (hence, taking its expectation results in a probability).
-#' `median()` takes medians, and `variance()` takes variances.
 #'
 #' For consistency, `E()` and `Pr()` are also defined for base arrays so that
 #' they can be used as summary functions in `summarise_draws()`.
@@ -18,7 +35,7 @@
 #' or `base::median()`), such as `na.rm`.
 #'
 #' @return
-#' A numeric vector with the same dimensions as the given random variable, where
+#' A numeric or logical vector with the same dimensions as the given random variable, where
 #' each entry in the vector is the mean, median, or variance of the corresponding entry in `x`.
 #'
 #' @examples
@@ -76,6 +93,9 @@ Pr.rvar <- function(x, ...) {
   mean(x, ...)
 }
 
+
+# numeric summaries -------------------------------------------------------
+
 #' @rdname rvar-summaries-over-draws
 #' @export
 median.rvar <- function(x, ...) {
@@ -91,9 +111,6 @@ distributional::variance
 variance.rvar <- function(x, ...) {
   summarise_rvar_by_element(x, var, ...)
 }
-
-
-
 
 
 # stuff to be converted ---------------------------------------------------------------

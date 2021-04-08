@@ -3,7 +3,8 @@
 #' Summaries of random variables over array elements, within draws
 #'
 #' Compute summaries of random variables over array elements and within draws,
-#' producing a new random variable of length 1 (except in the case of `rvar_range()`).
+#' producing a new random variable of length 1 (except in the case of
+#' `rvar_range()`, see 'Details').
 #'
 #' @param ... [`rvar`]s
 #' @template args-rvar-summaries-na.rm
