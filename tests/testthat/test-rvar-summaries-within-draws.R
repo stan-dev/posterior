@@ -11,6 +11,12 @@ test_that("numeric summary functions work", {
   expect_equal(draws_of(rvar_min(x)), apply(x_array, 1, min), check.attributes = FALSE)
   expect_equal(draws_of(rvar_max(x)), apply(x_array, 1, max), check.attributes = FALSE)
 
+  # default values on empty input
+  expect_equal(rvar_sum(), as_rvar(0))
+  expect_equal(rvar_prod(), as_rvar(1))
+  expect_warning(expect_equal(rvar_min(), as_rvar(Inf)))
+  expect_warning(expect_equal(rvar_max(), as_rvar(-Inf)))
+
   # test argument passing
   x[1,2] <- NA
   expect_equal(
@@ -49,6 +55,9 @@ test_that("rvar_range works", {
   x <- new_rvar(x_array)
 
   expect_equal(draws_of(rvar_range(x)), t(apply(x_array, 1, range)), check.attributes = FALSE)
+
+  # default values on empty input
+  expect_warning(expect_equal(rvar_range(), as_rvar(c(Inf, -Inf))))
 })
 
 
@@ -60,6 +69,10 @@ test_that("logical summaries work", {
 
   expect_equal(draws_of(rvar_all(x > 6)), as.matrix(apply(x_array > 6, 1, all)), check.attributes = FALSE)
   expect_equal(draws_of(rvar_any(x > 6)), as.matrix(apply(x_array > 6, 1, any)), check.attributes = FALSE)
+
+  # default values on empty input
+  expect_equal(rvar_all(), as_rvar(TRUE))
+  expect_equal(rvar_any(), as_rvar(FALSE))
 })
 
 
