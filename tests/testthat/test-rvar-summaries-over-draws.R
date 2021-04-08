@@ -26,3 +26,12 @@ test_that("summary functions work", {
   expect_equal(anyNA(x_with_na), TRUE)
   expect_equal(is.na(x_with_na), array(c(FALSE, TRUE, FALSE, FALSE, FALSE, FALSE), dim = c(2,3)), check.attributes = FALSE)
 })
+
+
+# is.na -------------------------------------------------------------------
+
+test_that("is.na works", {
+  x = c(rvar(NA), 1)
+  expect_equal(is.na(x), c(TRUE, FALSE))
+})
+
