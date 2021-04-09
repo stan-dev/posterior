@@ -399,12 +399,6 @@ compatibility with the base R family of functions for applying functions over ar
 `as.list()` to convert an `rvar` into a list along its first dimension, which
 may be necessary for compatibility with some functions (like `purrr:map()`).
 
-One exception is that while `apply()` will work with an `rvar` input if your function
-returns base data types (like numerics), it will not give you simplified `rvar`
-arrays if your function returns an `rvar`. Thus, we supply the `rvar_apply()`
-function, which takes in either base arrays or `rvar` arrays and returns `rvar`
-arrays.
-
 For example, given this multidimensional `rvar`...
 
 ```{r multidim_array}
@@ -414,8 +408,21 @@ dim(x) <- c(2,3,4)
 x
 ```
 
-...you can use `rvar_apply()` with `rvar_mean()` to compute the distributions of
-means along one margin of the array:
+... you can apply functions along the margins using `apply()` (here, a silly example):
+
+```{r apply}
+apply(x, c(1,2), length)
+```
+
+One exception is that while `apply()` will work with an `rvar` input if your function
+returns base data types (like numerics), it will not give you simplified `rvar`
+arrays if your function returns an `rvar`. Thus, we supply the `rvar_apply()`
+function, which takes in either base arrays or `rvar` arrays and returns `rvar`
+arrays, and which also uses the `rvar` broadcasting rules to combine the
+results of the applied function.
+
+For example, you can use `rvar_apply()` with `rvar_mean()` to compute the distributions of
+means along one margin of an array:
 
 ```{r rvar_apply_one_dim}
 rvar_apply(x, 1, rvar_mean)
@@ -424,7 +431,7 @@ rvar_apply(x, 1, rvar_mean)
 Or along multiple dimensions:
 
 ```{r rvar_apply_multi_dim}
-rvar_apply(x, 2:3, rvar_mean)
+rvar_apply(x, c(2,3), rvar_mean)
 ```
 
 

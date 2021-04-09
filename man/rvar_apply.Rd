@@ -15,21 +15,20 @@ and columns. If \code{.x} has named dimensions, this can be a character vector s
 dimension names.}
 
 \item{.f}{the function to be applied. This must be a function that returns an \code{\link{rvar}}.
-The dimensions of the result of \code{.f} applied to each margin of \code{.x} must be the same as
-each other, otherwise the resulting \code{\link{rvar}} cannot be simplified. See 'Details'.}
+The dimensions of the result of \code{.f} applied to each margin of \code{.x} must be able to be
+broadasted to a common shape, otherwise the resulting \code{\link{rvar}} cannot be simplified.
+See 'Details'.}
 
 \item{...}{optional arguments to \code{.f}.}
 }
 \value{
 An \code{\link{rvar}}.
 
-If each call to \code{.f} returns an \code{\link{rvar}} of dimension \code{d}, then \code{rvar_apply()}
-returns an \code{\link{rvar}} of dimension \code{c(d, dim(.x)[.margin])} if \code{d != 1}.
-If \code{d} equals \code{1}, \code{rvar_apply()} returns an \code{\link{rvar}} of dimension \code{dim(.x)[.margin]}
-otherwise. If \code{d} is \code{0}, the result has length \code{0} but not necessarily the 'correct' dimension.
-
-The calls to \code{.f} must return \code{\link{rvar}}s of the same shape; otherwise \code{rvar_apply()}
-returns an error.
+If the result of each call to \code{.f} returns an \code{\link{rvar}} of dimension \code{d} after
+being broadcast to a common shape, then \code{rvar_apply()} returns an \code{\link{rvar}} of
+dimension \code{c(d, dim(.x)[.margin])}. If the last dimension of the result would
+be \code{1}, it is dropped (other dimensions equal to \code{1} are retained). If \code{d} is
+\code{0}, the result has length \code{0} but not necessarily the 'correct' dimension.
 }
 \description{
 Returns an \code{\link{rvar}} obtained by applying a function to margins of an array or \code{\link{rvar}}.
@@ -40,7 +39,9 @@ and the final result is always an \code{\link{rvar}}.
 This function acts much like \code{apply()}, except that the function passed to it (\code{.f})
 must return \code{\link{rvar}}s, and the result is simplified into an \code{\link{rvar}}. Unlike
 \code{apply()}, it also keeps the dimensions of the returned values along each margin,
-rather than simplifying each margin to a vector.
+rather than simplifying each margin to a vector, and if the results of \code{.f} do
+not all have the same dimensions, it applies the \code{\link{rvar}} broadcasting rules to
+bind results together rather than using vector recycling.
 
 If you wish to apply functions over \code{\link{rvar}}s where the result is not intended to
 be simplified into an \code{\link{rvar}}, you can use the standard \code{apply()}, \code{lapply()},
