@@ -26,6 +26,10 @@ test_that("rvar_apply works", {
   expect_equal(rvar_apply(x, c(1,2), rvar_mean), rvar(apply(draws_of(x), c(1,2,3), mean)))
   expect_equal(rvar_apply(x, c(1,3), rvar_mean), rvar(apply(draws_of(x), c(1,2,4), mean)))
 
+  expect_error(rvar_apply(x, c(1,3), function(x) 0))
+
+  expect_equal(length(rvar_apply(x, c(1,3), function(x) rvar())), 0)
+
   # test that if the cell values are multidimensional everything is bound back
   # together properly (though with dimnames dropped)
   x1 <- x + 1
