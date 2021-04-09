@@ -9,7 +9,16 @@
 \alias{Pr.logical}
 \alias{Pr.rvar}
 \alias{median.rvar}
+\alias{Summary.rvar}
 \alias{variance.rvar}
+\alias{var.rvar}
+\alias{sd.rvar}
+\alias{mad.rvar}
+\alias{range.rvar}
+\alias{is.finite.rvar}
+\alias{is.infinite.rvar}
+\alias{is.nan.rvar}
+\alias{is.na.rvar}
 \title{Summaries of random variables within array elements, over draws}
 \usage{
 E(x, ...)
@@ -26,7 +35,25 @@ Pr(x, ...)
 
 \method{median}{rvar}(x, ...)
 
+\method{Summary}{rvar}(...)
+
 \method{variance}{rvar}(x, ...)
+
+\method{var}{rvar}(x, ...)
+
+\method{sd}{rvar}(x, ...)
+
+\method{mad}{rvar}(x, ...)
+
+\method{range}{rvar}(...)
+
+\method{is.finite}{rvar}(x)
+
+\method{is.infinite}{rvar}(x)
+
+\method{is.nan}{rvar}(x)
+
+\method{is.na}{rvar}(x)
 }
 \arguments{
 \item{x}{an \code{\link{rvar}}}
@@ -53,7 +80,7 @@ logical summaries (\code{all()}, \code{any()}), and special value predicates (\c
 Unless otherwise stated, these functions return a numeric array with the same shape
 (same dimensions) as the input \code{\link{rvar}}, \code{x}.
 
-\code{range(x)} return an array with dimensions \code{c(dim(x), 2)}, where the last
+\code{range(x)} returns an array with dimensions \code{c(2, dim(x))}, where the last
 dimension contains the minimum and maximum values.
 
 \code{is.infinite(x)}, \code{is.nan(x)}, and \code{is.na(x)} return logical arrays, where each
@@ -89,7 +116,7 @@ pnorm(1.5, mean = 1:4, sd = 2)
 \link{rvar-functions} for density, CDF, and quantile functions of random variables.
 
 Other rvar-summaries: 
-\code{\link{Summary.rvar}()},
+\code{\link{rvar-summaries-within-draws}},
 \code{\link{rvar_is_finite}()}
 }
 \concept{rvar-summaries}

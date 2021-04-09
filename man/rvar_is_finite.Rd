@@ -47,7 +47,7 @@ implementations of \code{is.finite()}, \code{is.infinite()}, \code{is.nan()}, an
 \code{rvar}s.
 
 Other rvar-summaries: 
-\code{\link{Summary.rvar}()},
-\code{\link{rvar-summaries-over-draws}}
+\code{\link{rvar-summaries-over-draws}},
+\code{\link{rvar-summaries-within-draws}}
 }
 \concept{rvar-summaries}
