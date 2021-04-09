@@ -11,8 +11,14 @@
 \alias{median.rvar}
 \alias{Summary.rvar}
 \alias{variance.rvar}
+\alias{var}
+\alias{var.default}
 \alias{var.rvar}
+\alias{sd}
+\alias{sd.default}
 \alias{sd.rvar}
+\alias{mad}
+\alias{mad.default}
 \alias{mad.rvar}
 \alias{range.rvar}
 \alias{is.finite.rvar}
@@ -39,9 +45,21 @@ Pr(x, ...)
 
 \method{variance}{rvar}(x, ...)
 
+var(x, ...)
+
+\method{var}{default}(x, ...)
+
 \method{var}{rvar}(x, ...)
 
+sd(x, ...)
+
+\method{sd}{default}(x, ...)
+
 \method{sd}{rvar}(x, ...)
+
+mad(x, ...)
+
+\method{mad}{default}(x, ...)
 
 \method{mad}{rvar}(x, ...)
 
@@ -98,7 +116,7 @@ they can be used as summary functions in \code{summarise_draws()}.
 \examples{
 
 set.seed(5678)
-x = rdo(rnorm(4, mean = 1:4, sd = 2))
+x = rvar_rng(rnorm, 4, mean = 1:4, sd = 2)
 
 # These should all be ~= c(1, 2, 3, 4)
 E(x)

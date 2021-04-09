@@ -43,7 +43,7 @@
 #' @examples
 #'
 #' set.seed(5678)
-#' x = rdo(rnorm(4, mean = 1:4, sd = 2))
+#' x = rvar_rng(rnorm, 4, mean = 1:4, sd = 2)
 #'
 #' # These should all be ~= c(1, 2, 3, 4)
 #' E(x)
@@ -121,16 +121,20 @@ variance.rvar <- function(x, ...) {
   summarise_rvar_by_element(x, function(x, ...) var(as.vector(x), ...), ...)
 }
 
+#' @rdname rvar-summaries-over-draws
 #' @export
 var <- function(x, ...) UseMethod("var")
+#' @rdname rvar-summaries-over-draws
 #' @export
 var.default <- function(x, ...) stats::var(x, ...)
 #' @rdname rvar-summaries-over-draws
 #' @export
 var.rvar <- variance.rvar
 
+#' @rdname rvar-summaries-over-draws
 #' @export
 sd <- function(x, ...) UseMethod("sd")
+#' @rdname rvar-summaries-over-draws
 #' @export
 sd.default <- function(x, ...) stats::sd(x, ...)
 #' @rdname rvar-summaries-over-draws
@@ -139,8 +143,10 @@ sd.rvar <- function(x, ...) {
   summarise_rvar_by_element(x, sd, ...)
 }
 
+#' @rdname rvar-summaries-over-draws
 #' @export
 mad <- function(x, ...) UseMethod("mad")
+#' @rdname rvar-summaries-over-draws
 #' @export
 mad.default <- function(x, ...) stats::mad(x, ...)
 #' @rdname rvar-summaries-over-draws
