@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Merge chains of <code>draws</code> objects — merge_chains • posterior</title>
+<title>Merge chains of draws objects — merge_chains • posterior</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Merge chains of <code>draws</code> objects — merge_chains" />
+<meta property="og:title" content="Merge chains of draws objects — merge_chains" />
 <meta property="og:description" content="Merge chains of draws objects into a single chain." />
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -130,19 +130,19 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fa fa-twitter"></span>
+    <span class="fas fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fa fa-users"></span>
+    <span class="fas fa-users"></span>
      
   </a>
 </li>
@@ -168,19 +168,25 @@
     <p>Merge chains of <code><a href='draws.html'>draws</a></code> objects into a single chain.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>merge_chains</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>merge_chains</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_matrix</span>
-<span class='fu'>merge_chains</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>merge_chains</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_array</span>
-<span class='fu'>merge_chains</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>merge_chains</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_df</span>
-<span class='fu'>merge_chains</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>merge_chains</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_list</span>
-<span class='fu'>merge_chains</span>(<span class='no'>x</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>merge_chains</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for rvar</span>
+<span class='fu'>merge_chains</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for draws_rvars</span>
+<span class='fu'>merge_chains</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -200,13 +206,15 @@
     <p>A <code>draws</code> object of the same class as <code>x</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='example_draws.html'>example_draws</a></span>()
-<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>x</span>)</div><div class='output co'>#&gt;  'draws_array' num [1:100, 1:4, 1:10] 2.01 1.46 5.81 6.85 1.81 ...
+    <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  'draws_array' num [1:100, 1:4, 1:10] 2.01 1.46 5.81 6.85 1.81 ...
 #&gt;  - attr(*, "dimnames")=List of 3
 #&gt;   ..$ iteration: chr [1:100] "1" "2" "3" "4" ...
 #&gt;   ..$ chain    : chr [1:4] "1" "2" "3" "4"
 #&gt;   ..$ variable : chr [1:10] "mu" "tau" "theta[1]" "theta[2]" ...</div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='fu'>merge_chains</span>(<span class='no'>x</span>))</div><div class='output co'>#&gt;  'draws_array' num [1:400, 1, 1:10] 2.01 1.46 5.81 6.85 1.81 ...
+<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='fu'>merge_chains</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  'draws_array' num [1:400, 1, 1:10] 2.01 1.46 5.81 6.85 1.81 ...
 #&gt;  - attr(*, "dimnames")=List of 3
 #&gt;   ..$ iteration: chr [1:400] "1" "2" "3" "4" ...
 #&gt;   ..$ chain    : chr "1"
@@ -227,7 +235,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

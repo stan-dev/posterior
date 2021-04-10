@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>The <code>draws_df</code> format — draws_df • posterior</title>
+<title>The draws_df format — draws_df • posterior</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="The <code>draws_df</code> format — draws_df" />
+<meta property="og:title" content="The draws_df format — draws_df" />
 <meta property="og:description" content="The as_draws_df() methods convert
 objects to the draws_df format.
 The draws_df() function creates an object of the
@@ -76,7 +76,7 @@ See Details." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@ See Details." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -134,19 +134,19 @@ See Details." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fa fa-twitter"></span>
+    <span class="fas fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fa fa-users"></span>
+    <span class="fas fa-users"></span>
      
   </a>
 </li>
@@ -176,35 +176,38 @@ The <code>draws_df()</code> function creates an object of the
 See <strong>Details</strong>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>as_draws_df</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
-<span class='fu'>as_draws_df</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>as_draws_df</span>(<span class='no'>x</span>, <span class='kw'>.iteration</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>.chain</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>)
+<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, .iteration <span class='op'>=</span> <span class='cn'>NULL</span>, .chain <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_df</span>
-<span class='fu'>as_draws_df</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_matrix</span>
-<span class='fu'>as_draws_df</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_array</span>
-<span class='fu'>as_draws_df</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_list</span>
-<span class='fu'>as_draws_df</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for draws_rvars</span>
+<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for mcmc</span>
-<span class='fu'>as_draws_df</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for mcmc.list</span>
-<span class='fu'>as_draws_df</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>draws_df</span>(<span class='no'>...</span>, <span class='kw'>.nchains</span> <span class='kw'>=</span> <span class='fl'>1</span>)
+<span class='fu'>draws_df</span><span class='op'>(</span><span class='va'>...</span>, .nchains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 
-<span class='fu'>is_draws_df</span>(<span class='no'>x</span>)</pre>
+<span class='fu'>is_draws_df</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -258,11 +261,14 @@ unique values. See <strong>Examples</strong>.</p>
 <code><a href='draws_array.html'>draws_array</a>()</code>,
 <code><a href='draws_list.html'>draws_list</a>()</code>,
 <code><a href='draws_matrix.html'>draws_matrix</a>()</code>,
+<code><a href='draws_rvars.html'>draws_rvars</a>()</code>,
 <code><a href='draws.html'>draws</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x1</span> <span class='kw'>&lt;-</span> <span class='fu'>as_draws_df</span>(<span class='fu'><a href='example_draws.html'>example_draws</a></span>())
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>x1</span>)</div><div class='output co'>#&gt; [1] "draws_df"   "draws"      "tbl_df"     "tbl"        "data.frame"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x1</span>)</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 10 variables
+    <pre class="examples"><div class='input'><span class='va'>x1</span> <span class='op'>&lt;-</span> <span class='fu'>as_draws_df</span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>x1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "draws_df"   "draws"      "tbl_df"     "tbl"        "data.frame"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 10 variables
 #&gt;      mu tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6]
 #&gt; 1  2.01 2.8     3.96    0.271    -0.74      2.1    0.923      1.7
 #&gt; 2  1.46 7.0     0.12   -0.069     0.95      7.3   -0.062     11.3
@@ -275,7 +281,8 @@ unique values. See <strong>Examples</strong>.</p>
 #&gt; 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1
 #&gt; 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5
 #&gt; # ... with 390 more draws, and 2 more variables
-#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>x1</span>)</div><div class='output co'>#&gt; tibble [400 × 13] (S3: draws_df/draws/tbl_df/tbl/data.frame)
+#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>x1</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; draws_df[,13] [400 × 13] (S3: draws_df/draws/tbl_df/tbl/data.frame)
 #&gt;  $ mu        : num [1:400] 2.01 1.46 5.81 6.85 1.81 ...
 #&gt;  $ tau       : num [1:400] 2.77 6.98 9.68 4.79 2.85 ...
 #&gt;  $ theta[1]  : num [1:400] 3.962 0.124 21.251 14.7 5.96 ...
@@ -289,8 +296,10 @@ unique values. See <strong>Examples</strong>.</p>
 #&gt;  $ .chain    : int [1:400] 1 1 1 1 1 1 1 1 1 1 ...
 #&gt;  $ .iteration: int [1:400] 1 2 3 4 5 6 7 8 9 10 ...
 #&gt;  $ .draw     : int [1:400] 1 2 3 4 5 6 7 8 9 10 ...</div><div class='input'>
-<span class='no'>x2</span> <span class='kw'>&lt;-</span> <span class='fu'>draws_df</span>(<span class='kw'>a</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>), <span class='kw'>b</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span>(<span class='fl'>10</span>), <span class='kw'>c</span> <span class='kw'>=</span> <span class='fl'>1</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span>(<span class='no'>x2</span>)</div><div class='output co'>#&gt; [1] "draws_df"   "draws"      "tbl_df"     "tbl"        "data.frame"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='no'>x2</span>)</div><div class='output co'>#&gt; # A draws_df: 10 iterations, 1 chains, and 3 variables
+<span class='va'>x2</span> <span class='op'>&lt;-</span> <span class='fu'>draws_df</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>, b <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>, c <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>x2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] "draws_df"   "draws"      "tbl_df"     "tbl"        "data.frame"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; # A draws_df: 10 iterations, 1 chains, and 3 variables
 #&gt;         a     b c
 #&gt; 1   0.862  1.07 1
 #&gt; 2  -0.243 -0.67 1
@@ -302,7 +311,8 @@ unique values. See <strong>Examples</strong>.</p>
 #&gt; 8   2.683  0.13 1
 #&gt; 9  -0.361  0.49 1
 #&gt; 10  0.213 -1.70 1
-#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span>(<span class='no'>x2</span>)</div><div class='output co'>#&gt; tibble [10 × 6] (S3: draws_df/draws/tbl_df/tbl/data.frame)
+#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>x2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; draws_df[,6] [10 × 6] (S3: draws_df/draws/tbl_df/tbl/data.frame)
 #&gt;  $ a         : num [1:10] 0.8621 -0.2432 -0.2061 0.0192 0.0296 ...
 #&gt;  $ b         : num [1:10] 1.074 -0.665 1.114 -0.246 -1.178 ...
 #&gt;  $ c         : num [1:10] 1 1 1 1 1 1 1 1 1 1
@@ -311,7 +321,8 @@ unique values. See <strong>Examples</strong>.</p>
 #&gt;  $ .draw     : int [1:10] 1 2 3 4 5 6 7 8 9 10</div><div class='input'>
 <span class='co'># the difference between iteration and draw is clearer when contrasting</span>
 <span class='co'># the head and tail of the data frame</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span>(<span class='no'>x1</span>), <span class='kw'>reserved</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; # A draws_df: 6 iterations, 1 chains, and 10 variables
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>x1</span><span class='op'>)</span>, reserved <span class='op'>=</span> <span class='cn'>TRUE</span>, max_variables <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; # A draws_df: 6 iterations, 1 chains, and 10 variables
 #&gt;    mu tau .chain .iteration .draw
 #&gt; 1 2.0 2.8      1          1     1
 #&gt; 2 1.5 7.0      1          2     2
@@ -319,7 +330,8 @@ unique values. See <strong>Examples</strong>.</p>
 #&gt; 4 6.8 4.8      1          4     4
 #&gt; 5 1.8 2.8      1          5     5
 #&gt; 6 3.8 4.1      1          6     6
-#&gt; # ... with 8 more variables</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span>(<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span>(<span class='no'>x1</span>), <span class='kw'>reserved</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>max_variables</span> <span class='kw'>=</span> <span class='fl'>2</span>)</div><div class='output co'>#&gt; # A draws_df: 6 iterations, 1 chains, and 10 variables
+#&gt; # ... with 8 more variables</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>tail</a></span><span class='op'>(</span><span class='va'>x1</span><span class='op'>)</span>, reserved <span class='op'>=</span> <span class='cn'>TRUE</span>, max_variables <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; # A draws_df: 6 iterations, 1 chains, and 10 variables
 #&gt;   mu tau .chain .iteration .draw
 #&gt; 1 NA  NA     NA          1     1
 #&gt; 2 NA  NA     NA          2     2
@@ -344,7 +356,7 @@ unique values. See <strong>Examples</strong>.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -75,7 +75,7 @@ rhat()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ rhat()." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -133,19 +133,19 @@ rhat()." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fa fa-twitter"></span>
+    <span class="fas fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fa fa-users"></span>
+    <span class="fas fa-users"></span>
      
   </a>
 </li>
@@ -174,7 +174,7 @@ recommend the improved Rhat convergence diagnostic implemented in
 <code><a href='rhat.html'>rhat()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rhat_basic</span>(<span class='no'>x</span>, <span class='kw'>split</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>rhat_basic</span><span class='op'>(</span><span class='va'>x</span>, split <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -219,8 +219,9 @@ Hall/CRC.</p>
 <code><a href='rhat.html'>rhat</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>mu</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='extract_variable_matrix.html'>extract_variable_matrix</a></span>(<span class='fu'><a href='example_draws.html'>example_draws</a></span>(), <span class='st'>"mu"</span>)
-<span class='fu'>rhat_basic</span>(<span class='no'>mu</span>)</div><div class='output co'>#&gt; [1] 0.9979106</div><div class='input'>
+    <pre class="examples"><div class='input'><span class='va'>mu</span> <span class='op'>&lt;-</span> <span class='fu'><a href='extract_variable.draws_rvars.html'>extract_variable_matrix</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"mu"</span><span class='op'>)</span>
+<span class='fu'>rhat_basic</span><span class='op'>(</span><span class='va'>mu</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.9979106</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -237,7 +238,7 @@ Hall/CRC.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

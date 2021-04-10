@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bind <code>draws</code> objects together — bind_draws • posterior</title>
+<title>Bind draws objects together — bind_draws • posterior</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Bind <code>draws</code> objects together — bind_draws" />
+<meta property="og:title" content="Bind draws objects together — bind_draws" />
 <meta property="og:description" content="Bind multiple draws objects together to form a single
 draws object." />
 
@@ -73,7 +73,7 @@ draws object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@ draws object." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -131,19 +131,19 @@ draws object." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fa fa-twitter"></span>
+    <span class="fas fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fa fa-users"></span>
+    <span class="fas fa-users"></span>
      
   </a>
 </li>
@@ -170,19 +170,22 @@ draws object." />
 <code>draws</code> object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>bind_draws</span>(<span class='no'>x</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>bind_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_matrix</span>
-<span class='fu'>bind_draws</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>along</span> <span class='kw'>=</span> <span class='st'>"variable"</span>)
+<span class='fu'>bind_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, along <span class='op'>=</span> <span class='st'>"variable"</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_array</span>
-<span class='fu'>bind_draws</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>along</span> <span class='kw'>=</span> <span class='st'>"variable"</span>)
+<span class='fu'>bind_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, along <span class='op'>=</span> <span class='st'>"variable"</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_df</span>
-<span class='fu'>bind_draws</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>along</span> <span class='kw'>=</span> <span class='st'>"variable"</span>)
+<span class='fu'>bind_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, along <span class='op'>=</span> <span class='st'>"variable"</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_list</span>
-<span class='fu'>bind_draws</span>(<span class='no'>x</span>, <span class='no'>...</span>, <span class='kw'>along</span> <span class='kw'>=</span> <span class='st'>"variable"</span>)</pre>
+<span class='fu'>bind_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, along <span class='op'>=</span> <span class='st'>"variable"</span><span class='op'>)</span>
+
+<span class='co'># S3 method for draws_rvars</span>
+<span class='fu'>bind_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, along <span class='op'>=</span> <span class='st'>"variable"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -223,7 +226,7 @@ Possible values are <code>variable</code> (the default), <code>chain</code>, <co
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -86,7 +86,7 @@ diagnostics.
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -94,7 +94,7 @@ diagnostics.
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -144,19 +144,19 @@ diagnostics.
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fa fa-twitter"></span>
+    <span class="fas fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fa fa-users"></span>
+    <span class="fas fa-users"></span>
      
   </a>
 </li>
@@ -203,13 +203,26 @@ diagnostics.</p></li>
     
 
 
-<p>The following options are used to format and print <a href='draws.html'>draws</a> objects,
+<p>The following options are used to format and print <code><a href='draws.html'>draws</a></code> objects,
 as in <code><a href='print.draws_array.html'>print.draws_array()</a></code>, <code><a href='print.draws_df.html'>print.draws_df()</a></code>, <code><a href='print.draws_list.html'>print.draws_list()</a></code>,
-and <code><a href='print.draws_matrix.html'>print.draws_matrix()</a></code>:</p><ul>
+<code><a href='print.draws_matrix.html'>print.draws_matrix()</a></code>, and <code><a href='print.draws_rvars.html'>print.draws_rvars()</a></code>:</p><ul>
 <li><p><code>posterior.max_draws</code>: Maximum number of draws to print.</p></li>
 <li><p><code>posterior.max_iterations</code>: Maximum number of iterations to print.</p></li>
 <li><p><code>posterior.max_chains</code>: Maximum number of chains to print.</p></li>
 <li><p><code>posterior.max_variables</code>: Maximum number of variables to print.</p></li>
+</ul>
+
+<p>The following option is used to format and print <code><a href='rvar.html'>rvar</a></code> objects,
+as in <code><a href='print.rvar.html'>print.rvar()</a></code> and <code><a href='print.draws_rvars.html'>print.draws_rvars()</a></code>:</p><ul>
+<li><p><code>posterior.rvar_summary</code>: What style of summary to display:
+<code>"mean_sd"</code> displays <code>mean±sd</code>, <code>"median_mad"</code> displays <code>median±mad</code>.</p></li>
+</ul>
+
+<p>The following option is used to construct new <code><a href='rvar.html'>rvar</a></code> objects,
+as in <code><a href='rfun.html'>rfun()</a></code> and <code><a href='rdo.html'>rdo()</a></code>:</p><ul>
+<li><p><code>posterior.rvar_ndraws</code>: The number of draws used to construct
+new random variables when this number cannot be determined
+from existing arguments (e.g., other <code><a href='rvar.html'>rvar</a></code>s passed to a function).</p></li>
 </ul>
 
 
@@ -228,7 +241,7 @@ and <code><a href='print.draws_matrix.html'>print.draws_matrix()</a></code>:</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
