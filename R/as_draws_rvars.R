@@ -69,7 +69,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
       # first, pull out the list of indices into a data frame
       # where each column is an index variable
       indices <- sapply(vars_indices[var_i], `[[`, 2)
-      indices <- as.data.frame(do_call(rbind, strsplit(indices, ",")),
+      indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")),
                                stringsAsFactors = FALSE)
       unique_indices <- vector("list", length(indices))
       .dimnames <- vector("list", length(indices))
@@ -117,7 +117,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
                        all.x = TRUE, sort = FALSE)
       # need to do the sort manually after merge because when sort = TRUE, merge
       # sorts factors as if they were strings, and we need factors to be sorted as factors
-      indices <- indices[do_call(order, as.list(indices[, -ncol(indices), drop = FALSE])),]
+      indices <- indices[do.call(order, as.list(indices[, -ncol(indices), drop = FALSE])),]
 
       # re-sort the array and fill in missing cells with NA
       var_matrix <- var_matrix[, indices$index, drop = FALSE]

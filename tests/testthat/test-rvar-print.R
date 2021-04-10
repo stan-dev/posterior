@@ -61,7 +61,7 @@ test_that("vec_ptype_abbr and vec_ptype_full work", {
   x <- rvar(array(1:24, dim = c(2,3,4)))
   x_with_chains <- rvar(array(1:24, dim = c(2,3,4)), nchains = 2)
 
-  expect_equal(vec_ptype_abbr(x), "rvar")
+  expect_equal(vec_ptype_abbr(x, suffix_shape = FALSE), "rvar")
   expect_equal(vec_ptype_full(rvar(1:3)), "rvar<3>")
   expect_equal(vec_ptype_full(x), "rvar<2>[,4]")
   expect_equal(vec_ptype_full(x_with_chains), "rvar<1,2>[,4]")

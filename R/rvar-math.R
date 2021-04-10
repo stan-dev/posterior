@@ -5,16 +5,17 @@
 #' Compute expectations (`E()` or `mean()`), probabilities (`Pr()`),
 #' medians (`median()`), and variances (`variance()`) from a random variable.
 #'
-#' @param x an [`rvar`]
-#' @param na.rm Should `NA` values in the random variable be removed before
-#' computing summaries?
-#' @param ... further arguments passed to underlying functions (e.g., `base::mean()`
-#' or `base::median()`).
-#'
 #' Both `E()`, `mean()`, and `Pr()` take means over the draws dimension of the provided
 #' random variable. `Pr()` additionally checks that the provided [`rvar`]
 #' is a logical variable (hence, taking its expectation results in a probability).
 #' `median()` takes medians, and `variance()` takes variances.
+#'
+#' For consistency, `E()` and `Pr()` are also defined for base arrays so that
+#' they can be used as summary functions in `summarise_draws()`.
+#'
+#' @param x an [`rvar`]
+#' @param ... further arguments passed to underlying functions (e.g., `base::mean()`
+#' or `base::median()`), such as `na.rm`.
 #'
 #' @return
 #' A numeric vector with the same dimensions as the given random variable, where
@@ -39,8 +40,8 @@
 #' @seealso [rvar-summaries-by-draw] for summary functions within draws.
 #' [rvar-functions] for density, CDF, and quantile functions of random variables.
 #' @export
-E <- function(x, na.rm = FALSE) {
-  summarise_rvar_by_element(x, mean, na.rm = na.rm)
+E <- function(x, ...) {
+  mean(x, ...)
 }
 
 #' @rdname rvar-summaries
@@ -51,11 +52,27 @@ mean.rvar <- function(x, ...) {
 
 #' @rdname rvar-summaries
 #' @export
-Pr <- function(x, na.rm = FALSE) {
-  if (!all(is.logical(draws_of(x)))) {
-    stop2("Can only use `Pr(...)` on logical random variables.")
+Pr <- function(x, ...) UseMethod("Pr")
+
+#' @rdname rvar-summaries
+#' @export
+Pr.default <- function(x, ...) {
+  stop2("Can only use `Pr()` on logical variables.")
+}
+
+#' @rdname rvar-summaries
+#' @export
+Pr.logical <- function(x, ...) {
+  mean(x, ...)
+}
+
+#' @rdname rvar-summaries
+#' @export
+Pr.rvar <- function(x, ...) {
+  if (!is.logical(draws_of(x))) {
+    stop2("Can only use `Pr()` on logical random variables.")
   }
-  summarise_rvar_by_element(x, mean, na.rm = na.rm)
+  mean(x, ...)
 }
 
 #' @rdname rvar-summaries
@@ -141,7 +158,7 @@ range.rvar <- function(..., na.rm = FALSE) {
   rvars <- conform_rvar_nchains(rvars)
 
   # bind all args into a single matrix of draws to perform the summary over
-  all_draws <- draws_of(do_call(c, rvars))
+  all_draws <- draws_of(do.call(c, rvars))
 
   # perform summary
   .draws <- apply(all_draws, 1, f, na.rm = na.rm)
@@ -209,7 +226,13 @@ Ops.rvar <- function(e1, e2) {
 Math.rvar <- function(x, ...) {
   f <- get(.Generic)
 
-  new_rvar(f(draws_of(x)), .nchains = nchains(x))
+  if (.Generic %in% c("cumsum", "cumprod", "cummax", "cummin")) {
+    # cumulative functions need to be handled differently
+    # from other functions in this generic
+    new_rvar(t(apply(draws_of(x), 1, f)), .nchains = nchains(x))
+  } else {
+    new_rvar(f(draws_of(x), ...), .nchains = nchains(x))
+  }
 }
 
 

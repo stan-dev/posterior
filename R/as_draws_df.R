@@ -90,7 +90,7 @@ as_draws_df.draws_array <- function(x, ...) {
     out[[i]]$.iteration <- iteration_ids
     out[[i]]$.draw <- compute_draw_ids(chain_ids[i], iteration_ids)
   }
-  out <- do_call(rbind, out)
+  out <- do.call(rbind, out)
   class(out) <- class_draws_df()
   out
 }
@@ -110,7 +110,7 @@ as_draws_df.draws_list <- function(x, ...) {
     out[[i]]$.iteration <- iteration_ids
     out[[i]]$.draw <- compute_draw_ids(chain_ids[i], iteration_ids)
   }
-  out <- do_call(rbind, out)
+  out <- do.call(rbind, out)
   class(out) <- class_draws_df()
   out
 }

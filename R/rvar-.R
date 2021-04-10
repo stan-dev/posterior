@@ -36,11 +36,31 @@
 #' straightforward translation.
 #'
 #' As [rfun()] and [rdo()] incur some performance cost, you can also operate directly
-#' on the underlying array using the [draws_of()] function.
+#' on the underlying array using the [draws_of()] function. To re-use existing
+#' random number generator functions to efficiently create `rvar`s, use [rvar_rng()].
 #'
-#' @seealso [as_rvar()] to convert objects to `rvar`s.
+#' @seealso [as_rvar()] to convert objects to `rvar`s. See [rdo()], [rfun()], and
+#' [rvar_rng()] for higher-level interfaces for creating `rvar`s.
 #'
 #' @return An object of class `"rvar"` representing a random variable.
+#'
+#' @examples
+#'
+#' # To create a "scalar" `rvar`, pass a one-dimensional array or a vector
+#' # whose length (here `4000`) is the desired number of draws:
+#' x <- rvar(rnorm(4000, mean = 1, sd = 1))
+#' x
+#'
+#' # Create random vectors by adding an additional dimension:
+#' n <- 4   # length of output vector
+#' x <- rvar(array(rnorm(4000 * n, mean = rep(1:n, each = 4000), sd = 1), dim = c(4000, n)))
+#' x
+#'
+#' # Create a random matrix:
+#' rows <- 4
+#' cols <- 3
+#' x <- rvar(array(rnorm(4000 * rows * cols, mean = 1, sd = 1), dim = c(4000, rows, cols)))
+#' x
 #'
 #' @export
 rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = 1L) {

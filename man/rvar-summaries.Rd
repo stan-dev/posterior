@@ -5,15 +5,24 @@
 \alias{E}
 \alias{mean.rvar}
 \alias{Pr}
+\alias{Pr.default}
+\alias{Pr.logical}
+\alias{Pr.rvar}
 \alias{median.rvar}
 \alias{variance.rvar}
 \title{Summaries, expectations, and variances of random variables}
 \usage{
-E(x, na.rm = FALSE)
+E(x, ...)
 
 \method{mean}{rvar}(x, ...)
 
-Pr(x, na.rm = FALSE)
+Pr(x, ...)
+
+\method{Pr}{default}(x, ...)
+
+\method{Pr}{logical}(x, ...)
+
+\method{Pr}{rvar}(x, ...)
 
 \method{median}{rvar}(x, ...)
 
@@ -22,16 +31,8 @@ Pr(x, na.rm = FALSE)
 \arguments{
 \item{x}{an \code{\link{rvar}}}
 
-\item{na.rm}{Should \code{NA} values in the random variable be removed before
-computing summaries?}
-
 \item{...}{further arguments passed to underlying functions (e.g., \code{base::mean()}
-or \code{base::median()}).
-
-Both \code{E()}, \code{mean()}, and \code{Pr()} take means over the draws dimension of the provided
-random variable. \code{Pr()} additionally checks that the provided \code{\link{rvar}}
-is a logical variable (hence, taking its expectation results in a probability).
-\code{median()} takes medians, and \code{variance()} takes variances.}
+or \code{base::median()}), such as \code{na.rm}.}
 }
 \value{
 A numeric vector with the same dimensions as the given random variable, where
@@ -40,6 +41,15 @@ each entry in the vector is the mean, median, or variance of the corresponding e
 \description{
 Compute expectations (\code{E()} or \code{mean()}), probabilities (\code{Pr()}),
 medians (\code{median()}), and variances (\code{variance()}) from a random variable.
+}
+\details{
+Both \code{E()}, \code{mean()}, and \code{Pr()} take means over the draws dimension of the provided
+random variable. \code{Pr()} additionally checks that the provided \code{\link{rvar}}
+is a logical variable (hence, taking its expectation results in a probability).
+\code{median()} takes medians, and \code{variance()} takes variances.
+
+For consistency, \code{E()} and \code{Pr()} are also defined for base arrays so that
+they can be used as summary functions in \code{summarise_draws()}.
 }
 \examples{
 

@@ -11,10 +11,13 @@ as_rvar(x, dim = NULL, dimnames = NULL, nchains = NULL)
 (or an \code{\link{rvar}} itself).}
 
 \item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
-or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.}
+or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.
+\strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the underlying array, so you cannot
+change the number of draws using this argument.}
 
 \item{dimnames}{Override for the names of the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dimnames]{dimnames()}}): a list of character
-vectors giving the names in each dimension. If \code{NULL} (the default), this is determined by the input.}
+vectors giving the names in each dimension. If \code{NULL} (the default), this is determined by the input.
+\strong{NOTE:} This argument controls the names of the dimensions of the \code{\link{rvar}}, not the underlying array.}
 
 \item{nchains}{Number of chains (default is \code{1}).}
 }
@@ -33,6 +36,19 @@ the same dimensions as \code{x}. This is in contrast to the \code{\link[=rvar]{r
 treats the first dimension of \code{x} as the draws dimension. As a result, \code{as_rvar()}
 is useful for creating constants.
 }
+\examples{
+
+# You can use as_rvar() to create "constant" rvars (having only one draw):
+x <- as_rvar(1)
+x
+
+# Such constants can be of arbitrary shape:
+as_rvar(1:4)
+as_rvar(matrix(1:10, nrow = 5))
+as_rvar(array(1:12, dim = c(2, 3, 2)))
+
+}
 \seealso{
-\code{\link[=rvar]{rvar()}} to construct \code{\link{rvar}}s directly.
+\code{\link[=rvar]{rvar()}} to construct \code{\link{rvar}}s directly.  See \code{\link[=rdo]{rdo()}}, \code{\link[=rfun]{rfun()}}, and
+\code{\link[=rvar_rng]{rvar_rng()}} for higher-level interfaces for creating \code{rvar}s.
 }

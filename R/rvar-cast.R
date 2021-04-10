@@ -16,9 +16,21 @@
 #' treats the first dimension of `x` as the draws dimension. As a result, `as_rvar()`
 #' is useful for creating constants.
 #'
-#' @seealso [rvar()] to construct [`rvar`]s directly.
+#' @seealso [rvar()] to construct [`rvar`]s directly.  See [rdo()], [rfun()], and
+#' [rvar_rng()] for higher-level interfaces for creating `rvar`s.
 #'
 #' @return An object of class `"rvar"` representing a random variable.
+#'
+#' @examples
+#'
+#' # You can use as_rvar() to create "constant" rvars (having only one draw):
+#' x <- as_rvar(1)
+#' x
+#'
+#' # Such constants can be of arbitrary shape:
+#' as_rvar(1:4)
+#' as_rvar(matrix(1:10, nrow = 5))
+#' as_rvar(array(1:12, dim = c(2, 3, 2)))
 #'
 #' @export
 as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {

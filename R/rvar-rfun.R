@@ -83,9 +83,9 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
     if (length(rvar_args) == 0) {
       # no rvar arguments, so just create a random variable by applying this function
       # ndraws times
-      list_of_draws <- replicate(ndraws, do_call(.f, args), simplify = FALSE)
+      list_of_draws <- replicate(ndraws, do.call(.f, args), simplify = FALSE)
     } else {
-      list_of_draws <- do_call(mapply, c(FUN = .f, rvar_args, MoreArgs = list(args[!is_rvar_arg]),
+      list_of_draws <- do.call(mapply, c(FUN = .f, rvar_args, MoreArgs = list(args[!is_rvar_arg]),
         SIMPLIFY = FALSE, USE.NAMES = FALSE
       ))
     }
@@ -164,7 +164,7 @@ rdo <- function(expr, dim = NULL, ndraws = NULL) {
 
   f_alist <- append(f_alist, quo_get_expr(f_expr))
   f <- rfun(as.function(f_alist, envir = f_env), ndraws = ndraws)
-  result <- do_call(f, rvars_in_expr, enclos = f_env)
+  result <- do.call(f, rvars_in_expr, envir = f_env)
 
   if (!is.null(dim)) {
     dim(result) <- dim
@@ -244,7 +244,7 @@ rvar_rng <- function(.f, n, ..., ndraws = NULL) {
 
   nd <- n * ndraws
   args <- c(n = nd, args)
-  result <- do_call(.f, args)
+  result <- do.call(.f, args)
   dim(result) <- c(n, ndraws)
   new_rvar(t(result), .nchains = nchains)
 }
