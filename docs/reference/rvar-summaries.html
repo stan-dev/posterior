@@ -81,7 +81,7 @@ medians (median()), and variances (variance()) from a random variable." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -131,19 +131,19 @@ medians (median()), and variances (variance()) from a random variable." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fa fa-twitter"></span>
+    <span class="fas fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fa fa-users"></span>
+    <span class="fas fa-users"></span>
      
   </a>
 </li>
@@ -170,12 +170,21 @@ medians (median()), and variances (variance()) from a random variable." />
 medians (<code><a href='https://rdrr.io/r/stats/median.html'>median()</a></code>), and variances (<code><a href='https://pkg.mitchelloharawild.com/distributional/reference/variance.html'>variance()</a></code>) from a random variable.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>E</span><span class='op'>(</span><span class='va'>x</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>E</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for rvar</span>
 <span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>Pr</span><span class='op'>(</span><span class='va'>x</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+<span class='fu'>Pr</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>Pr</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for logical</span>
+<span class='fu'>Pr</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for rvar</span>
+<span class='fu'>Pr</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for rvar</span>
 <span class='fu'><a href='https://rdrr.io/r/stats/median.html'>median</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -191,18 +200,9 @@ medians (<code><a href='https://rdrr.io/r/stats/median.html'>median()</a></code>
       <td><p>an <code><a href='rvar.html'>rvar</a></code></p></td>
     </tr>
     <tr>
-      <th>na.rm</th>
-      <td><p>Should <code>NA</code> values in the random variable be removed before
-computing summaries?</p></td>
-    </tr>
-    <tr>
       <th>...</th>
       <td><p>further arguments passed to underlying functions (e.g., <code><a href='https://rdrr.io/r/base/mean.html'>base::mean()</a></code>
-or <code>base::median()</code>).</p>
-<p>Both <code>E()</code>, <code><a href='https://rdrr.io/r/base/mean.html'>mean()</a></code>, and <code>Pr()</code> take means over the draws dimension of the provided
-random variable. <code>Pr()</code> additionally checks that the provided <code><a href='rvar.html'>rvar</a></code>
-is a logical variable (hence, taking its expectation results in a probability).
-<code><a href='https://rdrr.io/r/stats/median.html'>median()</a></code> takes medians, and <code><a href='https://pkg.mitchelloharawild.com/distributional/reference/variance.html'>variance()</a></code> takes variances.</p></td>
+or <code>base::median()</code>), such as <code>na.rm</code>.</p></td>
     </tr>
     </table>
 
@@ -210,6 +210,14 @@ is a logical variable (hence, taking its expectation results in a probability).
 
     <p>A numeric vector with the same dimensions as the given random variable, where
 each entry in the vector is the mean, median, or variance of the corresponding entry in <code>x</code>.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Both <code>E()</code>, <code><a href='https://rdrr.io/r/base/mean.html'>mean()</a></code>, and <code>Pr()</code> take means over the draws dimension of the provided
+random variable. <code>Pr()</code> additionally checks that the provided <code><a href='rvar.html'>rvar</a></code>
+is a logical variable (hence, taking its expectation results in a probability).
+<code><a href='https://rdrr.io/r/stats/median.html'>median()</a></code> takes medians, and <code><a href='https://pkg.mitchelloharawild.com/distributional/reference/variance.html'>variance()</a></code> takes variances.</p>
+<p>For consistency, <code>E()</code> and <code>Pr()</code> are also defined for base arrays so that
+they can be used as summary functions in <code><a href='draws_summary.html'>summarise_draws()</a></code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='rvar-summaries-by-draw.html'>rvar-summaries-by-draw</a> for summary functions within draws.

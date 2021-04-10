@@ -3,7 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   rvar: rvar.html
-last_built: 2021-03-26T19:33Z
+last_built: 2021-04-10T09:52Z
 urls:
   reference: https://mc-stan.org/posterior/reference
   article: https://mc-stan.org/posterior/articles

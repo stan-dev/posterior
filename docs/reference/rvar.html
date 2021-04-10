@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -130,19 +130,19 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fa fa-twitter"></span>
+    <span class="fas fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fa fa-users"></span>
+    <span class="fas fa-users"></span>
      
   </a>
 </li>
@@ -183,12 +183,15 @@ first dimension is used to index draws from the distribution.</p></td>
     <tr>
       <th>dim</th>
       <td><p>Override for the dimensions of the <code>rvar</code> to be created (see <code><a href='https://rdrr.io/r/base/dim.html'>dim()</a></code>): an integer vector of length one
-or more giving the maximal indices in each dimension. If <code>NULL</code> (the default), this is determined by the input.</p></td>
+or more giving the maximal indices in each dimension. If <code>NULL</code> (the default), this is determined by the input.
+<strong>NOTE:</strong> This argument controls the dimensions of the <code>rvar</code>, not the underlying array, so you cannot
+change the number of draws using this argument.</p></td>
     </tr>
     <tr>
       <th>dimnames</th>
       <td><p>Override for the names of the dimensions of the <code>rvar</code> to be created (see <code><a href='https://rdrr.io/r/base/dimnames.html'>dimnames()</a></code>): a list of character
-vectors giving the names in each dimension. If <code>NULL</code> (the default), this is determined by the input.</p></td>
+vectors giving the names in each dimension. If <code>NULL</code> (the default), this is determined by the input.
+<strong>NOTE:</strong> This argument controls the names of the dimensions of the <code>rvar</code>, not the underlying array.</p></td>
     </tr>
     <tr>
       <th>nchains</th>
@@ -221,11 +224,39 @@ code into code that executes across draws from one or more random variables
 and returns a random variable as output. Typically <code><a href='rdo.html'>rdo()</a></code> offers the most
 straightforward translation.</p>
 <p>As <code><a href='rfun.html'>rfun()</a></code> and <code><a href='rdo.html'>rdo()</a></code> incur some performance cost, you can also operate directly
-on the underlying array using the <code><a href='draws_of.html'>draws_of()</a></code> function.</p>
+on the underlying array using the <code><a href='draws_of.html'>draws_of()</a></code> function. To re-use existing
+random number generator functions to efficiently create <code>rvar</code>s, use <code><a href='rvar_rng.html'>rvar_rng()</a></code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='as_rvar.html'>as_rvar()</a></code> to convert objects to <code>rvar</code>s.</p></div>
+    <div class='dont-index'><p><code><a href='as_rvar.html'>as_rvar()</a></code> to convert objects to <code>rvar</code>s. See <code><a href='rdo.html'>rdo()</a></code>, <code><a href='rfun.html'>rfun()</a></code>, and
+<code><a href='rvar_rng.html'>rvar_rng()</a></code> for higher-level interfaces for creating <code>rvar</code>s.</p></div>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='co'># To create a "scalar" `rvar`, pass a one-dimensional array or a vector</span>
+<span class='co'># whose length (here `4000`) is the desired number of draws:</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rvar</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>4000</span>, mean <span class='op'>=</span> <span class='fl'>1</span>, sd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>x</span>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] <span style='color: #949494;'>mean ± sd:</span><span>
+#&gt; [1] 1 ± 0.99 </div><div class='input'>
+<span class='co'># Create random vectors by adding an additional dimension:</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>   <span class='co'># length of output vector</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rvar</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>4000</span> <span class='op'>*</span> <span class='va'>n</span>, mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span>, each <span class='op'>=</span> <span class='fl'>4000</span><span class='op'>)</span>, sd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4000</span>, <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>x</span>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[4] </span><span style='color: #949494;'>mean ± sd:</span><span>
+#&gt; [1] 1 ± 0.98  2 ± 1.00  3 ± 0.97  4 ± 0.98 </div><div class='input'>
+<span class='co'># Create a random matrix:</span>
+<span class='va'>rows</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>
+<span class='va'>cols</span> <span class='op'>&lt;-</span> <span class='fl'>3</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rvar</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>4000</span> <span class='op'>*</span> <span class='va'>rows</span> <span class='op'>*</span> <span class='va'>cols</span>, mean <span class='op'>=</span> <span class='fl'>1</span>, sd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4000</span>, <span class='va'>rows</span>, <span class='va'>cols</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>x</span>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[4,3] </span><span style='color: #949494;'>mean ± sd:</span><span>
+#&gt;      [,1]         [,2]         [,3]        
+#&gt; [1,] 1.03 ± 0.99  1.00 ± 1.00  1.00 ± 0.97 
+#&gt; [2,] 1.01 ± 0.99  1.01 ± 0.99  0.99 ± 1.00 
+#&gt; [3,] 0.99 ± 1.00  1.02 ± 0.99  1.02 ± 1.01 
+#&gt; [4,] 0.99 ± 1.00  0.99 ± 1.02  1.01 ± 1.01 </div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

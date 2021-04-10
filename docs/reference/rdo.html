@@ -81,7 +81,7 @@ producing a new rvar." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -131,19 +131,19 @@ producing a new rvar." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fa fa-twitter"></span>
+    <span class="fas fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fa fa-users"></span>
+    <span class="fas fa-users"></span>
      
   </a>
 </li>
@@ -183,7 +183,9 @@ supports quasiquotation.</p></td>
     <tr>
       <th>dim</th>
       <td><p>Override for the dimensions of the <code><a href='rvar.html'>rvar</a></code> to be created (see <code><a href='https://rdrr.io/r/base/dim.html'>dim()</a></code>): an integer vector of length one
-or more giving the maximal indices in each dimension. If <code>NULL</code> (the default), this is determined by the input.</p></td>
+or more giving the maximal indices in each dimension. If <code>NULL</code> (the default), this is determined by the input.
+<strong>NOTE:</strong> This argument controls the dimensions of the <code><a href='rvar.html'>rvar</a></code>, not the underlying array, so you cannot
+change the number of draws using this argument.</p></td>
     </tr>
     <tr>
       <th>ndraws</th>
