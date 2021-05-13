@@ -444,7 +444,6 @@ check_existing_variables <- function(variables, x, regex = FALSE,
       c(variables[!(variables %in% missing_candidates)],
         all_variables[all_variables_base %in% vector_variables])
     )
-    variables <- variables[order(match(variables, all_variables))]
   } else {
     missing_variables <- setdiff(variables, all_variables)
   }
