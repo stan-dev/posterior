@@ -111,3 +111,20 @@ test_that("variables can be subsetted via non-scalar selection", {
   x_sub <- subset_draws(x, variable = "theta")
   expect_equal(variables(x_sub), c(paste0("theta[", 1:8, "]")))
 })
+
+test_that("subset_draws speed is tolerable with many variables", {
+  x <- as_draws_matrix(matrix(rnorm(10 * 300000), nrow = 10))
+  tt <- system.time(x2 <- subset_draws(x, colnames(x)))
+  expect_equal(x, x2)
+  expect_lt(tt[["elapsed"]], 1)
+})
+
+test_that("subset_draws speed is tolerable with many variables", {
+  x <- as_draws_matrix(example_draws())
+  expect_error(
+    subset_draws(x, variable = c("theta[2]", "X", "theta[3]", "Y")),
+    "The following variables are missing in the draws object: {'X', 'Y'}",
+    fixed = TRUE
+  )
+})
+
