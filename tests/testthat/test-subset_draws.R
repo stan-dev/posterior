@@ -135,13 +135,13 @@ test_that("subset_draws preserves variable order", {
 })
 
 test_that("non-unique subsetting for draws_df same as doing it with draws_list", {
-  x1 <- as_draws_df(example_draws())
-  x2 <- as_draws_list(example_draws())
+  x_df <- as_draws_df(example_draws())
+  x_list <- as_draws_list(example_draws())
 
-  x1_sub <- subset_draws(x1, chain = c(1,1,2), iteration = c(1:2, 1:50),
-                         unique = FALSE)
-  x2_sub <- subset_draws(x2, chain = c(1,1,2), iteration = c(1:2, 1:50),
-                         unique = FALSE)
-  expect_equivalent(x1_sub, as_draws_df(x2_sub))
+  x_df_sub <- subset_draws(x_df, chain = c(1,1,2), iteration = c(1:2, 1:50),
+                           unique = FALSE)
+  x_list_sub <- subset_draws(x_list, chain = c(1,1,2), iteration = c(1:2, 1:50),
+                             unique = FALSE)
+  expect_equivalent(x_df_sub, as_draws_df(x_list_sub))
 })
 
