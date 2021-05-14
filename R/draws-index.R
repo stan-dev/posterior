@@ -430,22 +430,20 @@ check_existing_variables <- function(variables, x, regex = FALSE,
   if (regex) {
     tmp <- named_list(variables)
     for (i in seq_along(variables)) {
-      tmp[[i]] <- all_variables[grepl(variables[i], all_variables)]
+      tmp[[i]] <- grep(variables[i], all_variables)
     }
     # regular expressions are not required to match anything
     missing_variables <- NULL
-    variables <- as.character(unique(unlist(tmp)))
+    variables <- as.character(all_variables[unique(unlist(tmp))])
   } else if (!scalar_only) {
-    tmp <- named_list(variables)
-    escaped_variables <- escape_all(variables)
-    missing <- rep(NA, length(variables))
-    for (i in seq_along(variables)) {
-      v_regex <- paste0("^", escaped_variables[i], "(\\[.*\\])?$")
-      tmp[[i]] <- all_variables[grepl(v_regex, all_variables)]
-      missing[i] <- !length(tmp[[i]])
-    }
-    missing_variables <- variables[missing]
-    variables <- as.character(unique(unlist(tmp)))
+    missing_candidates <- setdiff(variables, all_variables)
+    all_variables_base <- gsub("\\[.*\\]$", "", all_variables)
+    missing_variables <- setdiff(missing_candidates, all_variables_base)
+    vector_variables <- setdiff(missing_candidates, missing_variables)
+    variables <- unique(
+      c(variables[!(variables %in% missing_candidates)],
+        all_variables[all_variables_base %in% vector_variables])
+    )
   } else {
     missing_variables <- setdiff(variables, all_variables)
   }
