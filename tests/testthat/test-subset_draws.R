@@ -119,7 +119,7 @@ test_that("subset_draws speed is tolerable with many variables", {
   expect_lt(tt[["elapsed"]], 1)
 })
 
-test_that("subset_draws speed is tolerable with many variables", {
+test_that("subset_draws errors if selecting missing variables", {
   x <- as_draws_matrix(example_draws())
   expect_error(
     subset_draws(x, variable = c("theta[2]", "X", "theta[3]", "Y")),
@@ -132,5 +132,16 @@ test_that("subset_draws preserves variable order", {
   x <- as_draws_matrix(example_draws())
   x <- subset_draws(x, variable = c("theta[2]", "theta[1]"))
   expect_equal(variables(x), c("theta[2]", "theta[1]"))
+})
+
+test_that("non-unique subsetting for draws_df same as doing it with draws_list", {
+  x1 <- as_draws_df(example_draws())
+  x2 <- as_draws_list(example_draws())
+
+  x1_sub <- subset_draws(x1, chain = c(1,1,2), iteration = c(1:2, 1:50),
+                         unique = FALSE)
+  x2_sub <- subset_draws(x2, chain = c(1,1,2), iteration = c(1:2, 1:50),
+                         unique = FALSE)
+  expect_equal(x1_sub, as_draws_df(x2_sub))
 })
 
