@@ -142,6 +142,6 @@ test_that("non-unique subsetting for draws_df same as doing it with draws_list",
                          unique = FALSE)
   x2_sub <- subset_draws(x2, chain = c(1,1,2), iteration = c(1:2, 1:50),
                          unique = FALSE)
-  expect_equal(x1_sub, as_draws_df(x2_sub))
+  expect_equivalent(x1_sub, as_draws_df(x2_sub))
 })
 
