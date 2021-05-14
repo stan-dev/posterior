@@ -241,10 +241,15 @@ subset_dims <- function(x, ...) {
       }
       x <- repair_draws(x, order = FALSE)
     } else {
-      # non-unique subsetting is conceptually easier in 'draws_list' objects
-      x <- as_draws_list(x)
-      x <- subset_draws(x, chain = chain, iteration = iteration, unique = FALSE)
-      x <- as_draws_df(x)
+      if (!is.null(chain)) {
+        x <- x[unlist(lapply(chain, function(c) which(x$.chain == c))), ]
+        x$.chain <- rep(seq_along(chain), each = nrow(x) / length(chain))
+      }
+      if (!is.null(iteration)) {
+        x <- x[unlist(lapply(iteration, function(i) which(x$.iteration == i))), ]
+        x$.iteration <- rep(seq_along(iteration), each = nrow(x) / length(iteration))
+      }
+      x <- repair_draws(x)
     }
   }
   if (!reserved && !is.null(variable)) {
