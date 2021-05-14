@@ -128,3 +128,9 @@ test_that("subset_draws speed is tolerable with many variables", {
   )
 })
 
+test_that("subset_draws preserves variable order", {
+  x <- as_draws_matrix(example_draws())
+  x <- subset_draws(x, variable = c("theta[2]", "theta[1]"))
+  expect_equal(variables(x), c("theta[2]", "theta[1]"))
+})
+
