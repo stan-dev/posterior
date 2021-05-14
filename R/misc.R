@@ -27,22 +27,20 @@ seq_cols <- function(x) {
   seq_len(NCOL(x))
 }
 
-# selectively drop dimensions of arrays
+# selectively drop the dimensions of an array which have only one level
 drop_dims <- function(x, dims = NULL) {
   assert_array(x)
   assert_integerish(dims, null.ok = TRUE)
-  old_dims <- dim(x)
   if (is.null(dims)) {
-    dims <- old_dims[old_dims == 1L]
+    x <- drop(x)
   } else {
-    assert_true(all(old_dims[dims] <= 1L))
+    old_dims <- dim(x)
+    assert_true(all(old_dims[dims] == 1L))
+    old_dimnames <- dimnames(x)
+    dim(x) <- old_dims[-dims]
+    dimnames(x) <- old_dimnames[-dims]
   }
-  if (!length(dims)) {
-    return(x)
-  }
-  old_dimnames <- dimnames(x)
-  dim(x) <- old_dims[-dims]
-  dimnames(x) <- old_dimnames[-dims]
+  class(x) <- setdiff(class(x), "draws_array")
   x
 }
 
