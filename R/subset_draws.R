@@ -164,7 +164,7 @@ subset_dims <- function(x, ...) {
   }
   dim_x <- max(length(dim(x)), 1L)
   if (length(dots) > dim_x) {
-    stop2("'x' has only ", dim_x, " dimensions.")
+    stop_no_call("'x' has only ", dim_x, " dimensions.")
   }
   if (length(dots) < dim_x) {
     dots <- c(dots, repl(NULL, dim_x - length(dots)))
@@ -331,10 +331,10 @@ prepare_subsetting <- function(x, iteration = NULL, chain = NULL,
                                draw = NULL) {
   if (!is.null(draw)) {
     if (!is.null(iteration)) {
-      stop2("Cannot subset 'iteration' and 'draw' at the same time.")
+      stop_no_call("Cannot subset 'iteration' and 'draw' at the same time.")
     }
     if (!is.null(chain)) {
-      stop2("Cannot subset 'chain' and 'draw' at the same time.")
+      stop_no_call("Cannot subset 'chain' and 'draw' at the same time.")
     }
     if (nchains(x) > 1L) {
       message("Merging chains in order to subset via 'draw'.")

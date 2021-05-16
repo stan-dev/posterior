@@ -449,7 +449,7 @@ check_existing_variables <- function(variables, x, regex = FALSE,
   }
   variables <- check_reserved_variables(variables)
   if (length(missing_variables)) {
-    stop2("The following variables are missing in the draws object: ",
+    stop_no_call("The following variables are missing in the draws object: ",
           comma(missing_variables))
   }
   variables
@@ -463,7 +463,7 @@ check_new_variables <- function(variables) {
   # we shouldn't expect to take this branch often (since it is an error)
   if (anyDuplicated(variables)) {
     duplicates = unique(variables[duplicated(variables)])
-    stop2(
+    stop_no_call(
       "Duplicate variable names are not allowed in draws objects.\n",
       "The following variable names are duplicates:\n",
       comma(duplicates)
@@ -480,7 +480,7 @@ check_reserved_variables <- function(variables) {
   # this has the advantage that power users can directly add such variables
   used_reserved_variables <- intersect(reserved_df_variables(), variables)
   if (length(used_reserved_variables)) {
-    stop2("Variable names ", comma(used_reserved_variables), " are reserved.")
+    stop_no_call("Variable names ", comma(used_reserved_variables), " are reserved.")
   }
   variables
 }
@@ -499,12 +499,12 @@ check_iteration_ids <- function(iteration_ids, x, unique = TRUE) {
   }
   iteration_ids <- sort(iteration_ids)
   if (any(iteration_ids < 1L)) {
-    stop2("Iteration indices should be positive.")
+    stop_no_call("Iteration indices should be positive.")
   }
   niterations <- niterations(x)
   max_iteration <- SW(max(iteration_ids))
   if (max_iteration > niterations) {
-    stop2("Tried to subset iterations up to '", max_iteration, "' ",
+    stop_no_call("Tried to subset iterations up to '", max_iteration, "' ",
           "but the object only has '", niterations, "' iterations.")
   }
   iteration_ids
@@ -524,12 +524,12 @@ check_chain_ids <- function(chain_ids, x, unique = TRUE) {
   }
   chain_ids <- sort(chain_ids)
   if (any(chain_ids < 1L)) {
-    stop2("Chain indices should be positive.")
+    stop_no_call("Chain indices should be positive.")
   }
   nchains <- nchains(x)
   max_chain <- SW(max(chain_ids))
   if (max_chain > nchains) {
-    stop2("Tried to subset chains up to '", max_chain, "' ",
+    stop_no_call("Tried to subset chains up to '", max_chain, "' ",
           "but the object only has '", nchains, "' chains.")
   }
   chain_ids
@@ -549,12 +549,12 @@ check_draw_ids <- function(draw_ids, x, unique = TRUE) {
   }
   draw_ids <- sort(draw_ids)
   if (any(draw_ids < 1L)) {
-    stop2("Draw indices should be positive.")
+    stop_no_call("Draw indices should be positive.")
   }
   ndraws <- ndraws(x)
   max_draw <- SW(max(draw_ids))
   if (max_draw > ndraws) {
-    stop2("Tried to subset draws up to '", max_draw, "' ",
+    stop_no_call("Tried to subset draws up to '", max_draw, "' ",
           "but the object only has '", ndraws, "' draws.")
   }
   draw_ids

@@ -65,7 +65,7 @@ closest_draws_format <- function(x) {
     out <- "list"
   }
   else {
-    stop2("Don't know how to transform an object of class ",
+    stop_no_call("Don't know how to transform an object of class ",
           "'", class(x)[1L], "' to any supported draws format.")
   }
   paste0("draws_", out)
@@ -82,7 +82,7 @@ is_draws <- function(x) {
 # the validity of the 'draw' argument in 'subset'
 check_draws_object <- function(x) {
   if (!is_draws(x)) {
-    stop2("The object is not in a format supported by posterior.")
+    stop_no_call("The object is not in a format supported by posterior.")
   }
   x
 }
@@ -100,17 +100,17 @@ default_variables <- function(nvariables) {
 validate_draws_per_variable <- function(...) {
   out <- list(...)
   if (!rlang::is_named(out)) {
-    stop2("All variables must be named.")
+    stop_no_call("All variables must be named.")
   }
   if (".nchains" %in% names(out)) {
     # '.nchains' is an additional argument in chain supporting formats
-    stop2("'.nchains' is not supported for this format.")
+    stop_no_call("'.nchains' is not supported for this format.")
   }
   out <- lapply(out, as.numeric)
   ndraws_per_variable <- lengths(out)
   ndraws <- max(ndraws_per_variable)
   if (!all(ndraws_per_variable %in% c(1, ndraws))) {
-    stop2("Number of draws per variable needs to be 1 or ", ndraws, ".")
+    stop_no_call("Number of draws per variable needs to be 1 or ", ndraws, ".")
   }
   for (i in which(ndraws_per_variable == 1)) {
     out[[i]] <- rep(out[[i]], ndraws)

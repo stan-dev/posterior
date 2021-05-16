@@ -21,7 +21,7 @@
     dim(.draws) <- c(ndraws(x), 1)
     out <- new_rvar(.draws, .nchains = nchains(x))
   } else {
-    stop2("subscript out of bounds")
+    stop_no_call("subscript out of bounds")
   }
   out
 }
@@ -60,7 +60,7 @@
       x
     }))
   } else {
-    stop2("subscript out of bounds")
+    stop_no_call("subscript out of bounds")
   }
   x
 }

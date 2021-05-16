@@ -177,6 +177,6 @@ get_summary_functions <- function(summary = NULL) {
   switch(summary,
     mean_sd = c("mean", "sd"),
     median_mad = c("median", "mad"),
-    stop2('`summary` must be one of "mean_sd" or "median_mad"')
+    stop_no_call('`summary` must be one of "mean_sd" or "median_mad"')
   )
 }

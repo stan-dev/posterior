@@ -152,11 +152,11 @@ validate_weights <- function(weights, draws, log = FALSE) {
   checkmate::expect_numeric(weights)
   checkmate::expect_flag(log)
   if (length(weights) != ndraws(draws)) {
-    stop2("Number of weights must match the number of draws.")
+    stop_no_call("Number of weights must match the number of draws.")
   }
   if (!log) {
     if (any(weights < 0)) {
-      stop2("Weights must be non-negative.")
+      stop_no_call("Weights must be non-negative.")
     }
     weights <- log(weights)
   }

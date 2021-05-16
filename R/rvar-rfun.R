@@ -56,12 +56,12 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
   rvar_args <- as.character(rvar_args %||% arg_names)
 
   if (!all(rvar_args %in% arg_names)) {
-    stop2("must specify names of formal arguments for 'rfun'")
+    stop_no_call("must specify names of formal arguments for 'rfun'")
   }
 
   collisions <- arg_names %in% c("FUN", "SIMPLIFY", "USE.NAMES")
   if (any(collisions)) {
-    stop2("'.f' may not have argument(s) named ", comma(arg_names[collisions]))
+    stop_no_call("'.f' may not have argument(s) named ", comma(arg_names[collisions]))
   }
 
   FUNV <- function() {
@@ -236,7 +236,7 @@ rvar_rng <- function(.f, n, ..., ndraws = NULL) {
 
     rvar_args_ndims <- lengths(lapply(rvar_args, dim))
     if (!all(rvar_args_ndims == 1)) {
-      stop2("All arguments to rvar_rng() that are rvars must be single-dimensional (vectors).")
+      stop_no_call("All arguments to rvar_rng() that are rvars must be single-dimensional (vectors).")
     }
 
     args[is_rvar_arg] <- lapply(rvar_args, function(x) t(draws_of(x)))

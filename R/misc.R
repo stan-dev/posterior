@@ -28,7 +28,7 @@ seq_cols <- function(x) {
 }
 
 # selectively drop one-level dimensions of an array and/or reset object classes
-drop2 <- function(x, dims = NULL, reset_class = FALSE) {
+drop_dims_or_classes <- function(x, dims = NULL, reset_class = FALSE) {
   assert_array(x)
   assert_integerish(dims, null.ok = TRUE)
   reset_class <- as_one_logical(reset_class)
@@ -51,7 +51,7 @@ drop2 <- function(x, dims = NULL, reset_class = FALSE) {
     }
   }
   # optionally, set class to NULL and let R decide appropriate classes
-  if(reset_class) {
+  if (reset_class) {
     class(x) <- NULL
   }
   x
@@ -72,8 +72,8 @@ as_one_logical <- function(x, allow_na = FALSE) {
   s <- substitute(x)
   x <- as.logical(x)
   if (length(x) != 1L || anyNA(x) && !allow_na) {
-    s <- deparse2(s)
-    stop2("Cannot coerce '", s, "' to a single logical value.")
+    s <- deparse_pretty(s)
+    stop_no_call("Cannot coerce '", s, "' to a single logical value.")
   }
   x
 }
@@ -83,8 +83,8 @@ as_one_integer <- function(x, allow_na = FALSE) {
   s <- substitute(x)
   x <- SW(as.integer(x))
   if (length(x) != 1L || anyNA(x) && !allow_na) {
-    s <- deparse2(s)
-    stop2("Cannot coerce '", s, "' to a single integer value.")
+    s <- deparse_pretty(s)
+    stop_no_call("Cannot coerce '", s, "' to a single integer value.")
   }
   x
 }
@@ -94,8 +94,8 @@ as_one_numeric <- function(x, allow_na = FALSE) {
   s <- substitute(x)
   x <- SW(as.numeric(x))
   if (length(x) != 1L || anyNA(x) && !allow_na) {
-    s <- deparse2(s)
-    stop2("Cannot coerce '", s, "' to a single numeric value.")
+    s <- deparse_pretty(s)
+    stop_no_call("Cannot coerce '", s, "' to a single numeric value.")
   }
   x
 }
@@ -105,8 +105,8 @@ as_one_character <- function(x, allow_na = FALSE) {
   s <- substitute(x)
   x <- as.character(x)
   if (length(x) != 1L || anyNA(x) && !allow_na) {
-    s <- deparse2(s)
-    stop2("Cannot coerce '", s, "' to a single character value.")
+    s <- deparse_pretty(s)
+    stop_no_call("Cannot coerce '", s, "' to a single character value.")
   }
   x
 }
@@ -131,7 +131,7 @@ move_to_start <- function(x, start) {
 
 # prettily deparse an expression
 # @return a single character string
-deparse2 <- function(x, max_chars = NULL, max_wsp = 1L) {
+deparse_pretty <- function(x, max_chars = NULL, max_wsp = 1L) {
   out <- collapse(deparse(x))
   out <- rm_wsp(out, max_wsp)
   assert_int(max_chars, null.ok = TRUE)
@@ -185,7 +185,7 @@ comma <- function(...) {
   paste0("{", paste0("'", c(...), "'", collapse = ", "), "}")
 }
 
-stop2 <- function(...) {
+stop_no_call <- function(...) {
   stop(..., call. = FALSE)
 }
 
