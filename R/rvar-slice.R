@@ -138,10 +138,9 @@
       if (all(names(new_dimnames) == "")) names(new_dimnames) <- NULL
       dimnames(x) <- new_dimnames
     }
-    x
-  } else {
-    x
   }
+
+  x
 }
 
 #' @export
