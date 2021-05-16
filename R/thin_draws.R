@@ -30,11 +30,11 @@ thin_draws.draws <- function(x, thin, ...) {
     return(x)
   }
   if (thin <= 0L) {
-    stop2("'thin' must be a positive integer.")
+    stop_no_call("'thin' must be a positive integer.")
   }
   niterations <- niterations(x)
   if (thin > niterations ) {
-    stop2("'thin' must be smaller than the total number of iterations.")
+    stop_no_call("'thin' must be smaller than the total number of iterations.")
   }
   iteration_ids <- seq(1, niterations, by = thin)
   subset_draws(x, iteration = iteration_ids)

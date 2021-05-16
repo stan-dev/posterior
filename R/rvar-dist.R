@@ -21,7 +21,7 @@
 #' @export
 density.rvar <- function(x, at, ...) {
   if (length(x) != 1) {
-    stop2("density() can currently only be used on scalar rvars")
+    stop_no_call("density() can currently only be used on scalar rvars")
   }
 
   d <- density(draws_of(x), cut = 0, ...)
@@ -37,7 +37,7 @@ distributional::cdf
 #' @export
 cdf.rvar <- function(x, q, ...) {
   if (length(x) != 1) {
-    stop2("cdf() can currently only be used on scalar rvars")
+    stop_no_call("cdf() can currently only be used on scalar rvars")
   }
 
   ecdf(draws_of(x))(q)

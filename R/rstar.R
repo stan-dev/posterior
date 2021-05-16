@@ -93,7 +93,7 @@ rstar <- function(x, split = TRUE,
                   ...) {
 
   if (!"caret" %in% .packages()) {
-    stop2("Package 'caret' is required for 'rstar' to work. ",
+    stop_no_call("Package 'caret' is required for 'rstar' to work. ",
           "Please use library(caret) to load the package.")
   }
 
@@ -102,11 +102,11 @@ rstar <- function(x, split = TRUE,
   method <- as_one_character(method)
   nsimulations <- as_one_integer(nsimulations)
   if (nsimulations < 1) {
-    stop2("'nsimulations' must be greater than or equal to 1.")
+    stop_no_call("'nsimulations' must be greater than or equal to 1.")
   }
   training_proportion <- as_one_numeric(training_proportion)
   if (training_proportion <= 0 || training_proportion >= 1) {
-    stop2("'training_proportion' must be greater than 0 and less than 1.")
+    stop_no_call("'training_proportion' must be greater than 0 and less than 1.")
   }
 
   # caret requires data.frame like objects
@@ -132,7 +132,7 @@ rstar <- function(x, split = TRUE,
     )
   } else {
     if (!(is.null(hyperparameters) || is.list(hyperparameters))) {
-      stop2("'hyperparameters' must be a list or NULL.")
+      stop_no_call("'hyperparameters' must be a list or NULL.")
     }
     caret_grid <- hyperparameters
   }

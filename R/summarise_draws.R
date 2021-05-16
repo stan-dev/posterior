@@ -76,7 +76,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
       names(funs) <- rep("", length(funs))
     }
     calls <- substitute(list(...))[-1]
-    calls <- ulapply(calls, deparse2)
+    calls <- ulapply(calls, deparse_pretty)
     for (i in seq_along(funs)) {
       fname <- NULL
       if (is.character(funs[[i]])) {
@@ -97,7 +97,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
         } else if (fname %in% getNamespaceExports("posterior")) {
           env <- asNamespace("posterior")
         } else {
-          stop2("Cannot find function '", fname, "'.")
+          stop_no_call("Cannot find function '", fname, "'.")
         }
       }
       funs[[i]] <- rlang::as_function(funs[[i]], env = env)
@@ -126,7 +126,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   variables <- variables(x)
   out <- named_list(variables, values = list(named_list(names(funs))))
   for (v in variables) {
-    draws <- drop2(x[, , v], dims = 3, reset_class = TRUE)
+    draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = TRUE)
     args <- c(list(draws), .args)
     for (m in names(funs)) {
       out[[v]][[m]] <- do.call(funs[[m]], args)
@@ -139,7 +139,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   }
   out <- tibble::as_tibble(do.call(rbind, out))
   if ("variable" %in% names(out)) {
-    stop2("Name 'variable' is reserved in 'summarise_draws'.")
+    stop_no_call("Name 'variable' is reserved in 'summarise_draws'.")
   }
   out$variable <- variables
   out <- move_to_start(out, "variable")
@@ -157,7 +157,7 @@ summary.draws <- function(object, ...) {
 #' @export
 summarise_draws.rvar <- function(x, ...) {
   .x <- draws_rvars(x = x)
-  names(.x) <- deparse2(substitute(x))
+  names(.x) <- deparse_pretty(substitute(x))
   summarise_draws(.x, ...)
 }
 
@@ -165,7 +165,7 @@ summarise_draws.rvar <- function(x, ...) {
 #' @export
 summary.rvar <- function(object, ...) {
   .x <- draws_rvars(x = object)
-  names(.x) <- deparse2(substitute(object))
+  names(.x) <- deparse_pretty(substitute(object))
   summarise_draws(.x, ...)
 }
 

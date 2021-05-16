@@ -139,7 +139,7 @@ ess_tail <- function(x) {
 ess_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
   probs <- as.numeric(probs)
   if (any(probs < 0 | probs > 1)) {
-    stop2("'probs' must contain values between 0 and 1.")
+    stop_no_call("'probs' must contain values between 0 and 1.")
   }
   names <- as_one_logical(names)
   out <- ulapply(probs, .ess_quantile, x = x)
@@ -222,7 +222,7 @@ ess_sd <- function(x) {
 mcse_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
   probs <- as.numeric(probs)
   if (any(probs < 0 | probs > 1)) {
-    stop2("'probs' must contain values between 0 and 1.")
+    stop_no_call("'probs' must contain values between 0 and 1.")
   }
   names <- as_one_logical(names)
   out <- ulapply(probs, .mcse_quantile, x = x)

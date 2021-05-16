@@ -221,7 +221,7 @@ anyDuplicated.rvar <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
 # then return the corresponding margin for draws_of(x)
 check_rvar_margin <- function(x, MARGIN) {
   if (!(1 <= MARGIN && MARGIN <= length(dim(x)))) {
-    stop2("MARGIN = ", MARGIN, " is invalid for dim = ", paste0(dim(x), collapse = ","))
+    stop_no_call("MARGIN = ", MARGIN, " is invalid for dim = ", paste0(dim(x), collapse = ","))
   }
   MARGIN + 1
 }
@@ -253,13 +253,13 @@ check_rvar_yank_index = function(x, i, ...) {
   index <- dots_list(i, ..., .preserve_empty = TRUE, .ignore_empty = "none")
 
   if (any(lengths(index)) > 1) {
-    stop2("Cannot select more than one element per index with `[[` in an rvar.")
+    stop_no_call("Cannot select more than one element per index with `[[` in an rvar.")
   } else if (any(sapply(index, function(x) is_missing(x) || is.na(x)))) {
-    stop2("Missing indices not allowed with `[[` in an rvar.")
+    stop_no_call("Missing indices not allowed with `[[` in an rvar.")
   } else if (any(sapply(index, is.logical))) {
-    stop2("Logical indices not allowed with `[[` in an rvar.")
+    stop_no_call("Logical indices not allowed with `[[` in an rvar.")
   } else if (any(sapply(index, function(x) x < 0))) {
-    stop2("subscript out of bounds")
+    stop_no_call("subscript out of bounds")
   }
 
   index
@@ -270,7 +270,7 @@ check_rvar_yank_index = function(x, i, ...) {
 check_rvar_subset_indices = function(x, ...) {
   ndim = max(length(dim(x)), 1)
   if (length(substitute(list(...))) - 1 > ndim) {
-    stop2("Cannot index past dimension ", ndim, ".")
+    stop_no_call("Cannot index past dimension ", ndim, ".")
   }
 }
 
@@ -283,7 +283,7 @@ ndraws2_common <- function(ndraws_x, ndraws_y) {
   } else if (ndraws_x == ndraws_y) {
     ndraws_x
   } else {
-    stop2(
+    stop_no_call(
       "Random variables have different number of draws (", ndraws_x,
       " and ", ndraws_y, ") and cannot be used together."
     )
@@ -317,10 +317,10 @@ nchains2_common <- function(nchains_x, nchains_y) {
 check_nchains_compat_with_ndraws <- function(nchains, ndraws) {
   # except with constants, nchains must divide the number of draws
   if (ndraws != 1 && isTRUE(ndraws %% nchains != 0)) {
-    stop2("Number of chains does not divide the number of draws.")
+    stop_no_call("Number of chains does not divide the number of draws.")
   }
   if (nchains < 1) {
-    stop2("Number of chains must be >= 1")
+    stop_no_call("Number of chains must be >= 1")
   }
 }
 
@@ -368,7 +368,7 @@ check_rvar_dims_first <- function(x, y) {
   } else if (identical(x_dim_dropped, y_dim_dropped)) {
     dim(x) <- dim(y)
   } else {
-    stop2("Cannot assign an rvar with dimension ", paste0(x_dim, collapse = ","),
+    stop_no_call("Cannot assign an rvar with dimension ", paste0(x_dim, collapse = ","),
       " to an rvar with dimension ", paste0(y_dim, collapse = ","))
   }
 
@@ -415,7 +415,7 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     current_dim[seq(length(current_dim) + 1, length(dim))] = 1
     dim(x) = current_dim
   } else if (length(current_dim) > length(dim)) {
-    stop2(
+    stop_no_call(
       "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "] ",
       "to array of shape [", paste(dim, collapse = ","), "]:\n",
       "Desired shape has fewer dimensions than existing array."
@@ -430,7 +430,7 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
   }
 
   if (any(current_dim[dim_to_broadcast] != 1)) {
-    stop2(
+    stop_no_call(
       "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "] ",
       "to array of shape [", paste(dim, collapse = ","), "]:\n",
       "All dimensions must be 1 or equal."

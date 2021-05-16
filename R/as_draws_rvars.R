@@ -198,7 +198,7 @@ draws_rvars <- function(..., .nchains = 1) {
   })
 
   if (!rlang::is_named(out)) {
-    stop2("All variables must be named.")
+    stop_no_call("All variables must be named.")
   }
 
   .as_draws_rvars(out)
