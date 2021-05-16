@@ -161,7 +161,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
       args <- c(list(draws), .args)
       out_v <- named_list(names(funs))
       for (m in names(funs)) {
-        out_v[[m]] <- do.call(funs[[m]], args1)
+        out_v[[m]] <- do.call(funs[[m]], args)
       }
       out[v_ind, ] <- unlist(out_v)
     }
