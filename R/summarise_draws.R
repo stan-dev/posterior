@@ -68,7 +68,6 @@ summarise_draws.default <- function(x, ...) {
 #' @rdname draws_summary
 #' @export
 summarise_draws.draws <- function(x, ..., .args = list()) {
-  print("new version")
   funs <- as.list(c(...))
   .args <- as.list(.args)
   if (length(funs)) {
