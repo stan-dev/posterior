@@ -27,20 +27,33 @@ seq_cols <- function(x) {
   seq_len(NCOL(x))
 }
 
-# selectively drop the dimensions of an array which have only one level
-drop_dims <- function(x, dims = NULL) {
+# selectively drop one-level dimensions of an array and/or reset object classes
+drop2 <- function(x, dims = NULL, reset_class = FALSE) {
   assert_array(x)
   assert_integerish(dims, null.ok = TRUE)
-  if (is.null(dims)) {
-    x <- drop(x)
-  } else {
-    old_dims <- dim(x)
-    assert_true(all(old_dims[dims] == 1L))
-    old_dimnames <- dimnames(x)
-    dim(x) <- old_dims[-dims]
-    dimnames(x) <- old_dimnames[-dims]
+  reset_class <- posterior:::as_one_logical(reset_class)
+  old_dims <- dim(x)
+  # proceed to drop dimensions if the input array has any non-NULL dimensions
+  if (length(old_dims)) {
+    # base::drop if all one-level dimensions are to be dropped non-selectively
+    if (is.null(dims) || setequal(dims, which(old_dims == 1L))) {
+      x <- drop(x)
+      # custom drop if certain one-level dimensions are to be dropped selectively
+    } else {
+      dim(x) <- old_dims[-dims]
+      old_dimnames <- dimnames(x)
+      # if all names of new dimnames are empty strings (""), set them to NULL
+      new_dimnames <- old_dimnames[-dims]
+      if (all(names(new_dimnames) == "")) {
+        names(new_dimnames) <- NULL
+      }
+      dimnames(x) <- new_dimnames
+    }
   }
-  class(x) <- setdiff(class(x), "draws_array")
+  # optionally, set class to NULL and let R decide appropriate classes
+  if(reset_class) {
+    class(x) <- NULL
+  }
   x
 }
 
