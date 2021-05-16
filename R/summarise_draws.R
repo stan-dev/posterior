@@ -159,7 +159,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
       v <- variables[v_ind]
       draws <- drop_dims(x[, , v], dims = 3)
       args <- c(list(draws), .args)
-      out_v <- named_list(names(funs))
+      out_v <- vector(mode = "list", length = length(funs))
       for (m in names(funs)) {
         out_v[[m]] <- do.call(funs[[m]], args)
       }
