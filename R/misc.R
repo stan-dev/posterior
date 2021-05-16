@@ -31,7 +31,7 @@ seq_cols <- function(x) {
 drop2 <- function(x, dims = NULL, reset_class = FALSE) {
   assert_array(x)
   assert_integerish(dims, null.ok = TRUE)
-  reset_class <- posterior:::as_one_logical(reset_class)
+  reset_class <- as_one_logical(reset_class)
   old_dims <- dim(x)
   # proceed to drop dimensions if the input array has any non-NULL dimensions
   if (length(old_dims)) {
