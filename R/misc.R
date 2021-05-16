@@ -27,22 +27,33 @@ seq_cols <- function(x) {
   seq_len(NCOL(x))
 }
 
-# selectively drop dimensions of arrays
-drop_dims <- function(x, dims = NULL) {
+# selectively drop one-level dimensions of an array and/or reset object classes
+drop2 <- function(x, dims = NULL, reset_class = FALSE) {
   assert_array(x)
   assert_integerish(dims, null.ok = TRUE)
+  reset_class <- as_one_logical(reset_class)
   old_dims <- dim(x)
-  if (is.null(dims)) {
-    dims <- old_dims[old_dims == 1L]
-  } else {
-    assert_true(all(old_dims[dims] <= 1L))
+  # proceed to drop dimensions if the input array has any non-NULL dimensions
+  if (length(old_dims)) {
+    # base::drop if all one-level dimensions are to be dropped non-selectively
+    if (is.null(dims) || setequal(dims, which(old_dims == 1L))) {
+      x <- drop(x)
+      # custom drop if certain one-level dimensions are to be dropped selectively
+    } else {
+      dim(x) <- old_dims[-dims]
+      old_dimnames <- dimnames(x)
+      # if all names of new dimnames are empty strings (""), set them to NULL
+      new_dimnames <- old_dimnames[-dims]
+      if (all(names(new_dimnames) == "")) {
+        names(new_dimnames) <- NULL
+      }
+      dimnames(x) <- new_dimnames
+    }
   }
-  if (!length(dims)) {
-    return(x)
+  # optionally, set class to NULL and let R decide appropriate classes
+  if(reset_class) {
+    class(x) <- NULL
   }
-  old_dimnames <- dimnames(x)
-  dim(x) <- old_dims[-dims]
-  dimnames(x) <- old_dimnames[-dims]
   x
 }
 

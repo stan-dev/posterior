@@ -83,7 +83,7 @@ as_draws_df.draws_array <- function(x, ...) {
   rownames(x) <- NULL
   out <- named_list(chain_ids)
   for (i in seq_along(out)) {
-    out[[i]] <- drop_dims(x[, i, ], dims = 2)
+    out[[i]] <- drop2(x[, i, ], dims = 2, reset_class = TRUE)
     class(out[[i]]) <- "matrix"
     out[[i]] <- tibble::as_tibble(out[[i]])
     out[[i]]$.chain <- chain_ids[i]

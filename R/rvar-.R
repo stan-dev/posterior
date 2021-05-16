@@ -464,25 +464,6 @@ broadcast_draws <- function(x, .ndraws, keep_constants = FALSE) {
   }
 }
 
-drop_ <- function(x) {
-  .dim <- dim(x)
-
-  if (length(.dim) > 1) {
-    # with exactly 1 dimension left we don't want to drop anything
-    # (otherwise names get lost), so only do this with > 1 dimension
-    keep_dim <- .dim != 1
-    .dimnames <- dimnames(x)
-    dim(x) <- .dim[keep_dim]
-    # for comparison / testing, ensure if no dimnames have names that we
-    # actually have those names be NULL (rather than just empty strings)
-    new_dimnames <- .dimnames[keep_dim]
-    if (all(names(new_dimnames) == "")) names(new_dimnames) <- NULL
-    dimnames(x) <- new_dimnames
-  }
-
-  x
-}
-
 # flatten dimensions and names of an array
 flatten_array = function(x, x_name = NULL) {
   # determine new dimension names in the form x,y,z
