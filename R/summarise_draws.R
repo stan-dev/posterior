@@ -151,10 +151,10 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   # Pre-allocate matrix to store output
   out <- matrix(NA, nrow = length(variables), ncol = length(unlist(out1)))
   colnames(out) <- the_names
-  out[1,] <- unlist(out1)
+  out[1, ] <- unlist(out1)
   
   # Do the computation for all remaining variables
-  if(length(variables) > 1L){
+  if (length(variables) > 1L) {
     for (v_ind in 2:length(variables)) {
       v <- variables[v_ind]
       draws <- drop_dims(x[, , v], dims = 3)
