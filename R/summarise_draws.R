@@ -126,8 +126,6 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   variables <- variables(x)
   
   if (length(variables)) {
-    n_fun <- length(funs)
-    
     get_summary_list <- function(x, v) {
       draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
       args <- c(list(draws), .args)
@@ -137,11 +135,10 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
       }
       return(v_summary)
     }
-    
     # get length and output names, calculated on the first variable
     out1 <- get_summary_list(x, variables[1])
-    the_names <- vector(mode = "list", length = n_fun)
-    for (i in 1:n_fun){
+    the_names <- vector(mode = "list", length = length(funs))
+    for (i in seq_along(out1)){
       if (rlang::is_named(out1[[i]])) {
         the_names[[i]] <- names(out1[[i]])
       } else if (length(out1[[i]]) > 1) {
@@ -151,17 +148,14 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
       }
     }
     the_names <- unlist(the_names)
-    
     # Check for naming issues prior do doing lengthy computation
     if ("variable" %in% the_names) {
       stop_no_call("Name 'variable' is reserved in 'summarise_draws'.")
     }
-    
     # Pre-allocate matrix to store output
     out <- matrix(NA, nrow = length(variables), ncol = length(the_names))
     colnames(out) <- the_names
     out[1, ] <- unlist(out1)
-    
     # Do the computation for all remaining variables
     if (length(variables) > 1L) {
       for (v_ind in 2:length(variables)) {
@@ -170,13 +164,12 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
         out[v_ind, ] <- unlist(out_v)
       }
     }
-    
     out <- tibble::as_tibble(out)
     out$variable <- variables
     out <- move_to_start(out, "variable")
     class(out) <- class_draws_summary()
     return(out)
-  } else {
+  } else { # i.e. if length(variables) == 0L
     warning("the draws object contained no variables with unreserved names; 
             no summaries computed")
     return(tibble::tibble(character()))
