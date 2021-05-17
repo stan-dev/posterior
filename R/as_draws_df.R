@@ -66,7 +66,7 @@ as_draws_df.draws_matrix <- function(x, ...) {
   }
   x <- tibble::as_tibble(x)
   x[".chain"] <- 1L
-  x[c(".iteration", ".draw")] <- 1L:nrow(x)
+  x[c(".iteration", ".draw")] <- seq_len(nrow(x))
   class(x) <- class_draws_df()
   x
 }
@@ -83,7 +83,7 @@ as_draws_df.draws_array <- function(x, ...) {
   x <- tibble::as_tibble(x)
   x[".chain"] <- rep(chain_ids, each = max(iteration_ids))
   x[".iteration"] <- rep(iteration_ids, max(chain_ids))
-  x[".draw"] <- 1L:nrow(x)
+  x[".draw"] <- seq_len(nrow(x))
   class(x) <- class_draws_df()
   x
 }
@@ -102,7 +102,7 @@ as_draws_df.draws_list <- function(x, ...) {
   x <- tibble::as_tibble(x)
   x[".chain"] <- rep(chain_ids, each = max(iteration_ids))
   x[".iteration"] <- rep(iteration_ids, max(chain_ids))
-  x[".draw"] <- 1L:nrow(x)
+  x[".draw"] <- seq_len(nrow(x))
   class(x) <- class_draws_df()
   x
 }
@@ -148,7 +148,7 @@ as_draws_df.mcmc.list <- function(x, ...) {
     iteration_ids <- x[[.iteration]]
     x[.iteration] <- NULL
   } else {
-    iteration_ids <- 1L:nrow(x)
+    iteration_ids <- seq_len(nrow(x))
   }
   # prepare chain indices
   if (!is.null(.chain)) {
@@ -197,8 +197,8 @@ draws_df <- function(..., .nchains = 1) {
   }
   niterations <- ndraws %/% .nchains
   out <- as.data.frame(out, optional = TRUE)
-  out[".iteration"] <- rep(1L:niterations, .nchains)
-  out[".chain"] <- rep(1L:.nchains, each = niterations)
+  out[".iteration"] <- rep(seq_len(niterations), .nchains)
+  out[".chain"] <- rep(seq_len(.nchains), each = niterations)
   as_draws_df(out)
 }
 
