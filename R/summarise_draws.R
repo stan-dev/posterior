@@ -127,7 +127,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
 
   # get length and output names, calculated on the first variable
   v1 <- variables[1]
-  draws1 <- drop_dims_or_classes(x[, , v1], dims = 3)
+  draws1 <- drop_dims_or_classes(x[, , v1], dims = 3, reset_class = FALSE)
   args1 <- c(list(draws1), .args)
   out1 <- named_list(names(funs))
   n_fun <- length(out1)
