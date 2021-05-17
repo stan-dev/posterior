@@ -159,7 +159,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
     # Do the computation for all remaining variables
     if (length(variables) > 1L) {
       for (v_ind in 2:length(variables)) {
-        out_v <- get_summary_list(x, variables[v_ind])
+        out_v <- create_summary_list(x, variables[v_ind])
         out[v_ind, ] <- unlist(out_v)
       }
     }
