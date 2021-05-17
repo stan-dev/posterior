@@ -130,11 +130,12 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   draws1 <- drop_dims_or_classes(x[, , v1], dims = 3)
   args1 <- c(list(draws1), .args)
   out1 <- named_list(names(funs))
+  n_fun <- length(out1)
   for (m in names(funs)) {
     out1[[m]] <- do.call(funs[[m]], args1)
   }
-  the_names <- vector(mode = "list", length = length(out1))
-  for (i in 1:length(out1)){
+  the_names <- vector(mode = "list", length = n_fun)
+  for (i in 1:n_fun){
     if (rlang::is_named(out1[[i]])) {
       the_names[[i]] <- names(out1[[i]])
     } else if (length(out1[[i]]) > 1) {
