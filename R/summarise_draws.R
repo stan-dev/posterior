@@ -76,7 +76,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
       names(funs) <- rep("", length(funs))
     }
     calls <- substitute(list(...))[-1]
-    calls <- ulapply(calls, deparse2)
+    calls <- ulapply(calls, deparse_pretty)
     for (i in seq_along(funs)) {
       fname <- NULL
       if (is.character(funs[[i]])) {
@@ -97,7 +97,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
         } else if (fname %in% getNamespaceExports("posterior")) {
           env <- asNamespace("posterior")
         } else {
-          stop2("Cannot find function '", fname, "'.")
+          stop_no_call("Cannot find function '", fname, "'.")
         }
       }
       funs[[i]] <- rlang::as_function(funs[[i]], env = env)
@@ -124,9 +124,10 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   x <- repair_draws(x)
   x <- as_draws_array(x)
   variables <- variables(x)
+
   # get length and output names, calculated on the first variable
   v1 <- variables[1]
-  draws1 <- drop_dims(x[, , v1], dims = 3)
+  draws1 <- drop_dims_or_classes(x[, , v1], dims = 3)
   args1 <- c(list(draws1), .args)
   out1 <- named_list(names(funs))
   for (m in names(funs)) {
@@ -145,7 +146,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   
   # Check for naming issues prior do doing lengthy computation
   if ("variable" %in% the_names) {
-    stop2("Name 'variable' is reserved in 'summarise_draws'.")
+    stop_no_call("Name 'variable' is reserved in 'summarise_draws'.")
   }
   
   # Pre-allocate matrix to store output
@@ -157,7 +158,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   if (length(variables) > 1L) {
     for (v_ind in 2:length(variables)) {
       v <- variables[v_ind]
-      draws <- drop_dims(x[, , v], dims = 3)
+      draws <- drop_dims_or_classes(x[, , v], dims = 3)
       args <- c(list(draws), .args)
       out_v <- vector(mode = "list", length = length(funs))
       for (m in names(funs)) {
@@ -184,7 +185,7 @@ summary.draws <- function(object, ...) {
 #' @export
 summarise_draws.rvar <- function(x, ...) {
   .x <- draws_rvars(x = x)
-  names(.x) <- deparse2(substitute(x))
+  names(.x) <- deparse_pretty(substitute(x))
   summarise_draws(.x, ...)
 }
 
@@ -192,7 +193,7 @@ summarise_draws.rvar <- function(x, ...) {
 #' @export
 summary.rvar <- function(object, ...) {
   .x <- draws_rvars(x = object)
-  names(.x) <- deparse2(substitute(object))
+  names(.x) <- deparse_pretty(substitute(object))
   summarise_draws(.x, ...)
 }
 

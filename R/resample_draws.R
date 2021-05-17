@@ -65,7 +65,7 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
   if (is.null(weights)) {
     weights <- weights(x, normalize = TRUE)
     if (is.null(weights)) {
-      stop2("No weights are provided and none can ",
+      stop_no_call("No weights are provided and none can ",
             "be found within the draws object.")
     }
     # resampling invalidates stored weights
@@ -75,7 +75,7 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
   }
   if (is.null(ndraws)) {
     if (grepl("_no_replace$", method)) {
-      stop2("Argument 'ndraws' is required when sampling without replacement.")
+      stop_no_call("Argument 'ndraws' is required when sampling without replacement.")
     }
     ndraws <- length(weights)
   }
@@ -96,7 +96,7 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
 # @return index vector of length 'ndraws'
 .resample_simple_no_replace <- function(weights, ndraws, ...) {
   if (ndraws > length(weights)) {
-    stop2("Argument 'ndraws' must be smaller than the total ",
+    stop_no_call("Argument 'ndraws' must be smaller than the total ",
           "number of draws in method 'simple_no_replace'.")
   }
   out <- seq_along(weights)

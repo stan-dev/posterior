@@ -91,10 +91,10 @@ as_draws_list.mcmc.list <- function(x, ...) {
     x <- list(x)
   }
   if (any(!ulapply(x, is.list))) {
-    stop2("All list elements must be lists themselves.")
+    stop_no_call("All list elements must be lists themselves.")
   }
   if (length(unique(lengths(x))) != 1L) {
-    stop2("All list elements must have the same length.")
+    stop_no_call("All list elements must have the same length.")
   }
   if (is.null(names(x[[1]]))) {
     # no variable names provided; using default names
@@ -108,11 +108,11 @@ as_draws_list.mcmc.list <- function(x, ...) {
   niterations <- length(x[[1]][[1]])
   for (i in seq_along(x)) {
     if (!all(names(x[[i]]) == variables)) {
-      stop2("Variables in all chains must have the same names.")
+      stop_no_call("Variables in all chains must have the same names.")
     }
     for (j in seq_along(x[[i]])) {
       if (length(x[[i]][[j]]) != niterations) {
-        stop2("All variables in all chains must have the same length.")
+        stop_no_call("All variables in all chains must have the same length.")
       }
     }
   }

@@ -32,7 +32,7 @@ extract_variable_matrix.draws <- function(x, variable, ...) {
   variable <- as_one_character(variable)
   out <- .subset_draws(x, variable = variable, reserved = FALSE)
   out <- as_draws_array(out)
-  out <- drop_dims(out, dims = 3)
+  out <- drop_dims_or_classes(out, dims = 3, reset_class = TRUE)
   class(out) <- "matrix"
   out
 }
@@ -49,7 +49,7 @@ extract_variable_matrix.draws_rvars <- function(x, variable, ...) {
     root_variable <- regmatches(variable, variable_regex)[[1]][[2]]
     extract_variable_matrix(as_draws_array(x[root_variable]), variable, ...)
   } else if (length(x[[variable]]) > 1) {
-    stop2(
+    stop_no_call(
       'Cannot extract non-scalar value using extract_variable_matrix():\n',
       '  "', variable, '" has dimensions: [', paste0(dim(x[[variable]]), collapse = ","), ']\n',
       '  Try including brackets ("[]") and indices in the variable name to extract a scalar value.'

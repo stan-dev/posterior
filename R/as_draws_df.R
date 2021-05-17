@@ -83,7 +83,7 @@ as_draws_df.draws_array <- function(x, ...) {
   rownames(x) <- NULL
   out <- named_list(chain_ids)
   for (i in seq_along(out)) {
-    out[[i]] <- drop_dims(x[, i, ], dims = 2)
+    out[[i]] <- drop_dims_or_classes(x[, i, ], dims = 2, reset_class = TRUE)
     class(out[[i]]) <- "matrix"
     out[[i]] <- tibble::as_tibble(out[[i]])
     out[[i]]$.chain <- chain_ids[i]
@@ -146,7 +146,7 @@ as_draws_df.mcmc.list <- function(x, ...) {
     .iteration <- as_one_character(.iteration)
     has_iteration_column <- .iteration %in% names(x)
     if (!has_iteration_column) {
-      stop2("Iteration indicator '", .iteration, "' cannot be found.")
+      stop_no_call("Iteration indicator '", .iteration, "' cannot be found.")
     }
   } else {
     .iteration <- ".iteration"
@@ -163,7 +163,7 @@ as_draws_df.mcmc.list <- function(x, ...) {
     .chain <- as_one_character(.chain)
     has_chain_column <- .chain %in% names(x)
     if (!has_chain_column) {
-      stop2("Chain indicator '", .chain, "' cannot be found.")
+      stop_no_call("Chain indicator '", .chain, "' cannot be found.")
     }
   } else {
     .chain <- ".chain"
@@ -197,11 +197,11 @@ draws_df <- function(..., .nchains = 1) {
   out <- validate_draws_per_variable(...)
   .nchains <- as_one_integer(.nchains)
   if (.nchains < 1) {
-    stop2("Number of chains must be positive.")
+    stop_no_call("Number of chains must be positive.")
   }
   ndraws <- length(out[[1]])
   if (ndraws %% .nchains != 0) {
-    stop2("Number of chains does not divide the number of draws.")
+    stop_no_call("Number of chains does not divide the number of draws.")
   }
   niterations <- ndraws %/% .nchains
   out <- as.data.frame(out, optional = TRUE)
