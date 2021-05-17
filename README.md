@@ -17,12 +17,12 @@ users and developers of packages for fitting Bayesian models or working
 with output from Bayesian models. The primary goals of the package are
 to:
 
-  - Efficiently convert between many different useful formats of draws
+-   Efficiently convert between many different useful formats of draws
     (samples) from posterior or prior distributions.
-  - Provide consistent methods for operations commonly performed on
+-   Provide consistent methods for operations commonly performed on
     draws, for example, subsetting, binding, or mutating draws.
-  - Provide various summaries of draws in convenient formats.
-  - Provide lightweight implementations of state of the art posterior
+-   Provide various summaries of draws in convenient formats.
+-   Provide lightweight implementations of state of the art posterior
     inference diagnostics.
 
 ### Installation
@@ -44,7 +44,7 @@ remotes::install_github("stan-dev/posterior")
 
 ``` r
 library("posterior")
-#> This is posterior version 0.1.0
+#> This is posterior version 0.1.5
 ```
 
 To demonstrate how to work with the **posterior** package, we will use
@@ -113,7 +113,7 @@ print(eight_schools_df)
 #> 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1
 #> 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5
 #> # ... with 390 more draws, and 2 more variables
-#> # ... hidden meta-columns {'.chain', '.iteration', '.draw'}
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
 
 Different formats are preferable in different situations and hence
@@ -201,7 +201,7 @@ subset_draws(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 #> 8  -1.2
 #> 9  10.9
 #> 10  9.8
-#> # ... hidden meta-columns {'.chain', '.iteration', '.draw'}
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
 
 The same call to `subset_draws()` can be used regardless of whether the
@@ -235,7 +235,7 @@ print(x)
 #> 9  0.15 3.9  16.6
 #> 10 7.17 1.8  79.9
 #> # ... with 390 more draws
-#> # ... hidden meta-columns {'.chain', '.iteration', '.draw'}
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
 ```
 
 When we do the math ourselves, we see that indeed for each draw, `phi`
@@ -274,12 +274,12 @@ x4 <- bind_draws(x1, x3, along = "variable")
 print(x4)
 #> # A draws_matrix: 5 draws, and 3 variables
 #>     variable
-#> draw  alpha beta theta
-#>    1 -0.961    1  0.08
-#>    2  0.348    1  2.21
-#>    3  0.898    1  1.44
-#>    4 -1.255    1  0.44
-#>    5 -0.065    1  3.87
+#> draw alpha beta theta
+#>    1  1.77    1  0.16
+#>    2  0.41    1  0.55
+#>    3  1.85    1  1.52
+#>    4 -0.77    1  1.77
+#>    5  1.02    1  0.19
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -289,17 +289,17 @@ x5 <- bind_draws(x1, x2, along = "draw")
 print(x5)
 #> # A draws_matrix: 10 draws, and 2 variables
 #>     variable
-#> draw  alpha beta
-#>   1  -0.961    1
-#>   2   0.348    1
-#>   3   0.898    1
-#>   4  -1.255    1
-#>   5  -0.065    1
-#>   6   1.421    2
-#>   7  -1.318    2
-#>   8   1.744    2
-#>   9   0.425    2
-#>   10  0.789    2
+#> draw   alpha beta
+#>   1   1.7669    1
+#>   2   0.4124    1
+#>   3   1.8490    1
+#>   4  -0.7658    1
+#>   5   1.0250    1
+#>   6   0.8754    2
+#>   7  -0.0025    2
+#>   8  -0.7391    2
+#>   9  -0.0039    2
+#>   10  0.3473    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -318,27 +318,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 draws, and 5 variables
 #>     variable
-#> draw     V1    V2     V3    V4     V5
-#>   1  -1.388  0.32  0.238 -1.29  0.282
-#>   2  -0.514 -0.61  0.092 -0.24 -1.138
-#>   3   0.189 -1.03  1.459 -0.41 -0.854
-#>   4  -0.034 -1.78  0.826  0.14 -1.050
-#>   5  -1.681 -1.26 -0.481 -0.99 -0.474
-#>   6   0.536  1.09  0.014 -0.22  0.642
-#>   7  -0.812  0.79 -0.627 -1.77  0.086
-#>   8   2.268 -0.70 -0.092 -1.59 -1.445
-#>   9  -0.075 -0.70  0.400  0.97 -0.737
-#>   10 -0.144 -0.58  0.029  1.02 -1.431
+#> draw     V1    V2    V3    V4      V5
+#>   1   1.275  1.50  0.21  1.88 -0.0523
+#>   2  -0.659 -0.75  0.75 -1.05 -0.0058
+#>   3   0.584 -0.36  0.63 -0.73 -0.3592
+#>   4   0.530  1.40  1.26  0.94 -0.5055
+#>   5   1.298  2.18 -1.28  1.27 -0.9424
+#>   6  -0.582 -0.69 -0.36 -0.33 -2.0679
+#>   7  -1.215  0.76 -1.06 -1.15  0.1941
+#>   8   0.394  0.36  0.79 -1.75  0.8235
+#>   9   0.058  0.89 -1.12 -0.42 -0.3248
+#>   10  1.248  1.25  0.73  0.63  0.1322
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 x 5
-#>   variable   mean    sd  median   mad
-#>   <chr>     <dbl> <dbl>   <dbl> <dbl>
-#> 1 V1       -0.165 1.10  -0.110  0.778
-#> 2 V2       -0.446 0.908 -0.658  0.719
-#> 3 V3        0.186 0.608  0.0604 0.383
-#> 4 V4       -0.438 0.984 -0.324  1.21 
-#> 5 V5       -0.612 0.729 -0.796  0.725
+#>   variable    mean    sd median   mad
+#>   <chr>      <dbl> <dbl>  <dbl> <dbl>
+#> 1 V1        0.293  0.884  0.462 1.18 
+#> 2 V2        0.653  0.994  0.825 0.924
+#> 3 V3        0.0546 0.934  0.420 0.855
+#> 4 V4       -0.0735 1.19  -0.378 1.32 
+#> 5 V5       -0.311  0.776 -0.189 0.473
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
@@ -348,7 +348,7 @@ either way.
 
 ### Contributing to posterior
 
-We welcome contributions\! The **posterior** package is under active
+We welcome contributions! The **posterior** package is under active
 development. If you find bugs or have ideas for new features (for us or
 yourself to implement) please open an issue on GitHub
 (<https://github.com/stan-dev/posterior/issues>).
@@ -363,14 +363,14 @@ for their work.
 
 When using **posterior**, please cite it as follows:
 
-  - Bürkner P. C., Gabry J., Kay M., & Vehtari A. (2020). “posterior:
+-   Bürkner P. C., Gabry J., Kay M., & Vehtari A. (2020). “posterior:
     Tools for Working with Posterior Distributions.” R package version
-    XXX, \<URL: <https://mc-stan.org/posterior>\>.
+    XXX, &lt;URL: <https://mc-stan.org/posterior>&gt;.
 
 When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or
 `ess_tail`, please also cite
 
-  - Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C.
+-   Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C.
     (2020). Rank-normalization, folding, and localization: An improved
     Rhat for assessing convergence of MCMC. *Bayesian Analysis*.
 
