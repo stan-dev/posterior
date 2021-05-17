@@ -136,7 +136,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
       return(v_summary)
     }
     # get length and output names, calculated on the first variable
-    out1 <- get_summary_list(x, variables[1])
+    out1 <- create_summary_list(x, variables[1])
     the_names <- vector(mode = "list", length = length(funs))
     for (i in seq_along(out1)){
       if (rlang::is_named(out1[[i]])) {
