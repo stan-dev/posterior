@@ -126,7 +126,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   variables <- variables(x)
   
   if (length(variables)) {
-    get_summary_list <- function(x, v) {
+  create_summary_list <- function(x, v) {
       draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
       args <- c(list(draws), .args)
       v_summary <- named_list(names(funs))
