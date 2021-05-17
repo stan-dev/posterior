@@ -158,7 +158,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   if (length(variables) > 1L) {
     for (v_ind in 2:length(variables)) {
       v <- variables[v_ind]
-      draws <- drop_dims_or_classes(x[, , v], dims = 3)
+      draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
       args <- c(list(draws), .args)
       out_v <- vector(mode = "list", length = length(funs))
       for (m in names(funs)) {
