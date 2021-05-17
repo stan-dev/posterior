@@ -152,7 +152,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   }
   
   # Pre-allocate matrix to store output
-  out <- matrix(NA, nrow = length(variables), ncol = length(unlist(out1)))
+  out <- matrix(NA, nrow = length(variables), ncol = length(the_names))
   colnames(out) <- the_names
   out[1, ] <- unlist(out1)
   
