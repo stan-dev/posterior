@@ -36,7 +36,7 @@ bind_draws.draws_matrix <- function(x, ..., along = "variable") {
     check_same_fun_output(dots, variables)
     out <- do.call(abind, c(dots, along = 1L))
   } else if (along == "chain") {
-    stop2("Cannot bind 'draws_matrix' objects along 'chain'.")
+    stop_no_call("Cannot bind 'draws_matrix' objects along 'chain'.")
   }
   as_draws_matrix(out)
 }
@@ -66,7 +66,7 @@ bind_draws.draws_array <- function(x, ..., along = "variable") {
     check_same_fun_output(dots, chain_ids)
     out <- do.call(abind, c(dots, along = 1L))
   } else if (along == "draw") {
-    stop2("Cannot bind 'draws_array' objects along 'draw'.")
+    stop_no_call("Cannot bind 'draws_array' objects along 'draw'.")
   }
   as_draws_array(out)
 }
@@ -157,7 +157,7 @@ bind_draws.draws_list <- function(x, ..., along = "variable") {
       }
     }
   } else if (along == "draw") {
-    stop2("Cannot bind 'draws_list' objects along 'draw'.")
+    stop_no_call("Cannot bind 'draws_list' objects along 'draw'.")
   }
   as_draws_list(out)
 }
@@ -180,7 +180,7 @@ bind_draws.draws_rvars <- function(x, ..., along = "variable") {
     check_same_fun_output(dots, iteration_ids)
     out <- do.call(c, dots)
   } else if (along == "iteration") {
-    stop2("Cannot bind 'draws_rvars' objects along 'iteration'.")
+    stop_no_call("Cannot bind 'draws_rvars' objects along 'iteration'.")
   } else if (along %in% c("chain", "draw")) {
     check_same_fun_output(dots, variables)
     if (along == "chain") {
@@ -208,7 +208,7 @@ bind_draws.NULL <- function(x, ..., along = "variable") {
   dots <- list(...)
   dots <- remove_null(dots)
   if (!length(dots)) {
-    stop2("All objects passed to 'bind_draws' are NULL.")
+    stop_no_call("All objects passed to 'bind_draws' are NULL.")
   }
   do.call(bind_draws, dots)
 }
@@ -220,14 +220,14 @@ bind_draws.NULL <- function(x, ..., along = "variable") {
 check_same_fun_output <- function(ls, fun) {
   assert_list(ls)
   if (is.function(fun)) {
-    fun_name <- deparse2(substitute(fun))
+    fun_name <- deparse_pretty(substitute(fun))
   } else {
     fun_name <- as_one_character(fun)
     fun <- get(fun, mode = "function")
   }
   ids <- lapply(ls, fun)
   if (sum(!duplicated(ids)) > 1L) {
-    stop2("'", fun_name, "' of bound objects do not match.")
+    stop_no_call("'", fun_name, "' of bound objects do not match.")
   }
   invisible(TRUE)
 }

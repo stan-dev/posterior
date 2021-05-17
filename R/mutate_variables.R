@@ -93,14 +93,14 @@ mutate_variables.draws_rvars <- function(.x, ...) {
 .mutate_variable <- function(expr, data, env = caller_env()) {
   out <- eval_tidy(expr, data, env)
   if (!is.numeric(out)) {
-    stop2("{", as_label(expr), "} does not evaluate to a numeric vector.")
+    stop_no_call("{", as_label(expr), "} does not evaluate to a numeric vector.")
   }
   n <- length(data[[1]])
   if (length(out) == 1L) {
     out <- rep(out, n)
   }
   if (length(out) != n) {
-    stop2("{", as_label(expr), "} does not evaluate ",
+    stop_no_call("{", as_label(expr), "} does not evaluate ",
           "to a vector of length 1 or ", n, ".")
   }
   out

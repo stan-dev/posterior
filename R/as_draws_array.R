@@ -142,11 +142,11 @@ draws_array <- function(..., .nchains = 1) {
   out <- validate_draws_per_variable(...)
   .nchains <- as_one_integer(.nchains)
   if (.nchains < 1) {
-    stop2("Number of chains must be positive.")
+    stop_no_call("Number of chains must be positive.")
   }
   ndraws <- length(out[[1]])
   if (ndraws %% .nchains != 0) {
-    stop2("Number of chains does not divide the number of draws.")
+    stop_no_call("Number of chains does not divide the number of draws.")
   }
   niterations <- ndraws %/% .nchains
   variables <- names(out)

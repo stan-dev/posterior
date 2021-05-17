@@ -45,7 +45,7 @@ extract_variable.draws_rvars <- function(x, variable, ...) {
     root_variable <- regmatches(variable, variable_regex)[[1]][[2]]
     out <- extract_variable(as_draws_array(x[root_variable]), variable, ...)
   } else if (length(x[[variable]]) > 1) {
-    stop2(
+    stop_no_call(
       'Cannot extract non-scalar value using extract_variable():\n',
       '  "', variable, '" has dimensions: [', paste0(dim(x[[variable]]), collapse = ","), ']\n',
       '  Try including brackets ("[]") and indices in the variable name to extract a scalar value.'
