@@ -228,7 +228,7 @@ is_draws_df_like <- function(x) {
     reserved_vars <- setdiff(reserved_vars, names(out))
     out[, reserved_vars] <- NextMethod("[", j = reserved_vars, drop = FALSE)
   } else if (!all(reserved_df_variables() %in% names(out))) {
-    warning2("Dropping 'draws_df' class as required metadata was removed.")
+    warning_no_call("Dropping 'draws_df' class as required metadata was removed.")
     class(out) <- setdiff(class(out), c("draws_df", "draws"))
   }
   out
