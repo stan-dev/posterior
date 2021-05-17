@@ -133,16 +133,17 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   for (m in names(funs)) {
     out1[[m]] <- do.call(funs[[m]], args1)
   }
-  the_names <- vector()
+  the_names <- vector(mode = "list", length = length(out1))
   for (i in 1:length(out1)){
     if (rlang::is_named(out1[[i]])) {
-      the_names <- c(the_names, names(out1[[i]]))
+      the_names[[i]] <- names(out1[[i]])
     } else if (length(out1[[i]]) > 1) {
-      the_names <- c(the_names, paste0(names(out1)[i], ".", c(1:length(out1[[i]]))))
+      the_names[[i]] <- paste0(names(out1)[i], ".", c(1:length(out1[[i]])))
     } else {
-      the_names <- c(the_names, names(out1)[i])
+      the_names[[i]] <- names(out1)[i]
     }
   }
+  the_names <- unlist(the_names)
   
   # Check for naming issues prior do doing lengthy computation
   if ("variable" %in% the_names) {
