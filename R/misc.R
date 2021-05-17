@@ -189,7 +189,7 @@ stop_no_call <- function(...) {
   stop(..., call. = FALSE)
 }
 
-warning2 <- function(...) {
+warning_no_call <- function(...) {
   warning(..., call. = FALSE)
 }
 

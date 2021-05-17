@@ -452,7 +452,7 @@ check_existing_variables <- function(variables, x, regex = FALSE,
     stop_no_call("The following variables are missing in the draws object: ",
           comma(missing_variables))
   }
-  variables
+  invisible(variables)
 }
 
 # check validity of new variables: e.g., that there are
@@ -482,7 +482,7 @@ check_reserved_variables <- function(variables) {
   if (length(used_reserved_variables)) {
     stop_no_call("Variable names ", comma(used_reserved_variables), " are reserved.")
   }
-  variables
+  invisible(variables)
 }
 
 # check validity of iteration indices
@@ -507,7 +507,7 @@ check_iteration_ids <- function(iteration_ids, x, unique = TRUE) {
     stop_no_call("Tried to subset iterations up to '", max_iteration, "' ",
           "but the object only has '", niterations, "' iterations.")
   }
-  iteration_ids
+  invisible(iteration_ids)
 }
 
 # check validity of chain indices
@@ -532,7 +532,7 @@ check_chain_ids <- function(chain_ids, x, unique = TRUE) {
     stop_no_call("Tried to subset chains up to '", max_chain, "' ",
           "but the object only has '", nchains, "' chains.")
   }
-  chain_ids
+  invisible(chain_ids)
 }
 
 # check validity of draw indices
@@ -557,5 +557,5 @@ check_draw_ids <- function(draw_ids, x, unique = TRUE) {
     stop_no_call("Tried to subset draws up to '", max_draw, "' ",
           "but the object only has '", ndraws, "' draws.")
   }
-  draw_ids
+  invisible(draw_ids)
 }

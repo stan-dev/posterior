@@ -61,13 +61,12 @@ as_draws_df.draws_df <- function(x, ...) {
 #' @rdname draws_df
 #' @export
 as_draws_df.draws_matrix <- function(x, ...) {
-  class(x) <- "matrix"
-  draws <- as.integer(rownames(x))
-  rownames(x) <- NULL
+  if (ndraws(x) == 0L) {
+    return(empty_draws_df(variables(x)))
+  }
   x <- tibble::as_tibble(x)
-  x$.chain <- rep(1L, nrow(x))
-  x$.iteration <- draws
-  x$.draw <- draws
+  x[".chain"] <- 1L
+  x[c(".iteration", ".draw")] <- seq_len(nrow(x))
   class(x) <- class_draws_df()
   x
 }
@@ -75,44 +74,37 @@ as_draws_df.draws_matrix <- function(x, ...) {
 #' @rdname draws_df
 #' @export
 as_draws_df.draws_array <- function(x, ...) {
-  if (ndraws(x) == 0) {
+  if (ndraws(x) == 0L) {
     return(empty_draws_df(variables(x)))
   }
   iteration_ids <- iteration_ids(x)
   chain_ids <- chain_ids(x)
-  rownames(x) <- NULL
-  out <- named_list(chain_ids)
-  for (i in seq_along(out)) {
-    out[[i]] <- drop_dims_or_classes(x[, i, ], dims = 2, reset_class = TRUE)
-    class(out[[i]]) <- "matrix"
-    out[[i]] <- tibble::as_tibble(out[[i]])
-    out[[i]]$.chain <- chain_ids[i]
-    out[[i]]$.iteration <- iteration_ids
-    out[[i]]$.draw <- compute_draw_ids(chain_ids[i], iteration_ids)
-  }
-  out <- do.call(rbind, out)
-  class(out) <- class_draws_df()
-  out
+  x <- apply(x, 3L, c)
+  x <- tibble::as_tibble(x)
+  x[".chain"] <- rep(chain_ids, each = max(iteration_ids))
+  x[".iteration"] <- rep(iteration_ids, max(chain_ids))
+  x[".draw"] <- seq_len(nrow(x))
+  class(x) <- class_draws_df()
+  x
 }
 
 #' @rdname draws_df
 #' @export
 as_draws_df.draws_list <- function(x, ...) {
-  if (ndraws(x) == 0) {
+  if (ndraws(x) == 0L) {
     return(empty_draws_df(variables(x)))
   }
   iteration_ids <- iteration_ids(x)
   chain_ids <- chain_ids(x)
-  out <- named_list(chain_ids)
-  for (i in seq_along(out)) {
-    out[[i]] <- tibble::as_tibble(x[[i]])
-    out[[i]]$.chain <- chain_ids[i]
-    out[[i]]$.iteration <- iteration_ids
-    out[[i]]$.draw <- compute_draw_ids(chain_ids[i], iteration_ids)
-  }
-  out <- do.call(rbind, out)
-  class(out) <- class_draws_df()
-  out
+  vars <- names(x[[1L]])
+  x <- do.call(rbind.data.frame, x)
+  colnames(x) <- vars
+  x <- tibble::as_tibble(x)
+  x[".chain"] <- rep(chain_ids, each = max(iteration_ids))
+  x[".iteration"] <- rep(iteration_ids, max(chain_ids))
+  x[".draw"] <- seq_len(nrow(x))
+  class(x) <- class_draws_df()
+  x
 }
 
 #' @rdname draws_df
@@ -154,9 +146,9 @@ as_draws_df.mcmc.list <- function(x, ...) {
   }
   if (has_iteration_column) {
     iteration_ids <- x[[.iteration]]
-    x[[.iteration]] <- NULL
+    x[.iteration] <- NULL
   } else {
-    iteration_ids <- seq_len(NROW(x))
+    iteration_ids <- seq_len(nrow(x))
   }
   # prepare chain indices
   if (!is.null(.chain)) {
@@ -171,22 +163,22 @@ as_draws_df.mcmc.list <- function(x, ...) {
   }
   if (has_chain_column) {
     chain_ids <- x[[.chain]]
-    x[[.chain]] <- NULL
+    x[.chain] <- NULL
   } else {
-    chain_ids <- rep(1L, NROW(x))
+    chain_ids <- rep(1L, nrow(x))
   }
   # prepare draw indices --- i.e. drop them, since they are regenerated below
-  x[[".draw"]] <- NULL
+  x[".draw"] <- NULL
 
   # add reserved variables to the data
   check_new_variables(names(x))
-  x$.chain <- chain_ids
-  x$.iteration <- iteration_ids
+  x[".chain"] <- chain_ids
+  x[".iteration"] <- iteration_ids
   if (has_iteration_column || has_chain_column) {
-    x$.chain <- repair_chain_ids(x$.chain)
-    x$.iteration <- repair_iteration_ids(x$.iteration, x$.chain)
+    x[".chain"] <- repair_chain_ids(x[[".chain"]])
+    x[".iteration"] <- repair_iteration_ids(x[[".iteration"]], x[[".chain"]])
   }
-  x$.draw <- compute_draw_ids(x$.chain, x$.iteration)
+  x[".draw"] <- compute_draw_ids(x[[".chain"]], x[[".iteration"]])
   class(x) <- class_draws_df()
   x
 }
@@ -205,8 +197,8 @@ draws_df <- function(..., .nchains = 1) {
   }
   niterations <- ndraws %/% .nchains
   out <- as.data.frame(out, optional = TRUE)
-  out$.iteration <- rep(1L:niterations, .nchains)
-  out$.chain <- rep(1L:.nchains, each = niterations)
+  out[".iteration"] <- rep(seq_len(niterations), .nchains)
+  out[".chain"] <- rep(seq_len(.nchains), each = niterations)
   as_draws_df(out)
 }
 
@@ -236,7 +228,7 @@ is_draws_df_like <- function(x) {
     reserved_vars <- setdiff(reserved_vars, names(out))
     out[, reserved_vars] <- NextMethod("[", j = reserved_vars, drop = FALSE)
   } else if (!all(reserved_df_variables() %in% names(out))) {
-    warning2("Dropping 'draws_df' class as required metadata was removed.")
+    warning_no_call("Dropping 'draws_df' class as required metadata was removed.")
     class(out) <- setdiff(class(out), c("draws_df", "draws"))
   }
   out
@@ -245,13 +237,9 @@ is_draws_df_like <- function(x) {
 # create an empty draws_df object
 empty_draws_df <- function(variables = character(0)) {
   assert_character(variables, null.ok = TRUE)
-  out <- tibble::tibble()
-  for (v in variables) {
-    out[[v]] <- numeric(0)
-  }
-  out$.chain <- integer(0)
-  out$.iteration <- integer(0)
-  out$.draw <- integer(0)
-  class(out) <- class_draws_df()
-  out
+  x <- tibble::tibble()
+  x[variables] <- numeric(0)
+  x[c(".chain", ".iteration", ".draw")] <- integer(0)
+  class(x) <- class_draws_df()
+  x
 }

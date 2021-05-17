@@ -303,7 +303,7 @@ nchains2_common <- function(nchains_x, nchains_y) {
   } else if (nchains_x == nchains_y) {
     nchains_x
   } else {
-    warning2(
+    warning_no_call(
       "Random variables do not have the same number of chains (", nchains_x, " and ", nchains_y, "),\n",
       "so chains were dropped.\n",
       "Use merge_chains() to collapse chains before combining rvars with\n",
