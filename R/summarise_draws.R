@@ -169,8 +169,10 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
     class(out) <- class_draws_summary()
     return(out)
   } else { # i.e. if length(variables) == 0L
-    warning("the draws object contained no variables with unreserved names; 
-            no summaries computed")
+    warning_no_call(
+      "The draws object contained no variables with unreserved names. ",
+      "No summaries were computed."
+    )
     return(tibble::tibble(character()))
   }
 }
