@@ -115,7 +115,7 @@ summarise_draws_helper <- function(x, funs, .args) {
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.draws <- function(x, ..., .args = list(), cores) {
+summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
   cores <- as.integer(cores)
   if (is.na(cores) | (cores <= 0)) {
     stop_no_call("cores must be a positive integer")
