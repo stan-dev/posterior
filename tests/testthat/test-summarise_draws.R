@@ -80,7 +80,7 @@ test_that("multicore summarise_draws is identical to single-core summarise_draws
             parsum_x <- summarise_draws(x, cores = 2)
             expect_identical(sum_x, parsum_x)
             
-            dimnames(x)$variable[3] <- reserved_variables()[1]
+            dimnames(x)$variable[2] <- reserved_variables()[1]
             sum_x <- summarise_draws(x)
             parsum_x <- summarise_draws(x, cores = 2)
             expect_identical(sum_x, parsum_x)
