@@ -89,7 +89,11 @@ parsummarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
       chunk_list[[i]] <- x[ , , (chunk_size*(i - 1) + 1):(min(c(chunk_size*i, n_vars)))]
     }
   }
-  summary_list <- parallel::mclapply(chunk_list, summarise_draws, ... = ..., .args = .args, mc.cores = cores)
+ # if (checkmate::test_os("windows")) {
+    summary_list <- parallel::parLapply(chunk_list, summarise_draws, ... = ..., .args = .args, mc.cores = cores)
+#  } else {
+ #   summary_list <- parallel::mclapply(chunk_list, summarise_draws, ... = ..., .args = .args, mc.cores = cores)
+#  }
   out <- do.call("rbind", summary_list)
   out
 }
