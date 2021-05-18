@@ -80,7 +80,7 @@ create_summary_list <- function(x, v, funs, .args) {
   v_summary
 }
 
-summarise_draws_helper <- function(x, funs, .args) {
+summarise_draws_helper <- function(x, funs, .args, create_summary_list) {
   variables <- variables(x)
   # get length and output names, calculated on the first variable
   out1 <- create_summary_list(x, variables[1], funs, .args)
