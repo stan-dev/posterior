@@ -206,7 +206,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
     if (checkmate::test_os("windows")) {
       cl <- parallel::makePSOCKcluster(cores)
       on.exit(parallel::stopCluster(cl))
-      clusterExport(cl,c('summarise_draws_helper','create_summary_list'))
+      parallel::clusterExport(cl,c('summarise_draws_helper','create_summary_list'))
       summary_list <- parallel::parLapply(chunk_list, summarise_draws_helper2, cl = cl)
     } else {
       summary_list <- parallel::mclapply(chunk_list, summarise_draws_helper2, mc.cores = cores)
