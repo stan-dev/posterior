@@ -202,7 +202,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
         chunk_list[[i]] <- x[ , , (chunk_size * (i - 1) + 1):(min(c(chunk_size * i, n_vars)))]
       }
     }
-    summarise_draws_helper2 <- function(x, summarise_draws_helper) {
+    summarise_draws_helper2 <- function(x) {
       summarise_draws_helper(x, funs = funs, .args = .args)
     }
     if (checkmate::test_os("windows")) {
@@ -211,7 +211,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
       parallel::clusterEvalQ(cl = cl, library("posterior"))
       summary_list <- parallel::parLapply(cl = cl, X = chunk_list, fun = summarise_draws_helper2)
     } else {
-      summary_list <- parallel::mclapply(X = chunk_list, FUN = summarise_draws_helper2, summarise_draws_helper, mc.cores = cores)
+      summary_list <- parallel::mclapply(X = chunk_list, FUN = summarise_draws_helper2, mc.cores = cores)
     }
     out <- do.call("rbind", summary_list)
   }
