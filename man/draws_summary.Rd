@@ -43,6 +43,11 @@ for examples.}
 
 \item{.args}{Optional \code{list} of additional arguments passed to the summary
 functions.}
+
+\item{cores}{Positive number of cores for computing summarise for different variables
+in parallel. Coerced to integer if possible, otherwise errors. Defaults to \code{cores = 1}
+in which case no parallelization is implemented. By default, creates a socket cluster
+on Windows and uses forking otherwise.}
 }
 \value{
 The \code{summarise_draws()} methods return a \link[tibble:tibble]{tibble} data frame.

@@ -18,6 +18,10 @@
 #'   for examples.
 #' @param .args Optional `list` of additional arguments passed to the summary
 #'   functions.
+#' @param cores Positive number of cores for computing summarise for different variables
+#'   in parallel. Coerced to integer if possible, otherwise errors. Defaults to `cores = 1` 
+#'   in which case no parallelization is implemented. By default, creates a socket cluster
+#'   on Windows and uses forking otherwise.
 #'
 #' @return
 #' The `summarise_draws()` methods return a [tibble][tibble::tibble] data frame.
