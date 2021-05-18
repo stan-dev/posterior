@@ -121,8 +121,8 @@ summarise_draws_helper <- function(x, funs, .args) {
 #' @export
 summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
   cores <- as.integer(cores)
-  if (is.na(cores) | (cores <= 0)) {
-    stop_no_call("cores must be a positive integer")
+  if (is.na(cores) || cores <= 0 || length(cores) != 1) {
+    stop_no_call("'cores' must be a positive integer.")
   }
   funs <- as.list(c(...))
   .args <- as.list(.args)
@@ -197,9 +197,9 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
     chunk_size <- ceiling(n_vars/cores)
     n_chunks <- ceiling(n_vars/chunk_size)
     chunk_list <- vector(length = n_chunks, mode = "list")
-    for(i in 1:n_chunks){
-      if((chunk_size*(i - 1) + 1) <= n_vars){
-        chunk_list[[i]] <- x[ , , (chunk_size*(i - 1) + 1):(min(c(chunk_size*i, n_vars)))]
+    for (i in 1:n_chunks) {
+      if ((chunk_size * (i - 1) + 1) <= n_vars) {
+        chunk_list[[i]] <- x[ , , (chunk_size * (i - 1) + 1):(min(c(chunk_size * i, n_vars)))]
       }
     }
     summarise_draws_helper2 <- function(x) {summarise_draws_helper(x, funs = funs, .args = .args)}
