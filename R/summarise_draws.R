@@ -210,8 +210,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
       on.exit(parallel::stopCluster(cl))
       parallel::clusterExport(cl = cl, c('create_summary_list', 'drop_dims_or_classes',
                                          'named_list', 'summarise_draws_helper', 'variables',
-                                         'rlang::is_named', 'stop_no_call', 'tibble::as_tibble',
-                                         'move_to_start', 'class_draws_summary'),
+                                         'stop_no_call', 'move_to_start', 'class_draws_summary'),
                               envir = environment())
       summary_list <- parallel::parLapply(cl = cl, X = chunk_list, fun = summarise_draws_helper2)
     } else {
