@@ -202,14 +202,14 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
         chunk_list[[i]] <- x[ , , (chunk_size * (i - 1) + 1):(min(c(chunk_size * i, n_vars)))]
       }
     }
-    summarise_draws_helper2 <- function(x) {summarise_draws_helper(x, funs = funs, .args = .args,
+    summarise_draws_helper2 <- function(x, summarise_draws_helper) {summarise_draws_helper(x, funs = funs, .args = .args,
                                                                    create_summary_list = create_summary_list)}
     if (checkmate::test_os("windows")) {
       cl <- parallel::makePSOCKcluster(cores)
       on.exit(parallel::stopCluster(cl))
-      summary_list <- parallel::parLapply(chunk_list, summarise_draws_helper2, cl = cl)
+      summary_list <- parallel::parLapply(cl = cl, X = chunk_list, fun = summarise_draws_helper2, summarise_draws_helper)
     } else {
-      summary_list <- parallel::mclapply(chunk_list, summarise_draws_helper2, mc.cores = cores)
+      summary_list <- parallel::mclapply(X = chunk_list, FUN = summarise_draws_helper2, summarise_draws_helper, mc.cores = cores)
     }
     out <- do.call("rbind", summary_list)
   }
