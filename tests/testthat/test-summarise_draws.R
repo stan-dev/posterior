@@ -70,7 +70,7 @@ test_that("summarise_draws warns if all variable names are reserved", {
 })
 
 test_that("multicore summarise_draws is identical to single-core summarise_draws 
-          including if some chunkscontain no variables", {
+          including if some chunks contain no variables", {
             set.seed(1)
             nc <- 4
             n <- 3
@@ -93,7 +93,7 @@ test_that("multicore summarise_draws is identical to single-core summarise_draws
             expect_identical(sum_x, parsum_x)
             
             dimnames(x)$variable[1] <- reserved_variables()[1]
-            sum_x <- summarise_draws(x)
-            parsum_x <- summarise_draws(x, cores = 4)
+            suppressWarnings(sum_x <- summarise_draws(x))
+            suppressWarnings(parsum_x <- summarise_draws(x, cores = 4))
             expect_identical(sum_x, parsum_x)
 })
