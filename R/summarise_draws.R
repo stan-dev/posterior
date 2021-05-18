@@ -80,7 +80,7 @@ create_summary_list <- function(x, v, funs, .args) {
   v_summary
 }
 
-summarise_draws_helper <- function(x, funs, .args, create_summary_list) {
+summarise_draws_helper <- function(x, funs, .args) {
   variables <- variables(x)
   # get length and output names, calculated on the first variable
   out1 <- create_summary_list(x, variables[1], funs, .args)
@@ -202,12 +202,14 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
         chunk_list[[i]] <- x[ , , (chunk_size * (i - 1) + 1):(min(c(chunk_size * i, n_vars)))]
       }
     }
-    summarise_draws_helper2 <- function(x, summarise_draws_helper) {summarise_draws_helper(x, funs = funs, .args = .args,
-                                                                   create_summary_list = create_summary_list)}
+    summarise_draws_helper2 <- function(x, summarise_draws_helper) {
+      summarise_draws_helper(x, funs = funs, .args = .args)
+    }
     if (checkmate::test_os("windows")) {
       cl <- parallel::makePSOCKcluster(cores)
       on.exit(parallel::stopCluster(cl))
-      summary_list <- parallel::parLapply(cl = cl, X = chunk_list, fun = summarise_draws_helper2, summarise_draws_helper)
+      parallel::clusterEvalQ(cl = cl, library(posterior))
+      summary_list <- parallel::parLapply(cl = cl, X = chunk_list, fun = summarise_draws_helper2)
     } else {
       summary_list <- parallel::mclapply(X = chunk_list, FUN = summarise_draws_helper2, summarise_draws_helper, mc.cores = cores)
     }
