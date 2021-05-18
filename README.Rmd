@@ -92,7 +92,7 @@ the available formats see `help("draws")`. All of the formats are essentially
 base R object classes and can be used as such. For example, a `draws_matrix`
 object is just a `matrix` with a little more consistency and additional methods.
 
-#### Summarising draws
+#### Summarizing draws
 
 Computing summaries of posterior or prior draws and convergence diagnostics for
 posterior draws is one of the most common tasks when working with Bayesian

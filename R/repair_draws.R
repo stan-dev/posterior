@@ -6,7 +6,7 @@
 #' @template args-methods-x
 #' @template args-methods-dots
 #' @param order Logical; Indicates if draws should be ordered (via
-#'   [`order_draws`]) before reparing indices. Defaults to `TRUE`.
+#'   [`order_draws`]) before repairing indices. Defaults to `TRUE`.
 #'
 #' @examples
 #' x <- as_draws_array(example_draws())
