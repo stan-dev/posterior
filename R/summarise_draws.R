@@ -66,7 +66,7 @@ summarise_draws.default <- function(x, ...) {
 }
 
 # Helper functions
-create_summary_list <- function(x, v, .args) {
+create_summary_list <- function(x, v, funs, .args) {
   draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
   args <- c(list(draws), .args)
   v_summary <- named_list(names(funs))
@@ -79,7 +79,7 @@ create_summary_list <- function(x, v, .args) {
 summarise_draws_helper <- function(x, funs, .args) {
   variables <- variables(x)
   # get length and output names, calculated on the first variable
-  out1 <- create_summary_list(x, variables[1], .args)
+  out1 <- create_summary_list(x, variables[1], funs, .args)
   the_names <- vector(mode = "list", length = length(funs))
   for (i in seq_along(out1)){
     if (rlang::is_named(out1[[i]])) {
@@ -102,7 +102,7 @@ summarise_draws_helper <- function(x, funs, .args) {
   # Do the computation for all remaining variables
   if (length(variables) > 1L) {
     for (v_ind in 2:length(variables)) {
-      out_v <- create_summary_list(x, variables[v_ind], .args)
+      out_v <- create_summary_list(x, variables[v_ind], funs, .args)
       out[v_ind, ] <- unlist(out_v)
     }
   }
