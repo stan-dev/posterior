@@ -18,7 +18,7 @@
 #'   for examples.
 #' @param .args Optional `list` of additional arguments passed to the summary
 #'   functions.
-#' @param cores Positive number of cores for computing summarise for different variables
+#' @param cores Positive number of cores for computing summaries for different variables
 #'   in parallel. Coerced to integer if possible, otherwise errors. Defaults to `cores = 1` 
 #'   in which case no parallelization is implemented. By default, creates a socket cluster
 #'   on Windows and uses forking otherwise.
@@ -206,6 +206,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
     if (checkmate::test_os("windows")) {
       cl <- parallel::makePSOCKcluster(cores)
       on.exit(parallel::stopCluster(cl))
+      clusterExport(cl,c('summarise_draws_helper','create_summary_list'))
       summary_list <- parallel::parLapply(chunk_list, summarise_draws_helper2, cl = cl)
     } else {
       summary_list <- parallel::mclapply(chunk_list, summarise_draws_helper2, mc.cores = cores)
