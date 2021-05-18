@@ -1,12 +1,11 @@
 #' Bind `draws` objects together
 #'
-#' Bind multiple [`draws`] objects together to form a single
-#' `draws` object.
+#' Bind multiple [`draws`] objects together to form a single `draws` object.
 #'
 #' @param x A [`draws`] object. The draws format of `x` will define the format
 #'   of the returned draws object.
 #' @param ... Further [`draws`] objects.
-#' @param along The dimenion along with draws objects should be bind together.
+#' @param along The dimension along which draws objects should be bound together.
 #'   Possible values are `variable` (the default), `chain`, `iteration`, and
 #'   `draw`. Not all options are supported for all input formats.
 #' @template return-draws
