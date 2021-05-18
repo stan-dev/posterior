@@ -73,27 +73,27 @@ test_that("multicore summarise_draws is identical to single-core summarise_draws
           including if some chunks contain no variables", {
             set.seed(1)
             nc <- 4
-            n <- 3
+            n <- 2
             test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
             x <- as_draws_array(test_array)
             sum_x <- summarise_draws(x)
-            parsum_x <- summarise_draws(x, cores = 4)
+            parsum_x <- summarise_draws(x, cores = 2)
             expect_identical(sum_x, parsum_x)
             
             dimnames(x)$variable[3] <- reserved_variables()[1]
             sum_x <- summarise_draws(x)
-            parsum_x <- summarise_draws(x, cores = 4)
+            parsum_x <- summarise_draws(x, cores = 2)
             expect_identical(sum_x, parsum_x)
             
             n <- 1
             test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
             x <- as_draws_array(test_array)
             sum_x <- summarise_draws(x)
-            parsum_x <- summarise_draws(x, cores = 4)
+            parsum_x <- summarise_draws(x, cores = 2)
             expect_identical(sum_x, parsum_x)
             
             dimnames(x)$variable[1] <- reserved_variables()[1]
             suppressWarnings(sum_x <- summarise_draws(x))
-            suppressWarnings(parsum_x <- summarise_draws(x, cores = 4))
+            suppressWarnings(parsum_x <- summarise_draws(x, cores = 2))
             expect_identical(sum_x, parsum_x)
 })
