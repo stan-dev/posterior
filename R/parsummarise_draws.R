@@ -43,7 +43,7 @@ NULL
 
 #' @rdname draws_summary
 #' @export
-parsummarise_draws <- function(x, ..., cores = 1,) {
+parsummarise_draws <- function(x, ..., cores = 1) {
   UseMethod("parsummarise_draws")
 }
 
