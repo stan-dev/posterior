@@ -68,3 +68,32 @@ test_that("summarise_draws warns if all variable names are reserved", {
   variables(x) <- ".log_weight"
   expect_warning(summarize_draws(x), "no variables with unreserved names")
 })
+
+test_that("multicore summarise_draws is identical to single-core summarise_draws 
+          including if some chunkscontain no variables", {
+            set.seed(1)
+            nc <- 4
+            n <- 3
+            test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
+            x <- as_draws_array(test_array)
+            sum_x <- summarise_draws(x)
+            parsum_x <- summarise_draws(x, cores = 4)
+            expect_identical(sum_x, parsum_x)
+            
+            dimnames(x)$variable[3] <- reserved_variables()[1]
+            sum_x <- summarise_draws(x)
+            parsum_x <- summarise_draws(x, cores = 4)
+            expect_identical(sum_x, parsum_x)
+            
+            n <- 1
+            test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
+            x <- as_draws_array(test_array)
+            sum_x <- summarise_draws(x)
+            parsum_x <- summarise_draws(x, cores = 4)
+            expect_identical(sum_x, parsum_x)
+            
+            dimnames(x)$variable[1] <- reserved_variables()[1]
+            sum_x <- summarise_draws(x)
+            parsum_x <- summarise_draws(x, cores = 4)
+            expect_identical(sum_x, parsum_x)
+})
