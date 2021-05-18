@@ -81,9 +81,9 @@ create_summary_list <- function(x, v, funs, .args) {
 }
 
 summarise_draws_helper <- function(x, funs, .args) {
-  variables <- variables(x)
+  variables_x <- variables(x)
   # get length and output names, calculated on the first variable
-  out1 <- create_summary_list(x, variables[1], funs, .args)
+  out1 <- create_summary_list(x, variables_x[1], funs, .args)
   the_names <- vector(mode = "list", length = length(funs))
   for (i in seq_along(out1)){
     if (rlang::is_named(out1[[i]])) {
@@ -100,18 +100,18 @@ summarise_draws_helper <- function(x, funs, .args) {
     stop_no_call("Name 'variable' is reserved in 'summarise_draws'.")
   }
   # Pre-allocate matrix to store output
-  out <- matrix(NA, nrow = length(variables), ncol = length(the_names))
+  out <- matrix(NA, nrow = length(variables_x), ncol = length(the_names))
   colnames(out) <- the_names
   out[1, ] <- unlist(out1)
   # Do the computation for all remaining variables
-  if (length(variables) > 1L) {
-    for (v_ind in 2:length(variables)) {
-      out_v <- create_summary_list(x, variables[v_ind], funs, .args)
+  if (length(variables_x) > 1L) {
+    for (v_ind in 2:length(variables_x)) {
+      out_v <- create_summary_list(x, variables_x[v_ind], funs, .args)
       out[v_ind, ] <- unlist(out_v)
     }
   }
   out <- tibble::as_tibble(out)
-  out$variable <- variables
+  out$variable <- variables_x
   out <- move_to_start(out, "variable")
   class(out) <- class_draws_summary()
   out
@@ -179,9 +179,9 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
   }
   x <- repair_draws(x)
   x <- as_draws_array(x)
-  variables <- variables(x)
+  variables_x <- variables(x)
   
-  if (!length(variables)) {
+  if (!length(variables_x)) {
     warning_no_call(
       "The draws object contained no variables with unreserved names. ",
       "No summaries were computed."
@@ -193,7 +193,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
     out <- summarise_draws_helper(x, funs, .args)
   } else {
     x <- x[ , , !(dimnames(x)$variable %in% reserved_variables())]
-    n_vars <- length(variables)
+    n_vars <- length(variables_x)
     chunk_size <- ceiling(n_vars/cores)
     n_chunks <- ceiling(n_vars/chunk_size)
     chunk_list <- vector(length = n_chunks, mode = "list")
@@ -208,7 +208,11 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
     if (checkmate::test_os("windows")) {
       cl <- parallel::makePSOCKcluster(cores)
       on.exit(parallel::stopCluster(cl))
-      parallel::clusterEvalQ(cl = cl, library("posterior"))
+      parallel::clusterExport(cl = cl, c('create_summary_list', 'drop_dims_or_classes',
+                                         'named_list', 'summarise_draws_helper', 'variables',
+                                         'rlang::is_named', 'stop_no_call', 'tibble::as_tibble',
+                                         'move_to_start', 'class_draws_summary'),
+                              envir = environment())
       summary_list <- parallel::parLapply(cl = cl, X = chunk_list, fun = summarise_draws_helper2)
     } else {
       summary_list <- parallel::mclapply(X = chunk_list, FUN = summarise_draws_helper2, mc.cores = cores)
