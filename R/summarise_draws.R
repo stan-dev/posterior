@@ -190,7 +190,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
   }
   
   if (cores == 1) {
-    out <- summarise_draws_helper(x, funs, .args)
+    out <- summarise_draws_helper(x, funs, .args, create_summary_list)
   } else {
     x <- x[ , , !(dimnames(x)$variable %in% reserved_variables())]
     n_vars <- length(variables)
