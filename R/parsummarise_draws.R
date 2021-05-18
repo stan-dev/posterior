@@ -90,6 +90,8 @@ parsummarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
     }
   }
  # if (checkmate::test_os("windows")) {
+    cl <- parallel::makePSOCKcluster(cores)
+    on.exit(parallel::stopCluster(cl))
     summary_list <- parallel::parLapply(chunk_list, summarise_draws, ... = ..., .args = .args, mc.cores = cores)
 #  } else {
  #   summary_list <- parallel::mclapply(chunk_list, summarise_draws, ... = ..., .args = .args, mc.cores = cores)
