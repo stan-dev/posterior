@@ -97,6 +97,7 @@ parsummarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
     summary_list <- parallel::mclapply(chunk_list, summarise_draws, ... = ..., .args = .args, mc.cores = cores)
   }
   out <- do.call("rbind", summary_list)
+  out <- summarise_draws(x, ... = ..., .args = .args)
   out
 }
 
