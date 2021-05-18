@@ -3,10 +3,15 @@ test_that("parsummarise_draws works correctly", {
   sum_x <- summarise_draws(x)
   parsum_x <- parsummarise_draws(x)
   expect_identical(sum_x, parsum_x)
+  parsum2_x <- parsummarise_draws(x, cores = 2)
+  expect_identical(sum_x, parsum2_x)
   
   sum_x <- summarise_draws(x, mean, median)
-  parsum_x <- parsummarise_draws(x, mean, median)
+  parsum1_x <- parsummarise_draws(x, mean, median)
+  parsum2_x <- parsummarise_draws(x, mean, median)
   expect_equal(sum_x, parsum_x)
+  expect_equal(sum_x, parsum_x)
+  
   
   sum_x <- summarise_draws(x, default_mcse_measures())
   parsum_x <- parsummarise_draws(x, default_mcse_measures())
@@ -67,4 +72,33 @@ test_that("summarise_draws warns if all variable names are reserved", {
   x <- subset_draws(as_draws_df(example_draws()), variable = "mu")
   variables(x) <- ".log_weight"
   expect_warning(parsummarize_draws(x), "no variables with unreserved names")
+})
+
+test_that("parsummarise_draws is identical to summarise_draws if some chunks 
+          contain no variables", {
+  set.seed(1)
+  nc <- 4
+  n <- 3
+  test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
+  x <- as_draws_array(test_array)
+  sum_x <- summarise_draws(x)
+  parsum_x <- parsummarise_draws(x, cores = 4)
+  expect_identical(sum_x, parsum_x)
+  
+  dimnames(x)$variable[3] <- reserved_variables()[1]
+  sum_x <- summarise_draws(x)
+  parsum_x <- parsummarise_draws(x, cores = 4)
+  expect_identical(sum_x, parsum_x)
+  
+  n <- 1
+  test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
+  x <- as_draws_array(test_array)
+  sum_x <- summarise_draws(x)
+  parsum_x <- parsummarise_draws(x, cores = 4)
+  expect_identical(sum_x, parsum_x)
+  
+  dimnames(x)$variable[1] <- reserved_variables()[1]
+  sum_x <- summarise_draws(x)
+  parsum_x <- parsummarise_draws(x, cores = 4)
+  expect_identical(sum_x, parsum_x)
 })
