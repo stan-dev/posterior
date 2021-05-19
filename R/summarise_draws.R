@@ -212,8 +212,8 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
                               unclass(lsf.str(envir = asNamespace("posterior"), all = T)),
                               envir = as.environment(asNamespace("posterior"))
                               )
-      parallel::clusterEvalQ(cl, library(checkmate))
-      parallel::clusterEvalQ(cl, library(rlang))
+      # parallel::clusterEvalQ(cl, library(checkmate))
+      # parallel::clusterEvalQ(cl, library(rlang))
       
       summary_list <- parallel::parLapply(cl = cl, X = chunk_list, fun = summarise_draws_helper2)
     } else {
