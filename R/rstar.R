@@ -49,7 +49,7 @@
 #'
 #'   The statistic, R*, is stochastic, meaning that each time the test is run,
 #'   unless the random seed is fixed, it will generally produce a different
-#'   result. To minimise the implications of this stochasticity, it is
+#'   result. To minimize the implications of this stochasticity, it is
 #'   recommended to repeatedly run this function to calculate a distribution of
 #'   R*; alternatively, an approximation to this distribution can be obtained by
 #'   setting `uncertainty = TRUE`, although this approximation of uncertainty

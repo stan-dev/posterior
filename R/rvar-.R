@@ -17,7 +17,7 @@
 #' The `"rvar"` class internally represents random variables as arrays of arbitrary
 #' dimension, where the first dimension is used to index draws from the distribution.
 #
-#' Most mathemetical operators and functions are supported, including efficient matrix
+#' Most mathematical operators and functions are supported, including efficient matrix
 #' multiplication and vector and array-style indexing. The intent is that an `rvar`
 #' works as closely as possible to how a base vector/matrix/array does, with a few
 #' differences:
@@ -527,10 +527,17 @@ copy_dimnames <- function(src, src_i, dst, dst_i) {
 # helpers: applying functions over rvars ----------------------------------
 
 # apply a summary function within each draw of the rvar (dropping other dimensions)
-summarise_rvar_within_draws <- function(x, .f, ...) {
+summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_empty = .f()) {
   draws <- draws_of(x)
   dim <- dim(draws)
-  new_rvar(apply(draws, 1, .f, ...), .nchains = nchains(x))
+  if (!length(dim)) {
+    # x is a NULL rvar, need to return base value for this summary function
+    as_rvar(.when_empty)
+  } else {
+    draws <- apply(draws, 1, .f, ...)
+    if (.transpose) draws <- t(draws)
+    new_rvar(draws, .nchains = nchains(x))
+  }
 }
 
 # apply vectorized function to an rvar's draws

@@ -27,7 +27,7 @@ of the returned draws object.}
 
 \item{...}{Further \code{\link{draws}} objects.}
 
-\item{along}{The dimenion along with draws objects should be bind together.
+\item{along}{The dimension along which draws objects should be bound together.
 Possible values are \code{variable} (the default), \code{chain}, \code{iteration}, and
 \code{draw}. Not all options are supported for all input formats.}
 }
@@ -35,6 +35,5 @@ Possible values are \code{variable} (the default), \code{chain}, \code{iteration
 A \code{draws} object of the same class as \code{x}.
 }
 \description{
-Bind multiple \code{\link{draws}} objects together to form a single
-\code{draws} object.
+Bind multiple \code{\link{draws}} objects together to form a single \code{draws} object.
 }

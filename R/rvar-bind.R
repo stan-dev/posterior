@@ -39,7 +39,6 @@ cbind.rvar <- function(...) {
 
 #' bind a list of objects together, as in cbind or rbind (depending on `axis`),
 #' converting to rvars as needed
-#' @importFrom utils getS3method
 #' @noRd
 bind_rvars <- function(args, arg_exprs, deparse.level = 1, axis = 1) {
   if (any(sapply(args, is.data.frame))) {
