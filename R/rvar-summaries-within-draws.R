@@ -48,14 +48,17 @@
 #' @family rvar-summaries
 #' @name rvar-summaries-within-draws
 #' @export
-rvar_mean <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), mean, na.rm = na.rm)
-
+rvar_mean <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), mean, na.rm = na.rm,
+  .when_empty = stop2("in rvar_mean(): cannot take mean of empty vector")
+)
 
 # numeric summaries -------------------------------------------------------
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_median <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), median, na.rm = na.rm)
+rvar_median <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), median, na.rm = na.rm,
+  .when_empty = stop2("in rvar_median(): cannot take median of empty vector")
+)
 
 #' @rdname rvar-summaries-within-draws
 #' @export
@@ -78,20 +81,26 @@ rvar_max <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), max
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_sd <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), sd, na.rm = na.rm)
+rvar_sd <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), sd, na.rm = na.rm,
+  .when_empty = stop2("in rvar_sd(): cannot take sd of empty vector")
+)
 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_var <- function(..., na.rm = FALSE) {
   # var() is silly and gives the covariance matrix instead of the variance
   # when dim(x) == 2, so convert to a vector to avoid this
-  summarise_rvar_within_draws(c(...), function(x) var(as.vector(x), na.rm = na.rm))
+  summarise_rvar_within_draws(c(...), function(x) var(as.vector(x), na.rm = na.rm),
+    .when_empty = stop2("in rvar_var(): cannot take variance of empty vector")
+  )
 }
 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_mad <- function(..., constant = 1.4826, na.rm = FALSE, low = FALSE, high = FALSE) {
-  summarise_rvar_within_draws(c(...), mad, constant = constant, na.rm = na.rm, low = low, high = high)
+  summarise_rvar_within_draws(c(...), mad, constant = constant, na.rm = na.rm, low = low, high = high,
+    .when_empty = stop2("in rvar_mad(): cannot take mad of empty vector")
+  )
 }
 
 
