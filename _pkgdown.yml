@@ -14,8 +14,8 @@ navbar:
   left:
     - icon: fa-home fa-lg
       href: index.html
-    # - text: "Vignettes"
-    #   href: articles/index.html
+    - text: "Vignettes"
+      href: articles/index.html
     - text: "Functions"
       href: reference/index.html
     - text: "News"
@@ -90,4 +90,16 @@ reference:
       - starts_with("mcse")
       - quantile2
       - rstar
+
+articles:
+  - title: "Getting started"
+    desc: >
+      Installing posterior and using the basic functionality
+    contents:
+      - posterior
+  - title: "rvar: The Random Variable Datatype"
+    desc: >
+      An overview of a new datatype introduced by posterior
+    contents:
+      - rvar
 
