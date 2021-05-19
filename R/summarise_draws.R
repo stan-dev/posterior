@@ -214,11 +214,11 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
                               envir = as.environment(asNamespace("posterior"))
                               )
       parallel::clusterExport(cl = cl, 
-                              unclass(lsf.str(envir = asNamespace("checkmate"), all = T)),
+                              unclass(lsf.str(envir = asNamespace("checkmate"), all = TRUE)),
                               envir = as.environment(asNamespace("checkmate"))
       )
       parallel::clusterExport(cl = cl, 
-                              unclass(lsf.str(envir = asNamespace("rlang"), all = T)),
+                              unclass(lsf.str(envir = asNamespace("rlang"), all = TRUE)),
                               envir = as.environment(asNamespace("rlang"))
       )
       summary_list <- parallel::parLapply(cl = cl, X = chunk_list, fun = summarise_draws_helper2)
