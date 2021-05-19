@@ -210,8 +210,12 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
       on.exit(parallel::stopCluster(cl))
       parallel::clusterExport(cl = cl, 
                               c(unclass(lsf.str(envir = asNamespace("posterior"), all = T)),
-                                unclass(lsf.str(envir = asNamespace("checkmate"), all = T))),
-                              envir = environment())
+                                unclass(lsf.str(envir = asNamespace("checkmate"), all = T))))
+      parallel::clusterEvalQ(cl, 
+                             "%and%" <- function(lhs, rhs) {
+                                          if (isTRUE(lhs)) rhs else lhs
+                                        }
+                             )
       summary_list <- parallel::parLapply(cl = cl, X = chunk_list, fun = summarise_draws_helper2)
     } else {
       summary_list <- parallel::mclapply(X = chunk_list, FUN = summarise_draws_helper2, mc.cores = cores)
