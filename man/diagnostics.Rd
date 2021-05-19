@@ -8,17 +8,18 @@
 A list of available diagnostics and links to their individual help pages.
 }
 \details{
-\itemize{
-\item \code{\link[=ess_basic]{ess_basic()}}: Basic version of effective sample size
-\item \code{\link[=ess_bulk]{ess_bulk()}}: Bulk effective sample size
-\item \code{\link[=ess_tail]{ess_tail()}}: Tail effective sample size
-\item \code{\link[=ess_quantile]{ess_quantile()}}: Effective sample sizes for quantiles
-\item \code{\link[=ess_sd]{ess_sd()}}: Effective sample sizes for standard deviations
-\item \code{\link[=mcse_mean]{mcse_mean()}}: Monte Carlo standard error for the mean
-\item \code{\link[=mcse_quantile]{mcse_quantile()}}: Monte Carlo standard error for quantiles
-\item \code{\link[=mcse_sd]{mcse_sd()}}: Monte Carlo standard error for standard deviations
-\item \code{\link[=rhat_basic]{rhat_basic()}}: Basic version of Rhat
-\item \code{\link[=rhat]{rhat()}}: Improved, rank-based version of Rhat
-\item \code{\link[=rstar]{rstar()}}: R* diagnostic
+\tabular{ll}{
+   \strong{Function} \tab \strong{Description} \cr
+   \code{\link[=ess_basic]{ess_basic()}} \tab Basic version of effective sample size \cr
+   \code{\link[=ess_bulk]{ess_bulk()}} \tab Bulk effective sample size \cr
+   \code{\link[=ess_tail]{ess_tail()}} \tab Tail effective sample size \cr
+   \code{\link[=ess_quantile]{ess_quantile()}} \tab Effective sample sizes for quantiles \cr
+   \code{\link[=ess_sd]{ess_sd()}} \tab Effective sample sizes for standard deviations \cr
+   \code{\link[=mcse_mean]{mcse_mean()}} \tab Monte Carlo standard error for the mean \cr
+   \code{\link[=mcse_quantile]{mcse_quantile()}} \tab Monte Carlo standard error for quantiles \cr
+   \code{\link[=mcse_sd]{mcse_sd()}} \tab Monte Carlo standard error for standard deviations \cr
+   \code{\link[=rhat_basic]{rhat_basic()}} \tab Basic version of Rhat \cr
+   \code{\link[=rhat]{rhat()}} \tab Improved, rank-based version of Rhat \cr
+   \code{\link[=rstar]{rstar()}} \tab R* diagnostic \cr
 }
 }

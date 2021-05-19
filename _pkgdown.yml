@@ -85,6 +85,7 @@ reference:
       Compute summary statistics and convergence diagnostics
     contents:
       - summarise_draws
+      - diagnostics
       - starts_with("ess")
       - starts_with("rhat")
       - starts_with("mcse")

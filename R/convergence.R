@@ -10,17 +10,20 @@
 #' @aliases convergence
 #'
 #' @details
-#' * [ess_basic()]: Basic version of effective sample size
-#' * [ess_bulk()]: Bulk effective sample size
-#' * [ess_tail()]: Tail effective sample size
-#' * [ess_quantile()]: Effective sample sizes for quantiles
-#' * [ess_sd()]: Effective sample sizes for standard deviations
-#' * [mcse_mean()]: Monte Carlo standard error for the mean
-#' * [mcse_quantile()]: Monte Carlo standard error for quantiles
-#' * [mcse_sd()]: Monte Carlo standard error for standard deviations
-#' * [rhat_basic()]: Basic version of Rhat
-#' * [rhat()]: Improved, rank-based version of Rhat
-#' * [rstar()]: R* diagnostic
+#'
+#' |**Function**|**Description**|
+#' |:----------|:---------------|
+#' | [ess_basic()] | Basic version of effective sample size |
+#' | [ess_bulk()] | Bulk effective sample size |
+#' | [ess_tail()] | Tail effective sample size |
+#' | [ess_quantile()] | Effective sample sizes for quantiles |
+#' | [ess_sd()] | Effective sample sizes for standard deviations |
+#' | [mcse_mean()] | Monte Carlo standard error for the mean |
+#' | [mcse_quantile()] | Monte Carlo standard error for quantiles |
+#' | [mcse_sd()] | Monte Carlo standard error for standard deviations |
+#' | [rhat_basic()] | Basic version of Rhat |
+#' | [rhat()] | Improved, rank-based version of Rhat |
+#' | [rstar()] | R* diagnostic |
 #'
 NULL
 

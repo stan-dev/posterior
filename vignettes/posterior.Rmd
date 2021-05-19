@@ -370,7 +370,7 @@ individual help pages see `help("diagnostics", "posterior")`.
 
 In addition to the methods demonstrated in this vignette, posterior has various
 other methods available for draws objects. The following is a (potentially
-incomplete) list of the other available methods.
+incomplete) list.
 
 |**Method**|**Description**|
 |:----------|:---------------|
