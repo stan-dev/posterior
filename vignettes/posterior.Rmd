@@ -11,14 +11,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
-```
-
-
 ## Introduction 
 
 The posterior R package is intended to provide useful tools for both users
@@ -297,7 +289,7 @@ Monte Carlo Standard Error (MCSE) we could use either of these options:
 # the function mcse_mean is provided by the posterior package
 s1 <- summarise_draws(eight_schools_df, "mean", "mcse_mean") 
 s2 <- summarise_draws(eight_schools_df, mean, mcse_mean) 
-all.equal(s1, s2) # TRUE
+identical(s1, s2)
 print(s1)
 ```
 
@@ -366,27 +358,31 @@ quantiles and standard deviations, an experimental new diagnostic called R*
 (`rstar()`), and others. For a list of available diagnostics and links to their
 individual help pages see `help("diagnostics", "posterior")`.
 
+If you have suggestions for additional diagnostics that should be implemented in
+posterior, please open an issue at
+<https://github.com/stan-dev/posterior/issues>.
+
 ## Other methods
 
 In addition to the methods demonstrated in this vignette, posterior has various
-other methods available for draws objects. The following is a (potentially
-incomplete) list.
+other methods available for working with `draws` objects. The following is a
+(potentially incomplete) list.
 
 |**Method**|**Description**|
 |:----------|:---------------|
 | `order_draws()` | Order `draws` objects according to iteration and chain number |
-| `repair_draws()`| Repair indices of `draws` objects so that iterations chains,
-and draws are continuously and consistently numbered |
+| `repair_draws()`| Repair indices of `draws` objects so that iterations chains, and draws are continuously and consistently numbered |
 |`resample_draws()` | Resample `draws` objects according to provided weights |
 | `thin_draws()` | Thin `draws` objects to reduce size and autocorrelation |
-| `weight_draws()`| Add weights to draws objects, with one weight per draw, for
-use in subsequent weighting operations |
+| `weight_draws()`| Add weights to draws objects, with one weight per draw, for use in subsequent weighting operations |
 | `extract_variable()` | Extract a vector of draws of a single variable  |
-| `extract_variable_matrix()` | Extract an iterations x chains matrix of of
-draws of a single variable |
+| `extract_variable_matrix()` | Extract an iterations x chains matrix of draws of a single variable |
 | `merge_chains()` | Merge chains of `draws` objects into a single chain. | 
-| `split_chains()` | Split chains of `draws` objects by halving the number of
-iterations per chain and doubling the number of chains.  |
+| `split_chains()` | Split chains of `draws` objects by halving the number of iterations per chain and doubling the number of chains. |
+
+If you have suggestions for additional methods that would be useful for working
+with `draws` objects, please open an issue at
+<https://github.com/stan-dev/posterior/issues>.
 
 
 ## References
