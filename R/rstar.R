@@ -10,6 +10,7 @@
 #' predictive accuracy on a testing set: giving the ratio of accuracy to
 #' predicting a chain uniformly at random.
 #'
+#' @family diagnostics
 #' @param x A [`draws_df`] object or one coercible to a `draws_df` object.
 #' @template args-conv-split
 #'

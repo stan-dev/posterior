@@ -48,6 +48,7 @@ Other diagnostics:
 \code{\link{mcse_mean}()},
 \code{\link{mcse_quantile}()},
 \code{\link{mcse_sd}()},
-\code{\link{rhat}()}
+\code{\link{rhat}()},
+\code{\link{rstar}()}
 }
 \concept{diagnostics}

@@ -102,3 +102,17 @@ Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
 diagnostic with uncertainty using gradient-boosted machines \emph{arXiv
 preprint} \code{arXiv:2003.07900}.
 }
+\seealso{
+Other diagnostics: 
+\code{\link{ess_basic}()},
+\code{\link{ess_bulk}()},
+\code{\link{ess_quantile}()},
+\code{\link{ess_sd}()},
+\code{\link{ess_tail}()},
+\code{\link{mcse_mean}()},
+\code{\link{mcse_quantile}()},
+\code{\link{mcse_sd}()},
+\code{\link{rhat_basic}()},
+\code{\link{rhat}()}
+}
+\concept{diagnostics}
