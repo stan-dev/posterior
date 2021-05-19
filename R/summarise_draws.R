@@ -212,6 +212,14 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
                               unclass(lsf.str(envir = asNamespace("posterior"), all = T)),
                               envir = as.environment(asNamespace("posterior"))
                               )
+      parallel::clusterExport(cl = cl, 
+                              unclass(lsf.str(envir = asNamespace("checkmate"), all = T)),
+                              envir = as.environment(asNamespace("checkmate"))
+      )
+      parallel::clusterExport(cl = cl, 
+                              unclass(lsf.str(envir = asNamespace("rlang"), all = T)),
+                              envir = as.environment(asNamespace("rlang"))
+      )
       # parallel::clusterEvalQ(cl, library(checkmate))
       # parallel::clusterEvalQ(cl, library(rlang))
       
