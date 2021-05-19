@@ -62,7 +62,8 @@ By default, the following summary functions are used: \code{\link[=mean]{mean()}
 \code{\link[=sd]{sd()}}, \code{\link[=mad]{mad()}}, \code{\link[=quantile2]{quantile2()}}, \code{\link[=rhat]{rhat()}}, \code{\link[=ess_bulk]{ess_bulk()}}, and \code{\link[=ess_tail]{ess_tail()}}.
 The functions \code{default_summary_measures()}, \code{default_convergence_measures()},
 and \code{default_mcse_measures()} return character vectors of names of the
-default measures included in the package.
+default measures included in the package. See \code{?posterior::diagnostics}
+for a list of available diagnostics and links to their individual help pages.
 }
 \examples{
 x <- example_draws("eight_schools")

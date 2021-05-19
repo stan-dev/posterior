@@ -2,6 +2,28 @@
 # Copyright (C) 2018, 2019 Aki Vehtari, Paul Bürkner
 # See LICENSE.md for more details
 
+#' Convergence diagnostics
+#'
+#' A list of available diagnostics and links to their individual help pages.
+#'
+#' @name diagnostics
+#' @aliases convergence
+#'
+#' @details
+#' * [ess_basic()]: Basic version of effective sample size
+#' * [ess_bulk()]: Bulk effective sample size
+#' * [ess_tail()]: Tail effective sample size
+#' * [ess_quantile()]: Effective sample sizes for quantiles
+#' * [ess_sd()]: Effective sample sizes for standard deviations
+#' * [mcse_mean()]: Monte Carlo standard error for the mean
+#' * [mcse_quantile()]: Monte Carlo standard error for quantiles
+#' * [mcse_sd()]: Monte Carlo standard error for standard deviations
+#' * [rhat_basic()]: Basic version of Rhat
+#' * [rhat()]: Improved, rank-based version of Rhat
+#' * [rstar()]: R* diagnostic
+#'
+NULL
+
 #' Basic version of the Rhat convergence diagnostic
 #'
 #' Compute the basic Rhat convergence diagnostic for a single variable as
