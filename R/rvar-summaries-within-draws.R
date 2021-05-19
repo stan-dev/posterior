@@ -9,12 +9,13 @@
 #' @param ... [`rvar`]s
 #' @template args-rvar-summaries-na.rm
 #' @param constant For `rvar_mad()`, a scale factor for computing the median
-#' absolute deviation. See `mad()`.
+#' absolute deviation. See the details of `stats::mad()` for the justification
+#' for the default value.
 #' @param low For `rvar_mad()`, if `TRUE`, compute the 'lo-median', i.e., for
 #' even sample size, do not average the two middle values, but take the smaller
-#' one. See `mad()`.
+#' one. See `stats::mad()`.
 #' @param high For `rvar_mad()`, if `TRUE`, compute the 'hi-median', i.e., take
-#' the larger of the two middle values for even sample size. See `mad()`.
+#' the larger of the two middle values for even sample size. See `stats::mad()`.
 #'
 #' @details
 #'
@@ -40,6 +41,7 @@
 #' rvar_median(x)
 #' rvar_sum(x)
 #' rvar_prod(x)
+#' rvar_range(x)
 #'
 #' @seealso [rvar-summaries-over-draws] for summary functions across draws (e.g. expectations).
 #' [rvar-functions] for density, CDF, and quantile functions of random variables.

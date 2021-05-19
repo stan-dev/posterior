@@ -47,14 +47,15 @@ rvar_any(..., na.rm = FALSE)
 before summaries are computed.}
 
 \item{constant}{For \code{rvar_mad()}, a scale factor for computing the median
-absolute deviation. See \code{mad()}.}
+absolute deviation. See the details of \code{stats::mad()} for the justification
+for the default value.}
 
 \item{low}{For \code{rvar_mad()}, if \code{TRUE}, compute the 'lo-median', i.e., for
 even sample size, do not average the two middle values, but take the smaller
-one. See \code{mad()}.}
+one. See \code{stats::mad()}.}
 
 \item{high}{For \code{rvar_mad()}, if \code{TRUE}, compute the 'hi-median', i.e., take
-the larger of the two middle values for even sample size. See \code{mad()}.}
+the larger of the two middle values for even sample size. See \code{stats::mad()}.}
 }
 \value{
 An \code{\link{rvar}} of length 1 (or in the case of \code{range()}, length 2) with the same number
@@ -84,6 +85,7 @@ rvar_mean(x)
 rvar_median(x)
 rvar_sum(x)
 rvar_prod(x)
+rvar_range(x)
 
 }
 \seealso{

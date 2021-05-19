@@ -90,7 +90,7 @@ the case of \code{range()}, see 'Details').
 }
 \details{
 Summaries include expectations (\code{E()} or \code{mean()}), probabilities (\code{Pr()}),
-medians (\code{median()}), spread (\code{variance()}, \code{sd()}, \code{mad()}), sums and
+medians (\code{median()}), spread (\code{var()}, \code{variance()}, \code{sd()}, \code{mad()}), sums and
 products (\code{sum()}, \code{prod()}), extrema and ranges (\code{min()}, \code{max()}, \code{range()}),
 logical summaries (\code{all()}, \code{any()}), and special value predicates (\code{is.finite()},
 \code{is.infinite()}, \code{is.nan()}, \code{is.na()}).

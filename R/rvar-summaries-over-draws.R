@@ -13,7 +13,7 @@
 #' @details
 #'
 #' Summaries include expectations (`E()` or `mean()`), probabilities (`Pr()`),
-#' medians (`median()`), spread (`variance()`, `sd()`, `mad()`), sums and
+#' medians (`median()`), spread (`var()`, `variance()`, `sd()`, `mad()`), sums and
 #' products (`sum()`, `prod()`), extrema and ranges (`min()`, `max()`, `range()`),
 #' logical summaries (`all()`, `any()`), and special value predicates (`is.finite()`,
 #' `is.infinite()`, `is.nan()`, `is.na()`).
