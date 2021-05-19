@@ -209,7 +209,8 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
       cl <- parallel::makePSOCKcluster(cores)
       on.exit(parallel::stopCluster(cl))
       parallel::clusterExport(cl = cl, 
-                              unclass(lsf.str(envir = asNamespace("posterior"), all = T))
+                              unclass(lsf.str(envir = asNamespace("posterior"), all = T)),
+                              envir = as.environment(asNamespace("posterior"))
                               )
       parallel::clusterEvalQ(cl, library(checkmate))
       parallel::clusterEvalQ(cl, library(rlang))
