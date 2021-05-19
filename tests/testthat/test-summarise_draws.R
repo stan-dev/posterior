@@ -112,7 +112,7 @@ test_that("multicore summarise_draws is identical to single-core summarise_draws
 })
 
 
-test_that("summarise_draws for invalid cores specification", {
+test_that("summarise_draws errors for invalid cores specification", {
   x <- example_draws()
   expect_error(
     summarise_draws(x, cores = -1),
