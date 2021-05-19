@@ -9,7 +9,7 @@
 #'
 #' @name draws_summary
 #'
-#' @param x,object A `draws` object or one coercible to a `draws` object.
+#' @param .x,object A `draws` object or one coercible to a `draws` object.
 #' @param ... Name-value pairs of summary functions.
 #'   The name will be the name of the variable in the result unless
 #'   the function returns a named vector in which case the latter names
