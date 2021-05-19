@@ -73,6 +73,19 @@ test_that("multicore summarise_draws is identical to single-core summarise_draws
           including if some chunks contain no variables", {
             set.seed(1)
             nc <- 4
+            
+            n <- 20
+            test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
+            x <- as_draws_array(test_array)
+            sum_x <- summarise_draws(x)
+            parsum_x <- summarise_draws(x, cores = 2)
+            expect_identical(sum_x, parsum_x)
+            
+            dimnames(x)$variable[2] <- reserved_variables()[1]
+            sum_x <- summarise_draws(x)
+            parsum_x <- summarise_draws(x, cores = 2)
+            expect_identical(sum_x, parsum_x)
+            
             n <- 2
             test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
             x <- as_draws_array(test_array)
@@ -96,4 +109,17 @@ test_that("multicore summarise_draws is identical to single-core summarise_draws
             suppressWarnings(sum_x <- summarise_draws(x))
             suppressWarnings(parsum_x <- summarise_draws(x, cores = 2))
             expect_identical(sum_x, parsum_x)
+})
+
+
+test_that("summarise_draws for invalid cores specification", {
+  x <- example_draws()
+  expect_error(
+    summarise_draws(x, cores = -1),
+    "cores must be a positive integer"
+  )
+  expect_error(
+    summarise_draws(x, cores = NULL),
+    "Name 'variable' is reserved in 'summarise_draws'"
+  )
 })
