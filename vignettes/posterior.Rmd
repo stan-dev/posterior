@@ -369,17 +369,24 @@ individual help pages see `help("diagnostics", "posterior")`.
 ## Other methods
 
 In addition to the methods demonstrated in this vignette, posterior has various
-other methods available for draws objects including the following.
+other methods available for draws objects. The following is a (potentially
+incomplete) list of the other available methods.
 
-* `order_draws()`
-* `repair_draws()`
-* `resample_draws()`
-* `thin_draws()`
-* `weight_draws()`
-* `extract_variable()`
-* `extract_variable_matrix()`
-* `merge_chains()`
-* `split_chains()`
+|**Method**|**Description**|
+|:----------|:---------------|
+| `order_draws()` | Order `draws` objects according to iteration and chain number |
+| `repair_draws()`| Repair indices of `draws` objects so that iterations chains,
+and draws are continuously and consistently numbered |
+|`resample_draws()` | Resample `draws` objects according to provided weights |
+| `thin_draws()` | Thin `draws` objects to reduce size and autocorrelation |
+| `weight_draws()`| Add weights to draws objects, with one weight per draw, for
+use in subsequent weighting operations |
+| `extract_variable()` | Extract a vector of draws of a single variable  |
+| `extract_variable_matrix()` | Extract an iterations x chains matrix of of
+draws of a single variable |
+| `merge_chains()` | Merge chains of `draws` objects into a single chain. | 
+| `split_chains()` | Split chains of `draws` objects by halving the number of
+iterations per chain and doubling the number of chains.  |
 
 
 ## References
