@@ -253,15 +253,15 @@ create_summary_list <- function(x, v, funs, .args) {
 summarise_draws_helper <- function(x, funs, .args) {
   variables_x <- variables(x)
   # get length and output names, calculated on the first variable
-  out1 <- create_summary_list(x, variables_x[1], funs, .args)
+  out_1 <- create_summary_list(x, variables_x[1], funs, .args)
   the_names <- vector(mode = "list", length = length(funs))
-  for (i in seq_along(out1)){
-    if (rlang::is_named(out1[[i]])) {
-      the_names[[i]] <- names(out1[[i]])
-    } else if (length(out1[[i]]) > 1) {
-      the_names[[i]] <- paste0(names(out1)[i], ".", c(1:length(out1[[i]])))
+  for (i in seq_along(out_1)){
+    if (rlang::is_named(out_1[[i]])) {
+      the_names[[i]] <- names(out_1[[i]])
+    } else if (length(out_1[[i]]) > 1) {
+      the_names[[i]] <- paste0(names(out_1)[i], ".", c(1:length(out_1[[i]])))
     } else {
-      the_names[[i]] <- names(out1)[i]
+      the_names[[i]] <- names(out_1)[i]
     }
   }
   the_names <- unlist(the_names)
@@ -272,7 +272,7 @@ summarise_draws_helper <- function(x, funs, .args) {
   # Pre-allocate matrix to store output
   out <- matrix(NA, nrow = length(variables_x), ncol = length(the_names))
   colnames(out) <- the_names
-  out[1, ] <- unlist(out1)
+  out[1, ] <- unlist(out_1)
   # Do the computation for all remaining variables
   if (length(variables_x) > 1L) {
     for (v_ind in 2:length(variables_x)) {
