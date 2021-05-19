@@ -76,7 +76,7 @@ Pr <- function(x, ...) UseMethod("Pr")
 #' @rdname rvar-summaries-over-draws
 #' @export
 Pr.default <- function(x, ...) {
-  stop2("Can only use `Pr()` on logical variables.")
+  stop_no_call("Can only use `Pr()` on logical variables.")
 }
 #' @rdname rvar-summaries-over-draws
 #' @export
@@ -87,7 +87,7 @@ Pr.logical <- function(x, ...) {
 #' @export
 Pr.rvar <- function(x, ...) {
   if (!is.logical(draws_of(x))) {
-    stop2("Can only use `Pr()` on logical random variables.")
+    stop_no_call("Can only use `Pr()` on logical random variables.")
   }
   mean(x, ...)
 }

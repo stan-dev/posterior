@@ -1,5 +1,5 @@
 ---
-title: "The Random Variable Datatype"
+title: "rvar: The Random Variable Datatype"
 author: "Matthew Kay"
 date: "`r Sys.Date()`"
 output: 

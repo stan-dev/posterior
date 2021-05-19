@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
       </span>
     </div>
 
@@ -48,7 +48,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -98,19 +98,19 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fa fa-twitter"></span>
+    <span class="fas fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fa fa-users"></span>
+    <span class="fas fa-users"></span>
      
   </a>
 </li>
@@ -143,22 +143,26 @@
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
 <p>The package is not on CRAN yet, but you can install the beta release via</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"posterior"</span>, <span class="kw">repos</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"https://mc-stan.org/r-packages/"</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html">getOption</a></span>(<span class="st">"repos"</span>)))</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"posterior"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"https://mc-stan.org/r-packages/"</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html">getOption</a></span><span class="op">(</span><span class="st">"repos"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>or the latest development version from GitHub via</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="co"># install.packages("remotes")</span>
-<span class="kw pkg">remotes</span><span class="kw ns">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span>(<span class="st">"stan-dev/posterior"</span>)</pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"stan-dev/posterior"</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="examples" class="section level3">
 <h3 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h3>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="st">"posterior"</span>)
-<span class="co">#&gt; This is posterior version 0.1.0</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://mc-stan.org/posterior/">"posterior"</a></span><span class="op">)</span>
+<span class="co">#&gt; This is posterior version 0.1.0</span></code></pre></div>
 <p>To demonstrate how to work with the <strong>posterior</strong> package, we will use example posterior draws obtained from the eight schools hierarchical meta-analysis model described in Gelman et al. (2013). Essentially, we have an estimate per school (<code>theta[1]</code> through <code>theta[8]</code>) as well as an overall mean (<code>mu</code>) and standard deviation across schools (<code>tau</code>).</p>
 <div id="draws-formats" class="section level4">
 <h4 class="hasAnchor">
 <a href="#draws-formats" class="anchor"></a>Draws formats</h4>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="no">eight_schools_array</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/example_draws.html">example_draws</a></span>(<span class="st">"eight_schools"</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">eight_schools_array</span>, <span class="kw">max_variables</span> <span class="kw">=</span> <span class="fl">3</span>)
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eight_schools_array</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/example_draws.html">example_draws</a></span><span class="op">(</span><span class="st">"eight_schools"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">eight_schools_array</span>, max_variables <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_array: 100 iterations, 4 chains, and 10 variables</span>
 <span class="co">#&gt; , , variable = mu</span>
 <span class="co">#&gt; </span>
@@ -190,10 +194,11 @@
 <span class="co">#&gt;         4 14.70 12.45  5.4  2.69</span>
 <span class="co">#&gt;         5  5.96  9.75  8.2 -0.91</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt; # ... with 95 more iterations, and 7 more variables</span></pre></div>
+<span class="co">#&gt; # ... with 95 more iterations, and 7 more variables</span></code></pre></div>
 <p>The draws for this example come as a <code>draws_array</code> object, that is, an array with dimensions iterations x chains x variables. We can easily transform it to another format, for instance, a data frame with additional meta information.</p>
-<div class="sourceCode" id="cb5"><pre class="r"><span class="no">eight_schools_df</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/draws_df.html">as_draws_df</a></span>(<span class="no">eight_schools_array</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">eight_schools_df</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eight_schools_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_df.html">as_draws_df</a></span><span class="op">(</span><span class="va">eight_schools_array</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">eight_schools_df</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_df: 100 iterations, 4 chains, and 10 variables</span>
 <span class="co">#&gt;      mu tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6]</span>
 <span class="co">#&gt; 1  2.01 2.8     3.96    0.271    -0.74      2.1    0.923      1.7</span>
@@ -207,15 +212,16 @@
 <span class="co">#&gt; 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1</span>
 <span class="co">#&gt; 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5</span>
 <span class="co">#&gt; # ... with 390 more draws, and 2 more variables</span>
-<span class="co">#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</span></pre></div>
+<span class="co">#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</span></code></pre></div>
 <p>Different formats are preferable in different situations and hence posterior supports multiple formats and easy conversion between them. For more details on the available formats see <code><a href="reference/draws.html">help("draws")</a></code>. All of the formats are essentially base R object classes and can be used as such. For example, a <code>draws_matrix</code> object is just a <code>matrix</code> with a little more consistency and additional methods.</p>
 </div>
 <div id="summarising-draws" class="section level4">
 <h4 class="hasAnchor">
 <a href="#summarising-draws" class="anchor"></a>Summarising draws</h4>
 <p>Computing summaries of posterior or prior draws and convergence diagnostics for posterior draws is one of the most common tasks when working with Bayesian models fit using Markov Chain Monte Carlo (MCMC) methods. The <strong>posterior</strong> package provides a flexible interface for this purpose via <code><a href="reference/draws_summary.html">summarise_draws()</a></code>:</p>
-<div class="sourceCode" id="cb6"><pre class="r"><span class="co"># summarise_draws or summarize_draws</span>
-<span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span>(<span class="no">eight_schools_df</span>)
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># summarise_draws or summarize_draws</span>
+<span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">eight_schools_df</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 10 x 10</span>
 <span class="co">#&gt;    variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail</span>
 <span class="co">#&gt;    &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;</span>
@@ -228,9 +234,10 @@
 <span class="co">#&gt;  7 theta[5]  3.22   3.72  5.08  4.38  -5.93  10.8   1.01     523.     306.</span>
 <span class="co">#&gt;  8 theta[6]  3.99   4.14  5.16  4.81  -4.32  11.5   1.02     548.     205.</span>
 <span class="co">#&gt;  9 theta[7]  6.50   5.90  5.26  4.54  -1.19  15.4   1.00     434.     308.</span>
-<span class="co">#&gt; 10 theta[8]  4.57   4.64  5.25  4.89  -3.79  12.2   1.02     355.     146.</span></pre></div>
+<span class="co">#&gt; 10 theta[8]  4.57   4.64  5.25  4.89  -3.79  12.2   1.02     355.     146.</span></code></pre></div>
 <p>Basically, we get a data frame with one row per variable and one column per summary statistic or convergence diagnostic. The summaries <code>rhat</code>, <code>ess_bulk</code>, and <code>ess_tail</code> are described in Vehtari et al. (2020). We can choose which summaries to compute by passing additional arguments, either functions or names of functions. For instance, if we only wanted the mean and its corresponding Monte Carlo Standard Error (MCSE) we would use:</p>
-<div class="sourceCode" id="cb7"><pre class="r"><span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span>(<span class="no">eight_schools_df</span>, <span class="st">"mean"</span>, <span class="st">"mcse_mean"</span>)
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">eight_schools_df</span>, <span class="st">"mean"</span>, <span class="st">"mcse_mean"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 10 x 3</span>
 <span class="co">#&gt;    variable  mean mcse_mean</span>
 <span class="co">#&gt;    &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span>
@@ -243,14 +250,15 @@
 <span class="co">#&gt;  7 theta[5]  3.22     0.232</span>
 <span class="co">#&gt;  8 theta[6]  3.99     0.222</span>
 <span class="co">#&gt;  9 theta[7]  6.50     0.250</span>
-<span class="co">#&gt; 10 theta[8]  4.57     0.273</span></pre></div>
+<span class="co">#&gt; 10 theta[8]  4.57     0.273</span></code></pre></div>
 <p>For a function to work with <code>summarise_draws</code>, it needs to take a vector or matrix of numeric values and returns a single numeric value or a named vector of numeric values.</p>
 </div>
 <div id="subsetting-draws" class="section level4">
 <h4 class="hasAnchor">
 <a href="#subsetting-draws" class="anchor"></a>Subsetting draws</h4>
 <p>Another common task when working with posterior (or prior) draws, is subsetting according to various aspects of the draws (iterations, chains, or variables). <strong>posterior</strong> provides a convenient interface for this purpose via the <code><a href="reference/subset_draws.html">subset_draws()</a></code> method. For example, here is the code to extract the first five iterations of the first two chains of the variable <code>mu</code>:</p>
-<div class="sourceCode" id="cb8"><pre class="r"><span class="fu"><a href="reference/subset_draws.html">subset_draws</a></span>(<span class="no">eight_schools_df</span>, <span class="kw">variable</span> <span class="kw">=</span> <span class="st">"mu"</span>, <span class="kw">chain</span> <span class="kw">=</span> <span class="fl">1</span>:<span class="fl">2</span>, <span class="kw">iteration</span> <span class="kw">=</span> <span class="fl">1</span>:<span class="fl">5</span>)
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/subset_draws.html">subset_draws</a></span><span class="op">(</span><span class="va">eight_schools_df</span>, variable <span class="op">=</span> <span class="st">"mu"</span>, chain <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, iteration <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_df: 5 iterations, 2 chains, and 1 variables</span>
 <span class="co">#&gt;      mu</span>
 <span class="co">#&gt; 1   2.0</span>
@@ -263,16 +271,17 @@
 <span class="co">#&gt; 8  -1.2</span>
 <span class="co">#&gt; 9  10.9</span>
 <span class="co">#&gt; 10  9.8</span>
-<span class="co">#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</span></pre></div>
+<span class="co">#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</span></code></pre></div>
 <p>The same call to <code><a href="reference/subset_draws.html">subset_draws()</a></code> can be used regardless of whether the object is a <code>draws_df</code>, <code>draws_array</code>, <code>draws_list</code>, etc.</p>
 </div>
 <div id="mutating-and-renaming-draws" class="section level4">
 <h4 class="hasAnchor">
 <a href="#mutating-and-renaming-draws" class="anchor"></a>Mutating and renaming draws</h4>
 <p>The magic of having obtained draws from the joint posterior (or prior) distribution of a set of variables is that these draws can also be used to obtain draws from any other variable that is a function of the original variables. That is, if are interested in the posterior distribution of, say, <code>phi = (mu + tau)^2</code> all we have to do is to perform the transformation for each of the individual draws to obtain draws from the posterior distribution of the transformed variable. This procedure is automated in the <code>mutate_variables</code> method:</p>
-<div class="sourceCode" id="cb9"><pre class="r"><span class="no">x</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/mutate_variables.html">mutate_variables</a></span>(<span class="no">eight_schools_df</span>, <span class="kw">phi</span> <span class="kw">=</span> (<span class="no">mu</span> + <span class="no">tau</span>)^<span class="fl">2</span>)
-<span class="no">x</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/subset_draws.html">subset_draws</a></span>(<span class="no">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"mu"</span>, <span class="st">"tau"</span>, <span class="st">"phi"</span>))
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">x</span>)
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mutate_variables.html">mutate_variables</a></span><span class="op">(</span><span class="va">eight_schools_df</span>, phi <span class="op">=</span> <span class="op">(</span><span class="va">mu</span> <span class="op">+</span> <span class="va">tau</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/subset_draws.html">subset_draws</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mu"</span>, <span class="st">"tau"</span>, <span class="st">"phi"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_df: 100 iterations, 4 chains, and 3 variables</span>
 <span class="co">#&gt;      mu tau   phi</span>
 <span class="co">#&gt; 1  2.01 2.8  22.8</span>
@@ -286,25 +295,28 @@
 <span class="co">#&gt; 9  0.15 3.9  16.6</span>
 <span class="co">#&gt; 10 7.17 1.8  79.9</span>
 <span class="co">#&gt; # ... with 390 more draws</span>
-<span class="co">#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</span></pre></div>
+<span class="co">#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</span></code></pre></div>
 <p>When we do the math ourselves, we see that indeed for each draw, <code>phi</code> is equal to <code>(mu + tau)^2</code> (up to rounding two 2 digits for the purpose of printing).</p>
 <p>We may also easily rename variables, or even entire vectors of variables via <code>rename_variables</code>, for example:</p>
-<div class="sourceCode" id="cb10"><pre class="r"><span class="no">x</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/rename_variables.html">rename_variables</a></span>(<span class="no">eight_schools_df</span>, <span class="kw">mean</span> <span class="kw">=</span> <span class="no">mu</span>, <span class="kw">alpha</span> <span class="kw">=</span> <span class="no">theta</span>)
-<span class="fu"><a href="reference/draws-index.html">variables</a></span>(<span class="no">x</span>)
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/rename_variables.html">rename_variables</a></span><span class="op">(</span><span class="va">eight_schools_df</span>, mean <span class="op">=</span> <span class="va">mu</span>, alpha <span class="op">=</span> <span class="va">theta</span><span class="op">)</span>
+<span class="fu"><a href="reference/draws-index.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt;  [1] "mean"     "tau"      "alpha[1]" "alpha[2]" "alpha[3]" "alpha[4]" "alpha[5]"</span>
-<span class="co">#&gt;  [8] "alpha[6]" "alpha[7]" "alpha[8]"</span></pre></div>
+<span class="co">#&gt;  [8] "alpha[6]" "alpha[7]" "alpha[8]"</span></code></pre></div>
 <p>As with all <strong>posterior</strong> methods, <code>mutate_variables</code> and <code>rename_variables</code> can be used with all draws formats.</p>
 </div>
 <div id="binding-draws-together" class="section level4">
 <h4 class="hasAnchor">
 <a href="#binding-draws-together" class="anchor"></a>Binding draws together</h4>
 <p>Suppose we have multiple draws objects that we want to bind together:</p>
-<div class="sourceCode" id="cb11"><pre class="r"><span class="no">x1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="fl">5</span>), <span class="kw">beta</span> <span class="kw">=</span> <span class="fl">1</span>)
-<span class="no">x2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span>(<span class="kw">alpha</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="fl">5</span>), <span class="kw">beta</span> <span class="kw">=</span> <span class="fl">2</span>)
-<span class="no">x3</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span>(<span class="kw">theta</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html">rexp</a></span>(<span class="fl">5</span>))</pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, beta <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, beta <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span><span class="op">(</span>theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html">rexp</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Then, we can use the <code>bind_draws</code> method to bind them along different dimensions. For example, we can bind <code>x1</code> and <code>x3</code> together along the <code>'variable'</code> dimension:</p>
-<div class="sourceCode" id="cb12"><pre class="r"><span class="no">x4</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/bind_draws.html">bind_draws</a></span>(<span class="no">x1</span>, <span class="no">x3</span>, <span class="kw">along</span> <span class="kw">=</span> <span class="st">"variable"</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">x4</span>)
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">x4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bind_draws.html">bind_draws</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x3</span>, along <span class="op">=</span> <span class="st">"variable"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x4</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_matrix: 5 draws, and 3 variables</span>
 <span class="co">#&gt;     variable</span>
 <span class="co">#&gt; draw  alpha beta theta</span>
@@ -312,10 +324,11 @@
 <span class="co">#&gt;    2  0.348    1  2.21</span>
 <span class="co">#&gt;    3  0.898    1  1.44</span>
 <span class="co">#&gt;    4 -1.255    1  0.44</span>
-<span class="co">#&gt;    5 -0.065    1  3.87</span></pre></div>
+<span class="co">#&gt;    5 -0.065    1  3.87</span></code></pre></div>
 <p>Or, we can bind <code>x1</code> and <code>x2</code> together along the <code>'draw'</code> dimension:</p>
-<div class="sourceCode" id="cb13"><pre class="r"><span class="no">x5</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/bind_draws.html">bind_draws</a></span>(<span class="no">x1</span>, <span class="no">x2</span>, <span class="kw">along</span> <span class="kw">=</span> <span class="st">"draw"</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">x5</span>)
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">x5</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bind_draws.html">bind_draws</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, along <span class="op">=</span> <span class="st">"draw"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x5</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_matrix: 10 draws, and 2 variables</span>
 <span class="co">#&gt;     variable</span>
 <span class="co">#&gt; draw  alpha beta</span>
@@ -328,17 +341,18 @@
 <span class="co">#&gt;   7  -1.318    2</span>
 <span class="co">#&gt;   8   1.744    2</span>
 <span class="co">#&gt;   9   0.425    2</span>
-<span class="co">#&gt;   10  0.789    2</span></pre></div>
+<span class="co">#&gt;   10  0.789    2</span></code></pre></div>
 <p>As with all <strong>posterior</strong> methods, <code>bind_draws</code> can be used with all draws formats.</p>
 </div>
 <div id="converting-from-regular-r-objects-to-draws-formats" class="section level4">
 <h4 class="hasAnchor">
 <a href="#converting-from-regular-r-objects-to-draws-formats" class="anchor"></a>Converting from regular R objects to draws formats</h4>
 <p>The <code>eight_schools</code> example already comes in a format natively supported by posterior but we could of course also import the draws from other sources, for example, from common base R objects:</p>
-<div class="sourceCode" id="cb14"><pre class="r"><span class="no">x</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span>(<span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span>(<span class="fl">50</span>), <span class="kw">nrow</span> <span class="kw">=</span> <span class="fl">10</span>, <span class="kw">ncol</span> <span class="kw">=</span> <span class="fl">5</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span>(<span class="no">x</span>) <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="st">"V"</span>, <span class="fl">1</span>:<span class="fl">5</span>)
-<span class="no">x</span> <span class="kw">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">as_draws_matrix</a></span>(<span class="no">x</span>)
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span>(<span class="no">x</span>)
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">10</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"V"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">as_draws_matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_matrix: 10 draws, and 5 variables</span>
 <span class="co">#&gt;     variable</span>
 <span class="co">#&gt; draw     V1    V2     V3    V4     V5</span>
@@ -353,7 +367,7 @@
 <span class="co">#&gt;   9  -0.075 -0.70  0.400  0.97 -0.737</span>
 <span class="co">#&gt;   10 -0.144 -0.58  0.029  1.02 -1.431</span>
 
-<span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span>(<span class="no">x</span>, <span class="st">"mean"</span>, <span class="st">"sd"</span>, <span class="st">"median"</span>, <span class="st">"mad"</span>)
+<span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"mean"</span>, <span class="st">"sd"</span>, <span class="st">"median"</span>, <span class="st">"mad"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 x 5</span>
 <span class="co">#&gt;   variable   mean    sd  median   mad</span>
 <span class="co">#&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;</span>
@@ -361,7 +375,7 @@
 <span class="co">#&gt; 2 V2       -0.446 0.908 -0.658  0.719</span>
 <span class="co">#&gt; 3 V3        0.186 0.608  0.0604 0.383</span>
 <span class="co">#&gt; 4 V4       -0.438 0.984 -0.324  1.21 </span>
-<span class="co">#&gt; 5 V5       -0.612 0.729 -0.796  0.725</span></pre></div>
+<span class="co">#&gt; 5 V5       -0.612 0.729 -0.796  0.725</span></code></pre></div>
 <p>Instead of <code><a href="reference/draws_matrix.html">as_draws_matrix()</a></code> we also could have just used <code><a href="reference/draws.html">as_draws()</a></code>, which attempts to find the closest available format to the input object. In this case this would result in a <code>draws_matrix</code> object either way.</p>
 </div>
 </div>
@@ -446,7 +460,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

@@ -111,3 +111,36 @@ test_that("variables can be subsetted via non-scalar selection", {
   x_sub <- subset_draws(x, variable = "theta")
   expect_equal(variables(x_sub), c(paste0("theta[", 1:8, "]")))
 })
+
+test_that("subset_draws speed is tolerable with many variables", {
+  x <- as_draws_matrix(matrix(rnorm(10 * 300000), nrow = 10))
+  tt <- system.time(x2 <- subset_draws(x, colnames(x)))
+  expect_equal(x, x2)
+  expect_lt(tt[["elapsed"]], 1)
+})
+
+test_that("subset_draws errors if selecting missing variables", {
+  x <- as_draws_matrix(example_draws())
+  expect_error(
+    subset_draws(x, variable = c("theta[2]", "X", "theta[3]", "Y")),
+    "The following variables are missing in the draws object: {'X', 'Y'}",
+    fixed = TRUE
+  )
+})
+
+test_that("subset_draws preserves variable order", {
+  x <- as_draws_matrix(example_draws())
+  x <- subset_draws(x, variable = c("theta[2]", "theta[1]"))
+  expect_equal(variables(x), c("theta[2]", "theta[1]"))
+})
+
+test_that("non-unique subsetting for draws_df same as doing it with draws_list", {
+  x_df <- as_draws_df(example_draws())
+  x_list <- as_draws_list(example_draws())
+
+  x_df_sub <- subset_draws(x_df, chain = c(1,1,2), iteration = c(1:2, 1:50),
+                           unique = FALSE)
+  x_list_sub <- subset_draws(x_list, chain = c(1,1,2), iteration = c(1:2, 1:50),
+                             unique = FALSE)
+  expect_equal(x_df_sub, as_draws_df(x_list_sub))
+})

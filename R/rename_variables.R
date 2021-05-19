@@ -40,7 +40,7 @@ rename_variables.draws <- function(.x, ...) {
 
   if (any(new_names == "")) {
     old_names_without_new_name = old_names[new_names == ""]
-    stop2(
+    stop_no_call(
       "Cannot rename a variable to an empty name.\n",
       "The following variables did not have a new name provided:\n",
       comma(old_names_without_new_name)

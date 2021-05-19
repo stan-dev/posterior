@@ -62,3 +62,9 @@ test_that("summarise_draws and summary work for rvars", {
   expect_identical(summarise_draws(d$theta), ref)
   expect_identical(summary(d$theta), ref)
 })
+
+test_that("summarise_draws warns if all variable names are reserved", {
+  x <- subset_draws(as_draws_df(example_draws()), variable = "mu")
+  variables(x) <- ".log_weight"
+  expect_warning(summarize_draws(x), "no variables with unreserved names")
+})

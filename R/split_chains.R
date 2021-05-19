@@ -26,8 +26,10 @@ split_chains <- function(x, ...) {
 split_chains.draws <- function(x, ...) {
   niter <- niterations(x)
   if (niter %% 2 != 0) {
-    warning2("Number of iterations is not even. Removing the last iteration ",
-             "in order to split chains into two parts of equal length.")
+    warning_no_call(
+      "Number of iterations is not even. Removing the last iteration ",
+      "in order to split chains into two parts of equal length."
+    )
     niter <- niter - 1
   }
   iter_first_half <- seq_len(floor(niter / 2))
@@ -39,8 +41,10 @@ split_chains.draws <- function(x, ...) {
 
 #' @export
 split_chains.draws_matrix <- function(x, ...) {
-  warning2("Converted 'draws_matrix' to 'draws_array' object ",
-           "in order to split chains.")
+  warning_no_call(
+    "Converted 'draws_matrix' to 'draws_array' object ",
+    "in order to split chains."
+  )
   split_chains(as_draws_array(x))
 }
 

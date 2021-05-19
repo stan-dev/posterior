@@ -430,31 +430,29 @@ check_existing_variables <- function(variables, x, regex = FALSE,
   if (regex) {
     tmp <- named_list(variables)
     for (i in seq_along(variables)) {
-      tmp[[i]] <- all_variables[grepl(variables[i], all_variables)]
+      tmp[[i]] <- grep(variables[i], all_variables)
     }
     # regular expressions are not required to match anything
     missing_variables <- NULL
-    variables <- as.character(unique(unlist(tmp)))
+    variables <- as.character(all_variables[unique(unlist(tmp))])
   } else if (!scalar_only) {
-    tmp <- named_list(variables)
-    escaped_variables <- escape_all(variables)
-    missing <- rep(NA, length(variables))
-    for (i in seq_along(variables)) {
-      v_regex <- paste0("^", escaped_variables[i], "(\\[.*\\])?$")
-      tmp[[i]] <- all_variables[grepl(v_regex, all_variables)]
-      missing[i] <- !length(tmp[[i]])
-    }
-    missing_variables <- variables[missing]
-    variables <- as.character(unique(unlist(tmp)))
+    missing_candidates <- setdiff(variables, all_variables)
+    all_variables_base <- gsub("\\[.*\\]$", "", all_variables)
+    missing_variables <- setdiff(missing_candidates, all_variables_base)
+    vector_variables <- setdiff(missing_candidates, missing_variables)
+    variables <- unique(
+      c(variables[!(variables %in% missing_candidates)],
+        all_variables[all_variables_base %in% vector_variables])
+    )
   } else {
     missing_variables <- setdiff(variables, all_variables)
   }
   variables <- check_reserved_variables(variables)
   if (length(missing_variables)) {
-    stop2("The following variables are missing in the draws object: ",
+    stop_no_call("The following variables are missing in the draws object: ",
           comma(missing_variables))
   }
-  variables
+  invisible(variables)
 }
 
 # check validity of new variables: e.g., that there are
@@ -465,7 +463,7 @@ check_new_variables <- function(variables) {
   # we shouldn't expect to take this branch often (since it is an error)
   if (anyDuplicated(variables)) {
     duplicates = unique(variables[duplicated(variables)])
-    stop2(
+    stop_no_call(
       "Duplicate variable names are not allowed in draws objects.\n",
       "The following variable names are duplicates:\n",
       comma(duplicates)
@@ -482,9 +480,9 @@ check_reserved_variables <- function(variables) {
   # this has the advantage that power users can directly add such variables
   used_reserved_variables <- intersect(reserved_df_variables(), variables)
   if (length(used_reserved_variables)) {
-    stop2("Variable names ", comma(used_reserved_variables), " are reserved.")
+    stop_no_call("Variable names ", comma(used_reserved_variables), " are reserved.")
   }
-  variables
+  invisible(variables)
 }
 
 # check validity of iteration indices
@@ -501,15 +499,15 @@ check_iteration_ids <- function(iteration_ids, x, unique = TRUE) {
   }
   iteration_ids <- sort(iteration_ids)
   if (any(iteration_ids < 1L)) {
-    stop2("Iteration indices should be positive.")
+    stop_no_call("Iteration indices should be positive.")
   }
   niterations <- niterations(x)
   max_iteration <- SW(max(iteration_ids))
   if (max_iteration > niterations) {
-    stop2("Tried to subset iterations up to '", max_iteration, "' ",
+    stop_no_call("Tried to subset iterations up to '", max_iteration, "' ",
           "but the object only has '", niterations, "' iterations.")
   }
-  iteration_ids
+  invisible(iteration_ids)
 }
 
 # check validity of chain indices
@@ -526,15 +524,15 @@ check_chain_ids <- function(chain_ids, x, unique = TRUE) {
   }
   chain_ids <- sort(chain_ids)
   if (any(chain_ids < 1L)) {
-    stop2("Chain indices should be positive.")
+    stop_no_call("Chain indices should be positive.")
   }
   nchains <- nchains(x)
   max_chain <- SW(max(chain_ids))
   if (max_chain > nchains) {
-    stop2("Tried to subset chains up to '", max_chain, "' ",
+    stop_no_call("Tried to subset chains up to '", max_chain, "' ",
           "but the object only has '", nchains, "' chains.")
   }
-  chain_ids
+  invisible(chain_ids)
 }
 
 # check validity of draw indices
@@ -551,13 +549,13 @@ check_draw_ids <- function(draw_ids, x, unique = TRUE) {
   }
   draw_ids <- sort(draw_ids)
   if (any(draw_ids < 1L)) {
-    stop2("Draw indices should be positive.")
+    stop_no_call("Draw indices should be positive.")
   }
   ndraws <- ndraws(x)
   max_draw <- SW(max(draw_ids))
   if (max_draw > ndraws) {
-    stop2("Tried to subset draws up to '", max_draw, "' ",
+    stop_no_call("Tried to subset draws up to '", max_draw, "' ",
           "but the object only has '", ndraws, "' draws.")
   }
-  draw_ids
+  invisible(draw_ids)
 }

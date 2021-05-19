@@ -32,7 +32,7 @@ Random variables backed by arrays of arbitrary dimension
 \details{
 The \code{"rvar"} class internally represents random variables as arrays of arbitrary
 dimension, where the first dimension is used to index draws from the distribution.
-Most mathemetical operators and functions are supported, including efficient matrix
+Most mathematical operators and functions are supported, including efficient matrix
 multiplication and vector and array-style indexing. The intent is that an \code{rvar}
 works as closely as possible to how a base vector/matrix/array does, with a few
 differences:

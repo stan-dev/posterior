@@ -6,7 +6,7 @@
 #' @template args-methods-x
 #' @template args-methods-dots
 #' @param order Logical; Indicates if draws should be ordered (via
-#'   [`order_draws`]) before reparing indices. Defaults to `TRUE`.
+#'   [`order_draws`]) before repairing indices. Defaults to `TRUE`.
 #'
 #' @examples
 #' x <- as_draws_array(example_draws())
@@ -140,6 +140,7 @@ repair_chain_ids <- function(chain_ids) {
 #' @param iteration_ids A vector of iteration indices
 #' @noRd
 compute_draw_ids <- function(chain_ids, iteration_ids) {
+  assert_true(length(chain_ids) == length(iteration_ids))
   niterations <- SW(max(iteration_ids))
   out <- (chain_ids - 1L) * niterations + iteration_ids
   as.integer(out)

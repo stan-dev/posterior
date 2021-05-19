@@ -55,7 +55,7 @@ rvar_apply <- function(.x, .margin, .f, ...) {
   # this should return a list of rvars
   rvar_list <- apply(.x, .margin, .f, ...)
   if (!is.list(rvar_list) || !all(sapply(rvar_list, is_rvar))) {
-    stop2("The function passed to rvar_apply() must return rvars.")
+    stop_no_call("The function passed to rvar_apply() must return rvars.")
   }
 
   # get the dimensions of the results in each cell
