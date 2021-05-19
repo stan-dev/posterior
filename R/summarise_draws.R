@@ -69,54 +69,6 @@ summarise_draws.default <- function(x, ...) {
   summarise_draws(x, ...)
 }
 
-# Helper functions
-create_summary_list <- function(x, v, funs, .args) {
-  draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
-  args <- c(list(draws), .args)
-  v_summary <- named_list(names(funs))
-  for (m in names(funs)) {
-    v_summary[[m]] <- do.call(funs[[m]], args)
-  }
-  v_summary
-}
-
-summarise_draws_helper <- function(x, funs, .args) {
-  variables_x <- variables(x)
-  # get length and output names, calculated on the first variable
-  out1 <- create_summary_list(x, variables_x[1], funs, .args)
-  the_names <- vector(mode = "list", length = length(funs))
-  for (i in seq_along(out1)){
-    if (rlang::is_named(out1[[i]])) {
-      the_names[[i]] <- names(out1[[i]])
-    } else if (length(out1[[i]]) > 1) {
-      the_names[[i]] <- paste0(names(out1)[i], ".", c(1:length(out1[[i]])))
-    } else {
-      the_names[[i]] <- names(out1)[i]
-    }
-  }
-  the_names <- unlist(the_names)
-  # Check for naming issues prior do doing lengthy computation
-  if ("variable" %in% the_names) {
-    stop_no_call("Name 'variable' is reserved in 'summarise_draws'.")
-  }
-  # Pre-allocate matrix to store output
-  out <- matrix(NA, nrow = length(variables_x), ncol = length(the_names))
-  colnames(out) <- the_names
-  out[1, ] <- unlist(out1)
-  # Do the computation for all remaining variables
-  if (length(variables_x) > 1L) {
-    for (v_ind in 2:length(variables_x)) {
-      out_v <- create_summary_list(x, variables_x[v_ind], funs, .args)
-      out[v_ind, ] <- unlist(out_v)
-    }
-  }
-  out <- tibble::as_tibble(out)
-  out$variable <- variables_x
-  out <- move_to_start(out, "variable")
-  class(out) <- class_draws_summary()
-  out
-}
-
 #' @rdname draws_summary
 #' @export
 summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
@@ -282,6 +234,55 @@ empty_draws_summary <- function(dimensions = "variable") {
   for (d in dimensions) {
     out[[d]] <- character(0)
   }
+  class(out) <- class_draws_summary()
+  out
+}
+
+
+# Helper functions
+create_summary_list <- function(x, v, funs, .args) {
+  draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
+  args <- c(list(draws), .args)
+  v_summary <- named_list(names(funs))
+  for (m in names(funs)) {
+    v_summary[[m]] <- do.call(funs[[m]], args)
+  }
+  v_summary
+}
+
+summarise_draws_helper <- function(x, funs, .args) {
+  variables_x <- variables(x)
+  # get length and output names, calculated on the first variable
+  out1 <- create_summary_list(x, variables_x[1], funs, .args)
+  the_names <- vector(mode = "list", length = length(funs))
+  for (i in seq_along(out1)){
+    if (rlang::is_named(out1[[i]])) {
+      the_names[[i]] <- names(out1[[i]])
+    } else if (length(out1[[i]]) > 1) {
+      the_names[[i]] <- paste0(names(out1)[i], ".", c(1:length(out1[[i]])))
+    } else {
+      the_names[[i]] <- names(out1)[i]
+    }
+  }
+  the_names <- unlist(the_names)
+  # Check for naming issues prior do doing lengthy computation
+  if ("variable" %in% the_names) {
+    stop_no_call("Name 'variable' is reserved in 'summarise_draws'.")
+  }
+  # Pre-allocate matrix to store output
+  out <- matrix(NA, nrow = length(variables_x), ncol = length(the_names))
+  colnames(out) <- the_names
+  out[1, ] <- unlist(out1)
+  # Do the computation for all remaining variables
+  if (length(variables_x) > 1L) {
+    for (v_ind in 2:length(variables_x)) {
+      out_v <- create_summary_list(x, variables_x[v_ind], funs, .args)
+      out[v_ind, ] <- unlist(out_v)
+    }
+  }
+  out <- tibble::as_tibble(out)
+  out$variable <- variables_x
+  out <- move_to_start(out, "variable")
   class(out) <- class_draws_summary()
   out
 }
