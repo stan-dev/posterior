@@ -21,7 +21,7 @@
 #' @param cores Positive number of cores for computing summaries for different variables
 #'   in parallel. Coerced to integer if possible, otherwise errors. Defaults to `cores = 1` 
 #'   in which case no parallelization is implemented. By default, creates a socket cluster
-#'   on Windows and uses forking otherwise.
+#'   on Windows and forks otherwise.
 #'
 #' @return
 #' The `summarise_draws()` methods return a [tibble][tibble::tibble] data frame.
