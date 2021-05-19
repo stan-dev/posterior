@@ -15,7 +15,7 @@ extract_variable(x, variable, ...)
 \arguments{
 \item{x}{An \R object for which the methods are defined.}
 
-\item{variable}{Name of a single variable to extract draws for.}
+\item{variable}{Name of the variable to extract.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }

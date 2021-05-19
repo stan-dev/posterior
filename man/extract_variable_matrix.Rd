@@ -21,21 +21,21 @@ extract_variable_matrix(x, variable, ...)
 \arguments{
 \item{x}{An \R object for which the methods are defined.}
 
-\item{variable}{Name of a single variable to extract draws for.}
+\item{variable}{Name of the variable to extract.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-An \code{matrix} with dimension #iterations x #chains.
+A \code{matrix} with dimension iterations x chains.
 }
 \description{
-Extract a matrix of draws of a single variable with dimension
-#iterations x #chains, primarily for use in convergence functions
-such as \code{\link[=rhat]{rhat()}}.
+Extract an iterations x chains matrix of draws of a single variable.
+This is primarily used for convergence diagnostic functions such as \code{\link[=rhat]{rhat()}}.
 }
 \examples{
 x <- example_draws()
 mu <- extract_variable_matrix(x, variable = "mu")
+dim(mu)
 rhat(mu)
 
 }
