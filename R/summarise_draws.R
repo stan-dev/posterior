@@ -210,7 +210,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
       on.exit(parallel::stopCluster(cl))
       # Get necessary package functions, including internals, out to the cluster
       parallel::clusterExport(cl = cl, 
-                              unclass(lsf.str(envir = asNamespace("posterior"), all = T)),
+                              unclass(lsf.str(envir = asNamespace("posterior"), all = TRUE)),
                               envir = as.environment(asNamespace("posterior"))
                               )
       parallel::clusterExport(cl = cl, 
