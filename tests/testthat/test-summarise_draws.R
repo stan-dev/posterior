@@ -116,10 +116,10 @@ test_that("summarise_draws for invalid cores specification", {
   x <- example_draws()
   expect_error(
     summarise_draws(x, cores = -1),
-    "'cores' must be a positive integer"
+    "cores must be a positive integer"
   )
   expect_error(
     summarise_draws(x, cores = NULL),
-    "'cores' must be a positive integer"
+    "Name 'variable' is reserved in 'summarise_draws'"
   )
 })
