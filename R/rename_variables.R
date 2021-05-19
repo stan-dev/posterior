@@ -18,14 +18,17 @@
 #'
 #' @examples
 #' x <- as_draws_df(example_draws())
+#' variables(x)
 #'
-#' x
-#' rename_variables(x, mean = mu, sigma = tau)
-#' rename_variables(x, b = `theta[1]`)
-#' rename_variables(x, b = "theta[1]")
+#' x <- rename_variables(x, mean = mu, sigma = tau)
+#' variables(x)
+#'
+#' x <- rename_variables(x, b = `theta[1]`) # or b  = "theta[1]"
+#' variables(x)
 #'
 #' # rename all elements of 'theta' at once
-#' rename_variables(x, alpha = theta)
+#' x <- rename_variables(x, alpha = theta)
+#' variables(x)
 #'
 #' @export
 rename_variables <- function(.x, ...) {
