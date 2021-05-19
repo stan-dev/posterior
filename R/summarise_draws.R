@@ -216,6 +216,8 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
                              "%and%" <- function(lhs, rhs) {
                                if (isTRUE(lhs)) rhs else lhs
                              }
+      )
+      parallel::clusterEvalQ(cl,
                              `%<-%` <- function(lhs, value) {
                                lhs <- substitute(lhs)
                                env <- caller_env()
