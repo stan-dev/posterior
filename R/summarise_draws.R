@@ -54,7 +54,7 @@ NULL
 
 #' @rdname draws_summary
 #' @export
-summarise_draws <- function(.x, ...) {
+summarise_draws <- function(x, ...) {
   UseMethod("summarise_draws")
 }
 
@@ -64,14 +64,14 @@ summarize_draws <- summarise_draws
 
 
 #' @export
-summarise_draws.default <- function(.x, ...) {
-  .x <- as_draws(.x)
-  summarise_draws(.x, ...)
+summarise_draws.default <- function(x, ...) {
+  x <- as_draws(x)
+  summarise_draws(x, ...)
 }
 
 # Helper functions
-create_summary_list <- function(.x, v, funs, .args) {
-  draws <- drop_dims_or_classes(.x[, , v], dims = 3, reset_class = FALSE)
+create_summary_list <- function(x, v, funs, .args) {
+  draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
   args <- c(list(draws), .args)
   v_summary <- named_list(names(funs))
   for (m in names(funs)) {
@@ -80,10 +80,10 @@ create_summary_list <- function(.x, v, funs, .args) {
   v_summary
 }
 
-summarise_draws_helper <- function(.x, funs, .args) {
-  variables_x <- variables(.x)
+summarise_draws_helper <- function(x, funs, .args) {
+  variables_x <- variables(x)
   # get length and output names, calculated on the first variable
-  out1 <- create_summary_list(.x, variables_x[1], funs, .args)
+  out1 <- create_summary_list(x, variables_x[1], funs, .args)
   the_names <- vector(mode = "list", length = length(funs))
   for (i in seq_along(out1)){
     if (rlang::is_named(out1[[i]])) {
@@ -106,7 +106,7 @@ summarise_draws_helper <- function(.x, funs, .args) {
   # Do the computation for all remaining variables
   if (length(variables_x) > 1L) {
     for (v_ind in 2:length(variables_x)) {
-      out_v <- create_summary_list(.x, variables_x[v_ind], funs, .args)
+      out_v <- create_summary_list(x, variables_x[v_ind], funs, .args)
       out[v_ind, ] <- unlist(out_v)
     }
   }
@@ -119,7 +119,7 @@ summarise_draws_helper <- function(.x, funs, .args) {
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.draws <- function(.x, ..., .args = list(), cores = 1) {
+summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
   cores <- as.integer(cores)
   if (is.na(cores) || cores <= 0 || length(cores) != 1) {
     stop_no_call("'cores' must be a positive integer.")
@@ -174,12 +174,12 @@ summarise_draws.draws <- function(.x, ..., .args = list(), cores = 1) {
 
   # it is more efficient to repair and transform objects for all variables
   # at once instead of doing it within the loop for each variable separately
-  if (ndraws(.x) == 0L) {
+  if (ndraws(x) == 0L) {
     return(empty_draws_summary())
   }
-  .x <- repair_draws(.x)
-  .x <- as_draws_array(.x)
-  variables_x <- variables(.x)
+  x <- repair_draws(x)
+  x <- as_draws_array(x)
+  variables_x <- variables(x)
   
   if (!length(variables_x)) {
     warning_no_call(
@@ -190,20 +190,20 @@ summarise_draws.draws <- function(.x, ..., .args = list(), cores = 1) {
   }
   
   if (cores == 1) {
-    out <- summarise_draws_helper(.x, funs, .args)
+    out <- summarise_draws_helper(x, funs, .args)
   } else {
-    .x <- .x[ , , !(dimnames(.x)$variable %in% reserved_variables())]
+    x <- x[ , , !(dimnames(x)$variable %in% reserved_variables())]
     n_vars <- length(variables_x)
     chunk_size <- ceiling(n_vars/cores)
     n_chunks <- ceiling(n_vars/chunk_size)
     chunk_list <- vector(length = n_chunks, mode = "list")
     for (i in 1:n_chunks) {
       if ((chunk_size * (i - 1) + 1) <= n_vars) {
-        chunk_list[[i]] <- .x[ , , (chunk_size * (i - 1) + 1):(min(c(chunk_size * i, n_vars)))]
+        chunk_list[[i]] <- x[ , , (chunk_size * (i - 1) + 1):(min(c(chunk_size * i, n_vars)))]
       }
     }
-    summarise_draws_helper2 <- function(.x) {
-      summarise_draws_helper(.x, funs = funs, .args = .args)
+    summarise_draws_helper2 <- function(x) {
+      summarise_draws_helper(x, funs = funs, .args = .args)
     }
     if (checkmate::test_os("windows")) {
       cl <- parallel::makePSOCKcluster(cores)
@@ -238,9 +238,9 @@ summary.draws <- function(object, ...) {
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.rvar <- function(.x, ...) {
-  .x <- draws_rvars(x = .x)
-  names(.x) <- deparse_pretty(substitute(.x))
+summarise_draws.rvar <- function(x, ...) {
+  .x <- draws_rvars(x = x)
+  names(.x) <- deparse_pretty(substitute(x))
   summarise_draws(.x, ...)
 }
 
