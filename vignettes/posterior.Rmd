@@ -1,9 +1,10 @@
 ---
 title: "The posterior R package"
+author: "Paul Bürkner, Jonah Gabry, Matthew Kay, and Aki Vehtari"
 output: 
   rmarkdown::html_vignette:
     toc: true
-    toc_depth: 4
+    toc_depth: 3
 vignette: >
   %\VignetteIndexEntry{The posterior R package}
   %\VignetteEngine{knitr::rmarkdown}
@@ -152,6 +153,10 @@ Analogous functions exist for the other formats and are used similarly.
 
 ## Manipulating `draws` objects
 
+There are many methods available for manipulating draws objects in various ways.
+All of the methods demonstrated below, as well as other methods available in the
+package, are all available for every draws format.
+
 ### Subsetting 
 
 Subsetting `draws` objects can be done according to various aspects of the draws
@@ -177,7 +182,7 @@ str(sub_arr)
 We can check that these two calls to `subset_draws()` (the first with the data
 frame, the second with the array) produce the same result.
 
-```{r, subset-compare}
+```{r subset-compare, results='hold'}
 identical(sub_df, as_draws_df(sub_arr))
 identical(as_draws_array(sub_df), sub_arr)
 ```
@@ -194,64 +199,76 @@ behaves is that posterior will _not_ drop dimensions with only one level. That
 is, even though there is only one variable left after subsetting, the result of
 the subsetting above is still a `draws_array` and not a `draws_matrix`.
 
-<!-- ### Mutating and renaming -->
+### Mutating (transformations of variables)
 
-<!-- The magic of having obtained draws from the joint posterior (or prior) -->
-<!-- distribution of a set of variables is that these draws can also be used -->
-<!-- to obtain draws from any other variable that is a function of the original variables. -->
-<!-- That is, if are interested in the posterior distribution of, say,  -->
-<!-- `phi = (mu + tau)^2` all we have to do is to perform the transformation for each -->
-<!-- of the individual draws to obtain draws from the posterior distribution of the -->
-<!-- transformed variable. This procedure is automated in the `mutate_variables` method: -->
+The magic of having obtained draws from the joint posterior (or prior)
+distribution of a set of variables is that these draws can also be used
+to obtain draws from any other variable that is a function of the original variables.
+That is, if we are interested in the posterior distribution of, say,
+`phi = (mu + tau)^2` all we have to do is to perform the transformation for each
+of the individual draws to obtain draws from the posterior distribution of the
+transformed variable. This procedure is handled by `mutate_variables()`.
 
-<!-- ```{r} -->
-<!-- x <- mutate_variables(eight_schools_df, phi = (mu + tau)^2) -->
-<!-- x <- subset_draws(x, c("mu", "tau", "phi")) -->
-<!-- print(x) -->
-<!-- ``` -->
+```{r mutate}
+x <- mutate_variables(eight_schools_df, phi = (mu + tau)^2)
+x <- subset_draws(x, c("mu", "tau", "phi"))
+print(x)
+```
+### Renaming
 
-<!-- When we do the math ourselves, we see that indeed for each draw,  -->
-<!-- `phi` is equal to `(mu + tau)^2` (up to rounding two 2 digits  -->
-<!-- for the purpose of printing). -->
+To rename variables use `rename_variables()`. Here we rename the scalar `mu` to
+`mean` and the vector `theta` to `alpha`.
 
-<!-- We may also easily rename variables, or even entire vectors of variables via -->
-<!-- `rename_variables`, for example: -->
+```{r rename}
+# mu is a scalar, theta is a vector
+x <- rename_variables(eight_schools_df, mean = mu, alpha = theta)
+variables(x)
+```
+In the call to `rename_variables()` above, `mu` and `theta` can be quoted or
+unquoted.
 
-<!-- ```{r} -->
-<!-- x <- rename_variables(eight_schools_df, mean = mu, alpha = theta) -->
-<!-- variables(x) -->
-<!-- ``` -->
+It is also possible to rename individual elements of non-scalar parameters, 
+for example we can rename just the first element of `alpha`:
 
-<!-- As with all posterior methods, `mutate_variables` and `rename_variables`  -->
-<!-- can be used with all draws formats. -->
+```{r rename-element}
+x <- rename_variables(x, a1 = `alpha[1]`)
+variables(x)
+```
 
-<!-- ### Binding  -->
+### Binding
 
-<!-- Suppose we have multiple draws objects that we want to bind together: -->
+The `bind_draws()` method can be used to combine `draws` objects along different
+dimensions. As an example, suppose we have several different `draws_matrix`
+objects:
 
-<!-- ```{r} -->
-<!-- x1 <- draws_matrix(alpha = rnorm(5), beta = 1) -->
-<!-- x2 <- draws_matrix(alpha = rnorm(5), beta = 2) -->
-<!-- x3 <- draws_matrix(theta = rexp(5)) -->
-<!-- ``` -->
+```{r objects-to-bind}
+x1 <- draws_matrix(alpha = rnorm(5), beta = rnorm(5))
+x2 <- draws_matrix(alpha = rnorm(5), beta = rnorm(5))
+x3 <- draws_matrix(theta = rexp(5))
+```
 
-<!-- Then, we can use the `bind_draws` method to bind them along different dimensions. -->
-<!-- For example, we can bind `x1` and `x3` together along the `'variable'` dimension: -->
+We can bind `x1` and `x3` together along the `'variable'` dimension to get 
+a single `draws_matrix` with the variables from both `x1` and `x3`: 
 
-<!-- ```{r} -->
-<!-- x4 <- bind_draws(x1, x3, along = "variable") -->
-<!-- print(x4) -->
-<!-- ``` -->
+```{r bind-variable}
+x4 <- bind_draws(x1, x3, along = "variable")
+print(x4)
+```
 
-<!-- Or, we can bind `x1` and `x2` together along the `'draw'` dimension: -->
+Because `x1` and `x2` have the same variables, we can bind them along the
+`'draw'` dimension to create a single `draws_matrix` with more draws:
 
-<!-- ```{r} -->
-<!-- x5 <- bind_draws(x1, x2, along = "draw") -->
-<!-- print(x5) -->
-<!-- ``` -->
+```{r bind-draw}
+x5 <- bind_draws(x1, x2, along = "draw")
+print(x5)
+```
 
-<!-- As with all posterior methods, `bind_draws` can be used with all draws  -->
-<!-- formats. -->
+As with all posterior methods, `bind_draws()` can be used with all draws formats
+and depending on the format different dimensions are available to bind on. For
+example, we can bind `draws_array` objects together by `iteration`, `chain`, or
+`variable`, but a 2-D `draws_matrix` with the chains combined can only by bound
+by `draw` and `variable`.
+
 
 ## Summaries and diagnostics
 
@@ -302,7 +319,7 @@ matrix of numeric values and return a single numeric value or a named vector of
 numeric values. Additional arguments to the function can be specified in a list
 passed to the `.args` argument.
 
-```{r}
+```{r summary-.args}
 weighted_mean <- function(x, wts) {
   sum(x * wts)/sum(wts)
 }
@@ -330,9 +347,9 @@ can be simplified to
 ~quantile(., probs = c(0.4, 0.6))
 ```
 
-and either can be used with `summarise_draws()`.
+Both can be used with `summarise_draws()` and produce the same output:
 
-```{r, lambda-syntax}
+```{r lambda-syntax}
 summarise_draws(eight_schools_df, function(x) quantile(x, probs = c(0.4, 0.6)))
 
 summarise_draws(eight_schools_df, ~quantile(.x, probs = c(0.4, 0.6)))
@@ -340,37 +357,32 @@ summarise_draws(eight_schools_df, ~quantile(.x, probs = c(0.4, 0.6)))
 
 See `help("as_function", "rlang")` for details on specifying these functions.
 
+### Other diagnostics
+
+In addition to the default diagnostic functions used by `summarise_draws()`
+(`rhat()`, `ess_bulk()`, `ess_tail()`), posterior also provides additional
+diagnostics like effective sample sizes and monte carlo standard errors for
+quantiles and standard deviations, an experimental new diagnostic called R*
+(`rstar()`), and others. For a list of available diagnostics and links to their
+individual help pages see `help("diagnostics", "posterior")`.
+
+## Other methods
+
+In addition to the methods demonstrated in this vignette, posterior has various
+other methods available for draws objects including the following.
+
+* `order_draws()`
+* `repair_draws()`
+* `resample_draws()`
+* `thin_draws()`
+* `weight_draws()`
+* `extract_variable()`
+* `extract_variable_matrix()`
+* `merge_chains()`
+* `split_chains()`
 
 
-## Contributing to posterior
-
-We welcome contributions! The posterior package is under active development. If
-you find bugs or have ideas for new features (for us or yourself to implement)
-please open an issue on GitHub (https://github.com/stan-dev/posterior/issues).
-
-### Citing posterior
-
-Developing and maintaining open source software is an important yet often
-underappreciated contribution to scientific progress. Thus, whenever you are
-using open source software (or software in general), please make sure to cite it
-appropriately so that developers get credit for their work.
-
-When using posterior, please cite it as follows:
-
-* Bürkner P. C., Gabry J., Kay M., & Vehtari A. (2020). “posterior: Tools for
-Working with Posterior Distributions.” R package version XXX, <URL:
-https://mc-stan.org/posterior>.
-  
-When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or `ess_tail`,
-please also cite
-
-* Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
-Rank-normalization, folding, and localization: An improved Rhat for assessing
-convergence of MCMC. *Bayesian Analysis*.
-
-The same information can be obtained by running `citation("posterior")`.
-
-### References
+## References
 
 Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki Vehtari A.,
 & Rubin D. B. (2013). *Bayesian Data Analysis, Third Edition*. Chapman and
