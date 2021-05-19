@@ -10,7 +10,7 @@ resample_draws(x, ...)
 \method{resample_draws}{draws}(x, weights = NULL, method = "stratified", ndraws = NULL, ...)
 }
 \arguments{
-\item{x}{An \R object for which the methods are defined.}
+\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 

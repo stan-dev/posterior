@@ -22,7 +22,7 @@ weight_draws(x, weights, ...)
 \method{weight_draws}{draws_rvars}(x, weights, log = FALSE, ...)
 }
 \arguments{
-\item{x}{An \R object for which the methods are defined.}
+\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
 
 \item{weights}{A vector of weights of length equal to the number of
 draws in \code{x} (as obtained by method \code{\link{ndraws}}). Weights will be

@@ -11,7 +11,7 @@ thin_draws(x, thin, ...)
 \method{thin_draws}{draws}(x, thin, ...)
 }
 \arguments{
-\item{x}{An \R object for which the methods are defined.}
+\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
 
 \item{thin}{A positive integer specifying the period for selecting draws.}
 
