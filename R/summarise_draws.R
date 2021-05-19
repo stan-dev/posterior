@@ -144,7 +144,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
   if (cores == 1) {
     out <- summarise_draws_helper(x, funs, .args)
   } else {
-    x <- x[ , , !(dimnames(x)$variable %in% reserved_variables())]
+    x <- x[ , , variables_x]
     n_vars <- length(variables_x)
     chunk_size <- ceiling(n_vars/cores)
     n_chunks <- ceiling(n_vars/chunk_size)
