@@ -70,12 +70,12 @@ as_draws.rvar <- function(x, ...) {
 
 #' @export
 as_draws.mcmc <- function(x, ...) {
-  as_draws_array(x)
+  as_draws_matrix(x)
 }
 
 #' @export
 as_draws.mcmc.list <- function(x, ...) {
-  as_draws_array(x)
+  as_draws_list(x)
 }
 
 #' @rdname draws
