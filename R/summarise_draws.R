@@ -161,20 +161,32 @@ summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
       # }
       cl <- parallel::makePSOCKcluster(.cores)
       on.exit(parallel::stopCluster(cl))
-      parallel::clusterExport(
-        cl, "summarise_draws_helper",
-        envir = asNamespace("posterior")
-      )
+      # parallel::clusterExport(
+      #   cl, "summarise_draws_helper",
+      #   envir = asNamespace("posterior")
+      # )
       # globals <- globals::globalsOf(summarise_draws_helper)
       # parallel::clusterExport(cl, names(globals), envir = as.environment(globals))
-      summarise_draws_windows <- function(...) {
-        require("posterior", quietly = TRUE)
-        # require("rlang", quietly = TRUE)
-        # require("checkmate", quietly = TRUE)
-        summarise_draws_helper(...)
-      }
+      # summarise_draws_windows <- function(...) {
+      #   require("posterior", quietly = TRUE)
+      #   # require("rlang", quietly = TRUE)
+      #   # require("checkmate", quietly = TRUE)
+      #   summarise_draws_helper(...)
+      # }
+      parallel::clusterExport(
+        cl, package_function_names("posterior"),
+        envir = as.environment(asNamespace("posterior"))
+      )
+      parallel::clusterExport(
+        cl, package_function_names("checkmate"),
+        envir = as.environment(asNamespace("checkmate"))
+      )
+      parallel::clusterExport(
+        cl, package_function_names("rlang"),
+        envir = as.environment(asNamespace("rlang"))
+      )
       summary_list <- parallel::parLapply(
-        cl, X = chunk_list, fun = summarise_draws_windows,
+        cl, X = chunk_list, fun = summarise_draws_helper,
         funs = funs, .args = .args
       )
     } else {
