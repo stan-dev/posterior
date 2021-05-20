@@ -156,16 +156,21 @@ summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
       }
     }
     if (checkmate::test_os("windows")) {
-      if (!requireNamespace("globals", quietly = TRUE)) {
-        stop_no_call("Please install the 'globals' package.")
-      }
+      # if (!requireNamespace("globals", quietly = TRUE)) {
+      #   stop_no_call("Please install the 'globals' package.")
+      # }
       cl <- parallel::makePSOCKcluster(.cores)
       on.exit(parallel::stopCluster(cl))
-      # Get necessary package functions, including internals, out to the cluster
-      globals <- globals::globalsOf(summarise_draws_helper)
-      parallel::clusterExport(cl, names(globals), envir = as.environment(globals))
+      # globals <- globals::globalsOf(summarise_draws_helper)
+      # parallel::clusterExport(cl, names(globals), envir = as.environment(globals))
+      summarise_draws_windows <- function(...) {
+        require("posterior", quietly = TRUE)
+        # require("rlang", quietly = TRUE)
+        # require("checkmate", quietly = TRUE)
+        summarise_draws_helper(...)
+      }
       summary_list <- parallel::parLapply(
-        cl, X = chunk_list, fun = summarise_draws_helper,
+        cl, X = chunk_list, fun = summarise_draws_windows,
         funs = funs, .args = .args
       )
     } else {
