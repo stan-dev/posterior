@@ -25,7 +25,7 @@ repair_draws(x, order = TRUE, ...)
 \method{repair_draws}{rvar}(x, order = TRUE, ...)
 }
 \arguments{
-\item{x}{An \R object for which the methods are defined.}
+\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
 
 \item{order}{Logical; Indicates if draws should be ordered (via
 \code{\link{order_draws}}) before repairing indices. Defaults to \code{TRUE}.}

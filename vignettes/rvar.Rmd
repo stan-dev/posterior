@@ -136,8 +136,8 @@ Sigma %**% diag(1:3)
 The set of mathematical functions and operators supported by `rvar`s
 includes:
 
-| Group | Functions and operators |
-|-------|-----------|
+| Group                       | Functions and operators |
+|:----------------------------|:------------------------|
 | Arithmetic operators        | `+`, `-`, `*`, `/`, `^`, `%%`, `%/%` |
 | Logical operators           | `&`, `|`, `!` |
 | Comparison operators        | `==`, `!=`, `<`, `<=`, `>=`, `>` |
@@ -151,27 +151,62 @@ includes:
 | Array transposition         | `t()`, `aperm()` |
 | Matrix decomposition        | `chol()` |
 
-## Expectations and summaries
+## Expectations and summary functions
 
-The `E()` and `mean()` functions are aliases of each other, producing means
-within each cell of an `rvar`. For example:
+The `E()` function is an alias of `mean()`, producing means
+within each cell of an `rvar`. For example, given `mu`:
 
-```{r E}
+```{r mu}
+mu
+```
+
+We can get the expectation of each cell of `mu`:
+
+```{r E_mu}
 E(mu)
 ```
 
-You can similarly obtain the `median()` or `variance()` of `rvar` cells:
-
-```{r variance}
-variance(mu)
-```
-
 Expectations of logical expressions are probabilities, and can be computed either
-with `E()` / `mean()` or with `Pr()` (which is purely notational sugar):
+with `E()` / `mean()` or with `Pr()`. `Pr()` is provided as notational sugar, but
+also checks that the input is a logical variable before taking the mean:
 
 ```{r Pr}
 Pr(mu > 0)
 ```
+
+More generally, the `rvar` data type provides two types of summary functions: 
+
+1. Summary functions that mimic base-R vector summary functions, except applied to `rvar` vectors. These apply their summaries **over** elements of the input vectors **within** each draw, generally returning an `rvar` of length 1. These functions are prefixed with `rvar_` as a reminder that they return `rvar`s. Here is an example of `rvar_mean()`:
+  
+    ```{r rvar_mean_mu}
+    rvar_mean(mu)
+    ```
+
+2. Summary functions that summarise **within** elements of input vectors and **over** draws. These summary functions generally return base arrays (`numeric` or `logical`) of the same shape as the input `rvar`, and are especially useful for diagnostic summaries. These summary functions are not prefixed with `rvar_` as they do not return `rvar`s. Here is an example of `mean()`:
+
+    ```{r mean_mu}
+    mean(mu)
+    ```
+
+   You should expect the same values from these functions (though in a different shape) when you use them with `summarise_draws()`, for example:
+
+    ```{r summarise_draws_mu_mean}
+    summarise_draws(mu, mean)
+    ```
+
+Here is a table of both types of summary functions:
+
+|                          | 1. Summarise *within* draws,<br>*over* elements | 2. Summarise *over* draws,<br>*within* elements<br> |
+|--------------------------|:------------------------------------------------|:----------------------------------------------------|
+| **Output format**<br>of `res = f(x)` | `rvar` of length 1 | `array` of same shape as input `rvar` |
+| **Help page**            | `help("rvar-summaries-within-draws")` | `help("rvar-summaries-over-draws")` |
+| Numeric summaries        | `rvar_median()`<br>`rvar_sum()`, `rvar_prod()`<br>`rvar_min()`, `rvar_max()`| `median()`<br>`sum()`, `prod()`<br>`min()`, `max()`|
+| Mean                     | `rvar_mean()`<br>*N/A* | `mean()`, `E()`<br>`Pr()`: enforces that input is `logical` |
+| Spread                   | `rvar_sd()` <br>`rvar_var()` <br> `rvar_mad()` | `sd()`<br>`var()`, `variance()`<br> `mad()`|
+| Range                    | `rvar_range()`<br>**Note:** `length(res) == 2` | `range()`<br>**Note:** `dim(res) == c(2, dim(x))` |
+| Logical summaries        | `rvar_all()`, `rvar_any()` | `all()`, `any()` |
+| Special value predicates | `rvar_is_finite()`<br>`rvar_is_infinite()`<br>`rvar_is_nan()`<br>`rvar_is_na()`<br>**Note:** `dim(res) == dim(x)`. These functions act within draws but do not summarise over elements.        | `is.finite()`<br>`is.infinite()`<br>`is.nan()`<br>`is.na()`<br>**Note:** `res[i] == TRUE` if `x[i]` has any draws matching predicate (except for `is.finite()`, where all draws in `x[i]` must match) |
+| Diagnostics              | *N/A* | `ess_basic()`, `ess_bulk()`, `ess_quantile()`, `ess_sd()`, `ess_tail()`,<br>`mcse_mean()`, `mcse_quantile()`, `mcse_sd()`<br>`rhat()`, `rhat_basic()`|
 
 ## Constants
 
@@ -356,7 +391,51 @@ columns as `X` and contain only one row, so it can be broadcast along rows of `X
 X + row_y
 ```
 
-## Using `rvar`s in data frames
+## Applying functions over `rvar`s
+
+The `rvar` data type supplies an implementation of `as.list()`, which should give 
+compatibility with the base R family of functions for applying functions over arrays:
+`apply()`, `lapply()`, `vapply()`, `sapply()`, etc. You can also manually use
+`as.list()` to convert an `rvar` into a list along its first dimension, which
+may be necessary for compatibility with some functions (like `purrr:map()`).
+
+For example, given this multidimensional `rvar`...
+
+```{r multidim_array}
+set.seed(3456)
+x <- rvar_rng(rnorm, 24, mean = 1:24)
+dim(x) <- c(2,3,4)
+x
+```
+
+... you can apply functions along the margins using `apply()` (here, a silly example):
+
+```{r apply}
+apply(x, c(1,2), length)
+```
+
+One exception is that while `apply()` will work with an `rvar` input if your function
+returns base data types (like numerics), it will not give you simplified `rvar`
+arrays if your function returns an `rvar`. Thus, we supply the `rvar_apply()`
+function, which takes in either base arrays or `rvar` arrays and returns `rvar`
+arrays, and which also uses the `rvar` broadcasting rules to combine the
+results of the applied function.
+
+For example, you can use `rvar_apply()` with `rvar_mean()` to compute the distributions of
+means along one margin of an array:
+
+```{r rvar_apply_one_dim}
+rvar_apply(x, 1, rvar_mean)
+```
+
+Or along multiple dimensions:
+
+```{r rvar_apply_multi_dim}
+rvar_apply(x, c(2,3), rvar_mean)
+```
+
+
+## Using `rvar`s in data frames and in ggplot2
 
 `rvar`s can be used as columns in `data.frame()` or `tibble()` objects:
 
@@ -365,6 +444,6 @@ data.frame(x = c("a","b","c"), y)
 ```
 
 This makes them convenient for adding predictions to a data frame alongside
-the data used to generate the predictions. `rvar`s can then be visualized
+the data used to generate the predictions. `rvar`s can then be visualized with ggplot2
 using the `stat_dist_...` family of geometries in the [ggdist](https://mjskay.github.io/ggdist/)
 package.

@@ -70,7 +70,7 @@ subset_draws(x, ...)
 \method{subset}{draws}(x, ...)
 }
 \arguments{
-\item{x}{An \R object for which the methods are defined.}
+\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
