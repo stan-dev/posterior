@@ -1,1 +1,2 @@
-#' @param x An \R object for which the methods are defined.
+#' @param x A `draws` object, or another \R object for which the method is defined.
+
