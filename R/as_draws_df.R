@@ -162,7 +162,7 @@ as_draws_df.draws_rvar <- function(x, ...) {
   draws <- do.call(cbind, lapply(seq_along(x), function(i) {
     # flatten each rvar so it only has two dimensions: draws and variables
     # this also collapses indices into variable names in the format "var[i,j,k,...]"
-    x_i <- posterior:::flatten_array(x[[i]], names(x)[[i]])
+    x_i <- flatten_array(x[[i]], names(x)[[i]])
     draws_of(x_i)
   }))
 

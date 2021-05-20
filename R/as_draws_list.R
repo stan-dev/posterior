@@ -41,14 +41,14 @@ as_draws_list.data.frame <- function(x, ...) {
   if (ndraws(x) == 0) {
     return(empty_draws_list(variables(x)))
   }
-  out <- posterior:::named_list(chain_ids(x))
+  out <- named_list(chain_ids(x))
   x <- x[order(x$.draw), ]
   for (i in seq_along(out)) {
     out[[i]] <- subset(x, chain = i)
-    out[[i]] <- posterior:::remove_reserved_df_variables(out[[i]])
+    out[[i]] <- remove_reserved_df_variables(out[[i]])
     out[[i]] <- as.list(as.data.frame(as.matrix(out[[i]])))
   }
-  class(out) <- posterior:::class_draws_list()
+  class(out) <- class_draws_list()
   out
 }
 

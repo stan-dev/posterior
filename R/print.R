@@ -227,7 +227,7 @@ print.draws_list <- function(x, digits = 2,
   sel_iterations <- seq_len(min(max_iterations, niterations))
   sel_chains <- seq_len(min(max_chains, nchains))
   sel_variables <- seq_len(min(max_variables, nvariables))
-  y <- posterior:::.subset_draws(
+  y <- .subset_draws(
     x, sel_iterations, sel_chains, sel_variables,
     reserved = reserved
   )

@@ -178,14 +178,14 @@ as_draws_rvar.mcmc.list <- function(x, ...) {
     names(x) <- default_variables(length(x))
   } else {
     blank_names <- nchar(names(x)) == 0
-    names(x)[blank_names] <- posterior:::default_variables(length(x))[blank_names]
+    names(x)[blank_names] <- default_variables(length(x))[blank_names]
   }
 
-  posterior:::check_new_variables(names(x))
+  check_new_variables(names(x))
 
-  x <- posterior:::conform_rvar_ndraws_nchains(x)
+  x <- conform_rvar_ndraws_nchains(x)
 
-  class(x) <- posterior:::class_draws_rvar()
+  class(x) <- class_draws_rvar()
   x
 }
 

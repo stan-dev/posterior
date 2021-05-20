@@ -50,11 +50,11 @@ as_draws_matrix.data.frame <- function(x, ...) {
 as_draws_matrix.matrix <- function(x, ...) {
   new_dimnames <- list(draw = seq_len(nrow(x)), variable = dimnames(x)[[2]])
   if (is.null(new_dimnames[[2]])) {
-    new_dimnames[[2]] <- posterior:::default_variables(ncol(x))
+    new_dimnames[[2]] <- default_variables(ncol(x))
   }
-  posterior:::check_new_variables(new_dimnames[[2]])
+  check_new_variables(new_dimnames[[2]])
   dimnames(x) <- new_dimnames
-  class(x) <- posterior:::class_draws_matrix()
+  class(x) <- class_draws_matrix()
   x
 }
 
