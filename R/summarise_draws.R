@@ -3,9 +3,9 @@
 #' The `summarise_draws()` (and `summarize_draws()`) methods provide a quick way
 #' to get a table of summary statistics and diagnostics. These methods will
 #' convert an object to a `draws` object if it isn't already. For convenience, a
-#' [summary()][base::summary] method for `draws` and `rvar` objects are also provided as an
-#' alias for `summarise_draws()` if the input object is a `draws` or `rvar`
-#' object.
+#' [summary()][base::summary] method for `draws` and `rvar` objects are also
+#' provided as an alias for `summarise_draws()` if the input object is a `draws`
+#' or `rvar` object.
 #'
 #' @name draws_summary
 #'
@@ -18,10 +18,10 @@
 #'   for examples.
 #' @param .args Optional `list` of additional arguments passed to the summary
 #'   functions.
-#' @param cores Positive number of cores for computing summaries for different variables
-#'   in parallel. Coerced to integer if possible, otherwise errors. Defaults to `cores = 1` 
-#'   in which case no parallelization is implemented. By default, creates a socket cluster
-#'   on Windows and forks otherwise.
+#' @param .cores Positive number of cores for computing summaries for different
+#'   variables in parallel. Coerced to integer if possible, otherwise errors.
+#'   Defaults to `.cores = 1` in which case no parallelization is implemented.
+#'   By default, creates a socket cluster on Windows and forks otherwise.
 #'
 #' @return
 #' The `summarise_draws()` methods return a [tibble][tibble::tibble] data frame.
@@ -71,10 +71,10 @@ summarise_draws.default <- function(x, ...) {
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
-  cores <- as.integer(cores)
-  if (is.na(cores) || cores <= 0 || length(cores) != 1) {
-    stop_no_call("'cores' must be a positive integer.")
+summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
+  .cores <- as_one_integer(.cores)
+  if (.cores <= 0) {
+    stop_no_call("'.cores' must be a positive integer.")
   }
   funs <- as.list(c(...))
   .args <- as.list(.args)
@@ -132,7 +132,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
   x <- repair_draws(x)
   x <- as_draws_array(x)
   variables_x <- variables(x)
-  
+
   if (!length(variables_x)) {
     warning_no_call(
       "The draws object contained no variables with unreserved names. ",
@@ -140,42 +140,39 @@ summarise_draws.draws <- function(x, ..., .args = list(), cores = 1) {
     )
     return(tibble::tibble(character()))
   }
-  
-  if (cores == 1) {
+
+  if (.cores == 1) {
     out <- summarise_draws_helper(x, funs, .args)
   } else {
-    x <- x[ , , variables_x]
+    x <- x[, , variables_x]
     n_vars <- length(variables_x)
-    chunk_size <- ceiling(n_vars/cores)
-    n_chunks <- ceiling(n_vars/chunk_size)
+    chunk_size <- ceiling(n_vars / .cores)
+    n_chunks <- ceiling(n_vars / chunk_size)
     chunk_list <- vector(length = n_chunks, mode = "list")
-    for (i in 1:n_chunks) {
+    for (i in seq_len(n_chunks)) {
       if ((chunk_size * (i - 1) + 1) <= n_vars) {
-        chunk_list[[i]] <- x[ , , (chunk_size * (i - 1) + 1):(min(c(chunk_size * i, n_vars)))]
+        chunk <- (chunk_size * (i - 1) + 1):(min(c(chunk_size * i, n_vars)))
+        chunk_list[[i]] <- x[, , chunk]
       }
     }
-    summarise_draws_helper2 <- function(x) {
-      summarise_draws_helper(x, funs = funs, .args = .args)
-    }
     if (checkmate::test_os("windows")) {
-      cl <- parallel::makePSOCKcluster(cores)
+      if (!requireNamespace("globals", quietly = TRUE)) {
+        stop_no_call("Please install the 'globals' package.")
+      }
+      cl <- parallel::makePSOCKcluster(.cores)
       on.exit(parallel::stopCluster(cl))
       # Get necessary package functions, including internals, out to the cluster
-      parallel::clusterExport(cl = cl, 
-                              unclass(lsf.str(envir = asNamespace("posterior"), all = TRUE)),
-                              envir = as.environment(asNamespace("posterior"))
-                              )
-      parallel::clusterExport(cl = cl, 
-                              unclass(lsf.str(envir = asNamespace("checkmate"), all = TRUE)),
-                              envir = as.environment(asNamespace("checkmate"))
+      globals <- globals::globalsOf(summarise_draws_helper)
+      parallel::clusterExport(cl, names(globals), envir = as.environment(globals))
+      summary_list <- parallel::parLapply(
+        cl, X = chunk_list, fun = summarise_draws_helper,
+        funs = funs, .args = .args
       )
-      parallel::clusterExport(cl = cl, 
-                              unclass(lsf.str(envir = asNamespace("rlang"), all = TRUE)),
-                              envir = as.environment(asNamespace("rlang"))
-      )
-      summary_list <- parallel::parLapply(cl = cl, X = chunk_list, fun = summarise_draws_helper2)
     } else {
-      summary_list <- parallel::mclapply(X = chunk_list, FUN = summarise_draws_helper2, mc.cores = cores)
+      summary_list <- parallel::mclapply(
+        X = chunk_list, FUN = summarise_draws_helper,
+        mc.cores = .cores, funs = funs, .args = .args
+      )
     }
     out <- do.call("rbind", summary_list)
   }

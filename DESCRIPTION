@@ -32,7 +32,8 @@ Imports:
   vctrs,
   tensorA,
   pillar,
-  distributional
+  distributional,
+  parallel
 Suggests: 
   testthat (>= 2.1.0),
   caret (>= 6.0.84),
@@ -41,9 +42,9 @@ Suggests:
   e1071 (>= 1.7.3),
   dplyr,
   tidyr,
+  globals,
   knitr,
-  rmarkdown,
-  parallel
+  rmarkdown
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: true
