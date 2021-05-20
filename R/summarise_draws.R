@@ -161,6 +161,10 @@ summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
       # }
       cl <- parallel::makePSOCKcluster(.cores)
       on.exit(parallel::stopCluster(cl))
+      parallel::clusterExport(
+        cl, "summarise_draws_helper",
+        envir = asNamespace("posterior")
+      )
       # globals <- globals::globalsOf(summarise_draws_helper)
       # parallel::clusterExport(cl, names(globals), envir = as.environment(globals))
       summarise_draws_windows <- function(...) {
