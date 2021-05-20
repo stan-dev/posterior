@@ -27,10 +27,13 @@ repair_draws(x, order = TRUE, ...)
 \arguments{
 \item{x}{A \code{draws} object, or another \R object for which the method is defined.}
 
-\item{order}{Logical; Indicates if draws should be ordered (via
-\code{\link{order_draws}}) before repairing indices. Defaults to \code{TRUE}.}
+\item{order}{Should draws be ordered (via \code{\link[=order_draws]{order_draws()}}) before repairing
+indices? Defaults to \code{TRUE}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+}
+\value{
+A \code{draws} object of the same class as \code{x}.
 }
 \description{
 Repair indices of \code{draws} objects so that iterations, chains, and draws
@@ -43,4 +46,7 @@ x <- as_draws_array(example_draws())
 # repair iteration and chain indices
 repair_draws(x)
 
+}
+\seealso{
+\code{\link[=order_draws]{order_draws()}}
 }
