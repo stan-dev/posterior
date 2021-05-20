@@ -156,23 +156,10 @@ summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
       }
     }
     if (checkmate::test_os("windows")) {
-      # if (!requireNamespace("globals", quietly = TRUE)) {
-      #   stop_no_call("Please install the 'globals' package.")
-      # }
       cl <- parallel::makePSOCKcluster(.cores)
       on.exit(parallel::stopCluster(cl))
-      # parallel::clusterExport(
-      #   cl, "summarise_draws_helper",
-      #   envir = asNamespace("posterior")
-      # )
-      # globals <- globals::globalsOf(summarise_draws_helper)
-      # parallel::clusterExport(cl, names(globals), envir = as.environment(globals))
-      # summarise_draws_windows <- function(...) {
-      #   require("posterior", quietly = TRUE)
-      #   # require("rlang", quietly = TRUE)
-      #   # require("checkmate", quietly = TRUE)
-      #   summarise_draws_helper(...)
-      # }
+      # exporting all these functions seems to be required to
+      # pass GitHub actions checks on Windows
       parallel::clusterExport(
         cl, package_function_names("posterior"),
         envir = as.environment(asNamespace("posterior"))

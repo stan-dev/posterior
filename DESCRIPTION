@@ -42,7 +42,6 @@ Suggests:
   e1071 (>= 1.7.3),
   dplyr,
   tidyr,
-  globals,
   knitr,
   rmarkdown
 License: BSD_3_clause + file LICENSE
