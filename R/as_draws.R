@@ -44,31 +44,38 @@ as_draws.draws <- function(x, ...) {
 }
 
 #' @export
-as_draws.default <- function(x, ...) {
-  # transform an object to the closest supported draws format
-  format <- closest_draws_format(x)
-  fun <- get(paste0(".as_", format), asNamespace("posterior"))
-  fun(x, ...)
+as_draws.array <- function(x, ...) {
+  as_draws_array(x)
 }
 
-# detect the supported format closest to the format of the input
-closest_draws_format <- function(x) {
-  if (is_draws_matrix_like(x)) {
-    out <- "matrix"
-  } else if (is_draws_array_like(x)) {
-    out <- "array"
-  } else if (is_draws_df_like(x)) {
-    out <- "df"
-  } else if (is_draws_rvars_like(x)) {
-    out <- "rvars"
-  } else if (is_draws_list_like(x)) {
-    out <- "list"
-  }
-  else {
-    stop_no_call("Don't know how to transform an object of class ",
-          "'", class(x)[1L], "' to any supported draws format.")
-  }
-  paste0("draws_", out)
+#' @export
+as_draws.data.frame <- function(x, ...) {
+  as_draws_df(x)
+}
+
+#' @export
+as_draws.list <- function(x, ...) {
+  as_draws_list(x)
+}
+
+#' @export
+as_draws.matrix <- function(x, ...) {
+  as_draws_matrix(x)
+}
+
+#' @export
+as_draws.rvar <- function(x, ...) {
+  as_draws_rvar(x)
+}
+
+#' @export
+as_draws.mcmc <- function(x, ...) {
+  as_draws_array(x)
+}
+
+#' @export
+as_draws.mcmc.list <- function(x, ...) {
+  as_draws_array(x)
 }
 
 #' @rdname draws

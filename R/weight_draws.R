@@ -105,7 +105,7 @@ weight_draws.draws_list <- function(x, weights, log = FALSE, ...) {
 
 #' @rdname weight_draws
 #' @export
-weight_draws.draws_rvars <- function(x, weights, log = FALSE, ...) {
+weight_draws.draws_rvar <- function(x, weights, log = FALSE, ...) {
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   x$.log_weight <- rvar(log_weights)

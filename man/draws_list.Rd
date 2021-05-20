@@ -5,12 +5,8 @@
 \alias{as_draws_list}
 \alias{as_draws_list.default}
 \alias{as_draws_list.draws_list}
-\alias{as_draws_list.draws_matrix}
-\alias{as_draws_list.draws_array}
-\alias{as_draws_list.draws_df}
-\alias{as_draws_list.draws_rvars}
-\alias{as_draws_list.mcmc}
-\alias{as_draws_list.mcmc.list}
+\alias{as_draws_list.data.frame}
+\alias{as_draws_list.list}
 \alias{is_draws_list}
 \title{The \code{draws_list} format}
 \usage{
@@ -20,17 +16,9 @@ as_draws_list(x, ...)
 
 \method{as_draws_list}{draws_list}(x, ...)
 
-\method{as_draws_list}{draws_matrix}(x, ...)
+\method{as_draws_list}{data.frame}(x, ...)
 
-\method{as_draws_list}{draws_array}(x, ...)
-
-\method{as_draws_list}{draws_df}(x, ...)
-
-\method{as_draws_list}{draws_rvars}(x, ...)
-
-\method{as_draws_list}{mcmc}(x, ...)
-
-\method{as_draws_list}{mcmc.list}(x, ...)
+\method{as_draws_list}{list}(x, ...)
 
 draws_list(..., .nchains = 1)
 
@@ -79,7 +67,7 @@ Other formats:
 \code{\link{draws_array}()},
 \code{\link{draws_df}()},
 \code{\link{draws_matrix}()},
-\code{\link{draws_rvars}()},
+\code{\link{draws_rvar}()},
 \code{\link{draws}}
 }
 \concept{formats}

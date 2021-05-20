@@ -14,7 +14,7 @@ test_that("extract_variable_matrix works the same for different formats", {
   mu_matrix <- extract_variable_matrix(draws_matrix, "mu")
   expect_equal(as.vector(mu_matrix), as.vector(mu_array))
 
-  draws_rvars <- as_draws_rvars(example_draws())
+  draws_rvars <- as_draws_rvar(example_draws())
   mu_matrix <- extract_variable_matrix(draws_rvars, "mu")
   expect_equal(as.vector(mu_matrix), as.vector(mu_array))
 })
@@ -23,7 +23,7 @@ test_that("extract_variable_matrix works for draws_rvars on an indexed variable"
   draws_array <- as_draws_array(example_draws())
   theta1_array <- extract_variable_matrix(draws_array, "theta[1]")
 
-  draws_rvars <- as_draws_rvars(example_draws())
+  draws_rvars <- as_draws_rvar(example_draws())
   theta1_matrix <- extract_variable_matrix(draws_rvars, "theta[1]")
   expect_equal(as.vector(theta1_matrix), as.vector(theta1_array))
 

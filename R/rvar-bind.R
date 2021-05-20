@@ -17,7 +17,7 @@ c.rvar <- function(...) {
   for (i in seq_along(args)[-1]) {
     arg_name <- names(args)[[i]]
     arg <- make_1d(as_rvar(args[[i]]), arg_name)
-    out <- broadcast_and_bind_rvars(out, arg)
+    out <- broadcast_and_bind_rvar(out, arg)
   }
 
   out
@@ -27,21 +27,21 @@ c.rvar <- function(...) {
 rbind.rvar <- function(...) {
   # not sure why deparse.level is not passed here correctly...
   deparse.level <- rlang::caller_env()$deparse.level %||% 1
-  bind_rvars(list(...), as.list(substitute(list(...))[-1]), deparse.level)
+  bind_rvar(list(...), as.list(substitute(list(...))[-1]), deparse.level)
 }
 
 #' @export
 cbind.rvar <- function(...) {
   # not sure why deparse.level is not passed here correctly...
   deparse.level <- rlang::caller_env()$deparse.level %||% 1
-  bind_rvars(list(...), as.list(substitute(list(...))[-1]), deparse.level, axis = 2)
+  bind_rvar(list(...), as.list(substitute(list(...))[-1]), deparse.level, axis = 2)
 }
 
 #' bind a list of objects together, as in cbind or rbind (depending on `axis`),
-#' converting to rvars as needed
+#' converting to rvar as needed
 #' @importFrom utils getS3method
 #' @noRd
-bind_rvars <- function(args, arg_exprs, deparse.level = 1, axis = 1) {
+bind_rvar <- function(args, arg_exprs, deparse.level = 1, axis = 1) {
   if (any(sapply(args, is.data.frame))) {
     # if there is a data frame in args, we should just make the first arg
     # into a data frame and then use the data frame bind implementation
@@ -61,7 +61,7 @@ bind_rvars <- function(args, arg_exprs, deparse.level = 1, axis = 1) {
   for (i in seq_along(args)[-1]) {
     arg_name <- names(args)[[i]]
     arg <- make_at_least_2d(as_rvar(args[[i]]), axis, arg_name)
-    out <- broadcast_and_bind_rvars(out, arg, axis)
+    out <- broadcast_and_bind_rvar(out, arg, axis)
   }
 
   out
@@ -72,7 +72,7 @@ bind_rvars <- function(args, arg_exprs, deparse.level = 1, axis = 1) {
 
 #' broadcast two rvars to compatible dimensions and bind along the `axis` dimension
 #' @noRd
-broadcast_and_bind_rvars <- function(x, y, axis = 1) {
+broadcast_and_bind_rvar <- function(x, y, axis = 1) {
   if (!length(x)) return(y)
   if (!length(y)) return(x)
 

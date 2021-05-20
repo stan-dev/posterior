@@ -16,7 +16,7 @@ vignette: >
 This vignette describes the `rvar()` datatype, a multidimensional, sample-based
 representation of random variables designed to act as much like base R arrays
 as possible (e.g., by supporting many math operators and functions). This format
-is also the basis of the `draws_rvars()` format.
+is also the basis of the `draws_rvar()` format.
 
 The `rvar()` datatype is inspired by the [rv](https://cran.r-project.org/package=rv)
 package and [Kerman and Gelman (2007)](https://doi.org/10.1007%2Fs11222-007-9020-4),
@@ -32,7 +32,7 @@ library(posterior)
 set.seed(1234)
 ```
 
-## The `rvars` datatype
+## The `rvar` datatype
 
 The `rvar()` datatype is a wrapper around a multidimensional array where the
 first dimension is the number of draws in the random variable. The most direct
@@ -78,29 +78,29 @@ Manual construction and modification of `rvar`s in this way is not recommended
 unless you need it for performance reasons: several other higher-level interfaces
 to constructing and manipulating `rvar`s are described below.
 
-## The `draws_rvars` datatype
+## The `draws_rvar` datatype
 
-The `draws_rvars()` datatype, like all `draws` datatypes in posterior, contains
+The `draws_rvar()` datatype, like all `draws` datatypes in posterior, contains
 multiple variables in a joint sample from some distribution (e.g. a posterior or 
 prior distribution). 
 
 Below is the `example_draws("multi_normal")` dataset
-converted into the `draws_rvars()` format. This dataset has 100 iterations from 
+converted into the `draws_rvar()` format. This dataset has 100 iterations from 
 4 chains from the posterior of a a 3-dimensional multivariate normal model. The 
 `mu` variable is a mean vector of length 3 and the `Sigma` variable is a $3 \times 3$
 covariance matrix:
 
 ```{r post}
-post <- as_draws_rvars(example_draws("multi_normal"))
+post <- as_draws_rvar(example_draws("multi_normal"))
 post
 ```
 
-The `draws_rvars()` datatype works much the same way that other `draws` formats
+The `draws_rvar()` datatype works much the same way that other `draws` formats
 do; see **TODO: INSERT LINK** for an introduction to `draws` objects. One difference is that
-`draws_rvars` counts variables differently, because it allows variables to be multidimensional.
+`draws_rvar` counts variables differently, because it allows variables to be multidimensional.
 For example, the `post` object above contains two variables, `mu` and `Sigma`:
 
-```{r variables_draws_rvars}
+```{r variables_draws_rvar}
 variables(post)
 ```
 

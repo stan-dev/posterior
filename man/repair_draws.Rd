@@ -6,7 +6,7 @@
 \alias{repair_draws.draws_array}
 \alias{repair_draws.draws_df}
 \alias{repair_draws.draws_list}
-\alias{repair_draws.draws_rvars}
+\alias{repair_draws.draws_rvar}
 \alias{repair_draws.rvar}
 \title{Repair indices of \code{draws} objects}
 \usage{
@@ -20,7 +20,7 @@ repair_draws(x, order = TRUE, ...)
 
 \method{repair_draws}{draws_list}(x, order = TRUE, ...)
 
-\method{repair_draws}{draws_rvars}(x, order = TRUE, ...)
+\method{repair_draws}{draws_rvar}(x, order = TRUE, ...)
 
 \method{repair_draws}{rvar}(x, order = TRUE, ...)
 }

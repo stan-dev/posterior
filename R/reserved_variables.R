@@ -51,7 +51,7 @@ reserved_variables.draws_list <- function(x, ...) {
 }
 
 #' @export
-reserved_variables.draws_rvars <- function(x, ...) {
+reserved_variables.draws_rvar <- function(x, ...) {
   intersect(reserved_variables(), names(x))
 }
 

@@ -24,8 +24,8 @@ as_draws_list <- function(x, ...) {
 #' @rdname draws_list
 #' @export
 as_draws_list.default <- function(x, ...) {
-  x <- as_draws(x)
-  as_draws_list(x, ...)
+  x <- as_draws_df(x)
+  as_draws_list.data.frame(x, ...)
 }
 
 #' @rdname draws_list
@@ -36,56 +36,30 @@ as_draws_list.draws_list <- function(x, ...) {
 
 #' @rdname draws_list
 #' @export
-as_draws_list.draws_matrix <- function(x, ...) {
+as_draws_list.data.frame <- function(x, ...) {
   x <- as_draws_df(x)
-  as_draws_list(x, ...)
-}
-
-#' @rdname draws_list
-#' @export
-as_draws_list.draws_array <- function(x, ...) {
-  x <- as_draws_df(x)
-  as_draws_list(x, ...)
-}
-
-#' @rdname draws_list
-#' @export
-as_draws_list.draws_df <- function(x, ...) {
   if (ndraws(x) == 0) {
     return(empty_draws_list(variables(x)))
   }
-  out <- named_list(chain_ids(x))
+  out <- posterior:::named_list(chain_ids(x))
   x <- x[order(x$.draw), ]
   for (i in seq_along(out)) {
     out[[i]] <- subset(x, chain = i)
-    out[[i]] <- remove_reserved_df_variables(out[[i]])
-    out[[i]] <- as.list(out[[i]])
+    out[[i]] <- posterior:::remove_reserved_df_variables(out[[i]])
+    out[[i]] <- as.list(as.data.frame(as.matrix(out[[i]])))
   }
-  class(out) <- class_draws_list()
+  class(out) <- posterior:::class_draws_list()
   out
 }
 
 #' @rdname draws_list
 #' @export
-as_draws_list.draws_rvars <- function(x, ...) {
-  as_draws_list(as_draws_array(x), ...)
-}
-
-#' @rdname draws_list
-#' @export
-as_draws_list.mcmc <- function(x, ...) {
-  as_draws_list(as_draws_matrix(x), ...)
-}
-
-#' @rdname draws_list
-#' @export
-as_draws_list.mcmc.list <- function(x, ...) {
-  as_draws_list(as_draws_array(x), ...)
-}
-
-# try to convert any R object into a 'draws_list' object
-.as_draws_list <- function(x) {
-  x <- as.list(x)
+as_draws_list.list <- function(x, ...) {
+  if (is_draws_rvar(x)) {
+    x <- as_draws_df(x)
+    x <- as_draws_list.data.frame(x, ...)
+    return(x)
+  }
   # check heuristically if a list of a single chain is supplied
   if (is.numeric(x[[1]])) {
     x <- list(x)
@@ -136,12 +110,6 @@ class_draws_list <- function() {
 #' @export
 is_draws_list <- function(x) {
   inherits(x, "draws_list")
-}
-
-# is an object looking like a 'draws_list' object?
-is_draws_list_like <- function(x) {
-  # TODO: add more sophisticated checks
-  is.list(x)
 }
 
 #' @export

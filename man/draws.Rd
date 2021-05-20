@@ -49,6 +49,6 @@ Other formats:
 \code{\link{draws_df}()},
 \code{\link{draws_list}()},
 \code{\link{draws_matrix}()},
-\code{\link{draws_rvars}()}
+\code{\link{draws_rvar}()}
 }
 \concept{formats}

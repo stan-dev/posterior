@@ -74,8 +74,8 @@ test_that("subset_draws works correctly for draws_list objects", {
   expect_equal(variables(x_sub, reserved = TRUE), c("mu", ".log_weight"))
 })
 
-test_that("subset_draws works correctly for draws_rvars objects", {
-  x <- as_draws_rvars(example_draws())
+test_that("subset_draws works correctly for draws_rvar objects", {
+  x <- as_draws_rvar(example_draws())
   x_sub <- subset_draws(x, variable = c("mu"), iteration = 5:10, chain = 3:4)
   expect_equal(variables(x_sub), "mu")
   expect_equal(iteration_ids(x_sub), 1:6)

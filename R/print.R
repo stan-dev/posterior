@@ -227,7 +227,7 @@ print.draws_list <- function(x, digits = 2,
   sel_iterations <- seq_len(min(max_iterations, niterations))
   sel_chains <- seq_len(min(max_chains, nchains))
   sel_variables <- seq_len(min(max_variables, nvariables))
-  y <- .subset_draws(
+  y <- posterior:::.subset_draws(
     x, sel_iterations, sel_chains, sel_variables,
     reserved = reserved
   )
@@ -260,9 +260,9 @@ print.draws_list <- function(x, digits = 2,
   invisible(x)
 }
 
-#' Print `draws_rvars` objects
+#' Print `draws_rvar` objects
 #'
-#' Pretty printing for [`draws_rvars`] objects.
+#' Pretty printing for [`draws_rvar`] objects.
 #'
 #' @encoding UTF-8
 #' @template args-methods-x
@@ -274,11 +274,11 @@ print.draws_list <- function(x, digits = 2,
 #' @template return-draws
 #'
 #' @examples
-#' x <- as_draws_rvars(example_draws())
+#' x <- as_draws_rvar(example_draws())
 #' print(x)
 #'
 #' @export
-print.draws_rvars <- function(x,
+print.draws_rvar <- function(x,
   digits = 2,
   max_variables = getOption("posterior.max_variables", 8),
   summary = getOption("posterior.rvar_summary", "mean_sd"),
@@ -290,7 +290,7 @@ print.draws_rvars <- function(x,
   nchains <- nchains(x)
   nvariables <- nvariables(x)
   header <- paste0(
-    "# A draws_rvars: ", niterations, " iterations, ",
+    "# A draws_rvar: ", niterations, " iterations, ",
     nchains, " chains, and ", nvariables, " variables\n"
   )
   cat(header)

@@ -24,8 +24,8 @@ as_draws_matrix <- function(x, ...) {
 #' @rdname draws_matrix
 #' @export
 as_draws_matrix.default <- function(x, ...) {
-  x <- as_draws(x)
-  as_draws_matrix(x, ...)
+  x <- as_draws_df(x)
+  as_draws_matrix.data.frame(x, ...)
 }
 
 #' @rdname draws_matrix
@@ -36,85 +36,25 @@ as_draws_matrix.draws_matrix <- function(x, ...) {
 
 #' @rdname draws_matrix
 #' @export
-as_draws_matrix.draws_array <- function(x, ...) {
-  if (ndraws(x) == 0) {
-    return(empty_draws_matrix(variables(x), niterations(x)))
-  }
-  old_dim <- dim(x)
-  old_dimnames <- dimnames(x)
-  dim(x) <- c(old_dim[1] * old_dim[2], old_dim[3])
-  dimnames(x) <- list(
-    draw = as.character(seq_rows(x)),
-    variable = old_dimnames[[3]]
-  )
-  class(x) <- class_draws_matrix()
-  x
-}
-
-#' @rdname draws_matrix
-#' @export
-as_draws_matrix.draws_df <- function(x, ...) {
-  if (ndraws(x) == 0) {
-    return(empty_draws_matrix(variables(x)))
-  }
-  draws <- x$.draw
-  x <- remove_reserved_df_variables(x)
-  class(x) <- class(x)[-1L]
-  x <- .as_draws_matrix(x)
-  rownames(x) <- draws
-  x
-}
-
-#' @rdname draws_matrix
-#' @export
-as_draws_matrix.draws_list <- function(x, ...) {
+as_draws_matrix.data.frame <- function(x, ...) {
   x <- as_draws_df(x)
-  as_draws_matrix(x, ...)
-}
-
-#' @rdname draws_matrix
-#' @export
-as_draws_matrix.draws_rvars <- function(x, ...) {
   if (ndraws(x) == 0) {
     return(empty_draws_matrix(variables(x)))
   }
-  draws <- do.call(cbind, lapply(seq_along(x), function(i) {
-    # flatten each rvar so it only has two dimensions: draws and variables
-    # this also collapses indices into variable names in the format "var[i,j,k,...]"
-    x_i <- flatten_array(x[[i]], names(x)[[i]])
-    draws_of(x_i)
-  }))
-
-  as_draws_matrix(draws, ...)
+  x[c(".chain", ".iteration", ".draw")] <- NULL
+  as_draws_matrix.matrix(as.matrix(x))
 }
 
 #' @rdname draws_matrix
 #' @export
-as_draws_matrix.mcmc <- function(x, ...) {
-  class(x) <- "matrix"
-  attributes(x)[c("title", "mcpar")] <- NULL
-  .as_draws_matrix(x)
-}
-
-#' @rdname draws_matrix
-#' @export
-as_draws_matrix.mcmc.list <- function(x, ...) {
-  as_draws_matrix(as_draws_array(x), ...)
-}
-
-# try to convert any R object into a 'draws_matrix' object
-.as_draws_matrix <- function(x) {
-  x <- as.matrix(x)
-  new_dimnames <- list(draw = NULL, variable = NULL)
-  if (!is.null(dimnames(x)[[2]])) {
-    new_dimnames[[2]] <- dimnames(x)[[2]]
-  } else {
-    new_dimnames[[2]] <- default_variables(NCOL(x))
+as_draws_matrix.matrix <- function(x, ...) {
+  new_dimnames <- list(draw = seq_len(nrow(x)), variable = dimnames(x)[[2]])
+  if (is.null(new_dimnames[[2]])) {
+    new_dimnames[[2]] <- posterior:::default_variables(ncol(x))
   }
-  check_new_variables(new_dimnames[[2]])
-  new_dimnames[[1]] <- as.character(seq_rows(x))
+  posterior:::check_new_variables(new_dimnames[[2]])
   dimnames(x) <- new_dimnames
-  class(x) <- class_draws_matrix()
+  class(x) <- posterior:::class_draws_matrix()
   x
 }
 
@@ -133,11 +73,6 @@ class_draws_matrix <- function() {
 #' @export
 is_draws_matrix <- function(x) {
   inherits(x, "draws_matrix")
-}
-
-# is an object looking like a 'draws_matrix' object?
-is_draws_matrix_like <- function(x) {
-  is.matrix(x) || is.array(x) && length(dim(x)) == 2L
 }
 
 #' @export

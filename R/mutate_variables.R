@@ -20,7 +20,7 @@
 #' number of draws, we recommend using `mutate_variables` on [`draws_df`] and
 #' [`draws_list`] objects if speed is an issue.
 #'
-#' In [`draws_rvars`] objects, the output of each expression in `...` is
+#' In [`draws_rvar`] objects, the output of each expression in `...` is
 #' coerced to an [`rvar`] object if it is not already one using `as_rvar()`.
 #'
 #' @seealso [`variables`], [`rename_variables`]
@@ -79,7 +79,7 @@ mutate_variables.draws_list <- function(.x, ...) {
 
 #' @rdname mutate_variables
 #' @export
-mutate_variables.draws_rvars <- function(.x, ...) {
+mutate_variables.draws_rvar <- function(.x, ...) {
   dots <- enquos(..., .named = TRUE)
   names(dots) <- check_reserved_variables(names(dots))
   env <- caller_env()

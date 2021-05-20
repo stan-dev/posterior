@@ -1,48 +1,48 @@
-#' The `draws_rvars` format
+#' The `draws_rvar` format
 #'
-#' @name draws_rvars
+#' @name draws_rvar
 #' @family formats
 #'
-#' @templateVar draws_format draws_rvars
+#' @templateVar draws_format draws_rvar
 #' @templateVar base_class "list"
 #' @template draws_format-skeleton
 #' @template args-format-nchains
 #'
-#' @details Objects of class `"draws_rvars"` are lists of [`rvar`] objects.
+#' @details Objects of class `"draws_rvar"` are lists of [`rvar`] objects.
 #' See **Examples**.
 #'
 NULL
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-as_draws_rvars <- function(x, ...) {
-  UseMethod("as_draws_rvars")
+as_draws_rvar <- function(x, ...) {
+  UseMethod("as_draws_rvar")
 }
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-as_draws_rvars.default <- function(x, ...) {
+as_draws_rvar.default <- function(x, ...) {
   x <- as_draws(x)
-  as_draws_rvars(x, ...)
+  as_draws_rvar(x, ...)
 }
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-as_draws_rvars.draws_rvars <- function(x, ...) {
+as_draws_rvar.draws_rvar <- function(x, ...) {
   x
 }
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-as_draws_rvars.list <- function(x, ...) {
-  .as_draws_rvars(x, ...)
+as_draws_rvar.list <- function(x, ...) {
+  .as_draws_rvar(x, ...)
 }
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-as_draws_rvars.draws_matrix <- function(x, ...) {
+as_draws_rvar.draws_matrix <- function(x, ...) {
   if (ndraws(x) == 0) {
-    return(empty_draws_rvars(variables(x)))
+    return(empty_draws_rvar(variables(x)))
   }
 
   # split x[y,z] names into base name and indices
@@ -51,9 +51,9 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
   # pull out each var into its own rvar
   var_names <- unique(vars)
-  rvars_list <- lapply(var_names, function (var) {
+  rvar_list <- lapply(var_names, function (var) {
     var_i <- vars == var
-    # reset class here as otherwise the draws arrays in the output rvars
+    # reset class here as otherwise the draws arrays in the output rvar
     # have type draws_matrix, which makes inspecting them hard
     var_matrix <- unclass(x[, var_i, drop = FALSE])
 
@@ -129,14 +129,14 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
     }
     out
   })
-  names(rvars_list) <- var_names
-  .as_draws_rvars(rvars_list, ...)
+  names(rvar_list) <- var_names
+  .as_draws_rvar(rvar_list, ...)
 }
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-as_draws_rvars.draws_array <- function(x, ...) {
-  out <- as_draws_rvars(as_draws_matrix(x), ...)
+as_draws_rvar.draws_array <- function(x, ...) {
+  out <- as_draws_rvar(as_draws_matrix(x), ...)
 
   .nchains <- nchains(x)
   for (i in seq_along(out)) {
@@ -146,31 +146,31 @@ as_draws_rvars.draws_array <- function(x, ...) {
   out
 }
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-as_draws_rvars.draws_df <- as_draws_rvars.draws_array
+as_draws_rvar.draws_df <- as_draws_rvar.draws_array
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-as_draws_rvars.draws_list <- as_draws_rvars.draws_array
+as_draws_rvar.draws_list <- as_draws_rvar.draws_array
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-as_draws_rvars.mcmc <- function(x, ...) {
-  as_draws_rvars(as_draws_matrix(x), ...)
+as_draws_rvar.mcmc <- function(x, ...) {
+  as_draws_rvar(as_draws_matrix(x), ...)
 }
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-as_draws_rvars.mcmc.list <- function(x, ...) {
-  as_draws_rvars(as_draws_array(x), ...)
+as_draws_rvar.mcmc.list <- function(x, ...) {
+  as_draws_rvar(as_draws_array(x), ...)
 }
 
-# try to convert any R object into a 'draws_rvars' object
-.as_draws_rvars <- function(x, ...) {
+# try to convert any R object into a 'draws_rvar' object
+.as_draws_rvar <- function(x, ...) {
   x <- as.list(x)
 
-  # convert all elements to rvars
+  # convert all elements to rvar
   x <- lapply(x, as_rvar)
 
   # replace blank variable names with defaults
@@ -178,20 +178,20 @@ as_draws_rvars.mcmc.list <- function(x, ...) {
     names(x) <- default_variables(length(x))
   } else {
     blank_names <- nchar(names(x)) == 0
-    names(x)[blank_names] <- default_variables(length(x))[blank_names]
+    names(x)[blank_names] <- posterior:::default_variables(length(x))[blank_names]
   }
 
-  check_new_variables(names(x))
+  posterior:::check_new_variables(names(x))
 
-  x <- conform_rvar_ndraws_nchains(x)
+  x <- posterior:::conform_rvar_ndraws_nchains(x)
 
-  class(x) <- class_draws_rvars()
+  class(x) <- posterior:::class_draws_rvar()
   x
 }
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-draws_rvars <- function(..., .nchains = 1) {
+draws_rvar <- function(..., .nchains = 1) {
   out <- lapply(list(...), function(x) {
     if (is_rvar(x)) x
     else rvar(x, nchains = .nchains)
@@ -201,36 +201,36 @@ draws_rvars <- function(..., .nchains = 1) {
     stop_no_call("All variables must be named.")
   }
 
-  .as_draws_rvars(out)
+  .as_draws_rvar(out)
 }
 
-class_draws_rvars <- function() {
-  c("draws_rvars", "draws", "list")
+class_draws_rvar <- function() {
+  c("draws_rvar", "draws", "list")
 }
 
-#' @rdname draws_rvars
+#' @rdname draws_rvar
 #' @export
-is_draws_rvars <- function(x) {
-  inherits(x, "draws_rvars")
+is_draws_rvar <- function(x) {
+  inherits(x, "draws_rvar")
 }
 
-# is an object looking like a 'draws_rvars' object?
-is_draws_rvars_like <- function(x) {
+# is an object looking like a 'draws_rvar' object?
+is_draws_rvar_like <- function(x) {
   is.list(x) && all(sapply(x, is_rvar))
 }
 
 #' @export
-`[.draws_rvars` <- function(x, i, j, ..., drop = FALSE) {
+`[.draws_rvar` <- function(x, i, j, ..., drop = FALSE) {
   out <- NextMethod("[")
   class(out) <- class(x)
   out
 }
 
-# create an empty draws_rvars object
-empty_draws_rvars <- function(variables = character(0), nchains = 0) {
+# create an empty draws_rvar object
+empty_draws_rvar <- function(variables = character(0), nchains = 0) {
   assert_character(variables, null.ok = TRUE)
   assert_number(nchains, lower = 0)
   out <- named_list(variables, rvar())
-  class(out) <- class_draws_rvars()
+  class(out) <- class_draws_rvar()
   out
 }

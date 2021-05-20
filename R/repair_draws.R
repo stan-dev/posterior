@@ -64,7 +64,7 @@ repair_draws.draws_list <- function(x, order = TRUE, ...) {
 
 #' @rdname repair_draws
 #' @export
-repair_draws.draws_rvars <- function(x, order = TRUE, ...) {
+repair_draws.draws_rvar <- function(x, order = TRUE, ...) {
   for (i in seq_along(x)) {
     x[[i]] <- repair_draws(x[[i]], order = order, ...)
   }

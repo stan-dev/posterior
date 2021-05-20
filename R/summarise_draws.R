@@ -124,7 +124,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
   x <- repair_draws(x)
   x <- as_draws_array(x)
   variables <- variables(x)
-  
+
   if (!length(variables)) {
     warning_no_call(
       "The draws object contained no variables with unreserved names. ",
@@ -132,7 +132,7 @@ summarise_draws.draws <- function(x, ..., .args = list()) {
     )
     return(tibble::tibble(character()))
   }
-  
+
   create_summary_list <- function(x, v) {
     draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
     args <- c(list(draws), .args)
@@ -186,7 +186,7 @@ summary.draws <- function(object, ...) {
 #' @rdname draws_summary
 #' @export
 summarise_draws.rvar <- function(x, ...) {
-  .x <- draws_rvars(x = x)
+  .x <- draws_rvar(x = x)
   names(.x) <- deparse_pretty(substitute(x))
   summarise_draws(.x, ...)
 }
@@ -194,7 +194,7 @@ summarise_draws.rvar <- function(x, ...) {
 #' @rdname draws_summary
 #' @export
 summary.rvar <- function(object, ...) {
-  .x <- draws_rvars(x = object)
+  .x <- draws_rvar(x = object)
   names(.x) <- deparse_pretty(substitute(object))
   summarise_draws(.x, ...)
 }

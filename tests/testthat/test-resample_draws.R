@@ -26,9 +26,9 @@ test_that("resample_draws returns expected format", {
     "Argument 'ndraws' is required"
   )
 
-  x <- as_draws_rvars(x)
+  x <- as_draws_rvar(x)
   x_rs <- resample_draws(x, weights = w, method = "simple")
-  expect_true(is_draws_rvars(x_rs))
+  expect_true(is_draws_rvar(x_rs))
   expect_equal(ndraws(x_rs), ndraws(x))
 })
 

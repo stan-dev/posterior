@@ -62,7 +62,7 @@ order_draws.draws_list <- function(x, ...) {
 
 #' @rdname order_draws
 #' @export
-order_draws.draws_rvars <- function(x, ...) {
+order_draws.draws_rvar <- function(x, ...) {
   for (i in seq_along(x)) {
     x[[i]] <- order_draws(x[[i]])
   }

@@ -41,39 +41,14 @@ as_draws_df <- function(x, ...) {
 
 #' @rdname draws_df
 #' @export
-as_draws_df.default <- function(x, ...) {
-  x <- as_draws(x)
-  as_draws_df(x, ...)
-}
-
-#' @rdname draws_df
-#' @export
-as_draws_df.data.frame <- function(x, .iteration = NULL, .chain = NULL, ...) {
-  .as_draws_df(x, .iteration = .iteration, .chain = .chain)
-}
-
-#' @rdname draws_df
-#' @export
 as_draws_df.draws_df <- function(x, ...) {
   x
 }
 
 #' @rdname draws_df
 #' @export
-as_draws_df.draws_matrix <- function(x, ...) {
-  if (ndraws(x) == 0L) {
-    return(empty_draws_df(variables(x)))
-  }
-  x <- tibble::as_tibble(x)
-  x[".chain"] <- 1L
-  x[c(".iteration", ".draw")] <- seq_len(nrow(x))
-  class(x) <- class_draws_df()
-  x
-}
-
-#' @rdname draws_df
-#' @export
-as_draws_df.draws_array <- function(x, ...) {
+as_draws_df.array <- function(x, ...) {
+  x <- as_draws_array(x)
   if (ndraws(x) == 0L) {
     return(empty_draws_df(variables(x)))
   }
@@ -90,47 +65,7 @@ as_draws_df.draws_array <- function(x, ...) {
 
 #' @rdname draws_df
 #' @export
-as_draws_df.draws_list <- function(x, ...) {
-  if (ndraws(x) == 0L) {
-    return(empty_draws_df(variables(x)))
-  }
-  iteration_ids <- iteration_ids(x)
-  chain_ids <- chain_ids(x)
-  vars <- names(x[[1L]])
-  x <- do.call(rbind.data.frame, x)
-  colnames(x) <- vars
-  x <- tibble::as_tibble(x)
-  x[".chain"] <- rep(chain_ids, each = max(iteration_ids))
-  x[".iteration"] <- rep(iteration_ids, max(chain_ids))
-  x[".draw"] <- seq_len(nrow(x))
-  class(x) <- class_draws_df()
-  x
-}
-
-#' @rdname draws_df
-#' @export
-as_draws_df.draws_rvars <- function(x, ...) {
-  as_draws_df(as_draws_array(x), ...)
-}
-
-#' @rdname draws_df
-#' @export
-as_draws_df.mcmc <- function(x, ...) {
-  as_draws_df(as_draws_matrix(x), ...)
-}
-
-#' @rdname draws_df
-#' @export
-as_draws_df.mcmc.list <- function(x, ...) {
-  as_draws_df(as_draws_array(x), ...)
-}
-
-#' Convert any \R object into a \code{draws_df} object
-#' @param x An \R object.
-#' @param .iteration optional name of the column containing iteration indices
-#' @param .chain optional name of the column containing chain indices
-#' @noRd
-.as_draws_df <- function(x, .iteration = NULL, .chain = NULL) {
+as_draws_df.data.frame <- function(x, .iteration = NULL, .chain = NULL, ...) {
   x <- tibble::as_tibble(x, .name_repair = "unique")
 
   # prepare iteration indices
@@ -185,6 +120,80 @@ as_draws_df.mcmc.list <- function(x, ...) {
 
 #' @rdname draws_df
 #' @export
+as_draws_df.list <- function(x, ...) {
+  x <- as_draws_list(x)
+  if (ndraws(x) == 0L) {
+    return(empty_draws_df(variables(x)))
+  }
+  iteration_ids <- iteration_ids(x)
+  chain_ids <- chain_ids(x)
+  vars <- names(x[[1L]])
+  x <- do.call(rbind.data.frame, x)
+  colnames(x) <- vars
+  x <- tibble::as_tibble(x)
+  x[".chain"] <- rep(chain_ids, each = max(iteration_ids))
+  x[".iteration"] <- rep(iteration_ids, max(chain_ids))
+  x[".draw"] <- seq_len(nrow(x))
+  class(x) <- class_draws_df()
+  x
+}
+
+#' @rdname draws_df
+#' @export
+as_draws_df.matrix <- function(x, ...) {
+  x <- as_draws_matrix(x)
+  if (ndraws(x) == 0L) {
+    return(empty_draws_df(variables(x)))
+  }
+  x <- tibble::as_tibble(x)
+  x[".chain"] <- 1L
+  x[c(".iteration", ".draw")] <- seq_len(nrow(x))
+  class(x) <- class_draws_df()
+  x
+}
+
+#' @rdname draws_df
+#' @export
+as_draws_df.draws_rvar <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_array(variables(x)))
+  }
+
+  draws <- do.call(cbind, lapply(seq_along(x), function(i) {
+    # flatten each rvar so it only has two dimensions: draws and variables
+    # this also collapses indices into variable names in the format "var[i,j,k,...]"
+    x_i <- posterior:::flatten_array(x[[i]], names(x)[[i]])
+    draws_of(x_i)
+  }))
+
+  # add chain info back into the draws array
+  # ([draws, variables] -> [iterations, chains, variables])
+  .dimnames <- dimnames(draws)
+  dim(draws) <- c(niterations(x), nchains(x), dim(draws)[-1])
+  dimnames(draws) <- c(list(NULL, NULL), .dimnames[-1])
+  as_draws_df.array(draws, ...)
+}
+
+#' @rdname draws_df
+#' @export
+as_draws_df.mcmc <- function(x, ...) {
+  class(x) <- "matrix"
+  as_draws_df.matrix(x, ...)
+}
+
+#' @rdname draws_df
+#' @export
+as_draws_df.mcmc.list <- function(x, ...) {
+  if (length(x) == 1) {
+    return(as_draws_df.mcmc(x[[1]]))
+  }
+  x <- abind::abind(x, along = 3L)
+  x <- aperm(x, c(1, 3, 2))
+  as_draws_df.array(x, ...)
+}
+
+#' @rdname draws_df
+#' @export
 draws_df <- function(..., .nchains = 1) {
   out <- validate_draws_per_variable(...)
   .nchains <- as_one_integer(.nchains)
@@ -211,11 +220,6 @@ class_draws_df <- function() {
 #' @export
 is_draws_df <- function(x) {
   inherits(x, "draws_df")
-}
-
-# is an object looking like a 'draws_df' object?
-is_draws_df_like <- function(x) {
-  is.data.frame(x)
 }
 
 #' @export

@@ -6,7 +6,7 @@
 \alias{order_draws.draws_array}
 \alias{order_draws.draws_df}
 \alias{order_draws.draws_list}
-\alias{order_draws.draws_rvars}
+\alias{order_draws.draws_rvar}
 \alias{order_draws.rvar}
 \title{Order \code{draws} objects}
 \usage{
@@ -20,7 +20,7 @@ order_draws(x, ...)
 
 \method{order_draws}{draws_list}(x, ...)
 
-\method{order_draws}{draws_rvars}(x, ...)
+\method{order_draws}{draws_rvar}(x, ...)
 
 \method{order_draws}{rvar}(x, ...)
 }

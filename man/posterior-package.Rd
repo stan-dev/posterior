@@ -30,7 +30,7 @@ diagnostics.
 
 The following options are used to format and print \code{\link{draws}} objects,
 as in \code{print.draws_array()}, \code{print.draws_df()}, \code{print.draws_list()},
-\code{print.draws_matrix()}, and \code{print.draws_rvars()}:
+\code{print.draws_matrix()}, and \code{print.draws_rvar()}:
 \itemize{
 \item \code{posterior.max_draws}: Maximum number of draws to print.
 \item \code{posterior.max_iterations}: Maximum number of iterations to print.
@@ -39,7 +39,7 @@ as in \code{print.draws_array()}, \code{print.draws_df()}, \code{print.draws_lis
 }
 
 The following option is used to format and print \code{\link{rvar}} objects,
-as in \code{print.rvar()} and \code{print.draws_rvars()}:
+as in \code{print.rvar()} and \code{print.draws_rvar()}:
 \itemize{
 \item \code{posterior.rvar_summary}: What style of summary to display:
 \code{"mean_sd"} displays \verb{mean±sd}, \code{"median_mad"} displays \verb{median±mad}.

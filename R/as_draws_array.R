@@ -22,8 +22,8 @@ as_draws_array <- function(x, ...) {
 #' @rdname draws_array
 #' @export
 as_draws_array.default <- function(x, ...) {
-  x <- as_draws(x)
-  as_draws_array(x, ...)
+  x <- as_draws_df(x)
+  as_draws_array.data.frame(x, ...)
 }
 
 #' @rdname draws_array
@@ -34,22 +34,8 @@ as_draws_array.draws_array <- function(x, ...) {
 
 #' @rdname draws_array
 #' @export
-as_draws_array.draws_matrix <- function(x, ...) {
-  old_dim <- dim(x)
-  old_dimnames <- dimnames(x)
-  dim(x) <- c(old_dim[1], 1, old_dim[2])
-  dimnames(x) <- list(
-    iteration = as.character(seq_rows(x)),
-    chain = "1",
-    variable = old_dimnames[[2]]
-  )
-  class(x) <- class_draws_array()
-  x
-}
-
-#' @rdname draws_array
-#' @export
-as_draws_array.draws_df <- function(x, ...) {
+as_draws_array.data.frame <- function(x, ...) {
+  x <- as_draws_df(x)
   if (ndraws(x) == 0) {
     return(empty_draws_array(variables(x)))
   }
@@ -77,50 +63,16 @@ as_draws_array.draws_df <- function(x, ...) {
 
 #' @rdname draws_array
 #' @export
-as_draws_array.draws_list <- function(x, ...) {
-  x <- as_draws_df(x)
-  as_draws_array(x, ...)
-}
-
-#' @rdname draws_array
-#' @export
-as_draws_array.draws_rvars <- function(x, ...) {
-  if (ndraws(x) == 0) {
-    return(empty_draws_array(variables(x)))
+as_draws_array.array <- function(x, ...) {
+  if (is.matrix(x)) {
+    x <- as_draws_df(x)
+    x <- as_draws_array.data.frame(x, ...)
+    return(x)
   }
-
-  draws <- do.call(cbind, lapply(seq_along(x), function(i) {
-    # flatten each rvar so it only has two dimensions: draws and variables
-    # this also collapses indices into variable names in the format "var[i,j,k,...]"
-    x_i <- flatten_array(x[[i]], names(x)[[i]])
-    draws_of(x_i)
-  }))
-
-  # add chain info back into the draws array
-  # ([draws, variables] -> [iterations, chains, variables])
-  .dimnames <- dimnames(draws)
-  dim(draws) <- c(niterations(x), nchains(x), dim(draws)[-1])
-  dimnames(draws) <- c(list(NULL, NULL), .dimnames[-1])
-
-  as_draws_array(draws, ...)
-}
-
-#' @rdname draws_array
-#' @export
-as_draws_array.mcmc <- function(x, ...) {
-  as_draws_array(as_draws_matrix(x), ...)
-}
-
-#' @rdname draws_array
-#' @export
-as_draws_array.mcmc.list <- function(x, ...) {
-  class(x) <- "list"
-  .as_draws_array(as_array_matrix_list(x))
-}
-
-# try to convert any R object into a 'draws_array' object
-.as_draws_array <- function(x) {
-  x <- as.array(x)
+  if (length(dim(x)) != 3) {
+    stop_no_call("Don't know how to transform an array with other 3 dimensions",
+                 " to any supported draws format.")
+  }
   new_dimnames <- list(iteration = NULL, chain = NULL, variable = NULL)
   if (!is.null(dimnames(x)[[3]])) {
     new_dimnames[[3]] <- dimnames(x)[[3]]
@@ -164,11 +116,6 @@ class_draws_array <- function() {
 #' @export
 is_draws_array <- function(x) {
   inherits(x, "draws_array")
-}
-
-# is an object looking like a 'draws_array' object?
-is_draws_array_like <- function(x) {
-  is.array(x) && length(dim(x)) == 3L
 }
 
 #' @export

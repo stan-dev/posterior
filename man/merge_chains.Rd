@@ -7,7 +7,7 @@
 \alias{merge_chains.draws_df}
 \alias{merge_chains.draws_list}
 \alias{merge_chains.rvar}
-\alias{merge_chains.draws_rvars}
+\alias{merge_chains.draws_rvar}
 \title{Merge chains of \code{draws} objects}
 \usage{
 merge_chains(x, ...)
@@ -22,7 +22,7 @@ merge_chains(x, ...)
 
 \method{merge_chains}{rvar}(x, ...)
 
-\method{merge_chains}{draws_rvars}(x, ...)
+\method{merge_chains}{draws_rvar}(x, ...)
 }
 \arguments{
 \item{x}{An \R object for which the methods are defined.}
