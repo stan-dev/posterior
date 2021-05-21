@@ -73,7 +73,6 @@ test_that(paste(
   "multicore summarise_draws is identical to single-core summarise_draws",
   "including if some chunks contain no variables"
 ), {
-  skip_on_cran()
   set.seed(1)
   cores <- 2
   nc <- 4
