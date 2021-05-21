@@ -3,22 +3,25 @@
 \name{draws_array}
 \alias{draws_array}
 \alias{as_draws_array}
+\alias{as_draws_array.array}
+\alias{as_draws_array.data.frame}
 \alias{as_draws_array.default}
 \alias{as_draws_array.draws_array}
-\alias{as_draws_array.data.frame}
-\alias{as_draws_array.array}
+\alias{as_draws_array.matrix}
 \alias{is_draws_array}
 \title{The \code{draws_array} format}
 \usage{
 as_draws_array(x, ...)
 
+\method{as_draws_array}{array}(x, ...)
+
+\method{as_draws_array}{data.frame}(x, ...)
+
 \method{as_draws_array}{default}(x, ...)
 
 \method{as_draws_array}{draws_array}(x, ...)
 
-\method{as_draws_array}{data.frame}(x, ...)
-
-\method{as_draws_array}{array}(x, ...)
+\method{as_draws_array}{matrix}(x, ...)
 
 draws_array(..., .nchains = 1)
 

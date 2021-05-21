@@ -23,7 +23,6 @@ test_that("transformations to and from draws_array objects work", {
 
   draws_matrix <- as_draws_matrix(draws_array)
   draws_array2 <- as_draws_array(draws_matrix)
-  # cannot check equality as draws_matrix objects loose chain information
   expect_equal(
     summarise_draws(draws_array, default_summary_measures()),
     summarise_draws(draws_array2, default_summary_measures())
@@ -47,7 +46,6 @@ test_that("transformations to and from draws_df objects work", {
 
   draws_matrix <- as_draws_matrix(draws_df)
   draws_df2 <- as_draws_df(draws_matrix)
-  # cannot check equality as draws_matrix objects loose chain information
   expect_equal(
     summarise_draws(draws_df, default_summary_measures()),
     summarise_draws(draws_df2, default_summary_measures())
@@ -71,7 +69,6 @@ test_that("transformations to and from draws_list objects work", {
 
   draws_matrix <- as_draws_matrix(draws_list)
   draws_list2 <- as_draws_list(draws_matrix)
-  # cannot check equality as draws_matrix objects loose chain information
   expect_equal(
     summarise_draws(draws_list, default_summary_measures()),
     summarise_draws(draws_list2, default_summary_measures())
@@ -95,7 +92,6 @@ test_that("transformations to and from draws_rvar objects work", {
 
   draws_matrix <- as_draws_matrix(draws_rvar)
   draws_rvar2 <- as_draws_rvar(draws_matrix)
-  # cannot check equality as draws_matrix objects lose chain information
   expect_equal(
     summarise_draws(draws_rvar, default_summary_measures()),
     summarise_draws(draws_rvar2, default_summary_measures())

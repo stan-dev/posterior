@@ -38,44 +38,52 @@ as_draws <- function(x, ...) {
   UseMethod("as_draws")
 }
 
-#' @export
-as_draws.draws <- function(x, ...) {
-  x
-}
-
+#' @rdname draws
 #' @export
 as_draws.array <- function(x, ...) {
   as_draws_array(x)
 }
 
+#' @rdname draws
 #' @export
 as_draws.data.frame <- function(x, ...) {
   as_draws_df(x)
 }
 
+#' @rdname draws
+#' @export
+as_draws.draws <- function(x, ...) {
+  x
+}
+
+#' @rdname draws
 #' @export
 as_draws.list <- function(x, ...) {
   as_draws_list(x)
 }
 
+#' @rdname draws
 #' @export
 as_draws.matrix <- function(x, ...) {
   as_draws_matrix(x)
 }
 
-#' @export
-as_draws.rvar <- function(x, ...) {
-  as_draws_rvar(x)
-}
-
+#' @rdname draws
 #' @export
 as_draws.mcmc <- function(x, ...) {
   as_draws_matrix(x)
 }
 
+#' @rdname draws
 #' @export
 as_draws.mcmc.list <- function(x, ...) {
   as_draws_list(x)
+}
+
+#' @rdname draws
+#' @export
+as_draws.rvar <- function(x, ...) {
+  as_draws_rvar(x)
 }
 
 #' @rdname draws

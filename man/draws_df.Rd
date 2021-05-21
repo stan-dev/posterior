@@ -3,12 +3,12 @@
 \name{draws_df}
 \alias{draws_df}
 \alias{as_draws_df}
-\alias{as_draws_df.draws_df}
 \alias{as_draws_df.array}
 \alias{as_draws_df.data.frame}
+\alias{as_draws_df.draws_df}
+\alias{as_draws_df.draws_rvar}
 \alias{as_draws_df.list}
 \alias{as_draws_df.matrix}
-\alias{as_draws_df.draws_rvar}
 \alias{as_draws_df.mcmc}
 \alias{as_draws_df.mcmc.list}
 \alias{is_draws_df}
@@ -16,17 +16,17 @@
 \usage{
 as_draws_df(x, ...)
 
-\method{as_draws_df}{draws_df}(x, ...)
-
 \method{as_draws_df}{array}(x, ...)
 
 \method{as_draws_df}{data.frame}(x, .iteration = NULL, .chain = NULL, ...)
 
+\method{as_draws_df}{draws_df}(x, ...)
+
+\method{as_draws_df}{draws_rvar}(x, ...)
+
 \method{as_draws_df}{list}(x, ...)
 
 \method{as_draws_df}{matrix}(x, ...)
-
-\method{as_draws_df}{draws_rvar}(x, ...)
 
 \method{as_draws_df}{mcmc}(x, ...)
 

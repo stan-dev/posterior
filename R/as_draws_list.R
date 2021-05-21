@@ -23,6 +23,22 @@ as_draws_list <- function(x, ...) {
 
 #' @rdname draws_list
 #' @export
+as_draws_list.data.frame <- function(x, ...) {
+  x <- as_draws_df(x)
+  if (ndraws(x) == 0) {
+    return(empty_draws_list(variables(x)))
+  }
+  class(x) <- "data.frame"
+  .chain <- x[[".chain"]]
+  x[c(".chain", ".iteration", ".draw")] <- NULL
+  x <- split(x, .chain)
+  x <- lapply(x, as.list)
+  class(x) <- posterior:::class_draws_list()
+  x
+}
+
+#' @rdname draws_list
+#' @export
 as_draws_list.default <- function(x, ...) {
   x <- as_draws_df(x)
   as_draws_list.data.frame(x, ...)
@@ -36,30 +52,15 @@ as_draws_list.draws_list <- function(x, ...) {
 
 #' @rdname draws_list
 #' @export
-as_draws_list.data.frame <- function(x, ...) {
+as_draws_list.draws_rvar <- function(x, ...) {
   x <- as_draws_df(x)
-  if (ndraws(x) == 0) {
-    return(empty_draws_list(variables(x)))
-  }
-  out <- named_list(chain_ids(x))
-  x <- x[order(x$.draw), ]
-  for (i in seq_along(out)) {
-    out[[i]] <- subset(x, chain = i)
-    out[[i]] <- remove_reserved_df_variables(out[[i]])
-    out[[i]] <- as.list(as.data.frame(as.matrix(out[[i]])))
-  }
-  class(out) <- class_draws_list()
-  out
+  as_draws_list.data.frame(x, ...)
 }
 
 #' @rdname draws_list
 #' @export
 as_draws_list.list <- function(x, ...) {
-  if (is_draws_rvar(x)) {
-    x <- as_draws_df(x)
-    x <- as_draws_list.data.frame(x, ...)
-    return(x)
-  }
+  x <- as.list(x)
   # check heuristically if a list of a single chain is supplied
   if (is.numeric(x[[1]])) {
     x <- list(x)

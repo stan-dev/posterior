@@ -3,10 +3,34 @@
 \name{draws}
 \alias{draws}
 \alias{as_draws}
+\alias{as_draws.array}
+\alias{as_draws.data.frame}
+\alias{as_draws.draws}
+\alias{as_draws.list}
+\alias{as_draws.matrix}
+\alias{as_draws.mcmc}
+\alias{as_draws.mcmc.list}
+\alias{as_draws.rvar}
 \alias{is_draws}
 \title{Transform to \code{draws} objects}
 \usage{
 as_draws(x, ...)
+
+\method{as_draws}{array}(x, ...)
+
+\method{as_draws}{data.frame}(x, ...)
+
+\method{as_draws}{draws}(x, ...)
+
+\method{as_draws}{list}(x, ...)
+
+\method{as_draws}{matrix}(x, ...)
+
+\method{as_draws}{mcmc}(x, ...)
+
+\method{as_draws}{mcmc.list}(x, ...)
+
+\method{as_draws}{rvar}(x, ...)
 
 is_draws(x)
 }

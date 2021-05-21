@@ -3,20 +3,20 @@
 \name{draws_matrix}
 \alias{draws_matrix}
 \alias{as_draws_matrix}
+\alias{as_draws_matrix.data.frame}
 \alias{as_draws_matrix.default}
 \alias{as_draws_matrix.draws_matrix}
-\alias{as_draws_matrix.data.frame}
 \alias{as_draws_matrix.matrix}
 \alias{is_draws_matrix}
 \title{The \code{draws_matrix} format}
 \usage{
 as_draws_matrix(x, ...)
 
+\method{as_draws_matrix}{data.frame}(x, ...)
+
 \method{as_draws_matrix}{default}(x, ...)
 
 \method{as_draws_matrix}{draws_matrix}(x, ...)
-
-\method{as_draws_matrix}{data.frame}(x, ...)
 
 \method{as_draws_matrix}{matrix}(x, ...)
 

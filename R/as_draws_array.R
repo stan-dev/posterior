@@ -21,6 +21,44 @@ as_draws_array <- function(x, ...) {
 
 #' @rdname draws_array
 #' @export
+as_draws_array.array <- function(x, ...) {
+  if (length(dim(x)) != 3) {
+    stop_no_call("Don't know how to transform an array with other than 3 ",
+                 "dimensions to any supported draws format.")
+  }
+  dimnames(x) <- list(
+    "iteration" = seq_len(dim(x)[1]),
+    "chain" = seq_len(dim(x)[2]),
+    "variable" = dimnames(x)[[3]] %||% default_variables(dim(x)[3])
+  )
+  class(x) <- class_draws_array()
+  if (ndraws(x) == 0) {
+    return(empty_draws_array(variables(x)))
+  }
+  x
+}
+
+#' @rdname draws_array
+#' @export
+as_draws_array.data.frame <- function(x, ...) {
+  x <- as_draws_df(x)
+  if (ndraws(x) == 0) {
+    return(empty_draws_array(variables(x)))
+  }
+  class(x) <- "data.frame"
+  .chain <- x[[".chain"]]
+  x[c(".chain", ".iteration", ".draw")] <- NULL
+  x <- split(x, .chain)
+  x <- abind::abind(x, along = 3L)
+  x <- aperm(x, c(1, 3, 2))
+  names(dimnames(x)) <- c("iteration", "chain", "variable")
+  dimnames(x)[["iteration"]] <- seq_len(dim(x)[1])
+  class(x) <- class_draws_array()
+  x
+}
+
+#' @rdname draws_array
+#' @export
 as_draws_array.default <- function(x, ...) {
   x <- as_draws_df(x)
   as_draws_array.data.frame(x, ...)
@@ -34,58 +72,9 @@ as_draws_array.draws_array <- function(x, ...) {
 
 #' @rdname draws_array
 #' @export
-as_draws_array.data.frame <- function(x, ...) {
+as_draws_array.matrix <- function(x, ...) {
   x <- as_draws_df(x)
-  if (ndraws(x) == 0) {
-    return(empty_draws_array(variables(x)))
-  }
-  iterations <- iteration_ids(x)
-  chains <- chain_ids(x)
-  out <- vector("list", length(chains))
-  for (i in seq_along(out)) {
-    if (length(chains) == 1) {
-      out[[i]] <- x
-    } else {
-      out[[i]] <- x[x$.chain == i, ]
-    }
-    out[[i]] <- remove_reserved_df_variables(out[[i]])
-    out[[i]] <- as.matrix(out[[i]])
-  }
-  out <- as_array_matrix_list(out)
-  dimnames(out) <- list(
-    iteration = iterations,
-    chain = chains,
-    variable = dimnames(out)[[3]]
-  )
-  class(out) <- class_draws_array()
-  out
-}
-
-#' @rdname draws_array
-#' @export
-as_draws_array.array <- function(x, ...) {
-  if (is.matrix(x)) {
-    x <- as_draws_df(x)
-    x <- as_draws_array.data.frame(x, ...)
-    return(x)
-  }
-  if (length(dim(x)) != 3) {
-    stop_no_call("Don't know how to transform an array with other 3 dimensions",
-                 " to any supported draws format.")
-  }
-  new_dimnames <- list(iteration = NULL, chain = NULL, variable = NULL)
-  if (!is.null(dimnames(x)[[3]])) {
-    new_dimnames[[3]] <- dimnames(x)[[3]]
-  } else {
-    new_dimnames[[3]] <- default_variables(dim(x)[3])
-  }
-  check_new_variables(new_dimnames[[3]])
-  # TODO: use existing row/col names in any way?
-  new_dimnames[[1]] <- as.character(seq_rows(x))
-  new_dimnames[[2]] <- as.character(seq_cols(x))
-  dimnames(x) <- new_dimnames
-  class(x) <- class_draws_array()
-  x
+  as_draws_array.data.frame(x, ...)
 }
 
 #' @rdname draws_array
@@ -130,20 +119,6 @@ is_draws_array <- function(x) {
   out
 }
 
-# convert a list of matrices to an array
-as_array_matrix_list <- function(x) {
-  stopifnot(is.list(x))
-  if (length(x) == 1) {
-    tmp <- dimnames(x[[1]])
-    x <- x[[1]]
-    dim(x) <- c(dim(x), 1)
-    dimnames(x) <- tmp
-  } else {
-    x <- abind::abind(x, along = 3L)
-  }
-  x <- aperm(x, c(1, 3, 2))
-}
-
 # create an empty draws_array object
 empty_draws_array <- function(variables = character(0), nchains = 0,
                               niterations = 0) {
@@ -162,4 +137,3 @@ empty_draws_array <- function(variables = character(0), nchains = 0,
   class(out) <- class_draws_array()
   out
 }
-

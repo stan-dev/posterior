@@ -23,6 +23,17 @@ as_draws_matrix <- function(x, ...) {
 
 #' @rdname draws_matrix
 #' @export
+as_draws_matrix.data.frame <- function(x, ...) {
+  x <- as_draws_df(x)
+  if (ndraws(x) == 0) {
+    return(empty_draws_matrix(variables(x)))
+  }
+  x[c(".chain", ".iteration", ".draw")] <- NULL
+  as_draws_matrix.matrix(as.matrix(x))
+}
+
+#' @rdname draws_matrix
+#' @export
 as_draws_matrix.default <- function(x, ...) {
   x <- as_draws_df(x)
   as_draws_matrix.data.frame(x, ...)
@@ -32,17 +43,6 @@ as_draws_matrix.default <- function(x, ...) {
 #' @export
 as_draws_matrix.draws_matrix <- function(x, ...) {
   x
-}
-
-#' @rdname draws_matrix
-#' @export
-as_draws_matrix.data.frame <- function(x, ...) {
-  x <- as_draws_df(x)
-  if (ndraws(x) == 0) {
-    return(empty_draws_matrix(variables(x)))
-  }
-  x[c(".chain", ".iteration", ".draw")] <- NULL
-  as_draws_matrix.matrix(as.matrix(x))
 }
 
 #' @rdname draws_matrix

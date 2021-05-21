@@ -41,12 +41,6 @@ as_draws_df <- function(x, ...) {
 
 #' @rdname draws_df
 #' @export
-as_draws_df.draws_df <- function(x, ...) {
-  x
-}
-
-#' @rdname draws_df
-#' @export
 as_draws_df.array <- function(x, ...) {
   x <- as_draws_array(x)
   if (ndraws(x) == 0L) {
@@ -120,6 +114,29 @@ as_draws_df.data.frame <- function(x, .iteration = NULL, .chain = NULL, ...) {
 
 #' @rdname draws_df
 #' @export
+as_draws_df.draws_df <- function(x, ...) {
+  x
+}
+
+#' @rdname draws_df
+as_draws_df.draws_rvar <- function(x, ...) {
+  if (ndraws(x) == 0) {
+    return(empty_draws_array(variables(x)))
+  }
+  iteration_ids <- iteration_ids(x)
+  chain_ids <- chain_ids(x)
+  x <- cbind.data.frame(lapply(x, function(r) attr(r, "draws")))
+  x <- tibble::as_tibble(x)
+  colnames(x) <- gsub("\\.(\\d+)$", "\\[\\1\\]", colnames(x))
+  x[".chain"] <- rep(chain_ids, each = max(iteration_ids))
+  x[".iteration"] <- rep(iteration_ids, max(chain_ids))
+  x[".draw"] <- seq_len(nrow(x))
+  class(x) <- class_draws_df()
+  x
+}
+
+#' @rdname draws_df
+#' @export
 as_draws_df.list <- function(x, ...) {
   x <- as_draws_list(x)
   if (ndraws(x) == 0L) {
@@ -145,33 +162,12 @@ as_draws_df.matrix <- function(x, ...) {
   if (ndraws(x) == 0L) {
     return(empty_draws_df(variables(x)))
   }
+  class(x) <- "matrix"
   x <- tibble::as_tibble(x)
   x[".chain"] <- 1L
   x[c(".iteration", ".draw")] <- seq_len(nrow(x))
   class(x) <- class_draws_df()
   x
-}
-
-#' @rdname draws_df
-#' @export
-as_draws_df.draws_rvar <- function(x, ...) {
-  if (ndraws(x) == 0) {
-    return(empty_draws_array(variables(x)))
-  }
-
-  draws <- do.call(cbind, lapply(seq_along(x), function(i) {
-    # flatten each rvar so it only has two dimensions: draws and variables
-    # this also collapses indices into variable names in the format "var[i,j,k,...]"
-    x_i <- flatten_array(x[[i]], names(x)[[i]])
-    draws_of(x_i)
-  }))
-
-  # add chain info back into the draws array
-  # ([draws, variables] -> [iterations, chains, variables])
-  .dimnames <- dimnames(draws)
-  dim(draws) <- c(niterations(x), nchains(x), dim(draws)[-1])
-  dimnames(draws) <- c(list(NULL, NULL), .dimnames[-1])
-  as_draws_df.array(draws, ...)
 }
 
 #' @rdname draws_df
@@ -239,11 +235,11 @@ is_draws_df <- function(x) {
 }
 
 # create an empty draws_df object
-empty_draws_df <- function(variables = character(0)) {
-  assert_character(variables, null.ok = TRUE)
+empty_draws_df <- function(variables = NULL) {
+  checkmate::assert_character(variables, null.ok = TRUE)
   x <- tibble::tibble()
-  x[variables] <- numeric(0)
+  x[variables %||% character(0)] <- numeric(0)
   x[c(".chain", ".iteration", ".draw")] <- integer(0)
-  class(x) <- class_draws_df()
+  class(x) <- posterior:::class_draws_df()
   x
 }

@@ -3,20 +3,23 @@
 \name{draws_list}
 \alias{draws_list}
 \alias{as_draws_list}
+\alias{as_draws_list.data.frame}
 \alias{as_draws_list.default}
 \alias{as_draws_list.draws_list}
-\alias{as_draws_list.data.frame}
+\alias{as_draws_list.draws_rvar}
 \alias{as_draws_list.list}
 \alias{is_draws_list}
 \title{The \code{draws_list} format}
 \usage{
 as_draws_list(x, ...)
 
+\method{as_draws_list}{data.frame}(x, ...)
+
 \method{as_draws_list}{default}(x, ...)
 
 \method{as_draws_list}{draws_list}(x, ...)
 
-\method{as_draws_list}{data.frame}(x, ...)
+\method{as_draws_list}{draws_rvar}(x, ...)
 
 \method{as_draws_list}{list}(x, ...)
 
