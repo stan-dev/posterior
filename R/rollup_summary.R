@@ -37,7 +37,7 @@ NULL
 
 #' @rdname draws_summary_rollup
 #' @export
-rollup_summary <- function(x, rollup_vars = NULL,
+rollup_summary <- function(x, ..., rollup_vars = NULL,
                            min_only = c("ess_bulk", "ess_tail"),
                            max_only = "rhat") {
   UseMethod("rollup_summary")
