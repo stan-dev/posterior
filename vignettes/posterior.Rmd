@@ -160,7 +160,7 @@ every supported draws format.
 
 Subsetting `draws` objects can be done according to various aspects of the draws
 (iterations, chains, or variables). The posterior package provides a convenient
-interface for this purpose via the `subset_draws()`. For example, here is the
+interface for this purpose via `subset_draws()`. For example, here is the
 code to extract the first five iterations of the first two chains of the
 variable `mu`.
 
