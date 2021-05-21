@@ -72,6 +72,10 @@ summarise_draws.default <- function(x, ...) {
 #' @rdname draws_summary
 #' @export
 summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
+  if (ndraws(x) == 0L) {
+    return(empty_draws_summary())
+  }
+
   .cores <- as_one_integer(.cores)
   if (.cores <= 0) {
     stop_no_call("'.cores' must be a positive integer.")
@@ -98,7 +102,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
           names(funs)[i] <- calls[i]
         }
       }
-      # get functions passed as stings from the right environments
+      # get functions passed as strings from the right environments
       if (!is.null(fname)) {
         if (exists(fname, envir = caller_env())) {
           env <- caller_env()
@@ -126,9 +130,6 @@ summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
 
   # it is more efficient to repair and transform objects for all variables
   # at once instead of doing it within the loop for each variable separately
-  if (ndraws(x) == 0L) {
-    return(empty_draws_summary())
-  }
   x <- repair_draws(x)
   x <- as_draws_array(x)
   variables_x <- variables(x)
@@ -161,25 +162,34 @@ summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
       # exporting all these functions seems to be required to
       # pass GitHub actions checks on Windows
       parallel::clusterExport(
-        cl, package_function_names("posterior"),
+        cl,
+        varlist = package_function_names("posterior"),
         envir = as.environment(asNamespace("posterior"))
       )
       parallel::clusterExport(
-        cl, package_function_names("checkmate"),
+        cl,
+        varlist = package_function_names("checkmate"),
         envir = as.environment(asNamespace("checkmate"))
       )
       parallel::clusterExport(
-        cl, package_function_names("rlang"),
+        cl,
+        varlist = package_function_names("rlang"),
         envir = as.environment(asNamespace("rlang"))
       )
       summary_list <- parallel::parLapply(
-        cl, X = chunk_list, fun = summarise_draws_helper,
-        funs = funs, .args = .args
+        cl,
+        X = chunk_list,
+        fun = summarise_draws_helper,
+        funs = funs,
+        .args = .args
       )
     } else {
       summary_list <- parallel::mclapply(
-        X = chunk_list, FUN = summarise_draws_helper,
-        mc.cores = .cores, funs = funs, .args = .args
+        X = chunk_list,
+        FUN = summarise_draws_helper,
+        mc.cores = .cores,
+        funs = funs,
+        .args = .args
       )
     }
     out <- do.call("rbind", summary_list)
@@ -244,7 +254,6 @@ empty_draws_summary <- function(dimensions = "variable") {
 }
 
 
-# Helper functions
 create_summary_list <- function(x, v, funs, .args) {
   draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
   args <- c(list(draws), .args)
