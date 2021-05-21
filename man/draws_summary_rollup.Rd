@@ -8,6 +8,7 @@
 \usage{
 rollup_summary(
   x,
+  ...,
   rollup_vars = NULL,
   min_only = c("ess_bulk", "ess_tail"),
   max_only = "rhat"
@@ -23,6 +24,8 @@ rollup_summary(
 \arguments{
 \item{x}{a \code{draws_summary} object or a \code{draws} object to be summarised}
 
+\item{...}{Optional arguments to be passed to \code{summarise_draws} if x is a \code{draws} object}
+
 \item{rollup_vars}{a list of variable names (excluding brackets and indices) to roll up}
 
 \item{min_only}{a character vector of varable names for which only minimum values are
@@ -30,8 +33,6 @@ desired in the rollup}
 
 \item{max_only}{a character vector of varable names for which only maximum values are
 desired in the rollup}
-
-\item{...}{Optional arguments to be passed to \code{summarise_draws} if x is a \code{draws} object}
 }
 \value{
 The \code{rollup_summary()} methods return a list of \link[tibble:tibble]{tibble} data frames.
