@@ -75,7 +75,7 @@ supported formats are:
 * `draws_list`: A list with one sublist per chain. Each sublist is a named list
 with one vector of iterations per variable.
 * `draws_rvars`: A list of random variable `rvar` objects, one per variable. See
-the [vignette](rvar.html) dedicated to this new data type for details.
+`vignette("rvar")` for an introduction to this new data type.
 
 These formats are essentially base R object classes and can be used as such. For
 example, a `draws_matrix` object is just a `matrix` with a little more
