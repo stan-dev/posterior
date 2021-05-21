@@ -13,17 +13,17 @@
 #' @param max_only a character vector of varable names for which only maximum values are 
 #'    desired in the rollup
 #'
-#'#' @return
+#' @return
 #' The `rollup_summary()` methods return a list of [tibble][tibble::tibble] data frames.
 #' The first element is a standard `draws_summary` for the variables that are not rolled up
 #' The second element is a rollup of the variables to be rolled up and contains max and min
 #' values of the summary functions attained by any element of the variable
 #' 
-#' #' @details
+#' @details
 #' By default, only the maximum value of `rhat` and the mimum values of [ess_bulk()] and 
 #' [ess_tail()] are returned.  `NA`s are ignored unless all elements of the summary are `NA`
 #' 
-#' #' @examples
+#' @examples
 #' ds <- summarise_draws(example_draws())
 #' ds2 <- summarise_draws(2 * example_draws())
 #' ds2$variable <- c("pi", "upsilon", 

@@ -29,33 +29,33 @@ rollup_summary(
 desired in the rollup}
 
 \item{max_only}{a character vector of varable names for which only maximum values are
-desired in the rollup
+desired in the rollup}
 
-#' @return
+\item{...}{Optional arguments to be passed to \code{summarise_draws} if x is a \code{draws} object}
+}
+\value{
 The \code{rollup_summary()} methods return a list of \link[tibble:tibble]{tibble} data frames.
 The first element is a standard \code{draws_summary} for the variables that are not rolled up
 The second element is a rollup of the variables to be rolled up and contains max and min
 values of the summary functions attained by any element of the variable
-
-#' @details
-By default, only the maximum value of \code{rhat} and the mimum values of \code{\link[=ess_bulk]{ess_bulk()}} and
-\code{\link[=ess_tail]{ess_tail()}} are returned.  \code{NA}s are ignored unless all elements of the summary are \code{NA}
-
-#' @examples
-ds <- summarise_draws(example_draws())
-ds2 <- summarise_draws(2 * example_draws())
-ds2$variable <- c("pi", "upsilon",
-"omega\link{1,1}", "omega\link{2,1}", "omega\link{3,1}", "omega\link{4,1}",
-"omega\link{1,2}", "omega\link{2,2}", "omega\link{3,2}", "omega\link{4,2}")
-draws_summary <- rbind(ds, ds2)
-rollup_summary(draws_summary)
-rollup_summary(draws_summary, rollup_vars = "theta")
-rollup_summary(example_draws())}
-
-\item{...}{Optional arguments to be passed to \code{summarise_draws} if x is a \code{draws} object}
 }
 \description{
 By default, all variables containing \code{[} in the name are rolled up, but
 there is an option to pass a list of parameter names, which will roll up
 any variables that match \verb{^parameter_name\\\[.*}
+}
+\details{
+By default, only the maximum value of \code{rhat} and the mimum values of \code{\link[=ess_bulk]{ess_bulk()}} and
+\code{\link[=ess_tail]{ess_tail()}} are returned.  \code{NA}s are ignored unless all elements of the summary are \code{NA}
+}
+\examples{
+ds <- summarise_draws(example_draws())
+ds2 <- summarise_draws(2 * example_draws())
+ds2$variable <- c("pi", "upsilon", 
+                  "omega[1,1]", "omega[2,1]", "omega[3,1]", "omega[4,1]",
+                                    "omega[1,2]", "omega[2,2]", "omega[3,2]", "omega[4,2]")
+draws_summary <- rbind(ds, ds2)
+rollup_summary(draws_summary)
+rollup_summary(draws_summary, rollup_vars = "theta")
+rollup_summary(example_draws())
 }
