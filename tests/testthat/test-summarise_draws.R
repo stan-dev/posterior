@@ -68,3 +68,67 @@ test_that("summarise_draws warns if all variable names are reserved", {
   variables(x) <- ".log_weight"
   expect_warning(summarize_draws(x), "no variables with unreserved names")
 })
+
+test_that(paste(
+  "multicore summarise_draws is identical to single-core summarise_draws",
+  "including if some chunks contain no variables"
+), {
+  set.seed(1)
+  cores <- 2
+  nc <- 4
+
+  n <- 20
+  test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
+  x <- as_draws_array(test_array)
+  sum_x <- summarise_draws(x)
+  parsum_x <- summarise_draws(x, .cores = cores)
+  expect_identical(sum_x, parsum_x)
+
+  dimnames(x)$variable[2] <- reserved_variables()[1]
+  sum_x <- summarise_draws(x)
+  parsum_x <- summarise_draws(x, .cores = cores)
+  expect_identical(sum_x, parsum_x)
+
+  # test that externally defined summary functions can be found
+  mean2 <- function(x) sum(x) / length(x)
+  sum_x <- summarise_draws(x, mean2)
+  parsum_x <- summarise_draws(x, mean2, .cores = cores)
+  expect_identical(sum_x, parsum_x)
+
+  n <- 2
+  test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
+  x <- as_draws_array(test_array)
+  sum_x <- summarise_draws(x)
+  parsum_x <- summarise_draws(x, .cores = cores)
+  expect_identical(sum_x, parsum_x)
+
+  dimnames(x)$variable[2] <- reserved_variables()[1]
+  sum_x <- summarise_draws(x)
+  parsum_x <- summarise_draws(x, .cores = cores)
+  expect_identical(sum_x, parsum_x)
+
+  n <- 1
+  test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
+  x <- as_draws_array(test_array)
+  sum_x <- summarise_draws(x)
+  parsum_x <- summarise_draws(x, .cores = cores)
+  expect_identical(sum_x, parsum_x)
+
+  dimnames(x)$variable[1] <- reserved_variables()[1]
+  suppressWarnings(sum_x <- summarise_draws(x))
+  suppressWarnings(parsum_x <- summarise_draws(x, .cores = cores))
+  expect_identical(sum_x, parsum_x)
+})
+
+
+test_that("summarise_draws errors for invalid cores specification", {
+  x <- example_draws()
+  expect_error(
+    summarise_draws(x, .cores = -1),
+    "'.cores' must be a positive integer"
+  )
+  expect_error(
+    summarise_draws(x, .cores = NULL),
+    "Cannot coerce '.cores' to a single integer value"
+  )
+})

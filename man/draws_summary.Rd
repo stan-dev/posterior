@@ -17,7 +17,7 @@ summarise_draws(x, ...)
 
 summarize_draws(x, ...)
 
-\method{summarise_draws}{draws}(x, ..., .args = list())
+\method{summarise_draws}{draws}(x, ..., .args = list(), .cores = 1)
 
 \method{summary}{draws}(object, ...)
 
@@ -43,6 +43,11 @@ for examples.}
 
 \item{.args}{Optional \code{list} of additional arguments passed to the summary
 functions.}
+
+\item{.cores}{Positive number of cores for computing summaries for different
+variables in parallel. Coerced to integer if possible, otherwise errors.
+Defaults to \code{.cores = 1} in which case no parallelization is implemented.
+By default, creates a socket cluster on Windows and forks otherwise.}
 }
 \value{
 The \code{summarise_draws()} methods return a \link[tibble:tibble]{tibble} data frame.
@@ -53,9 +58,9 @@ columns contain summary statistics and diagnostics.
 The \code{summarise_draws()} (and \code{summarize_draws()}) methods provide a quick way
 to get a table of summary statistics and diagnostics. These methods will
 convert an object to a \code{draws} object if it isn't already. For convenience, a
-\link[base:summary]{summary()} method for \code{draws} and \code{rvar} objects are also provided as an
-alias for \code{summarise_draws()} if the input object is a \code{draws} or \code{rvar}
-object.
+\link[base:summary]{summary()} method for \code{draws} and \code{rvar} objects are also
+provided as an alias for \code{summarise_draws()} if the input object is a \code{draws}
+or \code{rvar} object.
 }
 \details{
 By default, the following summary functions are used: \code{\link[=mean]{mean()}}, \code{\link[=median]{median()}},
