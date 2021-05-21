@@ -5,7 +5,6 @@
 #'
 #' @template args-methods-x
 #' @template args-methods-dots
-#'
 #' @template return-draws
 #'
 #' @examples

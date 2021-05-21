@@ -41,9 +41,7 @@ are continuously and consistently numbered.
 }
 \examples{
 x <- as_draws_array(example_draws())
-# manually select some iterations and chains
 (x <- x[10:5, 3:4, ])
-# repair iteration and chain indices
 repair_draws(x)
 
 }

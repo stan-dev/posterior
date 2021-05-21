@@ -12,17 +12,18 @@ rename_variables(.x, ...)
 \arguments{
 \item{.x}{A \code{\link{draws}} object.}
 
-\item{...}{One or more expressions separated by commas indicating the variables
-to rename. Existing variable names can be unquoted expressions, as in
-\code{new_name = old_name}, or character vectors, as in \code{new_name = "old_name"}.
-All elements of non-scalar variables can be renamed at once.}
+\item{...}{One or more expressions, separated by commas, indicating the
+variables to rename. The variable names can be unquoted
+(\code{new_name = old_name}) or quoted (\code{"new_name" = "old_name"}). For non-scalar
+variables, all elements can be renamed together (\code{"new_name" = "old_name"})
+or they can be renamed individually (\code{"new_name[1]" = "old_name[1]"}).}
 }
 \value{
 Returns a \code{\link{draws}} object of the same format as \code{.x}, with variables renamed
 according to the expressions provided in \code{...}.
 }
 \description{
-Rename variables within a \code{\link{draws}} object.
+Rename variables in a \code{\link{draws}} object.
 }
 \examples{
 x <- as_draws_df(example_draws())

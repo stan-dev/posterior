@@ -35,6 +35,8 @@
 #' State Space Models, *Journal of Computational and Graphical Statistics*,
 #' 5(1):1-25, 1996.
 #'
+#' @seealso [resample_draws()]
+#'
 #' @examples
 #' x <- as_draws_df(example_draws())
 #'

@@ -70,3 +70,6 @@ Kitagawa, G., Monte Carlo Filter and Smoother for Non-Gaussian Nonlinear '
 State Space Models, \emph{Journal of Computational and Graphical Statistics},
 5(1):1-25, 1996.
 }
+\seealso{
+\code{\link[=resample_draws]{resample_draws()}}
+}

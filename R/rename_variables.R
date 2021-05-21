@@ -1,18 +1,17 @@
 #' Rename variables in `draws` objects
 #'
-#' Rename variables within a [`draws`] object.
+#' Rename variables in a [`draws`] object.
 #'
 #' @param .x A [`draws`] object.
-#' @param ... One or more expressions separated by commas indicating the variables
-#'   to rename. Existing variable names can be unquoted expressions, as in
-#'   `new_name = old_name`, or character vectors, as in `new_name = "old_name"`.
-#'   All elements of non-scalar variables can be renamed at once.
+#' @param ... One or more expressions, separated by commas, indicating the
+#'   variables to rename. The variable names can be unquoted
+#'   (`new_name = old_name`) or quoted (`"new_name" = "old_name"`). For non-scalar
+#'   variables, all elements can be renamed together (`"new_name" = "old_name"`)
+#'   or they can be renamed individually (`"new_name[1]" = "old_name[1]"`).
 #'
 #' @return
 #' Returns a [`draws`] object of the same format as `.x`, with variables renamed
 #' according to the expressions provided in `...`.
-#'
-#' @importFrom rlang quos as_name
 #'
 #' @seealso [`variables`], [`mutate_variables`]
 #'
@@ -30,6 +29,7 @@
 #' x <- rename_variables(x, alpha = theta)
 #' variables(x)
 #'
+#' @importFrom rlang quos as_name
 #' @export
 rename_variables <- function(.x, ...) {
   UseMethod("rename_variables")

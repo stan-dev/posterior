@@ -20,7 +20,7 @@ extract_variable(x, variable, ...)
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-A numeric vector of length #draws.
+A numeric vector of length equal to the number of draws.
 }
 \description{
 Extract a vector of draws of a single variable.

@@ -99,8 +99,8 @@ rstar(x, method = "knn")
 }
 \references{
 Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
-diagnostic with uncertainty using gradient-boosted machines \emph{arXiv
-preprint} \code{arXiv:2003.07900}.
+diagnostic with uncertainty using gradient-boosted machines.
+\emph{arXiv preprint} \code{arXiv:2003.07900}.
 }
 \seealso{
 Other diagnostics: 

@@ -16,13 +16,13 @@
 \arguments{
 \item{x, object}{An \code{\link{rvar}}.}
 
-\item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}
+\item{...}{Further arguments passed to the underlying \code{\link[=print]{print()}} methods.}
 
 \item{summary}{What style of summary to display: \code{"mean_sd"} displays \verb{mean±sd},
 \code{"median_mad"} displays \verb{median±mad}. If \code{NULL}, \code{getOption("posterior.rvar_summary")} is
 used (default \verb{"mean_sd}).}
 
-\item{digits}{Minimum number of significant digits to print.}
+\item{digits}{The minimum number of significant digits to print.}
 
 \item{color}{Whether or not to use color when formatting the output. If \code{TRUE},
 the \code{\link[pillar:style_subtle]{pillar::style_num()}} functions may be used to produce strings containing
