@@ -64,9 +64,9 @@ The structure of this object is explained in the next section.
 
 ### Available formats 
 
-Different formats are preferable in different situations and hence posterior
-supports multiple formats and easy conversion between them. Currently the 
-supported formats are: 
+Because different formats are preferable in different situations, posterior
+supports multiple formats and easy conversion between them. The currently
+supported formats are:
 
 * `draws_array`: An iterations by chains by variables array.
 * `draws_matrix`: A draws (iterations x chains) by variables array.
@@ -75,16 +75,20 @@ supported formats are:
 * `draws_list`: A list with one sublist per chain. Each sublist is a named list
 with one vector of iterations per variable.
 * `draws_rvars`: A list of random variable `rvar` objects, one per variable. See
-the [vignette](rvar.html) dedicated to this new datatype for details.
+the [vignette](rvar.html) dedicated to this new data type for details.
 
 These formats are essentially base R object classes and can be used as such. For
 example, a `draws_matrix` object is just a `matrix` with a little more
-consistency (e.g., no dropping of dimensions with one level) and additional
-methods. The exception to this is the `draws_rvars` format, which behave
-somewhat similarly to arrays but are really a unique data type. See the separate
-vignette on the `rvar` and `draws_rvars` data types for details.
+consistency (e.g., no dropping of dimensions with one level when indexing) and
+additional methods. The exception to this is the `draws_rvars` format, which
+contains `rvar` objects that behave somewhat like arrays but are really a unique
+data type. See the separate vignette on the `rvar` and `draws_rvars` data types
+for details.
 
-The draws for our example come as a `draws_array` object
+The draws for our example come as a `draws_array` object with 
+`r niterations(eight_schools_array)` iterations, 
+`r nchains(eight_schools_array)` chains, and 
+`r nvariables(eight_schools_array)` variables:
 
 ```{r draws_array-structure}
 str(eight_schools_array)
@@ -107,13 +111,14 @@ print(eight_schools_df)
 ### Converting regular R objects to `draws` formats
 
 The example draws already come in a format natively supported by posterior, but
-we could of course also import the draws from other sources like common base R
+we can of course also import the draws from other sources like common base R
 objects.
 
 #### Example: create draws_matrix from a matrix
 
-In addition to converting other `draws` objects the `as_draws_matrix()` function
-will convert a regular matrix to a `draws_matrix`.
+In addition to converting other `draws` objects to the `draws_matrix` format,
+the `as_draws_matrix()` function will convert a regular matrix to a
+`draws_matrix`.
 
 ```{r draws_matrix-from-matrix}
 x <- matrix(rnorm(50), nrow = 10, ncol = 5)
@@ -127,27 +132,27 @@ will now be available.
 
 Instead of `as_draws_matrix()` we also could have just used `as_draws()`, which
 attempts to find the closest available format to the input object. In this case
-this would result in a `draws_matrix` object either way.
+the result would be a `draws_matrix` object either way.
 
 #### Example: create draws_matrix from multiple vectors
 
-In addition to the `as_draws_matrix()` converter function, there is also a
-`draws_matrix()` constructor function that can be used to construct a draws
-matrix from multiple vectors.
+In addition to the `as_draws_matrix()` converter function there is also a
+`draws_matrix()` constructor function that can be used to create draws matrix
+from multiple vectors.
 
 ```{r draws_matrix-from-vectors}
 x <- draws_matrix(alpha = rnorm(50), beta = rnorm(50))
 print(x)
 ```
 
-Analogous functions exist for the other formats and are used similarly.
+Analogous functions exist for the other draws formats and are used similarly.
 
 
 ## Manipulating `draws` objects
 
 There are many methods available for manipulating draws objects in various ways.
-All of the methods demonstrated below, as well as other methods available in the
-package, are all available for every draws format.
+All of the methods demonstrated below, as well as other methods in the package,
+are all available for every draws format.
 
 ### Subsetting 
 
@@ -179,8 +184,8 @@ identical(sub_df, as_draws_df(sub_arr))
 identical(as_draws_array(sub_df), sub_arr)
 ```
 
-It is also possible to standard subsetting syntax with `draws` objects. The 
-following is equivalent to the use of `subset_draws()` with the array above. 
+It is also possible to use standard R subsetting syntax with `draws` objects.
+The following is equivalent to the use of `subset_draws()` with the array above.
 
 ```{r subset-standard}
 eight_schools_array[1:5, 1:2, "mu"]
@@ -194,8 +199,9 @@ the subsetting above is still a `draws_array` and not a `draws_matrix`.
 ### Mutating (transformations of variables)
 
 The magic of having obtained draws from the joint posterior (or prior)
-distribution of a set of variables is that these draws can also be used
-to obtain draws from any other variable that is a function of the original variables.
+distribution of a set of variables is that these draws can also be used to
+obtain draws from any other variable that is a function of the original
+variables.
 That is, if we are interested in the posterior distribution of, say,
 `phi = (mu + tau)^2` all we have to do is to perform the transformation for each
 of the individual draws to obtain draws from the posterior distribution of the
@@ -362,7 +368,7 @@ If you have suggestions for additional diagnostics that should be implemented in
 posterior, please open an issue at
 <https://github.com/stan-dev/posterior/issues>.
 
-## Other methods
+## Other methods for working with `draws` objects
 
 In addition to the methods demonstrated in this vignette, posterior has various
 other methods available for working with `draws` objects. The following is a
