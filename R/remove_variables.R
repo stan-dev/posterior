@@ -54,7 +54,22 @@ remove_variables.draws_list <- function(x, variables, ...) {
   x
 }
 
+#' @export
+remove_variables.draws_rvars <- function(x, variables, ...) {
+  variables <- as.character(variables)
+  if (!length(variables)) {
+    return(x)
+  }
+  x[!names(x) %in% variables]
+}
+
+# remove all reserved variables
+remove_reserved_variables <- function(x, ...) {
+  remove_variables(x, reserved_variables(x))
+}
+
 # remove reserved variables specific for the 'draws_df' format
 remove_reserved_df_variables <- function(x, ...) {
   remove_variables(x, reserved_df_variables())
 }
+
