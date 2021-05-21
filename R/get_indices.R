@@ -13,7 +13,7 @@
 NULL
 
 get_indices <- function(x){
-  vars_indices <- strsplit(variables, "(\\[|\\])")
+  vars_indices <- strsplit(x, "(\\[|\\])")
   vars <- sapply(vars_indices, `[[`, 1)
   var_names <- unique(vars)
   
