@@ -14,7 +14,7 @@ rollup_summary(
 )
 
 \method{rollup_summary}{draws_summary}(
-  draws_summary,
+  x,
   rollup_vars = NULL,
   min_only = c("ess_bulk", "ess_tail"),
   max_only = "rhat"
