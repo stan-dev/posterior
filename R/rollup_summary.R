@@ -5,8 +5,8 @@
 #' any variables that match `^parameter_name\\[.*`
 #' 
 #' @name draws_summary_rollup
-#' @param ... Optional arguments to be passed to `summarise_draws` if x is a `draws` object
 #' @param x a `draws_summary` object or a `draws` object to be summarised
+#' @param ... Optional arguments to be passed to `summarise_draws` if x is a `draws` object
 #' @param rollup_vars a list of variable names (excluding brackets and indices) to roll up
 #' @param min_only a character vector of varable names for which only minimum values are 
 #'    desired in the rollup
@@ -54,7 +54,7 @@ rollup_summary.default <- function(x, ..., rollup_vars = NULL,
 
 #' @rdname draws_summary_rollup
 #' @export
-rollup_summary.draws_summary <- function (draws_summary, rollup_vars = NULL,
+rollup_summary.draws_summary <- function (x, rollup_vars = NULL,
                             min_only = c("ess_bulk", "ess_tail"),
                             max_only = "rhat") {
   # get variable names
