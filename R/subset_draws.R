@@ -300,10 +300,16 @@ subset_dims <- function(x, ...) {
                                       variable = NULL, reserved = FALSE, ...) {
   if (!is.null(variable)) {
     if (reserved) {
-      reserved_vars <- setdiff(reserved_variables(x), variable)
-      x <- x[c(variable, reserved_vars)]
-    } else{
-      x <- x[variable]
+      z <- x
+    }
+    x <- x[variable]
+    if (reserved) {
+      new_vars <- variables(x, reserved = TRUE)
+      reserved_vars <- setdiff(reserved_variables(z), new_vars)
+      x <- c(x, z[reserved_vars])
+      # c() currently removes the 'draws' classes
+      class(x) <- class_draws_rvars()
+      remove(z)
     }
   }
   if (!is.null(chain)) {
