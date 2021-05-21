@@ -2,9 +2,26 @@
 % Please edit documentation in R/rollup_summary.R
 \name{draws_summary_rollup}
 \alias{draws_summary_rollup}
+\alias{rollup_summary}
+\alias{rollup_summary.draws_summary}
 \title{"Roll up" \code{draws_summary} objects by collapsing over nonscalar parameters.}
+\usage{
+rollup_summary(
+  x,
+  rollup_vars = NULL,
+  min_only = c("ess_bulk", "ess_tail"),
+  max_only = "rhat"
+)
+
+\method{rollup_summary}{draws_summary}(
+  draws_summary,
+  rollup_vars = NULL,
+  min_only = c("ess_bulk", "ess_tail"),
+  max_only = "rhat"
+)
+}
 \arguments{
-\item{x}{a \code{draws_summary} object}
+\item{x}{a \code{draws_summary} object or a \code{draws} object to be summarised}
 
 \item{rollup_vars}{a list of variable names (excluding brackets and indices) to roll up}
 
@@ -32,8 +49,10 @@ ds2$variable <- c("pi", "upsilon",
 "omega\link{1,2}", "omega\link{2,2}", "omega\link{3,2}", "omega\link{4,2}")
 draws_summary <- rbind(ds, ds2)
 rollup_summary(draws_summary)
-rollup_summary(draws_summary, rollup_vars = c("theta", "omega"))
-rollup_summary(draws_summary, rollup_vars = "theta")}
+rollup_summary(draws_summary, rollup_vars = "theta")
+rollup_summary(example_draws())}
+
+\item{...}{Optional arguments to be passed to \code{summarise_draws} if x is a \code{draws} object}
 }
 \description{
 By default, all variables containing \code{[} in the name are rolled up, but

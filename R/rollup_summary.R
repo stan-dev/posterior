@@ -5,7 +5,8 @@
 #' any variables that match `^parameter_name\\[.*`
 #' 
 #' @name draws_summary_rollup
-#' @param x a `draws_summary` object
+#' @param ... Optional arguments to be passed to `summarise_draws` if x is a `draws` object
+#' @param x a `draws_summary` object or a `draws` object to be summarised
 #' @param rollup_vars a list of variable names (excluding brackets and indices) to roll up
 #' @param min_only a character vector of varable names for which only minimum values are 
 #'    desired in the rollup
@@ -30,17 +31,29 @@
 #'                                     "omega[1,2]", "omega[2,2]", "omega[3,2]", "omega[4,2]")
 #' draws_summary <- rbind(ds, ds2)
 #' rollup_summary(draws_summary)
-#' rollup_summary(draws_summary, rollup_vars = c("theta", "omega"))
 #' rollup_summary(draws_summary, rollup_vars = "theta")
+#' rollup_summary(example_draws())
 NULL
 
+#' @rdname draws_summary_rollup
 #' @export
-rollup_summary <- function(x, ...) {
+rollup_summary <- function(x, rollup_vars = NULL,
+                           min_only = c("ess_bulk", "ess_tail"),
+                           max_only = "rhat") {
   UseMethod("rollup_summary")
 }
 
-# Can consider adding methods that first call `summarise_draws`
+#' @export
+rollup_summary.default <- function(x, ..., rollup_vars = NULL,
+                                   min_only = c("ess_bulk", "ess_tail"),
+                                   max_only = "rhat") {
+  rollup_summary(summarise_draws(x, ...), rollup_vars = NULL,
+                 min_only = c("ess_bulk", "ess_tail"),
+                 max_only = "rhat")
+}
 
+#' @rdname draws_summary_rollup
+#' @export
 rollup_summary.draws_summary <- function (draws_summary, rollup_vars = NULL,
                             min_only = c("ess_bulk", "ess_tail"),
                             max_only = "rhat") {
@@ -76,10 +89,6 @@ rollup_summary.draws_summary <- function (draws_summary, rollup_vars = NULL,
   dimensions <- lapply(indices, get_dims)
   dimension_column <- data.frame("dimension" = unlist(dimensions))
   nonscalar_out <- tibble::as_tibble(cbind(variable_column, dimension_column, min_max, max_only, min_only))
-
-  # Add dimensions column to nonscalar_out
-  
-  
   out <- list(unrolled_vars = ds_scalar, rolled_vars = nonscalar_out)
   out
 }
