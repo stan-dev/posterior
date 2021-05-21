@@ -221,3 +221,8 @@ log_sum_exp <- function(x) {
   }
   invisible(NULL)
 }
+
+# get names of all the functions of a package
+package_function_names <- function(package) {
+  unclass(lsf.str(envir = asNamespace(package), all = TRUE))
+}
