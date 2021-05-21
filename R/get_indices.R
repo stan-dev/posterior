@@ -1,7 +1,18 @@
-#' Parse the indices from a list of variables (extracted e.g. from a 
+#' Parse the indices from a vector of variables (extracted e.g. from a 
 #' `draws_summary` object or a `draws` object)
+#' 
+#' @name variable_indices
+#' @param x a character vector of variables
+#'
+#' @return
+#' A list of indices for each variable 
+#' 
+#' @details
+#' Assumes that variable indexing is reflected by square brackes in the names
+#' 
+NULL
 
-get_indices <- function(variables){
+get_indices <- function(x){
   vars_indices <- strsplit(variables, "(\\[|\\])")
   vars <- sapply(vars_indices, `[[`, 1)
   var_names <- unique(vars)
