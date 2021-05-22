@@ -1,8 +1,8 @@
 #' "Roll up" `draws_summary` objects by collapsing over nonscalar parameters.
 #' 
-#' By default, all variables containing `[` in the name are rolled up, but 
-#' there is an option to pass a list of parameter names, which will roll up
-#' any variables that match `^parameter_name\\[.*`
+#' By default, all variables with names matched by `\\[.*\\]$` are rolled up, 
+#' but there is an option to pass a list of parameter names, which will roll up
+#' any variables matched by `^parameter_name\\[.*\\]$`
 #' 
 #' @name draws_summary_rollup
 #' @param x a `draws_summary` object or a `draws` object to be summarised
@@ -11,7 +11,6 @@
 #'    desired in the rollup
 #' @param max_only a character vector of varable names for which only maximum values are 
 #'    desired in the rollup
-#' @param ... Optional arguments to be passed to `summarise_draws` if x is a `draws` object
 
 #' @return
 #' The `rollup_summary()` methods return a list of [tibble][tibble::tibble] data frames.
@@ -20,15 +19,15 @@
 #' values of the summary functions attained by any element of the variable
 #' 
 #' @details
-#' By default, only the maximum value of `rhat` and the mimum values of [ess_bulk()] and 
-#' [ess_tail()] are returned.  `NA`s are ignored unless all elements of the summary are `NA`
+#' By default, only the maximum value of `rhat` and the minimum values of [ess_bulk()] and 
+#' [ess_tail()] are returned.  # INSERT HOW WE HANDLE NA SUMMARIES
 #' 
 #' @examples
 #' ds <- summarise_draws(example_draws())
 #' ds2 <- summarise_draws(2 * example_draws())
 #' ds2$variable <- c("pi", "upsilon", 
 #'                   "omega[1,1]", "omega[2,1]", "omega[3,1]", "omega[4,1]",
-#'                                     "omega[1,2]", "omega[2,2]", "omega[3,2]", "omega[4,2]")
+#'                   "omega[1,2]", "omega[2,2]", "omega[3,2]", "omega[4,2]")
 #' draws_summary <- rbind(ds, ds2)
 #' rollup_summary(draws_summary)
 #' rollup_summary(draws_summary, rollup_vars = "theta")
@@ -39,15 +38,15 @@ NULL
 #' @export
 rollup_summary <- function(x, rollup_vars = NULL,
                            min_only = c("ess_bulk", "ess_tail"),
-                           max_only = "rhat", ...) {
+                           max_only = "rhat") {
   UseMethod("rollup_summary")
 }
 
 #' @export
 rollup_summary.default <- function(x, rollup_vars = NULL,
                                    min_only = c("ess_bulk", "ess_tail"),
-                                   max_only = "rhat", ...) {
-  rollup_summary(summarise_draws(x, ...), rollup_vars = NULL,
+                                   max_only = "rhat") {
+  rollup_summary(summarise_draws(x), rollup_vars = NULL,
                  min_only = c("ess_bulk", "ess_tail"),
                  max_only = "rhat")
 }
@@ -82,7 +81,7 @@ rollup_summary.draws_summary <- function (x, rollup_vars = NULL,
   min_only <- do.call(rbind, lapply(split_nonscalar, rollup_helper_min, names = min_only))
   max_only <- do.call(rbind, lapply(split_nonscalar, rollup_helper_max, names = max_only))
   variable_column <- data.frame("variable" = unique(varnames_nonscalar))
-  indices <- get_indices(ds_nonscalar$variable)
+  indices <- parse_variable_indices(ds_nonscalar$variable)
   get_dims <- function(x){paste0("(", 
                                  paste(apply(x[, names(x) != "index", drop = FALSE], 2, function(x){max(as.integer(x))}), collapse = ","),
                                  ")")}

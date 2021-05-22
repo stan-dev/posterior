@@ -8,7 +8,6 @@
 \usage{
 rollup_summary(
   x,
-  ...,
   rollup_vars = NULL,
   min_only = c("ess_bulk", "ess_tail"),
   max_only = "rhat"
@@ -23,8 +22,6 @@ rollup_summary(
 }
 \arguments{
 \item{x}{a \code{draws_summary} object or a \code{draws} object to be summarised}
-
-\item{...}{Optional arguments to be passed to \code{summarise_draws} if x is a \code{draws} object}
 
 \item{rollup_vars}{a list of variable names (excluding brackets and indices) to roll up}
 
@@ -41,20 +38,20 @@ The second element is a rollup of the variables to be rolled up and contains max
 values of the summary functions attained by any element of the variable
 }
 \description{
-By default, all variables containing \code{[} in the name are rolled up, but
-there is an option to pass a list of parameter names, which will roll up
-any variables that match \verb{^parameter_name\\\[.*}
+By default, all variables with names matched by \verb{\\\[.*\\\]$} are rolled up,
+but there is an option to pass a list of parameter names, which will roll up
+any variables matched by \verb{^parameter_name\\\[.*\\\]$}
 }
 \details{
-By default, only the maximum value of \code{rhat} and the mimum values of \code{\link[=ess_bulk]{ess_bulk()}} and
-\code{\link[=ess_tail]{ess_tail()}} are returned.  \code{NA}s are ignored unless all elements of the summary are \code{NA}
+By default, only the maximum value of \code{rhat} and the minimum values of \code{\link[=ess_bulk]{ess_bulk()}} and
+\code{\link[=ess_tail]{ess_tail()}} are returned.  # INSERT HOW WE HANDLE NA SUMMARIES
 }
 \examples{
 ds <- summarise_draws(example_draws())
 ds2 <- summarise_draws(2 * example_draws())
 ds2$variable <- c("pi", "upsilon", 
                   "omega[1,1]", "omega[2,1]", "omega[3,1]", "omega[4,1]",
-                                    "omega[1,2]", "omega[2,2]", "omega[3,2]", "omega[4,2]")
+                  "omega[1,2]", "omega[2,2]", "omega[3,2]", "omega[4,2]")
 draws_summary <- rbind(ds, ds2)
 rollup_summary(draws_summary)
 rollup_summary(draws_summary, rollup_vars = "theta")

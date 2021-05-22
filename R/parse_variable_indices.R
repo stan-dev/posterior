@@ -8,12 +8,12 @@
 #' A list of indices for each variable 
 #' 
 #' @details
-#' Assumes that variable indexing is reflected by square brackes in the names
+#' Assumes that variable indexing is reflected by square brackets in the names
 #' 
 NULL
 
-get_indices <- function(x){
-  vars_indices <- strsplit(x, "(\\[|\\])")
+parse_variable_indices <- function(x){
+  vars_indices <- strsplit(x, "(\\[|\\]$)")
   vars <- sapply(vars_indices, `[[`, 1)
   var_names <- unique(vars)
   
