@@ -63,4 +63,3 @@ reserved_df_variables <- function() {
 all_reserved_variables <- function(x = NULL) {
   c(reserved_variables(x), reserved_df_variables())
 }
-

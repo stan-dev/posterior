@@ -31,7 +31,11 @@ print.draws_matrix <- function(x, digits = 2,
   cat(header)
   sel_draws <- seq_len(min(max_draws, ndraws))
   sel_variables <- seq_len(min(max_variables, nvariables))
-  y <- .subset_draws(x, sel_draws, sel_variables, reserved = reserved)
+  y <- x
+  if (!reserved) {
+    y <- remove_reserved_variables(y)
+  }
+  y <- .subset_draws(y, sel_draws, sel_variables, reserved = reserved)
   class(y) <- "matrix"
   print(y, digits = digits, ...)
   more_iterations <- ndraws -  max_draws
@@ -93,8 +97,12 @@ print.draws_array <- function(x, digits = 2,
   sel_iterations <- seq_len(min(max_iterations, niterations))
   sel_chains <- seq_len(min(max_chains, nchains))
   sel_variables <- seq_len(min(max_variables, nvariables))
+  y <- x
+  if (!reserved) {
+    y <- remove_reserved_variables(y)
+  }
   y <- .subset_draws(
-    x, sel_iterations, sel_chains, sel_variables,
+    y, sel_iterations, sel_chains, sel_variables,
     reserved = reserved
   )
   class(y) <- "array"
@@ -159,11 +167,16 @@ print.draws_df <- function(x, digits = 2,
   cat(header)
   sel_draws <- seq_len(min(max_draws, ndraws))
   sel_variables <- seq_len(min(max_variables, nvariables))
+  y <- x
+  if (!reserved) {
+    y <- remove_reserved_variables(y)
+  }
   y <- .subset_draws(
-    x, draw = sel_draws, variable = sel_variables,
+    y, draw = sel_draws, variable = sel_variables,
     reserved = reserved
   )
   if (!reserved) {
+    # reserved df variables can only be removed after subsetting
     y <- remove_reserved_df_variables(y)
   }
   class(y) <- "data.frame"
@@ -227,8 +240,12 @@ print.draws_list <- function(x, digits = 2,
   sel_iterations <- seq_len(min(max_iterations, niterations))
   sel_chains <- seq_len(min(max_chains, nchains))
   sel_variables <- seq_len(min(max_variables, nvariables))
+  y <- x
+  if (!reserved) {
+    y <- remove_reserved_variables(y)
+  }
   y <- .subset_draws(
-    x, sel_iterations, sel_chains, sel_variables,
+    y, sel_iterations, sel_chains, sel_variables,
     reserved = reserved
   )
   for (i in seq_along(y)) {
@@ -295,14 +312,12 @@ print.draws_rvar <- function(x,
   )
   cat(header)
 
+  sel_variables <- seq_len(min(max_variables, nvariables))
+  y <- x
   if (!reserved) {
-    reserved_variables <- reserved_variables(x)
-    y <- x[!names(x) %in% reserved_variables]
-  } else {
-    y <- x
+    y <- remove_reserved_variables(y)
   }
-  sel_variables <- seq_len(min(max_variables, nvariables(y)))
-
+  y <- .subset_draws(y, variable = sel_variables, reserved = reserved)
   for (i in seq_along(y)) {
     cat0("$", names(y)[[i]], ": ")
     print(y[[i]], summary = summary, digits = digits, ...)
@@ -315,6 +330,7 @@ print.draws_rvar <- function(x,
     comment <- paste0("# ... with ", comment, "\n")
     cat(comment)
   }
+  reserved_variables <- reserved_variables(x)
   if (!reserved && length(reserved_variables)) {
     cat0("# ... hidden reserved variables ", comma(reserved_variables), "\n")
   }
