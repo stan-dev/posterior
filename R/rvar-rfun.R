@@ -4,8 +4,8 @@
 #'
 #' @param .f (multiple options) A function to turn into a function that accepts
 #'   and/or produces random variables:
-#'   * A function.
-#'   * A one-sided formula that can be parsed by [rlang::as_function()].
+#'   * A function
+#'   * A one-sided formula that can be parsed by [rlang::as_function()]
 #' @param rvar_args (character vector) The names of the arguments of `.f` that
 #'   should be allowed to accept [`rvar`]s as arguments. If `NULL` (the
 #'   default), all arguments to `.f` are turned into arguments that accept
