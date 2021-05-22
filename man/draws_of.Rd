@@ -36,3 +36,27 @@ The \strong{first} dimension of these arrays is the index of the draws. If
 so that the first dimension is the index of the iterations and the second
 dimension is the index of the chains.
 }
+\examples{
+
+x <- rvar(1:10, nchains = 2)
+x
+
+# draws_of() without arguments will return the array of draws without
+# chain information (first dimension is draw)
+draws_of(x)
+
+# draws_of() with with_chains = TRUE will reshape the returned array to
+# include chain information in the second dimension
+draws_of(x, with_chains = TRUE)
+
+# you can also set draws using draws_of(). When with_chains = FALSE the
+# existing chain information will be retained ...
+draws_of(x) <- 2:11
+x
+
+# when with_chains = TRUE the chain information will be set by the
+# second dimension of the assigned array
+draws_of(x, with_chains = TRUE) <- array(2:11, dim = c(2,5))
+x
+
+}

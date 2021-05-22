@@ -25,6 +25,7 @@ test_that("rvar can be created with specified number of chains", {
 })
 
 test_that("rvar constructor using with_chains works", {
+  # multidimensional rvar with chains
   x_array_nochains <- array(1:24, dim = c(6,2,2), dimnames = list(
     NULL, A = c("a1", "a2"), B = c("b1", "b2")
   ))
@@ -33,8 +34,14 @@ test_that("rvar constructor using with_chains works", {
   ))
   x_nochains <- rvar(x_array_nochains, nchains = 2)
   x_chains <- rvar(x_array_chains, with_chains = TRUE)
-
   expect_equal(x_chains, x_nochains)
+
+  # scalar rvar with chains
+  x2_array_nochains <- 1:24
+  x2_array_chains <- array(1:24, dim = c(6,4))
+  x2_nochains <- rvar(x2_array_nochains, nchains = 4)
+  x2_chains <- rvar(x2_array_chains, with_chains = TRUE)
+  expect_equal(x2_chains, x2_nochains)
 
   # NULL rvar
   expect_equal(rvar(with_chains = TRUE), rvar())
@@ -46,6 +53,7 @@ test_that("rvar constructor using with_chains works", {
 # draws_of ----------------------------------------------------------------
 
 test_that("draws_of using with_chains works", {
+  # retrieving a multidimensional rvar with draws_of using with_chains
   x_array_nochains <- array(1:24, dim = c(6,2,2), dimnames = list(
     NULL, A = c("a1", "a2"), B = c("b1", "b2")
   ))
@@ -53,9 +61,9 @@ test_that("draws_of using with_chains works", {
     NULL, NULL, A = c("a1", "a2"), B = c("b1", "b2")
   ))
   x <- rvar(x_array_nochains, nchains = 2)
-
   expect_equal(draws_of(x, with_chains = TRUE), x_array_chains)
 
+  # setting a multidimensional rvar with draws_of using with_chains
   x2_array_nochains <- x_array_nochains + 2
   x2_array_chains <- array(1:24 + 2, dim = c(2,3,2,2), dimnames = list(
     NULL, NULL, A = c("a1", "a2"), B = c("b1", "b2")
@@ -64,8 +72,21 @@ test_that("draws_of using with_chains works", {
   draws_of(x2, with_chains = TRUE) <- x2_array_chains
   expect_equal(x2, rvar(x2_array_nochains, nchains = 3))
 
+  # retrieving a scalar rvar with draws_of using with_chains
+  x2_array_nochains <- 1:24
+  x2_array_chains <- array(1:24, dim = c(6,4,1), dimnames = list(NULL))
+  x2 <- rvar(x2_array_nochains, nchains = 4)
+  expect_equal(draws_of(x2, with_chains = TRUE), x2_array_chains)
+
+  # setting a scalar rvar with draws_of using with_chains
+  x3_array_nochains <- 1:24 + 2
+  x3_array_chains <- array(1:24 + 2, dim = c(12,2), dimnames = list(NULL))
+  x3 <- x2
+  draws_of(x3, with_chains = TRUE) <- x3_array_chains
+  expect_equal(x3, rvar(x3_array_nochains, nchains = 2))
+
   # NULL rvar
-  expect_equivalent(draws_of(rvar(), with_chains = TRUE), array(numeric(), dim = c(1,1,0)))
+  expect_equal(draws_of(rvar(), with_chains = TRUE), array(numeric(), dim = c(1,1,0), dimnames = list(NULL)))
 
   x_null <- x
   draws_of(x_null, with_chains = TRUE) = numeric()

@@ -74,16 +74,18 @@ rvar_apply <- function(.x, .margin, .f, ...) {
     out <- broadcast_and_bind_rvars(out, rvar_i, 1)
   }
 
-  # restore the shape of the marginal dimensions
-  dim(out) <- c(marginal_dim, dim(out)[-1])
-  # if the last dimension is 1, drop it
-  n_dim <- length(dim(out))
-  if (dim(out)[[n_dim]] == 1) {
-    dim(out) <- dim(out)[-n_dim]
+  if (length(out) > 0) {
+    # restore the shape of the marginal dimensions
+    dim(out) <- c(marginal_dim, dim(out)[-1])
+    # if the last dimension is 1, drop it
+    n_dim <- length(dim(out))
+    if (dim(out)[[n_dim]] == 1) {
+      dim(out) <- dim(out)[-n_dim]
+    }
+    # restore marginal dimnames
+    marginal_dim_i <- seq_along(marginal_dim)
+    out <- copy_dimnames(.x, .margin, out, marginal_dim_i)
   }
-  # restore marginal dimnames
-  marginal_dim_i <- seq_along(marginal_dim)
-  out <- copy_dimnames(.x, .margin, out, marginal_dim_i)
 
   out
 }

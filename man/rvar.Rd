@@ -72,6 +72,8 @@ random number generator functions to efficiently create \code{rvar}s, use \code{
 }
 \examples{
 
+set.seed(1234)
+
 # To create a "scalar" `rvar`, pass a one-dimensional array or a vector
 # whose length (here `4000`) is the desired number of draws:
 x <- rvar(rnorm(4000, mean = 1, sd = 1))
@@ -86,6 +88,16 @@ x
 rows <- 4
 cols <- 3
 x <- rvar(array(rnorm(4000 * rows * cols, mean = 1, sd = 1), dim = c(4000, rows, cols)))
+x
+
+# If the input sample comes from multiple chains, we can indicate that using the
+# nchains argument (here, 1000 draws each from 4 chains):
+x <- rvar(rnorm(4000, mean = 1, sd = 1), nchains = 4)
+x
+
+# Or if the input sample has chain information as its second dimension, we can
+# use with_chains to create the rvar
+x <- rvar(array(rnorm(4000, mean = 1, sd = 1), dim = c(1000, 4)), with_chains = TRUE)
 x
 
 }
