@@ -177,7 +177,7 @@ draws_of <- function(x, with_chains = FALSE) {
 
 #' @rdname draws_of
 #' @export
-`draws_of<-` <- function(x, value, with_chains = FALSE) {
+`draws_of<-` <- function(x, with_chains = FALSE, value) {
   with_chains <- as_one_logical(with_chains)
 
   if (with_chains) {
