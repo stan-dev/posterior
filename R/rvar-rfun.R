@@ -2,16 +2,20 @@
 #'
 #' Function that create functions that can accept and/or produce [`rvar`]s.
 #'
-#' @param .f A function (or a one-sided formula representing a function that can be parsed by
-#' [rlang::as_function()]) to turn into a function that accepts and/or produces random variables.
-#' @param rvar_args The arguments of `.f` that should be allowed to accept [`rvar`]s as arguments.
-#' If `NULL` (the default), all arguments to `.f` are turned into arguments that accept
-#' [`rvar`]s.
-#' @param ndraws When no [`rvar`]s are supplied as arguments to the returned function, this is the number
-#' of draws that will be used to construct new random variables. If `NULL`,
-#' `getOption("posterior.rvar_ndraws")` is used (default 4000). If any arguments to the returned function contain
-#' [`rvar`]s, the number of draws in the provided [`rvar`]s is used instead of
-#' the value of this argument.
+#' @param .f (multiple options) A function to turn into a function that accepts
+#'   and/or produces random variables:
+#'   * A function.
+#'   * A one-sided formula that can be parsed by [rlang::as_function()].
+#' @param rvar_args (character vector) The names of the arguments of `.f` that
+#'   should be allowed to accept [`rvar`]s as arguments. If `NULL` (the
+#'   default), all arguments to `.f` are turned into arguments that accept
+#'   [`rvar`]s.
+#' @param ndraws (positive integer). The number of draws used to construct new
+#'   random variables if no [`rvar`]s are supplied as arguments to the
+#'   returned function. If `NULL`, `getOption("posterior.rvar_ndraws")` is used
+#'   (default `4000`). If any arguments to the returned function contain
+#'   [`rvar`]s, the number of draws in the provided [`rvar`]s is used instead of
+#'   the value of this argument.
 #'
 #' @details This function wraps an existing function (`.f`) such that it returns [`rvar`]s containing
 #' whatever type of data `.f` would normally return.
@@ -104,16 +108,16 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
 
 #' Execute expressions of random variables
 #'
-#' Execute (nearly) arbitrary R expressions that may include [`rvar`]s,
+#' Execute (nearly) arbitrary \R expressions that may include [`rvar`]s,
 #' producing a new [`rvar`].
 #'
-#' @param expr A bare expression that can (optionally) contain [`rvar`]s. The expression
-#' supports [quasiquotation].
-#' @param ndraws When no [`rvar`]s are supplied in `expr`, this is the number
-#' of draws that will be used to construct new random variables. If `NULL`,
-#' `getOption("posterior.rvar_ndraws")` is used (default 4000). If `expr` contains
-#' [`rvar`]s, the number of draws in the provided [`rvar`]s is used instead of
-#' the value of this argument.
+#' @param expr (expression) A bare expression that can (optionally) contain
+#'   [`rvar`]s. The expression supports [quasiquotation].
+#' @param ndraws (positive integer) The number of draws used to construct new
+#'   random variables if no [`rvar`]s are supplied in `expr`. If `NULL`,
+#'   `getOption("posterior.rvar_ndraws")` is used (default 4000). If `expr`
+#'   contains [`rvar`]s, the number of draws in the provided [`rvar`]s is used
+#'   instead of the value of this argument.
 #' @template args-rvar-dim
 #'
 #' @details This function evaluates `expr` possibly multiple times, once for each draw of
@@ -177,22 +181,23 @@ rdo <- function(expr, dim = NULL, ndraws = NULL) {
 #' Specialized alternative to `rdo()` or `rfun()` for creating [`rvar`]s from
 #' existing random-number generator functions (such as `rnorm()`, `rbinom()`, etc).
 #'
-#' @param .f A function (or character vector) representing a random-number
-#' generating function that follows the pattern of base random number generators
-#' (like `rnorm()`, `rbinom()`, etc).
-#' It must:
+#' @param .f (function) A function (or string naming a function) representing a
+#'   random-number generating function that follows the pattern of base random
+#'   number generators (like `rnorm()`, `rbinom()`, etc). It must:
 #'   - Have a first argument, `n`, giving the number of draws to take from the
 #'     distribution
 #'   - Have vectorized parameter arguments
 #'   - Return a single vector of length `n`
-#' @param n The length of the output [`rvar`] vector (**not** the number of draws)
-#' @param ... arguments passed to `.f`. These arguments may include [`rvar`]s, so
-#' long as they are vectors only (no multidimensional [`rvar`]s are allowed).
-#' @param ndraws When no [`rvar`]s are supplied in `...`, this is the number
-#' of draws that will be used to construct the returned random variable. If `NULL`,
-#' `getOption("posterior.rvar_ndraws")` is used (default 4000). If `...` contains
-#' [`rvar`]s, the number of draws in the provided [`rvar`]s is used instead of
-#' the value of this argument.
+#' @param n (positive integer) The length of the output [`rvar`] vector (**not**
+#'   the number of draws).
+#' @param ... Arguments passed to `.f`. These arguments may include [`rvar`]s,
+#'   so long as they are vectors only (no multidimensional [`rvar`]s are
+#'   allowed).
+#' @param ndraws (positive integer) The number of draws used to construct the
+#'   returned random variable if no [`rvar`]s are supplied in `...`. If `NULL`,
+#'   `getOption("posterior.rvar_ndraws")` is used (default 4000). If `...`
+#'   contains [`rvar`]s, the number of draws in the provided [`rvar`]s is used
+#'   instead of the value of this argument.
 #'
 #' @details This function unwraps the arrays underlying the input [`rvar`]s in
 #' `...` and then passes them to `.f`, relying on the vectorization of `.f`

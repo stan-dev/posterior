@@ -74,10 +74,10 @@ mad(x, ...)
 \method{is.na}{rvar}(x)
 }
 \arguments{
-\item{x}{an \code{\link{rvar}}}
+\item{x}{(rvar) An \code{\link{rvar}}.}
 
-\item{...}{further arguments passed to underlying functions (e.g., \code{base::mean()}
-or \code{base::median()}), such as \code{na.rm}.}
+\item{...}{Further arguments passed to underlying functions (e.g.,
+\code{base::mean()} or \code{base::median()}), such as \code{na.rm}.}
 }
 \value{
 A numeric or logical vector with the same dimensions as the given random variable, where
@@ -86,7 +86,7 @@ each entry in the vector is the mean, median, or variance of the corresponding e
 \description{
 Compute summaries within elements of an \code{\link{rvar}} and over draws of each element,
 producing an array of the same shape as the input random variable (except in
-the case of \code{range()}, see 'Details').
+the case of \code{range()}, see \strong{Details}).
 }
 \details{
 Summaries include expectations (\code{E()} or \code{mean()}), probabilities (\code{Pr()}),

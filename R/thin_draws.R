@@ -4,7 +4,7 @@
 #'
 #' @aliases thin
 #' @template args-methods-x
-#' @param thin A positive integer specifying the period for selecting draws.
+#' @param thin (positive integer) The period for selecting draws.
 #' @template args-methods-dots
 #' @template return-draws
 #'

@@ -15,21 +15,23 @@
 )
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
-\item{digits}{The minimum number of significant digits to print.}
+\item{digits}{(nonnegative integer) The minimum number of significant digits
+to print.}
 
-\item{max_variables}{The maximum number of variables to print. Can be
-controlled globally via the \code{"posterior.max_variables"}
+\item{max_variables}{(positive integer) The maximum number of variables to
+print. Can be controlled globally via the \code{"posterior.max_variables"}
 \link[base:options]{option}.}
 
-\item{summary}{What style of summary to display: \code{"mean_sd"} displays \verb{mean±sd},
-\code{"median_mad"} displays \verb{median±mad}. If \code{NULL}, \code{getOption("posterior.rvar_summary")} is
-used (default \verb{"mean_sd}).}
+\item{summary}{(string) The style of summary to display: \code{"mean_sd"} displays
+\verb{mean±sd}, \code{"median_mad"} displays \verb{median±mad}. If \code{NULL},
+\code{getOption("posterior.rvar_summary")} is used (default \verb{"mean_sd}).}
 
-\item{reserved}{Should reserved variables be included in the output? Defaults
-to \code{FALSE}. See \code{\link{reserved-variables}} for an overview of currently
-reserved variable names.}
+\item{reserved}{(logical) Should reserved variables be included in the
+output? Defaults to \code{FALSE}. See \code{\link{reserved-variables}} for an overview of
+currently reserved variable names.}
 
 \item{...}{Further arguments passed to the underlying \code{\link[=print]{print()}} methods.}
 }

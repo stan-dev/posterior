@@ -3,20 +3,19 @@
 #' Subset [`draws`] objects by variables, iterations, chains, and draws indices.
 #'
 #' @template args-methods-x
-#' @param variable Character vector of variable names to be selected.
-#'   All elements of non-scalar variables can be selected at once.
-#' @param iteration Numeric vector of iteration indices to be selected.
-#' @param chain Numeric vector of chain indices to be selected.
-#' @param draw Numeric vector of draw indices to be selected.
-#'   Subsetting draw indices will lead to an automatic merging of chains
-#'   via [`merge_chains`].
-#' @param regex Logical. Indicates whether `variable` should be treated as a
-#'   (vector of) regular expressions. Any variable in `x` matching at least one
+#' @param variable (character vector) The variables to select. All elements of
+#'   non-scalar variables can be selected at once.
+#' @param iteration (integer vector) The iteration indices to select.
+#' @param chain (integer vector) The chain indices to select.
+#' @param draw (integer vector) The draw indices to be select. Subsetting draw
+#'   indices will lead to an automatic merging of chains via [`merge_chains`].
+#' @param regex (logical) Should `variable` should be treated as a
+#'   (vector of) regular expressions? Any variable in `x` matching at least one
 #'   of the regular expressions will be selected. Defaults to `FALSE`.
-#' @param unique Logical. Indicates whether duplicated selection of chains,
-#'   iterations, or draws is possible. If `TRUE` (the default) only
-#'   unique chains, iterations, and draws are selected regardless of how
-#'   often they appear in the respective selecting arguments.
+#' @param unique (logical) Should duplicated selection of chains, iterations, or
+#'   draws be allowed? If `TRUE` (the default) only unique chains, iterations,
+#'   and draws are selected regardless of how often they appear in the
+#'   respective selecting arguments.
 #'
 #' @template args-methods-dots
 #' @template return-draws

@@ -10,9 +10,9 @@ draws_of(x)
 draws_of(x) <- value
 }
 \arguments{
-\item{x}{An \code{\link{rvar}}}
+\item{x}{(rvar) An \code{\link{rvar}} object.}
 
-\item{value}{An array}
+\item{value}{An array.}
 }
 \description{
 Gets/sets the array-representation that backs an \code{\link{rvar}}. Should be used rarely.

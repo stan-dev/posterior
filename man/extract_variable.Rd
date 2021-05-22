@@ -4,6 +4,7 @@
 \alias{extract_variable}
 \alias{extract_variable.default}
 \alias{extract_variable.draws}
+\alias{extract_variable.draws_rvars}
 \title{Extract draws of a single variable}
 \usage{
 extract_variable(x, variable, ...)
@@ -11,11 +12,14 @@ extract_variable(x, variable, ...)
 \method{extract_variable}{default}(x, variable, ...)
 
 \method{extract_variable}{draws}(x, variable, ...)
+
+\method{extract_variable}{draws_rvars}(x, variable, ...)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
-\item{variable}{Name of the variable to extract.}
+\item{variable}{(string) The name of the variable to extract.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }

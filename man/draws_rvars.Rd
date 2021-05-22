@@ -47,7 +47,7 @@ Arguments passed to individual methods (if applicable).
 For \code{draws_rvars()}: Named
 arguments containing numeric vectors each defining a separate variable.}
 
-\item{.nchains}{The number of chains (default is \code{1}).}
+\item{.nchains}{(positive integer) The number of chains. The default is \code{1}.}
 }
 \value{
 A \code{draws_rvars} object, which has classes

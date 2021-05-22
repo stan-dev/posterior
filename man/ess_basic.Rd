@@ -7,9 +7,11 @@
 ess_basic(x, split = TRUE)
 }
 \arguments{
-\item{x}{A 2D array of draws (iterations x chains) for a single variable.}
+\item{x}{(matrix) Draws for a single variable (iterations x chains). See
+\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.}
 
-\item{split}{Logical. If \code{TRUE}, compute estimate on split chains.}
+\item{split}{(logical) Should the estimate be computed on split chains? The
+default is \code{TRUE}.}
 }
 \value{
 A single numeric value. If any of the draws is non-finite, that is, \code{NA},

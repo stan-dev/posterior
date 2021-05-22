@@ -10,12 +10,14 @@ mcse_quantile(x, probs = c(0.05, 0.95), names = TRUE)
 mcse_median(x)
 }
 \arguments{
-\item{x}{A 2D array of draws (iterations x chains) for a single variable.}
+\item{x}{(matrix) Draws for a single variable (iterations x chains). See
+\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.}
 
-\item{probs}{A numeric vector of probabilities.}
+\item{probs}{(numeric vector) Probabilities in \verb{[0, 1]}.}
 
-\item{names}{Logical. If \code{TRUE}, the result has a names attribute. Set to
-\code{FALSE} for speedup with many probs.}
+\item{names}{(logical) Should the result have a \code{names} attribute? The
+default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many
+values in \code{probs}.}
 }
 \value{
 A numeric vector with one element per quantile. If any of the draws is

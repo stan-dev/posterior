@@ -85,6 +85,9 @@ order_draws.rvar <- function(x, ...) {
   x
 }
 
+
+# internal ----------------------------------------------------------------
+
 #' Order draws if told to do so
 #' @param x draws object to be ordered
 #' @param order should the draws object be ordered?

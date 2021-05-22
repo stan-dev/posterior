@@ -4,18 +4,19 @@
 #'
 #' Compute summaries of random variables over array elements and within draws,
 #' producing a new random variable of length 1 (except in the case of
-#' `rvar_range()`, see 'Details').
+#' `rvar_range()`, see **Details**).
 #'
-#' @param ... [`rvar`]s
+#' @param ... (rvar) One or more [`rvar`]s.
 #' @template args-rvar-summaries-na.rm
-#' @param constant For `rvar_mad()`, a scale factor for computing the median
-#' absolute deviation. See the details of `stats::mad()` for the justification
-#' for the default value.
-#' @param low For `rvar_mad()`, if `TRUE`, compute the 'lo-median', i.e., for
-#' even sample size, do not average the two middle values, but take the smaller
-#' one. See `stats::mad()`.
-#' @param high For `rvar_mad()`, if `TRUE`, compute the 'hi-median', i.e., take
-#' the larger of the two middle values for even sample size. See `stats::mad()`.
+#' @param constant (scalar real) For `rvar_mad()`, a scale factor for computing
+#'   the median absolute deviation. See the details of `stats::mad()` for the
+#'   justification for the default value.
+#' @param low (logical) For `rvar_mad()`, if `TRUE`, compute the 'lo-median',
+#'   i.e., for even sample size, do not average the two middle values, but take
+#'   the smaller one. See `stats::mad()`.
+#' @param high (logical) For `rvar_mad()`, if `TRUE`, compute the 'hi-median',
+#'   i.e., take the larger of the two middle values for even sample size. See
+#'   `stats::mad()`.
 #'
 #' @details
 #'
@@ -129,7 +130,7 @@ rvar_any <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), any
 #' Compute special value predicates (checking for finite / infinite values, `NaN`, and `NA`)
 #' on all draws within a random variable, returning a random variable.
 #'
-#' @param x An [`rvar`]
+#' @param x (rvar) An [`rvar`].
 #'
 #' @details
 #'

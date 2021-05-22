@@ -1,3 +1,4 @@
-#' @param probs A numeric vector of probabilities.
-#' @param names Logical. If `TRUE`, the result has a names attribute. Set to
-#'   `FALSE` for speedup with many probs.
+#' @param probs (numeric vector) Probabilities in `[0, 1]`.
+#' @param names (logical) Should the result have a `names` attribute? The
+#'   default is `TRUE`, but use `FALSE` for improved speed if there are many
+#'   values in `probs`.

@@ -1,1 +1,1 @@
-#' @param x A numeric vector forming a sequence of values.
+#' @param x (numeric vector) A sequence of values.

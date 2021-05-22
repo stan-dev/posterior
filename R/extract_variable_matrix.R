@@ -4,7 +4,7 @@
 #' This is primarily used for convergence diagnostic functions such as [rhat()].
 #'
 #' @template args-methods-x
-#' @param variable Name of the variable to extract.
+#' @param variable (string) The name of the variable to extract.
 #' @template args-methods-dots
 #' @return A `matrix` with dimension iterations x chains.
 #'

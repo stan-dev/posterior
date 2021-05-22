@@ -32,22 +32,22 @@ default_convergence_measures()
 default_mcse_measures()
 }
 \arguments{
-\item{x, object}{A \code{draws} object or one coercible to a \code{draws} object.}
+\item{x, object}{(draws) A \code{draws} object or one coercible to a \code{draws} object.}
 
 \item{...}{Name-value pairs of summary functions.
 The name will be the name of the variable in the result unless
 the function returns a named vector in which case the latter names
 are used. Functions can be passed in all formats supported by
-\link[rlang:as_function]{as_function()}. See the 'Examples' section below
+\link[rlang:as_function]{as_function()}. See the \strong{Examples} section below
 for examples.}
 
-\item{.args}{Optional \code{list} of additional arguments passed to the summary
-functions.}
+\item{.args}{(named list) Optional arguments passed to the summary functions.}
 
-\item{.cores}{Positive number of cores for computing summaries for different
-variables in parallel. Coerced to integer if possible, otherwise errors.
-Defaults to \code{.cores = 1} in which case no parallelization is implemented.
-By default, creates a socket cluster on Windows and forks otherwise.}
+\item{.cores}{(positive integer) The number of cores to use for computing
+summaries for different variables in parallel. Coerced to integer if
+possible, otherwise errors. The default is \code{.cores = 1}, in which case no
+parallelization is implemented. By default, a socket cluster is used on
+Windows and forks otherwise.}
 }
 \value{
 The \code{summarise_draws()} methods return a \link[tibble:tibble]{tibble} data frame.

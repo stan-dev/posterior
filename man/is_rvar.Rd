@@ -7,7 +7,7 @@
 is_rvar(x)
 }
 \arguments{
-\item{x}{An object}
+\item{x}{(any object) An object to test.}
 }
 \value{
 \code{TRUE} if \code{x} is an \code{\link{rvar}}, \code{FALSE} otherwise.

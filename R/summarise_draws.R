@@ -9,19 +9,19 @@
 #'
 #' @name draws_summary
 #'
-#' @param x,object A `draws` object or one coercible to a `draws` object.
+#' @param x,object (draws) A `draws` object or one coercible to a `draws` object.
 #' @param ... Name-value pairs of summary functions.
 #'   The name will be the name of the variable in the result unless
 #'   the function returns a named vector in which case the latter names
 #'   are used. Functions can be passed in all formats supported by
-#'   [as_function()][rlang::as_function]. See the 'Examples' section below
+#'   [as_function()][rlang::as_function]. See the **Examples** section below
 #'   for examples.
-#' @param .args Optional `list` of additional arguments passed to the summary
-#'   functions.
-#' @param .cores Positive number of cores for computing summaries for different
-#'   variables in parallel. Coerced to integer if possible, otherwise errors.
-#'   Defaults to `.cores = 1` in which case no parallelization is implemented.
-#'   By default, creates a socket cluster on Windows and forks otherwise.
+#' @param .args (named list) Optional arguments passed to the summary functions.
+#' @param .cores (positive integer) The number of cores to use for computing
+#'   summaries for different variables in parallel. Coerced to integer if
+#'   possible, otherwise errors. The default is `.cores = 1`, in which case no
+#'   parallelization is implemented. By default, a socket cluster is used on
+#'   Windows and forks otherwise.
 #'
 #' @return
 #' The `summarise_draws()` methods return a [tibble][tibble::tibble] data frame.

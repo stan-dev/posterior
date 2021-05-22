@@ -7,7 +7,8 @@
 ess_mean(x)
 }
 \arguments{
-\item{x}{A 2D array of draws (iterations x chains) for a single variable.}
+\item{x}{(matrix) Draws for a single variable (iterations x chains). See
+\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.}
 }
 \value{
 A single numeric value. If any of the draws is non-finite, that is, \code{NA},
