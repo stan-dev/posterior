@@ -6,13 +6,13 @@
 #' 
 #' @name draws_summary_rollup
 #' @param x a `draws_summary` object or a `draws` object to be summarised
-#' @param ... Optional arguments to be passed to `summarise_draws` if x is a `draws` object
 #' @param rollup_vars a list of variable names (excluding brackets and indices) to roll up
 #' @param min_only a character vector of varable names for which only minimum values are 
 #'    desired in the rollup
 #' @param max_only a character vector of varable names for which only maximum values are 
 #'    desired in the rollup
-#'
+#' @param ... Optional arguments to be passed to `summarise_draws` if x is a `draws` object
+
 #' @return
 #' The `rollup_summary()` methods return a list of [tibble][tibble::tibble] data frames.
 #' The first element is a standard `draws_summary` for the variables that are not rolled up
@@ -37,16 +37,16 @@ NULL
 
 #' @rdname draws_summary_rollup
 #' @export
-rollup_summary <- function(x, ..., rollup_vars = NULL,
+rollup_summary <- function(x, rollup_vars = NULL,
                            min_only = c("ess_bulk", "ess_tail"),
-                           max_only = "rhat") {
+                           max_only = "rhat", ...) {
   UseMethod("rollup_summary")
 }
 
 #' @export
-rollup_summary.default <- function(x, ..., rollup_vars = NULL,
+rollup_summary.default <- function(x, rollup_vars = NULL,
                                    min_only = c("ess_bulk", "ess_tail"),
-                                   max_only = "rhat") {
+                                   max_only = "rhat", ...) {
   rollup_summary(summarise_draws(x, ...), rollup_vars = NULL,
                  min_only = c("ess_bulk", "ess_tail"),
                  max_only = "rhat")
