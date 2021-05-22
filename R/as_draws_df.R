@@ -190,6 +190,13 @@ as_draws_df.mcmc.list <- function(x, ...) {
 
 #' @rdname draws_df
 #' @export
+as_draws_df.rvar <- function(x, ...) {
+  x <- as_draws_rvar(x)
+  as_draws_df.draws_rvar(x, ...)
+}
+
+#' @rdname draws_df
+#' @export
 draws_df <- function(..., .nchains = 1) {
   out <- validate_draws_per_variable(...)
   .nchains <- as_one_integer(.nchains)
@@ -240,6 +247,6 @@ empty_draws_df <- function(variables = NULL) {
   x <- tibble::tibble()
   x[variables %||% character(0)] <- numeric(0)
   x[c(".chain", ".iteration", ".draw")] <- integer(0)
-  class(x) <- posterior:::class_draws_df()
+  class(x) <- class_draws_df()
   x
 }

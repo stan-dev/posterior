@@ -199,7 +199,8 @@ bind_draws.draws_rvar <- function(x, ..., along = "variable") {
     })
     names(out) <- names(dots[[1]])
   }
-  as_draws_rvar(out)
+  class(out) <- class_draws_rvar()
+  out
 }
 
 #' @export

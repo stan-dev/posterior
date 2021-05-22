@@ -218,7 +218,7 @@ chain_ids.draws_rvar <- function(x) {
 }
 
 #' @export
-chain_ids.draws_rvar <- function(x) {
+chain_ids.rvar <- function(x) {
   seq_len(nchains(x))
 }
 

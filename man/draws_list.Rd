@@ -8,6 +8,8 @@
 \alias{as_draws_list.draws_list}
 \alias{as_draws_list.draws_rvar}
 \alias{as_draws_list.list}
+\alias{as_draws_list.vector}
+\alias{as_draws_list.rvar}
 \alias{is_draws_list}
 \title{The \code{draws_list} format}
 \usage{
@@ -22,6 +24,10 @@ as_draws_list(x, ...)
 \method{as_draws_list}{draws_rvar}(x, ...)
 
 \method{as_draws_list}{list}(x, ...)
+
+\method{as_draws_list}{vector}(x, ...)
+
+\method{as_draws_list}{rvar}(x, ...)
 
 draws_list(..., .nchains = 1)
 

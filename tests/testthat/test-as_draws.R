@@ -205,7 +205,7 @@ test_that("numeric vectors can be transformed to draws_list objects", {
 })
 
 test_that("numeric vectors can be transformed to draws_rvar objects", {
-  draws_rvar <- draws_rvar(a = 1:10, b = 11:20, c = 1, .nchains = 2)
+  draws_rvar <- draws_rvar(a = 1:10, b = 11:20, c = rep(1, 10), .nchains = 2)
   draws_array <- array(c(1:10, 11:20, rep(1, 10)), c(5, 2, 3))
   dimnames(draws_array)[[3]] <- c("a", "b", "c")
   draws_rvar2 <- as_draws_rvar(draws_array)
@@ -294,24 +294,24 @@ test_that("draws_* constructors throw correct errors", {
 test_that("as_draws_rvar correctly reshapes missing, out-of-order, and string array indices", {
   x_array <- as_draws_array(example_draws())
   variables(x_array) <- paste0("var[", rep(1:2, each = 5), ",", rep(1:5, 2), "]")
-  x_rvar <- as_draws_rvar(x_array)
+  x_rvars <- as_draws_rvar(x_array)
 
   x_array2 <- remove_variables(x_array, "var[2,3]")
-  x_rvar2 <- x_rvar
-  x_rvar2$var[2,3] <- NA
-  expect_equal(as_draws_rvar(x_array2), x_rvar2)
+  x_rvars2 <- x_rvars
+  x_rvars2$var[2,3] <- NA
+  expect_equal(as_draws_rvar(x_array2), x_rvars2)
 
   x_array2 <- subset_draws(x_array, variable = c("var[1,4]", "var[2,3]"))
-  x_rvar2 <- x_rvar
-  x_rvar2$var <- x_rvar2$var[1:2,1:4]
-  x_rvar2$var[1,1:3] <- NA
-  x_rvar2$var[2,c(1:2,4)] <- NA
-  expect_equal(as_draws_rvar(x_array2), x_rvar2)
+  x_rvars2 <- x_rvars
+  x_rvars2$var <- x_rvars2$var[1:2,1:4]
+  x_rvars2$var[1,1:3] <- NA
+  x_rvars2$var[2,c(1:2,4)] <- NA
+  expect_equal(as_draws_rvar(x_array2), x_rvars2)
 
-  x_rvar2 <- x_rvar
-  rownames(x_rvar2$var) <- letters[1:2]
-  colnames(x_rvar2$var) <- rev(letters[1:5])
-  expect_equal(as_draws_rvar(as_draws_array(x_rvar2)), x_rvar2)
+  x_rvars2 <- x_rvars
+  rownames(x_rvars2$var) <- letters[1:2]
+  colnames(x_rvars2$var) <- rev(letters[1:5])
+  expect_equal(as_draws_rvar(as_draws_array(x_rvars2)), x_rvars2)
 })
 
 test_that("draws_df does not munge variable names", {

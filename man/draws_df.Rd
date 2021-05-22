@@ -11,6 +11,7 @@
 \alias{as_draws_df.matrix}
 \alias{as_draws_df.mcmc}
 \alias{as_draws_df.mcmc.list}
+\alias{as_draws_df.rvar}
 \alias{is_draws_df}
 \title{The \code{draws_df} format}
 \usage{
@@ -31,6 +32,8 @@ as_draws_df(x, ...)
 \method{as_draws_df}{mcmc}(x, ...)
 
 \method{as_draws_df}{mcmc.list}(x, ...)
+
+\method{as_draws_df}{rvar}(x, ...)
 
 draws_df(..., .nchains = 1)
 

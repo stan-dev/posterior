@@ -33,7 +33,7 @@ as_draws_list.data.frame <- function(x, ...) {
   x[c(".chain", ".iteration", ".draw")] <- NULL
   x <- split(x, .chain)
   x <- lapply(x, as.list)
-  class(x) <- posterior:::class_draws_list()
+  class(x) <- class_draws_list()
   x
 }
 
@@ -60,40 +60,38 @@ as_draws_list.draws_rvar <- function(x, ...) {
 #' @rdname draws_list
 #' @export
 as_draws_list.list <- function(x, ...) {
-  x <- as.list(x)
-  # check heuristically if a list of a single chain is supplied
   if (is.numeric(x[[1]])) {
     x <- list(x)
   }
-  if (any(!ulapply(x, is.list))) {
-    stop_no_call("All list elements must be lists themselves.")
-  }
-  if (length(unique(lengths(x))) != 1L) {
-    stop_no_call("All list elements must have the same length.")
-  }
-  if (is.null(names(x[[1]]))) {
-    # no variable names provided; using default names
-    variables <- default_variables(length(x[[1]]))
-    for (i in seq_along(x)) {
-      names(x[[i]]) <- variables
+  x <- lapply(x, function(chain) {
+    if (is.null(names(chain))) {
+      names(chain) <- default_variables(length(chain))
     }
-  }
-  variables <- names(x[[1]])
-  check_new_variables(variables)
-  niterations <- length(x[[1]][[1]])
-  for (i in seq_along(x)) {
-    if (!all(names(x[[i]]) == variables)) {
-      stop_no_call("Variables in all chains must have the same names.")
-    }
-    for (j in seq_along(x[[i]])) {
-      if (length(x[[i]][[j]]) != niterations) {
-        stop_no_call("All variables in all chains must have the same length.")
-      }
-    }
-  }
-  names(x) <- as.character(seq_along(x))
+    chain
+  })
   class(x) <- class_draws_list()
   x
+}
+
+#' @rdname draws_list
+#' @export
+as_draws_list.vector <- function(x, ...) {
+  x <- list(list(x))
+  x <- lapply(x, function(chain) {
+    if (is.null(names(chain))) {
+      names(chain) <- default_variables(length(chain))
+    }
+    chain
+  })
+  class(x) <- class_draws_list()
+  x
+}
+
+#' @rdname draws_list
+#' @export
+as_draws_list.rvar <- function(x, ...) {
+  x <- as_draws_rvar.rvar(x)
+  as_draws_list.draws_rvar(x)
 }
 
 #' @rdname draws_list
