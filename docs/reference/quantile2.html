@@ -41,7 +41,7 @@
 
 <meta property="og:title" content="Compute Quantiles — quantile2" />
 <meta property="og:description" content="Compute quantiles of a sample and return them in a format consistent
-with other summary functions of the posterior package." />
+with other summary functions in the posterior package." />
 
 
 
@@ -73,7 +73,7 @@ with other summary functions of the posterior package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -84,6 +84,9 @@ with other summary functions of the posterior package." />
     <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/index.html">Vignettes</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -167,7 +170,7 @@ with other summary functions of the posterior package." />
 
     <div class="ref-description">
     <p>Compute quantiles of a sample and return them in a format consistent
-with other summary functions of the <span class="pkg">posterior</span> package.</p>
+with other summary functions in the <span class="pkg">posterior</span> package.</p>
     </div>
 
     <pre class="usage"><span class='fu'>quantile2</span><span class='op'>(</span><span class='va'>x</span>, probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.05</span>, <span class='fl'>0.95</span><span class='op'>)</span>, names <span class='op'>=</span> <span class='cn'>TRUE</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
@@ -177,7 +180,7 @@ with other summary functions of the <span class="pkg">posterior</span> package.<
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A 2D array of draws (iterations x chains).</p></td>
+      <td><p>A 2D array of draws (iterations x chains) for a single variable.</p></td>
     </tr>
     <tr>
       <th>probs</th>

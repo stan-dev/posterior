@@ -96,9 +96,10 @@ post
 ```
 
 The `draws_rvars()` datatype works much the same way that other `draws` formats
-do; see **TODO: INSERT LINK** for an introduction to `draws` objects. One difference is that
-`draws_rvars` counts variables differently, because it allows variables to be multidimensional.
-For example, the `post` object above contains two variables, `mu` and `Sigma`:
+do; see the main package vignette at `vignette("posterior")` for an introduction 
+to `draws` objects. One difference is that `draws_rvars` counts variables
+differently, because it allows variables to be multidimensional. For example,
+the `post` object above contains two variables, `mu` and `Sigma`:
 
 ```{r variables_draws_rvars}
 variables(post)

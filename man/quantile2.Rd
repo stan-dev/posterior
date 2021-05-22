@@ -9,7 +9,7 @@ quantile2(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
 \arguments{
 \item{x}{One of:
 \itemize{
-\item A 2D array of draws (iterations x chains).
+\item A 2D array of draws (iterations x chains) from a single variable.
 \item An \code{\link{rvar}}.
 }}
 
@@ -25,7 +25,7 @@ before the quantiles are computed.}
 }
 \description{
 Compute quantiles of a sample and return them in a format consistent
-with other summary functions of the \pkg{posterior} package.
+with other summary functions in the \pkg{posterior} package.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")

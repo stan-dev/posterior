@@ -33,7 +33,8 @@
 #' [sd()], [mad()], [quantile2()], [rhat()], [ess_bulk()], and [ess_tail()].
 #' The functions `default_summary_measures()`, `default_convergence_measures()`,
 #' and `default_mcse_measures()` return character vectors of names of the
-#' default measures included in the package.
+#' default measures included in the package. See `?posterior::diagnostics`
+#' for a list of available diagnostics and links to their individual help pages.
 #'
 #' @examples
 #' x <- example_draws("eight_schools")

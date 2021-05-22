@@ -5,14 +5,13 @@
 #'
 #' @template args-methods-x
 #' @template args-methods-dots
-#' @param order Logical; Indicates if draws should be ordered (via
-#'   [`order_draws`]) before repairing indices. Defaults to `TRUE`.
-#'
+#' @param order Should draws be ordered (via [`order_draws()`]) before repairing
+#'   indices? Defaults to `TRUE`.
+#' @template return-draws
+#' @seealso [order_draws()]
 #' @examples
 #' x <- as_draws_array(example_draws())
-#' # manually select some iterations and chains
 #' (x <- x[10:5, 3:4, ])
-#' # repair iteration and chain indices
 #' repair_draws(x)
 #'
 #' @export

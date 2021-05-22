@@ -8,8 +8,11 @@
 #'
 #' @examples
 #' x <- example_draws()
+#'
+#' # draws_array with 4 chains, 100 iters each
 #' str(x)
 #'
+#' # draws_array with 1 chain of 400 iterations
 #' str(merge_chains(x))
 #'
 #' @export

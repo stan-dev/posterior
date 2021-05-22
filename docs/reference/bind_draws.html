@@ -40,8 +40,7 @@
 
 
 <meta property="og:title" content="Bind draws objects together — bind_draws" />
-<meta property="og:description" content="Bind multiple draws objects together to form a single
-draws object." />
+<meta property="og:description" content="Bind multiple draws objects together to form a single draws object." />
 
 
 
@@ -73,7 +72,7 @@ draws object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -84,6 +83,9 @@ draws object." />
     <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/index.html">Vignettes</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -166,8 +168,7 @@ draws object." />
     </div>
 
     <div class="ref-description">
-    <p>Bind multiple <code><a href='draws.html'>draws</a></code> objects together to form a single
-<code>draws</code> object.</p>
+    <p>Bind multiple <code><a href='draws.html'>draws</a></code> objects together to form a single <code>draws</code> object.</p>
     </div>
 
     <pre class="usage"><span class='fu'>bind_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -197,13 +198,14 @@ of the returned draws object.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Further <code><a href='draws.html'>draws</a></code> objects.</p></td>
+      <td><p>Additional <code><a href='draws.html'>draws</a></code> objects to bind to <code>x</code>.</p></td>
     </tr>
     <tr>
       <th>along</th>
-      <td><p>The dimenion along with draws objects should be bind together.
-Possible values are <code>variable</code> (the default), <code>chain</code>, <code>iteration</code>, and
-<code>draw</code>. Not all options are supported for all input formats.</p></td>
+      <td><p>The dimension along which draws objects should be bound
+together. Possible values are <code>"variable"</code> (the default), <code>"chain"</code>,
+<code>"iteration"</code>, and <code>"draw"</code>. Not all options are supported for all input
+formats.</p></td>
     </tr>
     </table>
 

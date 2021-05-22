@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -82,6 +82,9 @@
     <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/index.html">Vignettes</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -170,6 +173,25 @@
     </colgroup>
 
     <tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-overview" class="hasAnchor"><a href="#section-overview" class="anchor"></a>Overview</h2>
+          <p class="section-desc"><p>Pacakge overview and global options</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="posterior-package.html">posterior-package</a></code> </p>
+        </td>
+        <td><p>Tools for working with posterior (and prior) distributions</p></td>
+      </tr>
+    </tbody><tbody>
       <tr>
         <th colspan="2">
           <h2 id="section-draws-objects-and-formats" class="hasAnchor"><a href="#section-draws-objects-and-formats" class="anchor"></a>Draws objects and formats</h2>
@@ -390,6 +412,12 @@
       </tr><tr>
         
         <td>
+          <p><code><a href="diagnostics.html">diagnostics</a></code> </p>
+        </td>
+        <td><p>Convergence diagnostics</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="ess_basic.html">ess_basic()</a></code> </p>
         </td>
         <td><p>Basic version of the effective sample size</p></td>
@@ -465,6 +493,109 @@
           <p><code><a href="rstar.html">rstar()</a></code> </p>
         </td>
         <td><p>Calculate R* convergence diagnostic</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-functionality-specific-to-the-rvar-datatype" class="hasAnchor"><a href="#section-functionality-specific-to-the-rvar-datatype" class="anchor"></a>Functionality specific to the rvar datatype</h2>
+          <p class="section-desc"><p>The <code>draws_rvar</code> format (a structured list of <code>rvar</code>s) has the same methods (e.g. bind_draws()) as the other draws formats. For the individual <code>rvar</code> objects themselves, however, posterior provides additional functionality.</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="chol.rvar.html">chol(<i>&lt;rvar&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Cholesky decomposition of random matrix</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rvar-functions.html">density(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-functions.html">cdf(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-functions.html">quantile(<i>&lt;rvar&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Density, CDF, and quantile functions of random variables</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rvar-matmult.html">`%**%`</a></code> </p>
+        </td>
+        <td><p>Matrix multiplication of random variables</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rvar-summaries-over-draws.html">E()</a></code> <code><a href="rvar-summaries-over-draws.html">mean(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">Pr()</a></code> <code><a href="rvar-summaries-over-draws.html">median(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">Summary(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">variance(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">var()</a></code> <code><a href="rvar-summaries-over-draws.html">sd()</a></code> <code><a href="rvar-summaries-over-draws.html">mad()</a></code> <code><a href="rvar-summaries-over-draws.html">range(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">is.finite(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">is.infinite(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">is.nan(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">is.na(<i>&lt;rvar&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Summaries of random variables within array elements, over draws</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rvar-summaries-within-draws.html">rvar_mean()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_median()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_sum()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_prod()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_min()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_max()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_sd()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_var()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_mad()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_range()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_all()</a></code> <code><a href="rvar-summaries-within-draws.html">rvar_any()</a></code> </p>
+        </td>
+        <td><p>Summaries of random variables over array elements, within draws</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rvar.html">rvar()</a></code> </p>
+        </td>
+        <td><p>Random variables of arbitrary dimension</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rvar_apply.html">rvar_apply()</a></code> </p>
+        </td>
+        <td><p>Random variable resulting from a function applied over margins of an array or random variable</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rvar_is_finite.html">rvar_is_finite()</a></code> <code><a href="rvar_is_finite.html">rvar_is_infinite()</a></code> <code><a href="rvar_is_finite.html">rvar_is_nan()</a></code> <code><a href="rvar_is_finite.html">rvar_is_na()</a></code> </p>
+        </td>
+        <td><p>Special value predicates for random variables</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rvar_rng.html">rvar_rng()</a></code> </p>
+        </td>
+        <td><p>Create random variables from existing random number generators</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="is_rvar.html">is_rvar()</a></code> </p>
+        </td>
+        <td><p>Is <code>x</code> a random variable?</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="as_rvar.html">as_rvar()</a></code> </p>
+        </td>
+        <td><p>Coerce to a random variable</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rdo.html">rdo()</a></code> </p>
+        </td>
+        <td><p>Execute expressions of random variables</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="rfun.html">rfun()</a></code> </p>
+        </td>
+        <td><p>Create functions of random variables</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="draws_of.html">draws_of()</a></code> <code><a href="draws_of.html">`draws_of&lt;-`()</a></code> </p>
+        </td>
+        <td><p>Get/set array of draws underlying a random variable</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="vctrs-compat.html">vec_ptype2(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_ptype2.rvar(<i>&lt;default&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_cast(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_cast.rvar(<i>&lt;default&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_ptype2.rvar(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_cast.rvar(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_ptype2.double(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_ptype2.rvar(<i>&lt;double&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_cast.rvar(<i>&lt;double&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_ptype2.integer(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_ptype2.rvar(<i>&lt;integer&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_cast.rvar(<i>&lt;integer&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_ptype2.logical(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_ptype2.rvar(<i>&lt;logical&gt;</i>)</a></code> <code><a href="vctrs-compat.html">vec_cast.rvar(<i>&lt;logical&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>rvar vctrs compatibility</p></td>
       </tr>
     </tbody>
     </table>

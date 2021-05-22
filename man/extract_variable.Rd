@@ -15,12 +15,12 @@ extract_variable(x, variable, ...)
 \arguments{
 \item{x}{A \code{draws} object, or another \R object for which the method is defined.}
 
-\item{variable}{Name of a single variable to extract draws for.}
+\item{variable}{Name of the variable to extract.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-A numeric vector of length #draws.
+A numeric vector of length equal to the number of draws.
 }
 \description{
 Extract a vector of draws of a single variable.

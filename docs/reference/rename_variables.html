@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Rename variables in draws objects — rename_variables" />
-<meta property="og:description" content="Rename variables within a draws object." />
+<meta property="og:description" content="Rename variables in a draws object." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -83,6 +83,9 @@
     <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/index.html">Vignettes</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -165,7 +168,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Rename variables within a <code><a href='draws.html'>draws</a></code> object.</p>
+    <p>Rename variables in a <code><a href='draws.html'>draws</a></code> object.</p>
     </div>
 
     <pre class="usage"><span class='fu'>rename_variables</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -182,10 +185,11 @@
     </tr>
     <tr>
       <th>...</th>
-      <td><p>One or more expressions separated by commas indicating the variables
-to rename. Existing variable names can be unquoted expressions, as in
-<code>new_name = old_name</code>, or character vectors, as in <code>new_name = "old_name"</code>.
-All elements of non-scalar variables can be renamed at once.</p></td>
+      <td><p>One or more expressions, separated by commas, indicating the
+variables to rename. The variable names can be unquoted
+(<code>new_name = old_name</code>) or quoted (<code>"new_name" = "old_name"</code>). For non-scalar
+variables, all elements can be renamed together (<code>"new_name" = "old_name"</code>)
+or they can be renamed individually (<code>"new_name[1]" = "old_name[1]"</code>).</p></td>
     </tr>
     </table>
 
@@ -199,80 +203,22 @@ according to the expressions provided in <code>...</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='draws_df.html'>as_draws_df</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='va'>x</span>
-</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 10 variables
-#&gt;      mu tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6]
-#&gt; 1  2.01 2.8     3.96    0.271    -0.74      2.1    0.923      1.7
-#&gt; 2  1.46 7.0     0.12   -0.069     0.95      7.3   -0.062     11.3
-#&gt; 3  5.81 9.7    21.25   14.931     1.83      1.4    0.531      7.2
-#&gt; 4  6.85 4.8    14.70    8.586     2.67      4.4    4.758      8.1
-#&gt; 5  1.81 2.8     5.96    1.156     3.11      2.0    0.769      4.7
-#&gt; 6  3.84 4.1     5.76    9.909    -1.00      5.3    5.889     -1.7
-#&gt; 7  5.47 4.0     4.03    4.151    10.15      6.6    3.741     -2.2
-#&gt; 8  1.20 1.5    -0.28    1.846     0.47      4.3    1.467      3.3
-#&gt; 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1
-#&gt; 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5
-#&gt; # ... with 390 more draws, and 2 more variables
-#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'>rename_variables</span><span class='op'>(</span><span class='va'>x</span>, mean <span class='op'>=</span> <span class='va'>mu</span>, sigma <span class='op'>=</span> <span class='va'>tau</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 10 variables
-#&gt;    mean sigma theta[1] theta[2] theta[3] theta[4] theta[5] theta[6]
-#&gt; 1  2.01   2.8     3.96    0.271    -0.74      2.1    0.923      1.7
-#&gt; 2  1.46   7.0     0.12   -0.069     0.95      7.3   -0.062     11.3
-#&gt; 3  5.81   9.7    21.25   14.931     1.83      1.4    0.531      7.2
-#&gt; 4  6.85   4.8    14.70    8.586     2.67      4.4    4.758      8.1
-#&gt; 5  1.81   2.8     5.96    1.156     3.11      2.0    0.769      4.7
-#&gt; 6  3.84   4.1     5.76    9.909    -1.00      5.3    5.889     -1.7
-#&gt; 7  5.47   4.0     4.03    4.151    10.15      6.6    3.741     -2.2
-#&gt; 8  1.20   1.5    -0.28    1.846     0.47      4.3    1.467      3.3
-#&gt; 9  0.15   3.9     1.81    0.661     0.86      4.5   -1.025      1.1
-#&gt; 10 7.17   1.8     6.08    8.102     7.68      5.6    7.106      8.5
-#&gt; # ... with 390 more draws, and 2 more variables
-#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'>rename_variables</span><span class='op'>(</span><span class='va'>x</span>, b <span class='op'>=</span> <span class='va'>`theta[1]`</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 10 variables
-#&gt;      mu tau     b theta[2] theta[3] theta[4] theta[5] theta[6]
-#&gt; 1  2.01 2.8  3.96    0.271    -0.74      2.1    0.923      1.7
-#&gt; 2  1.46 7.0  0.12   -0.069     0.95      7.3   -0.062     11.3
-#&gt; 3  5.81 9.7 21.25   14.931     1.83      1.4    0.531      7.2
-#&gt; 4  6.85 4.8 14.70    8.586     2.67      4.4    4.758      8.1
-#&gt; 5  1.81 2.8  5.96    1.156     3.11      2.0    0.769      4.7
-#&gt; 6  3.84 4.1  5.76    9.909    -1.00      5.3    5.889     -1.7
-#&gt; 7  5.47 4.0  4.03    4.151    10.15      6.6    3.741     -2.2
-#&gt; 8  1.20 1.5 -0.28    1.846     0.47      4.3    1.467      3.3
-#&gt; 9  0.15 3.9  1.81    0.661     0.86      4.5   -1.025      1.1
-#&gt; 10 7.17 1.8  6.08    8.102     7.68      5.6    7.106      8.5
-#&gt; # ... with 390 more draws, and 2 more variables
-#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'>rename_variables</span><span class='op'>(</span><span class='va'>x</span>, b <span class='op'>=</span> <span class='st'>"theta[1]"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 10 variables
-#&gt;      mu tau     b theta[2] theta[3] theta[4] theta[5] theta[6]
-#&gt; 1  2.01 2.8  3.96    0.271    -0.74      2.1    0.923      1.7
-#&gt; 2  1.46 7.0  0.12   -0.069     0.95      7.3   -0.062     11.3
-#&gt; 3  5.81 9.7 21.25   14.931     1.83      1.4    0.531      7.2
-#&gt; 4  6.85 4.8 14.70    8.586     2.67      4.4    4.758      8.1
-#&gt; 5  1.81 2.8  5.96    1.156     3.11      2.0    0.769      4.7
-#&gt; 6  3.84 4.1  5.76    9.909    -1.00      5.3    5.889     -1.7
-#&gt; 7  5.47 4.0  4.03    4.151    10.15      6.6    3.741     -2.2
-#&gt; 8  1.20 1.5 -0.28    1.846     0.47      4.3    1.467      3.3
-#&gt; 9  0.15 3.9  1.81    0.661     0.86      4.5   -1.025      1.1
-#&gt; 10 7.17 1.8  6.08    8.102     7.68      5.6    7.106      8.5
-#&gt; # ... with 390 more draws, and 2 more variables
-#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'>
+<span class='fu'><a href='draws-index.html'>variables</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1] "mu"       "tau"      "theta[1]" "theta[2]" "theta[3]" "theta[4]"
+#&gt;  [7] "theta[5]" "theta[6]" "theta[7]" "theta[8]"</div><div class='input'>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rename_variables</span><span class='op'>(</span><span class='va'>x</span>, mean <span class='op'>=</span> <span class='va'>mu</span>, sigma <span class='op'>=</span> <span class='va'>tau</span><span class='op'>)</span>
+<span class='fu'><a href='draws-index.html'>variables</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1] "mean"     "sigma"    "theta[1]" "theta[2]" "theta[3]" "theta[4]"
+#&gt;  [7] "theta[5]" "theta[6]" "theta[7]" "theta[8]"</div><div class='input'>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rename_variables</span><span class='op'>(</span><span class='va'>x</span>, b <span class='op'>=</span> <span class='va'>`theta[1]`</span><span class='op'>)</span> <span class='co'># or b  = "theta[1]"</span>
+<span class='fu'><a href='draws-index.html'>variables</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1] "mean"     "sigma"    "b"        "theta[2]" "theta[3]" "theta[4]"
+#&gt;  [7] "theta[5]" "theta[6]" "theta[7]" "theta[8]"</div><div class='input'>
 <span class='co'># rename all elements of 'theta' at once</span>
-<span class='fu'>rename_variables</span><span class='op'>(</span><span class='va'>x</span>, alpha <span class='op'>=</span> <span class='va'>theta</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; # A draws_df: 100 iterations, 4 chains, and 10 variables
-#&gt;      mu tau alpha[1] alpha[2] alpha[3] alpha[4] alpha[5] alpha[6]
-#&gt; 1  2.01 2.8     3.96    0.271    -0.74      2.1    0.923      1.7
-#&gt; 2  1.46 7.0     0.12   -0.069     0.95      7.3   -0.062     11.3
-#&gt; 3  5.81 9.7    21.25   14.931     1.83      1.4    0.531      7.2
-#&gt; 4  6.85 4.8    14.70    8.586     2.67      4.4    4.758      8.1
-#&gt; 5  1.81 2.8     5.96    1.156     3.11      2.0    0.769      4.7
-#&gt; 6  3.84 4.1     5.76    9.909    -1.00      5.3    5.889     -1.7
-#&gt; 7  5.47 4.0     4.03    4.151    10.15      6.6    3.741     -2.2
-#&gt; 8  1.20 1.5    -0.28    1.846     0.47      4.3    1.467      3.3
-#&gt; 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1
-#&gt; 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5
-#&gt; # ... with 390 more draws, and 2 more variables
-#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rename_variables</span><span class='op'>(</span><span class='va'>x</span>, alpha <span class='op'>=</span> <span class='va'>theta</span><span class='op'>)</span>
+<span class='fu'><a href='draws-index.html'>variables</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  [1] "mean"     "sigma"    "b"        "alpha[2]" "alpha[3]" "alpha[4]"
+#&gt;  [7] "alpha[5]" "alpha[6]" "alpha[7]" "alpha[8]"</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

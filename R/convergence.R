@@ -2,12 +2,36 @@
 # Copyright (C) 2018, 2019 Aki Vehtari, Paul Bürkner
 # See LICENSE.md for more details
 
+#' Convergence diagnostics
+#'
+#' A list of available diagnostics and links to their individual help pages.
+#'
+#' @name diagnostics
+#' @aliases convergence
+#'
+#' @details
+#'
+#' |**Function**|**Description**|
+#' |:----------|:---------------|
+#' | [ess_basic()] | Basic version of effective sample size |
+#' | [ess_bulk()] | Bulk effective sample size |
+#' | [ess_tail()] | Tail effective sample size |
+#' | [ess_quantile()] | Effective sample sizes for quantiles |
+#' | [ess_sd()] | Effective sample sizes for standard deviations |
+#' | [mcse_mean()] | Monte Carlo standard error for the mean |
+#' | [mcse_quantile()] | Monte Carlo standard error for quantiles |
+#' | [mcse_sd()] | Monte Carlo standard error for standard deviations |
+#' | [rhat_basic()] | Basic version of Rhat |
+#' | [rhat()] | Improved, rank-based version of Rhat |
+#' | [rstar()] | R* diagnostic |
+#'
+NULL
+
 #' Basic version of the Rhat convergence diagnostic
 #'
 #' Compute the basic Rhat convergence diagnostic for a single variable as
 #' described in Gelman et al. (2013). For practical applications, we strongly
-#' recommend the improved Rhat convergence diagnostic implemented in
-#' [rhat()].
+#' recommend the improved Rhat convergence diagnostic implemented in [rhat()].
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -56,9 +80,9 @@ ess_basic <- function(x, split = TRUE) {
 
 #' Rhat convergence diagnostic
 #'
-#' Compute Rhat convergence diagnostic as the maximum of rank normalized
-#' split-Rhat and rank normalized folded-split-Rhat for a single variable
-#' as proposed in Vehtari et al. (2019).
+#' Compute the Rhat convergence diagnostic for a single variable as the maximum
+#' of rank normalized split-Rhat and rank normalized folded-split-Rhat as
+#' proposed in Vehtari et al. (2019).
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -78,10 +102,11 @@ rhat <- function(x) {
 
 #' Bulk effective sample size (bulk-ESS)
 #'
-#' Compute bulk effective sample size estimate (bulk-ESS) for a single variable.
-#' Bulk-ESS is useful as a generic diagnostic for the sampling
-#' efficiency in the bulk of the posterior. It is defined as the
-#' effective sample size for rank normalized values using split chains.
+#' Compute a bulk effective sample size estimate (bulk-ESS) for a single
+#' variable. Bulk-ESS is useful as a diagnostic for the sampling efficiency in
+#' the bulk of the posterior. It is defined as the effective sample size for
+#' rank normalized values using split chains. For the tail effective sample size
+#' see [ess_tail()].
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -107,10 +132,11 @@ ess_bulk.rvar <- function(x) {
 
 #' Tail effective sample size (tail-ESS)
 #'
-#' Compute tail effective sample size estimate (tail-ESS) for a single variable.
-#' Tail-ESS is useful for generic diagnostic for the sampling
-#' efficiency in the tails of the posterior. It is defined as
-#' the minimum of the effective sample sizes for 5% and 95% quantiles.
+#' Compute a tail effective sample size estimate (tail-ESS) for a single
+#' variable. Tail-ESS is useful as a diagnostic for the sampling efficiency in
+#' the tails of the posterior. It is defined as the minimum of the effective
+#' sample sizes for 5% and 95% quantiles. For the bulk effective sample
+#' size see [ess_bulk()].
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -130,8 +156,8 @@ ess_tail <- function(x) {
 
 #' Effective sample sizes for quantiles
 #'
-#' Compute effective sample size estimates for quantile estimates of
-#' a single variable.
+#' Compute effective sample size estimates for quantile estimates of a single
+#' variable.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -175,7 +201,7 @@ ess_median <- function(x) {
 
 #' Effective sample size for the mean
 #'
-#' Compute effective sample size estimate for a mean (expectation)
+#' Compute an effective sample size estimate for a mean (expectation)
 #' estimate of a single variable.
 #'
 #' @template args-conv
@@ -194,8 +220,9 @@ ess_mean <- function(x) {
 #' Effective sample size for the standard deviation
 #'
 #' Compute an effective sample size estimate for the standard deviation (SD)
-#' estimate of a single variable. This is defined as minimum of effective
-#' sample size estimate for mean and mean of squared value.
+#' estimate of a single variable. This is defined as minimum of the effective
+#' sample size estimate for the mean and the the effective sample size estimate
+#' for the mean of the squared value.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -260,7 +287,7 @@ mcse_median <- function(x) {
 
 #' Monte Carlo standard error for the mean
 #'
-#' Compute Monte Carlo standard error for mean (expectation) of a
+#' Compute the Monte Carlo standard error for the mean (expectation) of a
 #' single variable.
 #'
 #' @family diagnostics
@@ -279,9 +306,9 @@ mcse_mean <- function(x) {
 
 #' Monte Carlo standard error for the standard deviation
 #'
-#' Compute Monte Carlo standard error for standard deviation (SD) of a
-#' single variable using Stirling's approximation and assuming
-#' approximate normality.
+#' Compute the Monte Carlo standard error for the standard deviation (SD) of a
+#' single variable using Stirling's approximation and assuming approximate
+#' normality.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -302,7 +329,7 @@ mcse_sd <- function(x) {
 #' Compute Quantiles
 #'
 #' Compute quantiles of a sample and return them in a format consistent
-#' with other summary functions of the \pkg{posterior} package.
+#' with other summary functions in the \pkg{posterior} package.
 #'
 #' @template args-conv
 #' @template args-conv-quantile
