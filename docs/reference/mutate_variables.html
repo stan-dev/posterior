@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -83,6 +83,9 @@
     <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/index.html">Vignettes</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -194,11 +197,12 @@
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Name-value pairs of expressions, each with length 1 or same length
-as in the entire input (i.e., number of iterations or draws). The name of
-each argument will be the name of a new variable, and the value will be its
-corresponding value. Use a <code>NULL</code> value in <code>mutate_variables</code> to drop a
-variable. New variables overwrite existing variables of the same name.</p></td>
+      <td><p>Name-value pairs of expressions, each with either length 1 or the
+same length as in the entire input (i.e., number of iterations or draws).
+The name of each argument will be the name of a new variable, and the value
+will be its corresponding value. Use a <code>NULL</code> value in <code>mutate_variables</code>
+to drop a variable. New variables overwrite existing variables of the same
+name.</p></td>
     </tr>
     </table>
 

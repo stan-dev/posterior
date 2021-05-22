@@ -42,10 +42,17 @@ from Bayesian models. The primary goals of the package are to:
 * Provide various summaries of draws in convenient formats.
 * Provide lightweight implementations of state of the art posterior inference 
   diagnostics.
+  
+If you are new to **posterior** we recommend starting with these vignettes: 
+
+* [*The posterior R package*](https://mc-stan.org/posterior/articles/posterior.html): 
+an introduction to the package and its main functionality 
+* [*rvar: The Random Variable Datatype*](https://mc-stan.org/posterior/articles/rvar.html): 
+an overview of the new random variable datatype
 
 ### Installation
 
-The package is not on CRAN yet, but you can install the beta release via 
+The package is not on CRAN yet, but you can install the latest beta release version via 
 
 ```{r install, eval=FALSE}
 install.packages("posterior", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
@@ -59,6 +66,9 @@ remotes::install_github("stan-dev/posterior")
 ```
 
 ### Examples
+
+Here we offer a few examples of using the package. For a more detailed overview
+see the vignette [*The posterior R package*](https://mc-stan.org/posterior/articles/posterior.html).
 
 ```{r load}
 library("posterior")

@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -51,6 +51,9 @@
     <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="articles/index.html">Vignettes</a>
 </li>
 <li>
   <a href="reference/index.html">Functions</a>
@@ -139,10 +142,17 @@
 <li>Provide various summaries of draws in convenient formats.</li>
 <li>Provide lightweight implementations of state of the art posterior inference diagnostics.</li>
 </ul>
+<p>If you are new to <strong>posterior</strong> we recommend starting with these vignettes:</p>
+<ul>
+<li>
+<a href="https://mc-stan.org/posterior/articles/posterior.html"><em>The posterior R package</em></a>: an introduction to the package and its main functionality</li>
+<li>
+<a href="https://mc-stan.org/posterior/articles/rvar.html"><em>rvar: The Random Variable Datatype</em></a>: an overview of the new random variable datatype</li>
+</ul>
 <div id="installation" class="section level3">
 <h3 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h3>
-<p>The package is not on CRAN yet, but you can install the beta release via</p>
+<p>The package is not on CRAN yet, but you can install the latest beta release version via</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"posterior"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"https://mc-stan.org/r-packages/"</span>, <span class="fu"><a href="https://rdrr.io/r/base/options.html">getOption</a></span><span class="op">(</span><span class="st">"repos"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>or the latest development version from GitHub via</p>
@@ -153,9 +163,15 @@
 <div id="examples" class="section level3">
 <h3 class="hasAnchor">
 <a href="#examples" class="anchor"></a>Examples</h3>
+<p>Here we offer a few examples of using the package. For a more detailed overview see the vignette <a href="https://mc-stan.org/posterior/articles/posterior.html"><em>The posterior R package</em></a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://mc-stan.org/posterior/">"posterior"</a></span><span class="op">)</span>
-<span class="co">#&gt; This is posterior version 0.1.0</span></code></pre></div>
+<span class="co">#&gt; This is posterior version 0.1.5</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; Attaching package: 'posterior'</span>
+<span class="co">#&gt; The following objects are masked from 'package:stats':</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt;     mad, sd, var</span></code></pre></div>
 <p>To demonstrate how to work with the <strong>posterior</strong> package, we will use example posterior draws obtained from the eight schools hierarchical meta-analysis model described in Gelman et al. (2013). Essentially, we have an estimate per school (<code>theta[1]</code> through <code>theta[8]</code>) as well as an overall mean (<code>mu</code>) and standard deviation across schools (<code>tau</code>).</p>
 <div id="draws-formats" class="section level4">
 <h4 class="hasAnchor">
@@ -212,12 +228,12 @@
 <span class="co">#&gt; 9  0.15 3.9     1.81    0.661     0.86      4.5   -1.025      1.1</span>
 <span class="co">#&gt; 10 7.17 1.8     6.08    8.102     7.68      5.6    7.106      8.5</span>
 <span class="co">#&gt; # ... with 390 more draws, and 2 more variables</span>
-<span class="co">#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</span></code></pre></div>
+<span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></code></pre></div>
 <p>Different formats are preferable in different situations and hence posterior supports multiple formats and easy conversion between them. For more details on the available formats see <code><a href="reference/draws.html">help("draws")</a></code>. All of the formats are essentially base R object classes and can be used as such. For example, a <code>draws_matrix</code> object is just a <code>matrix</code> with a little more consistency and additional methods.</p>
 </div>
-<div id="summarising-draws" class="section level4">
+<div id="summarizing-draws" class="section level4">
 <h4 class="hasAnchor">
-<a href="#summarising-draws" class="anchor"></a>Summarising draws</h4>
+<a href="#summarizing-draws" class="anchor"></a>Summarizing draws</h4>
 <p>Computing summaries of posterior or prior draws and convergence diagnostics for posterior draws is one of the most common tasks when working with Bayesian models fit using Markov Chain Monte Carlo (MCMC) methods. The <strong>posterior</strong> package provides a flexible interface for this purpose via <code><a href="reference/draws_summary.html">summarise_draws()</a></code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># summarise_draws or summarize_draws</span>
@@ -271,7 +287,7 @@
 <span class="co">#&gt; 8  -1.2</span>
 <span class="co">#&gt; 9  10.9</span>
 <span class="co">#&gt; 10  9.8</span>
-<span class="co">#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</span></code></pre></div>
+<span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></code></pre></div>
 <p>The same call to <code><a href="reference/subset_draws.html">subset_draws()</a></code> can be used regardless of whether the object is a <code>draws_df</code>, <code>draws_array</code>, <code>draws_list</code>, etc.</p>
 </div>
 <div id="mutating-and-renaming-draws" class="section level4">
@@ -295,7 +311,7 @@
 <span class="co">#&gt; 9  0.15 3.9  16.6</span>
 <span class="co">#&gt; 10 7.17 1.8  79.9</span>
 <span class="co">#&gt; # ... with 390 more draws</span>
-<span class="co">#&gt; # ... hidden meta-columns {'.chain', '.iteration', '.draw'}</span></code></pre></div>
+<span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></code></pre></div>
 <p>When we do the math ourselves, we see that indeed for each draw, <code>phi</code> is equal to <code>(mu + tau)^2</code> (up to rounding two 2 digits for the purpose of printing).</p>
 <p>We may also easily rename variables, or even entire vectors of variables via <code>rename_variables</code>, for example:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
@@ -319,29 +335,29 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x4</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_matrix: 5 draws, and 3 variables</span>
 <span class="co">#&gt;     variable</span>
-<span class="co">#&gt; draw  alpha beta theta</span>
-<span class="co">#&gt;    1 -0.961    1  0.08</span>
-<span class="co">#&gt;    2  0.348    1  2.21</span>
-<span class="co">#&gt;    3  0.898    1  1.44</span>
-<span class="co">#&gt;    4 -1.255    1  0.44</span>
-<span class="co">#&gt;    5 -0.065    1  3.87</span></code></pre></div>
+<span class="co">#&gt; draw alpha beta theta</span>
+<span class="co">#&gt;    1 -2.05    1  0.12</span>
+<span class="co">#&gt;    2 -1.47    1  0.77</span>
+<span class="co">#&gt;    3  0.44    1  1.38</span>
+<span class="co">#&gt;    4 -2.89    1  0.17</span>
+<span class="co">#&gt;    5 -0.48    1  2.07</span></code></pre></div>
 <p>Or, we can bind <code>x1</code> and <code>x2</code> together along the <code>'draw'</code> dimension:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x5</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bind_draws.html">bind_draws</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, along <span class="op">=</span> <span class="st">"draw"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x5</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_matrix: 10 draws, and 2 variables</span>
 <span class="co">#&gt;     variable</span>
-<span class="co">#&gt; draw  alpha beta</span>
-<span class="co">#&gt;   1  -0.961    1</span>
-<span class="co">#&gt;   2   0.348    1</span>
-<span class="co">#&gt;   3   0.898    1</span>
-<span class="co">#&gt;   4  -1.255    1</span>
-<span class="co">#&gt;   5  -0.065    1</span>
-<span class="co">#&gt;   6   1.421    2</span>
-<span class="co">#&gt;   7  -1.318    2</span>
-<span class="co">#&gt;   8   1.744    2</span>
-<span class="co">#&gt;   9   0.425    2</span>
-<span class="co">#&gt;   10  0.789    2</span></code></pre></div>
+<span class="co">#&gt; draw alpha beta</span>
+<span class="co">#&gt;   1  -2.05    1</span>
+<span class="co">#&gt;   2  -1.47    1</span>
+<span class="co">#&gt;   3   0.44    1</span>
+<span class="co">#&gt;   4  -2.89    1</span>
+<span class="co">#&gt;   5  -0.48    1</span>
+<span class="co">#&gt;   6  -0.41    2</span>
+<span class="co">#&gt;   7   1.90    2</span>
+<span class="co">#&gt;   8   0.41    2</span>
+<span class="co">#&gt;   9  -0.98    2</span>
+<span class="co">#&gt;   10  0.37    2</span></code></pre></div>
 <p>As with all <strong>posterior</strong> methods, <code>bind_draws</code> can be used with all draws formats.</p>
 </div>
 <div id="converting-from-regular-r-objects-to-draws-formats" class="section level4">
@@ -355,27 +371,27 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_matrix: 10 draws, and 5 variables</span>
 <span class="co">#&gt;     variable</span>
-<span class="co">#&gt; draw     V1    V2     V3    V4     V5</span>
-<span class="co">#&gt;   1  -1.388  0.32  0.238 -1.29  0.282</span>
-<span class="co">#&gt;   2  -0.514 -0.61  0.092 -0.24 -1.138</span>
-<span class="co">#&gt;   3   0.189 -1.03  1.459 -0.41 -0.854</span>
-<span class="co">#&gt;   4  -0.034 -1.78  0.826  0.14 -1.050</span>
-<span class="co">#&gt;   5  -1.681 -1.26 -0.481 -0.99 -0.474</span>
-<span class="co">#&gt;   6   0.536  1.09  0.014 -0.22  0.642</span>
-<span class="co">#&gt;   7  -0.812  0.79 -0.627 -1.77  0.086</span>
-<span class="co">#&gt;   8   2.268 -0.70 -0.092 -1.59 -1.445</span>
-<span class="co">#&gt;   9  -0.075 -0.70  0.400  0.97 -0.737</span>
-<span class="co">#&gt;   10 -0.144 -0.58  0.029  1.02 -1.431</span>
+<span class="co">#&gt; draw    V1    V2     V3    V4    V5</span>
+<span class="co">#&gt;   1   0.67  0.44 -0.615  1.22 -0.82</span>
+<span class="co">#&gt;   2   0.35 -0.42 -0.400  1.26  0.18</span>
+<span class="co">#&gt;   3   0.55  0.64  0.230 -1.45 -0.58</span>
+<span class="co">#&gt;   4   1.04  0.70 -0.789  1.53 -0.65</span>
+<span class="co">#&gt;   5  -1.04  0.79  0.362 -1.10 -1.43</span>
+<span class="co">#&gt;   6  -0.19  0.58  1.005 -0.34 -1.46</span>
+<span class="co">#&gt;   7  -0.98 -0.21 -0.963  0.57 -0.06</span>
+<span class="co">#&gt;   8   0.18  0.85 -0.098 -0.40 -0.66</span>
+<span class="co">#&gt;   9  -0.53 -0.65 -0.289 -1.11 -0.58</span>
+<span class="co">#&gt;   10  0.65 -0.84 -0.826  1.79  0.31</span>
 
 <span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"mean"</span>, <span class="st">"sd"</span>, <span class="st">"median"</span>, <span class="st">"mad"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 x 5</span>
-<span class="co">#&gt;   variable   mean    sd  median   mad</span>
-<span class="co">#&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 V1       -0.165 1.10  -0.110  0.778</span>
-<span class="co">#&gt; 2 V2       -0.446 0.908 -0.658  0.719</span>
-<span class="co">#&gt; 3 V3        0.186 0.608  0.0604 0.383</span>
-<span class="co">#&gt; 4 V4       -0.438 0.984 -0.324  1.21 </span>
-<span class="co">#&gt; 5 V5       -0.612 0.729 -0.796  0.725</span></code></pre></div>
+<span class="co">#&gt;   variable    mean    sd median   mad</span>
+<span class="co">#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 V1        0.0713 0.725  0.268 0.640</span>
+<span class="co">#&gt; 2 V2        0.188  0.647  0.513 0.454</span>
+<span class="co">#&gt; 3 V3       -0.238  0.623 -0.344 0.687</span>
+<span class="co">#&gt; 4 V4        0.198  1.22   0.111 1.75 </span>
+<span class="co">#&gt; 5 V5       -0.575  0.598 -0.618 0.561</span></code></pre></div>
 <p>Instead of <code><a href="reference/draws_matrix.html">as_draws_matrix()</a></code> we also could have just used <code><a href="reference/draws.html">as_draws()</a></code>, which attempts to find the closest available format to the input object. In this case this would result in a <code>draws_matrix</code> object either way.</p>
 </div>
 </div>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Effective sample size for the mean — ess_mean • posterior</title>
+<title>Convergence diagnostics — diagnostics • posterior</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="Effective sample size for the mean — ess_mean" />
-<meta property="og:description" content="Compute an effective sample size estimate for a mean (expectation)
-estimate of a single variable." />
+<meta property="og:title" content="Convergence diagnostics — diagnostics" />
+<meta property="og:description" content="A list of available diagnostics and links to their individual help pages." />
 
 
 
@@ -163,48 +162,37 @@ estimate of a single variable." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Effective sample size for the mean</h1>
+    <h1>Convergence diagnostics</h1>
     <small class="dont-index">Source: <a href='https://github.com/stan-dev/posterior/blob/master/R/convergence.R'><code>R/convergence.R</code></a></small>
-    <div class="hidden name"><code>ess_mean.Rd</code></div>
+    <div class="hidden name"><code>diagnostics.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute an effective sample size estimate for a mean (expectation)
-estimate of a single variable.</p>
+    <p>A list of available diagnostics and links to their individual help pages.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ess_mean</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>x</th>
-      <td><p>A 2D array of draws (iterations x chains) for a single variable.</p></td>
-    </tr>
-    </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>A single numeric value. If any of the draws is non-finite, that is, <code>NA</code>,
-<code>NaN</code>, <code>Inf</code>, or <code>-Inf</code>, the returned output will be (numeric) <code>NA</code>. Also, if
-all draws of a variable are the same (constant), the returned output will be
-(numeric) <code>NA</code> as well. The reason for the latter is that, for constant
-draws, we cannot distinguish between variables that are supposed to be
-constant (e.g.,  a diagonal element of a correlation matrix is always 1) or
-variables that just happened to be constant because of a failure of
-convergence or other problems in the sampling process.</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+    
+<table class='table'>
+<tr><td><strong>Function</strong></td><td><strong>Description</strong></td></tr>
+<tr><td><code><a href='ess_basic.html'>ess_basic()</a></code></td><td>Basic version of effective sample size</td></tr>
+<tr><td><code><a href='ess_bulk.html'>ess_bulk()</a></code></td><td>Bulk effective sample size</td></tr>
+<tr><td><code><a href='ess_tail.html'>ess_tail()</a></code></td><td>Tail effective sample size</td></tr>
+<tr><td><code><a href='ess_quantile.html'>ess_quantile()</a></code></td><td>Effective sample sizes for quantiles</td></tr>
+<tr><td><code><a href='ess_sd.html'>ess_sd()</a></code></td><td>Effective sample sizes for standard deviations</td></tr>
+<tr><td><code><a href='mcse_mean.html'>mcse_mean()</a></code></td><td>Monte Carlo standard error for the mean</td></tr>
+<tr><td><code><a href='mcse_quantile.html'>mcse_quantile()</a></code></td><td>Monte Carlo standard error for quantiles</td></tr>
+<tr><td><code><a href='mcse_sd.html'>mcse_sd()</a></code></td><td>Monte Carlo standard error for standard deviations</td></tr>
+<tr><td><code><a href='rhat_basic.html'>rhat_basic()</a></code></td><td>Basic version of Rhat</td></tr>
+<tr><td><code><a href='rhat.html'>rhat()</a></code></td><td>Improved, rank-based version of Rhat</td></tr>
+<tr><td><code><a href='rstar.html'>rstar()</a></code></td><td>R* diagnostic</td></tr>
+</table>
 
-    <p>Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
-Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
-Hall/CRC.</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>mu</span> <span class='op'>&lt;-</span> <span class='fu'><a href='extract_variable.draws_rvars.html'>extract_variable_matrix</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"mu"</span><span class='op'>)</span>
-<span class='fu'>ess_mean</span><span class='op'>(</span><span class='va'>mu</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 511.5225</div><div class='input'>
-</div></pre>
+
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

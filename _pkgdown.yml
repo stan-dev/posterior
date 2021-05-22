@@ -53,7 +53,25 @@ home:
   - text: Ask a question
     href: https://discourse.mc-stan.org/
 
+
+articles:
+  - title: "Getting started"
+    desc: >
+      Installing posterior and using the basic functionality
+    contents:
+      - posterior
+  - title: "rvar: The Random Variable Datatype"
+    desc: >
+      An overview of a new datatype introduced by posterior
+    contents:
+      - rvar
+
 reference:
+  - title: "Overview"
+    desc: >
+      Pacakge overview and global options
+    contents:
+      - posterior-package
   - title: "Draws objects and formats"
     desc: >
       Create`draws` objects and convert between supported formats
@@ -91,16 +109,19 @@ reference:
       - starts_with("mcse")
       - quantile2
       - rstar
-
-articles:
-  - title: "Getting started"
+  - title: "Functionality specific to the rvar datatype"
     desc: >
-      Installing posterior and using the basic functionality
+      The `draws_rvar` format (a structured list of `rvar` objects) has the same
+      methods (e.g. `bind_draws()`) as the other draws formats. For individual
+      `rvar` objects themselves, however, posterior provides additional
+      functionality.
     contents:
-      - posterior
-  - title: "rvar: The Random Variable Datatype"
-    desc: >
-      An overview of a new datatype introduced by posterior
-    contents:
-      - rvar
+      - chol.rvar
+      - starts_with("rvar")
+      - is_rvar
+      - as_rvar
+      - rdo
+      - rfun
+      - draws_of
+      - vctrs-compat
 

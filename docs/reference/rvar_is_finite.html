@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Effective sample size for the mean — ess_mean • posterior</title>
+<title>Special value predicates for random variables — rvar_is_finite • posterior</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="Effective sample size for the mean — ess_mean" />
-<meta property="og:description" content="Compute an effective sample size estimate for a mean (expectation)
-estimate of a single variable." />
+<meta property="og:title" content="Special value predicates for random variables — rvar_is_finite" />
+<meta property="og:description" content="Compute special value predicates (checking for finite / infinite values, NaN, and NA)
+on all draws within a random variable, returning a random variable." />
 
 
 
@@ -163,48 +163,66 @@ estimate of a single variable." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Effective sample size for the mean</h1>
-    <small class="dont-index">Source: <a href='https://github.com/stan-dev/posterior/blob/master/R/convergence.R'><code>R/convergence.R</code></a></small>
-    <div class="hidden name"><code>ess_mean.Rd</code></div>
+    <h1>Special value predicates for random variables</h1>
+    <small class="dont-index">Source: <a href='https://github.com/stan-dev/posterior/blob/master/R/rvar-summaries-within-draws.R'><code>R/rvar-summaries-within-draws.R</code></a></small>
+    <div class="hidden name"><code>rvar_is_finite.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute an effective sample size estimate for a mean (expectation)
-estimate of a single variable.</p>
+    <p>Compute special value predicates (checking for finite / infinite values, <code>NaN</code>, and <code>NA</code>)
+on all draws within a random variable, returning a random variable.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ess_mean</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>rvar_is_finite</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+
+<span class='fu'>rvar_is_infinite</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+
+<span class='fu'>rvar_is_nan</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+
+<span class='fu'>rvar_is_na</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A 2D array of draws (iterations x chains) for a single variable.</p></td>
+      <td><p>An <code><a href='rvar.html'>rvar</a></code></p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A single numeric value. If any of the draws is non-finite, that is, <code>NA</code>,
-<code>NaN</code>, <code>Inf</code>, or <code>-Inf</code>, the returned output will be (numeric) <code>NA</code>. Also, if
-all draws of a variable are the same (constant), the returned output will be
-(numeric) <code>NA</code> as well. The reason for the latter is that, for constant
-draws, we cannot distinguish between variables that are supposed to be
-constant (e.g.,  a diagonal element of a correlation matrix is always 1) or
-variables that just happened to be constant because of a failure of
-convergence or other problems in the sampling process.</p>
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+    <p>A logical <code><a href='rvar.html'>rvar</a></code> of the same length as the input.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
-Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
-Hall/CRC.</p>
+    <p>These functions return a new <code><a href='rvar.html'>rvar</a></code> that is the result of applying
+<code><a href='https://rdrr.io/r/base/is.finite.html'>is.finite()</a></code>, <code><a href='https://rdrr.io/r/base/is.finite.html'>is.infinite()</a></code>, <code><a href='https://rdrr.io/r/base/is.finite.html'>is.nan()</a></code>, or <code><a href='https://rdrr.io/r/base/NA.html'>is.na()</a></code> to every draw
+in the input random variable.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><a href='rvar-summaries-over-draws.html'>rvar-summaries-over-draws</a> for summary functions across draws, including
+implementations of <code><a href='https://rdrr.io/r/base/is.finite.html'>is.finite()</a></code>, <code><a href='https://rdrr.io/r/base/is.finite.html'>is.infinite()</a></code>, <code><a href='https://rdrr.io/r/base/is.finite.html'>is.nan()</a></code>, and <code><a href='https://rdrr.io/r/base/NA.html'>is.na()</a></code> for
+<code>rvar</code>s.</p>
+<p>Other rvar-summaries: 
+<code><a href='rvar-summaries-over-draws.html'>rvar-summaries-over-draws</a></code>,
+<code><a href='rvar-summaries-within-draws.html'>rvar-summaries-within-draws</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>mu</span> <span class='op'>&lt;-</span> <span class='fu'><a href='extract_variable.draws_rvars.html'>extract_variable_matrix</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"mu"</span><span class='op'>)</span>
-<span class='fu'>ess_mean</span><span class='op'>(</span><span class='va'>mu</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 511.5225</div><div class='input'>
-</div></pre>
+    <pre class="examples"><div class='input'>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rvar.html'>rvar</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='cn'>Inf</span>, <span class='op'>-</span><span class='cn'>Inf</span>, <span class='cn'>NaN</span>, <span class='cn'>NA</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>x</span>
+</div><div class='output co'>#&gt; rvar&lt;5&gt;[1] <span style='color: #949494;'>mean ± sd:</span><span>
+#&gt; [1] NaN ± NA </div><div class='input'>
+<span class='fu'>rvar_is_finite</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; rvar&lt;5&gt;[1] </span><span style='color: #949494;'>mean ± sd:</span><span>
+#&gt; [1] 0.2 ± 0.45 </div><div class='input'><span class='fu'>rvar_is_infinite</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; rvar&lt;5&gt;[1] </span><span style='color: #949494;'>mean ± sd:</span><span>
+#&gt; [1] 0.4 ± 0.55 </div><div class='input'><span class='fu'>rvar_is_nan</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; rvar&lt;5&gt;[1] </span><span style='color: #949494;'>mean ± sd:</span><span>
+#&gt; [1] 0.2 ± 0.45 </div><div class='input'><span class='fu'>rvar_is_na</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; rvar&lt;5&gt;[1] </span><span style='color: #949494;'>mean ± sd:</span><span>
+#&gt; [1] 0.4 ± 0.55 </div><div class='input'>
+</div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
