@@ -4,10 +4,11 @@
 #'
 #' @param x A [`draws`] object. The draws format of `x` will define the format
 #'   of the returned draws object.
-#' @param ... Further [`draws`] objects.
-#' @param along The dimension along which draws objects should be bound together.
-#'   Possible values are `variable` (the default), `chain`, `iteration`, and
-#'   `draw`. Not all options are supported for all input formats.
+#' @param ... Additional [`draws`] objects to bind to `x`.
+#' @param along The dimension along which draws objects should be bound
+#'   together. Possible values are `"variable"` (the default), `"chain"`,
+#'   `"iteration"`, and `"draw"`. Not all options are supported for all input
+#'   formats.
 #' @template return-draws
 #'
 #' @importFrom abind abind

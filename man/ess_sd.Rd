@@ -7,23 +7,23 @@
 ess_sd(x)
 }
 \arguments{
-\item{x}{A 2D array of draws (iterations x chains).}
+\item{x}{A 2D array of draws (iterations x chains) for a single variable.}
 }
 \value{
 A single numeric value. If any of the draws is non-finite, that is, \code{NA},
 \code{NaN}, \code{Inf}, or \code{-Inf}, the returned output will be (numeric) \code{NA}. Also, if
-all draws of a variable are the same, that is, if draws are constant, the
-returned output will be (numeric) \code{NA} as well. The reason for the latter is
-that, for constant draws, we cannot distinguish between variables that are
-supposed to be constant (e.g., for a diagonal element of a correlation
-matrix, which will always be 1) or variables that just happened to be
-constant because of a failure of convergence or other problems in the
-sampling process.
+all draws of a variable are the same (constant), the returned output will be
+(numeric) \code{NA} as well. The reason for the latter is that, for constant
+draws, we cannot distinguish between variables that are supposed to be
+constant (e.g.,  a diagonal element of a correlation matrix is always 1) or
+variables that just happened to be constant because of a failure of
+convergence or other problems in the sampling process.
 }
 \description{
 Compute an effective sample size estimate for the standard deviation (SD)
-estimate of a single variable. This is defined as minimum of effective
-sample size estimate for mean and mean of squared value.
+estimate of a single variable. This is defined as minimum of the effective
+sample size estimate for the mean and the the effective sample size estimate
+for the mean of the squared value.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -46,6 +46,7 @@ Other diagnostics:
 \code{\link{mcse_quantile}()},
 \code{\link{mcse_sd}()},
 \code{\link{rhat_basic}()},
-\code{\link{rhat}()}
+\code{\link{rhat}()},
+\code{\link{rstar}()}
 }
 \concept{diagnostics}

@@ -43,8 +43,8 @@ rvar_any(..., na.rm = FALSE)
 \arguments{
 \item{...}{\code{\link{rvar}}s}
 
-\item{na.rm}{Logical. If \code{TRUE}, any \code{NA}'s are removed from the input
-before summaries are computed.}
+\item{na.rm}{Should \code{NA}s be removed from the input before summaries are
+computed? The default is \code{FALSE}.}
 
 \item{constant}{For \code{rvar_mad()}, a scale factor for computing the median
 absolute deviation. See the details of \code{stats::mad()} for the justification

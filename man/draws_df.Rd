@@ -57,7 +57,7 @@ that contain chain indices. If \code{NULL} (the default), the \code{.chain}
 column is used if it exists. Otherwise, the input is treated as belonging
 to a single chain.}
 
-\item{.nchains}{Number of chains (default is \code{1}).}
+\item{.nchains}{The number of chains (default is \code{1}).}
 }
 \value{
 A \code{draws_df} object, which has classes
