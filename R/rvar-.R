@@ -613,3 +613,11 @@ summarise_rvar_by_element <- function(x, .f, ...) {
   dim <- dim(draws)
   apply(draws, seq_along(dim)[-1], .f, ...)
 }
+
+# apply a summary function across draws of the rvar (i.e., by each element)
+# including a chain dimension in the array passed to .f
+summarise_rvar_by_element_with_chains <- function(x, .f, ...) {
+  draws <- draws_of(x, with_chains = TRUE)
+  dim <- dim(draws)
+  apply(draws, seq_along(dim)[-c(1,2)], .f, ...)
+}

@@ -7,7 +7,11 @@
 quantile2(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
 }
 \arguments{
-\item{x}{A 2D array of draws (iterations x chains).}
+\item{x}{One of:
+\itemize{
+\item A 2D array of draws (iterations x chains).
+\item An \code{\link{rvar}}.
+}}
 
 \item{probs}{A numeric vector of probabilities.}
 

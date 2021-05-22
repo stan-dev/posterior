@@ -7,10 +7,15 @@
 ess_sd(x)
 }
 \arguments{
-\item{x}{A 2D array of draws (iterations x chains).}
+\item{x}{One of:
+\itemize{
+\item A 2D array of draws (iterations x chains).
+\item An \code{\link{rvar}}.
+}}
 }
 \value{
-A single numeric value. If any of the draws is non-finite, that is, \code{NA},
+If the input is an array,
+returns a single numeric value. If any of the draws is non-finite, that is, \code{NA},
 \code{NaN}, \code{Inf}, or \code{-Inf}, the returned output will be (numeric) \code{NA}. Also, if
 all draws of a variable are the same, that is, if draws are constant, the
 returned output will be (numeric) \code{NA} as well. The reason for the latter is
@@ -19,6 +24,10 @@ supposed to be constant (e.g., for a diagonal element of a correlation
 matrix, which will always be 1) or variables that just happened to be
 constant because of a failure of convergence or other problems in the
 sampling process.
+
+If the input is an \code{\link{rvar}}, returns an array of the same dimensions as the
+\code{\link{rvar}}, where each element is equal to the value that would be returned by
+passing the draws array for that element of the \code{\link{rvar}} to this function.
 }
 \description{
 Compute an effective sample size estimate for the standard deviation (SD)

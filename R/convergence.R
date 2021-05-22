@@ -93,8 +93,16 @@ rhat <- function(x) {
 #' ess_bulk(mu)
 #'
 #' @export
-ess_bulk <- function(x) {
+ess_bulk <- function(x) UseMethod("ess_bulk")
+#' @rdname ess_bulk
+#' @export
+ess_bulk.default <- function(x) {
   .ess(z_scale(.split_chains(x)))
+}
+#' @rdname ess_bulk
+#' @export
+ess_bulk.rvar <- function(x) {
+  summarise_rvar_by_element_with_chains(x, ess_bulk)
 }
 
 #' Tail effective sample size (tail-ESS)
