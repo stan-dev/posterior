@@ -5,12 +5,17 @@
 \alias{draws_of<-}
 \title{Get/set array of draws underlying a random variable}
 \usage{
-draws_of(x)
+draws_of(x, with_chains = FALSE)
 
-draws_of(x) <- value
+draws_of(x, with_chains = FALSE) <- value
 }
 \arguments{
 \item{x}{An \code{\link{rvar}}}
+
+\item{with_chains}{Should the array of draws include a dimension for chains?
+If \code{FALSE} (the default), chains are not included and the array has dimension
+\code{c(ndraws(x), dim(x))}. If \code{TRUE}, chains are included and the array has
+dimension \code{c(niterations(x), nchains(x), dim(x))}.}
 
 \item{value}{An array}
 }
@@ -26,5 +31,8 @@ order to do that.
 
 \code{\link{rvar}}s represent draws internally using arrays of arbitrary dimension, which
 is returned by \code{draws_of(x)} and can be set using \code{draws_of(x) <- value}.
-The \strong{first} dimension of these arrays is the index of the draws.
+The \strong{first} dimension of these arrays is the index of the draws. If
+\code{with_chains = TRUE}, then the dimensions of the returned array are modified
+so that the first dimension is the index of the iterations and the second
+dimension is the index of the chains.
 }

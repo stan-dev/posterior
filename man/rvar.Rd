@@ -4,13 +4,21 @@
 \alias{rvar}
 \title{Random variables of arbitrary dimension}
 \usage{
-rvar(x = double(), dim = NULL, dimnames = NULL, nchains = 1L)
+rvar(
+  x = double(),
+  dim = NULL,
+  dimnames = NULL,
+  nchains = 1L,
+  with_chains = FALSE
+)
 }
 \arguments{
 \item{x}{A vector or array where the first dimension represents draws from
 a distribution. The resulting \code{\link{rvar}} will have dimension \code{dim(x)[-1]}; that is,
 everything except the first dimension is used for the shape of the variable, and the
-first dimension is used to index draws from the distribution.}
+first dimension is used to index draws from the distribution. Optionally,
+if \code{with_chains == TRUE}, the first dimension indexes the iteration and the
+second dimension indexes the chain (see \code{with_chains}).}
 
 \item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
 or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.
@@ -22,6 +30,13 @@ vectors giving the names in each dimension. If \code{NULL} (the default), this i
 \strong{NOTE:} This argument controls the names of the dimensions of the \code{\link{rvar}}, not the underlying array.}
 
 \item{nchains}{Number of chains (default is \code{1}).}
+
+\item{with_chains}{Does \code{x} include a dimension for chains?
+If \code{FALSE} (the default), chains are not included, the first dimension of
+the input array should index draws, and the \code{nchains} argument can be
+used to determine the number of chains. If \code{TRUE}, the \code{nchains} argument
+is ignored and the second dimension of \code{x} is used to index chains.
+Internally, the array will be converted to a format without the chain index.}
 }
 \value{
 An object of class \code{"rvar"} representing a random variable.
