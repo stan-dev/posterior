@@ -13,15 +13,15 @@
 \alias{default_mcse_measures}
 \title{Summaries of \code{draws} objects}
 \usage{
-summarise_draws(x, ...)
+summarise_draws(.x, ...)
 
-summarize_draws(x, ...)
+summarize_draws(.x, ...)
 
-\method{summarise_draws}{draws}(x, ..., .args = list(), .cores = 1)
+\method{summarise_draws}{draws}(.x, ..., .args = list(), .cores = 1)
 
 \method{summary}{draws}(object, ...)
 
-\method{summarise_draws}{rvar}(x, ...)
+\method{summarise_draws}{rvar}(.x, ...)
 
 \method{summary}{rvar}(object, ...)
 
@@ -32,14 +32,13 @@ default_convergence_measures()
 default_mcse_measures()
 }
 \arguments{
-\item{x, object}{(draws) A \code{draws} object or one coercible to a \code{draws} object.}
+\item{.x, object}{(draws) A \code{draws} object or one coercible to a \code{draws} object.}
 
-\item{...}{Name-value pairs of summary functions.
-The name will be the name of the variable in the result unless
-the function returns a named vector in which case the latter names
-are used. Functions can be passed in all formats supported by
-\link[rlang:as_function]{as_function()}. See the \strong{Examples} section below
-for examples.}
+\item{...}{Name-value pairs of summary or \link[=diagnostics]{diagnostic}
+functions. The provided names will be used as the names of the columns in
+the result \emph{unless} the function returns a named vector, in which case the
+latter names are used. The functions can be specified in any format
+supported by \link[rlang:as_function]{as_function()}. See \strong{Examples}.}
 
 \item{.args}{(named list) Optional arguments passed to the summary functions.}
 
@@ -51,8 +50,12 @@ Windows and forks otherwise.}
 }
 \value{
 The \code{summarise_draws()} methods return a \link[tibble:tibble]{tibble} data frame.
-The first column, \code{"variable"}, contains the variable names and the remaining
+The first column (\code{"variable"}) contains the variable names and the remaining
 columns contain summary statistics and diagnostics.
+
+The functions \code{default_summary_measures()}, \code{default_convergence_measures()},
+and \code{default_mcse_measures()} return character vectors of names of the
+default measures.
 }
 \description{
 The \code{summarise_draws()} (and \code{summarize_draws()}) methods provide a quick way
@@ -63,12 +66,24 @@ provided as an alias for \code{summarise_draws()} if the input object is a \code
 or \code{rvar} object.
 }
 \details{
-By default, the following summary functions are used: \code{\link[=mean]{mean()}}, \code{\link[=median]{median()}},
-\code{\link[=sd]{sd()}}, \code{\link[=mad]{mad()}}, \code{\link[=quantile2]{quantile2()}}, \code{\link[=rhat]{rhat()}}, \code{\link[=ess_bulk]{ess_bulk()}}, and \code{\link[=ess_tail]{ess_tail()}}.
-The functions \code{default_summary_measures()}, \code{default_convergence_measures()},
-and \code{default_mcse_measures()} return character vectors of names of the
-default measures included in the package. See \code{?posterior::diagnostics}
-for a list of available diagnostics and links to their individual help pages.
+The default summary functions used are the ones specified by
+\code{default_summary_measures()} and \code{default_convergence_measures()}:
+
+\code{default_summary_measures()}
+\itemize{
+\item \code{\link[=mean]{mean()}}
+\item \code{\link[=median]{median()}}
+\item \code{\link[=sd]{sd()}}
+\item \code{\link[=mad]{mad()}}
+\item \code{\link[=quantile2]{quantile2()}}
+}
+
+\code{default_convergence_measures()}
+\itemize{
+\item \code{\link[=rhat]{rhat()}}
+\item \code{\link[=ess_bulk]{ess_bulk()}}
+\item \code{\link[=ess_tail]{ess_tail()}}
+}
 }
 \examples{
 x <- example_draws("eight_schools")
@@ -77,12 +92,20 @@ str(x)
 
 summarise_draws(x)
 summarise_draws(x, "mean", "median")
-summarise_draws(x, default_convergence_measures())
 summarise_draws(x, mean, mcse = mcse_mean)
 summarise_draws(x, ~quantile(.x, probs = c(0.4, 0.6)))
+
+# using default_*_meaures()
+summarise_draws(x, default_summary_measures())
+summarise_draws(x, default_convergence_measures())
+summarise_draws(x, default_mcse_measures())
 
 # illustrate use of '.args'
 ws <- rexp(ndraws(x))
 summarise_draws(x, weighted.mean, .args = list(w = ws))
 
+}
+\seealso{
+\code{\link{diagnostics}} for a list of available diagnostics and links to
+their individual help pages.
 }
