@@ -308,7 +308,7 @@ subset_dims <- function(x, ...) {
       reserved_vars <- setdiff(reserved_variables(z), new_vars)
       x <- c(x, z[reserved_vars])
       # c() currently removes the 'draws' classes
-      class(x) <- class_draws_rvars()
+      class(x) <- class_draws_rvar()
       remove(z)
     }
   }

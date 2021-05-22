@@ -91,7 +91,7 @@ test_that("print.draws_list handles reserved variables correctly", {
 })
 
 test_that("print.draws_rvars handles reserved variables correctly", {
-  x <- as_draws_rvars(example_draws())
+  x <- as_draws_rvar(example_draws())
   variables(x)[1] <- ".log_weight" # reserved name
   expect_output(print(x, max_variables = 1), "tau")
   expect_output(
