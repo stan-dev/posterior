@@ -120,7 +120,7 @@ is_draws_array <- function(x) {
 }
 
 # create an empty draws_array object
-empty_draws_array <- function(variables = character(0), nchains = 0,
+empty_draws_array <- function(variables = NULL, nchains = 0,
                               niterations = 0) {
   assert_character(variables, null.ok = TRUE)
   assert_number(nchains, lower = 0)
@@ -131,7 +131,7 @@ empty_draws_array <- function(variables = character(0), nchains = 0,
     dimnames = list(
       iteration = seq_len(niterations),
       chain = seq_len(nchains),
-      variable = variables
+      variable = variables %||% character(0)
     )
   )
   class(out) <- class_draws_array()

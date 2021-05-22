@@ -119,13 +119,13 @@ is_draws_list <- function(x) {
 }
 
 # create an empty draws_list object
-empty_draws_list <- function(variables = character(0),
+empty_draws_list <- function(variables = NULL,
                              nchains = 0) {
   assert_character(variables, null.ok = TRUE)
   assert_number(nchains, lower = 0)
   out <- named_list(seq_len(nchains))
   for (i in seq_along(out)) {
-    out[[i]] <- named_list(variables, numeric(0))
+    out[[i]] <- named_list(variables %||% character(0), numeric(0))
   }
   class(out) <- class_draws_list()
   out

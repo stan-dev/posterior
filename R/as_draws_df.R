@@ -243,7 +243,7 @@ is_draws_df <- function(x) {
 
 # create an empty draws_df object
 empty_draws_df <- function(variables = NULL) {
-  checkmate::assert_character(variables, null.ok = TRUE)
+  assert_character(variables, null.ok = TRUE)
   x <- tibble::tibble()
   x[variables %||% character(0)] <- numeric(0)
   x[c(".chain", ".iteration", ".draw")] <- integer(0)

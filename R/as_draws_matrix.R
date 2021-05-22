@@ -88,7 +88,7 @@ is_draws_matrix <- function(x) {
 }
 
 # create an empty draws_matrix object
-empty_draws_matrix <- function(variables = character(0), ndraws = 0) {
+empty_draws_matrix <- function(variables = NULL, ndraws = 0) {
   assert_character(variables, null.ok = TRUE)
   assert_number(ndraws, lower = 0)
   out <- matrix(
@@ -97,7 +97,7 @@ empty_draws_matrix <- function(variables = character(0), ndraws = 0) {
     ncol = length(variables),
     dimnames = list(
       draw = seq_len(ndraws),
-      variable = variables
+      variable = variables %||% character(0)
     )
   )
   class(out) <- class_draws_matrix()

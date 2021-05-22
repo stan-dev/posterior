@@ -94,10 +94,10 @@ is_draws_rvar <- function(x) {
 }
 
 # create an empty draws_rvar object
-empty_draws_rvar <- function(variables = character(0), nchains = 0) {
+empty_draws_rvar <- function(variables = NULL, nchains = 0) {
   assert_character(variables, null.ok = TRUE)
   assert_number(nchains, lower = 0)
-  out <- named_list(variables, rvar())
+  out <- named_list(variables %||% character(0), rvar())
   class(out) <- class_draws_rvar()
   out
 }
