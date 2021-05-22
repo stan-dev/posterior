@@ -10,8 +10,8 @@ rfun(.f, rvar_args = NULL, ndraws = NULL)
 \item{.f}{(multiple options) A function to turn into a function that accepts
 and/or produces random variables:
 \itemize{
-\item A function.
-\item A one-sided formula that can be parsed by \code{\link[rlang:as_function]{rlang::as_function()}}.
+\item A function
+\item A one-sided formula that can be parsed by \code{\link[rlang:as_function]{rlang::as_function()}}
 }}
 
 \item{rvar_args}{(character vector) The names of the arguments of \code{.f} that
