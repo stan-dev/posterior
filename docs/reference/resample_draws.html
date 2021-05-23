@@ -183,7 +183,8 @@ obtained through importance sampling.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A <code>draws</code> object, or another <span style="R">R</span> object for which the method is defined.</p></td>
+      <td><p>(draws) A <code>draws</code> object or another <span style="R">R</span> object for which the method
+is defined.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -191,15 +192,15 @@ obtained through importance sampling.</p>
     </tr>
     <tr>
       <th>weights</th>
-      <td><p>A vector of positive weights of length <code><a href='draws-index.html'>ndraws(x)</a></code> (the number
-of draws in <code>x</code>). The weights will be internally normalized. If <code>weights</code>
-is not specified, an attempt will be made to extract any weights already
-stored in the draws object (via <code><a href='weight_draws.html'>weight_draws()</a></code>). How exactly the weights
-influence the resampling depends on the <code>method</code> argument.</p></td>
+      <td><p>(numeric vector) A vector of positive weights of length
+<code><a href='draws-index.html'>ndraws(x)</a></code>. The weights will be internally normalized. If <code>weights</code> is not
+specified, an attempt will be made to extract any weights already stored in
+the draws object (via <code><a href='weight_draws.html'>weight_draws()</a></code>). How exactly the weights influence
+the resampling depends on the <code>method</code> argument.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>Name of the resampling method being applied:</p><ul>
+      <td><p>(string) The resampling method to use:</p><ul>
 <li><p><code>"simple"</code>: simple random resampling with replacement</p></li>
 <li><p><code>"simple_no_replace"</code>: simple random resampling without replacement</p></li>
 <li><p><code>"stratified"</code>: stratified resampling with replacement</p></li>
@@ -214,8 +215,9 @@ see Kitagawa (1996).</p></td>
     </tr>
     <tr>
       <th>ndraws</th>
-      <td><p>The number of draws to be returned. By default <code>ndraws</code> is set
-internally to the total number of draws in <code>x</code> if sensible.</p></td>
+      <td><p>(positive integer) The number of draws to be returned. By
+default <code>ndraws</code> is set internally to the total number of draws in <code>x</code> if
+sensible.</p></td>
     </tr>
     </table>
 

@@ -178,27 +178,35 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A vector or array where the first dimension represents draws from
-a distribution. The resulting <code>rvar</code> will have dimension <code>dim(x)[-1]</code>; that is,
-everything except the first dimension is used for the shape of the variable, and the
-first dimension is used to index draws from the distribution.</p></td>
+      <td><p>(multiple options) The object to convert to an <code>rvar</code>:</p><ul>
+<li><p>A vector of draws from a distribution.</p></li>
+<li><p>An array where the first dimension represents draws from a distribution.
+The resulting <code>rvar</code> will have dimension <code>dim(x)[-1]</code>; that is,
+everything except the first dimension is used for the shape of the
+variable, and the first dimension is used to index draws from the
+distribution. See <strong>Examples</strong>.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>dim</th>
-      <td><p>Override for the dimensions of the <code>rvar</code> to be created (see <code><a href='https://rdrr.io/r/base/dim.html'>dim()</a></code>): an integer vector of length one
-or more giving the maximal indices in each dimension. If <code>NULL</code> (the default), this is determined by the input.
-<strong>NOTE:</strong> This argument controls the dimensions of the <code>rvar</code>, not the underlying array, so you cannot
-change the number of draws using this argument.</p></td>
+      <td><p>(integer vector) One or more integers giving the maximal indices
+in each dimension to override the dimensions of the <code>rvar</code> to be created
+(see <code><a href='https://rdrr.io/r/base/dim.html'>dim()</a></code>). If <code>NULL</code> (the default), <code>dim</code> is determined by the input.
+<strong>NOTE:</strong> This argument controls the dimensions of the <code>rvar</code>, not the
+underlying array, so you cannot change the number of draws using this
+argument.</p></td>
     </tr>
     <tr>
       <th>dimnames</th>
-      <td><p>Override for the names of the dimensions of the <code>rvar</code> to be created (see <code><a href='https://rdrr.io/r/base/dimnames.html'>dimnames()</a></code>): a list of character
-vectors giving the names in each dimension. If <code>NULL</code> (the default), this is determined by the input.
-<strong>NOTE:</strong> This argument controls the names of the dimensions of the <code>rvar</code>, not the underlying array.</p></td>
+      <td><p>(list) Character vectors giving the names in each dimension
+to override the names of the dimensions of the <code>rvar</code> to be created (see
+<code><a href='https://rdrr.io/r/base/dimnames.html'>dimnames()</a></code>). If <code>NULL</code> (the default), this is determined by the input.
+<strong>NOTE:</strong> This argument controls the names of the dimensions of the
+<code>rvar</code>, not the underlying array.</p></td>
     </tr>
     <tr>
       <th>nchains</th>
-      <td><p>Number of chains (default is <code>1</code>).</p></td>
+      <td><p>(positive integer) The number of chains. The default is <code>1</code>.</p></td>
     </tr>
     </table>
 

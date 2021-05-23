@@ -185,7 +185,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x, object</th>
-      <td><p>An <code><a href='rvar.html'>rvar</a></code>.</p></td>
+      <td><p>(rvar) The <code><a href='rvar.html'>rvar</a></code> to print.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -193,25 +193,27 @@
     </tr>
     <tr>
       <th>summary</th>
-      <td><p>What style of summary to display: <code>"mean_sd"</code> displays <code>mean±sd</code>,
-<code>"median_mad"</code> displays <code>median±mad</code>. If <code>NULL</code>, <code><a href='https://rdrr.io/r/base/options.html'>getOption("posterior.rvar_summary")</a></code> is
-used (default <code>"mean_sd</code>).</p></td>
+      <td><p>(string) The style of summary to display: <code>"mean_sd"</code> displays
+<code>mean±sd</code>, <code>"median_mad"</code> displays <code>median±mad</code>. If <code>NULL</code>,
+<code><a href='https://rdrr.io/r/base/options.html'>getOption("posterior.rvar_summary")</a></code> is used (default <code>"mean_sd</code>).</p></td>
     </tr>
     <tr>
       <th>digits</th>
-      <td><p>The minimum number of significant digits to print.</p></td>
+      <td><p>(nonnegative integer) The minimum number of significant digits
+to print.</p></td>
     </tr>
     <tr>
       <th>color</th>
-      <td><p>Whether or not to use color when formatting the output. If <code>TRUE</code>,
-the <code><a href='https://pillar.r-lib.org/reference/style_subtle.html'>pillar::style_num()</a></code> functions may be used to produce strings containing
-control sequences to produce colored output on the terminal.</p></td>
+      <td><p>(logical) Whether or not to use color when formatting the
+output. If <code>TRUE</code>, the <code><a href='https://pillar.r-lib.org/reference/style_subtle.html'>pillar::style_num()</a></code> functions may be used to
+produce strings containing control sequences to produce colored output on
+the terminal.</p></td>
     </tr>
     <tr>
       <th>vec.len</th>
-      <td><p>Numeric (&gt;= 0) indicating how many 'first few' elements are
-displayed of each vector. If <code>NULL</code>, defaults to <code>getOption("str")$vec.len</code>,
-which defaults to 4.</p></td>
+      <td><p>(nonnegative integer) How many 'first few' elements are
+displayed of each vector. If <code>NULL</code>, defaults to
+<code>getOption("str")$vec.len</code>, which defaults to 4.</p></td>
     </tr>
     </table>
 

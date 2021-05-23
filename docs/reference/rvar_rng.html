@@ -180,10 +180,9 @@ existing random-number generator functions (such as <code><a href='https://rdrr.
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.f</th>
-      <td><p>A function (or character vector) representing a random-number
-generating function that follows the pattern of base random number generators
-(like <code><a href='https://rdrr.io/r/stats/Normal.html'>rnorm()</a></code>, <code><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom()</a></code>, etc).
-It must:</p><ul>
+      <td><p>(function) A function (or string naming a function) representing a
+random-number generating function that follows the pattern of base random
+number generators (like <code><a href='https://rdrr.io/r/stats/Normal.html'>rnorm()</a></code>, <code><a href='https://rdrr.io/r/stats/Binomial.html'>rbinom()</a></code>, etc). It must:</p><ul>
 <li><p>Have a first argument, <code>n</code>, giving the number of draws to take from the
 distribution</p></li>
 <li><p>Have vectorized parameter arguments</p></li>
@@ -192,20 +191,22 @@ distribution</p></li>
     </tr>
     <tr>
       <th>n</th>
-      <td><p>The length of the output <code><a href='rvar.html'>rvar</a></code> vector (<strong>not</strong> the number of draws)</p></td>
+      <td><p>(positive integer) The length of the output <code><a href='rvar.html'>rvar</a></code> vector (<strong>not</strong>
+the number of draws).</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>arguments passed to <code>.f</code>. These arguments may include <code><a href='rvar.html'>rvar</a></code>s, so
-long as they are vectors only (no multidimensional <code><a href='rvar.html'>rvar</a></code>s are allowed).</p></td>
+      <td><p>Arguments passed to <code>.f</code>. These arguments may include <code><a href='rvar.html'>rvar</a></code>s,
+so long as they are vectors only (no multidimensional <code><a href='rvar.html'>rvar</a></code>s are
+allowed).</p></td>
     </tr>
     <tr>
       <th>ndraws</th>
-      <td><p>When no <code><a href='rvar.html'>rvar</a></code>s are supplied in <code>...</code>, this is the number
-of draws that will be used to construct the returned random variable. If <code>NULL</code>,
-<code><a href='https://rdrr.io/r/base/options.html'>getOption("posterior.rvar_ndraws")</a></code> is used (default 4000). If <code>...</code> contains
-<code><a href='rvar.html'>rvar</a></code>s, the number of draws in the provided <code><a href='rvar.html'>rvar</a></code>s is used instead of
-the value of this argument.</p></td>
+      <td><p>(positive integer) The number of draws used to construct the
+returned random variable if no <code><a href='rvar.html'>rvar</a></code>s are supplied in <code>...</code>. If <code>NULL</code>,
+<code><a href='https://rdrr.io/r/base/options.html'>getOption("posterior.rvar_ndraws")</a></code> is used (default 4000). If <code>...</code>
+contains <code><a href='rvar.html'>rvar</a></code>s, the number of draws in the provided <code><a href='rvar.html'>rvar</a></code>s is used
+instead of the value of this argument.</p></td>
     </tr>
     </table>
 

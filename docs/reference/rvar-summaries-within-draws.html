@@ -42,7 +42,7 @@
 <meta property="og:title" content="Summaries of random variables over array elements, within draws — rvar-summaries-within-draws" />
 <meta property="og:description" content="Compute summaries of random variables over array elements and within draws,
 producing a new random variable of length 1 (except in the case of
-rvar_range(), see 'Details')." />
+rvar_range(), see Details)." />
 
 
 
@@ -172,7 +172,7 @@ rvar_range(), see 'Details')." />
     <div class="ref-description">
     <p>Compute summaries of random variables over array elements and within draws,
 producing a new random variable of length 1 (except in the case of
-<code>rvar_range()</code>, see 'Details').</p>
+<code>rvar_range()</code>, see <strong>Details</strong>).</p>
     </div>
 
     <pre class="usage"><span class='fu'>rvar_mean</span><span class='op'>(</span><span class='va'>...</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
@@ -204,29 +204,30 @@ producing a new random variable of length 1 (except in the case of
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>...</th>
-      <td><p><code><a href='rvar.html'>rvar</a></code>s</p></td>
+      <td><p>(rvar) One or more <code><a href='rvar.html'>rvar</a></code>s.</p></td>
     </tr>
     <tr>
       <th>na.rm</th>
-      <td><p>Should <code>NA</code>s be removed from the input before summaries are
-computed? The default is <code>FALSE</code>.</p></td>
+      <td><p>(logical) Should <code>NA</code>s be removed from the input before
+summaries are computed? The default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>constant</th>
-      <td><p>For <code>rvar_mad()</code>, a scale factor for computing the median
-absolute deviation. See the details of <code><a href='https://rdrr.io/r/stats/mad.html'>stats::mad()</a></code> for the justification
-for the default value.</p></td>
+      <td><p>(scalar real) For <code>rvar_mad()</code>, a scale factor for computing
+the median absolute deviation. See the details of <code><a href='https://rdrr.io/r/stats/mad.html'>stats::mad()</a></code> for the
+justification for the default value.</p></td>
     </tr>
     <tr>
       <th>low</th>
-      <td><p>For <code>rvar_mad()</code>, if <code>TRUE</code>, compute the 'lo-median', i.e., for
-even sample size, do not average the two middle values, but take the smaller
-one. See <code><a href='https://rdrr.io/r/stats/mad.html'>stats::mad()</a></code>.</p></td>
+      <td><p>(logical) For <code>rvar_mad()</code>, if <code>TRUE</code>, compute the 'lo-median',
+i.e., for even sample size, do not average the two middle values, but take
+the smaller one. See <code><a href='https://rdrr.io/r/stats/mad.html'>stats::mad()</a></code>.</p></td>
     </tr>
     <tr>
       <th>high</th>
-      <td><p>For <code>rvar_mad()</code>, if <code>TRUE</code>, compute the 'hi-median', i.e., take
-the larger of the two middle values for even sample size. See <code><a href='https://rdrr.io/r/stats/mad.html'>stats::mad()</a></code>.</p></td>
+      <td><p>(logical) For <code>rvar_mad()</code>, if <code>TRUE</code>, compute the 'hi-median',
+i.e., take the larger of the two middle values for even sample size. See
+<code><a href='https://rdrr.io/r/stats/mad.html'>stats::mad()</a></code>.</p></td>
     </tr>
     </table>
 

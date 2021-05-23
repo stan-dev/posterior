@@ -2,7 +2,7 @@
 # Copyright (C) 2018, 2019 Aki Vehtari, Paul Bürkner
 # See LICENSE.md for more details
 
-#' Convergence diagnostics
+#' List of available convergence diagnostics
 #'
 #' A list of available diagnostics and links to their individual help pages.
 #'

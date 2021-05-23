@@ -178,13 +178,23 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An <code><a href='rvar.html'>rvar</a></code>, <code><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></code>, or <code><a href='https://rdrr.io/r/base/logical.html'>logical</a></code>. Must be 1 or 2-dimensional. If it is a vector,
-it is treated as a row vector.</p></td>
+      <td><p>(multiple options) The object to be postmultiplied by <code>y</code>:</p><ul>
+<li><p>An <code><a href='rvar.html'>rvar</a></code></p></li>
+<li><p>A <code><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></code> vector or matrix</p></li>
+<li><p>A <code><a href='https://rdrr.io/r/base/logical.html'>logical</a></code> vector or matrix</p></li>
+</ul>
+
+<p>If a vector is used, it is treated as a <em>row</em> vector.</p></td>
     </tr>
     <tr>
       <th>y</th>
-      <td><p>An <code><a href='rvar.html'>rvar</a></code>, <code><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></code>, or <code><a href='https://rdrr.io/r/base/logical.html'>logical</a></code>. Must be 1 or 2-dimensional. If it is a vector,
-it is treated as a column vector.</p></td>
+      <td><p>(multiple options) The object to be premultiplied by <code>x</code>:</p><ul>
+<li><p>An <code><a href='rvar.html'>rvar</a></code></p></li>
+<li><p>A <code><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></code> vector or matrix</p></li>
+<li><p>A <code><a href='https://rdrr.io/r/base/logical.html'>logical</a></code> vector or matrix</p></li>
+</ul>
+
+<p>If a vector is used, it is treated as a <em>column</em> vector.</p></td>
     </tr>
     </table>
 

@@ -181,18 +181,18 @@ provided as an alias for <code>summarise_draws()</code> if the input object is a
 or <code>rvar</code> object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>summarize_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>summarize_draws</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws</span>
-<span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, .args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, .cores <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
+<span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span>, .args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='op'>)</span>, .cores <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws</span>
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for rvar</span>
-<span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>.x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for rvar</span>
 <span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -207,45 +207,61 @@ or <code>rvar</code> object.</p>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x, object</th>
-      <td><p>A <code>draws</code> object or one coercible to a <code>draws</code> object.</p></td>
+      <th>.x, object</th>
+      <td><p>(draws) A <code>draws</code> object or one coercible to a <code>draws</code> object.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Name-value pairs of summary functions.
-The name will be the name of the variable in the result unless
-the function returns a named vector in which case the latter names
-are used. Functions can be passed in all formats supported by
-<a href='https://rlang.r-lib.org/reference/as_function.html'>as_function()</a>. See the 'Examples' section below
-for examples.</p></td>
+      <td><p>Name-value pairs of summary or <a href='diagnostics.html'>diagnostic</a>
+functions. The provided names will be used as the names of the columns in
+the result <em>unless</em> the function returns a named vector, in which case the
+latter names are used. The functions can be specified in any format
+supported by <a href='https://rlang.r-lib.org/reference/as_function.html'>as_function()</a>. See <strong>Examples</strong>.</p></td>
     </tr>
     <tr>
       <th>.args</th>
-      <td><p>Optional <code>list</code> of additional arguments passed to the summary
-functions.</p></td>
+      <td><p>(named list) Optional arguments passed to the summary functions.</p></td>
     </tr>
     <tr>
       <th>.cores</th>
-      <td><p>Positive number of cores for computing summaries for different
-variables in parallel. Coerced to integer if possible, otherwise errors.
-Defaults to <code>.cores = 1</code> in which case no parallelization is implemented.
-By default, creates a socket cluster on Windows and forks otherwise.</p></td>
+      <td><p>(positive integer) The number of cores to use for computing
+summaries for different variables in parallel. Coerced to integer if
+possible, otherwise errors. The default is <code>.cores = 1</code>, in which case no
+parallelization is implemented. By default, a socket cluster is used on
+Windows and forks otherwise.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The <code>summarise_draws()</code> methods return a <a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a> data frame.
-The first column, <code>"variable"</code>, contains the variable names and the remaining
+The first column (<code>"variable"</code>) contains the variable names and the remaining
 columns contain summary statistics and diagnostics.</p>
+<p>The functions <code>default_summary_measures()</code>, <code>default_convergence_measures()</code>,
+and <code>default_mcse_measures()</code> return character vectors of names of the
+default measures.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>By default, the following summary functions are used: <code><a href='https://rdrr.io/r/base/mean.html'>mean()</a></code>, <code><a href='https://rdrr.io/r/stats/median.html'>median()</a></code>,
-<code><a href='rvar-summaries-over-draws.html'>sd()</a></code>, <code><a href='rvar-summaries-over-draws.html'>mad()</a></code>, <code><a href='quantile2.html'>quantile2()</a></code>, <code><a href='rhat.html'>rhat()</a></code>, <code><a href='ess_bulk.html'>ess_bulk()</a></code>, and <code><a href='ess_tail.html'>ess_tail()</a></code>.
-The functions <code>default_summary_measures()</code>, <code>default_convergence_measures()</code>,
-and <code>default_mcse_measures()</code> return character vectors of names of the
-default measures included in the package. See <code><a href='diagnostics.html'>?posterior::diagnostics</a></code>
-for a list of available diagnostics and links to their individual help pages.</p>
+    <p>The default summary functions used are the ones specified by
+<code>default_summary_measures()</code> and <code>default_convergence_measures()</code>:</p>
+<p><code>default_summary_measures()</code></p><ul>
+<li><p><code><a href='https://rdrr.io/r/base/mean.html'>mean()</a></code></p></li>
+<li><p><code><a href='https://rdrr.io/r/stats/median.html'>median()</a></code></p></li>
+<li><p><code><a href='rvar-summaries-over-draws.html'>sd()</a></code></p></li>
+<li><p><code><a href='rvar-summaries-over-draws.html'>mad()</a></code></p></li>
+<li><p><code><a href='quantile2.html'>quantile2()</a></code></p></li>
+</ul>
+
+<p><code>default_convergence_measures()</code></p><ul>
+<li><p><code><a href='rhat.html'>rhat()</a></code></p></li>
+<li><p><code><a href='ess_bulk.html'>ess_bulk()</a></code></p></li>
+<li><p><code><a href='ess_tail.html'>ess_tail()</a></code></p></li>
+</ul>
+
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code><a href='diagnostics.html'>diagnostics</a></code> for a list of available diagnostics and links to
+their individual help pages.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='st'>"eight_schools"</span><span class='op'>)</span>
@@ -282,20 +298,7 @@ for a list of available diagnostics and links to their individual help pages.</p
 #&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  3.22   3.72
 #&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  3.99   4.14
 #&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  6.50   5.90
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  4.57   4.64</div><div class='input'><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>default_convergence_measures</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 10 x 4</span><span>
-#&gt;    variable  rhat ess_bulk ess_tail
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        1.02     558.     322.
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       1.01     246.     202.
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  1.01     400.     254.
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  1.02     564.     372.
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  1.01     312.     205.
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  1.02     695.     252.
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  1.01     523.     306.
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  1.02     548.     205.
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  1.00     434.     308.
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  1.02     355.     146.</div><div class='input'><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>mean</span>, mcse <span class='op'>=</span> <span class='va'>mcse_mean</span><span class='op'>)</span>
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  4.57   4.64</div><div class='input'><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>mean</span>, mcse <span class='op'>=</span> <span class='va'>mcse_mean</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 10 x 3</span><span>
 #&gt;    variable  mean  mcse
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
@@ -322,6 +325,47 @@ for a list of available diagnostics and links to their individual help pages.</p
 #&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  2.92  5.47
 #&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  4.81  7.33
 #&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  3.50  5.92</div><div class='input'>
+<span class='co'># using default_*_meaures()</span>
+<span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>default_summary_measures</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 10 x 7</span><span>
+#&gt;    variable  mean median    sd   mad      q5   q95
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>  </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        4.18   4.16  3.40  3.57  -</span><span style='color: #BB0000;'>0.854</span><span>  9.39
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       4.16   3.07  3.58  2.89   0.309 11.0 
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  6.75   5.97  6.30  4.87  -</span><span style='color: #BB0000;'>1.23</span><span>  18.9 
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  5.25   5.13  4.63  4.25  -</span><span style='color: #BB0000;'>1.97</span><span>  12.5 
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  3.04   3.99  6.80  4.94 -</span><span style='color: #BB0000;'>10.3</span><span>   11.9 
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  4.86   4.99  4.92  4.51  -</span><span style='color: #BB0000;'>3.57</span><span>  12.2 
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  3.22   3.72  5.08  4.38  -</span><span style='color: #BB0000;'>5.93</span><span>  10.8 
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  3.99   4.14  5.16  4.81  -</span><span style='color: #BB0000;'>4.32</span><span>  11.5 
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  6.50   5.90  5.26  4.54  -</span><span style='color: #BB0000;'>1.19</span><span>  15.4 
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  4.57   4.64  5.25  4.89  -</span><span style='color: #BB0000;'>3.79</span><span>  12.2 </div><div class='input'><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>default_convergence_measures</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 10 x 4</span><span>
+#&gt;    variable  rhat ess_bulk ess_tail
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu        1.02     558.     322.
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau       1.01     246.     202.
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]  1.01     400.     254.
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]  1.02     564.     372.
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]  1.01     312.     205.
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]  1.02     695.     252.
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]  1.01     523.     306.
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]  1.02     548.     205.
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]  1.00     434.     308.
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]  1.02     355.     146.</div><div class='input'><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>default_mcse_measures</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 10 x 6</span><span>
+#&gt;    variable mcse_mean mcse_median mcse_sd mcse_q5 mcse_q95
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>        </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>       </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>   </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>    </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu           0.150       0.319   0.149   0.551    0.415
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau          0.213       0.250   0.156   0.114    0.964
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]     0.319       0.262   0.233   0.820    1.36 
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]     0.202       0.213   0.166   0.676    0.848
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]     0.447       0.346   0.329   2.18     0.623
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]     0.189       0.287   0.154   0.956    0.449
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]     0.232       0.139   0.213   1.62     0.736
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]     0.222       0.421   0.195   1.16     0.432
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]     0.250       0.270   0.178   0.458    0.622
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]     0.273       0.372   0.241   0.997    1.29 </div><div class='input'>
 <span class='co'># illustrate use of '.args'</span>
 <span class='va'>ws</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Exponential.html'>rexp</a></span><span class='op'>(</span><span class='fu'><a href='draws-index.html'>ndraws</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>weighted.mean</span>, .args <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>w <span class='op'>=</span> <span class='va'>ws</span><span class='op'>)</span><span class='op'>)</span>
@@ -329,15 +373,15 @@ for a list of available diagnostics and links to their individual help pages.</p
 #&gt;    variable weighted.mean
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>            </span><span style='color: #949494;font-style: italic;'>&lt;dbl&gt;</span><span>
 #&gt; </span><span style='color: #BCBCBC;'> 1</span><span> mu                4.24
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau               4.14
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]          6.63
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]          5.15
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]          2.77
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]          4.85
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]          3.25
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]          4.18
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]          6.73
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]          4.92</div><div class='input'>
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span> tau               4.28
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span> theta[1]          6.85
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span> theta[2]          5.13
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span> theta[3]          3.28
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span> theta[4]          5.09
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span> theta[5]          3.66
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span> theta[6]          3.66
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span> theta[7]          6.21
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span> theta[8]          4.17</div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
