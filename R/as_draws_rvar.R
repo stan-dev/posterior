@@ -21,18 +21,49 @@ as_draws_rvar <- function(x, ...) {
 
 #' @rdname draws_array
 #' @export
-as_draws_rvar.data.frame <- function(x, ...) {
+as_draws_rvar.array <- function(x, ...) {
   x <- as_draws_df(x)
-  n_chains <- nchains(x)
-  vars <- gsub(pattern = "\\[.+\\]$", replacement = "", variables(x))
-  x <- unclass(x)
-  x[c(".chain", ".iteration", ".draw")] <- NULL
-  x <- split.default(x, vars)
-  x <- lapply(x, function(v) {
-    r_var <- rvar(unname(do.call(cbind, v)))
-    attr(r_var, "nchains") <- n_chains
-    r_var
+  if (ndraws(x) == 0L) {
+    return(empty_draws_array(variables(x)))
+  }
+  vars <- unique(gsub(pattern = "\\[.+\\]$", replacement = "", variables(x)))
+  n_chain <- nchains(x)
+  x <- lapply(vars, function(var) {
+    rvar_data <- subset_draws(x, variable = var, regex = TRUE)
+    class(rvar_data) <- "data.frame"
+    rvar_data[c(".chain", ".iteration", ".draw")] <- NULL
+    if (ncol(rvar_data) == 1L) {
+      rvar_dim <- 1L
+      rvar_dimname <- NULL
+    } else {
+      var_names <- colnames(rvar_data)
+      var_curr <- gsub("\\[.+\\]$", "", var_names[1])
+      ind_old <- do.call(
+        Map, c(c, strsplit(gsub("^.+\\[(.+)\\]$", "\\1", var_names), ","))
+      )
+      ind_range <- lapply(ind_old, function(ind) {
+        int <- SW(as.integer(ind))
+        if (rlang::is_integerish(int, finite = TRUE)) {
+          seq_len(max(int))
+        } else {
+          unique(ind)
+        }
+      })
+      ind_grid <- expand.grid(ind_range)
+      var_grid <- paste0(var_curr, "[", do.call(paste, c(ind_grid, sep=",")), "]")
+      var_na <- paste0(var_curr, "_NA")
+      var_grid[!(var_grid %in% var_names)] <- var_na
+      rvar_data[[var_na]] <- NA
+      rvar_data <- rvar_data[var_grid]
+      rvar_dim <- unname(lengths(ind_range))
+      rvar_dimname <- unname(lapply(ind_range, function(ind) {
+        if (is.character(ind)) ind
+        else NULL
+      }))
+    }
+    rvar(as.matrix(rvar_data), dim = rvar_dim, nchains = n_chain, dimnames = rvar_dimname)
   })
+  names(x) <- vars
   class(x) <- class_draws_rvar()
   x
 }
@@ -41,7 +72,8 @@ as_draws_rvar.data.frame <- function(x, ...) {
 #' @export
 as_draws_rvar.default <- function(x, ...) {
   x <- as_draws_df(x)
-  as_draws_rvar.data.frame(x, ...)
+  x <- as_draws_array.data.frame(x)
+  as_draws_rvar.array(x, ...)
 }
 
 #' @rdname draws_rvar

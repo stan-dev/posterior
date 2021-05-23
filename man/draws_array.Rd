@@ -9,7 +9,7 @@
 \alias{as_draws_array.draws_array}
 \alias{as_draws_array.matrix}
 \alias{is_draws_array}
-\alias{as_draws_rvar.data.frame}
+\alias{as_draws_rvar.array}
 \title{The \code{draws_array} format}
 \usage{
 as_draws_array(x, ...)
@@ -28,7 +28,7 @@ draws_array(..., .nchains = 1)
 
 is_draws_array(x)
 
-\method{as_draws_rvar}{data.frame}(x, ...)
+\method{as_draws_rvar}{array}(x, ...)
 }
 \arguments{
 \item{x}{An object to convert to a \code{draws_array} object.}
