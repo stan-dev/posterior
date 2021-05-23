@@ -254,7 +254,10 @@ ess_sd <- function(x) {
 #' mcse_quantile(mu, probs = c(0.1, 0.9))
 #'
 #' @export
-mcse_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
+mcse_quantile <- function(x, ...) UseMethod("mcse_quantile")
+#' @rdname mcse_quantile
+#' @export
+mcse_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE) {
   probs <- as.numeric(probs)
   if (any(probs < 0 | probs > 1)) {
     stop_no_call("'probs' must contain values between 0 and 1.")
@@ -265,6 +268,11 @@ mcse_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
     names(out) <- paste0("mcse_q", probs * 100)
   }
   out
+}
+#' @rdname mcse_quantile
+#' @export
+mcse_quantile.rvar <- function(x, ...) {
+  summarise_rvar_by_element_with_chains(x, mcse_quantile, ...)
 }
 
 #' @rdname mcse_quantile
