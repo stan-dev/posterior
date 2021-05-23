@@ -10,40 +10,44 @@ resample_draws(x, ...)
 \method{resample_draws}{draws}(x, weights = NULL, method = "stratified", ndraws = NULL, ...)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{weights}{A vector of positive weights of length equal to the number of
-draws in \code{draws} (as obtained by method \code{\link{ndraws}}). Weights will be
-internally normalized. If \code{weights} is \code{NULL} (the default), an attempt
-will be made to extract weights stored already in the draws object (via
-\code{\link{weight_draws}}). How exactly the weights influence the resampling
-depends on the \code{method} argument.}
+\item{weights}{(numeric vector) A vector of positive weights of length
+\code{ndraws(x)}. The weights will be internally normalized. If \code{weights} is not
+specified, an attempt will be made to extract any weights already stored in
+the draws object (via \code{\link[=weight_draws]{weight_draws()}}). How exactly the weights influence
+the resampling depends on the \code{method} argument.}
 
-\item{method}{Name of the resampling method being applied. Possible choices
-are \code{"simple"} for simple random resampling with replacement,
-\code{"simple_no_replace"} for simple random resampling without replacement,
-\code{"stratified"} for stratified resampling with replacement and
-\code{"deterministic"} for deterministic resampling with replacement. Currently,
-\code{"stratified"} is the default as it has comparably low variance and bias
-with respect to ideal resampling. The latter would sample perfectly
-proportional to the weights but is not possible in practice where only a
-finite number of draws are available. For more details about resampling
-methods, see Kitagawa (1996).}
+\item{method}{(string) The resampling method to use:
+\itemize{
+\item \code{"simple"}: simple random resampling with replacement
+\item \code{"simple_no_replace"}: simple random resampling without replacement
+\item \code{"stratified"}: stratified resampling with replacement
+\item \code{"deterministic"}: deterministic resampling with replacement
+}
 
-\item{ndraws}{Number of draws to be returned. By default (\code{NULL}), \code{ndraws}
-is set internally to the total number of draws in \code{x} if sensible.}
+Currently, \code{"stratified"} is the default as it has comparably low variance
+and bias with respect to ideal resampling. The latter would sample perfectly
+proportional to the weights, but this is not possible in practice due to the
+finite number of draws available. For more details about resampling methods,
+see Kitagawa (1996).}
+
+\item{ndraws}{(positive integer) The number of draws to be returned. By
+default \code{ndraws} is set internally to the total number of draws in \code{x} if
+sensible.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.
 }
 \description{
-Resample \code{\link{draws}} objects according to given weights obtained,
-for instance, through importance sampling.
+Resample \code{\link{draws}} objects according to provided weights, for example weights
+obtained through importance sampling.
 }
 \details{
-Upon usage of \code{resample_draws}, chains will be automatically merged
+Upon usage of \code{resample_draws()}, chains will automatically be merged
 due to subsetting of individual draws (see \code{\link{subset_draws}} for details).
 Also, weights stored in the \code{draws} object will be removed in the process,
 as resampling invalidates existing weights.
@@ -51,7 +55,7 @@ as resampling invalidates existing weights.
 \examples{
 x <- as_draws_df(example_draws())
 
-# random weights for illustrationary purposes
+# random weights for justr for demonstration
 w <- runif(ndraws(x), 0, 10)
 
 # use default stratified sampling
@@ -67,4 +71,7 @@ summarise_draws(x_rs, default_summary_measures())
 Kitagawa, G., Monte Carlo Filter and Smoother for Non-Gaussian Nonlinear '
 State Space Models, \emph{Journal of Computational and Graphical Statistics},
 5(1):1-25, 1996.
+}
+\seealso{
+\code{\link[=resample_draws]{resample_draws()}}
 }

@@ -25,9 +25,13 @@ order_draws(x, ...)
 \method{order_draws}{rvar}(x, ...)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+}
+\value{
+A \code{draws} object of the same class as \code{x}.
 }
 \description{
 Order \code{\link{draws}} objects according to iteration and chain number. By default,
@@ -36,9 +40,10 @@ leave them in an unordered state.
 }
 \examples{
 x <- as_draws_array(example_draws())
-# manually select some iterations and chains
-(x <- x[10:5, 4:3, ])
-# reorder iteration and chain indices
-order_draws(x)
+dimnames(x[10:5, 4:3, ])
+dimnames(order_draws(x[10:5, 4:3, ]))
 
+}
+\seealso{
+\code{\link[=repair_draws]{repair_draws()}}
 }

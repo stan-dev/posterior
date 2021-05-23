@@ -14,24 +14,25 @@
 )
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
-\item{digits}{Minimum number of significant digits to print.}
+\item{digits}{(nonnegative integer) The minimum number of significant digits
+to print.}
 
-\item{max_draws}{Maximum number of draws to print.
-Can be controlled globally via the \code{"posterior.max_draws"} option
-(see \code{\link{options}} details).}
+\item{max_draws}{(positive integer) The maximum number of draws to print. Can
+be controlled globally via the \code{"posterior.max_draws"}
+\link[base:options]{option}.}
 
-\item{max_variables}{Maximum number of variables to print.
-Can be controlled globally via the \code{"posterior.max_variables"} option
-(see \code{\link{options}} for details).}
+\item{max_variables}{(positive integer) The maximum number of variables to
+print. Can be controlled globally via the \code{"posterior.max_variables"}
+\link[base:options]{option}.}
 
-\item{reserved}{Logical. Indicates whether reserved variables should be
-included in the output. Defaults to \code{FALSE}.
-See \code{\link{reserved-variables}} for an overview of currently reserved
-variable names.}
+\item{reserved}{(logical) Should reserved variables be included in the
+output? Defaults to \code{FALSE}. See \code{\link{reserved-variables}} for an overview of
+currently reserved variable names.}
 
-\item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}
+\item{...}{Further arguments passed to the underlying \code{\link[=print]{print()}} methods.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.

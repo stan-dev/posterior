@@ -16,29 +16,30 @@ rstar(
 )
 }
 \arguments{
-\item{x}{A \code{\link{draws_df}} object or one coercible to a \code{draws_df} object.}
+\item{x}{(draws) A \code{\link{draws_df}} object or one coercible to a \code{draws_df} object.}
 
-\item{split}{Logical. If \code{TRUE}, compute estimate on split chains.}
+\item{split}{(logical) Should the estimate be computed on split chains? The
+default is \code{TRUE}.}
 
-\item{uncertainty}{Logical. Indicates whether to provide a vector of R*
+\item{uncertainty}{(logical). Indicates whether to provide a vector of R*
 values representing uncertainty in the calculated value (if \code{TRUE}) or a
-single value (if \code{FALSE}). Default is \code{TRUE.}}
+single value (if \code{FALSE}). The default is \code{TRUE.}}
 
-\item{method}{The machine learning classifier to use (must be available in
-the \pkg{caret} package). The default is \code{"rf"}, which calls the random
-forest classifier.}
+\item{method}{(string) The machine learning classifier to use (must be
+available in the \pkg{caret} package). The default is \code{"rf"}, which calls
+the random forest classifier.}
 
-\item{hyperparameters}{A named list of hyperparameter settings passed to the
-classifier. Default for random forest classifier (\code{method = "rf"}) is
-\code{mtry = floor(sqt(nvariables(x)))};
-default for gradient-based model (\code{method = "gbm"}) is
-\verb{interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10}.}
+\item{hyperparameters}{(named list) Hyperparameter settings passed to the classifier.
+The default for the random forest classifier (\code{method = "rf"}) is
+\code{list(mtry = floor(sqt(nvariables(x))))}.
+The default for the gradient-based model (\code{method = "gbm"}) is
+\code{list(interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10)}.}
 
-\item{training_proportion}{Proportion of iterations used to train the
-classifier. Default is 0.7.}
+\item{training_proportion}{(positive real) The proportion (in \verb{(0,1)}) of
+iterations in used to train the classifier. The default is \code{0.7}.}
 
-\item{nsimulations}{Number of R* values in the returned vector if
-\code{uncertainty} is \code{TRUE}. Default is 1000.}
+\item{nsimulations}{(positive integer) The number of R* values in the
+returned vector if \code{uncertainty} is \code{TRUE}. The default is \code{1000.}}
 
 \item{...}{Other arguments passed to \code{caret::train()}.}
 }
@@ -99,6 +100,20 @@ rstar(x, method = "knn")
 }
 \references{
 Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
-diagnostic with uncertainty using gradient-boosted machines \emph{arXiv
-preprint} \code{arXiv:2003.07900}.
+diagnostic with uncertainty using gradient-boosted machines.
+\emph{arXiv preprint} \code{arXiv:2003.07900}.
 }
+\seealso{
+Other diagnostics: 
+\code{\link{ess_basic}()},
+\code{\link{ess_bulk}()},
+\code{\link{ess_quantile}()},
+\code{\link{ess_sd}()},
+\code{\link{ess_tail}()},
+\code{\link{mcse_mean}()},
+\code{\link{mcse_quantile}()},
+\code{\link{mcse_sd}()},
+\code{\link{rhat_basic}()},
+\code{\link{rhat}()}
+}
+\concept{diagnostics}

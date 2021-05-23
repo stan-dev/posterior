@@ -7,10 +7,9 @@
 rvar_rng(.f, n, ..., ndraws = NULL)
 }
 \arguments{
-\item{.f}{A function (or character vector) representing a random-number
-generating function that follows the pattern of base random number generators
-(like \code{rnorm()}, \code{rbinom()}, etc).
-It must:
+\item{.f}{(function) A function (or string naming a function) representing a
+random-number generating function that follows the pattern of base random
+number generators (like \code{rnorm()}, \code{rbinom()}, etc). It must:
 \itemize{
 \item Have a first argument, \code{n}, giving the number of draws to take from the
 distribution
@@ -18,16 +17,18 @@ distribution
 \item Return a single vector of length \code{n}
 }}
 
-\item{n}{The length of the output \code{\link{rvar}} vector (\strong{not} the number of draws)}
+\item{n}{(positive integer) The length of the output \code{\link{rvar}} vector (\strong{not}
+the number of draws).}
 
-\item{...}{arguments passed to \code{.f}. These arguments may include \code{\link{rvar}}s, so
-long as they are vectors only (no multidimensional \code{\link{rvar}}s are allowed).}
+\item{...}{Arguments passed to \code{.f}. These arguments may include \code{\link{rvar}}s,
+so long as they are vectors only (no multidimensional \code{\link{rvar}}s are
+allowed).}
 
-\item{ndraws}{When no \code{\link{rvar}}s are supplied in \code{...}, this is the number
-of draws that will be used to construct the returned random variable. If \code{NULL},
-\code{getOption("posterior.rvar_ndraws")} is used (default 4000). If \code{...} contains
-\code{\link{rvar}}s, the number of draws in the provided \code{\link{rvar}}s is used instead of
-the value of this argument.}
+\item{ndraws}{(positive integer) The number of draws used to construct the
+returned random variable if no \code{\link{rvar}}s are supplied in \code{...}. If \code{NULL},
+\code{getOption("posterior.rvar_ndraws")} is used (default 4000). If \code{...}
+contains \code{\link{rvar}}s, the number of draws in the provided \code{\link{rvar}}s is used
+instead of the value of this argument.}
 }
 \value{
 A single-dimensional \code{\link{rvar}} of length \code{n}.

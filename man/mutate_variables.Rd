@@ -22,13 +22,14 @@ mutate_variables(.x, ...)
 \method{mutate_variables}{draws_rvars}(.x, ...)
 }
 \arguments{
-\item{.x}{A \code{\link{draws}} object.}
+\item{.x}{(draws) A \code{\link{draws}} object.}
 
-\item{...}{Name-value pairs of expressions, each with length 1 or same length
-as in the entire input (i.e., number of iterations or draws). The name of
-each argument will be the name of a new variable, and the value will be its
-corresponding value. Use a \code{NULL} value in \code{mutate_variables} to drop a
-variable. New variables overwrite existing variables of the same name.}
+\item{...}{Name-value pairs of expressions, each with either length 1 or the
+same length as in the entire input (i.e., number of iterations or draws).
+The name of each argument will be the name of a new variable, and the value
+will be its corresponding value. Use a \code{NULL} value in \code{mutate_variables}
+to drop a variable. New variables overwrite existing variables of the same
+name.}
 }
 \value{
 Returns a \code{\link{draws}} object of the same format as \code{.x}, with variables mutated

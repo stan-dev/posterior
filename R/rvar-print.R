@@ -3,16 +3,17 @@
 #' Printing and formatting methods for [`rvar`]s.
 #'
 #' @encoding UTF-8
-#' @param x,object An [`rvar`].
+#' @param x,object (rvar) The [`rvar`] to print.
 #' @template args-print-digits
 #' @template args-print-summary
 #' @template args-print-dots
-#' @param color Whether or not to use color when formatting the output. If `TRUE`,
-#' the [pillar::style_num()] functions may be used to produce strings containing
-#' control sequences to produce colored output on the terminal.
-#' @param vec.len Numeric (>= 0) indicating how many 'first few' elements are
-#' displayed of each vector. If `NULL`, defaults to `getOption("str")$vec.len`,
-#' which defaults to 4.
+#' @param color (logical) Whether or not to use color when formatting the
+#'   output. If `TRUE`, the [pillar::style_num()] functions may be used to
+#'   produce strings containing control sequences to produce colored output on
+#'   the terminal.
+#' @param vec.len (nonnegative integer) How many 'first few' elements are
+#'   displayed of each vector. If `NULL`, defaults to
+#'   `getOption("str")$vec.len`, which defaults to 4.
 #'
 #' @details
 #' `print()` and `str()` print out [`rvar`] objects by summarizing each element

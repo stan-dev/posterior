@@ -11,9 +11,10 @@ thin_draws(x, thin, ...)
 \method{thin_draws}{draws}(x, thin, ...)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
-\item{thin}{A positive integer specifying the period for selecting draws.}
+\item{thin}{(positive integer) The period for selecting draws.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
@@ -21,7 +22,7 @@ thin_draws(x, thin, ...)
 A \code{draws} object of the same class as \code{x}.
 }
 \description{
-Thin \code{\link{draws}} objects to reduce their size and autocorrelation of the chains.
+Thin \code{\link{draws}} objects to reduce their size and autocorrelation in the chains.
 }
 \examples{
 x <- example_draws()

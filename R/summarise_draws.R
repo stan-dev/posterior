@@ -9,31 +9,46 @@
 #'
 #' @name draws_summary
 #'
-#' @param x,object A `draws` object or one coercible to a `draws` object.
-#' @param ... Name-value pairs of summary functions.
-#'   The name will be the name of the variable in the result unless
-#'   the function returns a named vector in which case the latter names
-#'   are used. Functions can be passed in all formats supported by
-#'   [as_function()][rlang::as_function]. See the 'Examples' section below
-#'   for examples.
-#' @param .args Optional `list` of additional arguments passed to the summary
-#'   functions.
-#' @param .cores Positive number of cores for computing summaries for different
-#'   variables in parallel. Coerced to integer if possible, otherwise errors.
-#'   Defaults to `.cores = 1` in which case no parallelization is implemented.
-#'   By default, creates a socket cluster on Windows and forks otherwise.
+#' @param .x,object (draws) A `draws` object or one coercible to a `draws` object.
+#' @param ... Name-value pairs of summary or [diagnostic][diagnostics]
+#'   functions. The provided names will be used as the names of the columns in
+#'   the result *unless* the function returns a named vector, in which case the
+#'   latter names are used. The functions can be specified in any format
+#'   supported by [as_function()][rlang::as_function]. See **Examples**.
+#' @param .args (named list) Optional arguments passed to the summary functions.
+#' @param .cores (positive integer) The number of cores to use for computing
+#'   summaries for different variables in parallel. Coerced to integer if
+#'   possible, otherwise errors. The default is `.cores = 1`, in which case no
+#'   parallelization is implemented. By default, a socket cluster is used on
+#'   Windows and forks otherwise.
 #'
 #' @return
 #' The `summarise_draws()` methods return a [tibble][tibble::tibble] data frame.
-#' The first column, `"variable"`, contains the variable names and the remaining
+#' The first column (`"variable"`) contains the variable names and the remaining
 #' columns contain summary statistics and diagnostics.
 #'
-#' @details
-#' By default, the following summary functions are used: [mean()], [median()],
-#' [sd()], [mad()], [quantile2()], [rhat()], [ess_bulk()], and [ess_tail()].
 #' The functions `default_summary_measures()`, `default_convergence_measures()`,
 #' and `default_mcse_measures()` return character vectors of names of the
-#' default measures included in the package.
+#' default measures.
+#'
+#' @details
+#' The default summary functions used are the ones specified by
+#' `default_summary_measures()` and `default_convergence_measures()`:
+#'
+#' `default_summary_measures()`
+#' * [mean()]
+#' * [median()]
+#' * [sd()]
+#' * [mad()]
+#' * [quantile2()]
+#'
+#' `default_convergence_measures()`
+#' * [rhat()]
+#' * [ess_bulk()]
+#' * [ess_tail()]
+#'
+#' @seealso [`diagnostics`] for a list of available diagnostics and links to
+#'   their individual help pages.
 #'
 #' @examples
 #' x <- example_draws("eight_schools")
@@ -42,9 +57,13 @@
 #'
 #' summarise_draws(x)
 #' summarise_draws(x, "mean", "median")
-#' summarise_draws(x, default_convergence_measures())
 #' summarise_draws(x, mean, mcse = mcse_mean)
 #' summarise_draws(x, ~quantile(.x, probs = c(0.4, 0.6)))
+#'
+#' # using default_*_meaures()
+#' summarise_draws(x, default_summary_measures())
+#' summarise_draws(x, default_convergence_measures())
+#' summarise_draws(x, default_mcse_measures())
 #'
 #' # illustrate use of '.args'
 #' ws <- rexp(ndraws(x))
@@ -54,7 +73,7 @@ NULL
 
 #' @rdname draws_summary
 #' @export
-summarise_draws <- function(x, ...) {
+summarise_draws <- function(.x, ...) {
   UseMethod("summarise_draws")
 }
 
@@ -64,15 +83,15 @@ summarize_draws <- summarise_draws
 
 
 #' @export
-summarise_draws.default <- function(x, ...) {
-  x <- as_draws(x)
-  summarise_draws(x, ...)
+summarise_draws.default <- function(.x, ...) {
+  .x <- as_draws(.x)
+  summarise_draws(.x, ...)
 }
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
-  if (ndraws(x) == 0L) {
+summarise_draws.draws <- function(.x, ..., .args = list(), .cores = 1) {
+  if (ndraws(.x) == 0L) {
     return(empty_draws_summary())
   }
 
@@ -130,9 +149,9 @@ summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
 
   # it is more efficient to repair and transform objects for all variables
   # at once instead of doing it within the loop for each variable separately
-  x <- repair_draws(x)
-  x <- as_draws_array(x)
-  variables_x <- variables(x)
+  .x <- repair_draws(.x)
+  .x <- as_draws_array(.x)
+  variables_x <- variables(.x)
 
   if (!length(variables_x)) {
     warning_no_call(
@@ -143,9 +162,9 @@ summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
   }
 
   if (.cores == 1) {
-    out <- summarise_draws_helper(x, funs, .args)
+    out <- summarise_draws_helper(.x, funs, .args)
   } else {
-    x <- x[, , variables_x]
+    .x <- .x[, , variables_x]
     n_vars <- length(variables_x)
     chunk_size <- ceiling(n_vars / .cores)
     n_chunks <- ceiling(n_vars / chunk_size)
@@ -153,7 +172,7 @@ summarise_draws.draws <- function(x, ..., .args = list(), .cores = 1) {
     for (i in seq_len(n_chunks)) {
       if ((chunk_size * (i - 1) + 1) <= n_vars) {
         chunk <- (chunk_size * (i - 1) + 1):(min(c(chunk_size * i, n_vars)))
-        chunk_list[[i]] <- x[, , chunk]
+        chunk_list[[i]] <- .x[, , chunk]
       }
     }
     if (checkmate::test_os("windows")) {
@@ -205,10 +224,10 @@ summary.draws <- function(object, ...) {
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.rvar <- function(x, ...) {
-  .x <- draws_rvars(x = x)
-  names(.x) <- deparse_pretty(substitute(x))
-  summarise_draws(.x, ...)
+summarise_draws.rvar <- function(.x, ...) {
+  x <- draws_rvars(x = .x)
+  names(x) <- deparse_pretty(substitute(.x))
+  summarise_draws(x, ...)
 }
 
 #' @rdname draws_summary

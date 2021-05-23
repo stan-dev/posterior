@@ -11,7 +11,8 @@ as_draws(x, ...)
 is_draws(x)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }

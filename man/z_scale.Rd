@@ -7,7 +7,7 @@
 z_scale(x)
 }
 \arguments{
-\item{x}{A numeric array of values.}
+\item{x}{(numeric) A scalar, vector, matrix, or array of values.}
 }
 \value{
 A numeric array of rank normalized values with the same size

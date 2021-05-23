@@ -1,31 +1,32 @@
 #' Resample `draws` objects
 #'
-#' Resample [`draws`] objects according to given weights obtained,
-#' for instance, through importance sampling.
+#' Resample [`draws`] objects according to provided weights, for example weights
+#' obtained through importance sampling.
 #'
 #' @template args-methods-x
-#' @param weights A vector of positive weights of length equal to the number of
-#'   draws in `draws` (as obtained by method [`ndraws`]). Weights will be
-#'   internally normalized. If `weights` is `NULL` (the default), an attempt
-#'   will be made to extract weights stored already in the draws object (via
-#'   [`weight_draws`]). How exactly the weights influence the resampling
-#'   depends on the `method` argument.
-#' @param method Name of the resampling method being applied. Possible choices
-#'   are `"simple"` for simple random resampling with replacement,
-#'   `"simple_no_replace"` for simple random resampling without replacement,
-#'   `"stratified"` for stratified resampling with replacement and
-#'   `"deterministic"` for deterministic resampling with replacement. Currently,
-#'   `"stratified"` is the default as it has comparably low variance and bias
-#'   with respect to ideal resampling. The latter would sample perfectly
-#'   proportional to the weights but is not possible in practice where only a
-#'   finite number of draws are available. For more details about resampling
-#'   methods, see Kitagawa (1996).
-#' @param ndraws Number of draws to be returned. By default (`NULL`), `ndraws`
-#'   is set internally to the total number of draws in `x` if sensible.
+#' @param weights (numeric vector) A vector of positive weights of length
+#'   `ndraws(x)`. The weights will be internally normalized. If `weights` is not
+#'   specified, an attempt will be made to extract any weights already stored in
+#'   the draws object (via [weight_draws()]). How exactly the weights influence
+#'   the resampling depends on the `method` argument.
+#' @param method (string) The resampling method to use:
+#'  * `"simple"`: simple random resampling with replacement
+#'  * `"simple_no_replace"`: simple random resampling without replacement
+#'  * `"stratified"`: stratified resampling with replacement
+#'  * `"deterministic"`: deterministic resampling with replacement
+#'
+#'  Currently, `"stratified"` is the default as it has comparably low variance
+#'  and bias with respect to ideal resampling. The latter would sample perfectly
+#'  proportional to the weights, but this is not possible in practice due to the
+#'  finite number of draws available. For more details about resampling methods,
+#'  see Kitagawa (1996).
+#' @param ndraws (positive integer) The number of draws to be returned. By
+#'   default `ndraws` is set internally to the total number of draws in `x` if
+#'   sensible.
 #' @template args-methods-dots
 #' @template return-draws
 #'
-#' @details Upon usage of `resample_draws`, chains will be automatically merged
+#' @details Upon usage of `resample_draws()`, chains will automatically be merged
 #'   due to subsetting of individual draws (see [`subset_draws`] for details).
 #'   Also, weights stored in the `draws` object will be removed in the process,
 #'   as resampling invalidates existing weights.
@@ -35,10 +36,12 @@
 #' State Space Models, *Journal of Computational and Graphical Statistics*,
 #' 5(1):1-25, 1996.
 #'
+#' @seealso [resample_draws()]
+#'
 #' @examples
 #' x <- as_draws_df(example_draws())
 #'
-#' # random weights for illustrationary purposes
+#' # random weights for justr for demonstration
 #' w <- runif(ndraws(x), 0, 10)
 #'
 #' # use default stratified sampling
@@ -66,7 +69,7 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
     weights <- weights(x, normalize = TRUE)
     if (is.null(weights)) {
       stop_no_call("No weights are provided and none can ",
-            "be found within the draws object.")
+                   "be found within the draws object.")
     }
     # resampling invalidates stored weights
     x <- remove_variables(x, ".log_weight")
@@ -91,6 +94,9 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
   out <- seq_along(weights)
   sample(out, ndraws, replace = TRUE, prob = weights)
 }
+
+
+# internal ----------------------------------------------------------------
 
 # simple random resampling without replacement
 # @return index vector of length 'ndraws'
@@ -128,7 +134,7 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
       out[j] <- i
     }
   }
-  return(out)
+  out
 }
 
 # Deterministic resampling

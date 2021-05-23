@@ -7,25 +7,27 @@
 rdo(expr, dim = NULL, ndraws = NULL)
 }
 \arguments{
-\item{expr}{A bare expression that can (optionally) contain \code{\link{rvar}}s. The expression
-supports \link{quasiquotation}.}
+\item{expr}{(expression) A bare expression that can (optionally) contain
+\code{\link{rvar}}s. The expression supports \link{quasiquotation}.}
 
-\item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
-or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.
-\strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the underlying array, so you cannot
-change the number of draws using this argument.}
+\item{dim}{(integer vector) One or more integers giving the maximal indices
+in each dimension to override the dimensions of the \code{\link{rvar}} to be created
+(see \code{\link[=dim]{dim()}}). If \code{NULL} (the default), \code{dim} is determined by the input.
+\strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the
+underlying array, so you cannot change the number of draws using this
+argument.}
 
-\item{ndraws}{When no \code{\link{rvar}}s are supplied in \code{expr}, this is the number
-of draws that will be used to construct new random variables. If \code{NULL},
-\code{getOption("posterior.rvar_ndraws")} is used (default 4000). If \code{expr} contains
-\code{\link{rvar}}s, the number of draws in the provided \code{\link{rvar}}s is used instead of
-the value of this argument.}
+\item{ndraws}{(positive integer) The number of draws used to construct new
+random variables if no \code{\link{rvar}}s are supplied in \code{expr}. If \code{NULL},
+\code{getOption("posterior.rvar_ndraws")} is used (default 4000). If \code{expr}
+contains \code{\link{rvar}}s, the number of draws in the provided \code{\link{rvar}}s is used
+instead of the value of this argument.}
 }
 \value{
 An \code{\link{rvar}}.
 }
 \description{
-Execute (nearly) arbitrary R expressions that may include \code{\link{rvar}}s,
+Execute (nearly) arbitrary \R expressions that may include \code{\link{rvar}}s,
 producing a new \code{\link{rvar}}.
 }
 \details{

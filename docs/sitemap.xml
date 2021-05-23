@@ -19,6 +19,9 @@
     <loc>https://mc-stan.org/posterior/reference/chol.rvar.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/diagnostics.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/draws-index.html</loc>
   </url>
   <url>
@@ -157,13 +160,19 @@
     <loc>https://mc-stan.org/posterior/reference/rvar-matmult.html</loc>
   </url>
   <url>
-    <loc>https://mc-stan.org/posterior/reference/rvar-summaries-by-draw.html</loc>
+    <loc>https://mc-stan.org/posterior/reference/rvar-summaries-over-draws.html</loc>
   </url>
   <url>
-    <loc>https://mc-stan.org/posterior/reference/rvar-summaries.html</loc>
+    <loc>https://mc-stan.org/posterior/reference/rvar-summaries-within-draws.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar_apply.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar_is_finite.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar_rng.html</loc>
@@ -191,6 +200,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/z_scale.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/articles/posterior.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/articles/rvar.html</loc>

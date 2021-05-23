@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -42,6 +42,9 @@
     <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/index.html">Vignettes</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -115,13 +118,13 @@
 
       
 
-      </header><script src="rvar_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="rvar_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>rvar: The Random Variable Datatype</h1>
                         <h4 class="author">Matthew Kay</h4>
             
-            <h4 class="date">2021-04-10</h4>
+            <h4 class="date">2021-05-22</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/stan-dev/posterior/blob/master/vignettes/rvar.Rmd"><code>vignettes/rvar.Rmd</code></a></small>
       <div class="hidden name"><code>rvar.Rmd</code></div>
@@ -193,7 +196,7 @@
 ## [1,]  1.28 ± 0.17   0.53 ± 0.20  -0.40 ± 0.28 
 ## [2,]  0.53 ± 0.20   3.67 ± 0.45  -2.10 ± 0.48 
 ## [3,] -0.40 ± 0.28  -2.10 ± 0.48   8.12 ± 0.95</code></pre>
-<p>The <code><a href="../reference/draws_rvars.html">draws_rvars()</a></code> datatype works much the same way that other <code>draws</code> formats do; see <strong>TODO: INSERT LINK</strong> for an introduction to <code>draws</code> objects. One difference is that <code>draws_rvars</code> counts variables differently, because it allows variables to be multidimensional. For example, the <code>post</code> object above contains two variables, <code>mu</code> and <code>Sigma</code>:</p>
+<p>The <code><a href="../reference/draws_rvars.html">draws_rvars()</a></code> datatype works much the same way that other <code>draws</code> formats do; see the main package vignette at <code><a href="../articles/posterior.html">vignette("posterior")</a></code> for an introduction to <code>draws</code> objects. One difference is that <code>draws_rvars</code> counts variables differently, because it allows variables to be multidimensional. For example, the <code>post</code> object above contains two variables, <code>mu</code> and <code>Sigma</code>:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="../reference/draws-index.html">variables</a></span><span class="op">(</span><span class="va">post</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "mu"    "Sigma"</code></pre>
@@ -226,112 +229,228 @@
 <p>The set of mathematical functions and operators supported by <code>rvar</code>s includes:</p>
 <table class="table">
 <colgroup>
-<col width="38%">
-<col width="61%">
+<col width="53%">
+<col width="46%">
 </colgroup>
 <thead><tr class="header">
-<th>Group</th>
-<th>Functions and operators</th>
+<th align="left">Group</th>
+<th align="left">Functions and operators</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>Arithmetic operators</td>
-<td>
+<td align="left">Arithmetic operators</td>
+<td align="left">
 <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>, <code><a href="https://rdrr.io/r/base/Arithmetic.html">-</a></code>, <code><a href="https://rdrr.io/r/base/Arithmetic.html">*</a></code>, <code><a href="https://rdrr.io/r/base/Arithmetic.html">/</a></code>, <code><a href="https://rdrr.io/r/base/Arithmetic.html">^</a></code>, <code><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></code>, <code><a href="https://rdrr.io/r/base/Arithmetic.html">%/%</a></code>
 </td>
 </tr>
 <tr class="even">
-<td>Logical operators</td>
-<td>
+<td align="left">Logical operators</td>
+<td align="left">
 <code><a href="https://rdrr.io/r/base/Logic.html">&amp;</a></code>, <code><a href="https://rdrr.io/r/base/Logic.html">|</a></code>, <code><a href="https://rdrr.io/r/base/Logic.html">!</a></code>
 </td>
 </tr>
 <tr class="odd">
-<td>Comparison operators</td>
-<td>
+<td align="left">Comparison operators</td>
+<td align="left">
 <code><a href="https://rdrr.io/r/base/Comparison.html">==</a></code>, <code><a href="https://rdrr.io/r/base/Comparison.html">!=</a></code>, <code><a href="https://rdrr.io/r/base/Comparison.html">&lt;</a></code>, <code><a href="https://rdrr.io/r/base/Comparison.html">&lt;=</a></code>, <code><a href="https://rdrr.io/r/base/Comparison.html">&gt;=</a></code>, <code><a href="https://rdrr.io/r/base/Comparison.html">&gt;</a></code>
 </td>
 </tr>
 <tr class="even">
-<td>Matrix multiplication</td>
-<td><code><a href="../reference/rvar-matmult.html">%**%</a></code></td>
+<td align="left">Matrix multiplication</td>
+<td align="left"><code><a href="../reference/rvar-matmult.html">%**%</a></code></td>
 </tr>
 <tr class="odd">
-<td>Basic functions</td>
-<td>
+<td align="left">Basic functions</td>
+<td align="left">
 <code><a href="https://rdrr.io/r/base/MathFun.html">abs()</a></code>, <code><a href="https://rdrr.io/r/base/sign.html">sign()</a></code><br><code><a href="https://rdrr.io/r/base/MathFun.html">sqrt()</a></code><br><code><a href="https://rdrr.io/r/base/Round.html">floor()</a></code>, <code><a href="https://rdrr.io/r/base/Round.html">ceiling()</a></code>, <code><a href="https://rdrr.io/r/base/Round.html">trunc()</a></code>, <code><a href="https://rdrr.io/r/base/Round.html">round()</a></code>, <code><a href="https://rdrr.io/r/base/Round.html">signif()</a></code>
 </td>
 </tr>
 <tr class="even">
-<td>Logarithms and exponentials</td>
-<td>
+<td align="left">Logarithms and exponentials</td>
+<td align="left">
 <code><a href="https://rdrr.io/r/base/Log.html">exp()</a></code>, <code><a href="https://rdrr.io/r/base/Log.html">expm1()</a></code><br><code><a href="https://rdrr.io/r/base/Log.html">log()</a></code>, <code><a href="https://rdrr.io/r/base/Log.html">log10()</a></code>, <code><a href="https://rdrr.io/r/base/Log.html">log2()</a></code>, <code><a href="https://rdrr.io/r/base/Log.html">log1p()</a></code>
 </td>
 </tr>
 <tr class="odd">
-<td>Trigonometric functions</td>
-<td>
+<td align="left">Trigonometric functions</td>
+<td align="left">
 <code><a href="https://rdrr.io/r/base/Trig.html">cos()</a></code>, <code><a href="https://rdrr.io/r/base/Trig.html">sin()</a></code>, <code><a href="https://rdrr.io/r/base/Trig.html">tan()</a></code><br><code><a href="https://rdrr.io/r/base/Trig.html">cospi()</a></code>, <code><a href="https://rdrr.io/r/base/Trig.html">sinpi()</a></code>, <code><a href="https://rdrr.io/r/base/Trig.html">tanpi()</a></code><br><code><a href="https://rdrr.io/r/base/Trig.html">acos()</a></code>, <code><a href="https://rdrr.io/r/base/Trig.html">asin()</a></code>, <code><a href="https://rdrr.io/r/base/Trig.html">atan()</a></code>
 </td>
 </tr>
 <tr class="even">
-<td>Hyperbolic functions</td>
-<td>
+<td align="left">Hyperbolic functions</td>
+<td align="left">
 <code><a href="https://rdrr.io/r/base/Hyperbolic.html">cosh()</a></code>, <code><a href="https://rdrr.io/r/base/Hyperbolic.html">sinh()</a></code>, <code><a href="https://rdrr.io/r/base/Hyperbolic.html">tanh()</a></code><br><code><a href="https://rdrr.io/r/base/Hyperbolic.html">acosh()</a></code>, <code><a href="https://rdrr.io/r/base/Hyperbolic.html">asinh()</a></code>, <code><a href="https://rdrr.io/r/base/Hyperbolic.html">atanh()</a></code>
 </td>
 </tr>
 <tr class="odd">
-<td>Special functions</td>
-<td>
+<td align="left">Special functions</td>
+<td align="left">
 <code><a href="https://rdrr.io/r/base/Special.html">lgamma()</a></code>, <code><a href="https://rdrr.io/r/base/Special.html">gamma()</a></code>, <code><a href="https://rdrr.io/r/base/Special.html">digamma()</a></code>, <code><a href="https://rdrr.io/r/base/Special.html">trigamma()</a></code>
 </td>
 </tr>
 <tr class="even">
-<td>Cumulative functions</td>
-<td>
+<td align="left">Cumulative functions</td>
+<td align="left">
 <code><a href="https://rdrr.io/r/base/cumsum.html">cumsum()</a></code>, <code><a href="https://rdrr.io/r/base/cumsum.html">cumprod()</a></code>, <code><a href="https://rdrr.io/r/base/cumsum.html">cummax()</a></code>, <code><a href="https://rdrr.io/r/base/cumsum.html">cummin()</a></code>
 </td>
 </tr>
 <tr class="odd">
-<td>Array transposition</td>
-<td>
+<td align="left">Array transposition</td>
+<td align="left">
 <code><a href="https://rdrr.io/r/base/t.html">t()</a></code>, <code><a href="https://rdrr.io/r/base/aperm.html">aperm()</a></code>
 </td>
 </tr>
 <tr class="even">
-<td>Matrix decomposition</td>
-<td><code><a href="https://rdrr.io/r/base/chol.html">chol()</a></code></td>
+<td align="left">Matrix decomposition</td>
+<td align="left"><code><a href="https://rdrr.io/r/base/chol.html">chol()</a></code></td>
 </tr>
 </tbody>
 </table>
 </div>
-<div id="expectations-and-summaries" class="section level2">
+<div id="expectations-and-summary-functions" class="section level2">
 <h2 class="hasAnchor">
-<a href="#expectations-and-summaries" class="anchor"></a>Expectations and summaries</h2>
-<p>The <code><a href="../reference/rvar-summaries.html">E()</a></code> and <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code> functions are aliases of each other, producing means within each cell of an <code>rvar</code>. For example:</p>
+<a href="#expectations-and-summary-functions" class="anchor"></a>Expectations and summary functions</h2>
+<p>The <code><a href="../reference/rvar-summaries-over-draws.html">E()</a></code> function is an alias of <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, producing means within each cell of an <code>rvar</code>. For example, given <code>mu</code>:</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/rvar-summaries.html">E</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.05139284 0.11132363 0.18581977</code></pre>
-<p>You can similarly obtain the <code><a href="https://rdrr.io/r/stats/median.html">median()</a></code> or <code><a href="https://pkg.mitchelloharawild.com/distributional/reference/variance.html">variance()</a></code> of <code>rvar</code> cells:</p>
+<code class="sourceCode R"><span class="va">mu</span></code></pre></div>
+<pre><code>## rvar&lt;100,4&gt;[3] mean ± sd:
+## [1] 0.051 ± 0.11  0.111 ± 0.20  0.186 ± 0.31</code></pre>
+<p>We can get the expectation of each cell of <code>mu</code>:</p>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://pkg.mitchelloharawild.com/distributional/reference/variance.html">variance</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.01265422 0.03948985 0.09851761</code></pre>
-<p>Expectations of logical expressions are probabilities, and can be computed either with <code><a href="../reference/rvar-summaries.html">E()</a></code> / <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code> or with <code><a href="../reference/rvar-summaries.html">Pr()</a></code> (which is purely notational sugar):</p>
+<code class="sourceCode R"><span class="fu"><a href="../reference/rvar-summaries-over-draws.html">E</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 0.05139284 0.11132363 0.18581977</code></pre>
+<p>Expectations of logical expressions are probabilities, and can be computed either with <code><a href="../reference/rvar-summaries-over-draws.html">E()</a></code> / <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code> or with <code><a href="../reference/rvar-summaries-over-draws.html">Pr()</a></code>. <code><a href="../reference/rvar-summaries-over-draws.html">Pr()</a></code> is provided as notational sugar, but also checks that the input is a logical variable before taking the mean:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/rvar-summaries.html">Pr</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="../reference/rvar-summaries-over-draws.html">Pr</a></span><span class="op">(</span><span class="va">mu</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] 0.6600 0.6900 0.7025</code></pre>
+<p>More generally, the <code>rvar</code> data type provides two types of summary functions:</p>
+<ol style="list-style-type: decimal">
+<li>
+<p>Summary functions that mimic base-R vector summary functions, except applied to <code>rvar</code> vectors. These apply their summaries <strong>over</strong> elements of the input vectors <strong>within</strong> each draw, generally returning an <code>rvar</code> of length 1. These functions are prefixed with <code>rvar_</code> as a reminder that they return <code>rvar</code>s. Here is an example of <code><a href="../reference/rvar-summaries-within-draws.html">rvar_mean()</a></code>:</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/rvar-summaries-within-draws.html">rvar_mean</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span></code></pre></div>
+<pre><code>## rvar&lt;100,4&gt;[1] mean ± sd:
+## [1] 0.12 ± 0.11</code></pre>
+</li>
+<li>
+<p>Summary functions that summarise <strong>within</strong> elements of input vectors and <strong>over</strong> draws. These summary functions generally return base arrays (<code>numeric</code> or <code>logical</code>) of the same shape as the input <code>rvar</code>, and are especially useful for diagnostic summaries. These summary functions are not prefixed with <code>rvar_</code> as they do not return <code>rvar</code>s. Here is an example of <code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>:</p>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">mu</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 0.05139284 0.11132363 0.18581977</code></pre>
+<p>You should expect the same values from these functions (though in a different shape) when you use them with <code><a href="../reference/draws_summary.html">summarise_draws()</a></code>, for example:</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">mu</span>, <span class="va">mean</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 3 x 2
+##   variable   mean
+##   &lt;chr&gt;     &lt;dbl&gt;
+## 1 mu[1]    0.0514
+## 2 mu[2]    0.111 
+## 3 mu[3]    0.186</code></pre>
+</li>
+</ol>
+<p>Here is a table of both types of summary functions:</p>
+<table class="table">
+<colgroup>
+<col width="20%">
+<col width="38%">
+<col width="41%">
+</colgroup>
+<thead><tr class="header">
+<th></th>
+<th align="left">1. Summarise <em>within</em> draws,<br><em>over</em> elements</th>
+<th align="left">2. Summarise <em>over</em> draws,<br><em>within</em> elements<br>
+</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>
+<strong>Output format</strong><br>of <code>res = f(x)</code>
+</td>
+<td align="left">
+<code>rvar</code> of length 1</td>
+<td align="left">
+<code>array</code> of same shape as input <code>rvar</code>
+</td>
+</tr>
+<tr class="even">
+<td><strong>Help page</strong></td>
+<td align="left"><code><a href="../reference/rvar-summaries-within-draws.html">help("rvar-summaries-within-draws")</a></code></td>
+<td align="left"><code><a href="../reference/rvar-summaries-over-draws.html">help("rvar-summaries-over-draws")</a></code></td>
+</tr>
+<tr class="odd">
+<td>Numeric summaries</td>
+<td align="left">
+<code><a href="../reference/rvar-summaries-within-draws.html">rvar_median()</a></code><br><code><a href="../reference/rvar-summaries-within-draws.html">rvar_sum()</a></code>, <code><a href="../reference/rvar-summaries-within-draws.html">rvar_prod()</a></code><br><code><a href="../reference/rvar-summaries-within-draws.html">rvar_min()</a></code>, <code><a href="../reference/rvar-summaries-within-draws.html">rvar_max()</a></code>
+</td>
+<td align="left">
+<code><a href="https://rdrr.io/r/stats/median.html">median()</a></code><br><code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code>, <code><a href="https://rdrr.io/r/base/prod.html">prod()</a></code><br><code><a href="https://rdrr.io/r/base/Extremes.html">min()</a></code>, <code><a href="https://rdrr.io/r/base/Extremes.html">max()</a></code>
+</td>
+</tr>
+<tr class="even">
+<td>Mean</td>
+<td align="left">
+<code><a href="../reference/rvar-summaries-within-draws.html">rvar_mean()</a></code><br><em>N/A</em>
+</td>
+<td align="left">
+<code><a href="https://rdrr.io/r/base/mean.html">mean()</a></code>, <code><a href="../reference/rvar-summaries-over-draws.html">E()</a></code><br><code><a href="../reference/rvar-summaries-over-draws.html">Pr()</a></code>: enforces that input is <code>logical</code>
+</td>
+</tr>
+<tr class="odd">
+<td>Spread</td>
+<td align="left">
+<code><a href="../reference/rvar-summaries-within-draws.html">rvar_sd()</a></code> <br><code><a href="../reference/rvar-summaries-within-draws.html">rvar_var()</a></code> <br><code><a href="../reference/rvar-summaries-within-draws.html">rvar_mad()</a></code>
+</td>
+<td align="left">
+<code><a href="../reference/rvar-summaries-over-draws.html">sd()</a></code><br><code><a href="../reference/rvar-summaries-over-draws.html">var()</a></code>, <code><a href="https://pkg.mitchelloharawild.com/distributional/reference/variance.html">variance()</a></code><br><code><a href="../reference/rvar-summaries-over-draws.html">mad()</a></code>
+</td>
+</tr>
+<tr class="even">
+<td>Range</td>
+<td align="left">
+<code><a href="../reference/rvar-summaries-within-draws.html">rvar_range()</a></code><br><strong>Note:</strong> <code>length(res) == 2</code>
+</td>
+<td align="left">
+<code><a href="https://rdrr.io/r/base/range.html">range()</a></code><br><strong>Note:</strong> <code>dim(res) == c(2, dim(x))</code>
+</td>
+</tr>
+<tr class="odd">
+<td>Logical summaries</td>
+<td align="left">
+<code><a href="../reference/rvar-summaries-within-draws.html">rvar_all()</a></code>, <code><a href="../reference/rvar-summaries-within-draws.html">rvar_any()</a></code>
+</td>
+<td align="left">
+<code><a href="https://rdrr.io/r/base/all.html">all()</a></code>, <code><a href="https://rdrr.io/r/base/any.html">any()</a></code>
+</td>
+</tr>
+<tr class="even">
+<td>Special value predicates</td>
+<td align="left">
+<code><a href="../reference/rvar_is_finite.html">rvar_is_finite()</a></code><br><code><a href="../reference/rvar_is_finite.html">rvar_is_infinite()</a></code><br><code><a href="../reference/rvar_is_finite.html">rvar_is_nan()</a></code><br><code><a href="../reference/rvar_is_finite.html">rvar_is_na()</a></code><br><strong>Note:</strong> <code>dim(res) == dim(x)</code>. These functions act within draws but do not summarise over elements.</td>
+<td align="left">
+<code><a href="https://rdrr.io/r/base/is.finite.html">is.finite()</a></code><br><code><a href="https://rdrr.io/r/base/is.finite.html">is.infinite()</a></code><br><code><a href="https://rdrr.io/r/base/is.finite.html">is.nan()</a></code><br><code><a href="https://rdrr.io/r/base/NA.html">is.na()</a></code><br><strong>Note:</strong> <code>res[i] == TRUE</code> if <code>x[i]</code> has any draws matching predicate (except for <code><a href="https://rdrr.io/r/base/is.finite.html">is.finite()</a></code>, where all draws in <code>x[i]</code> must match)</td>
+</tr>
+<tr class="odd">
+<td>Diagnostics</td>
+<td align="left"><em>N/A</em></td>
+<td align="left">
+<code><a href="../reference/ess_basic.html">ess_basic()</a></code>, <code><a href="../reference/ess_bulk.html">ess_bulk()</a></code>, <code><a href="../reference/ess_quantile.html">ess_quantile()</a></code>, <code><a href="../reference/ess_sd.html">ess_sd()</a></code>, <code><a href="../reference/ess_tail.html">ess_tail()</a></code>,<br><code><a href="../reference/mcse_mean.html">mcse_mean()</a></code>, <code><a href="../reference/mcse_quantile.html">mcse_quantile()</a></code>, <code><a href="../reference/mcse_sd.html">mcse_sd()</a></code><br><code><a href="../reference/rhat.html">rhat()</a></code>, <code><a href="../reference/rhat_basic.html">rhat_basic()</a></code>
+</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="constants" class="section level2">
 <h2 class="hasAnchor">
 <a href="#constants" class="anchor"></a>Constants</h2>
 <p>Constant <code>rvar</code>s can be constructed by converting numeric vectors or arrays into <code>rvar</code>s using <code><a href="../reference/as_rvar.html">as_rvar()</a></code>, which will return an <code>rvar</code> with one draw and the same dimensions as its input:</p>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">const</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/as_rvar.html">as_rvar</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span>
 <span class="va">const</span></code></pre></div>
 <pre><code>## rvar&lt;1&gt;[3] mean ± sd:
 ## [1] 1 ± NA  2 ± NA  3 ± NA</code></pre>
 <p>While normally <code>rvar</code>s must have the same number of draws to be used in the same expression, <code>rvar</code>s with one draw are treated like constants, and can be combined with other <code>rvar</code>s:</p>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mu</span> <span class="op">+</span> <span class="va">const</span></code></pre></div>
 <pre><code>## rvar&lt;100,4&gt;[3] mean ± sd:
 ## [1] 1.1 ± 0.11  2.1 ± 0.20  3.2 ± 0.31</code></pre>
@@ -354,11 +473,11 @@
 <a href="#converting-functions-with-rfun" class="anchor"></a>Converting functions with <code>rfun()</code>
 </h3>
 <p>The <code><a href="../reference/rfun.html">rfun()</a></code> wrapper converts an existing R function into a new function that <code>rvar</code>s can be passed to it as arguments, and which will return <code>rvar</code>s. We can use <code><a href="../reference/rfun.html">rfun()</a></code> to convert the base <code><a href="https://rdrr.io/r/stats/Normal.html">rnorm()</a></code> and <code><a href="https://rdrr.io/r/stats/GammaDist.html">rgamma()</a></code> random number generating functions into functions that accept and return <code>rvar</code>s:</p>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">rvar_norm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rfun.html">rfun</a></span><span class="op">(</span><span class="va">rnorm</span><span class="op">)</span>
 <span class="va">rvar_gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rfun.html">rfun</a></span><span class="op">(</span><span class="va">rgamma</span><span class="op">)</span></code></pre></div>
 <p>Then we can translate the above example into code using those functions:</p>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu">rvar_norm</span><span class="op">(</span><span class="fl">4</span>, mean <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu">rvar_gamma</span><span class="op">(</span><span class="fl">1</span>, shape <span class="op">=</span> <span class="fl">1</span>, rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">rvar_norm</span><span class="op">(</span><span class="fl">4</span>, <span class="va">mu</span>, <span class="va">sigma</span><span class="op">)</span>
@@ -372,19 +491,19 @@
 <a href="#evaluating-expressions-with-rdo" class="anchor"></a>Evaluating expressions with <code>rdo()</code>
 </h3>
 <p>An alternative to <code><a href="../reference/rfun.html">rfun()</a></code> is to use <code><a href="../reference/rdo.html">rdo()</a></code>, which can be passed nearly-arbitrary R expressions. The expression will be executed multiple times to construct an <code>rvar</code>. E.g., we can write an expression for <code>mu</code> like in the above example:</p>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rdo.html">rdo</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">4</span>, mean <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="va">mu</span></code></pre></div>
 <pre><code>## rvar&lt;4000&gt;[4] mean ± sd:
 ## [1] 0.99 ± 1.00  1.96 ± 0.99  3.02 ± 1.00  4.03 ± 1.01</code></pre>
 <p>We can also control the number of draws using the <code>ndraws</code> argument:</p>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rdo.html">rdo</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">4</span>, mean <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>, ndraws <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
 <span class="va">mu</span></code></pre></div>
 <pre><code>## rvar&lt;1000&gt;[4] mean ± sd:
 ## [1] 0.99 ± 0.97  2.04 ± 1.02  2.98 ± 1.00  3.99 ± 0.98</code></pre>
 <p><code><a href="../reference/rdo.html">rdo()</a></code> expressions can also contain other <code>rvar</code>s, so long as all <code>rvar</code>s in the expression have the same number of draws. Thus, we can re-write the example above that used <code><a href="../reference/rfun.html">rfun()</a></code> as follows:</p>
-<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rdo.html">rdo</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">4</span>, mean <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rdo.html">rdo</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/GammaDist.html">rgamma</a></span><span class="op">(</span><span class="fl">1</span>, shape <span class="op">=</span> <span class="fl">1</span>, rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rdo.html">rdo</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">4</span>, <span class="va">mu</span>, <span class="va">sigma</span><span class="op">)</span><span class="op">)</span>
@@ -404,7 +523,7 @@
 <li>They return a single vector of length <code>n</code>, representing <code>n</code> draws from the distribution.</li>
 </ul>
 <p>You can use any function with this interface with <code><a href="../reference/rvar_rng.html">rvar_rng()</a></code>, and it will adapt it to be able to take <code>rvar</code> arguments and return an <code>rvar</code>, as follows:</p>
-<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rvar_rng.html">rvar_rng</a></span><span class="op">(</span><span class="va">rnorm</span>, <span class="fl">4</span>, mean <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="va">sigma</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rvar_rng.html">rvar_rng</a></span><span class="op">(</span><span class="va">rgamma</span>, <span class="fl">1</span>, shape <span class="op">=</span> <span class="fl">1</span>, rate <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rvar_rng.html">rvar_rng</a></span><span class="op">(</span><span class="va">rnorm</span>, <span class="fl">4</span>, <span class="va">mu</span>, <span class="va">sigma</span><span class="op">)</span>
@@ -419,7 +538,7 @@
 <a href="#broadcasting" class="anchor"></a>Broadcasting</h2>
 <p>Broadcasting for <code>rvar</code>s does not follow R’s vector recycling rules. Instead, when two variables with different dimensions are being used with basic arithmetic functions, dimensions are added until both variables have the same number of dimensions. If two variables <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> differ on the length of dimension <span class="math inline">\(d\)</span>, they can be broadcast to the same size so long as one of the variables has dimension <span class="math inline">\(d\)</span> of size 1. Then that variable will be broadcast up to the same size as the other variable along that dimension. If two variables disagree on the size of a dimension and neither has size 1, it is an error.</p>
 <p>For example, consider this random matrix:</p>
-<div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rdo.html">rdo</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">12</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">12</span><span class="op">)</span>, dim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span>
 <span class="va">X</span></code></pre></div>
 <pre><code>## rvar&lt;4000&gt;[4,3] mean ± sd:
@@ -429,18 +548,18 @@
 ## [3,]  3.00 ± 1.00   7.03 ± 1.01  11.00 ± 1.02 
 ## [4,]  4.01 ± 0.99   8.01 ± 1.02  12.00 ± 1.00</code></pre>
 <p>And this vector of length 3:</p>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rdo.html">rdo</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">3</span><span class="op">:</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>
 <span class="va">y</span></code></pre></div>
 <pre><code>## rvar&lt;4000&gt;[3] mean ± sd:
 ## [1] 3 ± 1  2 ± 1  1 ± 1</code></pre>
 <p>If we attempt to add <code>X</code> and <code>y</code>, it will produce an error as vectors are by default treated as column vectors, and <code>y</code> has length 3 while columns of <code>X</code> have length 4:</p>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">X</span> <span class="op">+</span> <span class="va">y</span></code></pre></div>
 <pre><code>## Error: Cannot broadcast array of shape [4000,3,1] to array of shape [4000,4,3]:
 ## All dimensions must be 1 or equal.</code></pre>
 <p>By contrast, R arrays of the same shape will simply recycle <code>y</code> until it is the same length as <code>X</code> (regardless of the dimensions). Thus will produce a result, though likely not the intended result:</p>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span></code></pre></div>
 <pre><code>##          [,1]      [,2]     [,3]
 ## [1,] 3.992307  7.011170 10.01719
@@ -448,14 +567,14 @@
 ## [3,] 3.992297 10.031501 12.99773
 ## [4,] 7.008743 10.003724 12.99064</code></pre>
 <p>On the other hand, if y were a row vector…</p>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">row_y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html">t</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>
 <span class="va">row_y</span></code></pre></div>
 <pre><code>## rvar&lt;4000&gt;[1,3] mean ± sd:
 ##      [,1]   [,2]   [,3]  
 ## [1,] 3 ± 1  2 ± 1  1 ± 1</code></pre>
 <p>…it would have the same number of columns as <code>X</code> and contain only one row, so it can be broadcast along rows of <code>X</code>:</p>
-<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">X</span> <span class="op">+</span> <span class="va">row_y</span></code></pre></div>
 <pre><code>## rvar&lt;4000&gt;[4,3] mean ± sd:
 ##      [,1]      [,2]      [,3]     
@@ -464,17 +583,72 @@
 ## [3,]  6 ± 1.4   9 ± 1.4  12 ± 1.4 
 ## [4,]  7 ± 1.4  10 ± 1.4  13 ± 1.4</code></pre>
 </div>
-<div id="using-rvars-in-data-frames" class="section level2">
+<div id="applying-functions-over-rvars" class="section level2">
 <h2 class="hasAnchor">
-<a href="#using-rvars-in-data-frames" class="anchor"></a>Using <code>rvar</code>s in data frames</h2>
+<a href="#applying-functions-over-rvars" class="anchor"></a>Applying functions over <code>rvar</code>s</h2>
+<p>The <code>rvar</code> data type supplies an implementation of <code><a href="https://rdrr.io/r/base/list.html">as.list()</a></code>, which should give compatibility with the base R family of functions for applying functions over arrays: <code><a href="https://rdrr.io/r/base/apply.html">apply()</a></code>, <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code>, <code><a href="https://rdrr.io/r/base/lapply.html">vapply()</a></code>, <code><a href="https://rdrr.io/r/base/lapply.html">sapply()</a></code>, etc. You can also manually use <code><a href="https://rdrr.io/r/base/list.html">as.list()</a></code> to convert an <code>rvar</code> into a list along its first dimension, which may be necessary for compatibility with some functions (like <code>purrr:map()</code>).</p>
+<p>For example, given this multidimensional <code>rvar</code>…</p>
+<div class="sourceCode" id="cb58"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">3456</span><span class="op">)</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rvar_rng.html">rvar_rng</a></span><span class="op">(</span><span class="va">rnorm</span>, <span class="fl">24</span>, mean <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">24</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span>
+<span class="va">x</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[2,3,4] mean ± sd:
+## , , 1
+## 
+##      [,1]       [,2]       [,3]      
+## [1,]  1 ± 0.99   3 ± 0.98   5 ± 1.00 
+## [2,]  2 ± 1.01   4 ± 0.99   6 ± 1.00 
+## 
+## , , 2
+## 
+##      [,1]       [,2]       [,3]      
+## [1,]  7 ± 1.00   9 ± 0.99  11 ± 1.00 
+## [2,]  8 ± 1.00  10 ± 1.00  12 ± 1.00 
+## 
+## , , 3
+## 
+##      [,1]       [,2]       [,3]      
+## [1,] 13 ± 1.00  15 ± 1.03  17 ± 0.99 
+## [2,] 14 ± 1.00  16 ± 0.98  18 ± 1.00 
+## 
+## , , 4
+## 
+##      [,1]       [,2]       [,3]      
+## [1,] 19 ± 0.99  21 ± 0.99  23 ± 1.02 
+## [2,] 20 ± 1.00  22 ± 0.99  24 ± 1.01</code></pre>
+<p>… you can apply functions along the margins using <code><a href="https://rdrr.io/r/base/apply.html">apply()</a></code> (here, a silly example):</p>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, <span class="va">length</span><span class="op">)</span></code></pre></div>
+<pre><code>##      [,1] [,2] [,3]
+## [1,]    4    4    4
+## [2,]    4    4    4</code></pre>
+<p>One exception is that while <code><a href="https://rdrr.io/r/base/apply.html">apply()</a></code> will work with an <code>rvar</code> input if your function returns base data types (like numerics), it will not give you simplified <code>rvar</code> arrays if your function returns an <code>rvar</code>. Thus, we supply the <code><a href="../reference/rvar_apply.html">rvar_apply()</a></code> function, which takes in either base arrays or <code>rvar</code> arrays and returns <code>rvar</code> arrays, and which also uses the <code>rvar</code> broadcasting rules to combine the results of the applied function.</p>
+<p>For example, you can use <code><a href="../reference/rvar_apply.html">rvar_apply()</a></code> with <code><a href="../reference/rvar-summaries-within-draws.html">rvar_mean()</a></code> to compute the distributions of means along one margin of an array:</p>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/rvar_apply.html">rvar_apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span>, <span class="va">rvar_mean</span><span class="op">)</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[2] mean ± sd:
+## [1] 12 ± 0.29  13 ± 0.29</code></pre>
+<p>Or along multiple dimensions:</p>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/rvar_apply.html">rvar_apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, <span class="va">rvar_mean</span><span class="op">)</span></code></pre></div>
+<pre><code>## rvar&lt;4000&gt;[3,4] mean ± sd:
+##      [,1]         [,2]         [,3]         [,4]        
+## [1,]  1.5 ± 0.71   7.5 ± 0.70  13.5 ± 0.71  19.5 ± 0.71 
+## [2,]  3.5 ± 0.69   9.5 ± 0.70  15.5 ± 0.71  21.5 ± 0.70 
+## [3,]  5.5 ± 0.71  11.5 ± 0.70  17.5 ± 0.70  23.5 ± 0.72</code></pre>
+</div>
+<div id="using-rvars-in-data-frames-and-in-ggplot2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#using-rvars-in-data-frames-and-in-ggplot2" class="anchor"></a>Using <code>rvar</code>s in data frames and in ggplot2</h2>
 <p><code>rvar</code>s can be used as columns in <code><a href="https://rdrr.io/r/base/data.frame.html">data.frame()</a></code> or <code>tibble()</code> objects:</p>
-<div class="sourceCode" id="cb52"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"a"</span>,<span class="st">"b"</span>,<span class="st">"c"</span><span class="op">)</span>, <span class="va">y</span><span class="op">)</span></code></pre></div>
 <pre><code>##   x                   y
 ## 1 a 2.997811 ± 1.028742
 ## 2 b 1.992926 ± 1.011693
 ## 3 c 0.995190 ± 1.001205</code></pre>
-<p>This makes them convenient for adding predictions to a data frame alongside the data used to generate the predictions. <code>rvar</code>s can then be visualized using the <code>stat_dist_...</code> family of geometries in the <a href="https://mjskay.github.io/ggdist/">ggdist</a> package.</p>
+<p>This makes them convenient for adding predictions to a data frame alongside the data used to generate the predictions. <code>rvar</code>s can then be visualized with ggplot2 using the <code>stat_dist_...</code> family of geometries in the <a href="https://mjskay.github.io/ggdist/">ggdist</a> package.</p>
 </div>
   </div>
 

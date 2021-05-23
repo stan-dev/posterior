@@ -51,10 +51,19 @@ Math.rvar <- function(x, ...) {
 #'
 #' @name rvar-matmult
 #' @aliases %**%
-#' @param x An [`rvar`], [`numeric`], or [`logical`]. Must be 1 or 2-dimensional. If it is a vector,
-#' it is treated as a row vector.
-#' @param y An [`rvar`], [`numeric`], or [`logical`]. Must be 1 or 2-dimensional. If it is a vector,
-#' it is treated as a column vector.
+#' @param x (multiple options) The object to be postmultiplied by `y`:
+#'   * An [`rvar`]
+#'   * A [`numeric`] vector or matrix
+#'   * A [`logical`] vector or matrix
+#'
+#'   If a vector is used, it is treated as a *row* vector.
+#'
+#' @param y (multiple options) The object to be premultiplied by `x`:
+#'   * An [`rvar`]
+#'   * A [`numeric`] vector or matrix
+#'   * A [`logical`] vector or matrix
+#'
+#'   If a vector is used, it is treated as a *column* vector.
 #'
 #' @details
 #' If `x` or `y` are vectors, they are converted into matrices prior to multiplication, with `x`
@@ -136,7 +145,7 @@ Math.rvar <- function(x, ...) {
 #'
 #' Cholesky decomposition of an [`rvar`] containing a matrix.
 #'
-#' @param x A 2-dimensional [`rvar`].
+#' @param x (rvar) A 2-dimensional [`rvar`].
 #' @param ... Additional parameters passed on to `chol.tensor()`
 #'
 #' @return An [`rvar`] containing the upper triangular factor of the Cholesky

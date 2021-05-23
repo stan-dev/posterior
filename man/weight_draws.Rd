@@ -22,19 +22,19 @@ weight_draws(x, weights, ...)
 \method{weight_draws}{draws_rvars}(x, weights, log = FALSE, ...)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
-\item{weights}{A vector of weights of length equal to the number of
-draws in \code{x} (as obtained by method \code{\link{ndraws}}). Weights will be
-internally stored on the log scale (in a variable called \code{.log_weight})
-and will not be normalized, but normalized (non-log) weights can be returned
-via the \code{\link{weights.draws}} method later.}
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)}.
+Weights will be internally stored on the log scale (in a variable called
+\code{.log_weight}) and will not be normalized, but normalized (non-log) weights
+can be returned via the \code{\link[=weights.draws]{weights.draws()}} method later.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{log}{Logical. Indicates if the weights passed via \code{weights} are on the
-log scale already. Defaults to \code{FALSE}, that is, expecting \code{weights} to be on
-the standard (non-log) scale.}
+\item{log}{(logicla) Are the weights passed already on the log scale? The
+default is \code{FALSE}, that is, expecting \code{weights} to be on the standard
+(non-log) scale.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.
@@ -42,9 +42,9 @@ A \code{draws} object of the same class as \code{x}.
 \description{
 Add weights to \code{\link{draws}} objects, with one weight per draw, for use in
 subsequent weighting operations. For reasons of numerical accuracy, weights
-are stored in the form of unnormalized log-weights (in a variable
-called \code{.log_weight}). See \code{\link{weights.draws}} for details how to extract weights
-from \code{draws} objects.
+are stored in the form of unnormalized log-weights (in a variable called
+\code{.log_weight}). See \code{\link[=weights.draws]{weights.draws()}} for details how to extract weights from
+\code{draws} objects.
 }
 \examples{
 x <- example_draws()
@@ -72,5 +72,5 @@ head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
 
 }
 \seealso{
-\code{\link{weights.draws}}, \code{\link{resample_draws}}
+\code{\link[=weights.draws]{weights.draws()}}, \code{\link[=resample_draws]{resample_draws()}}
 }

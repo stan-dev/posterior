@@ -32,11 +32,13 @@ nchains(x)
 ndraws(x)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{value}{For \code{variables(x) <- value}, a character vector of new variable names.}
+\item{value}{(character vector) For \code{variables(x) <- value}, the new variable
+names to use.}
 }
 \description{
 Index variables, iterations, chains, and draws.

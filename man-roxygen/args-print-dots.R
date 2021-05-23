@@ -1,1 +1,1 @@
-#' @param ... Further arguments passed to the underlying [`print`] methods.
+#' @param ... Further arguments passed to the underlying [print()] methods.

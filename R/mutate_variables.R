@@ -2,12 +2,13 @@
 #'
 #' Mutate variables in a [`draws`] object.
 #'
-#' @param .x A [`draws`] object.
-#' @param ... Name-value pairs of expressions, each with length 1 or same length
-#'   as in the entire input (i.e., number of iterations or draws). The name of
-#'   each argument will be the name of a new variable, and the value will be its
-#'   corresponding value. Use a `NULL` value in `mutate_variables` to drop a
-#'   variable. New variables overwrite existing variables of the same name.
+#' @param .x (draws) A [`draws`] object.
+#' @param ... Name-value pairs of expressions, each with either length 1 or the
+#'   same length as in the entire input (i.e., number of iterations or draws).
+#'   The name of each argument will be the name of a new variable, and the value
+#'   will be its corresponding value. Use a `NULL` value in `mutate_variables`
+#'   to drop a variable. New variables overwrite existing variables of the same
+#'   name.
 #'
 #' @return
 #' Returns a [`draws`] object of the same format as `.x`, with variables mutated
@@ -25,8 +26,6 @@
 #'
 #' @seealso [`variables`], [`rename_variables`]
 #'
-#' @importFrom rlang enquos caller_env eval_tidy as_label
-#'
 #' @examples
 #' x <- as_draws_df(example_draws())
 #' x <- subset(x, variable = c("mu", "tau"))
@@ -34,6 +33,7 @@
 #' mutate_variables(x, tau2 = tau^2)
 #' mutate_variables(x, scale = 1.96 * tau, lower = mu - scale)
 #'
+#' @importFrom rlang enquos caller_env eval_tidy as_label
 #' @export
 mutate_variables <- function(.x, ...) {
   UseMethod("mutate_variables")

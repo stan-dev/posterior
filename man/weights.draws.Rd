@@ -7,13 +7,13 @@
 \method{weights}{draws}(object, log = FALSE, normalize = TRUE, ...)
 }
 \arguments{
-\item{object}{A \code{\link{draws}} object.}
+\item{object}{(draws) A \code{\link{draws}} object.}
 
-\item{log}{Logical. Indicates if weights should be returned on the log scale.
+\item{log}{(logical) Should the weights be returned on the log scale?
 Defaults to \code{FALSE}.}
 
-\item{normalize}{Logical. Indicates if weights should be normalized
-in order to sum to 1 on the standard scale. Defaults to \code{TRUE}.}
+\item{normalize}{(logical) Should the weights be normalized to sum to 1 on
+the standard scale? Defaults to \code{TRUE}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }

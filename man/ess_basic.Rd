@@ -7,20 +7,21 @@
 ess_basic(x, split = TRUE)
 }
 \arguments{
-\item{x}{A 2D array of draws (iterations x chains).}
+\item{x}{(matrix) Draws for a single variable (iterations x chains). See
+\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.}
 
-\item{split}{Logical. If \code{TRUE}, compute estimate on split chains.}
+\item{split}{(logical) Should the estimate be computed on split chains? The
+default is \code{TRUE}.}
 }
 \value{
 A single numeric value. If any of the draws is non-finite, that is, \code{NA},
 \code{NaN}, \code{Inf}, or \code{-Inf}, the returned output will be (numeric) \code{NA}. Also, if
-all draws of a variable are the same, that is, if draws are constant, the
-returned output will be (numeric) \code{NA} as well. The reason for the latter is
-that, for constant draws, we cannot distinguish between variables that are
-supposed to be constant (e.g., for a diagonal element of a correlation
-matrix, which will always be 1) or variables that just happened to be
-constant because of a failure of convergence or other problems in the
-sampling process.
+all draws of a variable are the same (constant), the returned output will be
+(numeric) \code{NA} as well. The reason for the latter is that, for constant
+draws, we cannot distinguish between variables that are supposed to be
+constant (e.g.,  a diagonal element of a correlation matrix is always 1) or
+variables that just happened to be constant because of a failure of
+convergence or other problems in the sampling process.
 }
 \description{
 Compute the basic effective sample size (ESS) estimate for a single variable
@@ -48,6 +49,7 @@ Other diagnostics:
 \code{\link{mcse_quantile}()},
 \code{\link{mcse_sd}()},
 \code{\link{rhat_basic}()},
-\code{\link{rhat}()}
+\code{\link{rhat}()},
+\code{\link{rstar}()}
 }
 \concept{diagnostics}

@@ -5,15 +5,15 @@
 #' and the final result is always an [`rvar`].
 #'
 #' @param .x An array or an [`rvar`].
-#' @param .margin A vector giving the subscripts which the function will be applied over.
-#' E.g., for a matrix `1` indicates rows, `2` indicates columns, `c(1, 2)` indicates rows
-#' and columns. If `.x` has named dimensions, this can be a character vector selecting
-#' dimension names.
-#' @param .f the function to be applied. This must be a function that returns an [`rvar`].
-#' The dimensions of the result of `.f` applied to each margin of `.x` must be able to be
-#' broadasted to a common shape, otherwise the resulting [`rvar`] cannot be simplified.
-#' See 'Details'.
-#' @param ... optional arguments to `.f`.
+#' @param .margin (multiple options) The subscripts which the function will be applied over:
+#'   * An integer vector. E.g., for a matrix `1` indicates rows, `2` indicates
+#'     columns, `c(1, 2)` indicates rows and columns.
+#'   * A character vector of dimension names if `.x` has named dimensions.
+#' @param .f (function) The function to be applied. The function `.f` must
+#'   return an [`rvar`] and the dimensions of the result of `.f` applied to each
+#'   margin of `.x` must be able to be broadcasted to a common shape (otherwise
+#'   the resulting [`rvar`] cannot be simplified). See **Details**.
+#' @param ... Optional arguments passed to `.f`.
 #'
 #' @details
 #'

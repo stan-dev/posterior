@@ -10,28 +10,29 @@
 #' predictive accuracy on a testing set: giving the ratio of accuracy to
 #' predicting a chain uniformly at random.
 #'
-#' @param x A [`draws_df`] object or one coercible to a `draws_df` object.
+#' @family diagnostics
+#' @param x (draws) A [`draws_df`] object or one coercible to a `draws_df` object.
 #' @template args-conv-split
 #'
-#' @param uncertainty Logical. Indicates whether to provide a vector of R*
+#' @param uncertainty (logical). Indicates whether to provide a vector of R*
 #'   values representing uncertainty in the calculated value (if `TRUE`) or a
-#'   single value (if `FALSE`). Default is `TRUE.`
+#'   single value (if `FALSE`). The default is `TRUE.`
 #'
-#' @param method The machine learning classifier to use (must be available in
-#'   the \pkg{caret} package). The default is `"rf"`, which calls the random
-#'   forest classifier.
+#' @param method (string) The machine learning classifier to use (must be
+#'   available in the \pkg{caret} package). The default is `"rf"`, which calls
+#'   the random forest classifier.
 #'
-#' @param hyperparameters A named list of hyperparameter settings passed to the
-#'   classifier. Default for random forest classifier (`method = "rf"`) is
-#'   `mtry = floor(sqt(nvariables(x)))`;
-#'   default for gradient-based model (`method = "gbm"`) is
-#'   `interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10`.
+#' @param hyperparameters (named list) Hyperparameter settings passed to the classifier.
+#'   The default for the random forest classifier (`method = "rf"`) is
+#'   `list(mtry = floor(sqt(nvariables(x))))`.
+#'   The default for the gradient-based model (`method = "gbm"`) is
+#'   `list(interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10)`.
 #'
-#' @param nsimulations Number of R* values in the returned vector if
-#'   `uncertainty` is `TRUE`. Default is 1000.
+#' @param nsimulations (positive integer) The number of R* values in the
+#'   returned vector if `uncertainty` is `TRUE`. The default is `1000.`
 #'
-#' @param training_proportion Proportion of iterations used to train the
-#'   classifier. Default is 0.7.
+#' @param training_proportion (positive real) The proportion (in `(0,1)`) of
+#'   iterations in used to train the classifier. The default is `0.7`.
 #'
 #' @param ... Other arguments passed to `caret::train()`.
 #'
@@ -64,8 +65,8 @@
 #'   (if `uncertainty = TRUE`).
 #'
 #' @references Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
-#'   diagnostic with uncertainty using gradient-boosted machines \emph{arXiv
-#'   preprint} \code{arXiv:2003.07900}.
+#'   diagnostic with uncertainty using gradient-boosted machines.
+#'   *arXiv preprint* `arXiv:2003.07900`.
 #'
 #' @examples
 #' library(caret)

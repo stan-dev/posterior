@@ -44,7 +44,7 @@ Arguments passed to individual methods (if applicable).
 For \code{draws_list()}: Named
 arguments containing numeric vectors each defining a separate variable.}
 
-\item{.nchains}{Number of chains (default is \code{1}).}
+\item{.nchains}{(positive integer) The number of chains. The default is \code{1}.}
 }
 \value{
 A \code{draws_list} object, which has classes

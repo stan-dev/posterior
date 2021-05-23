@@ -5,7 +5,8 @@
 #' @name draws-index
 #' @template args-methods-x
 #' @template args-methods-dots
-#' @param value For `variables(x) <- value`, a character vector of new variable names.
+#' @param value (character vector) For `variables(x) <- value`, the new variable
+#'   names to use.
 #'
 #' @details
 #' The methods `variables()`, `iteration_ids()`, `chain_ids()`, and `draw_ids()` return
@@ -412,6 +413,9 @@ ndraws.rvar <- function(x) {
   # as.vector() to drop names in case there are index names
   as.vector(NROW(draws_of(x)))
 }
+
+
+# internal ----------------------------------------------------------------
 
 # check validity of existing variable names: e.g., that
 # all `variables` exist in `x` and that no `variables`are reserved words

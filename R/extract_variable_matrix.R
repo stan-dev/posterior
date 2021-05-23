@@ -1,17 +1,17 @@
 #' Extract matrix of a single variable
 #'
-#' Extract a matrix of draws of a single variable with dimension
-#' #iterations x #chains, primarily for use in convergence functions
-#' such as [rhat()].
+#' Extract an iterations x chains matrix of draws of a single variable.
+#' This is primarily used for convergence diagnostic functions such as [rhat()].
 #'
 #' @template args-methods-x
-#' @param variable Name of a single variable to extract draws for.
+#' @param variable (string) The name of the variable to extract.
 #' @template args-methods-dots
-#' @return An `matrix` with dimension #iterations x #chains.
+#' @return A `matrix` with dimension iterations x chains.
 #'
 #' @examples
 #' x <- example_draws()
 #' mu <- extract_variable_matrix(x, variable = "mu")
+#' dim(mu)
 #' rhat(mu)
 #'
 #' @export

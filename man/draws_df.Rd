@@ -47,17 +47,17 @@ Arguments passed to individual methods (if applicable).
 For \code{draws_df()}: Named
 arguments containing numeric vectors each defining a separate variable.}
 
-\item{.iteration}{Optional name of a column in the supplied \code{data.frame}
-that contain iteration indices. If \code{NULL} (the default), the \code{.iteration}
-column is used if it exists. Otherwise, the input is treated as being
-index continuously from the first to the last row.}
+\item{.iteration}{(string) The name of a column in the supplied
+\code{data.frame} that contain iteration indices. If \code{NULL} (the default), the
+\code{".iteration"} column is used if it exists. Otherwise, the input is treated
+as being indexed continuously from the first to the last row.}
 
-\item{.chain}{Optional name of a column in the supplied \code{data.frame}
-that contain chain indices. If \code{NULL} (the default), the \code{.chain}
-column is used if it exists. Otherwise, the input is treated as belonging
-to a single chain.}
+\item{.chain}{(string) The name of a column in the supplied \code{data.frame} that
+contains chain indices. If \code{NULL} (the default), the \code{".chain"} column is
+used if it exists. Otherwise, the input is treated as belonging to a single
+chain.}
 
-\item{.nchains}{Number of chains (default is \code{1}).}
+\item{.nchains}{(positive integer) The number of chains. The default is \code{1}.}
 }
 \value{
 A \code{draws_df} object, which has classes

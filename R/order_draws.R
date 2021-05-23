@@ -6,13 +6,12 @@
 #'
 #' @template args-methods-x
 #' @template args-methods-dots
-#'
+#' @template return-draws
+#' @seealso [repair_draws()]
 #' @examples
 #' x <- as_draws_array(example_draws())
-#' # manually select some iterations and chains
-#' (x <- x[10:5, 4:3, ])
-#' # reorder iteration and chain indices
-#' order_draws(x)
+#' dimnames(x[10:5, 4:3, ])
+#' dimnames(order_draws(x[10:5, 4:3, ]))
 #'
 #' @export
 order_draws <- function(x, ...) {
@@ -85,6 +84,9 @@ order_draws.rvar <- function(x, ...) {
   }
   x
 }
+
+
+# internal ----------------------------------------------------------------
 
 #' Order draws if told to do so
 #' @param x draws object to be ordered

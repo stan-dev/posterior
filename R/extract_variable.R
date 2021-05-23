@@ -3,9 +3,9 @@
 #' Extract a vector of draws of a single variable.
 #'
 #' @template args-methods-x
-#' @param variable Name of a single variable to extract draws for.
+#' @param variable (string) The name of the variable to extract.
 #' @template args-methods-dots
-#' @return A numeric vector of length #draws.
+#' @return A numeric vector of length equal to the number of draws.
 #'
 #' @examples
 #' x <- example_draws()
@@ -33,7 +33,7 @@ extract_variable.draws <- function(x, variable, ...) {
   as.vector(out)
 }
 
-#' @rdname extract_variable_matrix
+#' @rdname extract_variable
 #' @export
 extract_variable.draws_rvars <- function(x, variable, ...) {
   variable <- as_one_character(variable)

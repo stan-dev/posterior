@@ -41,21 +41,22 @@ rvar_all(..., na.rm = FALSE)
 rvar_any(..., na.rm = FALSE)
 }
 \arguments{
-\item{...}{\code{\link{rvar}}s}
+\item{...}{(rvar) One or more \code{\link{rvar}}s.}
 
-\item{na.rm}{Logical. If \code{TRUE}, any \code{NA}'s are removed from the input
-before summaries are computed.}
+\item{na.rm}{(logical) Should \code{NA}s be removed from the input before
+summaries are computed? The default is \code{FALSE}.}
 
-\item{constant}{For \code{rvar_mad()}, a scale factor for computing the median
-absolute deviation. See the details of \code{stats::mad()} for the justification
-for the default value.}
+\item{constant}{(scalar real) For \code{rvar_mad()}, a scale factor for computing
+the median absolute deviation. See the details of \code{stats::mad()} for the
+justification for the default value.}
 
-\item{low}{For \code{rvar_mad()}, if \code{TRUE}, compute the 'lo-median', i.e., for
-even sample size, do not average the two middle values, but take the smaller
-one. See \code{stats::mad()}.}
+\item{low}{(logical) For \code{rvar_mad()}, if \code{TRUE}, compute the 'lo-median',
+i.e., for even sample size, do not average the two middle values, but take
+the smaller one. See \code{stats::mad()}.}
 
-\item{high}{For \code{rvar_mad()}, if \code{TRUE}, compute the 'hi-median', i.e., take
-the larger of the two middle values for even sample size. See \code{stats::mad()}.}
+\item{high}{(logical) For \code{rvar_mad()}, if \code{TRUE}, compute the 'hi-median',
+i.e., take the larger of the two middle values for even sample size. See
+\code{stats::mad()}.}
 }
 \value{
 An \code{\link{rvar}} of length 1 (or in the case of \code{range()}, length 2) with the same number
@@ -65,7 +66,7 @@ each draw of the input rvar(s).
 \description{
 Compute summaries of random variables over array elements and within draws,
 producing a new random variable of length 1 (except in the case of
-\code{rvar_range()}, see 'Details').
+\code{rvar_range()}, see \strong{Details}).
 }
 \details{
 These functions compute statistics within each draw of the random variable.

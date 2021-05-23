@@ -4,9 +4,9 @@
 #' function (`cdf()`), and quantile function / inverse CDF (`quantile()`) of
 #' an [`rvar`].
 #'
-#' @param x an [`rvar`]
-#' @param q,at vector of quantiles.
-#' @param probs vector of probabilities
+#' @param x (rvar) An [`rvar`] object.
+#' @param q,at (numeric vector) One or more quantiles.
+#' @param probs (numeric vector) One or more probabilities in `[0,1]`.
 #' @param ... Additional arguments passed onto underlying methods:
 #'   - For `density()`, these are passed to [stats::density()].
 #'   - For `cdf()`, these are ignored.

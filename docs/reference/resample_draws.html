@@ -40,8 +40,8 @@
 
 
 <meta property="og:title" content="Resample draws objects — resample_draws" />
-<meta property="og:description" content="Resample draws objects according to given weights obtained,
-for instance, through importance sampling." />
+<meta property="og:description" content="Resample draws objects according to provided weights, for example weights
+obtained through importance sampling." />
 
 
 
@@ -73,7 +73,7 @@ for instance, through importance sampling." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -84,6 +84,9 @@ for instance, through importance sampling." />
     <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/index.html">Vignettes</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -166,8 +169,8 @@ for instance, through importance sampling." />
     </div>
 
     <div class="ref-description">
-    <p>Resample <code><a href='draws.html'>draws</a></code> objects according to given weights obtained,
-for instance, through importance sampling.</p>
+    <p>Resample <code><a href='draws.html'>draws</a></code> objects according to provided weights, for example weights
+obtained through importance sampling.</p>
     </div>
 
     <pre class="usage"><span class='fu'>resample_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -180,7 +183,7 @@ for instance, through importance sampling.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An <span style="R">R</span> object for which the methods are defined.</p></td>
+      <td><p>A <code>draws</code> object, or another <span style="R">R</span> object for which the method is defined.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -188,30 +191,31 @@ for instance, through importance sampling.</p>
     </tr>
     <tr>
       <th>weights</th>
-      <td><p>A vector of positive weights of length equal to the number of
-draws in <code>draws</code> (as obtained by method <code><a href='draws-index.html'>ndraws</a></code>). Weights will be
-internally normalized. If <code>weights</code> is <code>NULL</code> (the default), an attempt
-will be made to extract weights stored already in the draws object (via
-<code><a href='weight_draws.html'>weight_draws</a></code>). How exactly the weights influence the resampling
-depends on the <code>method</code> argument.</p></td>
+      <td><p>A vector of positive weights of length <code><a href='draws-index.html'>ndraws(x)</a></code> (the number
+of draws in <code>x</code>). The weights will be internally normalized. If <code>weights</code>
+is not specified, an attempt will be made to extract any weights already
+stored in the draws object (via <code><a href='weight_draws.html'>weight_draws()</a></code>). How exactly the weights
+influence the resampling depends on the <code>method</code> argument.</p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>Name of the resampling method being applied. Possible choices
-are <code>"simple"</code> for simple random resampling with replacement,
-<code>"simple_no_replace"</code> for simple random resampling without replacement,
-<code>"stratified"</code> for stratified resampling with replacement and
-<code>"deterministic"</code> for deterministic resampling with replacement. Currently,
-<code>"stratified"</code> is the default as it has comparably low variance and bias
-with respect to ideal resampling. The latter would sample perfectly
-proportional to the weights but is not possible in practice where only a
-finite number of draws are available. For more details about resampling
-methods, see Kitagawa (1996).</p></td>
+      <td><p>Name of the resampling method being applied:</p><ul>
+<li><p><code>"simple"</code>: simple random resampling with replacement</p></li>
+<li><p><code>"simple_no_replace"</code>: simple random resampling without replacement</p></li>
+<li><p><code>"stratified"</code>: stratified resampling with replacement</p></li>
+<li><p><code>"deterministic"</code>: deterministic resampling with replacement</p></li>
+</ul>
+
+<p>Currently, <code>"stratified"</code> is the default as it has comparably low variance
+and bias with respect to ideal resampling. The latter would sample perfectly
+proportional to the weights, but this is not possible in practice due to the
+finite number of draws available. For more details about resampling methods,
+see Kitagawa (1996).</p></td>
     </tr>
     <tr>
       <th>ndraws</th>
-      <td><p>Number of draws to be returned. By default (<code>NULL</code>), <code>ndraws</code>
-is set internally to the total number of draws in <code>x</code> if sensible.</p></td>
+      <td><p>The number of draws to be returned. By default <code>ndraws</code> is set
+internally to the total number of draws in <code>x</code> if sensible.</p></td>
     </tr>
     </table>
 
@@ -220,7 +224,7 @@ is set internally to the total number of draws in <code>x</code> if sensible.</p
     <p>A <code>draws</code> object of the same class as <code>x</code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Upon usage of <code>resample_draws</code>, chains will be automatically merged
+    <p>Upon usage of <code>resample_draws()</code>, chains will automatically be merged
 due to subsetting of individual draws (see <code><a href='subset_draws.html'>subset_draws</a></code> for details).
 Also, weights stored in the <code>draws</code> object will be removed in the process,
 as resampling invalidates existing weights.</p>
@@ -229,11 +233,14 @@ as resampling invalidates existing weights.</p>
     <p>Kitagawa, G., Monte Carlo Filter and Smoother for Non-Gaussian Nonlinear '
 State Space Models, <em>Journal of Computational and Graphical Statistics</em>,
 5(1):1-25, 1996.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p><code>resample_draws()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='draws_df.html'>as_draws_df</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
-<span class='co'># random weights for illustrationary purposes</span>
+<span class='co'># random weights for justr for demonstration</span>
 <span class='va'>w</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span><span class='fu'><a href='draws-index.html'>ndraws</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>, <span class='fl'>0</span>, <span class='fl'>10</span><span class='op'>)</span>
 
 <span class='co'># use default stratified sampling</span>

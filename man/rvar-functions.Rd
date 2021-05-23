@@ -14,7 +14,7 @@
 \method{quantile}{rvar}(x, probs, ...)
 }
 \arguments{
-\item{x}{an \code{\link{rvar}}}
+\item{x}{(rvar) An \code{\link{rvar}} object.}
 
 \item{...}{Additional arguments passed onto underlying methods:
 \itemize{
@@ -23,9 +23,9 @@
 \item For \code{quantile()}, these are passed to \code{\link[stats:quantile]{stats::quantile()}}.
 }}
 
-\item{q, at}{vector of quantiles.}
+\item{q, at}{(numeric vector) One or more quantiles.}
 
-\item{probs}{vector of probabilities}
+\item{probs}{(numeric vector) One or more probabilities in \verb{[0,1]}.}
 }
 \value{
 A vector of the same length as the input (\code{q}, \code{at}, or \code{probs}) containing
