@@ -25,10 +25,11 @@ repair_draws(x, order = TRUE, ...)
 \method{repair_draws}{rvar}(x, order = TRUE, ...)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
-\item{order}{Should draws be ordered (via \code{\link[=order_draws]{order_draws()}}) before repairing
-indices? Defaults to \code{TRUE}.}
+\item{order}{(logical) Should draws be ordered (via \code{\link[=order_draws]{order_draws()}}) before
+repairing indices? Defaults to \code{TRUE}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }

@@ -7,13 +7,13 @@
 #' `draws` objects.
 #'
 #' @template args-methods-x
-#' @param weights A vector of weights of length `ndraws(x)` (the number of draws
-#'   in `x`). Weights will be internally stored on the log scale (in a variable
-#'   called `.log_weight`) and will not be normalized, but normalized (non-log)
-#'   weights can be returned via the [weights.draws()] method later.
-#' @param log Are the weights passed already on the log scale? The default is
-#'   `FALSE`, that is, expecting `weights` to be on the standard (non-log)
-#'   scale.
+#' @param weights (numeric vector) A vector of weights of length `ndraws(x)`.
+#'   Weights will be internally stored on the log scale (in a variable called
+#'   `.log_weight`) and will not be normalized, but normalized (non-log) weights
+#'   can be returned via the [weights.draws()] method later.
+#' @param log (logicla) Are the weights passed already on the log scale? The
+#'   default is `FALSE`, that is, expecting `weights` to be on the standard
+#'   (non-log) scale.
 #' @template args-methods-dots
 #' @template return-draws
 #'
@@ -116,11 +116,11 @@ weight_draws.draws_rvars <- function(x, weights, log = FALSE, ...) {
 #' Extract weights from [`draws`] objects, with one weight per draw.
 #' See [`weight_draws`] for details how to add weights to [`draws`] objects.
 #'
-#' @param object A [`draws`] object.
-#' @param log Should the weights be returned on the log scale? Defaults to
-#'   `FALSE`.
-#' @param normalize Should the weights be normalized to sum to 1 on the standard
-#'   scale? Defaults to `TRUE`.
+#' @param object (draws) A [`draws`] object.
+#' @param log (logical) Should the weights be returned on the log scale?
+#'   Defaults to `FALSE`.
+#' @param normalize (logical) Should the weights be normalized to sum to 1 on
+#'   the standard scale? Defaults to `TRUE`.
 #' @template args-methods-dots
 #'
 #' @return A vector of weights, with one weight per draw.

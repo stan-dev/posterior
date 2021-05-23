@@ -14,23 +14,25 @@
 \method{str}{rvar}(object, ..., summary = NULL, vec.len = NULL)
 }
 \arguments{
-\item{x, object}{An \code{\link{rvar}}.}
+\item{x, object}{(rvar) The \code{\link{rvar}} to print.}
 
 \item{...}{Further arguments passed to the underlying \code{\link[=print]{print()}} methods.}
 
-\item{summary}{What style of summary to display: \code{"mean_sd"} displays \verb{mean±sd},
-\code{"median_mad"} displays \verb{median±mad}. If \code{NULL}, \code{getOption("posterior.rvar_summary")} is
-used (default \verb{"mean_sd}).}
+\item{summary}{(string) The style of summary to display: \code{"mean_sd"} displays
+\verb{mean±sd}, \code{"median_mad"} displays \verb{median±mad}. If \code{NULL},
+\code{getOption("posterior.rvar_summary")} is used (default \verb{"mean_sd}).}
 
-\item{digits}{The minimum number of significant digits to print.}
+\item{digits}{(nonnegative integer) The minimum number of significant digits
+to print.}
 
-\item{color}{Whether or not to use color when formatting the output. If \code{TRUE},
-the \code{\link[pillar:style_subtle]{pillar::style_num()}} functions may be used to produce strings containing
-control sequences to produce colored output on the terminal.}
+\item{color}{(logical) Whether or not to use color when formatting the
+output. If \code{TRUE}, the \code{\link[pillar:style_subtle]{pillar::style_num()}} functions may be used to
+produce strings containing control sequences to produce colored output on
+the terminal.}
 
-\item{vec.len}{Numeric (>= 0) indicating how many 'first few' elements are
-displayed of each vector. If \code{NULL}, defaults to \code{getOption("str")$vec.len},
-which defaults to 4.}
+\item{vec.len}{(nonnegative integer) How many 'first few' elements are
+displayed of each vector. If \code{NULL}, defaults to
+\code{getOption("str")$vec.len}, which defaults to 4.}
 }
 \value{
 For \code{print()} and \code{str()}, an invisible version of the input object.

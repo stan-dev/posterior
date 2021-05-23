@@ -2,10 +2,10 @@
 #'
 #' Bind multiple [`draws`] objects together to form a single `draws` object.
 #'
-#' @param x A [`draws`] object. The draws format of `x` will define the format
-#'   of the returned draws object.
-#' @param ... Additional [`draws`] objects to bind to `x`.
-#' @param along The dimension along which draws objects should be bound
+#' @param x (draws) A [`draws`] object. The draws format of `x` will define the
+#'   format of the returned draws object.
+#' @param ... (draws) Additional [`draws`] objects to bind to `x`.
+#' @param along (string) The dimension along which draws objects should be bound
 #'   together. Possible values are `"variable"` (the default), `"chain"`,
 #'   `"iteration"`, and `"draw"`. Not all options are supported for all input
 #'   formats.

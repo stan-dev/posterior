@@ -70,29 +70,29 @@ subset_draws(x, ...)
 \method{subset}{draws}(x, ...)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{variable}{Character vector of variable names to be selected.
-All elements of non-scalar variables can be selected at once.}
+\item{variable}{(character vector) The variables to select. All elements of
+non-scalar variables can be selected at once.}
 
-\item{iteration}{Numeric vector of iteration indices to be selected.}
+\item{iteration}{(integer vector) The iteration indices to select.}
 
-\item{chain}{Numeric vector of chain indices to be selected.}
+\item{chain}{(integer vector) The chain indices to select.}
 
-\item{draw}{Numeric vector of draw indices to be selected.
-Subsetting draw indices will lead to an automatic merging of chains
-via \code{\link{merge_chains}}.}
+\item{draw}{(integer vector) The draw indices to be select. Subsetting draw
+indices will lead to an automatic merging of chains via \code{\link{merge_chains}}.}
 
-\item{regex}{Logical. Indicates whether \code{variable} should be treated as a
-(vector of) regular expressions. Any variable in \code{x} matching at least one
+\item{regex}{(logical) Should \code{variable} should be treated as a
+(vector of) regular expressions? Any variable in \code{x} matching at least one
 of the regular expressions will be selected. Defaults to \code{FALSE}.}
 
-\item{unique}{Logical. Indicates whether duplicated selection of chains,
-iterations, or draws is possible. If \code{TRUE} (the default) only
-unique chains, iterations, and draws are selected regardless of how
-often they appear in the respective selecting arguments.}
+\item{unique}{(logical) Should duplicated selection of chains, iterations, or
+draws be allowed? If \code{TRUE} (the default) only unique chains, iterations,
+and draws are selected regardless of how often they appear in the
+respective selecting arguments.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.

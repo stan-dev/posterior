@@ -4,13 +4,16 @@
 #'
 #' @name rvar
 #'
-#' @param x A vector or array where the first dimension represents draws from
-#' a distribution. The resulting [`rvar`] will have dimension `dim(x)[-1]`; that is,
-#' everything except the first dimension is used for the shape of the variable, and the
-#' first dimension is used to index draws from the distribution.
+#' @param x (multiple options) The object to convert to an `rvar`:
+#'   * A vector of draws from a distribution.
+#'   * An array where the first dimension represents draws from a distribution.
+#'   The resulting [`rvar`] will have dimension `dim(x)[-1]`; that is,
+#'   everything except the first dimension is used for the shape of the
+#'   variable, and the first dimension is used to index draws from the
+#'   distribution. See **Examples**.
 #' @template args-rvar-dim
 #' @template args-rvar-dimnames
-#' @param nchains Number of chains (default is `1`).
+#' @param nchains (positive integer) The number of chains. The default is `1`.
 #'
 #' @details
 #'
@@ -124,8 +127,8 @@ new_rvar <- function(x = double(), .nchains = 1L) {
 #'
 #' Gets/sets the array-representation that backs an [`rvar`]. Should be used rarely.
 #'
-#' @param x An [`rvar`]
-#' @param value An array
+#' @param x (rvar) An [`rvar`] object.
+#' @param value An array.
 #'
 #' @details
 #'

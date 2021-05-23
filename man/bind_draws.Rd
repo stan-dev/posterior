@@ -22,12 +22,12 @@ bind_draws(x, ...)
 \method{bind_draws}{draws_rvars}(x, ..., along = "variable")
 }
 \arguments{
-\item{x}{A \code{\link{draws}} object. The draws format of \code{x} will define the format
-of the returned draws object.}
+\item{x}{(draws) A \code{\link{draws}} object. The draws format of \code{x} will define the
+format of the returned draws object.}
 
-\item{...}{Additional \code{\link{draws}} objects to bind to \code{x}.}
+\item{...}{(draws) Additional \code{\link{draws}} objects to bind to \code{x}.}
 
-\item{along}{The dimension along which draws objects should be bound
+\item{along}{(string) The dimension along which draws objects should be bound
 together. Possible values are \code{"variable"} (the default), \code{"chain"},
 \code{"iteration"}, and \code{"draw"}. Not all options are supported for all input
 formats.}

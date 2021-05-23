@@ -1,1 +1,2 @@
-#' @param split Logical. If `TRUE`, compute estimate on split chains.
+#' @param split (logical) Should the estimate be computed on split chains? The
+#'   default is `TRUE`.

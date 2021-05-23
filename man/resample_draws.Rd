@@ -10,17 +10,18 @@ resample_draws(x, ...)
 \method{resample_draws}{draws}(x, weights = NULL, method = "stratified", ndraws = NULL, ...)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{weights}{A vector of positive weights of length \code{ndraws(x)} (the number
-of draws in \code{x}). The weights will be internally normalized. If \code{weights}
-is not specified, an attempt will be made to extract any weights already
-stored in the draws object (via \code{\link[=weight_draws]{weight_draws()}}). How exactly the weights
-influence the resampling depends on the \code{method} argument.}
+\item{weights}{(numeric vector) A vector of positive weights of length
+\code{ndraws(x)}. The weights will be internally normalized. If \code{weights} is not
+specified, an attempt will be made to extract any weights already stored in
+the draws object (via \code{\link[=weight_draws]{weight_draws()}}). How exactly the weights influence
+the resampling depends on the \code{method} argument.}
 
-\item{method}{Name of the resampling method being applied:
+\item{method}{(string) The resampling method to use:
 \itemize{
 \item \code{"simple"}: simple random resampling with replacement
 \item \code{"simple_no_replace"}: simple random resampling without replacement
@@ -34,8 +35,9 @@ proportional to the weights, but this is not possible in practice due to the
 finite number of draws available. For more details about resampling methods,
 see Kitagawa (1996).}
 
-\item{ndraws}{The number of draws to be returned. By default \code{ndraws} is set
-internally to the total number of draws in \code{x} if sensible.}
+\item{ndraws}{(positive integer) The number of draws to be returned. By
+default \code{ndraws} is set internally to the total number of draws in \code{x} if
+sensible.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.

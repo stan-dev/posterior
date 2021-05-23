@@ -1,1 +1,1 @@
-#' @param .nchains The number of chains (default is `1`).
+#' @param .nchains (positive integer) The number of chains. The default is `1`.

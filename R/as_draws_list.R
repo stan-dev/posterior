@@ -152,8 +152,7 @@ is_draws_list_like <- function(x) {
 }
 
 # create an empty draws_list object
-empty_draws_list <- function(variables = character(0),
-                             nchains = 0) {
+empty_draws_list <- function(variables = character(0), nchains = 0) {
   assert_character(variables, null.ok = TRUE)
   assert_number(nchains, lower = 0)
   out <- named_list(seq_len(nchains))

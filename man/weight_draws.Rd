@@ -22,18 +22,19 @@ weight_draws(x, weights, ...)
 \method{weight_draws}{draws_rvars}(x, weights, log = FALSE, ...)
 }
 \arguments{
-\item{x}{A \code{draws} object, or another \R object for which the method is defined.}
+\item{x}{(draws) A \code{draws} object or another \R object for which the method
+is defined.}
 
-\item{weights}{A vector of weights of length \code{ndraws(x)} (the number of draws
-in \code{x}). Weights will be internally stored on the log scale (in a variable
-called \code{.log_weight}) and will not be normalized, but normalized (non-log)
-weights can be returned via the \code{\link[=weights.draws]{weights.draws()}} method later.}
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)}.
+Weights will be internally stored on the log scale (in a variable called
+\code{.log_weight}) and will not be normalized, but normalized (non-log) weights
+can be returned via the \code{\link[=weights.draws]{weights.draws()}} method later.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{log}{Are the weights passed already on the log scale? The default is
-\code{FALSE}, that is, expecting \code{weights} to be on the standard (non-log)
-scale.}
+\item{log}{(logicla) Are the weights passed already on the log scale? The
+default is \code{FALSE}, that is, expecting \code{weights} to be on the standard
+(non-log) scale.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.

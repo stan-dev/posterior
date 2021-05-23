@@ -2,8 +2,8 @@
 #'
 #' Objects for use in examples, vignettes, and tests.
 #'
-#' @param example Name of the example `draws` object. See **Details** for
-#'   available options.
+#' @param example (string) The name of the example `draws` object. See
+#'   **Details** for available options.
 #' @return A `draws` object.
 #'
 #' @details

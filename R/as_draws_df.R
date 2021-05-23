@@ -6,14 +6,14 @@
 #' @templateVar draws_format draws_df
 #' @templateVar base_class class(tibble::tibble())
 #' @template draws_format-skeleton
-#' @param .iteration Optional name of a column in the supplied `data.frame`
-#' that contain iteration indices. If `NULL` (the default), the `.iteration`
-#' column is used if it exists. Otherwise, the input is treated as being
-#' index continuously from the first to the last row.
-#' @param .chain Optional name of a column in the supplied `data.frame`
-#' that contain chain indices. If `NULL` (the default), the `.chain`
-#' column is used if it exists. Otherwise, the input is treated as belonging
-#' to a single chain.
+#' @param .iteration (string) The name of a column in the supplied
+#'   `data.frame` that contain iteration indices. If `NULL` (the default), the
+#'   `".iteration"` column is used if it exists. Otherwise, the input is treated
+#'   as being indexed continuously from the first to the last row.
+#' @param .chain (string) The name of a column in the supplied `data.frame` that
+#'   contains chain indices. If `NULL` (the default), the `".chain"` column is
+#'   used if it exists. Otherwise, the input is treated as belonging to a single
+#'   chain.
 #' @template args-format-nchains
 #'
 #' @details Objects of class `"draws_df"` are [tibble][tibble::tibble] data
@@ -127,8 +127,8 @@ as_draws_df.mcmc.list <- function(x, ...) {
 
 #' Convert any \R object into a `draws_df` object
 #' @param x An \R object.
-#' @param .iteration optional name of the column containing iteration indices
-#' @param .chain optional name of the column containing chain indices
+#' @param .iteration (string) Optional name of the column containing iteration indices.
+#' @param .chain (string) Optional name of the column containing chain indices.
 #' @noRd
 .as_draws_df <- function(x, .iteration = NULL, .chain = NULL) {
   x <- tibble::as_tibble(x, .name_repair = "unique")

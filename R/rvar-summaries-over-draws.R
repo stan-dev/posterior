@@ -4,11 +4,11 @@
 #'
 #' Compute summaries within elements of an [`rvar`] and over draws of each element,
 #' producing an array of the same shape as the input random variable (except in
-#' the case of `range()`, see 'Details').
+#' the case of `range()`, see **Details**).
 #'
-#' @param x an [`rvar`]
-#' @param ... further arguments passed to underlying functions (e.g., `base::mean()`
-#' or `base::median()`), such as `na.rm`.
+#' @param x (rvar) An [`rvar`].
+#' @param ... Further arguments passed to underlying functions (e.g.,
+#'   `base::mean()` or `base::median()`), such as `na.rm`.
 #'
 #' @details
 #'

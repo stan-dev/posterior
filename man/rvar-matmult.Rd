@@ -8,11 +8,23 @@
 x \%**\% y
 }
 \arguments{
-\item{x}{An \code{\link{rvar}}, \code{\link{numeric}}, or \code{\link{logical}}. Must be 1 or 2-dimensional. If it is a vector,
-it is treated as a row vector.}
+\item{x}{(multiple options) The object to be postmultiplied by \code{y}:
+\itemize{
+\item An \code{\link{rvar}}
+\item A \code{\link{numeric}} vector or matrix
+\item A \code{\link{logical}} vector or matrix
+}
 
-\item{y}{An \code{\link{rvar}}, \code{\link{numeric}}, or \code{\link{logical}}. Must be 1 or 2-dimensional. If it is a vector,
-it is treated as a column vector.}
+If a vector is used, it is treated as a \emph{row} vector.}
+
+\item{y}{(multiple options) The object to be premultiplied by \code{x}:
+\itemize{
+\item An \code{\link{rvar}}
+\item A \code{\link{numeric}} vector or matrix
+\item A \code{\link{logical}} vector or matrix
+}
+
+If a vector is used, it is treated as a \emph{column} vector.}
 }
 \value{
 An \code{\link{rvar}} representing the matrix product of \code{x} and \code{y}.

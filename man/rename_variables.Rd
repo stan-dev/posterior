@@ -10,7 +10,7 @@ rename_variables(.x, ...)
 \method{rename_variables}{draws}(.x, ...)
 }
 \arguments{
-\item{.x}{A \code{\link{draws}} object.}
+\item{.x}{(draws) A \code{\link{draws}} object.}
 
 \item{...}{One or more expressions, separated by commas, indicating the
 variables to rename. The variable names can be unquoted

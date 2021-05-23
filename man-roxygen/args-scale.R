@@ -1,1 +1,1 @@
-#' @param x A numeric array of values.
+#' @param x (numeric) A scalar, vector, matrix, or array of values.

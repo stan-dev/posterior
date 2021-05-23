@@ -325,9 +325,9 @@ mcse_sd <- function(x) {
 #'
 #' @template args-conv
 #' @template args-conv-quantile
-#' @param na.rm Logical. If `TRUE`, any `NA` and `NaN`'s are removed from `x`
-#'   before the quantiles are computed.
-#' @param ... Further arguments passed to [quantile()].
+#' @param na.rm (logical) Should `NA` and `NaN` values be removed from `x` prior
+#'   to computing quantiles? The default is `FALSE`.
+#' @param ... Further arguments passed to [stats::quantile()].
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")

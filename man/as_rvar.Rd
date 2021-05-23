@@ -7,19 +7,23 @@
 as_rvar(x, dim = NULL, dimnames = NULL, nchains = NULL)
 }
 \arguments{
-\item{x}{An object that can be converted to an \code{\link{rvar}}, such as a vector or array
-(or an \code{\link{rvar}} itself).}
+\item{x}{(multiple options) An object that can be converted to an \code{\link{rvar}},
+such as a vector, array, or an \code{\link{rvar}} itself.}
 
-\item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
-or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.
-\strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the underlying array, so you cannot
-change the number of draws using this argument.}
+\item{dim}{(integer vector) One or more integers giving the maximal indices
+in each dimension to override the dimensions of the \code{\link{rvar}} to be created
+(see \code{\link[=dim]{dim()}}). If \code{NULL} (the default), \code{dim} is determined by the input.
+\strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the
+underlying array, so you cannot change the number of draws using this
+argument.}
 
-\item{dimnames}{Override for the names of the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dimnames]{dimnames()}}): a list of character
-vectors giving the names in each dimension. If \code{NULL} (the default), this is determined by the input.
-\strong{NOTE:} This argument controls the names of the dimensions of the \code{\link{rvar}}, not the underlying array.}
+\item{dimnames}{(list) Character vectors giving the names in each dimension
+to override the names of the dimensions of the \code{\link{rvar}} to be created (see
+\code{\link[=dimnames]{dimnames()}}). If \code{NULL} (the default), this is determined by the input.
+\strong{NOTE:} This argument controls the names of the dimensions of the
+\code{\link{rvar}}, not the underlying array.}
 
-\item{nchains}{Number of chains (default is \code{1}).}
+\item{nchains}{(positive integer) The number of chains. The default is \code{1}.}
 }
 \value{
 An object of class \code{"rvar"} representing a random variable.
