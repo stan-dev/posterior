@@ -25,9 +25,20 @@ to:
 -   Provide lightweight implementations of state of the art posterior
     inference diagnostics.
 
+If you are new to **posterior** we recommend starting with these
+vignettes:
+
+-   [*The posterior R
+    package*](https://mc-stan.org/posterior/articles/posterior.html): an
+    introduction to the package and its main functionality
+-   [*rvar: The Random Variable
+    Datatype*](https://mc-stan.org/posterior/articles/rvar.html): an
+    overview of the new random variable datatype
+
 ### Installation
 
-The package is not on CRAN yet, but you can install the beta release via
+The package is not on CRAN yet, but you can install the latest beta
+release version via
 
 ``` r
 install.packages("posterior", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
@@ -42,9 +53,18 @@ remotes::install_github("stan-dev/posterior")
 
 ### Examples
 
+Here we offer a few examples of using the package. For a more detailed
+overview see the vignette [*The posterior R
+package*](https://mc-stan.org/posterior/articles/posterior.html).
+
 ``` r
 library("posterior")
 #> This is posterior version 0.1.5
+#> 
+#> Attaching package: 'posterior'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     mad, sd, var
 ```
 
 To demonstrate how to work with the **posterior** package, we will use
@@ -123,7 +143,7 @@ the formats are essentially base R object classes and can be used as
 such. For example, a `draws_matrix` object is just a `matrix` with a
 little more consistency and additional methods.
 
-#### Summarising draws
+#### Summarizing draws
 
 Computing summaries of posterior or prior draws and convergence
 diagnostics for posterior draws is one of the most common tasks when
@@ -275,11 +295,11 @@ print(x4)
 #> # A draws_matrix: 5 draws, and 3 variables
 #>     variable
 #> draw alpha beta theta
-#>    1  1.77    1  0.16
-#>    2  0.41    1  0.55
-#>    3  1.85    1  1.52
-#>    4 -0.77    1  1.77
-#>    5  1.02    1  0.19
+#>    1 -2.05    1  0.12
+#>    2 -1.47    1  0.77
+#>    3  0.44    1  1.38
+#>    4 -2.89    1  0.17
+#>    5 -0.48    1  2.07
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -289,17 +309,17 @@ x5 <- bind_draws(x1, x2, along = "draw")
 print(x5)
 #> # A draws_matrix: 10 draws, and 2 variables
 #>     variable
-#> draw   alpha beta
-#>   1   1.7669    1
-#>   2   0.4124    1
-#>   3   1.8490    1
-#>   4  -0.7658    1
-#>   5   1.0250    1
-#>   6   0.8754    2
-#>   7  -0.0025    2
-#>   8  -0.7391    2
-#>   9  -0.0039    2
-#>   10  0.3473    2
+#> draw alpha beta
+#>   1  -2.05    1
+#>   2  -1.47    1
+#>   3   0.44    1
+#>   4  -2.89    1
+#>   5  -0.48    1
+#>   6  -0.41    2
+#>   7   1.90    2
+#>   8   0.41    2
+#>   9  -0.98    2
+#>   10  0.37    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -318,27 +338,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 draws, and 5 variables
 #>     variable
-#> draw     V1    V2    V3    V4      V5
-#>   1   1.275  1.50  0.21  1.88 -0.0523
-#>   2  -0.659 -0.75  0.75 -1.05 -0.0058
-#>   3   0.584 -0.36  0.63 -0.73 -0.3592
-#>   4   0.530  1.40  1.26  0.94 -0.5055
-#>   5   1.298  2.18 -1.28  1.27 -0.9424
-#>   6  -0.582 -0.69 -0.36 -0.33 -2.0679
-#>   7  -1.215  0.76 -1.06 -1.15  0.1941
-#>   8   0.394  0.36  0.79 -1.75  0.8235
-#>   9   0.058  0.89 -1.12 -0.42 -0.3248
-#>   10  1.248  1.25  0.73  0.63  0.1322
+#> draw    V1    V2     V3    V4    V5
+#>   1   0.67  0.44 -0.615  1.22 -0.82
+#>   2   0.35 -0.42 -0.400  1.26  0.18
+#>   3   0.55  0.64  0.230 -1.45 -0.58
+#>   4   1.04  0.70 -0.789  1.53 -0.65
+#>   5  -1.04  0.79  0.362 -1.10 -1.43
+#>   6  -0.19  0.58  1.005 -0.34 -1.46
+#>   7  -0.98 -0.21 -0.963  0.57 -0.06
+#>   8   0.18  0.85 -0.098 -0.40 -0.66
+#>   9  -0.53 -0.65 -0.289 -1.11 -0.58
+#>   10  0.65 -0.84 -0.826  1.79  0.31
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 x 5
 #>   variable    mean    sd median   mad
 #>   <chr>      <dbl> <dbl>  <dbl> <dbl>
-#> 1 V1        0.293  0.884  0.462 1.18 
-#> 2 V2        0.653  0.994  0.825 0.924
-#> 3 V3        0.0546 0.934  0.420 0.855
-#> 4 V4       -0.0735 1.19  -0.378 1.32 
-#> 5 V5       -0.311  0.776 -0.189 0.473
+#> 1 V1        0.0713 0.725  0.268 0.640
+#> 2 V2        0.188  0.647  0.513 0.454
+#> 3 V3       -0.238  0.623 -0.344 0.687
+#> 4 V4        0.198  1.22   0.111 1.75 
+#> 5 V5       -0.575  0.598 -0.618 0.561
 ```
 
 Instead of `as_draws_matrix()` we also could have just used

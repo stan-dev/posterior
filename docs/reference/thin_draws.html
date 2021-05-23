@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="Thin draws objects — thin_draws" />
-<meta property="og:description" content="Thin draws objects to reduce their size and autocorrelation of the chains." />
+<meta property="og:description" content="Thin draws objects to reduce their size and autocorrelation in the chains." />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -83,6 +83,9 @@
     <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/index.html">Vignettes</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -165,7 +168,7 @@
     </div>
 
     <div class="ref-description">
-    <p>Thin <code><a href='draws.html'>draws</a></code> objects to reduce their size and autocorrelation of the chains.</p>
+    <p>Thin <code><a href='draws.html'>draws</a></code> objects to reduce their size and autocorrelation in the chains.</p>
     </div>
 
     <pre class="usage"><span class='fu'>thin_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>thin</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -178,7 +181,7 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An <span style="R">R</span> object for which the methods are defined.</p></td>
+      <td><p>A <code>draws</code> object, or another <span style="R">R</span> object for which the method is defined.</p></td>
     </tr>
     <tr>
       <th>thin</th>

@@ -3,9 +3,9 @@
 #' Extract a vector of draws of a single variable.
 #'
 #' @template args-methods-x
-#' @param variable Name of a single variable to extract draws for.
+#' @param variable Name of the variable to extract.
 #' @template args-methods-dots
-#' @return A numeric vector of length #draws.
+#' @return A numeric vector of length equal to the number of draws.
 #'
 #' @examples
 #' x <- example_draws()

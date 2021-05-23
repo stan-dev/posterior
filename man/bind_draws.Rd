@@ -25,11 +25,12 @@ bind_draws(x, ...)
 \item{x}{A \code{\link{draws}} object. The draws format of \code{x} will define the format
 of the returned draws object.}
 
-\item{...}{Further \code{\link{draws}} objects.}
+\item{...}{Additional \code{\link{draws}} objects to bind to \code{x}.}
 
-\item{along}{The dimension along which draws objects should be bound together.
-Possible values are \code{variable} (the default), \code{chain}, \code{iteration}, and
-\code{draw}. Not all options are supported for all input formats.}
+\item{along}{The dimension along which draws objects should be bound
+together. Possible values are \code{"variable"} (the default), \code{"chain"},
+\code{"iteration"}, and \code{"draw"}. Not all options are supported for all input
+formats.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.

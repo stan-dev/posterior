@@ -5,7 +5,8 @@
 #' @name draws-index
 #' @template args-methods-x
 #' @template args-methods-dots
-#' @param value For `variables(x) <- value`, a character vector of new variable names.
+#' @param value For `variables(x) <- value`, a character vector of new variable
+#'   names.
 #'
 #' @details
 #' The methods `variables()`, `iteration_ids()`, `chain_ids()`, and `draw_ids()` return

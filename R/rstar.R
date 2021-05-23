@@ -10,6 +10,7 @@
 #' predictive accuracy on a testing set: giving the ratio of accuracy to
 #' predicting a chain uniformly at random.
 #'
+#' @family diagnostics
 #' @param x A [`draws_df`] object or one coercible to a `draws_df` object.
 #' @template args-conv-split
 #'
@@ -64,8 +65,8 @@
 #'   (if `uncertainty = TRUE`).
 #'
 #' @references Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
-#'   diagnostic with uncertainty using gradient-boosted machines \emph{arXiv
-#'   preprint} \code{arXiv:2003.07900}.
+#'   diagnostic with uncertainty using gradient-boosted machines.
+#'   *arXiv preprint* `arXiv:2003.07900`.
 #'
 #' @examples
 #' library(caret)

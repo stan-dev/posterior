@@ -1,0 +1,407 @@
+---
+title: "The posterior R package"
+author: "Paul Bürkner, Jonah Gabry, Matthew Kay, and Aki Vehtari"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{The posterior R package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction 
+
+The posterior R package is intended to provide useful tools for both users
+and developers of packages for fitting Bayesian models or working with output
+from Bayesian models. The primary goals of the package are to:
+
+* Efficiently convert between many different useful formats of
+  draws (samples) from posterior or prior distributions.
+* Provide consistent methods for operations commonly performed on draws, 
+  for example, subsetting, binding, or mutating draws.
+* Provide various summaries of draws in convenient formats.
+* Provide lightweight implementations of state of the art posterior inference 
+  diagnostics.
+
+## Installation
+
+The package is not on CRAN yet, but you can install the latest beta release 
+version via 
+
+```{r install, eval=FALSE}
+install.packages("posterior", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+```
+
+or the latest development version from GitHub via 
+
+```{r install_github, eval=FALSE}
+# install.packages("remotes")
+remotes::install_github("stan-dev/posterior")
+```
+
+## Example 
+
+```{r setup}
+library("posterior")
+```
+
+To demonstrate how to work with the posterior package, throughout the rest of
+this vignette we will use example posterior draws obtained from the eight
+schools hierarchical meta-analysis model described in Gelman et al. (2013). The
+variables are an estimate per school (`theta[1]` through `theta[8]`) as well as
+an overall mean (`mu`) and standard deviation across schools (`tau`).
+
+```{r example-drawss}
+eight_schools_array <- example_draws("eight_schools")
+print(eight_schools_array, max_variables = 3)
+```
+
+The structure of this object is explained in the next section.
+
+## Draws formats 
+
+### Available formats 
+
+Because different formats are preferable in different situations, posterior
+supports multiple formats and easy conversion between them. The currently
+supported formats are:
+
+* `draws_array`: An iterations by chains by variables array.
+* `draws_matrix`: A draws (iterations x chains) by variables array.
+* `draws_df`: A draws by variables data frame with addition meta columns
+`.chain`, `.iteration`, `.draw`.
+* `draws_list`: A list with one sublist per chain. Each sublist is a named list
+with one vector of iterations per variable.
+* `draws_rvars`: A list of random variable `rvar` objects, one per variable. See
+`vignette("rvar")` for an introduction to this new data type.
+
+These formats are essentially base R object classes and can be used as such. For
+example, a `draws_matrix` object is just a `matrix` with a little more
+consistency (e.g., no dropping of dimensions with one level when indexing) and
+additional methods. The exception to this is the `draws_rvars` format, which
+contains `rvar` objects that behave somewhat like arrays but are really a unique
+data type. See the separate vignette on the `rvar` and `draws_rvars` data types
+for details.
+
+The draws for our example come as a `draws_array` object with 
+`r niterations(eight_schools_array)` iterations, 
+`r nchains(eight_schools_array)` chains, and 
+`r nvariables(eight_schools_array)` variables:
+
+```{r draws_array-structure}
+str(eight_schools_array)
+```
+
+### Converting between formats
+
+Each of the formats has a method `as_draws_<format>` (e.g., `as_draws_list()`) 
+for creating an object  of the class from any of the other formats. As a 
+demonstration we can convert the example `draws_array` to a `draws_df`, 
+a data frame with additional meta information. To convert to a `draws_df` we
+use `as_draws_df()`.
+
+```{r draws_df}
+eight_schools_df <- as_draws_df(eight_schools_array)
+str(eight_schools_df)
+print(eight_schools_df)
+```
+
+### Converting regular R objects to `draws` formats
+
+The example draws already come in a format natively supported by posterior, but
+we can of course also import the draws from other sources like common base R
+objects.
+
+#### Example: create draws_matrix from a matrix
+
+In addition to converting other `draws` objects to the `draws_matrix` format,
+the `as_draws_matrix()` function will convert a regular matrix to a
+`draws_matrix`.
+
+```{r draws_matrix-from-matrix}
+x <- matrix(rnorm(50), nrow = 10, ncol = 5)
+colnames(x) <- paste0("V", 1:5)
+x <- as_draws_matrix(x)
+print(x)
+```
+Because the matrix was converted to a `draws_matrix`, all of the methods for
+working with `draws` objects described in subsequent sections of this vignette
+will now be available.
+
+Instead of `as_draws_matrix()` we also could have just used `as_draws()`, which
+attempts to find the closest available format to the input object. In this case
+the result would be a `draws_matrix` object either way.
+
+#### Example: create draws_matrix from multiple vectors
+
+In addition to the `as_draws_matrix()` converter function there is also a
+`draws_matrix()` constructor function that can be used to create draws matrix
+from multiple vectors.
+
+```{r draws_matrix-from-vectors}
+x <- draws_matrix(alpha = rnorm(50), beta = rnorm(50))
+print(x)
+```
+
+Analogous functions exist for the other draws formats and are used similarly.
+
+
+## Manipulating `draws` objects
+
+The posterior package provides many methods for manipulating draws objects in
+useful ways. In this section we demonstrate several of the most commonly used
+methods. These methods, like the other methods in posterior, are available for
+every supported draws format.
+
+
+### Subsetting 
+
+Subsetting `draws` objects can be done according to various aspects of the draws
+(iterations, chains, or variables). The posterior package provides a convenient
+interface for this purpose via `subset_draws()`. For example, here is the
+code to extract the first five iterations of the first two chains of the
+variable `mu`.
+
+```{r subset-df}
+sub_df <- subset_draws(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
+str(sub_df)
+```
+
+The same call to `subset_draws()` can be used regardless of the draws format.
+For example, here is the same code except replacing the `draws_df` object with 
+the `draws_array` object. 
+
+```{r subset-array}
+sub_arr <- subset_draws(eight_schools_array, variable = "mu", chain = 1:2, iteration = 1:5)
+str(sub_arr)
+```
+
+We can check that these two calls to `subset_draws()` (the first with the data
+frame, the second with the array) produce the same result.
+
+```{r subset-compare, results='hold'}
+identical(sub_df, as_draws_df(sub_arr))
+identical(as_draws_array(sub_df), sub_arr)
+```
+
+It is also possible to use standard R subsetting syntax with `draws` objects.
+The following is equivalent to the use of `subset_draws()` with the array above.
+
+```{r subset-standard}
+eight_schools_array[1:5, 1:2, "mu"]
+```
+
+The major difference between how posterior behaves when indexing and how base R
+behaves is that posterior will _not_ drop dimensions with only one level. That
+is, even though there is only one variable left after subsetting, the result of
+the subsetting above is still a `draws_array` and not a `draws_matrix`.
+
+### Mutating (transformations of variables)
+
+The magic of having obtained draws from the joint posterior (or prior)
+distribution of a set of variables is that these draws can also be used to
+obtain draws from any other variable that is a function of the original
+variables.
+That is, if we are interested in the posterior distribution of, say,
+`phi = (mu + tau)^2` all we have to do is to perform the transformation for each
+of the individual draws to obtain draws from the posterior distribution of the
+transformed variable. This procedure is handled by `mutate_variables()`.
+
+```{r mutate}
+x <- mutate_variables(eight_schools_df, phi = (mu + tau)^2)
+x <- subset_draws(x, c("mu", "tau", "phi"))
+print(x)
+```
+
+### Renaming
+
+To rename variables use `rename_variables()`. Here we rename the scalar `mu` to
+`mean` and the vector `theta` to `alpha`.
+
+```{r rename}
+# mu is a scalar, theta is a vector
+x <- rename_variables(eight_schools_df, mean = mu, alpha = theta)
+variables(x)
+```
+In the call to `rename_variables()` above, `mu` and `theta` can be quoted or
+unquoted.
+
+It is also possible to rename individual elements of non-scalar parameters, 
+for example we can rename just the first element of `alpha`:
+
+```{r rename-element}
+x <- rename_variables(x, a1 = `alpha[1]`)
+variables(x)
+```
+
+### Binding
+
+The `bind_draws()` method can be used to combine `draws` objects along different
+dimensions. As an example, suppose we have several different `draws_matrix`
+objects:
+
+```{r objects-to-bind}
+x1 <- draws_matrix(alpha = rnorm(5), beta = rnorm(5))
+x2 <- draws_matrix(alpha = rnorm(5), beta = rnorm(5))
+x3 <- draws_matrix(theta = rexp(5))
+```
+
+We can bind `x1` and `x3` together along the `'variable'` dimension to get 
+a single `draws_matrix` with the variables from both `x1` and `x3`: 
+
+```{r bind-variable}
+x4 <- bind_draws(x1, x3, along = "variable")
+print(x4)
+```
+
+Because `x1` and `x2` have the same variables, we can bind them along the
+`'draw'` dimension to create a single `draws_matrix` with more draws:
+
+```{r bind-draw}
+x5 <- bind_draws(x1, x2, along = "draw")
+print(x5)
+```
+
+As with all posterior methods, `bind_draws()` can be used with all draws formats
+and depending on the format different dimensions are available to bind on. For
+example, we can bind `draws_array` objects together by `iteration`, `chain`, or
+`variable`, but a 2-D `draws_matrix` with the chains combined can only by bound
+by `draw` and `variable`.
+
+
+## Summaries and diagnostics
+
+### summarise_draws() basic usage
+
+Computing summaries of posterior or prior draws and convergence diagnostics for
+posterior draws are some of the most common tasks when working with Bayesian
+models fit using Markov Chain Monte Carlo (MCMC) methods. The posterior
+package provides a flexible interface for this purpose via `summarise_draws()`
+(or `summarize_draws()`), which can be passed any of the formats supported by
+the package.
+
+```{r summary}
+# summarise_draws or summarize_draws
+summarise_draws(eight_schools_df)
+```
+
+The result is a data frame with one row per variable and one column per
+summary statistic or convergence diagnostic. The summaries `rhat`, `ess_bulk`,
+and `ess_tail` are described in Vehtari et al. (2020). We can choose which
+summaries to compute by passing additional arguments, either functions or names
+of functions. For instance, if we only wanted the mean and its corresponding
+Monte Carlo Standard Error (MCSE) we could use either of these options:
+
+```{r summary-with-measures}
+# the function mcse_mean is provided by the posterior package
+s1 <- summarise_draws(eight_schools_df, "mean", "mcse_mean") 
+s2 <- summarise_draws(eight_schools_df, mean, mcse_mean) 
+identical(s1, s2)
+print(s1)
+```
+
+### Changing column names
+
+The column names in the output can be changed by providing the functions 
+as name-value pairs, where the name is the name to use in the output and the 
+value is a function name or definition. For example, here we change the names
+`mean` and `sd` to `posterior_mean` and `posterior_sd`.
+
+```{r change-summary-names}
+summarise_draws(eight_schools_df, posterior_mean = mean, posterior_sd = sd)
+```
+
+### Using custom functions 
+
+For a function to work with `summarise_draws()`, it needs to take a vector or
+matrix of numeric values and return a single numeric value or a named vector of
+numeric values. Additional arguments to the function can be specified in a list
+passed to the `.args` argument.
+
+```{r summary-.args}
+weighted_mean <- function(x, wts) {
+  sum(x * wts)/sum(wts)
+}
+summarise_draws(
+  eight_schools_df, 
+  weighted_mean, 
+  .args = list(wts = rexp(ndraws(eight_schools_df)))
+)
+```
+
+### Specifying functions using lambda-like syntax
+
+It is also possible to specify a summary function using a one-sided formula that
+follows the conventions supported by `rlang::as_function()`. For example, the
+function
+
+```{r standard-quantile, eval = FALSE}
+function(x) quantile(x, probs = c(0.4, 0.6))
+```
+
+can be simplified to 
+
+```{r lambda-quantile, eval = FALSE}
+# for multiple arguments `.x` and `.y` can be used, see ?rlang::as_function
+~quantile(., probs = c(0.4, 0.6))
+```
+
+Both can be used with `summarise_draws()` and produce the same output:
+
+```{r lambda-syntax}
+summarise_draws(eight_schools_df, function(x) quantile(x, probs = c(0.4, 0.6)))
+
+summarise_draws(eight_schools_df, ~quantile(.x, probs = c(0.4, 0.6)))
+```
+
+See `help("as_function", "rlang")` for details on specifying these functions.
+
+### Other diagnostics
+
+In addition to the default diagnostic functions used by `summarise_draws()`
+(`rhat()`, `ess_bulk()`, `ess_tail()`), posterior also provides additional
+diagnostics like effective sample sizes and Monte Carlo standard errors for
+quantiles and standard deviations, an experimental new diagnostic called R*, and
+others. For a list of available diagnostics and links to their individual help
+pages see `help("diagnostics", "posterior")`.
+
+If you have suggestions for additional diagnostics that should be implemented in
+posterior, please open an issue at
+<https://github.com/stan-dev/posterior/issues>.
+
+
+## Other methods for working with `draws` objects
+
+In addition to the methods demonstrated in this vignette, posterior has various
+other methods available for working with `draws` objects. The following is a
+(potentially incomplete) list.
+
+|**Method**|**Description**|
+|:----------|:---------------|
+| `order_draws()` | Order `draws` objects according to iteration and chain number |
+| `repair_draws()`| Repair indices of `draws` objects so that iterations chains, and draws are continuously and consistently numbered |
+|`resample_draws()` | Resample `draws` objects according to provided weights |
+| `thin_draws()` | Thin `draws` objects to reduce size and autocorrelation |
+| `weight_draws()`| Add weights to draws objects, with one weight per draw, for use in subsequent weighting operations |
+| `extract_variable()` | Extract a vector of draws of a single variable  |
+| `extract_variable_matrix()` | Extract an iterations x chains matrix of draws of a single variable |
+| `merge_chains()` | Merge chains of `draws` objects into a single chain. | 
+| `split_chains()` | Split chains of `draws` objects by halving the number of iterations per chain and doubling the number of chains. |
+
+If you have suggestions for additional methods that would be useful for working
+with `draws` objects, please open an issue at
+<https://github.com/stan-dev/posterior/issues>.
+
+
+## References
+
+Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki Vehtari A.,
+& Rubin D. B. (2013). *Bayesian Data Analysis, Third Edition*. Chapman and
+Hall/CRC.
+
+Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
+Rank-normalization, folding, and localization: An improved Rhat for assessing
+convergence of MCMC. *Bayesian Analysis*.
+

@@ -7,24 +7,24 @@
 ess_bulk(x)
 }
 \arguments{
-\item{x}{A 2D array of draws (iterations x chains).}
+\item{x}{A 2D array of draws (iterations x chains) for a single variable.}
 }
 \value{
 A single numeric value. If any of the draws is non-finite, that is, \code{NA},
 \code{NaN}, \code{Inf}, or \code{-Inf}, the returned output will be (numeric) \code{NA}. Also, if
-all draws of a variable are the same, that is, if draws are constant, the
-returned output will be (numeric) \code{NA} as well. The reason for the latter is
-that, for constant draws, we cannot distinguish between variables that are
-supposed to be constant (e.g., for a diagonal element of a correlation
-matrix, which will always be 1) or variables that just happened to be
-constant because of a failure of convergence or other problems in the
-sampling process.
+all draws of a variable are the same (constant), the returned output will be
+(numeric) \code{NA} as well. The reason for the latter is that, for constant
+draws, we cannot distinguish between variables that are supposed to be
+constant (e.g.,  a diagonal element of a correlation matrix is always 1) or
+variables that just happened to be constant because of a failure of
+convergence or other problems in the sampling process.
 }
 \description{
-Compute bulk effective sample size estimate (bulk-ESS) for a single variable.
-Bulk-ESS is useful as a generic diagnostic for the sampling
-efficiency in the bulk of the posterior. It is defined as the
-effective sample size for rank normalized values using split chains.
+Compute a bulk effective sample size estimate (bulk-ESS) for a single
+variable. Bulk-ESS is useful as a diagnostic for the sampling efficiency in
+the bulk of the posterior. It is defined as the effective sample size for
+rank normalized values using split chains. For the tail effective sample size
+see \code{\link[=ess_tail]{ess_tail()}}.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -47,6 +47,7 @@ Other diagnostics:
 \code{\link{mcse_quantile}()},
 \code{\link{mcse_sd}()},
 \code{\link{rhat_basic}()},
-\code{\link{rhat}()}
+\code{\link{rhat}()},
+\code{\link{rstar}()}
 }
 \concept{diagnostics}

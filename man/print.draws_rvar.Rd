@@ -17,22 +17,21 @@
 \arguments{
 \item{x}{A \code{draws} object, or another \R object for which the method is defined.}
 
-\item{digits}{Minimum number of significant digits to print.}
+\item{digits}{The minimum number of significant digits to print.}
 
-\item{max_variables}{Maximum number of variables to print.
-Can be controlled globally via the \code{"posterior.max_variables"} option
-(see \code{\link{options}} for details).}
+\item{max_variables}{The maximum number of variables to print. Can be
+controlled globally via the \code{"posterior.max_variables"}
+\link[base:options]{option}.}
 
 \item{summary}{What style of summary to display: \code{"mean_sd"} displays \verb{mean±sd},
 \code{"median_mad"} displays \verb{median±mad}. If \code{NULL}, \code{getOption("posterior.rvar_summary")} is
 used (default \verb{"mean_sd}).}
 
-\item{reserved}{Logical. Indicates whether reserved variables should be
-included in the output. Defaults to \code{FALSE}.
-See \code{\link{reserved-variables}} for an overview of currently reserved
-variable names.}
+\item{reserved}{Should reserved variables be included in the output? Defaults
+to \code{FALSE}. See \code{\link{reserved-variables}} for an overview of currently
+reserved variable names.}
 
-\item{...}{Further arguments passed to the underlying \code{\link{print}} methods.}
+\item{...}{Further arguments passed to the underlying \code{\link[=print]{print()}} methods.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.

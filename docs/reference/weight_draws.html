@@ -42,9 +42,9 @@
 <meta property="og:title" content="Weight draws objects — weight_draws" />
 <meta property="og:description" content="Add weights to draws objects, with one weight per draw, for use in
 subsequent weighting operations. For reasons of numerical accuracy, weights
-are stored in the form of unnormalized log-weights (in a variable
-called .log_weight). See weights.draws for details how to extract weights
-from draws objects." />
+are stored in the form of unnormalized log-weights (in a variable called
+.log_weight). See weights.draws() for details how to extract weights from
+draws objects." />
 
 
 
@@ -76,7 +76,7 @@ from draws objects." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -87,6 +87,9 @@ from draws objects." />
     <span class="fas fa-home fa-lg"></span>
      
   </a>
+</li>
+<li>
+  <a href="../articles/index.html">Vignettes</a>
 </li>
 <li>
   <a href="../reference/index.html">Functions</a>
@@ -171,9 +174,9 @@ from draws objects." />
     <div class="ref-description">
     <p>Add weights to <code><a href='draws.html'>draws</a></code> objects, with one weight per draw, for use in
 subsequent weighting operations. For reasons of numerical accuracy, weights
-are stored in the form of unnormalized log-weights (in a variable
-called <code>.log_weight</code>). See <code><a href='weights.draws.html'>weights.draws</a></code> for details how to extract weights
-from <code>draws</code> objects.</p>
+are stored in the form of unnormalized log-weights (in a variable called
+<code>.log_weight</code>). See <code><a href='weights.draws.html'>weights.draws()</a></code> for details how to extract weights from
+<code>draws</code> objects.</p>
     </div>
 
     <pre class="usage"><span class='fu'>weight_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>weights</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -198,15 +201,14 @@ from <code>draws</code> objects.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>An <span style="R">R</span> object for which the methods are defined.</p></td>
+      <td><p>A <code>draws</code> object, or another <span style="R">R</span> object for which the method is defined.</p></td>
     </tr>
     <tr>
       <th>weights</th>
-      <td><p>A vector of weights of length equal to the number of
-draws in <code>x</code> (as obtained by method <code><a href='draws-index.html'>ndraws</a></code>). Weights will be
-internally stored on the log scale (in a variable called <code>.log_weight</code>)
-and will not be normalized, but normalized (non-log) weights can be returned
-via the <code><a href='weights.draws.html'>weights.draws</a></code> method later.</p></td>
+      <td><p>A vector of weights of length <code><a href='draws-index.html'>ndraws(x)</a></code> (the number of draws
+in <code>x</code>). Weights will be internally stored on the log scale (in a variable
+called <code>.log_weight</code>) and will not be normalized, but normalized (non-log)
+weights can be returned via the <code><a href='weights.draws.html'>weights.draws()</a></code> method later.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -214,9 +216,9 @@ via the <code><a href='weights.draws.html'>weights.draws</a></code> method later
     </tr>
     <tr>
       <th>log</th>
-      <td><p>Logical. Indicates if the weights passed via <code>weights</code> are on the
-log scale already. Defaults to <code>FALSE</code>, that is, expecting <code>weights</code> to be on
-the standard (non-log) scale.</p></td>
+      <td><p>Are the weights passed already on the log scale? The default is
+<code>FALSE</code>, that is, expecting <code>weights</code> to be on the standard (non-log)
+scale.</p></td>
     </tr>
     </table>
 
@@ -225,7 +227,7 @@ the standard (non-log) scale.</p></td>
     <p>A <code>draws</code> object of the same class as <code>x</code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code><a href='weights.draws.html'>weights.draws</a></code>, <code><a href='resample_draws.html'>resample_draws</a></code></p></div>
+    <div class='dont-index'><p><code><a href='weights.draws.html'>weights.draws()</a></code>, <code><a href='resample_draws.html'>resample_draws()</a></code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span>
@@ -233,28 +235,26 @@ the standard (non-log) scale.</p></td>
 <span class='co'># sample some random weights for illustration</span>
 <span class='va'>wts</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Exponential.html'>rexp</a></span><span class='op'>(</span><span class='fu'><a href='draws-index.html'>ndraws</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>wts</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.3675121 0.4685078 1.7228034 2.3398183 0.4259129 0.9929149</div><div class='input'>
+</div><div class='output co'>#&gt; [1] 0.12537521 0.51153003 0.43158989 0.01586271 1.98827365 1.42360646</div><div class='input'>
 <span class='co'># add weights</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>weight_draws</span><span class='op'>(</span><span class='va'>x</span>, weights <span class='op'>=</span> <span class='va'>wts</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Loading required namespace: testthat</span></div><div class='input'>
 <span class='co'># extract weights</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># defaults to normalized weights</span>
-</div><div class='output co'>#&gt; [1] 0.0009163224 0.0011681362 0.0042954862 0.0058338968 0.0010619337
-#&gt; [6] 0.0024756466</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>x</span>, normalize<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># recover original weights</span>
-</div><div class='output co'>#&gt; [1] 0.3675121 0.4685078 1.7228034 2.3398183 0.4259129 0.9929149</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>x</span>, log<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># get normalized log-weights</span>
-</div><div class='output co'>#&gt; [1] -6.995142 -6.752346 -5.450191 -5.144070 -6.847664 -6.001254</div><div class='input'>
+</div><div class='output co'>#&gt; [1] 2.943483e-04 1.200939e-03 1.013260e-03 3.724149e-05 4.667947e-03
+#&gt; [6] 3.342256e-03</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>x</span>, normalize<span class='op'>=</span><span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># recover original weights</span>
+</div><div class='output co'>#&gt; [1] 0.12537521 0.51153003 0.43158989 0.01586271 1.98827365 1.42360646</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>x</span>, log<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># get normalized log-weights</span>
+</div><div class='output co'>#&gt; [1]  -8.130747  -6.724652  -6.894582 -10.198087  -5.367036  -5.701109</div><div class='input'>
 <span class='co'># add weights which are already on the log scale</span>
 <span class='va'>log_wts</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Log.html'>log</a></span><span class='op'>(</span><span class='va'>wts</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>log_wts</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] -1.000998966 -0.758202442  0.543952831  0.850073277 -0.853520434
-#&gt; [6] -0.007110276</div><div class='input'>
+</div><div class='output co'>#&gt; [1] -2.0764444 -0.6703490 -0.8402795 -4.1437844  0.6872667  0.3531934</div><div class='input'>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>weight_draws</span><span class='op'>(</span><span class='va'>x</span>, weights <span class='op'>=</span> <span class='va'>log_wts</span>, log <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='co'># extract weights</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.0009163224 0.0011681362 0.0042954862 0.0058338968 0.0010619337
-#&gt; [6] 0.0024756466</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>x</span>, log<span class='op'>=</span><span class='cn'>TRUE</span>, normalize <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># recover original log_wts</span>
-</div><div class='output co'>#&gt; [1] -1.000998966 -0.758202442  0.543952831  0.850073277 -0.853520434
-#&gt; [6] -0.007110276</div><div class='input'>
+</div><div class='output co'>#&gt; [1] 2.943483e-04 1.200939e-03 1.013260e-03 3.724149e-05 4.667947e-03
+#&gt; [6] 3.342256e-03</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>x</span>, log<span class='op'>=</span><span class='cn'>TRUE</span>, normalize <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># recover original log_wts</span>
+</div><div class='output co'>#&gt; [1] -2.0764444 -0.6703490 -0.8402795 -4.1437844  0.6872667  0.3531934</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

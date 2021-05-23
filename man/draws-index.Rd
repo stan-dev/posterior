@@ -36,7 +36,8 @@ ndraws(x)
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{value}{For \code{variables(x) <- value}, a character vector of new variable names.}
+\item{value}{For \code{variables(x) <- value}, a character vector of new variable
+names.}
 }
 \description{
 Index variables, iterations, chains, and draws.
