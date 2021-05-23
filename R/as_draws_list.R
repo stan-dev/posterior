@@ -52,7 +52,7 @@ as_draws_list.draws_list <- function(x, ...) {
 
 #' @rdname draws_list
 #' @export
-as_draws_list.draws_rvar <- function(x, ...) {
+as_draws_list.draws_rvars <- function(x, ...) {
   x <- as_draws_df(x)
   as_draws_list.data.frame(x, ...)
 }
@@ -90,8 +90,8 @@ as_draws_list.vector <- function(x, ...) {
 #' @rdname draws_list
 #' @export
 as_draws_list.rvar <- function(x, ...) {
-  x <- as_draws_rvar.rvar(x)
-  as_draws_list.draws_rvar(x)
+  x <- as_draws_rvars.rvar(x)
+  as_draws_list.draws_rvars(x)
 }
 
 #' @rdname draws_list

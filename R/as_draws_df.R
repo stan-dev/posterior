@@ -119,7 +119,7 @@ as_draws_df.draws_df <- function(x, ...) {
 }
 
 #' @rdname draws_df
-as_draws_df.draws_rvar <- function(x, ...) {
+as_draws_df.draws_rvars <- function(x, ...) {
   if (ndraws(x) == 0) {
     return(empty_draws_array(variables(x)))
   }
@@ -195,9 +195,9 @@ as_draws_df.mcmc.list <- function(x, ...) {
 
 #' @rdname draws_df
 #' @export
-as_draws_df.rvar <- function(x, ...) {
-  x <- as_draws_rvar(x)
-  as_draws_df.draws_rvar(x, ...)
+as_draws_df.rvars <- function(x, ...) {
+  x <- as_draws_rvars(x)
+  as_draws_df.draws_rvars(x, ...)
 }
 
 #' @rdname draws_df

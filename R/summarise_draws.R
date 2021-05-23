@@ -207,7 +207,7 @@ summary.draws <- function(object, ...) {
 #' @rdname draws_summary
 #' @export
 summarise_draws.rvar <- function(x, ...) {
-  .x <- draws_rvar(x = x)
+  .x <- draws_rvars(x = x)
   names(.x) <- deparse_pretty(substitute(x))
   summarise_draws(.x, ...)
 }
@@ -215,7 +215,7 @@ summarise_draws.rvar <- function(x, ...) {
 #' @rdname draws_summary
 #' @export
 summary.rvar <- function(object, ...) {
-  .x <- draws_rvar(x = object)
+  .x <- draws_rvars(x = object)
   names(.x) <- deparse_pretty(substitute(object))
   summarise_draws(.x, ...)
 }

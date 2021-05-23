@@ -55,8 +55,8 @@ test_that("mutate_variables works correctly for draws_array objects", {
   expect_equal(x[, , "tau2"], x[, , "tau"]^2, check.attributes = FALSE)
 })
 
-test_that("mutate_variables works correctly for draws_rvar objects", {
-  x <- as_draws_rvar(example_draws())
+test_that("mutate_variables works correctly for draws_rvars objects", {
+  x <- as_draws_rvars(example_draws())
   x <- mutate_variables(x, tau_sq = tau^2, theta_2_sq = theta[[2]]^2)
   expect_equal(x$tau_sq, x$tau^2, check.attributes = FALSE)
   expect_equal(x$theta_2_sq, x$theta[[2]]^2, check.attributes = FALSE)

@@ -33,7 +33,7 @@ Because \code{\link{rvar}} is an S3 class and S3 classes cannot properly overrid
 \examples{
 
 # d has mu (mean vector of length 3) and Sigma (3x3 covariance matrix)
-d <- as_draws_rvar(example_draws("multi_normal"))
+d <- as_draws_rvars(example_draws("multi_normal"))
 d$Sigma
 
 # trivial example: multiplication by a non-random matrix

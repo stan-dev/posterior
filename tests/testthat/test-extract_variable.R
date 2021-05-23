@@ -14,20 +14,20 @@ test_that("extract_variable works the same for different formats", {
   mu_matrix <- extract_variable(draws_matrix, "mu")
   expect_equal(as.vector(mu_matrix), as.vector(mu_array))
 
-  draws_rvar <- as_draws_rvar(example_draws())
-  mu_matrix <- extract_variable(draws_rvar, "mu")
+  draws_rvars <- as_draws_rvars(example_draws())
+  mu_matrix <- extract_variable(draws_rvars, "mu")
   expect_equal(as.vector(mu_matrix), as.vector(mu_array))
 })
 
-test_that("extract_variable works for draws_rvar on an indexed variable", {
+test_that("extract_variable works for draws_rvars on an indexed variable", {
   draws_array <- as_draws_array(example_draws())
   theta1_array <- extract_variable(draws_array, "theta[1]")
 
-  draws_rvar <- as_draws_rvar(example_draws())
-  theta1_matrix <- extract_variable(draws_rvar, "theta[1]")
+  draws_rvars <- as_draws_rvars(example_draws())
+  theta1_matrix <- extract_variable(draws_rvars, "theta[1]")
   expect_equal(as.vector(theta1_matrix), as.vector(theta1_array))
 
-  expect_error(extract_variable(draws_rvar, "theta"), "Cannot extract non-scalar value")
+  expect_error(extract_variable(draws_rvars, "theta"), "Cannot extract non-scalar value")
 })
 
 test_that("extract_variable default method works", {

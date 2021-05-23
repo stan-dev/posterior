@@ -60,12 +60,12 @@ test_that("variables() and variables<-() work on draws_df", {
   expect_equal(x, ref)
 })
 
-test_that("variables() and variables<-() work on draws_rvar", {
-  x <- as_draws_rvar(matrix(11:20, ncol = 2, dimnames = list(NULL, c("a", "b"))))
+test_that("variables() and variables<-() work on draws_rvars", {
+  x <- as_draws_rvars(matrix(11:20, ncol = 2, dimnames = list(NULL, c("a", "b"))))
 
-  ref <- as_draws_rvar(matrix(11:20, ncol = 2, dimnames = list(NULL, c("x", "y[1]"))))
+  ref <- as_draws_rvars(matrix(11:20, ncol = 2, dimnames = list(NULL, c("x", "y[1]"))))
 
-  # variables works a bit differently for draws_rvar
+  # variables works a bit differently for draws_rvars
   expect_equal(variables(x), c("a", "b"))
   expect_equal(variables(ref), c("x", "y"))
 

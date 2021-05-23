@@ -69,8 +69,8 @@ test_that("indices of draws_list objects are correct", {
   expect_equal(chain_ids(x), 1:length(x))
 })
 
-test_that("indices of draws_rvar objects are correct", {
-  x <- as_draws_rvar(example_draws())
+test_that("indices of draws_rvars objects are correct", {
+  x <- as_draws_rvars(example_draws())
 
   expect_equal(iteration_ids(x), 1:(length(draws_of(x[[1]]))/4))
   expect_equal(chain_ids(x), 1:4)

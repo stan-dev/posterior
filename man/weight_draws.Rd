@@ -6,7 +6,7 @@
 \alias{weight_draws.draws_array}
 \alias{weight_draws.draws_df}
 \alias{weight_draws.draws_list}
-\alias{weight_draws.draws_rvar}
+\alias{weight_draws.draws_rvars}
 \title{Weight \code{draws} objects}
 \usage{
 weight_draws(x, weights, ...)
@@ -19,7 +19,7 @@ weight_draws(x, weights, ...)
 
 \method{weight_draws}{draws_list}(x, weights, log = FALSE, ...)
 
-\method{weight_draws}{draws_rvar}(x, weights, log = FALSE, ...)
+\method{weight_draws}{draws_rvars}(x, weights, log = FALSE, ...)
 }
 \arguments{
 \item{x}{A \code{draws} object, or another \R object for which the method is defined.}

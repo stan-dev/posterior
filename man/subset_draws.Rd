@@ -6,7 +6,7 @@
 \alias{subset_draws.draws_array}
 \alias{subset_draws.draws_df}
 \alias{subset_draws.draws_list}
-\alias{subset_draws.draws_rvar}
+\alias{subset_draws.draws_rvars}
 \alias{subset.draws}
 \title{Subset \code{draws} objects}
 \usage{
@@ -56,7 +56,7 @@ subset_draws(x, ...)
   ...
 )
 
-\method{subset_draws}{draws_rvar}(
+\method{subset_draws}{draws_rvars}(
   x,
   variable = NULL,
   iteration = NULL,

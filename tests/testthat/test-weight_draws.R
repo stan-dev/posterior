@@ -50,8 +50,8 @@ test_that("weight_draws works on draws_list", {
   expect_equal(weights2, weights)
 })
 
-test_that("weight_draws works on draws_rvar", {
-  x <- as_draws_rvar(example_draws())
+test_that("weight_draws works on draws_rvars", {
+  x <- as_draws_rvars(example_draws())
   weights <- rexp(ndraws(x))
 
   x1 <- weight_draws(x, weights)

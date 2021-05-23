@@ -29,7 +29,7 @@
 #'
 #' The following options are used to format and print [`draws`] objects,
 #' as in `print.draws_array()`, `print.draws_df()`, `print.draws_list()`,
-#' `print.draws_matrix()`, and `print.draws_rvar()`:
+#' `print.draws_matrix()`, and `print.draws_rvars()`:
 #'
 #' * `posterior.max_draws`: Maximum number of draws to print.
 #' * `posterior.max_iterations`: Maximum number of iterations to print.
@@ -37,7 +37,7 @@
 #' * `posterior.max_variables`: Maximum number of variables to print.
 #'
 #' The following option is used to format and print [`rvar`] objects,
-#' as in `print.rvar()` and `print.draws_rvar()`:
+#' as in `print.rvar()` and `print.draws_rvars()`:
 #'
 #' * `posterior.rvar_summary`: What style of summary to display:
 #' `"mean_sd"` displays `mean±sd`, `"median_mad"` displays `median±mad`.

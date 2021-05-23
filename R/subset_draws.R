@@ -127,7 +127,7 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
 
 #' @rdname subset_draws
 #' @export
-subset_draws.draws_rvar <- function(x, variable = NULL, iteration = NULL,
+subset_draws.draws_rvars <- function(x, variable = NULL, iteration = NULL,
                                      chain = NULL, draw = NULL, regex = FALSE,
                                      unique = TRUE, ...) {
   x <- repair_draws(x)
@@ -296,7 +296,7 @@ subset_dims <- function(x, ...) {
 
 #' @importFrom vctrs vec_slice
 #' @export
-.subset_draws.draws_rvar <- function(x, iteration = NULL, chain = NULL,
+.subset_draws.draws_rvars <- function(x, iteration = NULL, chain = NULL,
                                       variable = NULL, reserved = FALSE, ...) {
   if (!is.null(variable)) {
     if (reserved) {
@@ -308,7 +308,7 @@ subset_dims <- function(x, ...) {
       reserved_vars <- setdiff(reserved_variables(z), new_vars)
       x <- c(x, z[reserved_vars])
       # c() currently removes the 'draws' classes
-      class(x) <- class_draws_rvar()
+      class(x) <- class_draws_rvars()
       remove(z)
     }
   }

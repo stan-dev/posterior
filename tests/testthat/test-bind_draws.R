@@ -125,8 +125,8 @@ test_that("bind_draws works for draws_list objects", {
                "Cannot bind 'draws_list' objects along 'draw'")
 })
 
-test_that("bind_draws works for draws_rvar objects", {
-  draws1 <- as_draws_rvar(example_draws())
+test_that("bind_draws works for draws_rvars objects", {
+  draws1 <- as_draws_rvars(example_draws())
   draws2 <- subset_draws(draws1, chain = 2)
   draws3 <- subset_draws(draws1, iteration = 10:20)
   draws4 <- as_draws_list(data.frame(
@@ -146,7 +146,7 @@ test_that("bind_draws works for draws_rvar objects", {
   expect_equal(variables(draws_new), variables(draws1))
 
   expect_error(bind_draws(draws1, draws3, along = "iteration"),
-    "Cannot bind 'draws_rvar' objects along 'iteration'")
+    "Cannot bind 'draws_rvars' objects along 'iteration'")
 
   draws_new <- bind_draws(draws1, draws3, along = "draw")
   expect_equal(ndraws(draws_new), ndraws(draws1) + ndraws(draws3))

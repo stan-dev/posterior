@@ -71,7 +71,7 @@ rvar_apply <- function(.x, .margin, .f, ...) {
   for (i in seq_along(rvar_list)[-1]) {
     rvar_i <- rvar_list[[i]]
     dim(rvar_i) <- c(1, dim(rvar_i))
-    out <- broadcast_and_bind_rvar(out, rvar_i, 1)
+    out <- broadcast_and_bind_rvars(out, rvar_i, 1)
   }
 
   # restore the shape of the marginal dimensions

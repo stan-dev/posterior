@@ -164,7 +164,7 @@ test_that("matrix multiplication works", {
 })
 
 test_that("diag works", {
-  Sigma <- as_draws_rvar(example_draws("multi_normal"))$Sigma
+  Sigma <- as_draws_rvars(example_draws("multi_normal"))$Sigma
 
   expect_equal(diag(Sigma), c(Sigma[1,1], Sigma[2,2], Sigma[3,3]))
 
@@ -179,7 +179,7 @@ test_that("diag works", {
 })
 
 test_that("Cholesky decomposition works", {
-  Sigma <- as_draws_rvar(example_draws("multi_normal"))$Sigma
+  Sigma <- as_draws_rvars(example_draws("multi_normal"))$Sigma
 
   # adding dimensions because we should expect these to be dropped
   dimnames(Sigma) <- list(

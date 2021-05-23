@@ -13,8 +13,8 @@ test_that("transformations to and from draws_matrix objects work", {
   draws_matrix2 <- as_draws_matrix(draws_list)
   expect_equal(draws_matrix, draws_matrix2)
 
-  draws_rvar <- as_draws_rvar(draws_matrix)
-  draws_matrix2 <- as_draws_matrix(draws_rvar)
+  draws_rvars <- as_draws_rvars(draws_matrix)
+  draws_matrix2 <- as_draws_matrix(draws_rvars)
   expect_equal(draws_matrix, draws_matrix2)
 })
 
@@ -36,8 +36,8 @@ test_that("transformations to and from draws_array objects work", {
   draws_array2 <- as_draws_array(draws_list)
   expect_equal(draws_array, draws_array2)
 
-  draws_rvar <- as_draws_rvar(draws_array)
-  draws_array2 <- as_draws_array(draws_rvar)
+  draws_rvars <- as_draws_rvars(draws_array)
+  draws_array2 <- as_draws_array(draws_rvars)
   expect_equal(draws_array, draws_array2)
 })
 
@@ -59,8 +59,8 @@ test_that("transformations to and from draws_df objects work", {
   draws_df2 <- as_draws_df(draws_list)
   expect_equal(draws_df, draws_df2)
 
-  draws_rvar <- as_draws_rvar(draws_df)
-  draws_df2 <- as_draws_df(draws_rvar)
+  draws_rvars <- as_draws_rvars(draws_df)
+  draws_df2 <- as_draws_df(draws_rvars)
   expect_equal(draws_df, draws_df2)
 })
 
@@ -82,32 +82,32 @@ test_that("transformations to and from draws_list objects work", {
   draws_list2 <- as_draws_list(draws_df)
   expect_equal(draws_list, draws_list2)
 
-  draws_rvar <- as_draws_rvar(draws_list)
-  draws_list2 <- as_draws_list(draws_rvar)
+  draws_rvars <- as_draws_rvars(draws_list)
+  draws_list2 <- as_draws_list(draws_rvars)
   expect_equal(draws_list, draws_list2)
 })
 
-test_that("transformations to and from draws_rvar objects work", {
-  draws_rvar <- as_draws_rvar(example_draws())
+test_that("transformations to and from draws_rvars objects work", {
+  draws_rvars <- as_draws_rvars(example_draws())
 
-  draws_matrix <- as_draws_matrix(draws_rvar)
-  draws_rvar2 <- as_draws_rvar(draws_matrix)
+  draws_matrix <- as_draws_matrix(draws_rvars)
+  draws_rvars2 <- as_draws_rvars(draws_matrix)
   expect_equal(
-    summarise_draws(draws_rvar, default_summary_measures()),
-    summarise_draws(draws_rvar2, default_summary_measures())
+    summarise_draws(draws_rvars, default_summary_measures()),
+    summarise_draws(draws_rvars2, default_summary_measures())
   )
 
-  draws_array <- as_draws_array(draws_rvar)
-  draws_rvar2 <- as_draws_rvar(draws_array)
-  expect_equal(draws_rvar, draws_rvar2)
+  draws_array <- as_draws_array(draws_rvars)
+  draws_rvars2 <- as_draws_rvars(draws_array)
+  expect_equal(draws_rvars, draws_rvars2)
 
-  draws_df <- as_draws_df(draws_rvar)
-  draws_rvar2 <- as_draws_rvar(draws_df)
-  expect_equal(draws_rvar, draws_rvar2)
+  draws_df <- as_draws_df(draws_rvars)
+  draws_rvars2 <- as_draws_rvars(draws_df)
+  expect_equal(draws_rvars, draws_rvars2)
 
-  draws_list <- as_draws_list(draws_rvar)
-  draws_rvar2 <- as_draws_rvar(draws_list)
-  expect_equal(draws_rvar, draws_rvar2)
+  draws_list <- as_draws_list(draws_rvars)
+  draws_rvars2 <- as_draws_rvars(draws_list)
+  expect_equal(draws_rvars, draws_rvars2)
 })
 
 test_that("matrices can be transformed to draws_matrix objects", {
@@ -204,12 +204,12 @@ test_that("numeric vectors can be transformed to draws_list objects", {
   expect_equal(draws_list, draws_list2)
 })
 
-test_that("numeric vectors can be transformed to draws_rvar objects", {
-  draws_rvar <- draws_rvar(a = 1:10, b = 11:20, c = rep(1, 10), .nchains = 2)
+test_that("numeric vectors can be transformed to draws_rvars objects", {
+  draws_rvars <- draws_rvars(a = 1:10, b = 11:20, c = rep(1, 10), .nchains = 2)
   draws_array <- array(c(1:10, 11:20, rep(1, 10)), c(5, 2, 3))
   dimnames(draws_array)[[3]] <- c("a", "b", "c")
-  draws_rvar2 <- as_draws_rvar(draws_array)
-  expect_equal(draws_rvar, draws_rvar2)
+  draws_rvars2 <- as_draws_rvars(draws_array)
+  expect_equal(draws_rvars, draws_rvars2)
 })
 
 test_that("mcmc and mcmc.list objects can be transformed to draws objects", {
@@ -227,14 +227,14 @@ test_that("mcmc and mcmc.list objects can be transformed to draws objects", {
     as_draws_array(x1),
     as_draws_df(x1),
     as_draws_list(x1),
-    as_draws_rvar(x1)
+    as_draws_rvars(x1)
   )
   mcmc_list_draws <- list(
     as_draws_matrix(xlist),
     as_draws_array(xlist),
     as_draws_df(xlist),
     as_draws_list(xlist),
-    as_draws_rvar(xlist)
+    as_draws_rvars(xlist)
   )
   for (j in seq_along(mcmc_draws)) {
     xj <- mcmc_draws[[j]]
@@ -257,7 +257,7 @@ test_that("empty draws objects can be converted", {
     empty_draws_array(),
     empty_draws_list(),
     empty_draws_df(),
-    empty_draws_rvar()
+    empty_draws_rvars()
   )
   for (j in seq_along(empty_draws)) {
     # basically just check they don't error and preserve 0 draws
@@ -266,7 +266,7 @@ test_that("empty draws objects can be converted", {
     expect_equal(ndraws(as_draws_array(empty_j)), 0)
     expect_equal(ndraws(as_draws_df(empty_j)), 0)
     expect_equal(ndraws(as_draws_list(empty_j)), 0)
-    expect_equal(ndraws(as_draws_rvar(empty_j)), 0)
+    expect_equal(ndraws(as_draws_rvars(empty_j)), 0)
   }
 })
 
@@ -291,27 +291,27 @@ test_that("draws_* constructors throw correct errors", {
   expect_error(draws_list(a = 1, .nchains = 2), "Number of chains does not divide the number of draws")
 })
 
-test_that("as_draws_rvar correctly reshapes missing, out-of-order, and string array indices", {
+test_that("as_draws_rvars correctly reshapes missing, out-of-order, and string array indices", {
   x_array <- as_draws_array(example_draws())
   variables(x_array) <- paste0("var[", rep(1:2, each = 5), ",", rep(1:5, 2), "]")
-  x_rvars <- as_draws_rvar(x_array)
+  x_rvars <- as_draws_rvars(x_array)
 
   x_array2 <- remove_variables(x_array, "var[2,3]")
   x_rvars2 <- x_rvars
   x_rvars2$var[2,3] <- NA
-  expect_equal(as_draws_rvar(x_array2), x_rvars2)
+  expect_equal(as_draws_rvars(x_array2), x_rvars2)
 
   x_array2 <- subset_draws(x_array, variable = c("var[1,4]", "var[2,3]"))
   x_rvars2 <- x_rvars
   x_rvars2$var <- x_rvars2$var[1:2,1:4]
   x_rvars2$var[1,1:3] <- NA
   x_rvars2$var[2,c(1:2,4)] <- NA
-  expect_equal(as_draws_rvar(x_array2), x_rvars2)
+  expect_equal(as_draws_rvars(x_array2), x_rvars2)
 
   x_rvars2 <- x_rvars
   rownames(x_rvars2$var) <- letters[1:2]
   colnames(x_rvars2$var) <- rev(letters[1:5])
-  expect_equal(as_draws_rvar(as_draws_array(x_rvars2)), x_rvars2)
+  expect_equal(as_draws_rvars(as_draws_array(x_rvars2)), x_rvars2)
 })
 
 test_that("draws_df does not munge variable names", {

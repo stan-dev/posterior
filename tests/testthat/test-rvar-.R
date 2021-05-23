@@ -1,4 +1,4 @@
-# function for making rvar from arrays that expects last index to be
+# function for making rvars from arrays that expects last index to be
 # draws (for testing so that when array structure changes tests don't have to)
 rvar_from_array = function(x) {
   .dim = dim(x)
@@ -6,7 +6,7 @@ rvar_from_array = function(x) {
   new_rvar(aperm(x, c(last_dim, seq_len(last_dim - 1))))
 }
 
-# creating rvar ----------------------------------------------------------
+# creating rvars ----------------------------------------------------------
 
 test_that("rvar creation with custom dim works", {
   x_matrix <- array(1:24, dim = c(2,12))
@@ -45,7 +45,7 @@ test_that("unique.rvar and duplicated.rvar work", {
 
 # tibbles -----------------------------------------------------------------
 
-test_that("rvar work in tibbles", {
+test_that("rvars work in tibbles", {
   skip_if_not_installed("dplyr")
   skip_if_not_installed("tidyr")
 
@@ -111,7 +111,7 @@ test_that("warnings for unequal draws/chains are correct", {
   )
 
   expect_error(
-    draws_rvar(x = rvar(1:10), y = rvar(1:11)),
+    draws_rvars(x = rvar(1:10), y = rvar(1:11)),
     "variables have different number of draws"
   )
 

@@ -6,7 +6,7 @@
 \alias{as_draws_list.data.frame}
 \alias{as_draws_list.default}
 \alias{as_draws_list.draws_list}
-\alias{as_draws_list.draws_rvar}
+\alias{as_draws_list.draws_rvars}
 \alias{as_draws_list.list}
 \alias{as_draws_list.vector}
 \alias{as_draws_list.rvar}
@@ -21,7 +21,7 @@ as_draws_list(x, ...)
 
 \method{as_draws_list}{draws_list}(x, ...)
 
-\method{as_draws_list}{draws_rvar}(x, ...)
+\method{as_draws_list}{draws_rvars}(x, ...)
 
 \method{as_draws_list}{list}(x, ...)
 
@@ -76,7 +76,7 @@ Other formats:
 \code{\link{draws_array}()},
 \code{\link{draws_df}()},
 \code{\link{draws_matrix}()},
-\code{\link{draws_rvar}()},
+\code{\link{draws_rvars}()},
 \code{\link{draws}}
 }
 \concept{formats}

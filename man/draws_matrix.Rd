@@ -66,7 +66,7 @@ Other formats:
 \code{\link{draws_array}()},
 \code{\link{draws_df}()},
 \code{\link{draws_list}()},
-\code{\link{draws_rvar}()},
+\code{\link{draws_rvars}()},
 \code{\link{draws}}
 }
 \concept{formats}

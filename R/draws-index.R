@@ -75,7 +75,7 @@ variables.draws_list <- function(x, reserved = FALSE, ...) {
 }
 
 #' @export
-variables.draws_rvar <- function(x, reserved = FALSE, ...) {
+variables.draws_rvars <- function(x, reserved = FALSE, ...) {
   remove_reserved_variable_names(names(x), reserved)
 }
 
@@ -127,7 +127,7 @@ remove_reserved_variable_names <- function(variables, reserved) {
 }
 
 #' @export
-`variables<-.draws_rvar` <- function(x, value) {
+`variables<-.draws_rvars` <- function(x, value) {
   check_new_variables(value)
   names(x) <- value
   x
@@ -167,7 +167,7 @@ iteration_ids.draws_list <- function(x) {
 }
 
 #' @export
-iteration_ids.draws_rvar <- function(x) {
+iteration_ids.draws_rvars <- function(x) {
   iteration_ids(x[[1]])
 }
 
@@ -214,7 +214,7 @@ chain_ids.draws_list <- function(x) {
 }
 
 #' @export
-chain_ids.draws_rvar <- function(x) {
+chain_ids.draws_rvars <- function(x) {
   chain_ids(x[[1]])
 }
 
@@ -261,7 +261,7 @@ draw_ids.draws_list <- function(x) {
 }
 
 #' @export
-draw_ids.draws_rvar <- function(x) {
+draw_ids.draws_rvars <- function(x) {
   draw_ids(x[[1]])
 }
 
@@ -322,7 +322,7 @@ niterations.draws_list <- function(x) {
 }
 
 #' @export
-niterations.draws_rvar <- function(x) {
+niterations.draws_rvars <- function(x) {
   if (!length(x)) 0 else niterations(x[[1]])
 }
 
@@ -363,7 +363,7 @@ nchains.draws_list <- function(x) {
 }
 
 #' @export
-nchains.draws_rvar <- function(x) {
+nchains.draws_rvars <- function(x) {
   if (!length(x)) 0 else nchains(x[[1]])
 }
 
@@ -404,7 +404,7 @@ ndraws.draws_list <- function(x) {
 }
 
 #' @export
-ndraws.draws_rvar <- function(x) {
+ndraws.draws_rvars <- function(x) {
   if (!length(x)) 0 else ndraws(x[[1]])
 }
 
