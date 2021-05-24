@@ -1,4 +1,12 @@
-on: push
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
 
 name: Continuous Benchmarks
 
