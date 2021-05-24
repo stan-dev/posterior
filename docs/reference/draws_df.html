@@ -228,21 +228,21 @@ arguments containing numeric vectors each defining a separate variable.</p></td>
     </tr>
     <tr>
       <th>.iteration</th>
-      <td><p>Optional name of a column in the supplied <code>data.frame</code>
-that contain iteration indices. If <code>NULL</code> (the default), the <code>.iteration</code>
-column is used if it exists. Otherwise, the input is treated as being
-index continuously from the first to the last row.</p></td>
+      <td><p>(string) The name of a column in the supplied
+<code>data.frame</code> that contain iteration indices. If <code>NULL</code> (the default), the
+<code>".iteration"</code> column is used if it exists. Otherwise, the input is treated
+as being indexed continuously from the first to the last row.</p></td>
     </tr>
     <tr>
       <th>.chain</th>
-      <td><p>Optional name of a column in the supplied <code>data.frame</code>
-that contain chain indices. If <code>NULL</code> (the default), the <code>.chain</code>
-column is used if it exists. Otherwise, the input is treated as belonging
-to a single chain.</p></td>
+      <td><p>(string) The name of a column in the supplied <code>data.frame</code> that
+contains chain indices. If <code>NULL</code> (the default), the <code>".chain"</code> column is
+used if it exists. Otherwise, the input is treated as belonging to a single
+chain.</p></td>
     </tr>
     <tr>
       <th>.nchains</th>
-      <td><p>The number of chains (default is <code>1</code>).</p></td>
+      <td><p>(positive integer) The number of chains. The default is <code>1</code>.</p></td>
     </tr>
     </table>
 

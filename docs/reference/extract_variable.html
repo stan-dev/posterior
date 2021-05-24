@@ -177,6 +177,9 @@
 <span class='fu'>extract_variable</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>variable</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws</span>
+<span class='fu'>extract_variable</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>variable</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for draws_rvars</span>
 <span class='fu'>extract_variable</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>variable</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -184,11 +187,12 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A <code>draws</code> object, or another <span style="R">R</span> object for which the method is defined.</p></td>
+      <td><p>(draws) A <code>draws</code> object or another <span style="R">R</span> object for which the method
+is defined.</p></td>
     </tr>
     <tr>
       <th>variable</th>
-      <td><p>Name of the variable to extract.</p></td>
+      <td><p>(string) The name of the variable to extract.</p></td>
     </tr>
     <tr>
       <th>...</th>

@@ -3,7 +3,7 @@
 \name{diagnostics}
 \alias{diagnostics}
 \alias{convergence}
-\title{Convergence diagnostics}
+\title{List of available convergence diagnostics}
 \description{
 A list of available diagnostics and links to their individual help pages.
 }

@@ -178,20 +178,25 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>.f</th>
-      <td><p>A function (or a one-sided formula representing a function that can be parsed by
-<code><a href='https://rlang.r-lib.org/reference/as_function.html'>rlang::as_function()</a></code>) to turn into a function that accepts and/or produces random variables.</p></td>
+      <td><p>(multiple options) A function to turn into a function that accepts
+and/or produces random variables:</p><ul>
+<li><p>A function</p></li>
+<li><p>A one-sided formula that can be parsed by <code><a href='https://rlang.r-lib.org/reference/as_function.html'>rlang::as_function()</a></code></p></li>
+</ul></td>
     </tr>
     <tr>
       <th>rvar_args</th>
-      <td><p>The arguments of <code>.f</code> that should be allowed to accept <code><a href='rvar.html'>rvar</a></code>s as arguments.
-If <code>NULL</code> (the default), all arguments to <code>.f</code> are turned into arguments that accept
+      <td><p>(character vector) The names of the arguments of <code>.f</code> that
+should be allowed to accept <code><a href='rvar.html'>rvar</a></code>s as arguments. If <code>NULL</code> (the
+default), all arguments to <code>.f</code> are turned into arguments that accept
 <code><a href='rvar.html'>rvar</a></code>s.</p></td>
     </tr>
     <tr>
       <th>ndraws</th>
-      <td><p>When no <code><a href='rvar.html'>rvar</a></code>s are supplied as arguments to the returned function, this is the number
-of draws that will be used to construct new random variables. If <code>NULL</code>,
-<code><a href='https://rdrr.io/r/base/options.html'>getOption("posterior.rvar_ndraws")</a></code> is used (default 4000). If any arguments to the returned function contain
+      <td><p>(positive integer). The number of draws used to construct new
+random variables if no <code><a href='rvar.html'>rvar</a></code>s are supplied as arguments to the
+returned function. If <code>NULL</code>, <code><a href='https://rdrr.io/r/base/options.html'>getOption("posterior.rvar_ndraws")</a></code> is used
+(default <code>4000</code>). If any arguments to the returned function contain
 <code><a href='rvar.html'>rvar</a></code>s, the number of draws in the provided <code><a href='rvar.html'>rvar</a></code>s is used instead of
 the value of this argument.</p></td>
     </tr>

@@ -38,3 +38,16 @@ A \code{draws} object of the same class as \code{x}.
 \description{
 Bind multiple \code{\link{draws}} objects together to form a single \code{draws} object.
 }
+\examples{
+x1 <- draws_matrix(alpha = rnorm(5), beta = rnorm(5))
+x2 <- draws_matrix(alpha = rnorm(5), beta = rnorm(5))
+ndraws(x1)
+ndraws(x2)
+x3 <- bind_draws(x1, x2, along = "draw")
+ndraws(x3)
+
+x4 <- draws_matrix(theta = rexp(5))
+x5 <- bind_draws(x1, x4, along = "variable")
+variables(x5)
+
+}

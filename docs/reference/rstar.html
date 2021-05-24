@@ -197,45 +197,46 @@ predicting a chain uniformly at random.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A <code><a href='draws_df.html'>draws_df</a></code> object or one coercible to a <code>draws_df</code> object.</p></td>
+      <td><p>(draws) A <code><a href='draws_df.html'>draws_df</a></code> object or one coercible to a <code>draws_df</code> object.</p></td>
     </tr>
     <tr>
       <th>split</th>
-      <td><p>Logical. If <code>TRUE</code>, compute estimate on split chains.</p></td>
+      <td><p>(logical) Should the estimate be computed on split chains? The
+default is <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>uncertainty</th>
-      <td><p>Logical. Indicates whether to provide a vector of R*
+      <td><p>(logical). Indicates whether to provide a vector of R*
 values representing uncertainty in the calculated value (if <code>TRUE</code>) or a
-single value (if <code>FALSE</code>). Default is <code>TRUE.</code></p></td>
+single value (if <code>FALSE</code>). The default is <code>TRUE.</code></p></td>
     </tr>
     <tr>
       <th>method</th>
-      <td><p>The machine learning classifier to use (must be available in
-the <span class="pkg">caret</span> package). The default is <code>"rf"</code>, which calls the random
-forest classifier.</p></td>
+      <td><p>(string) The machine learning classifier to use (must be
+available in the <span class="pkg">caret</span> package). The default is <code>"rf"</code>, which calls
+the random forest classifier.</p></td>
     </tr>
     <tr>
       <th>hyperparameters</th>
-      <td><p>A named list of hyperparameter settings passed to the
-classifier. Default for random forest classifier (<code>method = "rf"</code>) is
-<code>mtry = floor(sqt(nvariables(x)))</code>;
-default for gradient-based model (<code>method = "gbm"</code>) is
-<code>interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10</code>.</p></td>
+      <td><p>(named list) Hyperparameter settings passed to the classifier.
+The default for the random forest classifier (<code>method = "rf"</code>) is
+<code><a href='https://rdrr.io/r/base/list.html'>list(mtry = floor(sqt(nvariables(x))))</a></code>.
+The default for the gradient-based model (<code>method = "gbm"</code>) is
+<code><a href='https://rdrr.io/r/base/list.html'>list(interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10)</a></code>.</p></td>
     </tr>
     <tr>
       <th>training_proportion</th>
-      <td><p>Proportion of iterations used to train the
-classifier. Default is 0.7.</p></td>
+      <td><p>(positive real) The proportion (in <code>(0,1)</code>) of
+iterations in used to train the classifier. The default is <code>0.7</code>.</p></td>
     </tr>
     <tr>
       <th>nsimulations</th>
-      <td><p>Number of R* values in the returned vector if
-<code>uncertainty</code> is <code>TRUE</code>. Default is 1000.</p></td>
+      <td><p>(positive integer) The number of R* values in the
+returned vector if <code>uncertainty</code> is <code>TRUE</code>. The default is <code>1000.</code></p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Other arguments passed to <code>caret::train()</code>.</p></td>
+      <td><p>Other arguments passed to <code><a href='https://rdrr.io/pkg/caret/man/train.html'>caret::train()</a></code>.</p></td>
     </tr>
     </table>
 
@@ -287,21 +288,35 @@ diagnostic with uncertainty using gradient-boosted machines.
 <code><a href='rhat.html'>rhat</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>caret</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in library(caret): there is no package called ‘caret’</span></div><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='st'>"eight_schools"</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/topepo/caret/'>caret</a></span><span class='op'>)</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='st'>"eight_schools"</span><span class='op'>)</span>
 <span class='fu'>rstar</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: Package 'caret' is required for 'rstar' to work. Please use library(caret) to load the package.</span></div><div class='input'><span class='fu'>rstar</span><span class='op'>(</span><span class='va'>x</span>, split <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: Package 'caret' is required for 'rstar' to work. Please use library(caret) to load the package.</span></div><div class='input'><span class='fu'>rstar</span><span class='op'>(</span><span class='va'>x</span>, method <span class='op'>=</span> <span class='st'>"gbm"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: Package 'caret' is required for 'rstar' to work. Please use library(caret) to load the package.</span></div><div class='input'><span class='co'># can pass additional arguments to methods</span>
+</div><div class='output co'>#&gt; [1] 2.133333</div><div class='input'><span class='fu'>rstar</span><span class='op'>(</span><span class='va'>x</span>, split <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 1.166667</div><div class='input'><span class='fu'>rstar</span><span class='op'>(</span><span class='va'>x</span>, method <span class='op'>=</span> <span class='st'>"gbm"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; Iter   TrainDeviance   ValidDeviance   StepSize   Improve
+#&gt;      1        2.0794             nan     0.1000    0.0482
+#&gt;      2        1.9932             nan     0.1000   -0.0403
+#&gt;      3        1.9152             nan     0.1000   -0.0513
+#&gt;      4        1.8641             nan     0.1000   -0.0060
+#&gt;      5        1.8059             nan     0.1000   -0.0363
+#&gt;      6        1.7663             nan     0.1000   -0.0263
+#&gt;      7        1.7162             nan     0.1000   -0.0145
+#&gt;      8        1.6704             nan     0.1000   -0.0342
+#&gt;      9        1.6249             nan     0.1000   -0.0415
+#&gt;     10        1.5934             nan     0.1000   -0.0138
+#&gt;     20        1.2766             nan     0.1000   -0.0425
+#&gt;     40        0.8687             nan     0.1000   -0.0416
+#&gt;     50        0.7315             nan     0.1000   -0.0197
+#&gt; </div><div class='output co'>#&gt; [1] 1.466667</div><div class='input'><span class='co'># can pass additional arguments to methods</span>
 <span class='fu'>rstar</span><span class='op'>(</span><span class='va'>x</span>, method <span class='op'>=</span> <span class='st'>"gbm"</span>, verbose <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: Package 'caret' is required for 'rstar' to work. Please use library(caret) to load the package.</span></div><div class='input'>
+</div><div class='output co'>#&gt; [1] 1.133333</div><div class='input'>
 <span class='co'># with uncertainty, returns a vector of R* values</span>
 <span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span><span class='op'>(</span><span class='fu'>rstar</span><span class='op'>(</span><span class='va'>x</span>, uncertainty <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: Package 'caret' is required for 'rstar' to work. Please use library(caret) to load the package.</span></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span><span class='op'>(</span><span class='fu'>rstar</span><span class='op'>(</span><span class='va'>x</span>, uncertainty <span class='op'>=</span> <span class='cn'>TRUE</span>, nsimulations <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: Package 'caret' is required for 'rstar' to work. Please use library(caret) to load the package.</span></div><div class='input'>
+</div><div class='img'><img src='rstar-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/hist.html'>hist</a></span><span class='op'>(</span><span class='fu'>rstar</span><span class='op'>(</span><span class='va'>x</span>, uncertainty <span class='op'>=</span> <span class='cn'>TRUE</span>, nsimulations <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span><span class='op'>)</span>
+</div><div class='img'><img src='rstar-2.png' alt='' width='700' height='433' /></div><div class='input'>
 <span class='co'># can use other classification methods in caret library</span>
 <span class='fu'>rstar</span><span class='op'>(</span><span class='va'>x</span>, method <span class='op'>=</span> <span class='st'>"knn"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error: Package 'caret' is required for 'rstar' to work. Please use library(caret) to load the package.</span></div><div class='input'>
+</div><div class='output co'>#&gt; [1] 2</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

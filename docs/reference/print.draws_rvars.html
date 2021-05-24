@@ -186,29 +186,31 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A <code>draws</code> object, or another <span style="R">R</span> object for which the method is defined.</p></td>
+      <td><p>(draws) A <code>draws</code> object or another <span style="R">R</span> object for which the method
+is defined.</p></td>
     </tr>
     <tr>
       <th>digits</th>
-      <td><p>The minimum number of significant digits to print.</p></td>
+      <td><p>(nonnegative integer) The minimum number of significant digits
+to print.</p></td>
     </tr>
     <tr>
       <th>max_variables</th>
-      <td><p>The maximum number of variables to print. Can be
-controlled globally via the <code>"posterior.max_variables"</code>
+      <td><p>(positive integer) The maximum number of variables to
+print. Can be controlled globally via the <code>"posterior.max_variables"</code>
 <a href='https://rdrr.io/r/base/options.html'>option</a>.</p></td>
     </tr>
     <tr>
       <th>summary</th>
-      <td><p>What style of summary to display: <code>"mean_sd"</code> displays <code>mean±sd</code>,
-<code>"median_mad"</code> displays <code>median±mad</code>. If <code>NULL</code>, <code><a href='https://rdrr.io/r/base/options.html'>getOption("posterior.rvar_summary")</a></code> is
-used (default <code>"mean_sd</code>).</p></td>
+      <td><p>(string) The style of summary to display: <code>"mean_sd"</code> displays
+<code>mean±sd</code>, <code>"median_mad"</code> displays <code>median±mad</code>. If <code>NULL</code>,
+<code><a href='https://rdrr.io/r/base/options.html'>getOption("posterior.rvar_summary")</a></code> is used (default <code>"mean_sd</code>).</p></td>
     </tr>
     <tr>
       <th>reserved</th>
-      <td><p>Should reserved variables be included in the output? Defaults
-to <code>FALSE</code>. See <code><a href='reserved-variables.html'>reserved-variables</a></code> for an overview of currently
-reserved variable names.</p></td>
+      <td><p>(logical) Should reserved variables be included in the
+output? Defaults to <code>FALSE</code>. See <code><a href='reserved-variables.html'>reserved-variables</a></code> for an overview of
+currently reserved variable names.</p></td>
     </tr>
     <tr>
       <th>...</th>

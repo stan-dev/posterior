@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Extract matrix of a single variable — extract_variable.draws_rvars • posterior</title>
+<title>Extract matrix of a single variable — extract_variable_matrix • posterior</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Extract matrix of a single variable — extract_variable.draws_rvars" />
+<meta property="og:title" content="Extract matrix of a single variable — extract_variable_matrix" />
 <meta property="og:description" content="Extract an iterations x chains matrix of draws of a single variable.
 This is primarily used for convergence diagnostic functions such as rhat()." />
 
@@ -164,7 +164,7 @@ This is primarily used for convergence diagnostic functions such as rhat()." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Extract matrix of a single variable</h1>
-    <small class="dont-index">Source: <a href='https://github.com/stan-dev/posterior/blob/master/R/extract_variable.R'><code>R/extract_variable.R</code></a>, <a href='https://github.com/stan-dev/posterior/blob/master/R/extract_variable_matrix.R'><code>R/extract_variable_matrix.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/stan-dev/posterior/blob/master/R/extract_variable_matrix.R'><code>R/extract_variable_matrix.R</code></a></small>
     <div class="hidden name"><code>extract_variable_matrix.Rd</code></div>
     </div>
 
@@ -173,10 +173,7 @@ This is primarily used for convergence diagnostic functions such as rhat()." />
 This is primarily used for convergence diagnostic functions such as <code><a href='rhat.html'>rhat()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for draws_rvars</span>
-<span class='fu'><a href='extract_variable.html'>extract_variable</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>variable</span>, <span class='va'>...</span><span class='op'>)</span>
-
-<span class='fu'>extract_variable_matrix</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>variable</span>, <span class='va'>...</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>extract_variable_matrix</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>variable</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for default</span>
 <span class='fu'>extract_variable_matrix</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>variable</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -192,11 +189,12 @@ This is primarily used for convergence diagnostic functions such as <code><a hre
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A <code>draws</code> object, or another <span style="R">R</span> object for which the method is defined.</p></td>
+      <td><p>(draws) A <code>draws</code> object or another <span style="R">R</span> object for which the method
+is defined.</p></td>
     </tr>
     <tr>
       <th>variable</th>
-      <td><p>Name of the variable to extract.</p></td>
+      <td><p>(string) The name of the variable to extract.</p></td>
     </tr>
     <tr>
       <th>...</th>

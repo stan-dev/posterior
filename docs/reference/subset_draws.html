@@ -241,7 +241,8 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A <code>draws</code> object, or another <span style="R">R</span> object for which the method is defined.</p></td>
+      <td><p>(draws) A <code>draws</code> object or another <span style="R">R</span> object for which the method
+is defined.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -249,35 +250,34 @@
     </tr>
     <tr>
       <th>variable</th>
-      <td><p>Character vector of variable names to be selected.
-All elements of non-scalar variables can be selected at once.</p></td>
+      <td><p>(character vector) The variables to select. All elements of
+non-scalar variables can be selected at once.</p></td>
     </tr>
     <tr>
       <th>iteration</th>
-      <td><p>Numeric vector of iteration indices to be selected.</p></td>
+      <td><p>(integer vector) The iteration indices to select.</p></td>
     </tr>
     <tr>
       <th>chain</th>
-      <td><p>Numeric vector of chain indices to be selected.</p></td>
+      <td><p>(integer vector) The chain indices to select.</p></td>
     </tr>
     <tr>
       <th>draw</th>
-      <td><p>Numeric vector of draw indices to be selected.
-Subsetting draw indices will lead to an automatic merging of chains
-via <code><a href='merge_chains.html'>merge_chains</a></code>.</p></td>
+      <td><p>(integer vector) The draw indices to be select. Subsetting draw
+indices will lead to an automatic merging of chains via <code><a href='merge_chains.html'>merge_chains</a></code>.</p></td>
     </tr>
     <tr>
       <th>regex</th>
-      <td><p>Logical. Indicates whether <code>variable</code> should be treated as a
-(vector of) regular expressions. Any variable in <code>x</code> matching at least one
+      <td><p>(logical) Should <code>variable</code> should be treated as a
+(vector of) regular expressions? Any variable in <code>x</code> matching at least one
 of the regular expressions will be selected. Defaults to <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>unique</th>
-      <td><p>Logical. Indicates whether duplicated selection of chains,
-iterations, or draws is possible. If <code>TRUE</code> (the default) only
-unique chains, iterations, and draws are selected regardless of how
-often they appear in the respective selecting arguments.</p></td>
+      <td><p>(logical) Should duplicated selection of chains, iterations, or
+draws be allowed? If <code>TRUE</code> (the default) only unique chains, iterations,
+and draws are selected regardless of how often they appear in the
+respective selecting arguments.</p></td>
     </tr>
     </table>
 

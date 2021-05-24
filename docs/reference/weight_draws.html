@@ -201,14 +201,15 @@ are stored in the form of unnormalized log-weights (in a variable called
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A <code>draws</code> object, or another <span style="R">R</span> object for which the method is defined.</p></td>
+      <td><p>(draws) A <code>draws</code> object or another <span style="R">R</span> object for which the method
+is defined.</p></td>
     </tr>
     <tr>
       <th>weights</th>
-      <td><p>A vector of weights of length <code><a href='draws-index.html'>ndraws(x)</a></code> (the number of draws
-in <code>x</code>). Weights will be internally stored on the log scale (in a variable
-called <code>.log_weight</code>) and will not be normalized, but normalized (non-log)
-weights can be returned via the <code><a href='weights.draws.html'>weights.draws()</a></code> method later.</p></td>
+      <td><p>(numeric vector) A vector of weights of length <code><a href='draws-index.html'>ndraws(x)</a></code>.
+Weights will be internally stored on the log scale (in a variable called
+<code>.log_weight</code>) and will not be normalized, but normalized (non-log) weights
+can be returned via the <code><a href='weights.draws.html'>weights.draws()</a></code> method later.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -216,9 +217,9 @@ weights can be returned via the <code><a href='weights.draws.html'>weights.draws
     </tr>
     <tr>
       <th>log</th>
-      <td><p>Are the weights passed already on the log scale? The default is
-<code>FALSE</code>, that is, expecting <code>weights</code> to be on the standard (non-log)
-scale.</p></td>
+      <td><p>(logicla) Are the weights passed already on the log scale? The
+default is <code>FALSE</code>, that is, expecting <code>weights</code> to be on the standard
+(non-log) scale.</p></td>
     </tr>
     </table>
 
@@ -238,7 +239,7 @@ scale.</p></td>
 </div><div class='output co'>#&gt; [1] 0.12537521 0.51153003 0.43158989 0.01586271 1.98827365 1.42360646</div><div class='input'>
 <span class='co'># add weights</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>weight_draws</span><span class='op'>(</span><span class='va'>x</span>, weights <span class='op'>=</span> <span class='va'>wts</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Loading required namespace: testthat</span></div><div class='input'>
+
 <span class='co'># extract weights</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/weights.html'>weights</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span> <span class='co'># defaults to normalized weights</span>
 </div><div class='output co'>#&gt; [1] 2.943483e-04 1.200939e-03 1.013260e-03 3.724149e-05 4.667947e-03
