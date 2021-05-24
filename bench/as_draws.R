@@ -1,4 +1,5 @@
 # Benchmarks for conversion between draws formats
+library(posterior)
 
 iterations <- 500
 chains <- 4
