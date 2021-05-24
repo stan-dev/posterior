@@ -10,3 +10,4 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^bench$
