@@ -42,13 +42,14 @@ rollup_summary <- function(x, rollup_vars = NULL,
   UseMethod("rollup_summary")
 }
 
+#' @rdname draws_summary_rollup
 #' @export
 rollup_summary.default <- function(x, rollup_vars = NULL,
                                    min_only = c("ess_bulk", "ess_tail"),
                                    max_only = "rhat") {
-  rollup_summary(summarise_draws(x), rollup_vars = NULL,
-                 min_only = c("ess_bulk", "ess_tail"),
-                 max_only = "rhat")
+  rollup_summary(summarise_draws(x), rollup_vars = rollup_vars,
+                 min_only = min_only,
+                 max_only = max_only)
 }
 
 #' @rdname draws_summary_rollup
@@ -81,12 +82,8 @@ rollup_summary.draws_summary <- function (x, rollup_vars = NULL,
   min_only <- do.call(rbind, lapply(split_nonscalar, rollup_helper_min, names = min_only))
   max_only <- do.call(rbind, lapply(split_nonscalar, rollup_helper_max, names = max_only))
   variable_column <- data.frame("variable" = unique(varnames_nonscalar))
-  indices <- parse_variable_indices(ds_nonscalar$variable)
-  get_dims <- function(x){paste0("(", 
-                                 paste(apply(x[, names(x) != "index", drop = FALSE], 2, function(x){max(as.integer(x))}), collapse = ","),
-                                 ")")}
-  dimensions <- lapply(indices, get_dims)
-  dimension_column <- data.frame("dimension" = unlist(dimensions))
+  variable_indices <- parse_variable_indices(ds_nonscalar$variable)
+  dimension_column <- data.frame("dimension" = sapply(variable_indices, function(x){x$dimensions}))
   nonscalar_out <- tibble::as_tibble(cbind(variable_column, dimension_column, min_max, max_only, min_only))
   out <- list(unrolled_vars = ds_scalar, rolled_vars = nonscalar_out)
   out

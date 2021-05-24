@@ -3,10 +3,18 @@
 \name{draws_summary_rollup}
 \alias{draws_summary_rollup}
 \alias{rollup_summary}
+\alias{rollup_summary.default}
 \alias{rollup_summary.draws_summary}
 \title{"Roll up" \code{draws_summary} objects by collapsing over nonscalar parameters.}
 \usage{
 rollup_summary(
+  x,
+  rollup_vars = NULL,
+  min_only = c("ess_bulk", "ess_tail"),
+  max_only = "rhat"
+)
+
+\method{rollup_summary}{default}(
   x,
   rollup_vars = NULL,
   min_only = c("ess_bulk", "ess_tail"),

@@ -8,12 +8,31 @@
 \item{x}{a character vector of variables}
 }
 \value{
-A list of indices for each variable
+A list with index information for each unique variable name V in \code{x}. Top-level list names are
+the variable names. Each element contains:
+$dimensionality  the number of dimensions of V. Returns 0 for scalars with no brackets
+but 1 for \code{y[1]} even if \code{y} has no other entries in \code{x}.
+
+$dimensions  a vector of the actual dimensions of V, as determined by the number of unique
+elements at each index position. Set to \code{NA} if the dimensionality is zero.
+
+$implied_dimensions  a vector of the implied dimensions of V, where any position in V that
+contains exclusively integers is filled in to include all integers from the lesser of one
+and its minimum up to its maximum. Set to \code{NA} if the dimensionality is zero.
+
+$index_names  a list of length corresponding to the dimensionality, where each element is the
+unique levels of the corresponding index if the index is parsed as factor, and NULL otherwise.
+Set to \code{NULL} if the dimensionality is zero.
+
+$indices  if dimensionality is zero, returns 1.
+if dimensionality is 1 or greater, returns a dataframe of every implied combination of indices
+
+$position  the position of each combination of indices from $indices in the the argument \code{x}
 }
 \description{
 Parse the indices from a vector of variables (extracted e.g. from a
 \code{draws_summary} object or a \code{draws} object)
 }
 \details{
-Assumes that variable indexing is reflected by square brackets in the names
+Assumes that variable indexing uses square brackets in the variable names
 }
