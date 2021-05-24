@@ -83,7 +83,9 @@ rollup_summary.draws_summary <- function (x, rollup_vars = NULL,
   max_only <- do.call(rbind, lapply(split_nonscalar, rollup_helper_max, names = max_only))
   variable_column <- data.frame("variable" = unique(varnames_nonscalar))
   variable_indices <- parse_variable_indices(ds_nonscalar$variable)
-  dimension_column <- data.frame("dimension" = sapply(variable_indices, function(x){x$dimensions}))
+  dimension_column <- data.frame("dimension" = paste0("(", 
+                                                      sapply(variable_indices, function(x){paste(x$dimensions, collapse = ",")}),
+                                                      ")"))
   nonscalar_out <- tibble::as_tibble(cbind(variable_column, dimension_column, min_max, max_only, min_only))
   out <- list(unrolled_vars = ds_scalar, rolled_vars = nonscalar_out)
   out
