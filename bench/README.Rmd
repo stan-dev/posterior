@@ -1,0 +1,77 @@
+---
+title: "Benchmarks for posterior"
+output: github_document
+---
+
+```{r setup, message = FALSE}
+library(bench)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(here)
+
+theme_set(
+  theme_light() +
+  theme(
+    axis.line.x = element_line(color = "gray70", size = rel(0.5)),
+    axis.line.y = element_line(color = "gray70", size = rel(0.5)),
+    axis.title.x = element_text(margin = margin(t = 7)), 
+    axis.title.y = element_text(margin = margin(r = 7)), 
+    panel.border = element_rect(fill = NA, colour = "grey87", size = rel(0.5)),
+    strip.text = element_text(color = "black", margin = margin(6, 6, 6, 6)),
+    strip.background = element_rect(fill = "gray90")
+  )  
+)
+```
+
+## Running benchmarks
+
+The continuous benchmarks in posterior use the Github version of [bench](https://github.com/r-lib/bench)
+(the CRAN version does not support continuous benchmarks yet). Thus you must
+install the version of bench from Github.
+
+Benchmarks are stored in `bench/` and you can run them locally via `bench::cb_run()`.
+**However,** pushing local runs of the benchmarks to the server may not be advisable
+as they may not be comparable to the remote machine benchmarks.
+Remote benchmarks are run using continuous integration on Github and stored as
+git notes. You can fetch these benchmarks via:
+
+```{r}
+# bench::cb_ functions require that we are in the project root directory
+setwd(here::here())
+
+bench::cb_fetch()
+cb <- bench::cb_read()
+```
+
+The `cb` object stores benchmarks as nested tibbles:
+
+```{r}
+cb %>%
+  filter(lengths(benchmarks) > 0) %>%
+  select(-commit_hash)
+```
+
+I find the default plot for continuous benchmarks in `bench` (in `bench::plot_time()`)
+a bit hard to read; the following code is a modified version of it that shows benchmarks
+from the `bench/as_draws.R` file:
+
+```{r, fig.height = 8, fig.width = 8}
+cb %>%
+  filter(lengths(benchmarks) > 0) %>%
+  head(5) %>%
+  unnest(benchmarks) %>%
+  mutate(pretty_name = bench:::get_pretty_names(cur_data_all())) %>%
+  filter(file == "as_draws.R") %>%
+  ggplot(aes(y = pretty_name, x = p50, xmin = p25, xmax = p75, color = os)) +
+  geom_line(aes(group = NA), color = "gray50") +
+  geom_pointrange() +
+  scale_x_bench_time() +
+  facet_wrap(vars(name), ncol = 4) +
+  theme(legend.position = "bottom") +
+  labs(
+    y = NULL,
+    x = "Benchmark time",
+    color = NULL
+  )
+```
