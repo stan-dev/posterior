@@ -5,41 +5,87 @@
 #' @param x a character vector of variables
 #'
 #' @return
-#' A list of indices for each variable 
+#' A list with index information for each unique variable name V. Top-level list names are the variable names.
+#' Each element contains: 
+#'    $dimensionality  the number of dimensions of V. Returns 0 for scalars with no brackets
+#'    but 1 for `x[1]` even if `x` has no other elements.
+#'    
+#'    $dimensions  a vector of the actual dimensions of V, as determined by the number of unique
+#'    elements at each index position. Set to `NA` if the dimensionality is zero.
+#'    
+#'    $implied_dimensions  a vector of the implied dimensions of V, where any position in V that 
+#'    contains exclusively positive integers is filled in to include all integers from one to 
+#'    its maximum. Set to `NA` if the dimensionality is zero.
+#'    
+#'    $index_names  a list of length corresponding to the dimensionality, where each element is the
+#'    unique levels of the corresponding index if the index is parsed as factor, and NULL otherwise.
+#'    Set to `NULL` if the dimensionality is zero.
+#'    
+#'    $indices  if dimensionality is zero, returns 1.
+#'    if dimensionality is 1, returns a vector of the 
 #' 
 #' @details
-#' Assumes that variable indexing is reflected by square brackets in the names
+#' Assumes that variable indexing uses square brackets in the variable names
 #' 
 NULL
 
 parse_variable_indices <- function(x){
-  vars_indices <- strsplit(x, "(\\[|\\]$)")
+  vars_indices <- strsplit(x, "(\\[|\\])")
   vars <- sapply(vars_indices, `[[`, 1)
   var_names <- unique(vars)
-  
-  var <- var_names[6]
-  
-  indices_list <- lapply(var_names, function (var) {
-    var_i <- vars == var
-    # reset class here as otherwise the draws arrays in the output rvars
-    # have type draws_matrix, which makes inspecting them hard
-    var_length <- sum(var_i)
-    
-    if (var_length == 1) {
-      # single variable, no indices
-      out <- 1
-      dimnames(out) <- NULL
+  # Check that no variables contain unpaired or non-terminal square brackets
+  if_indexed <- (sapply(vars_indices, length) > 1)
+  if_indexed2 <- grepl("\\[.*\\]$", x)
+  extra_bracket <- grepl("\\].", x) | grepl("\\[.*\\[", x)
+  if (any(extra_bracket) | (!identical(if_indexed, if_indexed2))) {
+    stop_no_call(paste("Some variable names contain unpaired square brackets",
+                  "or are multi-indexed."))
+  }
+  missing_index <- grepl("\\[,|,\\]|,,", x) # check for `[,` `,,` or `,]`
+  if (any(missing_index)) {
+    stop_no_call(paste("Some variables contain missing indices. Each comma between square", 
+                       "brackets must be both preceeded and succeeded by an index."))
+  }
+
+  # Get dimensionality. Variables with no brackets are given as dimensionality zero.
+  # Variables with brackets are given dimensionality 1, even if they contain just one element.
+  dimensionality_elementwise <- sapply(vars_indices, function(x){
+    if (length(x) == 2) {
+      out <- length(strsplit(x[2], ",")[[1]]) # number of commas plus one
     } else {
-      # variable with indices => we need to reshape the array
-      # basically, we're going to do a bunch of work up front to figure out
-      # a single array slice that does most of the work for us.
-      
-      # first, pull out the list of indices into a data frame
-      # where each column is an index variable
+      out <- 0
+    }
+    out
+  })
+  dimensionality <- sapply(var_names, function(x){
+    out <- unique(dimensionality_elementwise[vars == x])
+    if (length(out) != 1) {
+      stop_no_call(paste0("Inconsistent indexing found for variable ", x, " ."))
+    }
+    out
+  })
+  variable_indices_info <- lapply(var_names, function (x) {
+    # dimensions counts the number of unique values of each index.
+    # implied_dimensions gives the maximum for integer indices with no values <= 0
+    # indices is a data frame with one line per combination of indices, including implied indices
+    # position gives the position in the original vector of variables (passed to `parse_variable_indices`)
+    # where a given combination of indices is found (NA if the comination does not exist)
+    indices_info <- named_list(c("dimensionality", "dimensions", "implied_dimensions", "index_names", "indices", "position"))
+    indices_info$dimensionality <- dimensionality[[x]]
+    var_i <- vars == x
+    var_length <- sum(var_i)
+    if (dimensionality[x] == 0) {
+      # single variable, no indices
+      indices_info$dimensions <- indices_info$implied_dimensions <- NA
+      indices_info$indices <- as.integer(1)
+      dimnames(indices_info$indices) <- NULL
+      indices_info$implied_dimensions <- NA
+      indices_info$internal_position <- 1
+    } else {
       indices <- sapply(vars_indices[var_i], `[[`, 2)
       indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")),
                                stringsAsFactors = FALSE)
-      
+      indices_info$dimensions <- unname(apply(indices, 2, function(x){length(unique(x))}))
       unique_indices <- vector("list", length(indices))
       .dimnames <- vector("list", length(indices))
       names(unique_indices) <- names(indices)
@@ -53,10 +99,9 @@ parse_variable_indices <- function(x){
             indices[[i]] <- as.integer(numeric_index)
             unique_indices[[i]] <- seq.int(1, max(numeric_index))
           } else {
-            # indices with values < 1 are sorted but otherwise left as-is, and will create dimnames
+            # indices with values < 1 are filled in between the min and max
             indices[[i]] <- numeric_index
-            unique_indices[[i]] <- sort(unique(numeric_index))
-            .dimnames[[i]] <- unique_indices[[i]]
+            unique_indices[[i]] <- seq.int(min(numeric_index), max(numeric_index))
           }
         } else {
           # we convert non-numeric indices to factors so that we can force them
@@ -68,6 +113,9 @@ parse_variable_indices <- function(x){
           .dimnames[[i]] <- unique_indices[[i]]
         }
       }
+      
+      indices_info$index_names <- .dimnames
+      indices_info$implied_dimensions <- unname(sapply(unique_indices, length))
       
       # sort indices and fill in missing indices as NA to ensure
       # (1) even if the order of the variables is something weird (like 
@@ -87,8 +135,12 @@ parse_variable_indices <- function(x){
       # need to do the sort manually after merge because when sort = TRUE, merge
       # sorts factors as if they were strings, and we need factors to be sorted as factors
       indices <- indices[do.call(order, as.list(indices[, -ncol(indices), drop = FALSE])),]
+      
+      indices_info$indices <- unname(rev(indices[, names(indices) != "index", drop = FALSE]))
+      indices_info$position <- which(var_i)[indices$index]
     }
-    indices
+    indices_info
   })
-  indices_list
+  names(variable_indices_info) <- var_names
+  variable_indices_info
 }
