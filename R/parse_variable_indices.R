@@ -36,7 +36,7 @@ parse_variable_indices <- function(x){
   vars <- sapply(vars_indices, `[[`, 1)
   var_names <- unique(vars)
   # Check that no variables contain unpaired or non-terminal square brackets
-  if_indexed <- (sapply(vars_indices, length) > 1)
+  if_indexed <- lengths(vars_indices) > 1
   if_indexed2 <- grepl("\\[.*\\]$", x)
   extra_bracket <- grepl("\\].", x) | grepl("\\[.*\\[", x)
   if (any(extra_bracket) | (!identical(if_indexed, if_indexed2))) {
