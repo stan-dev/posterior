@@ -117,7 +117,7 @@ parse_variable_indices <- function(x){
       }
       
       indices_info$index_names <- .dimnames
-      indices_info$implied_dimensions <- unname(sapply(unique_indices, length))
+      indices_info$implied_dimensions <- unname(lengths(unique_indices))
       
       # sort indices and fill in missing indices as NA to ensure
       # (1) even if the order of the variables is something weird (like 
