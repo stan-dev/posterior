@@ -7,22 +7,22 @@
 #' @return
 #' A list with index information for each unique variable name V in `x`. Top-level list names are 
 #' the variable names. Each element contains: 
-#'    $dimensionality  the number of dimensions of V. Returns 0 for scalars with no brackets
+#'    $ndim  the number of dimensions of V. Returns 0 for scalars with no brackets
 #'    but 1 for `y[1]` even if `y` has no other entries in `x`.
 #'    
-#'    $dimensions  a vector of the actual dimensions of V, as determined by the number of unique
-#'    elements at each index position. Set to `NA` if the dimensionality is zero.
+#'    $dim  a vector of the actual dimensions of V, as determined by the number of unique
+#'    elements at each index position. Set to `NA` if the ndim is zero.
 #'    
-#'    $implied_dimensions  a vector of the implied dimensions of V, where any position in V that 
+#'    $implied_dim  a vector of the implied dimensions of V, where any position in V that 
 #'    contains exclusively integers is filled in to include all integers from the lesser of one 
-#'    and its minimum up to its maximum. Set to `NA` if the dimensionality is zero.
+#'    and its minimum up to its maximum. Set to `NA` if ndim is zero.
 #'    
-#'    $index_names  a list of length corresponding to the dimensionality, where each element is the
+#'    $index_names  a list of length corresponding to ndim, where each element is the
 #'    unique levels of the corresponding index if the index is parsed as factor, and NULL otherwise.
-#'    Set to `NULL` if the dimensionality is zero.
+#'    Set to `NULL` if ndim is zero.
 #'    
-#'    $indices  if dimensionality is zero, returns 1.
-#'    if dimensionality is 1 or greater, returns a dataframe of every implied combination of indices
+#'    $indices  if ndim is zero, returns 1.
+#'    if ndim is 1 or greater, returns a dataframe of every implied combination of indices
 #'    
 #'    $position  the position of each combination of indices from $indices in the the argument `x`
 #' 
@@ -49,9 +49,9 @@ parse_variable_indices <- function(x){
                        "brackets must be both preceeded and succeeded by an index."))
   }
 
-  # Get dimensionality. Variables with no brackets are given as dimensionality zero.
-  # Variables with brackets are given dimensionality 1, even if they contain just one element.
-  dimensionality_elementwise <- sapply(vars_indices, function(x){
+  # Get ndim. Variables with no brackets are given as ndim zero.
+  # Variables with brackets are given ndim 1, even if they contain just one element.
+  ndim_elementwise <- sapply(vars_indices, function(x){
     if (length(x) == 2) {
       out <- length(strsplit(x[2], ",")[[1]]) # number of commas plus one
     } else {
@@ -59,24 +59,19 @@ parse_variable_indices <- function(x){
     }
     out
   })
-  dimensionality <- sapply(var_names, function(x){
-    out <- unique(dimensionality_elementwise[vars == x])
+  ndim <- sapply(var_names, function(x){
+    out <- unique(ndim_elementwise[vars == x])
     if (length(out) != 1) {
       stop_no_call(paste0("Inconsistent indexing found for variable ", x, " ."))
     }
     out
   })
   variable_indices_info <- lapply(var_names, function (x) {
-    # dimensions counts the number of unique values of each index.
-    # implied_dimensions gives the maximum for integer indices with no values <= 0
-    # indices is a data frame with one line per combination of indices, including implied indices
-    # position gives the position in the original vector of variables (passed to `parse_variable_indices`)
-    # where a given combination of indices is found (NA if the comination does not exist)
-    indices_info <- named_list(c("dimensionality", "dimensions", "implied_dimensions", "index_names", "indices", "position"))
-    indices_info$dimensionality <- dimensionality[[x]]
+    indices_info <- named_list(c("ndim", "dimensions", "implied_dimensions", "index_names", "indices", "position"))
+    indices_info$ndim <- ndim[[x]]
     var_i <- vars == x
     var_length <- sum(var_i)
-    if (dimensionality[x] == 0) {
+    if (ndim[x] == 0) {
       # single variable, no indices
       indices_info$dimensions <- indices_info$implied_dimensions <- NA
       indices_info$indices <- 1L
