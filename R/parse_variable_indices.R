@@ -90,13 +90,12 @@ parse_variable_indices <- function(x){
         if (!anyNA(numeric_index) && rlang::is_integerish(numeric_index)) {
           # for integer indices, we need to convert them to integers
           # so that we can sort them in numerical order (not string order)
+          indices[[i]] <- as.integer(numeric_index)
           if (min(numeric_index) >= 1) {
             # integer indices >= 1 are forced to lower bound of 1 + no dimnames
-            indices[[i]] <- as.integer(numeric_index)
             unique_indices[[i]] <- seq.int(1, max(numeric_index))
           } else {
             # indices with values < 1 are filled in between the min and max
-            indices[[i]] <- numeric_index
             unique_indices[[i]] <- seq.int(min(numeric_index), max(numeric_index))
           }
         } else {
