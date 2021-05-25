@@ -75,7 +75,6 @@ parse_variable_indices <- function(x){
       # single variable, no indices
       indices_info$dimensions <- indices_info$implied_dimensions <- NA
       indices_info$indices <- 1L
-      dimnames(indices_info$indices) <- NULL
       indices_info$implied_dimensions <- NA
       indices_info$internal_position <- 1
     } else {
