@@ -38,17 +38,11 @@ parse_variable_indices <- function(x){
   # Check that no variables contain unpaired or non-terminal square brackets
   if_indexed <- lengths(vars_indices) > 1
   if_indexed2 <- grepl("\\[.*\\]$", x)
-  extra_bracket <- grepl("\\].", x) | grepl("\\[.*\\[", x)
-  if (any(extra_bracket) | (!identical(if_indexed, if_indexed2))) {
-    stop_no_call(paste("Some variable names contain unpaired square brackets",
-                  "or are multi-indexed."))
+  bracket_problems <- grepl("\\].|\\[.*\\[|\\[,|,\\]|,,", x)
+  if (any(bracket_problems) | (!identical(if_indexed, if_indexed2))) {
+    stop_no_call(paste("Some variable names contain unpaired square brackets,",
+                  "missing indices, or are multi-indexed."))
   }
-  missing_index <- grepl("\\[,|,\\]|,,", x) # check for `[,` `,,` or `,]`
-  if (any(missing_index)) {
-    stop_no_call(paste("Some variables contain missing indices. Each comma between square", 
-                       "brackets must be both preceeded and succeeded by an index."))
-  }
-
   # Get ndim. Variables with no brackets are given as ndim zero.
   # Variables with brackets are given ndim 1, even if they contain just one element.
   ndim_elementwise <- sapply(vars_indices, function(x){
