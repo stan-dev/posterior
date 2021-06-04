@@ -2,9 +2,15 @@
 % Please edit documentation in R/convergence.R
 \name{ess_basic}
 \alias{ess_basic}
+\alias{ess_basic.default}
+\alias{ess_basic.rvar}
 \title{Basic version of the effective sample size}
 \usage{
 ess_basic(x, split = TRUE)
+
+\method{ess_basic}{default}(x, split = TRUE)
+
+\method{ess_basic}{rvar}(x, split = TRUE)
 }
 \arguments{
 \item{x}{One of:
@@ -39,6 +45,9 @@ recommend the improved ESS convergence diagnostics implemented in
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 ess_basic(mu)
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+ess_basic(d$Sigma)
 
 }
 \references{

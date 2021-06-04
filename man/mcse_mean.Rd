@@ -2,9 +2,15 @@
 % Please edit documentation in R/convergence.R
 \name{mcse_mean}
 \alias{mcse_mean}
+\alias{mcse_mean.default}
+\alias{mcse_mean.rvar}
 \title{Monte Carlo standard error for the mean}
 \usage{
 mcse_mean(x)
+
+\method{mcse_mean}{default}(x)
+
+\method{mcse_mean}{rvar}(x)
 }
 \arguments{
 \item{x}{One of:
@@ -35,6 +41,9 @@ single variable.
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 mcse_mean(mu)
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+mcse_mean(d$Sigma)
 
 }
 \references{

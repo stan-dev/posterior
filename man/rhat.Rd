@@ -2,9 +2,15 @@
 % Please edit documentation in R/convergence.R
 \name{rhat}
 \alias{rhat}
+\alias{rhat.default}
+\alias{rhat.rvar}
 \title{Rhat convergence diagnostic}
 \usage{
 rhat(x)
+
+\method{rhat}{default}(x)
+
+\method{rhat}{rvar}(x)
 }
 \arguments{
 \item{x}{One of:
@@ -36,6 +42,9 @@ proposed in Vehtari et al. (2019).
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 rhat(mu)
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+rhat(d$Sigma)
 
 }
 \references{

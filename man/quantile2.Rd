@@ -2,9 +2,15 @@
 % Please edit documentation in R/convergence.R
 \name{quantile2}
 \alias{quantile2}
+\alias{quantile2.default}
+\alias{quantile2.rvar}
 \title{Compute Quantiles}
 \usage{
 quantile2(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
+
+\method{quantile2}{default}(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
+
+\method{quantile2}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
 }
 \arguments{
 \item{x}{One of:

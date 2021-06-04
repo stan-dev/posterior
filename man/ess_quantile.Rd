@@ -2,12 +2,21 @@
 % Please edit documentation in R/convergence.R
 \name{ess_quantile}
 \alias{ess_quantile}
+\alias{ess_quantile.default}
+\alias{ess_quantile.rvar}
 \alias{ess_median}
+\alias{ess_mean.default}
 \title{Effective sample sizes for quantiles}
 \usage{
 ess_quantile(x, probs = c(0.05, 0.95), names = TRUE)
 
+\method{ess_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE)
+
+\method{ess_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE)
+
 ess_median(x)
+
+\method{ess_mean}{default}(x)
 }
 \arguments{
 \item{x}{One of:
@@ -22,7 +31,8 @@ ess_median(x)
 \code{FALSE} for speedup with many probs.}
 }
 \value{
-A numeric vector with one element per quantile. If any of the draws is
+If the input is an array,
+returns a numeric vector with one element per quantile. If any of the draws is
 non-finite, that is, \code{NA}, \code{NaN}, \code{Inf}, or \code{-Inf}, the returned output will
 be a vector of (numeric) \code{NA} values. Also, if all draws of a variable are
 the same (constant), the returned output will be a vector of (numeric) \code{NA}
@@ -31,6 +41,13 @@ cannot distinguish between variables that are supposed to be constant (e.g.,
 a diagonal element of a correlation matrix is always 1) or variables that
 just happened to be constant because of a failure of convergence or other
 problems in the sampling process.
+
+If the input is an \code{\link{rvar}} and \code{length(probs) == 1}, returns an array of the
+same dimensions as the \code{\link{rvar}}, where each element is equal to the value
+that would be returned by passing the draws array for that element of the
+\code{\link{rvar}} to this function. If \code{length(probs) > 1}, the first dimension of the
+result indexes the input probabilities; i.e. the result has dimension
+\code{c(length(probs), dim(x))}.
 }
 \description{
 Compute effective sample size estimates for quantile estimates of a single
@@ -39,6 +56,9 @@ variable.
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 ess_quantile(mu, probs = c(0.1, 0.9))
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+ess_quantile(d$mu, probs = c(0.1, 0.9))
 
 }
 \references{

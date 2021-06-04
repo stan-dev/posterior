@@ -45,6 +45,9 @@ see \code{\link[=ess_tail]{ess_tail()}}.
 mu <- extract_variable_matrix(example_draws(), "mu")
 ess_bulk(mu)
 
+d <- as_draws_rvars(example_draws("multi_normal"))
+ess_bulk(d$Sigma)
+
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and

@@ -2,9 +2,12 @@
 % Please edit documentation in R/convergence.R
 \name{ess_mean}
 \alias{ess_mean}
+\alias{ess_mean.rvar}
 \title{Effective sample size for the mean}
 \usage{
 ess_mean(x)
+
+\method{ess_mean}{rvar}(x)
 }
 \arguments{
 \item{x}{One of:
@@ -35,6 +38,9 @@ estimate of a single variable.
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 ess_mean(mu)
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+ess_mean(d$Sigma)
 
 }
 \references{

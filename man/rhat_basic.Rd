@@ -2,9 +2,15 @@
 % Please edit documentation in R/convergence.R
 \name{rhat_basic}
 \alias{rhat_basic}
+\alias{rhat_basic.default}
+\alias{rhat_basic.rvar}
 \title{Basic version of the Rhat convergence diagnostic}
 \usage{
 rhat_basic(x, split = TRUE)
+
+\method{rhat_basic}{default}(x, split = TRUE)
+
+\method{rhat_basic}{rvar}(x, split = TRUE)
 }
 \arguments{
 \item{x}{One of:
@@ -38,6 +44,9 @@ recommend the improved Rhat convergence diagnostic implemented in \code{\link[=r
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 rhat_basic(mu)
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+rhat_basic(d$Sigma)
 
 }
 \references{

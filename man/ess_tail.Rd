@@ -2,9 +2,15 @@
 % Please edit documentation in R/convergence.R
 \name{ess_tail}
 \alias{ess_tail}
+\alias{ess_tail.default}
+\alias{ess_tail.rvar}
 \title{Tail effective sample size (tail-ESS)}
 \usage{
 ess_tail(x)
+
+\method{ess_tail}{default}(x)
+
+\method{ess_tail}{rvar}(x)
 }
 \arguments{
 \item{x}{One of:
@@ -38,6 +44,9 @@ size see \code{\link[=ess_bulk]{ess_bulk()}}.
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 ess_tail(mu)
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+ess_tail(d$Sigma)
 
 }
 \references{

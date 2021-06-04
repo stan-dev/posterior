@@ -2,9 +2,15 @@
 % Please edit documentation in R/convergence.R
 \name{mcse_sd}
 \alias{mcse_sd}
+\alias{mcse_sd.default}
+\alias{mcse_sd.rvar}
 \title{Monte Carlo standard error for the standard deviation}
 \usage{
 mcse_sd(x)
+
+\method{mcse_sd}{default}(x)
+
+\method{mcse_sd}{rvar}(x)
 }
 \arguments{
 \item{x}{One of:
@@ -36,6 +42,9 @@ normality.
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 mcse_sd(mu)
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+mcse_sd(d$Sigma)
 
 }
 \references{

@@ -2,9 +2,15 @@
 % Please edit documentation in R/convergence.R
 \name{ess_sd}
 \alias{ess_sd}
+\alias{ess_sd.default}
+\alias{ess_sd.rvar}
 \title{Effective sample size for the standard deviation}
 \usage{
 ess_sd(x)
+
+\method{ess_sd}{default}(x)
+
+\method{ess_sd}{rvar}(x)
 }
 \arguments{
 \item{x}{One of:
@@ -37,6 +43,9 @@ for the mean of the squared value.
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 ess_sd(mu)
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+ess_sd(d$Sigma)
 
 }
 \references{
