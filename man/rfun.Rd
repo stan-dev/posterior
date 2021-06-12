@@ -7,16 +7,22 @@
 rfun(.f, rvar_args = NULL, ndraws = NULL)
 }
 \arguments{
-\item{.f}{A function (or a one-sided formula representing a function that can be parsed by
-\code{\link[rlang:as_function]{rlang::as_function()}}) to turn into a function that accepts and/or produces random variables.}
+\item{.f}{(multiple options) A function to turn into a function that accepts
+and/or produces random variables:
+\itemize{
+\item A function
+\item A one-sided formula that can be parsed by \code{\link[rlang:as_function]{rlang::as_function()}}
+}}
 
-\item{rvar_args}{The arguments of \code{.f} that should be allowed to accept \code{\link{rvar}}s as arguments.
-If \code{NULL} (the default), all arguments to \code{.f} are turned into arguments that accept
+\item{rvar_args}{(character vector) The names of the arguments of \code{.f} that
+should be allowed to accept \code{\link{rvar}}s as arguments. If \code{NULL} (the
+default), all arguments to \code{.f} are turned into arguments that accept
 \code{\link{rvar}}s.}
 
-\item{ndraws}{When no \code{\link{rvar}}s are supplied as arguments to the returned function, this is the number
-of draws that will be used to construct new random variables. If \code{NULL},
-\code{getOption("posterior.rvar_ndraws")} is used (default 4000). If any arguments to the returned function contain
+\item{ndraws}{(positive integer). The number of draws used to construct new
+random variables if no \code{\link{rvar}}s are supplied as arguments to the
+returned function. If \code{NULL}, \code{getOption("posterior.rvar_ndraws")} is used
+(default \code{4000}). If any arguments to the returned function contain
 \code{\link{rvar}}s, the number of draws in the provided \code{\link{rvar}}s is used instead of
 the value of this argument.}
 }

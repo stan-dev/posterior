@@ -16,7 +16,7 @@ rvar_is_nan(x)
 rvar_is_na(x)
 }
 \arguments{
-\item{x}{An \code{\link{rvar}}}
+\item{x}{(rvar) An \code{\link{rvar}}.}
 }
 \value{
 A logical \code{\link{rvar}} of the same length as the input.

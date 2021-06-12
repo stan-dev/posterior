@@ -182,7 +182,8 @@ normality.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>A 2D array of draws (iterations x chains) for a single variable.</p></td>
+      <td><p>(matrix) Draws for a single variable (iterations x chains). See
+<code><a href='extract_variable_matrix.html'>extract_variable_matrix()</a></code>.</p></td>
     </tr>
     </table>
 
@@ -217,7 +218,7 @@ MCMC. <em>arXiv preprint</em> <code>arXiv:1903.08008</code>.</p>
 <code><a href='rstar.html'>rstar</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>mu</span> <span class='op'>&lt;-</span> <span class='fu'><a href='extract_variable.draws_rvars.html'>extract_variable_matrix</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"mu"</span><span class='op'>)</span>
+    <pre class="examples"><div class='input'><span class='va'>mu</span> <span class='op'>&lt;-</span> <span class='fu'><a href='extract_variable_matrix.html'>extract_variable_matrix</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"mu"</span><span class='op'>)</span>
 <span class='fu'>mcse_sd</span><span class='op'>(</span><span class='va'>mu</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 0.1494182</div><div class='input'>
 </div></pre>

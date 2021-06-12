@@ -63,6 +63,9 @@ remove_variables.draws_rvars <- function(x, variables, ...) {
   x[!names(x) %in% variables]
 }
 
+
+# internal ----------------------------------------------------------------
+
 # remove all reserved variables
 remove_reserved_variables <- function(x, ...) {
   remove_variables(x, reserved_variables(x))

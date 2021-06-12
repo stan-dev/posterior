@@ -13,25 +13,34 @@ rvar(
 )
 }
 \arguments{
-\item{x}{A vector or array where the first dimension represents draws from
-a distribution. The resulting \code{\link{rvar}} will have dimension \code{dim(x)[-1]}; that is,
-everything except the first dimension is used for the shape of the variable, and the
-first dimension is used to index draws from the distribution. Optionally,
+\item{x}{(multiple options) The object to convert to an \code{rvar}:
+\itemize{
+\item A vector of draws from a distribution.
+\item An array where the first dimension represents draws from a distribution.
+The resulting \code{\link{rvar}} will have dimension \code{dim(x)[-1]}; that is,
+everything except the first dimension is used for the shape of the
+variable, and the first dimension is used to index draws from the
+distribution (see \strong{Examples}). Optionally,
 if \code{with_chains == TRUE}, the first dimension indexes the iteration and the
-second dimension indexes the chain (see \code{with_chains}).}
+second dimension indexes the chain (see \code{with_chains}).
+}}
 
-\item{dim}{Override for the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dim]{dim()}}): an integer vector of length one
-or more giving the maximal indices in each dimension. If \code{NULL} (the default), this is determined by the input.
-\strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the underlying array, so you cannot
-change the number of draws using this argument.}
+\item{dim}{(integer vector) One or more integers giving the maximal indices
+in each dimension to override the dimensions of the \code{\link{rvar}} to be created
+(see \code{\link[=dim]{dim()}}). If \code{NULL} (the default), \code{dim} is determined by the input.
+\strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the
+underlying array, so you cannot change the number of draws using this
+argument.}
 
-\item{dimnames}{Override for the names of the dimensions of the \code{\link{rvar}} to be created (see \code{\link[=dimnames]{dimnames()}}): a list of character
-vectors giving the names in each dimension. If \code{NULL} (the default), this is determined by the input.
-\strong{NOTE:} This argument controls the names of the dimensions of the \code{\link{rvar}}, not the underlying array.}
+\item{dimnames}{(list) Character vectors giving the names in each dimension
+to override the names of the dimensions of the \code{\link{rvar}} to be created (see
+\code{\link[=dimnames]{dimnames()}}). If \code{NULL} (the default), this is determined by the input.
+\strong{NOTE:} This argument controls the names of the dimensions of the
+\code{\link{rvar}}, not the underlying array.}
 
-\item{nchains}{Number of chains (default is \code{1}).}
+\item{nchains}{(positive integer) The number of chains. The default is \code{1}.}
 
-\item{with_chains}{Does \code{x} include a dimension for chains?
+\item{with_chains}{(logical) Does \code{x} include a dimension for chains?
 If \code{FALSE} (the default), chains are not included, the first dimension of
 the input array should index draws, and the \code{nchains} argument can be
 used to determine the number of chains. If \code{TRUE}, the \code{nchains} argument

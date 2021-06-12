@@ -7,8 +7,8 @@
 example_draws(example = "eight_schools")
 }
 \arguments{
-\item{example}{Name of the example \code{draws} object. See \strong{Details} for
-available options.}
+\item{example}{(string) The name of the example \code{draws} object. See
+\strong{Details} for available options.}
 }
 \value{
 A \code{draws} object.

@@ -4,16 +4,19 @@
 #'
 #' @name rvar
 #'
-#' @param x A vector or array where the first dimension represents draws from
-#' a distribution. The resulting [`rvar`] will have dimension `dim(x)[-1]`; that is,
-#' everything except the first dimension is used for the shape of the variable, and the
-#' first dimension is used to index draws from the distribution. Optionally,
-#' if `with_chains == TRUE`, the first dimension indexes the iteration and the
-#' second dimension indexes the chain (see `with_chains`).
+#' @param x (multiple options) The object to convert to an `rvar`:
+#'   * A vector of draws from a distribution.
+#'   * An array where the first dimension represents draws from a distribution.
+#'     The resulting [`rvar`] will have dimension `dim(x)[-1]`; that is,
+#'     everything except the first dimension is used for the shape of the
+#'     variable, and the first dimension is used to index draws from the
+#'     distribution (see **Examples**). Optionally,
+#'     if `with_chains == TRUE`, the first dimension indexes the iteration and the
+#'     second dimension indexes the chain (see `with_chains`).
 #' @template args-rvar-dim
 #' @template args-rvar-dimnames
-#' @param nchains Number of chains (default is `1`).
-#' @param with_chains Does `x` include a dimension for chains?
+#' @param nchains (positive integer) The number of chains. The default is `1`.
+#' @param with_chains (logical) Does `x` include a dimension for chains?
 #' If `FALSE` (the default), chains are not included, the first dimension of
 #' the input array should index draws, and the `nchains` argument can be
 #' used to determine the number of chains. If `TRUE`, the `nchains` argument
@@ -129,9 +132,9 @@ new_rvar <- function(x = double(), .nchains = 1L) {
 #'
 #' Gets/sets the array-representation that backs an [`rvar`]. Should be used rarely.
 #'
-#' @param x An [`rvar`]
-#' @param value An array
-#' @param with_chains Should the array of draws include a dimension for chains?
+#' @param x (rvar) An [`rvar`] object.
+#' @param value (array) An array of values to use as the backing array of `x`.
+#' @param with_chains (logical) Should the array of draws include a dimension for chains?
 #' If `FALSE` (the default), chains are not included and the array has dimension
 #' `c(ndraws(x), dim(x))`. If `TRUE`, chains are included and the array has
 #' dimension `c(niterations(x), nchains(x), dim(x))`.

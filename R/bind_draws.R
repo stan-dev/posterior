@@ -2,14 +2,26 @@
 #'
 #' Bind multiple [`draws`] objects together to form a single `draws` object.
 #'
-#' @param x A [`draws`] object. The draws format of `x` will define the format
-#'   of the returned draws object.
-#' @param ... Additional [`draws`] objects to bind to `x`.
-#' @param along The dimension along which draws objects should be bound
+#' @param x (draws) A [`draws`] object. The draws format of `x` will define the
+#'   format of the returned draws object.
+#' @param ... (draws) Additional [`draws`] objects to bind to `x`.
+#' @param along (string) The dimension along which draws objects should be bound
 #'   together. Possible values are `"variable"` (the default), `"chain"`,
 #'   `"iteration"`, and `"draw"`. Not all options are supported for all input
 #'   formats.
 #' @template return-draws
+#'
+#' @examples
+#' x1 <- draws_matrix(alpha = rnorm(5), beta = rnorm(5))
+#' x2 <- draws_matrix(alpha = rnorm(5), beta = rnorm(5))
+#' ndraws(x1)
+#' ndraws(x2)
+#' x3 <- bind_draws(x1, x2, along = "draw")
+#' ndraws(x3)
+#'
+#' x4 <- draws_matrix(theta = rexp(5))
+#' x5 <- bind_draws(x1, x4, along = "variable")
+#' variables(x5)
 #'
 #' @importFrom abind abind
 #' @export

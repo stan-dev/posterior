@@ -186,21 +186,22 @@ and the final result is always an <code><a href='rvar.html'>rvar</a></code>.</p>
     </tr>
     <tr>
       <th>.margin</th>
-      <td><p>A vector giving the subscripts which the function will be applied over.
-E.g., for a matrix <code>1</code> indicates rows, <code>2</code> indicates columns, <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code> indicates rows
-and columns. If <code>.x</code> has named dimensions, this can be a character vector selecting
-dimension names.</p></td>
+      <td><p>(multiple options) The subscripts which the function will be applied over:</p><ul>
+<li><p>An integer vector. E.g., for a matrix <code>1</code> indicates rows, <code>2</code> indicates
+columns, <code><a href='https://rdrr.io/r/base/c.html'>c(1, 2)</a></code> indicates rows and columns.</p></li>
+<li><p>A character vector of dimension names if <code>.x</code> has named dimensions.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>.f</th>
-      <td><p>the function to be applied. This must be a function that returns an <code><a href='rvar.html'>rvar</a></code>.
-The dimensions of the result of <code>.f</code> applied to each margin of <code>.x</code> must be able to be
-broadasted to a common shape, otherwise the resulting <code><a href='rvar.html'>rvar</a></code> cannot be simplified.
-See 'Details'.</p></td>
+      <td><p>(function) The function to be applied. The function <code>.f</code> must
+return an <code><a href='rvar.html'>rvar</a></code> and the dimensions of the result of <code>.f</code> applied to each
+margin of <code>.x</code> must be able to be broadcasted to a common shape (otherwise
+the resulting <code><a href='rvar.html'>rvar</a></code> cannot be simplified). See <strong>Details</strong>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>optional arguments to <code>.f</code>.</p></td>
+      <td><p>Optional arguments passed to <code>.f</code>.</p></td>
     </tr>
     </table>
 

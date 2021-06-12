@@ -2,11 +2,11 @@
 #'
 #' Convert `x` to an [`rvar`] object.
 #'
-#' @param x An object that can be converted to an [`rvar`], such as a vector or array
-#' (or an [`rvar`] itself).
+#' @param x (multiple options) An object that can be converted to an [`rvar`],
+#'   such as a vector, array, or an [`rvar`] itself.
 #' @template args-rvar-dim
 #' @template args-rvar-dimnames
-#' @param nchains Number of chains (default is `1`).
+#' @param nchains (positive integer) The number of chains. The default is `1`.
 #'
 #' @details For objects that are already [`rvar`]s, returns them (with modified dimensions
 #' if `dim` is not `NULL`).
@@ -74,7 +74,7 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 #'
 #' Test if `x` is an [`rvar`].
 #'
-#' @param x An object
+#' @param x (any object) An object to test.
 #'
 #' @seealso [as_rvar()] to convert objects to `rvar`s.
 #'
@@ -187,10 +187,10 @@ vec_restore.rvar <- function(x, ...) {
 #'
 #' @name vctrs-compat
 #'
-#' @param x,y Vectors
-#' @param to Type to cast to
-#' @param ... Further arguments passed to other functions
-#' @param x_arg,y_arg Argument names for `x` and `y`
+#' @param x,y Vectors.
+#' @param to Type to cast to.
+#' @param ... Further arguments passed to other functions.
+#' @param x_arg,y_arg Argument names for `x` and `y`.
 #'
 #' @details
 #'
@@ -204,6 +204,7 @@ vec_restore.rvar <- function(x, ...) {
 #' @export
 #' @export vec_ptype2.rvar
 vec_ptype2.rvar <- function(x, y, ...) UseMethod("vec_ptype2.rvar", y)
+
 #' @rdname vctrs-compat
 #' @method vec_ptype2.rvar default
 #' @export
@@ -217,6 +218,7 @@ vec_ptype2.rvar.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
 #' @export
 #' @export vec_cast.rvar
 vec_cast.rvar <- function(x, to, ...) UseMethod("vec_cast.rvar")
+
 #' @rdname vctrs-compat
 #' @method vec_cast.rvar default
 #' @export
@@ -243,10 +245,12 @@ vec_cast.rvar.rvar <- function(x, to, ...) x
 #' @method vec_ptype2.double rvar
 #' @export
 vec_ptype2.double.rvar <- function(x, y, ...) new_rvar()
+
 #' @rdname vctrs-compat
 #' @method vec_ptype2.rvar double
 #' @export
 vec_ptype2.rvar.double <- function(x, y, ...) new_rvar()
+
 #' @rdname vctrs-compat
 #' @method vec_cast.rvar double
 #' @export
@@ -257,10 +261,12 @@ vec_cast.rvar.double <- function(x, to, ...) new_constant_rvar(x)
 #' @method vec_ptype2.integer rvar
 #' @export
 vec_ptype2.integer.rvar <- function(x, y, ...) new_rvar()
+
 #' @rdname vctrs-compat
 #' @method vec_ptype2.rvar integer
 #' @export
 vec_ptype2.rvar.integer <- function(x, y, ...) new_rvar()
+
 #' @rdname vctrs-compat
 #' @method vec_cast.rvar integer
 #' @export
@@ -271,10 +277,12 @@ vec_cast.rvar.integer <- function(x, to, ...) new_constant_rvar(x)
 #' @method vec_ptype2.logical rvar
 #' @export
 vec_ptype2.logical.rvar <- function(x, y, ...) new_rvar()
+
 #' @rdname vctrs-compat
 #' @method vec_ptype2.rvar logical
 #' @export
 vec_ptype2.rvar.logical <- function(x, y, ...) new_rvar()
+
 #' @rdname vctrs-compat
 #' @method vec_cast.rvar logical
 #' @export

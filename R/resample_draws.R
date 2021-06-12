@@ -4,12 +4,12 @@
 #' obtained through importance sampling.
 #'
 #' @template args-methods-x
-#' @param weights A vector of positive weights of length `ndraws(x)` (the number
-#'   of draws in `x`). The weights will be internally normalized. If `weights`
-#'   is not specified, an attempt will be made to extract any weights already
-#'   stored in the draws object (via [weight_draws()]). How exactly the weights
-#'   influence the resampling depends on the `method` argument.
-#' @param method Name of the resampling method being applied:
+#' @param weights (numeric vector) A vector of positive weights of length
+#'   `ndraws(x)`. The weights will be internally normalized. If `weights` is not
+#'   specified, an attempt will be made to extract any weights already stored in
+#'   the draws object (via [weight_draws()]). How exactly the weights influence
+#'   the resampling depends on the `method` argument.
+#' @param method (string) The resampling method to use:
 #'  * `"simple"`: simple random resampling with replacement
 #'  * `"simple_no_replace"`: simple random resampling without replacement
 #'  * `"stratified"`: stratified resampling with replacement
@@ -20,8 +20,9 @@
 #'  proportional to the weights, but this is not possible in practice due to the
 #'  finite number of draws available. For more details about resampling methods,
 #'  see Kitagawa (1996).
-#' @param ndraws The number of draws to be returned. By default `ndraws` is set
-#'   internally to the total number of draws in `x` if sensible.
+#' @param ndraws (positive integer) The number of draws to be returned. By
+#'   default `ndraws` is set internally to the total number of draws in `x` if
+#'   sensible.
 #' @template args-methods-dots
 #' @template return-draws
 #'
@@ -93,6 +94,9 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
   out <- seq_along(weights)
   sample(out, ndraws, replace = TRUE, prob = weights)
 }
+
+
+# internal ----------------------------------------------------------------
 
 # simple random resampling without replacement
 # @return index vector of length 'ndraws'

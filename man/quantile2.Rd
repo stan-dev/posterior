@@ -13,21 +13,23 @@ quantile2(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
 \method{quantile2}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
 }
 \arguments{
-\item{x}{One of:
+\item{x}{(multiple options) One of:
 \itemize{
-\item A 2D array of draws (iterations x chains) from a single variable.
+\item A matrix of draws for a single variable (iterations x chains). See
+\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
 \item An \code{\link{rvar}}.
 }}
 
-\item{probs}{A numeric vector of probabilities.}
+\item{probs}{(numeric vector) Probabilities in \verb{[0, 1]}.}
 
-\item{names}{Logical. If \code{TRUE}, the result has a names attribute. Set to
-\code{FALSE} for speedup with many probs.}
+\item{names}{(logical) Should the result have a \code{names} attribute? The
+default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many
+values in \code{probs}.}
 
-\item{na.rm}{Logical. If \code{TRUE}, any \code{NA} and \code{NaN}'s are removed from \code{x}
-before the quantiles are computed.}
+\item{na.rm}{(logical) Should \code{NA} and \code{NaN} values be removed from \code{x} prior
+to computing quantiles? The default is \code{FALSE}.}
 
-\item{...}{Further arguments passed to \code{\link[=quantile]{quantile()}}.}
+\item{...}{Further arguments passed to \code{\link[stats:quantile]{stats::quantile()}}.}
 }
 \description{
 Compute quantiles of a sample and return them in a format consistent

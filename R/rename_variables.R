@@ -2,7 +2,7 @@
 #'
 #' Rename variables in a [`draws`] object.
 #'
-#' @param .x A [`draws`] object.
+#' @param .x (draws) A [`draws`] object.
 #' @param ... One or more expressions, separated by commas, indicating the
 #'   variables to rename. The variable names can be unquoted
 #'   (`new_name = old_name`) or quoted (`"new_name" = "old_name"`). For non-scalar

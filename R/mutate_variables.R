@@ -2,7 +2,7 @@
 #'
 #' Mutate variables in a [`draws`] object.
 #'
-#' @param .x A [`draws`] object.
+#' @param .x (draws) A [`draws`] object.
 #' @param ... Name-value pairs of expressions, each with either length 1 or the
 #'   same length as in the entire input (i.e., number of iterations or draws).
 #'   The name of each argument will be the name of a new variable, and the value

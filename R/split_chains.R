@@ -47,6 +47,9 @@ split_chains.draws_matrix <- function(x, ...) {
   split_chains(as_draws_array(x))
 }
 
+
+# internal ----------------------------------------------------------------
+
 # split chains for use in convergence diagnostics
 # @param x matrix of draws (iterations x chains)
 # @return matrix of draws with split chains

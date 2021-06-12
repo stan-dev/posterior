@@ -13,9 +13,10 @@ mcse_sd(x)
 \method{mcse_sd}{rvar}(x)
 }
 \arguments{
-\item{x}{One of:
+\item{x}{(multiple options) One of:
 \itemize{
-\item A 2D array of draws (iterations x chains) from a single variable.
+\item A matrix of draws for a single variable (iterations x chains). See
+\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
 \item An \code{\link{rvar}}.
 }}
 }

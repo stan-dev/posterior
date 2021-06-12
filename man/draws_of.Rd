@@ -10,14 +10,14 @@ draws_of(x, with_chains = FALSE)
 draws_of(x, with_chains = FALSE) <- value
 }
 \arguments{
-\item{x}{An \code{\link{rvar}}}
+\item{x}{(rvar) An \code{\link{rvar}} object.}
 
-\item{with_chains}{Should the array of draws include a dimension for chains?
+\item{with_chains}{(logical) Should the array of draws include a dimension for chains?
 If \code{FALSE} (the default), chains are not included and the array has dimension
 \code{c(ndraws(x), dim(x))}. If \code{TRUE}, chains are included and the array has
 dimension \code{c(niterations(x), nchains(x), dim(x))}.}
 
-\item{value}{An array}
+\item{value}{(array) An array of values to use as the backing array of \code{x}.}
 }
 \description{
 Gets/sets the array-representation that backs an \code{\link{rvar}}. Should be used rarely.

@@ -22,7 +22,7 @@ mutate_variables(.x, ...)
 \method{mutate_variables}{draws_rvars}(.x, ...)
 }
 \arguments{
-\item{.x}{A \code{\link{draws}} object.}
+\item{.x}{(draws) A \code{\link{draws}} object.}
 
 \item{...}{Name-value pairs of expressions, each with either length 1 or the
 same length as in the entire input (i.e., number of iterations or draws).

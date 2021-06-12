@@ -13,13 +13,15 @@ ess_basic(x, split = TRUE)
 \method{ess_basic}{rvar}(x, split = TRUE)
 }
 \arguments{
-\item{x}{One of:
+\item{x}{(multiple options) One of:
 \itemize{
-\item A 2D array of draws (iterations x chains) from a single variable.
+\item A matrix of draws for a single variable (iterations x chains). See
+\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
 \item An \code{\link{rvar}}.
 }}
 
-\item{split}{Logical. If \code{TRUE}, compute estimate on split chains.}
+\item{split}{(logical) Should the estimate be computed on split chains? The
+default is \code{TRUE}.}
 }
 \value{
 If the input is an array,

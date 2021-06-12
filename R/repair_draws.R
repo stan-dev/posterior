@@ -5,8 +5,8 @@
 #'
 #' @template args-methods-x
 #' @template args-methods-dots
-#' @param order Should draws be ordered (via [`order_draws()`]) before repairing
-#'   indices? Defaults to `TRUE`.
+#' @param order (logical) Should draws be ordered (via [`order_draws()`]) before
+#'   repairing indices? Defaults to `TRUE`.
 #' @template return-draws
 #' @seealso [order_draws()]
 #' @examples
@@ -89,6 +89,9 @@ repair_draws.rvar <- function(x, order = TRUE, ...) {
   rownames(draws_of(x)) <- as.character(seq_rows(draws_of(x)))
   x
 }
+
+
+# internal ----------------------------------------------------------------
 
 #' Repair indices to be continuously numbered integers starting from one
 #' @param x vector of values

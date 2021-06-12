@@ -9,17 +9,19 @@ rvar_apply(.x, .margin, .f, ...)
 \arguments{
 \item{.x}{An array or an \code{\link{rvar}}.}
 
-\item{.margin}{A vector giving the subscripts which the function will be applied over.
-E.g., for a matrix \code{1} indicates rows, \code{2} indicates columns, \code{c(1, 2)} indicates rows
-and columns. If \code{.x} has named dimensions, this can be a character vector selecting
-dimension names.}
+\item{.margin}{(multiple options) The subscripts which the function will be applied over:
+\itemize{
+\item An integer vector. E.g., for a matrix \code{1} indicates rows, \code{2} indicates
+columns, \code{c(1, 2)} indicates rows and columns.
+\item A character vector of dimension names if \code{.x} has named dimensions.
+}}
 
-\item{.f}{the function to be applied. This must be a function that returns an \code{\link{rvar}}.
-The dimensions of the result of \code{.f} applied to each margin of \code{.x} must be able to be
-broadasted to a common shape, otherwise the resulting \code{\link{rvar}} cannot be simplified.
-See 'Details'.}
+\item{.f}{(function) The function to be applied. The function \code{.f} must
+return an \code{\link{rvar}} and the dimensions of the result of \code{.f} applied to each
+margin of \code{.x} must be able to be broadcasted to a common shape (otherwise
+the resulting \code{\link{rvar}} cannot be simplified). See \strong{Details}.}
 
-\item{...}{optional arguments to \code{.f}.}
+\item{...}{Optional arguments passed to \code{.f}.}
 }
 \value{
 An \code{\link{rvar}}.

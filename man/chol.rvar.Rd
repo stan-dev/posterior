@@ -7,7 +7,7 @@
 \method{chol}{rvar}(x, ...)
 }
 \arguments{
-\item{x}{A 2-dimensional \code{\link{rvar}}.}
+\item{x}{(rvar) A 2-dimensional \code{\link{rvar}}.}
 
 \item{...}{Additional parameters passed on to \code{chol.tensor()}}
 }

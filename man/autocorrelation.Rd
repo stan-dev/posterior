@@ -7,7 +7,7 @@
 autocorrelation(x)
 }
 \arguments{
-\item{x}{A numeric vector forming a sequence of values.}
+\item{x}{(numeric vector) A sequence of values.}
 }
 \value{
 A numeric vector of autocorrelations at every lag (scaled by N-lag).
