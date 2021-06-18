@@ -1,6 +1,6 @@
 BSD 3-Clause License
 
-Copyright (c) 2019 Stan Developers and their Assignees; Trustees of Columbia University; Paul Bürkner; Jonah Gabry; Matthew Kay; Aki Vehtari;
+Copyright (c) 2021 posterior package authors; Stan Developers and their Assignees; Trustees of Columbia University
 
 All rights reserved.
 
