@@ -93,9 +93,8 @@ rstar <- function(x, split = TRUE,
                   nsimulations = 1000,
                   ...) {
 
-  if (!"caret" %in% .packages()) {
-    stop_no_call("Package 'caret' is required for 'rstar' to work. ",
-          "Please use library(caret) to load the package.")
+  if (!requireNamespace("caret", quietly = TRUE)) {
+    stop_no_call("Please install the 'caret' package to use this function.")
   }
 
   split <- as_one_logical(split)
