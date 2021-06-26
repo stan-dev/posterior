@@ -405,3 +405,10 @@ Chapman and Hall/CRC.
 Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
 Rank-normalization, folding, and localization: An improved Rhat for
 assessing convergence of MCMC. *Bayesian Analysis*.
+
+### Licensing
+
+The **posterior** package is licensed under the following licenses:
+
+- Code: BSD 3-clause (https://opensource.org/licenses/BSD-3-Clause)
+- Documentation: CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
