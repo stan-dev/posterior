@@ -146,8 +146,12 @@ iteration_ids.NULL <- function(x) {
 
 #' @export
 iteration_ids.draws_matrix <- function(x) {
-  out <- rownames(x) %||% seq_rows(x)
-  as.integer(out)
+  if (nchains(x) > 1) {
+    out <- seq_len(niterations(x))
+  } else {
+    out <- draw_ids(x)
+  }
+  out
 }
 
 #' @export
@@ -174,10 +178,11 @@ iteration_ids.draws_rvars <- function(x) {
 #' @export
 iteration_ids.rvar <- function(x) {
   if (nchains(x) > 1) {
-    seq_len(niterations(x))
+    out <- seq_len(niterations(x))
   } else {
-    draw_ids(x)
+    out <- draw_ids(x)
   }
+  out
 }
 
 #' @rdname draws-index
@@ -193,7 +198,7 @@ chain_ids.NULL <- function(x) {
 
 #' @export
 chain_ids.draws_matrix <- function(x) {
-  1L
+  seq_len(nchains(x))
 }
 
 #' @export
@@ -236,7 +241,7 @@ draw_ids.NULL <- function(x) {
 
 #' @export
 draw_ids.draws_matrix <- function(x) {
-  iteration_ids(x)
+  as.integer(rownames(x) %||% seq_rows(x))
 }
 
 #' @export
@@ -300,7 +305,7 @@ niterations.NULL <- function(x) {
 
 #' @export
 niterations.draws_matrix <- function(x) {
-  NROW(x)
+  NROW(x) / nchains(x)
 }
 
 #' @export
@@ -344,7 +349,7 @@ nchains.NULL <- function(x) {
 
 #' @export
 nchains.draws_matrix <- function(x) {
-  1L
+  attr(x, "nchains") %||% 1L
 }
 
 #' @export

@@ -42,13 +42,21 @@ bind_draws.draws_matrix <- function(x, ..., along = "variable") {
   dots <- lapply(dots, as_draws_matrix)
   dots <- lapply(dots, repair_draws)
   if (along == "variable") {
-    check_same_fun_output(dots, draw_ids)
+    check_same_fun_output(dots, chain_ids)
+    check_same_fun_output(dots, iteration_ids)
     out <- do.call(abind, c(dots, along = 2L))
-  } else if (along %in% c("iteration", "draw")) {
+    attr(out, "nchains") <- nchains(dots[[1]])
+  } else if (along == "chain") {
+    check_same_fun_output(dots, variables)
+    check_same_fun_output(dots, iteration_ids)
+    out <- do.call(abind, c(dots, along = 1L))
+    attr(out, "nchains") <- sum(sapply(dots, nchains))
+  } else if (along == "iteration") {
+    stop_no_call("Cannot bind 'draws_matrix' objects along 'iteration'.")
+  } else if (along %in% c("draw")) {
     check_same_fun_output(dots, variables)
     out <- do.call(abind, c(dots, along = 1L))
-  } else if (along == "chain") {
-    stop_no_call("Cannot bind 'draws_matrix' objects along 'chain'.")
+    attr(out, "nchains") <- 1L
   }
   as_draws_matrix(out)
 }

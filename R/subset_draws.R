@@ -53,11 +53,8 @@ subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
   chain <- check_chain_ids(chain, x, unique = unique)
   draw <- check_draw_ids(draw, x, unique = unique)
   x <- prepare_subsetting(x, iteration, chain, draw)
-  if (!is.null(iteration)) {
-    draw <- iteration
-  }
-  x <- .subset_draws(x, draw, variable, reserved = TRUE)
-  if (!is.null(draw)) {
+  x <- .subset_draws(x, iteration, chain, draw, variable, reserved = TRUE)
+  if (!is.null(chain) || !is.null(iteration)) {
     x <- repair_draws(x, order = FALSE)
   }
   x
@@ -187,9 +184,30 @@ subset_dims <- function(x, ...) {
 }
 
 #' @export
-.subset_draws.draws_matrix <- function(x, draw = NULL, variable = NULL,
+.subset_draws.draws_matrix <- function(x, iteration = NULL, chain = NULL,
+                                       draw = NULL, variable = NULL,
                                        reserved = FALSE, ...) {
-  out <- subset_dims(x, draw, variable)
+  out <- subset_dims(x, NULL, variable)
+  if (!is.null(draw)) {
+    out <- out[draw, ]
+  } else {
+    if (!is.null(chain)) {
+      chain <- unique(chain)
+      nchains <- length(chain)
+      chain_ids <- rep(chain_ids(out), each = niterations(out))
+      slice_index <- chain_ids %in% chain
+      out <- out[slice_index, ]
+      attr(out, "nchains") <- nchains
+    }
+    if (!is.null(iteration)) {
+      niterations <- length(iteration)
+      slice_index <- iteration +
+        (rep(chain_ids(out), each = niterations) - 1) * niterations(out)
+      nchains <- nchains(out)
+      out <- out[slice_index, ]
+      attr(out, "nchains") <- nchains
+    }
+  }
   if (reserved && !is.null(variable)) {
     new_vars <- variables(out, reserved = TRUE)
     reserved_vars <- setdiff(reserved_variables(x), new_vars)
@@ -323,7 +341,8 @@ subset_dims <- function(x, ...) {
   }
   if (!is.null(iteration)) {
     niterations <- length(iteration)
-    slice_index <- iteration + (rep(chain_ids(x), each = length(iteration)) - 1) * niterations(x)
+    slice_index <- iteration +
+      (rep(chain_ids(x), each = niterations) - 1) * niterations(x)
     for (i in seq_along(x)) {
       draws_of(x[[i]]) <- vec_slice(draws_of(x[[i]]), slice_index)
     }

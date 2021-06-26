@@ -23,15 +23,14 @@ merge_chains <- function(x, ...) {
 #' @rdname merge_chains
 #' @export
 merge_chains.draws_matrix <- function(x, ...) {
-  # draws_matrix does not store chain information anyway
+  attr(x, "nchains") <- 1L
   x
 }
 
 #' @rdname merge_chains
 #' @export
 merge_chains.draws_array <- function(x, ...) {
-  # converting to draws_matrix will automatically merge chains
-  x <- as_draws_matrix(x)
+  x <- merge_chains(as_draws_matrix(x))
   as_draws_array(x)
 }
 

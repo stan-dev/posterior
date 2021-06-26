@@ -13,16 +13,16 @@ test_that("indices work for NULL", {
 test_that("indices of draws_matrix objects are correct", {
    x <- as_draws_matrix(example_draws())
 
-   expect_equal(iteration_ids(x), 1:NROW(x))
-   expect_equal(chain_ids(x), 1)
+   expect_equal(iteration_ids(x), 1:100)
+   expect_equal(chain_ids(x), 1:4)
    expect_equal(draw_ids(x), 1:NROW(x))
 
-   expect_equal(niterations(x), NROW(x))
-   expect_equal(nchains(x), 1)
+   expect_equal(niterations(x), NROW(x) / 4)
+   expect_equal(nchains(x), 4)
    expect_equal(ndraws(x), NROW(x))
 
    rownames(x) <- NULL
-   expect_equal(iteration_ids(x), 1:NROW(x))
+   expect_equal(draw_ids(x), 1:NROW(x))
 })
 
 test_that("indices of draws_array objects are correct", {

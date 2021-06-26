@@ -32,7 +32,7 @@ as_draws_matrix(x, ...)
 
 \method{as_draws_matrix}{mcmc.list}(x, ...)
 
-draws_matrix(...)
+draws_matrix(..., .nchains = 1)
 
 is_draws_matrix(x)
 }

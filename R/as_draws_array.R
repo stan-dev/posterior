@@ -37,13 +37,16 @@ as_draws_array.draws_array <- function(x, ...) {
 as_draws_array.draws_matrix <- function(x, ...) {
   old_dim <- dim(x)
   old_dimnames <- dimnames(x)
-  dim(x) <- c(old_dim[1], 1, old_dim[2])
+  iteration_ids <- iteration_ids(x)
+  chain_ids <- chain_ids(x)
+  dim(x) <- c(niterations(x), nchains(x), old_dim[2])
   dimnames(x) <- list(
-    iteration = as.character(seq_rows(x)),
-    chain = "1",
+    iteration = iteration_ids,
+    chain = chain_ids,
     variable = old_dimnames[[2]]
   )
   class(x) <- class_draws_array()
+  attr(x, "nchains") <- NULL
   x
 }
 
@@ -148,7 +151,7 @@ draws_array <- function(..., .nchains = 1) {
   if (ndraws %% .nchains != 0) {
     stop_no_call("Number of chains does not divide the number of draws.")
   }
-  niterations <- ndraws %/% .nchains
+  niterations <- ndraws / .nchains
   variables <- names(out)
   out <- unlist(out)
   out <- array(out, dim = c(niterations, .nchains, length(variables)))

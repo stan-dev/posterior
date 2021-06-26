@@ -64,9 +64,13 @@ as_draws_df.draws_matrix <- function(x, ...) {
   if (ndraws(x) == 0L) {
     return(empty_draws_df(variables(x)))
   }
-  x <- tibble::as_tibble(x)
-  x[".chain"] <- 1L
-  x[c(".iteration", ".draw")] <- seq_len(nrow(x))
+  iteration_ids <- iteration_ids(x)
+  chain_ids <- chain_ids(x)
+  attr(x, "nchains") <- NULL
+  x <- tibble::as_tibble(unclass(x))
+  x[".chain"] <- rep(chain_ids, each = max(iteration_ids))
+  x[".iteration"] <- rep(iteration_ids, max(chain_ids))
+  x[".draw"] <- seq_len(nrow(x))
   class(x) <- class_draws_df()
   x
 }

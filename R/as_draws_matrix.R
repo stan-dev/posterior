@@ -6,6 +6,7 @@
 #' @templateVar draws_format draws_matrix
 #' @templateVar base_class "matrix"
 #' @template draws_format-skeleton
+#' @template args-format-nchains
 #'
 #' @details Objects of class `"draws_matrix"` are matrices (2-D arrays) with
 #'   dimensions `"draw"` and `"variable"`. This format does not store any
@@ -40,6 +41,7 @@ as_draws_matrix.draws_array <- function(x, ...) {
   if (ndraws(x) == 0) {
     return(empty_draws_matrix(variables(x), niterations(x)))
   }
+  nchains <- nchains(x)
   old_dim <- dim(x)
   old_dimnames <- dimnames(x)
   dim(x) <- c(old_dim[1] * old_dim[2], old_dim[3])
@@ -48,6 +50,7 @@ as_draws_matrix.draws_array <- function(x, ...) {
     variable = old_dimnames[[3]]
   )
   class(x) <- class_draws_matrix()
+  attr(x, "nchains") <- nchains
   x
 }
 
@@ -57,11 +60,13 @@ as_draws_matrix.draws_df <- function(x, ...) {
   if (ndraws(x) == 0) {
     return(empty_draws_matrix(variables(x)))
   }
+  nchains <- nchains(x)
   draws <- x$.draw
   x <- remove_reserved_df_variables(x)
   class(x) <- class(x)[-1L]
   x <- .as_draws_matrix(x)
   rownames(x) <- draws
+  attr(x, "nchains") <- nchains
   x
 }
 
@@ -78,14 +83,15 @@ as_draws_matrix.draws_rvars <- function(x, ...) {
   if (ndraws(x) == 0) {
     return(empty_draws_matrix(variables(x)))
   }
-  draws <- do.call(cbind, lapply(seq_along(x), function(i) {
+  out <- do.call(cbind, lapply(seq_along(x), function(i) {
     # flatten each rvar so it only has two dimensions: draws and variables
     # this also collapses indices into variable names in the format "var[i,j,k,...]"
     x_i <- flatten_array(x[[i]], names(x)[[i]])
     draws_of(x_i)
   }))
-
-  as_draws_matrix(draws, ...)
+  out <- as_draws_matrix(out, ...)
+  attr(out, "nchains") <- nchains(x)
+  out
 }
 
 #' @rdname draws_matrix
@@ -104,6 +110,7 @@ as_draws_matrix.mcmc.list <- function(x, ...) {
 
 # try to convert any R object into a 'draws_matrix' object
 .as_draws_matrix <- function(x) {
+  .nchains <- attr(x, "nchains") %||% 1L
   x <- as.matrix(x)
   new_dimnames <- list(draw = NULL, variable = NULL)
   if (!is.null(dimnames(x)[[2]])) {
@@ -115,14 +122,25 @@ as_draws_matrix.mcmc.list <- function(x, ...) {
   new_dimnames[[1]] <- as.character(seq_rows(x))
   dimnames(x) <- new_dimnames
   class(x) <- class_draws_matrix()
+  attr(x, "nchains") <- .nchains
   x
 }
 
 #' @rdname draws_matrix
 #' @export
-draws_matrix <- function(...) {
+draws_matrix <- function(..., .nchains = 1) {
   out <- validate_draws_per_variable(...)
-  as_draws_matrix(do.call(cbind, out))
+  .nchains <- as_one_integer(.nchains)
+  if (.nchains < 1) {
+    stop_no_call("Number of chains must be positive.")
+  }
+  ndraws <- length(out[[1]])
+  if (ndraws %% .nchains != 0) {
+    stop_no_call("Number of chains does not divide the number of draws.")
+  }
+  out <- do.call(cbind, out)
+  attr(out, "nchains") <- .nchains
+  as_draws_matrix(out)
 }
 
 class_draws_matrix <- function() {
@@ -148,6 +166,9 @@ is_draws_matrix_like <- function(x) {
   out <- NextMethod("[", drop = drop)
   if (length(dim(out)) == length(dim(x))) {
     class(out) <- class(x)
+    if (missing(i)) {
+      attr(out, "nchains") <- nchains(x)
+    }
   }
   out
 }
