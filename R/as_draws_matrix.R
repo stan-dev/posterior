@@ -9,10 +9,7 @@
 #' @template args-format-nchains
 #'
 #' @details Objects of class `"draws_matrix"` are matrices (2-D arrays) with
-#'   dimensions `"draw"` and `"variable"`. This format does not store any
-#'   information about which MCMC chain the draws are from and so we simply
-#'   refer to the rows as draws and not iterations (unlike for the
-#'   [`draws_array`] format). See **Examples**.
+#'   dimensions `"draw"` and `"variable"`. See **Examples**.
 #'
 NULL
 
