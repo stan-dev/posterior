@@ -7,13 +7,13 @@
 \alias{mcse_median}
 \title{Monte Carlo standard error for quantiles}
 \usage{
-mcse_quantile(x, probs = c(0.05, 0.95), names = TRUE)
+mcse_quantile(x, probs = c(0.05, 0.95), ...)
 
-\method{mcse_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE)
+\method{mcse_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
-\method{mcse_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE)
+\method{mcse_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
-mcse_median(x)
+mcse_median(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -24,6 +24,8 @@ mcse_median(x)
 }}
 
 \item{probs}{(numeric vector) Probabilities in \verb{[0, 1]}.}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 
 \item{names}{(logical) Should the result have a \code{names} attribute? The
 default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many

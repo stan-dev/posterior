@@ -8,15 +8,15 @@
 \alias{ess_mean.default}
 \title{Effective sample sizes for quantiles}
 \usage{
-ess_quantile(x, probs = c(0.05, 0.95), names = TRUE)
+ess_quantile(x, probs = c(0.05, 0.95), ...)
 
-\method{ess_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE)
+\method{ess_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
-\method{ess_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE)
+\method{ess_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
-ess_median(x)
+ess_median(x, ...)
 
-\method{ess_mean}{default}(x)
+\method{ess_mean}{default}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -27,6 +27,8 @@ ess_median(x)
 }}
 
 \item{probs}{(numeric vector) Probabilities in \verb{[0, 1]}.}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 
 \item{names}{(logical) Should the result have a \code{names} attribute? The
 default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many

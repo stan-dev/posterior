@@ -6,11 +6,11 @@
 \alias{ess_basic.rvar}
 \title{Basic version of the effective sample size}
 \usage{
-ess_basic(x, split = TRUE)
+ess_basic(x, ...)
 
-\method{ess_basic}{default}(x, split = TRUE)
+\method{ess_basic}{default}(x, split = TRUE, ...)
 
-\method{ess_basic}{rvar}(x, split = TRUE)
+\method{ess_basic}{rvar}(x, split = TRUE, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -19,6 +19,8 @@ ess_basic(x, split = TRUE)
 \code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
 \item An \code{\link{rvar}}.
 }}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 
 \item{split}{(logical) Should the estimate be computed on split chains? The
 default is \code{TRUE}.}

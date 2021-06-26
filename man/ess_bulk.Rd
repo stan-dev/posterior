@@ -6,11 +6,11 @@
 \alias{ess_bulk.rvar}
 \title{Bulk effective sample size (bulk-ESS)}
 \usage{
-ess_bulk(x)
+ess_bulk(x, ...)
 
-\method{ess_bulk}{default}(x)
+\method{ess_bulk}{default}(x, ...)
 
-\method{ess_bulk}{rvar}(x)
+\method{ess_bulk}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -19,6 +19,8 @@ ess_bulk(x)
 \code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
 \item An \code{\link{rvar}}.
 }}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 If the input is an array,

@@ -6,11 +6,11 @@
 \alias{rhat.rvar}
 \title{Rhat convergence diagnostic}
 \usage{
-rhat(x)
+rhat(x, ...)
 
-\method{rhat}{default}(x)
+\method{rhat}{default}(x, ...)
 
-\method{rhat}{rvar}(x)
+\method{rhat}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -19,6 +19,8 @@ rhat(x)
 \code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
 \item An \code{\link{rvar}}.
 }}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 If the input is an array,

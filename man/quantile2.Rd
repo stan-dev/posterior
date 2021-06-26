@@ -6,11 +6,11 @@
 \alias{quantile2.rvar}
 \title{Compute Quantiles}
 \usage{
-quantile2(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
+quantile2(x, probs = c(0.05, 0.95), na.rm = FALSE, ...)
 
-\method{quantile2}{default}(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
+\method{quantile2}{default}(x, probs = c(0.05, 0.95), na.rm = FALSE, names = TRUE, ...)
 
-\method{quantile2}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
+\method{quantile2}{rvar}(x, probs = c(0.05, 0.95), na.rm = FALSE, names = TRUE, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -22,14 +22,15 @@ quantile2(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE, ...)
 
 \item{probs}{(numeric vector) Probabilities in \verb{[0, 1]}.}
 
-\item{names}{(logical) Should the result have a \code{names} attribute? The
-default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many
-values in \code{probs}.}
-
 \item{na.rm}{(logical) Should \code{NA} and \code{NaN} values be removed from \code{x} prior
 to computing quantiles? The default is \code{FALSE}.}
 
-\item{...}{Further arguments passed to \code{\link[stats:quantile]{stats::quantile()}}.}
+\item{...}{Arguments passed to individual methods (if applicable) and then
+on to \code{\link[stats:quantile]{stats::quantile()}}.}
+
+\item{names}{(logical) Should the result have a \code{names} attribute? The
+default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many
+values in \code{probs}.}
 }
 \description{
 Compute quantiles of a sample and return them in a format consistent

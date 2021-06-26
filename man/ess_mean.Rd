@@ -5,9 +5,9 @@
 \alias{ess_mean.rvar}
 \title{Effective sample size for the mean}
 \usage{
-ess_mean(x)
+ess_mean(x, ...)
 
-\method{ess_mean}{rvar}(x)
+\method{ess_mean}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -16,6 +16,8 @@ ess_mean(x)
 \code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
 \item An \code{\link{rvar}}.
 }}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 If the input is an array,

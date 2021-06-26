@@ -6,11 +6,11 @@
 \alias{ess_sd.rvar}
 \title{Effective sample size for the standard deviation}
 \usage{
-ess_sd(x)
+ess_sd(x, ...)
 
-\method{ess_sd}{default}(x)
+\method{ess_sd}{default}(x, ...)
 
-\method{ess_sd}{rvar}(x)
+\method{ess_sd}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -19,6 +19,8 @@ ess_sd(x)
 \code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
 \item An \code{\link{rvar}}.
 }}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 If the input is an array,

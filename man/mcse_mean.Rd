@@ -6,11 +6,11 @@
 \alias{mcse_mean.rvar}
 \title{Monte Carlo standard error for the mean}
 \usage{
-mcse_mean(x)
+mcse_mean(x, ...)
 
-\method{mcse_mean}{default}(x)
+\method{mcse_mean}{default}(x, ...)
 
-\method{mcse_mean}{rvar}(x)
+\method{mcse_mean}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -19,6 +19,8 @@ mcse_mean(x)
 \code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
 \item An \code{\link{rvar}}.
 }}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 If the input is an array,

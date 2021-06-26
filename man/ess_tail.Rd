@@ -6,11 +6,11 @@
 \alias{ess_tail.rvar}
 \title{Tail effective sample size (tail-ESS)}
 \usage{
-ess_tail(x)
+ess_tail(x, ...)
 
-\method{ess_tail}{default}(x)
+\method{ess_tail}{default}(x, ...)
 
-\method{ess_tail}{rvar}(x)
+\method{ess_tail}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -19,6 +19,8 @@ ess_tail(x)
 \code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
 \item An \code{\link{rvar}}.
 }}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 If the input is an array,
