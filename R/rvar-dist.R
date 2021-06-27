@@ -14,19 +14,37 @@
 #'
 #' @return
 #'
-#' A vector of the same length as the input (`q`, `at`, or `probs`) containing
-#' values from the corresponding function of the given [`rvar`].
+#' If `x` is a scalar [`rvar`], returns a vector of the same length as the input
+#' (`q`, `at`, or `probs`) containing values from the corresponding function
+#' of the given [`rvar`].
+#'
+#' If `x` has length greater than 2, returns an array with dimensions
+#' `c(length(y), dim(x))` where `y` is `q`, `at`, or `probs`, where each
+#' `result[i,...]` is the value of the corresponding function,`f(y[i])`, for
+#' the correspond cell in the input array, `x[...]`.
+#'
+#' @examples
+#'
+#' set.seed(1234)
+#' x = rvar(rnorm(100))
+#'
+#' density(x, seq(-2, 2, length.out = 10))
+#' cdf(x, seq(-2, 2, length.out = 10))
+#' quantile(x, ppoints(10))
+#'
+#' x2 = c(rvar(rnorm(100, mean = -0.5)), rvar(rnorm(100, mean = 0.5)))
+#' density(x2, seq(-2, 2, length.out = 10))
+#' cdf(x2, seq(-2, 2, length.out = 10))
+#' quantile(x2, ppoints(10))
 #'
 #' @name rvar-functions
 #' @export
 density.rvar <- function(x, at, ...) {
-  if (length(x) != 1) {
-    stop_no_call("density() can currently only be used on scalar rvars")
-  }
-
-  d <- density(draws_of(x), cut = 0, ...)
-  f <- approxfun(d$x, d$y, yleft = 0, yright = 0)
-  f(at)
+  summarise_rvar_by_element(x, function(draws) {
+    d <- density(draws, cut = 0, ...)
+    f <- approxfun(d$x, d$y, yleft = 0, yright = 0)
+    f(at)
+  })
 }
 
 #' @importFrom distributional cdf
@@ -36,15 +54,15 @@ distributional::cdf
 #' @rdname rvar-functions
 #' @export
 cdf.rvar <- function(x, q, ...) {
-  if (length(x) != 1) {
-    stop_no_call("cdf() can currently only be used on scalar rvars")
-  }
-
-  ecdf(draws_of(x))(q)
+  summarise_rvar_by_element(x, function(draws) {
+    ecdf(draws)(q)
+  })
 }
 
 #' @rdname rvar-functions
 #' @export
 quantile.rvar <- function(x, probs, ...) {
-  quantile(draws_of(x), probs, ...)
+  summarise_rvar_by_element(x, function(draws) {
+    quantile(draws, probs, names = FALSE, ...)
+  })
 }
