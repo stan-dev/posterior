@@ -218,7 +218,7 @@ test_that("numeric vectors can be transformed to draws_rvars objects", {
 
 test_that("rvars can be transformed to draws objects", {
   rv_array <- array(c(1:10, 11:20, rep(1, 10)), c(5, 2, 3))
-  rv <- rvar(x_array)
+  rv <- rvar(rv_array)
   draws_rvars <- draws_rvars(x = rv)
   expect_equal(as_draws(rv), draws_rvars)
   expect_equal(as_draws_rvars(rv), draws_rvars)
