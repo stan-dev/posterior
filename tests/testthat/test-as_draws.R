@@ -216,6 +216,18 @@ test_that("numeric vectors can be transformed to draws_rvars objects", {
   expect_equal(draws_rvars, draws_rvars2)
 })
 
+test_that("rvars can be transformed to draws objects", {
+  rv_array <- array(c(1:10, 11:20, rep(1, 10)), c(5, 2, 3))
+  rv <- rvar(x_array)
+  draws_rvars <- draws_rvars(x = rv)
+  expect_equal(as_draws(rv), draws_rvars)
+  expect_equal(as_draws_rvars(rv), draws_rvars)
+  expect_equal(as_draws_matrix(rv), as_draws_matrix(draws_rvars))
+  expect_equal(as_draws_array(rv), as_draws_array(draws_rvars))
+  expect_equal(as_draws_df(rv), as_draws_df(draws_rvars))
+  expect_equal(as_draws_list(rv), as_draws_list(draws_rvars))
+})
+
 test_that("mcmc and mcmc.list objects can be transformed to draws objects", {
   # don't want to add coda as dependency so construct equivalent of
   # mcmc and mcmc.list objects

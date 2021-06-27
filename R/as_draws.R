@@ -59,6 +59,11 @@ as_draws.default <- function(x, ...) {
   fun(x, ...)
 }
 
+#' @export
+as_draws.rvar <- function(x, ...) {
+  as_draws_rvars(x, ...)
+}
+
 # detect the supported format closest to the format of the input
 closest_draws_format <- function(x) {
   if (is_draws_matrix_like(x)) {
