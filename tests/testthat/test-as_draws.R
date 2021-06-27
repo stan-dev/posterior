@@ -227,6 +227,7 @@ test_that("mcmc and mcmc.list objects can be transformed to draws objects", {
   xlist <- structure(list(x1 = x1, x2 = x2), class = "mcmc.list")
 
   mcmc_draws <- list(
+    as_draws(x1),
     as_draws_matrix(x1),
     as_draws_array(x1),
     as_draws_df(x1),
@@ -234,6 +235,7 @@ test_that("mcmc and mcmc.list objects can be transformed to draws objects", {
     as_draws_rvars(x1)
   )
   mcmc_list_draws <- list(
+    as_draws(xlist),
     as_draws_matrix(xlist),
     as_draws_array(xlist),
     as_draws_df(xlist),

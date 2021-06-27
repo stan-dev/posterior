@@ -47,7 +47,15 @@ as_draws.draws <- function(x, ...) {
 as_draws.default <- function(x, ...) {
   # transform an object to the closest supported draws format
   format <- closest_draws_format(x)
-  fun <- get(paste0(".as_", format), asNamespace("posterior"))
+  fun_name <- paste0("as_", format)
+  if (!has_s3_method(fun_name, class(x))) {
+    # if there is no implementation of as_draws_XXX() for this class, then
+    # we can't call as_draws_XXX() here as it will end up in as_draws_XXX.default()
+    # which will call back to as_draws.default(), creating an infinite loop. So
+    # we call down to .as_draws_XXX() instead.
+    fun_name <- paste0(".", fun_name)
+  }
+  fun <- get(fun_name, asNamespace("posterior"))
   fun(x, ...)
 }
 
