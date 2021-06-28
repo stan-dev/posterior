@@ -32,10 +32,10 @@ If \code{x} is a scalar \code{\link{rvar}}, returns a vector of the same length 
 (\code{q}, \code{at}, or \code{probs}) containing values from the corresponding function
 of the given \code{\link{rvar}}.
 
-If \code{x} has length greater than 2, returns an array with dimensions
+If \code{x} has length greater than 1, returns an array with dimensions
 \code{c(length(y), dim(x))} where \code{y} is \code{q}, \code{at}, or \code{probs}, where each
 \code{result[i,...]} is the value of the corresponding function,\code{f(y[i])}, for
-the correspond cell in the input array, \code{x[...]}.
+the corresponding cell in the input array, \code{x[...]}.
 }
 \description{
 The probability density function (\code{density()}), cumulative distribution

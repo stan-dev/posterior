@@ -78,13 +78,15 @@ str.rvar <- function(
   nest.lev = 0, give.attr = TRUE
 ) {
 
-  str_next <- function(x, ...) str(x, ...,
-    summary = summary,
-    vec.len = vec.len,
-    indent.str = paste(indent.str, ".."),
-    nest.lev = nest.lev + 1,
-    give.attr = give.attr
-  )
+  str_next <- function(x, ...) {
+    str(x, ...,
+      summary = summary,
+      vec.len = vec.len,
+      indent.str = paste(indent.str, ".."),
+      nest.lev = nest.lev + 1,
+      give.attr = give.attr
+    )
+  }
 
   # HEADER
   .draws <- draws_of(object)

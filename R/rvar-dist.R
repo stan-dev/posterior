@@ -18,10 +18,10 @@
 #' (`q`, `at`, or `probs`) containing values from the corresponding function
 #' of the given [`rvar`].
 #'
-#' If `x` has length greater than 2, returns an array with dimensions
+#' If `x` has length greater than 1, returns an array with dimensions
 #' `c(length(y), dim(x))` where `y` is `q`, `at`, or `probs`, where each
 #' `result[i,...]` is the value of the corresponding function,`f(y[i])`, for
-#' the correspond cell in the input array, `x[...]`.
+#' the corresponding cell in the input array, `x[...]`.
 #'
 #' @examples
 #'
