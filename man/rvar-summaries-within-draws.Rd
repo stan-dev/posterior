@@ -12,6 +12,7 @@
 \alias{rvar_var}
 \alias{rvar_mad}
 \alias{rvar_range}
+\alias{rvar_quantile}
 \alias{rvar_all}
 \alias{rvar_any}
 \title{Summaries of random variables over array elements, within draws}
@@ -36,6 +37,8 @@ rvar_mad(..., constant = 1.4826, na.rm = FALSE, low = FALSE, high = FALSE)
 
 rvar_range(..., na.rm = FALSE)
 
+rvar_quantile(..., probs, names = FALSE, na.rm = FALSE)
+
 rvar_all(..., na.rm = FALSE)
 
 rvar_any(..., na.rm = FALSE)
@@ -57,9 +60,15 @@ the smaller one. See \code{stats::mad()}.}
 \item{high}{(logical) For \code{rvar_mad()}, if \code{TRUE}, compute the 'hi-median',
 i.e., take the larger of the two middle values for even sample size. See
 \code{stats::mad()}.}
+
+\item{probs}{(numeric vector) For \code{rvar_quantile()}, probabilities in \verb{[0, 1]}.}
+
+\item{names}{(logical) For \code{rvar_quantile()}, if \code{TRUE}, the result has a
+\code{names} attribute.}
 }
 \value{
-An \code{\link{rvar}} of length 1 (or in the case of \code{range()}, length 2) with the same number
+An \code{\link{rvar}} of length 1 (for \code{range()}, length 2; for \code{quantile()}, length
+equal to \code{length(probs)}) with the same number
 of draws as the input rvar(s) containing the summary statistic computed within
 each draw of the input rvar(s).
 }
@@ -87,6 +96,7 @@ rvar_median(x)
 rvar_sum(x)
 rvar_prod(x)
 rvar_range(x)
+rvar_quantile(x, probs = c(0.25, 0.5, 0.75), names = TRUE)
 
 }
 \seealso{
