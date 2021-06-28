@@ -74,7 +74,26 @@ can be accessed (and modified, with caution) via `draws_of()`:
 str(draws_of(x))
 ```
 
-Manual construction and modification of `rvar`s in this way is not recommended
+While the above examples assume all draws come from a single chain, `rvar`s
+can also contain samples from multiple chains. For example, if your array of
+draws has iterations as the first dimension and chains as the second dimension,
+you can use `with_chains = TRUE` to create an `rvar` that includes chain
+information:
+
+```{r x_matrix_with_chains}
+iterations <- 1000
+chains <- 4
+rows <- 4
+cols <- 3
+x_array <- array(
+  rnorm(iterations * chains * rows * cols, mean = 1, sd = 1),
+  dim = c(iterations, chains, rows, cols)
+)
+x <- rvar(x_array, with_chains = TRUE)
+x
+```
+
+Manual construction and modification of `rvar`s in this way is not always recommended
 unless you need it for performance reasons: several other higher-level interfaces
 to constructing and manipulating `rvar`s are described below.
 
@@ -82,9 +101,19 @@ to constructing and manipulating `rvar`s are described below.
 
 The `draws_rvars()` datatype, like all `draws` datatypes in posterior, contains
 multiple variables in a joint sample from some distribution (e.g. a posterior or 
-prior distribution). 
+prior distribution).
 
-Below is the `example_draws("multi_normal")` dataset
+You can construct `draws_rvars()` objects directly using the `draws_rvars()`
+function. The input `rvar`s must have the same number of chains and iterations,
+but can otherwise have different shapes:
+
+```{r draws_rvars}
+d <- draws_rvars(x = x, y = rvar(rnorm(iterations * chains), nchains = 4))
+d
+```
+
+Existing objects can also be converted to the `draws_rvars()` format
+using `as_draws_rvars()`. Below is the `example_draws("multi_normal")` dataset
 converted into the `draws_rvars()` format. This dataset has 100 iterations from 
 4 chains from the posterior of a a 3-dimensional multivariate normal model. The 
 `mu` variable is a mean vector of length 3 and the `Sigma` variable is a $3 \times 3$
