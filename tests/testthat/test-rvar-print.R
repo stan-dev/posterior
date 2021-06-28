@@ -47,6 +47,26 @@ test_that("basic str.rvar works", {
     " rvar<1,2>[3,4]  1.5 ± 0.71  3.5 ± 0.71  5.5 ± 0.71  7.5 ± 0.71  9.5 ± 0.71 ...",
     fixed = TRUE
   )
+
+  x_with_attrs <- x
+  dimnames(x_with_attrs)[1] = list(c("a","b","c"))
+  attr(draws_of(x_with_attrs), "foo") = list(1,2)
+  attr(x_with_attrs, "bar") = list(1,2)
+
+  expect_output(str(x_with_attrs, vec.len = 5),
+    ' rvar<2>[3,4]  1.5 ± 0.71  3.5 ± 0.71  5.5 ± 0.71  7.5 ± 0.71  9.5 ± 0.71 ...
+ - dimnames(*)=List of 2
+  ..$ : chr [1:3] "a" "b" "c"
+  ..$ : NULL
+ - attr(draws_of(*), "foo")=List of 2
+  ..$ : num 1
+  ..$ : num 2
+ - attr(*, "bar")=List of 2
+  ..$ : num 1
+  ..$ : num 2',
+    fixed = TRUE
+  )
+
 })
 
 test_that("format summary arg works", {
