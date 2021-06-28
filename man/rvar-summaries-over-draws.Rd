@@ -131,7 +131,7 @@ pnorm(1.5, mean = 1:4, sd = 2)
 }
 \seealso{
 \link{rvar-summaries-within-draws} for summary functions within draws.
-\link{rvar-functions} for density, CDF, and quantile functions of random variables.
+\link{rvar-dist} for density, CDF, and quantile functions of random variables.
 
 Other rvar-summaries: 
 \code{\link{rvar-summaries-within-draws}},

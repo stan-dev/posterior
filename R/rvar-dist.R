@@ -37,7 +37,7 @@
 #' cdf(x2, seq(-2, 2, length.out = 10))
 #' quantile(x2, ppoints(10))
 #'
-#' @name rvar-functions
+#' @name rvar-dist
 #' @export
 density.rvar <- function(x, at, ...) {
   summarise_rvar_by_element(x, function(draws) {
@@ -51,7 +51,7 @@ density.rvar <- function(x, at, ...) {
 #' @export
 distributional::cdf
 
-#' @rdname rvar-functions
+#' @rdname rvar-dist
 #' @export
 cdf.rvar <- function(x, q, ...) {
   summarise_rvar_by_element(x, function(draws) {
@@ -59,7 +59,7 @@ cdf.rvar <- function(x, q, ...) {
   })
 }
 
-#' @rdname rvar-functions
+#' @rdname rvar-dist
 #' @export
 quantile.rvar <- function(x, probs, ...) {
   summarise_rvar_by_element(x, function(draws) {

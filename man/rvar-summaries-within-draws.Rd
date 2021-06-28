@@ -91,7 +91,7 @@ rvar_range(x)
 }
 \seealso{
 \link{rvar-summaries-over-draws} for summary functions across draws (e.g. expectations).
-\link{rvar-functions} for density, CDF, and quantile functions of random variables.
+\link{rvar-dist} for density, CDF, and quantile functions of random variables.
 
 Other rvar-summaries: 
 \code{\link{rvar-summaries-over-draws}},

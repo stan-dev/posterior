@@ -45,7 +45,7 @@
 #' rvar_range(x)
 #'
 #' @seealso [rvar-summaries-over-draws] for summary functions across draws (e.g. expectations).
-#' [rvar-functions] for density, CDF, and quantile functions of random variables.
+#' [rvar-dist] for density, CDF, and quantile functions of random variables.
 #' @family rvar-summaries
 #' @name rvar-summaries-within-draws
 #' @export
