@@ -52,5 +52,13 @@ as in \code{rfun()} and \code{rdo()}:
 new random variables when this number cannot be determined
 from existing arguments (e.g., other \code{\link{rvar}}s passed to a function).
 }
+
+The following options are used to control warning messages:
+\itemize{
+\item \code{posterior.warn_on_merge_chains}: (logical) Some operations will
+trigger an automatic merging of chains, for example, because chains do not
+match between two objects involved in a binary operation. Whether this
+causes a warning can be controlled by this option.
+}
 }
 
