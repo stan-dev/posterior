@@ -7,13 +7,21 @@
 #' @param x (multiple options) The object to convert to an `rvar`:
 #'   * A vector of draws from a distribution.
 #'   * An array where the first dimension represents draws from a distribution.
-#'   The resulting [`rvar`] will have dimension `dim(x)[-1]`; that is,
-#'   everything except the first dimension is used for the shape of the
-#'   variable, and the first dimension is used to index draws from the
-#'   distribution. See **Examples**.
+#'     The resulting [`rvar`] will have dimension `dim(x)[-1]`; that is,
+#'     everything except the first dimension is used for the shape of the
+#'     variable, and the first dimension is used to index draws from the
+#'     distribution (see **Examples**). Optionally,
+#'     if `with_chains == TRUE`, the first dimension indexes the iteration and the
+#'     second dimension indexes the chain (see `with_chains`).
 #' @template args-rvar-dim
 #' @template args-rvar-dimnames
 #' @param nchains (positive integer) The number of chains. The default is `1`.
+#' @param with_chains (logical) Does `x` include a dimension for chains?
+#' If `FALSE` (the default), chains are not included, the first dimension of
+#' the input array should index draws, and the `nchains` argument can be
+#' used to determine the number of chains. If `TRUE`, the `nchains` argument
+#' is ignored and the second dimension of `x` is used to index chains.
+#' Internally, the array will be converted to a format without the chain index.
 #'
 #' @details
 #'
@@ -49,6 +57,8 @@
 #'
 #' @examples
 #'
+#' set.seed(1234)
+#'
 #' # To create a "scalar" `rvar`, pass a one-dimensional array or a vector
 #' # whose length (here `4000`) is the desired number of draws:
 #' x <- rvar(rnorm(4000, mean = 1, sd = 1))
@@ -65,52 +75,47 @@
 #' x <- rvar(array(rnorm(4000 * rows * cols, mean = 1, sd = 1), dim = c(4000, rows, cols)))
 #' x
 #'
+#' # If the input sample comes from multiple chains, we can indicate that using the
+#' # nchains argument (here, 1000 draws each from 4 chains):
+#' x <- rvar(rnorm(4000, mean = 1, sd = 1), nchains = 4)
+#' x
+#'
+#' # Or if the input sample has chain information as its second dimension, we can
+#' # use with_chains to create the rvar
+#' x <- rvar(array(rnorm(4000, mean = 1, sd = 1), dim = c(1000, 4)), with_chains = TRUE)
+#' x
+#'
 #' @export
-rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = 1L) {
-  x <- new_rvar(x, .nchains = nchains)
+rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = 1L, with_chains = FALSE) {
+  with_chains <- as_one_logical(with_chains)
+  if (with_chains) {
+    nchains <- dim(x)[[2]] %||% 1L
+    x <- drop_chain_dim(x)
+  }
+
+  out <- new_rvar(x, .nchains = nchains)
 
   if (!is.null(dim)) {
-    dim(x) <- dim
+    dim(out) <- dim
   }
   if (!is.null(dimnames)) {
-    dimnames(x) <- dimnames
+    dimnames(out) <- dimnames
   }
 
-  x
+  out
 }
 
 #' @importFrom vctrs new_vctr
 new_rvar <- function(x = double(), .nchains = 1L) {
-  .dim <- dim(x)
   if (length(x) == 0) {
     x <- double()
   }
-  x <- as.array(x)
 
-  if (length(x) == 0) {
-    # canonical NULL rvar is 1 draw of nothing
-    # this ensures that (e.g.) extending a null rvar
-    # with x[1] = something works.
-    dim(x) <- c(1, 0)
-  }
-  else if (is.null(.dim) || length(.dim) == 1) {
-    # 1d vectors get treated as a single variable
-    dim(x) <- c(length(x), 1)
-  }
-
-  # ensure dimnames is set (makes comparison easier for tests)
-  if (length(dimnames(x)) == 0) {
-    dimnames(x) <- list(NULL)
-  }
+  x <- cleanup_draw_dims(as.array(x))
 
   .ndraws <- dim(x)[[1]]
   .nchains <- as_one_integer(.nchains)
   check_nchains_compat_with_ndraws(.nchains, .ndraws)
-
-  # ensure we have an index for draws
-  if (length(rownames(x)) == 0) {
-    rownames(x) <- as.character(seq_rows(x))
-  }
 
   structure(
     list(),
@@ -128,7 +133,11 @@ new_rvar <- function(x = double(), .nchains = 1L) {
 #' Gets/sets the array-representation that backs an [`rvar`]. Should be used rarely.
 #'
 #' @param x (rvar) An [`rvar`] object.
-#' @param value An array.
+#' @param value (array) An array of values to use as the backing array of `x`.
+#' @param with_chains (logical) Should the array of draws include a dimension for chains?
+#' If `FALSE` (the default), chains are not included and the array has dimension
+#' `c(ndraws(x), dim(x))`. If `TRUE`, chains are included and the array has
+#' dimension `c(niterations(x), nchains(x), dim(x))`.
 #'
 #' @details
 #'
@@ -140,17 +149,62 @@ new_rvar <- function(x = double(), .nchains = 1L) {
 #'
 #' [`rvar`]s represent draws internally using arrays of arbitrary dimension, which
 #' is returned by `draws_of(x)` and can be set using `draws_of(x) <- value`.
-#' The **first** dimension of these arrays is the index of the draws.
+#' The **first** dimension of these arrays is the index of the draws. If
+#' `with_chains = TRUE`, then the dimensions of the returned array are modified
+#' so that the first dimension is the index of the iterations and the second
+#' dimension is the index of the chains.
+#'
+#' @examples
+#'
+#' x <- rvar(1:10, nchains = 2)
+#' x
+#'
+#' # draws_of() without arguments will return the array of draws without
+#' # chain information (first dimension is draw)
+#' draws_of(x)
+#'
+#' # draws_of() with with_chains = TRUE will reshape the returned array to
+#' # include chain information in the second dimension
+#' draws_of(x, with_chains = TRUE)
+#'
+#' # you can also set draws using draws_of(). When with_chains = FALSE the
+#' # existing chain information will be retained ...
+#' draws_of(x) <- 2:11
+#' x
+#'
+#' # when with_chains = TRUE the chain information will be set by the
+#' # second dimension of the assigned array
+#' draws_of(x, with_chains = TRUE) <- array(2:11, dim = c(2,5))
+#' x
 #'
 #' @export
-draws_of <- function(x) {
-  attr(x, "draws")
+draws_of <- function(x, with_chains = FALSE) {
+  with_chains <- as_one_logical(with_chains)
+  draws <- attr(x, "draws")
+
+  if (with_chains) {
+    x_dim <- dim(x)
+    dim(draws) <- c(niterations(x), nchains(x), x_dim)
+    x_dim_i <- seq_along(x_dim)
+    draws <- copy_dimnames(x, x_dim_i, draws, x_dim_i + 2)
+  }
+
+  draws
 }
 
 #' @rdname draws_of
 #' @export
-`draws_of<-` <- function(x, value) {
-  attr(x, "draws") <- value
+`draws_of<-` <- function(x, with_chains = FALSE, value) {
+  with_chains <- as_one_logical(with_chains)
+
+  if (with_chains) {
+    draws <- drop_chain_dim(value)
+    attr(x, "nchains") <- dim(value)[[2]] %||% 1L
+  } else {
+    draws <- value
+  }
+  attr(x, "draws") <- cleanup_draw_dims(draws)
+
   x
 }
 
@@ -519,11 +573,63 @@ copy_dimnames <- function(src, src_i, dst, dst_i) {
   dimnames(dst)[dst_i] <- dimnames(src)[src_i]
   names(dimnames(dst))[dst_i] <- names(dimnames(src))[src_i]
   names(dimnames(dst))[is.na(names(dimnames(dst)))] <- ""
-  if (all(names(dimnames(dst)) == "")) {
+
+  dst_dimnames <- names(dimnames(dst))
+  empty_names <- is.na(dst_dimnames) | dst_dimnames == ""
+  if (all(empty_names)) {
     names(dimnames(dst)) <- NULL
   }
 
   dst
+}
+
+#' Drop the chain dimension from an array (presumed to be the second dim)
+#' @noRd
+drop_chain_dim <- function(x) {
+  if (length(x) == 0) {
+    # quick exit: NULL input
+    dim(x) <- c(1,0)
+    return(x)
+  }
+
+  x_dim <- dim(x)
+  if (length(x_dim) < 2) {
+    stop_no_call("Cannot use an array of dimension less than 2 when with_chains equals TRUE")
+  }
+
+  out <- x
+  dim(out) <- c(x_dim[[1]] * x_dim[[2]], x_dim[-c(1,2)])
+  x_dim_i <- seq_along(x_dim)[-c(1,2)]
+  out <- copy_dimnames(x, x_dim_i, out, x_dim_i - 1)
+  out
+}
+
+#' Clean up the dimensions of an array of draws. Ensures that dim and dimnames
+#' are set, that the array has at least two dimensions (first one is draws), etc.
+#' @noRd
+cleanup_draw_dims <- function(x) {
+  if (length(x) == 0) {
+    # canonical NULL rvar is 1 draw of nothing
+    # this ensures that (e.g.) extending a null rvar
+    # with x[1] = something works.
+    dim(x) <- c(1, 0)
+  }
+  else if (length(dim(x)) <= 1) {
+    # 1d vectors get treated as a single variable
+    dim(x) <- c(length(x), 1)
+  }
+
+  # ensure dimnames is set (makes comparison easier for tests)
+  if (length(dimnames(x)) == 0) {
+    dimnames(x) <- list(NULL)
+  }
+
+  # ensure we have an index for draws
+  if (length(rownames(x)) == 0) {
+    rownames(x) <- as.character(seq_rows(x))
+  }
+
+  x
 }
 
 
@@ -560,4 +666,12 @@ summarise_rvar_by_element <- function(x, .f, ...) {
     dim <- dim(draws)
     apply(draws, seq_along(dim)[-1], .f, ...)
   }
+}
+
+# apply a summary function across draws of the rvar (i.e., by each element)
+# including a chain dimension in the array passed to .f
+summarise_rvar_by_element_with_chains <- function(x, .f, ...) {
+  draws <- draws_of(x, with_chains = TRUE)
+  dim <- dim(draws)
+  apply(draws, seq_along(dim)[-c(1,2)], .f, ...)
 }

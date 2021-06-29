@@ -2,25 +2,38 @@
 % Please edit documentation in R/convergence.R
 \name{mcse_quantile}
 \alias{mcse_quantile}
+\alias{mcse_quantile.default}
+\alias{mcse_quantile.rvar}
 \alias{mcse_median}
 \title{Monte Carlo standard error for quantiles}
 \usage{
-mcse_quantile(x, probs = c(0.05, 0.95), names = TRUE)
+mcse_quantile(x, probs = c(0.05, 0.95), ...)
 
-mcse_median(x)
+\method{mcse_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, ...)
+
+\method{mcse_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, ...)
+
+mcse_median(x, ...)
 }
 \arguments{
-\item{x}{(matrix) Draws for a single variable (iterations x chains). See
-\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.}
+\item{x}{(multiple options) One of:
+\itemize{
+\item A matrix of draws for a single variable (iterations x chains). See
+\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
+\item An \code{\link{rvar}}.
+}}
 
 \item{probs}{(numeric vector) Probabilities in \verb{[0, 1]}.}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 
 \item{names}{(logical) Should the result have a \code{names} attribute? The
 default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many
 values in \code{probs}.}
 }
 \value{
-A numeric vector with one element per quantile. If any of the draws is
+If the input is an array,
+returns a numeric vector with one element per quantile. If any of the draws is
 non-finite, that is, \code{NA}, \code{NaN}, \code{Inf}, or \code{-Inf}, the returned output will
 be a vector of (numeric) \code{NA} values. Also, if all draws of a variable are
 the same (constant), the returned output will be a vector of (numeric) \code{NA}
@@ -29,6 +42,13 @@ cannot distinguish between variables that are supposed to be constant (e.g.,
 a diagonal element of a correlation matrix is always 1) or variables that
 just happened to be constant because of a failure of convergence or other
 problems in the sampling process.
+
+If the input is an \code{\link{rvar}} and \code{length(probs) == 1}, returns an array of the
+same dimensions as the \code{\link{rvar}}, where each element is equal to the value
+that would be returned by passing the draws array for that element of the
+\code{\link{rvar}} to this function. If \code{length(probs) > 1}, the first dimension of the
+result indexes the input probabilities; i.e. the result has dimension
+\code{c(length(probs), dim(x))}.
 }
 \description{
 Compute Monte Carlo standard errors for quantile estimates of a
@@ -37,6 +57,9 @@ single variable.
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 mcse_quantile(mu, probs = c(0.1, 0.9))
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+mcse_quantile(d$mu)
 
 }
 \references{
