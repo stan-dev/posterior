@@ -51,6 +51,7 @@
 #'
 #' format(x)
 #'
+#' @importFrom utils str lsf.str
 #' @export
 print.rvar <- function(x, ..., summary = NULL, digits = 2, color = TRUE) {
   # \u00b1 = plus/minus sign
