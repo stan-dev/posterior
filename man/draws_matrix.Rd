@@ -32,7 +32,7 @@ as_draws_matrix(x, ...)
 
 \method{as_draws_matrix}{mcmc.list}(x, ...)
 
-draws_matrix(...)
+draws_matrix(..., .nchains = 1)
 
 is_draws_matrix(x)
 }
@@ -43,6 +43,8 @@ is_draws_matrix(x)
 Arguments passed to individual methods (if applicable).
 For \code{draws_matrix()}: Named
 arguments containing numeric vectors each defining a separate variable.}
+
+\item{.nchains}{(positive integer) The number of chains. The default is \code{1}.}
 }
 \value{
 A \code{draws_matrix} object, which has classes
@@ -57,10 +59,7 @@ See \strong{Details}.
 }
 \details{
 Objects of class \code{"draws_matrix"} are matrices (2-D arrays) with
-dimensions \code{"draw"} and \code{"variable"}. This format does not store any
-information about which MCMC chain the draws are from and so we simply
-refer to the rows as draws and not iterations (unlike for the
-\code{\link{draws_array}} format). See \strong{Examples}.
+dimensions \code{"draw"} and \code{"variable"}. See \strong{Examples}.
 }
 \examples{
 x1 <- as_draws_matrix(example_draws())

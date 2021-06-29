@@ -34,7 +34,11 @@ is defined.}
 A \code{draws} object of the same class as \code{x}.
 }
 \description{
-Merge chains of \code{\link{draws}} objects into a single chain.
+Merge chains of \code{\link{draws}} objects into a single chain. Some operations will
+trigger an automatic merging of chains, for example, because chains do not
+match between two objects involved in a binary operation. By default, no
+warning will be issued when this happens but you can activate one via
+\code{options(posterior.warn_on_merge_chains = TRUE)}.
 }
 \examples{
 x <- example_draws()

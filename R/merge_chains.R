@@ -1,6 +1,10 @@
 #' Merge chains of `draws` objects
 #'
-#' Merge chains of [`draws`] objects into a single chain.
+#' Merge chains of [`draws`] objects into a single chain. Some operations will
+#' trigger an automatic merging of chains, for example, because chains do not
+#' match between two objects involved in a binary operation. By default, no
+#' warning will be issued when this happens but you can activate one via
+#' `options(posterior.warn_on_merge_chains = TRUE)`.
 #'
 #' @template args-methods-x
 #' @template args-methods-dots
@@ -23,15 +27,14 @@ merge_chains <- function(x, ...) {
 #' @rdname merge_chains
 #' @export
 merge_chains.draws_matrix <- function(x, ...) {
-  # draws_matrix does not store chain information anyway
+  attr(x, "nchains") <- 1L
   x
 }
 
 #' @rdname merge_chains
 #' @export
 merge_chains.draws_array <- function(x, ...) {
-  # converting to draws_matrix will automatically merge chains
-  x <- as_draws_matrix(x)
+  x <- merge_chains(as_draws_matrix(x))
   as_draws_array(x)
 }
 
@@ -70,4 +73,24 @@ merge_chains.draws_rvars <- function(x, ...) {
     x[[i]] <- merge_chains(x[[i]])
   }
   x
+}
+
+# some operations lead to an automatic chain merge
+# that users can choose to be warned about
+warn_merge_chains <- function(type = c("match", "index")) {
+  warn <- as_one_logical(getOption(
+    "posterior.warn_on_merge_chains",
+    default = FALSE
+  ))
+  if (warn) {
+    type <- as_one_character(type)
+    warning_no_call(
+      "Chains were dropped",
+      switch(type, ".",
+        match = " due to chain information not matching.",
+        index = " due to manually indexing draws."
+      )
+    )
+  }
+  invisible(NULL)
 }

@@ -23,11 +23,7 @@ test_that("transformations to and from draws_array objects work", {
 
   draws_matrix <- as_draws_matrix(draws_array)
   draws_array2 <- as_draws_array(draws_matrix)
-  # cannot check equality as draws_matrix objects loose chain information
-  expect_equal(
-    summarise_draws(draws_array, default_summary_measures()),
-    summarise_draws(draws_array2, default_summary_measures())
-  )
+  expect_equal(draws_array, draws_array2)
 
   draws_df <- as_draws_df(draws_array)
   draws_array2 <- as_draws_array(draws_df)
@@ -47,11 +43,7 @@ test_that("transformations to and from draws_df objects work", {
 
   draws_matrix <- as_draws_matrix(draws_df)
   draws_df2 <- as_draws_df(draws_matrix)
-  # cannot check equality as draws_matrix objects loose chain information
-  expect_equal(
-    summarise_draws(draws_df, default_summary_measures()),
-    summarise_draws(draws_df2, default_summary_measures())
-  )
+  expect_equal(draws_df, draws_df2)
 
   draws_array <- as_draws_array(draws_df)
   draws_df2 <- as_draws_df(draws_array)
@@ -71,11 +63,7 @@ test_that("transformations to and from draws_list objects work", {
 
   draws_matrix <- as_draws_matrix(draws_list)
   draws_list2 <- as_draws_list(draws_matrix)
-  # cannot check equality as draws_matrix objects loose chain information
-  expect_equal(
-    summarise_draws(draws_list, default_summary_measures()),
-    summarise_draws(draws_list2, default_summary_measures())
-  )
+  expect_equal(draws_list, draws_list2)
 
   draws_array <- as_draws_array(draws_list)
   draws_list2 <- as_draws_list(draws_array)
@@ -95,11 +83,7 @@ test_that("transformations to and from draws_rvars objects work", {
 
   draws_matrix <- as_draws_matrix(draws_rvars)
   draws_rvars2 <- as_draws_rvars(draws_matrix)
-  # cannot check equality as draws_matrix objects lose chain information
-  expect_equal(
-    summarise_draws(draws_rvars, default_summary_measures()),
-    summarise_draws(draws_rvars2, default_summary_measures())
-  )
+  expect_equal(draws_rvars, draws_rvars2)
 
   draws_array <- as_draws_array(draws_rvars)
   draws_rvars2 <- as_draws_rvars(draws_array)
@@ -249,7 +233,7 @@ test_that("mcmc and mcmc.list objects can be transformed to draws objects", {
 
     xj <- mcmc_list_draws[[j]]
     expect_equal(ndraws(xj), 20)
-    expect_equal(nchains(xj), if (is_draws_matrix(xj)) 1 else 2)
+    expect_equal(nchains(xj), 2)
     expect_equal(nvariables(xj), 2)
     expect_equal(variables(xj), c("A", "B"))
   }

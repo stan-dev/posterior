@@ -38,15 +38,6 @@ split_chains.draws <- function(x, ...) {
   bind_draws(x_first_half, x_second_half, along = "chain")
 }
 
-#' @export
-split_chains.draws_matrix <- function(x, ...) {
-  warning_no_call(
-    "Converted 'draws_matrix' to 'draws_array' object ",
-    "in order to split chains."
-  )
-  split_chains(as_draws_array(x))
-}
-
 
 # internal ----------------------------------------------------------------
 

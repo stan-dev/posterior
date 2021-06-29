@@ -1,8 +1,9 @@
 test_that("subset_draws works correctly for draws_matrix objects", {
   x <- as_draws_matrix(example_draws())
   x_sub <- subset_draws(x, variable = c("mu", "tau"), iteration = 5:10)
-  expect_equal(x[5:10, c("mu", "tau")], x_sub, check.attributes = FALSE)
-  expect_equal(draw_ids(x_sub), 1:6)
+  x_sub2 <- x[c(5:10, 105:110, 205:210, 305:310), c("mu", "tau")]
+  expect_equal(x_sub, x_sub2, check.attributes = FALSE)
+  expect_equal(iteration_ids(x_sub), 1:6)
 
   x_sub <- subset_draws(x, draw = c(2, 2, 4, 4), unique = FALSE)
   expect_equal(niterations(x_sub), 4)
