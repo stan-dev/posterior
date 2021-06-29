@@ -551,7 +551,13 @@ rvar_apply_vec_fun <- function(.f, x, ...) {
 
 # apply a summary function across draws of the rvar (i.e., by each element)
 summarise_rvar_by_element <- function(x, .f, ...) {
-  draws <- draws_of(x)
-  dim <- dim(draws)
-  apply(draws, seq_along(dim)[-1], .f, ...)
+  if (length(x) == 1) {
+    # this ensures that scalar rvars are summarized to vectors rather than
+    # to matrices with one column
+    .f(draws_of(x), ...)
+  } else {
+    draws <- draws_of(x)
+    dim <- dim(draws)
+    apply(draws, seq_along(dim)[-1], .f, ...)
+  }
 }

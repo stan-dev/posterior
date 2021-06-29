@@ -14,6 +14,11 @@
 #' @param vec.len (nonnegative integer) How many 'first few' elements are
 #'   displayed of each vector. If `NULL`, defaults to
 #'   `getOption("str")$vec.len`, which defaults to 4.
+#' @param indent.str (string) The indentation string to use.
+#' @param nest.lev (nonnegative integer) Current nesting level in the recursive
+#'   calls to `str()`.
+#' @param give.attr (logical) If `TRUE` (default), show attributes as sub
+#'   structures.
 #'
 #' @details
 #' `print()` and `str()` print out [`rvar`] objects by summarizing each element
@@ -23,7 +28,9 @@
 #' mean±sd or median±mad form.
 #'
 #' @return
-#' For `print()` and `str()`, an invisible version of the input object.
+#' For `print()`, an invisible version of the input object.
+#'
+#' For `str()`, nothing; i.e. `invisible(NULL)`.
 #'
 #' For `format()`, a character vector of the same dimensions as `x` where each
 #' entry is of the form `"mean±sd"` or `"median±mad"`, depending on the value
@@ -65,11 +72,27 @@ format.rvar <- function(x, ..., summary = NULL, digits = 2, color = FALSE) {
 
 #' @rdname print.rvar
 #' @export
-str.rvar <- function(object, ..., summary = NULL, vec.len = NULL) {
+str.rvar <- function(
+  object, ..., summary = NULL, vec.len = NULL,
+  indent.str = paste(rep.int(" ", max(0, nest.lev + 1)), collapse = ".."),
+  nest.lev = 0, give.attr = TRUE
+) {
+
+  str_next <- function(x, ...) {
+    str(x, ...,
+      summary = summary,
+      vec.len = vec.len,
+      indent.str = paste(indent.str, ".."),
+      nest.lev = nest.lev + 1,
+      give.attr = give.attr
+    )
+  }
+
+  # HEADER
   .draws <- draws_of(object)
   vec.len <- vec.len %||% getOption("str")$vec.len %||% 4
 
-  # flatten all the non-draws dimensions
+  # flatten all the non-draws dimensions for display
   .dim <- dim(.draws)
   dim(.draws) <- c(.dim[1], prod(.dim[-1]))
 
@@ -84,7 +107,33 @@ str.rvar <- function(object, ..., summary = NULL, vec.len = NULL) {
     paste(format_rvar_draws(.draws, summary = summary), collapse = "  "),
     ellipsis, "\n"
   )
-  invisible(object)
+
+  # ATTRIBUTES
+  # we have to be a bit clever about this to hide internal structure we don't
+  # want people messing with + the fact that some attributes (like dimnames)
+  # are actually attributes of the draws and not the base object.
+  if (give.attr) {
+    .dimnames <- dimnames(object)
+    if (!all(sapply(.dimnames, is.null))) {
+      # only show dimnames if they aren't all NULL
+      cat0(indent.str, paste0('- dimnames(*)='))
+      str_next(.dimnames, ...)
+    }
+
+    str_attr <- function(a, base, exclude) {
+      a_names <- names(a)
+      for (i in seq_along(a)) {
+        if (!a_names[[i]] %in% exclude) {
+          cat0(indent.str, paste0('- attr(', base, ', "', a_names[[i]], '")='))
+          str_next(a[[i]], ...)
+        }
+      }
+    }
+    str_attr(attributes(draws_of(object)), "draws_of(*)", c("names", "dim", "dimnames", "class"))
+    str_attr(attributes(object), "*", c("draws", "names", "dim", "dimnames", "class", "nchains"))
+  }
+
+  invisible(NULL)
 }
 
 #' @importFrom pillar pillar_shaft new_pillar_shaft_simple

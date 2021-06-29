@@ -68,6 +68,25 @@ test_that("rvar_range works", {
 })
 
 
+# quantiles ---------------------------------------------------------------
+
+test_that("rvar_quantile works", {
+  x_array <- array(1:24, dim = c(4,2,3))
+  x <- new_rvar(x_array)
+
+  p <- c(0.25, 0.5, 0.75)
+  quantiles <- t(apply(x_array, 1, quantile, probs = p, names = TRUE))
+  dimnames(quantiles)[1] <- list(1:4)
+  expect_equal(draws_of(rvar_quantile(x, probs = p, names = TRUE)), quantiles)
+
+  dimnames(quantiles)[2] <- NULL
+  expect_equal(draws_of(rvar_quantile(x, probs = p, names = FALSE)), quantiles)
+
+  q50 <- array(apply(x_array, 1, quantile, probs = 0.5), dim = c(4, 1), dimnames = list(1:4, "50%"))
+  expect_equal(draws_of(rvar_quantile(x, probs = 0.5, names = TRUE)), q50)
+})
+
+
 # logical summaries -------------------------------------------------------
 
 test_that("logical summaries work", {
