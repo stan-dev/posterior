@@ -163,8 +163,11 @@ is_draws_matrix_like <- function(x) {
   out <- NextMethod("[", drop = drop)
   if (length(dim(out)) == length(dim(x))) {
     class(out) <- class(x)
+    .nchains <- nchains(x)
     if (missing(i)) {
-      attr(out, "nchains") <- nchains(x)
+      attr(out, "nchains") <- .nchains
+    } else if (.nchains > 1L) {
+      warn_merge_chains("index")
     }
   }
   out

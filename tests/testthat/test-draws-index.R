@@ -113,3 +113,16 @@ test_that("indexing draws_matrix with [ and drop works correctly", {
   x3 <- x[,1:2, drop=TRUE]
   expect_s3_class(x3, "draws_matrix")
 })
+
+test_that("indexing draws dimension draws_matrix triggers a warning", {
+  options(posterior.warn_on_merge_chains = TRUE)
+  x <- as_draws_matrix(example_draws())
+  expect_warning(
+    x1 <- x[1:3, ],
+    "Chains were dropped due to manually indexing draws"
+  )
+  x <- merge_chains(x)
+  x2 <- x[1:3, ]
+  expect_equal(x1, x2)
+  options(posterior.warn_on_merge_chains = FALSE)
+})
