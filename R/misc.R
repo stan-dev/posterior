@@ -226,3 +226,14 @@ log_sum_exp <- function(x) {
 package_function_names <- function(package) {
   unclass(utils::lsf.str(envir = asNamespace(package), all = TRUE))
 }
+
+# return true if there is an S3 method for the
+# given function and class signature
+has_s3_method <- function(f, signature) {
+  for (class in signature) {
+    if (!is.null(utils::getS3method(f, class, optional = TRUE))) {
+      return(TRUE)
+    }
+  }
+  FALSE
+}

@@ -38,6 +38,11 @@ as_draws_rvars.list <- function(x, ...) {
   .as_draws_rvars(x, ...)
 }
 
+#' @export
+as_draws_rvars.rvar <- function(x, ...) {
+  .as_draws_rvars(list(x = x), ...)
+}
+
 #' @rdname draws_rvars
 #' @export
 as_draws_rvars.draws_matrix <- function(x, ...) {
