@@ -84,6 +84,10 @@ The default summary functions used are the ones specified by
 \item \code{\link[=ess_bulk]{ess_bulk()}}
 \item \code{\link[=ess_tail]{ess_tail()}}
 }
+
+The \code{var()} function should not be used to compute variances due
+to its inconsistent behavior with matrices. Instead, please use
+\code{distributional::variance()}.
 }
 \examples{
 x <- example_draws("eight_schools")
@@ -99,6 +103,9 @@ summarise_draws(x, ~quantile(.x, probs = c(0.4, 0.6)))
 summarise_draws(x, default_summary_measures())
 summarise_draws(x, default_convergence_measures())
 summarise_draws(x, default_mcse_measures())
+
+# compute variance of variables
+summarise_draws(x, var = distributional::variance)
 
 # illustrate use of '.args'
 ws <- rexp(ndraws(x))

@@ -47,6 +47,10 @@
 #' * [ess_bulk()]
 #' * [ess_tail()]
 #'
+#' The `var()` function should not be used to compute variances due
+#' to its inconsistent behavior with matrices. Instead, please use
+#' `distributional::variance()`.
+#'
 #' @seealso [`diagnostics`] for a list of available diagnostics and links to
 #'   their individual help pages.
 #'
@@ -64,6 +68,9 @@
 #' summarise_draws(x, default_summary_measures())
 #' summarise_draws(x, default_convergence_measures())
 #' summarise_draws(x, default_mcse_measures())
+#'
+#' # compute variance of variables
+#' summarise_draws(x, var = distributional::variance)
 #'
 #' # illustrate use of '.args'
 #' ws <- rexp(ndraws(x))
