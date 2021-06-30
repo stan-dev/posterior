@@ -49,6 +49,7 @@ NULL
 #'
 #' @export
 rhat_basic <- function(x, ...) UseMethod("rhat_basic")
+
 #' @rdname rhat_basic
 #' @export
 rhat_basic.default <- function(x, split = TRUE, ...) {
@@ -58,6 +59,7 @@ rhat_basic.default <- function(x, split = TRUE, ...) {
   }
   .rhat(x)
 }
+
 #' @rdname rhat_basic
 #' @export
 rhat_basic.rvar <- function(x, split = TRUE, ...) {
@@ -87,6 +89,7 @@ rhat_basic.rvar <- function(x, split = TRUE, ...) {
 #'
 #' @export
 ess_basic <- function(x, ...) UseMethod("ess_basic")
+
 #' @rdname ess_basic
 #' @export
 ess_basic.default <- function(x, split = TRUE, ...) {
@@ -96,6 +99,7 @@ ess_basic.default <- function(x, split = TRUE, ...) {
   }
   .ess(x)
 }
+
 #' @rdname ess_basic
 #' @export
 ess_basic.rvar <- function(x, split = TRUE, ...) {
@@ -123,6 +127,7 @@ ess_basic.rvar <- function(x, split = TRUE, ...) {
 #'
 #' @export
 rhat <- function(x, ...) UseMethod("rhat")
+
 #' @rdname rhat
 #' @export
 rhat.default <- function(x, ...) {
@@ -130,6 +135,7 @@ rhat.default <- function(x, ...) {
   rhat_tail <- .rhat(z_scale(.split_chains(fold_draws(x))))
   max(rhat_bulk, rhat_tail)
 }
+
 #' @rdname rhat
 #' @export
 rhat.rvar <- function(x, ...) {
@@ -159,11 +165,13 @@ rhat.rvar <- function(x, ...) {
 #'
 #' @export
 ess_bulk <- function(x, ...) UseMethod("ess_bulk")
+
 #' @rdname ess_bulk
 #' @export
 ess_bulk.default <- function(x, ...) {
   .ess(z_scale(.split_chains(x)))
 }
+
 #' @rdname ess_bulk
 #' @export
 ess_bulk.rvar <- function(x, ...) {
@@ -193,6 +201,7 @@ ess_bulk.rvar <- function(x, ...) {
 #'
 #' @export
 ess_tail <- function(x, ...) UseMethod("ess_tail")
+
 #' @rdname ess_tail
 #' @export
 ess_tail.default <- function(x, ...) {
@@ -200,12 +209,12 @@ ess_tail.default <- function(x, ...) {
   q95_ess <- ess_quantile(x, 0.95)
   min(q05_ess, q95_ess)
 }
+
 #' @rdname ess_tail
 #' @export
 ess_tail.rvar <- function(x, ...) {
   summarise_rvar_by_element_with_chains(x, ess_tail, ...)
 }
-
 
 #' Effective sample sizes for quantiles
 #'
@@ -227,7 +236,10 @@ ess_tail.rvar <- function(x, ...) {
 #' ess_quantile(d$mu, probs = c(0.1, 0.9))
 #'
 #' @export
-ess_quantile <- function(x, probs = c(0.05, 0.95), ...) UseMethod("ess_quantile")
+ess_quantile <- function(x, probs = c(0.05, 0.95), ...) {
+  UseMethod("ess_quantile")
+}
+
 #' @rdname ess_quantile
 #' @export
 ess_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
@@ -242,6 +254,7 @@ ess_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
   }
   out
 }
+
 #' @rdname ess_quantile
 #' @export
 ess_quantile.rvar <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
@@ -283,11 +296,13 @@ ess_median <- function(x, ...) {
 #'
 #' @export
 ess_mean <- function(x, ...) UseMethod("ess_mean")
+
 #' @rdname ess_quantile
 #' @export
 ess_mean.default <- function(x, ...) {
   .ess(.split_chains(x))
 }
+
 #' @rdname ess_mean
 #' @export
 ess_mean.rvar <- function(x, ...) {
@@ -316,11 +331,13 @@ ess_mean.rvar <- function(x, ...) {
 #'
 #' @export
 ess_sd <- function(x, ...) UseMethod("ess_sd")
+
 #' @rdname ess_sd
 #' @export
 ess_sd.default <- function(x, ...) {
   min(.ess(.split_chains(x)), .ess(.split_chains(x^2)))
 }
+
 #' @rdname ess_sd
 #' @export
 ess_sd.rvar <- function(x, ...) {
@@ -347,7 +364,10 @@ ess_sd.rvar <- function(x, ...) {
 #' mcse_quantile(d$mu)
 #'
 #' @export
-mcse_quantile <- function(x, probs = c(0.05, 0.95), ...) UseMethod("mcse_quantile")
+mcse_quantile <- function(x, probs = c(0.05, 0.95), ...) {
+  UseMethod("mcse_quantile")
+}
+
 #' @rdname mcse_quantile
 #' @export
 mcse_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
@@ -362,6 +382,7 @@ mcse_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
   }
   out
 }
+
 #' @rdname mcse_quantile
 #' @export
 mcse_quantile.rvar <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
@@ -406,11 +427,13 @@ mcse_median <- function(x, ...) {
 #'
 #' @export
 mcse_mean <- function(x, ...) UseMethod("mcse_mean")
+
 #' @rdname mcse_mean
 #' @export
 mcse_mean.default <- function(x, ...) {
   sd(x) / sqrt(ess_mean(x))
 }
+
 #' @rdname mcse_mean
 #' @export
 mcse_mean.rvar <- function(x, ...) {
@@ -438,6 +461,7 @@ mcse_mean.rvar <- function(x, ...) {
 #'
 #' @export
 mcse_sd <- function(x, ...) UseMethod("mcse_sd")
+
 #' @rdname mcse_sd
 #' @export
 mcse_sd.default <- function(x, ...) {
@@ -445,6 +469,7 @@ mcse_sd.default <- function(x, ...) {
   ess_sd <- ess_sd(x)
   sd(x) * sqrt(exp(1) * (1 - 1 / ess_sd)^(ess_sd - 1) - 1)
 }
+
 #' @rdname mcse_sd
 #' @export
 mcse_sd.rvar <- function(x, ...) {
@@ -471,6 +496,7 @@ mcse_sd.rvar <- function(x, ...) {
 quantile2 <- function(x, probs = c(0.05, 0.95), na.rm = FALSE, ...) {
   UseMethod("quantile2")
 }
+
 #' @rdname quantile2
 #' @export
 quantile2.default <- function(
@@ -491,6 +517,7 @@ quantile2.default <- function(
   }
   out
 }
+
 #' @rdname quantile2
 #' @export
 quantile2.rvar <- function(
@@ -532,14 +559,16 @@ fft_next_good_size <- function(N) {
 #' @export
 autocovariance <- function(x) {
   N <- length(x)
+  # zero padding makes fft() much faster when N > 1000
   M <- fft_next_good_size(N)
   Mt2 <- 2 * M
   yc <- x - mean(x)
   yc <- c(yc, rep.int(0, Mt2 - N))
-  transform <- fft(yc)
-  ac <- fft(Conj(transform) * transform, inverse = TRUE)
+  # FFT based unnormalized autocovariances
+  ac <- Re(fft(abs(fft(yc))^2, inverse = TRUE)[1:N])
   # use "biased" estimate as recommended by Geyer (1992)
-  ac <- Re(ac)[1:N] / (N^2 * 2)
+  # direct scaling with var(x) avoids need to compute "mask effect"
+  ac <- ac / ac[1] * var(x) * (N - 1) / N
   ac
 }
 

@@ -28,7 +28,7 @@ test_that("ess diagnostics return reasonable values", {
 
   ess <- ess_quantile(tau, probs = c(0.1, 0.9))
   expect_equal(names(ess), c("ess_q10", "ess_q90"))
-  expect_true(ess[1] > 150 & ess[1] < 200)
+  expect_true(ess[1] > 150 & ess[1] < 210)
   expect_true(ess[2] > 280 & ess[2] < 330)
 
   ess <- ess_median(tau)
@@ -109,4 +109,16 @@ test_that("convergence functions work with rvars", {
   expect_equal(mcse_sd(tau_rvar), mcse_sd(tau))
   expect_equal(rhat_basic(tau_rvar), rhat_basic(tau))
   expect_equal(rhat(tau_rvar), rhat(tau))
+})
+
+test_that("autocovariance returns correct results", {
+  x <- rnorm(100)
+  ac1 <- autocovariance(x)
+  ac2 <- acf(x, type = "covariance", lag.max = length(x), plot = FALSE)$acf[, 1, 1]
+  expect_equal(ac1, ac2)
+
+  x <- arima.sim(list(ar = c(0.5, -0.3)), 100)
+  ac1 <- autocovariance(x)
+  ac2 <- acf(x, type = "covariance", lag.max = length(x), plot = FALSE)$acf[, 1, 1]
+  expect_equal(ac1, ac2)
 })
