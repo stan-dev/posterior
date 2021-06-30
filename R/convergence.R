@@ -595,13 +595,14 @@ autocorrelation <- function(x) {
 #' ranks via the inverse normal transformation.
 #'
 #' @template args-scale
+#' @template args-frac-offset
 #' @return A numeric array of rank normalized values with the same size
 #'   and dimension as the input.
 #' @keywords internal
 #' @export
-z_scale <- function(x) {
+z_scale <- function(x, c = 3/8) {
   r <- rank(as.array(x), ties.method = 'average')
-  z <- qnorm(backtransform_ranks(r))
+  z <- qnorm(backtransform_ranks(r, c = c))
   z[is.na(x)] <- NA
   if (!is.null(dim(x))) {
     # output should have the input dimension
@@ -612,20 +613,20 @@ z_scale <- function(x) {
 
 #' Rank uniformization
 #'
-#' Compute rank uniformization for a numeric array. First replace each
-#' value by its rank. Average rank for ties are used to conserve the
-#' number of unique values of discrete quantities. Second, uniformize
-#' ranks to scale `[1/(2S), 1-1/(2S)]`, where `S` is the the number
-#' of values.
+#' Compute rank uniformization for a numeric array. First replace each value by
+#' its rank. Average rank for ties are used to conserve the number of unique
+#' values of discrete quantities. Second, uniformize ranks to the scale
+#' `[1/(2S), 1-1/(2S)]`, where `S` is the number of values.
 #'
 #' @template args-scale
+#' @template args-frac-offset
 #' @return A numeric array of uniformized values with the same size
 #'   and dimension as the input.
 #' @keywords internal
 #' @export
-u_scale <- function(x) {
+u_scale <- function(x, c = 3/8) {
   r <- rank(as.array(x), ties.method = 'average')
-  u <- backtransform_ranks(r)
+  u <- backtransform_ranks(r, c = c)
   u[is.na(x)] <- NA
   if (!is.null(dim(x))) {
     # output should have the input dimension
@@ -636,10 +637,9 @@ u_scale <- function(x) {
 
 #' Rank values
 #'
-#' Compute ranks for a numeric array. First replace each
+#' Compute ranks for a numeric array, that is, replace each
 #' value by its rank. Average rank for ties are used to conserve the
-#' number of unique values of discrete quantities. Second, normalize
-#' ranks via the inverse normal transformation.
+#' number of unique values of discrete quantities.
 #'
 #' @template args-scale
 #' @return A numeric array of ranked values with the same size
@@ -656,12 +656,13 @@ r_scale <- function(x) {
   r
 }
 
-#' Backtransformation of ranks
+#' Back-transformation of ranks
 #'
 #' @param r array of ranks
 #' @param c fractional offset; defaults to c = 3/8 as recommend by Blom (1958)
 #' @noRd
 backtransform_ranks <- function(r, c = 3/8) {
+  c <- as_one_numeric(c)
   S <- length(r)
   (r - c) / (S - 2 * c + 1)
 }

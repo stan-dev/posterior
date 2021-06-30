@@ -4,20 +4,22 @@
 \alias{u_scale}
 \title{Rank uniformization}
 \usage{
-u_scale(x)
+u_scale(x, c = 3/8)
 }
 \arguments{
 \item{x}{(numeric) A scalar, vector, matrix, or array of values.}
+
+\item{c}{(numeric) Fractional offset used in the back-transformation of ranks.
+Defaults to \code{3/8}.}
 }
 \value{
 A numeric array of uniformized values with the same size
 and dimension as the input.
 }
 \description{
-Compute rank uniformization for a numeric array. First replace each
-value by its rank. Average rank for ties are used to conserve the
-number of unique values of discrete quantities. Second, uniformize
-ranks to scale \verb{[1/(2S), 1-1/(2S)]}, where \code{S} is the the number
-of values.
+Compute rank uniformization for a numeric array. First replace each value by
+its rank. Average rank for ties are used to conserve the number of unique
+values of discrete quantities. Second, uniformize ranks to the scale
+\verb{[1/(2S), 1-1/(2S)]}, where \code{S} is the number of values.
 }
 \keyword{internal}

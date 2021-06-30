@@ -4,10 +4,13 @@
 \alias{z_scale}
 \title{Rank normalization}
 \usage{
-z_scale(x)
+z_scale(x, c = 3/8)
 }
 \arguments{
 \item{x}{(numeric) A scalar, vector, matrix, or array of values.}
+
+\item{c}{(numeric) Fractional offset used in the back-transformation of ranks.
+Defaults to \code{3/8}.}
 }
 \value{
 A numeric array of rank normalized values with the same size
