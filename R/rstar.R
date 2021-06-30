@@ -69,6 +69,7 @@
 #'   *arXiv preprint* `arXiv:2003.07900`.
 #'
 #' @examples
+#' \dontrun{
 #' library(caret)
 #' x <- example_draws("eight_schools")
 #' rstar(x)
@@ -83,6 +84,7 @@
 #'
 #' # can use other classification methods in caret library
 #' rstar(x, method = "knn")
+#' }
 #'
 #' @export
 rstar <- function(x, split = TRUE,

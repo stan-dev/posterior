@@ -224,7 +224,7 @@ log_sum_exp <- function(x) {
 
 # get names of all the functions of a package
 package_function_names <- function(package) {
-  unclass(lsf.str(envir = asNamespace(package), all = TRUE))
+  unclass(utils::lsf.str(envir = asNamespace(package), all = TRUE))
 }
 
 # return true if there is an S3 method for the

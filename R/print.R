@@ -22,11 +22,13 @@ print.draws_matrix <- function(x, digits = 2,
   max_draws <- as_one_integer(max_draws)
   max_variables <- as_one_integer(max_variables)
   reserved <- as_one_logical(reserved)
-  nvariables <- nvariables(x)
+  niterations <- niterations(x)
+  nchains <- nchains(x)
   ndraws <- ndraws(x)
+  nvariables <- nvariables(x)
   header <- paste0(
-    "# A draws_matrix: ", ndraws,
-    " draws, and ", nvariables, " variables\n"
+    "# A draws_matrix: ", niterations, " iterations, ",
+    nchains, " chains, and ", nvariables, " variables\n"
   )
   cat(header)
   sel_draws <- seq_len(min(max_draws, ndraws))
@@ -35,7 +37,10 @@ print.draws_matrix <- function(x, digits = 2,
   if (!reserved) {
     y <- remove_reserved_variables(y)
   }
-  y <- .subset_draws(y, sel_draws, sel_variables, reserved = reserved)
+  y <- .subset_draws(
+    y, draw = sel_draws, variable = sel_variables,
+    reserved = reserved
+  )
   class(y) <- "matrix"
   print(y, digits = digits, ...)
   more_iterations <- ndraws -  max_draws

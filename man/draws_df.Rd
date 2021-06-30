@@ -19,7 +19,7 @@ as_draws_df(x, ...)
 
 \method{as_draws_df}{default}(x, ...)
 
-\method{as_draws_df}{data.frame}(x, .iteration = NULL, .chain = NULL, ...)
+\method{as_draws_df}{data.frame}(x, ...)
 
 \method{as_draws_df}{draws_df}(x, ...)
 
@@ -47,16 +47,6 @@ Arguments passed to individual methods (if applicable).
 For \code{draws_df()}: Named
 arguments containing numeric vectors each defining a separate variable.}
 
-\item{.iteration}{(string) The name of a column in the supplied
-\code{data.frame} that contain iteration indices. If \code{NULL} (the default), the
-\code{".iteration"} column is used if it exists. Otherwise, the input is treated
-as being indexed continuously from the first to the last row.}
-
-\item{.chain}{(string) The name of a column in the supplied \code{data.frame} that
-contains chain indices. If \code{NULL} (the default), the \code{".chain"} column is
-used if it exists. Otherwise, the input is treated as belonging to a single
-chain.}
-
 \item{.nchains}{(positive integer) The number of chains. The default is \code{1}.}
 }
 \value{
@@ -77,6 +67,10 @@ columns \code{".iteration"}, \code{".chain"}, and \code{".draw"}. The difference
 the \code{".iteration"} and \code{".draw"} columns is that the former is relative to
 the MCMC chain while the latter ignores the chain information and has all
 unique values. See \strong{Examples}.
+
+If a \code{data.frame}-like object is supplied to \code{as_draws_df} that contains
+columns named \code{".iteration"} or \code{".chain"}, they will be treated as
+iteration and chain indices, respectively. See \strong{Examples}.
 }
 \examples{
 x1 <- as_draws_df(example_draws())
@@ -93,6 +87,11 @@ str(x2)
 # the head and tail of the data frame
 print(head(x1), reserved = TRUE, max_variables = 2)
 print(tail(x1), reserved = TRUE, max_variables = 2)
+
+# manually supply chain information
+xnew <- data.frame(mu = rnorm(10), .chain = rep(1:2, each = 5))
+xnew <- as_draws_df(xnew)
+print(xnew)
 
 }
 \seealso{

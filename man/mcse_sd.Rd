@@ -2,16 +2,29 @@
 % Please edit documentation in R/convergence.R
 \name{mcse_sd}
 \alias{mcse_sd}
+\alias{mcse_sd.default}
+\alias{mcse_sd.rvar}
 \title{Monte Carlo standard error for the standard deviation}
 \usage{
-mcse_sd(x)
+mcse_sd(x, ...)
+
+\method{mcse_sd}{default}(x, ...)
+
+\method{mcse_sd}{rvar}(x, ...)
 }
 \arguments{
-\item{x}{(matrix) Draws for a single variable (iterations x chains). See
-\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.}
+\item{x}{(multiple options) One of:
+\itemize{
+\item A matrix of draws for a single variable (iterations x chains). See
+\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}.
+\item An \code{\link{rvar}}.
+}}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-A single numeric value. If any of the draws is non-finite, that is, \code{NA},
+If the input is an array,
+returns a single numeric value. If any of the draws is non-finite, that is, \code{NA},
 \code{NaN}, \code{Inf}, or \code{-Inf}, the returned output will be (numeric) \code{NA}. Also, if
 all draws of a variable are the same (constant), the returned output will be
 (numeric) \code{NA} as well. The reason for the latter is that, for constant
@@ -19,6 +32,10 @@ draws, we cannot distinguish between variables that are supposed to be
 constant (e.g.,  a diagonal element of a correlation matrix is always 1) or
 variables that just happened to be constant because of a failure of
 convergence or other problems in the sampling process.
+
+If the input is an \code{\link{rvar}}, returns an array of the same dimensions as the
+\code{\link{rvar}}, where each element is equal to the value that would be returned by
+passing the draws array for that element of the \code{\link{rvar}} to this function.
 }
 \description{
 Compute the Monte Carlo standard error for the standard deviation (SD) of a
@@ -28,6 +45,9 @@ normality.
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
 mcse_sd(mu)
+
+d <- as_draws_rvars(example_draws("multi_normal"))
+mcse_sd(d$Sigma)
 
 }
 \references{

@@ -28,7 +28,7 @@ test_that("ess diagnostics return reasonable values", {
 
   ess <- ess_quantile(tau, probs = c(0.1, 0.9))
   expect_equal(names(ess), c("ess_q10", "ess_q90"))
-  expect_true(ess[1] > 150 & ess[1] < 200)
+  expect_true(ess[1] > 150 & ess[1] < 210)
   expect_true(ess[2] > 280 & ess[2] < 330)
 
   ess <- ess_median(tau)
@@ -91,4 +91,34 @@ test_that("convergence diagnostics throw correct errors", {
   mu <- extract_variable_matrix(example_draws(), "mu")
   expect_error(ess_quantile(mu, probs = 1.2), "'probs' must contain values between 0 and 1")
   expect_error(mcse_quantile(mu, probs = 1.2), "'probs' must contain values between 0 and 1")
+})
+
+test_that("convergence functions work with rvars", {
+  tau <- extract_variable_matrix(example_draws(), "tau")
+  tau_rvar <- rvar(tau, with_chains = TRUE)
+
+  expect_equal(ess_basic(tau_rvar), ess_basic(tau))
+  expect_equal(ess_bulk(tau_rvar), ess_bulk(tau))
+  expect_equal(ess_tail(tau_rvar), ess_tail(tau))
+  # convergence functions with multiple return values on rvars returns a column
+  # vector; should be equal to the NULL-dimension vector format when transposed
+  expect_equal(t(ess_quantile(tau_rvar, probs = c(.1, .9))), t(ess_quantile(tau, probs = c(.1, .9))))
+  expect_equal(ess_sd(tau_rvar), ess_sd(tau))
+  expect_equal(mcse_mean(tau_rvar), mcse_mean(tau))
+  expect_equal(t(mcse_quantile(tau_rvar, probs = c(.1, .9))), t(mcse_quantile(tau, probs = c(.1, .9))))
+  expect_equal(mcse_sd(tau_rvar), mcse_sd(tau))
+  expect_equal(rhat_basic(tau_rvar), rhat_basic(tau))
+  expect_equal(rhat(tau_rvar), rhat(tau))
+})
+
+test_that("autocovariance returns correct results", {
+  x <- rnorm(100)
+  ac1 <- autocovariance(x)
+  ac2 <- acf(x, type = "covariance", lag.max = length(x), plot = FALSE)$acf[, 1, 1]
+  expect_equal(ac1, ac2)
+
+  x <- arima.sim(list(ar = c(0.5, -0.3)), 100)
+  ac1 <- autocovariance(x)
+  ac2 <- acf(x, type = "covariance", lag.max = length(x), plot = FALSE)$acf[, 1, 1]
+  expect_equal(ac1, ac2)
 })

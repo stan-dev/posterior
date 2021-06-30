@@ -11,7 +11,15 @@
 
 \method{format}{rvar}(x, ..., summary = NULL, digits = 2, color = FALSE)
 
-\method{str}{rvar}(object, ..., summary = NULL, vec.len = NULL)
+\method{str}{rvar}(
+  object,
+  ...,
+  summary = NULL,
+  vec.len = NULL,
+  indent.str = paste(rep.int(" ", max(0, nest.lev + 1)), collapse = ".."),
+  nest.lev = 0,
+  give.attr = TRUE
+)
 }
 \arguments{
 \item{x, object}{(rvar) The \code{\link{rvar}} to print.}
@@ -33,9 +41,19 @@ the terminal.}
 \item{vec.len}{(nonnegative integer) How many 'first few' elements are
 displayed of each vector. If \code{NULL}, defaults to
 \code{getOption("str")$vec.len}, which defaults to 4.}
+
+\item{indent.str}{(string) The indentation string to use.}
+
+\item{nest.lev}{(nonnegative integer) Current nesting level in the recursive
+calls to \code{str()}.}
+
+\item{give.attr}{(logical) If \code{TRUE} (default), show attributes as sub
+structures.}
 }
 \value{
-For \code{print()} and \code{str()}, an invisible version of the input object.
+For \code{print()}, an invisible version of the input object.
+
+For \code{str()}, nothing; i.e. \code{invisible(NULL)}.
 
 For \code{format()}, a character vector of the same dimensions as \code{x} where each
 entry is of the form \code{"mean±sd"} or \code{"median±mad"}, depending on the value

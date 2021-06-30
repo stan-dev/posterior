@@ -110,21 +110,22 @@ as.list.rvar <- function(x, ...) {
   apply(draws_of(x), 2, new_rvar, .nchains = nchains(x))
 }
 
-#' @export
 #' @importFrom rlang as_label
+#' @export
 as.data.frame.rvar <- function(x, ..., optional = FALSE) {
-  if (length(dim(x)) == 2) {
-    # x is matrix-like, convert it into a data frame of the same shape
-    out <- as.data.frame.matrix(x, ..., optional = optional)
-  } else if (length(dim(x)) <= 1) {
-    out <- NextMethod()
-    if (!optional) {
-      names(out) <- as_label(substitute(x))
-    }
-  } else {
-    out <- NextMethod()
+  out <- as.data.frame.array(x, ..., optional = optional)
+  if (length(dim(x)) <= 1 && !optional) {
+    names(out) <- as_label(substitute(x))
   }
   out
+}
+
+#' @importFrom tibble as_tibble
+#' @export
+as_tibble.rvar <- function(x, ...) {
+  #default name for vectors is `value` with as_tibble
+  value <- x
+  as_tibble(as.data.frame(value, optional = FALSE), ...)
 }
 
 

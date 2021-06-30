@@ -74,7 +74,26 @@ can be accessed (and modified, with caution) via `draws_of()`:
 str(draws_of(x))
 ```
 
-Manual construction and modification of `rvar`s in this way is not recommended
+While the above examples assume all draws come from a single chain, `rvar`s
+can also contain samples from multiple chains. For example, if your array of
+draws has iterations as the first dimension and chains as the second dimension,
+you can use `with_chains = TRUE` to create an `rvar` that includes chain
+information:
+
+```{r x_matrix_with_chains}
+iterations <- 1000
+chains <- 4
+rows <- 4
+cols <- 3
+x_array <- array(
+  rnorm(iterations * chains * rows * cols, mean = 1, sd = 1),
+  dim = c(iterations, chains, rows, cols)
+)
+x <- rvar(x_array, with_chains = TRUE)
+x
+```
+
+Manual construction and modification of `rvar`s in this way is not always recommended
 unless you need it for performance reasons: several other higher-level interfaces
 to constructing and manipulating `rvar`s are described below.
 
@@ -82,9 +101,19 @@ to constructing and manipulating `rvar`s are described below.
 
 The `draws_rvars()` datatype, like all `draws` datatypes in posterior, contains
 multiple variables in a joint sample from some distribution (e.g. a posterior or 
-prior distribution). 
+prior distribution).
 
-Below is the `example_draws("multi_normal")` dataset
+You can construct `draws_rvars()` objects directly using the `draws_rvars()`
+function. The input `rvar`s must have the same number of chains and iterations,
+but can otherwise have different shapes:
+
+```{r draws_rvars}
+d <- draws_rvars(x = x, y = rvar(rnorm(iterations * chains), nchains = 4))
+d
+```
+
+Existing objects can also be converted to the `draws_rvars()` format
+using `as_draws_rvars()`. Below is the `example_draws("multi_normal")` dataset
 converted into the `draws_rvars()` format. This dataset has 100 iterations from 
 4 chains from the posterior of a a 3-dimensional multivariate normal model. The 
 `mu` variable is a mean vector of length 3 and the `Sigma` variable is a $3 \times 3$
@@ -205,6 +234,7 @@ Here is a table of both types of summary functions:
 | Mean                     | `rvar_mean()`<br>*N/A* | `mean()`, `E()`<br>`Pr()`: enforces that input is `logical` |
 | Spread                   | `rvar_sd()` <br>`rvar_var()` <br> `rvar_mad()` | `sd()`<br>`var()`, `variance()`<br> `mad()`|
 | Range                    | `rvar_range()`<br>**Note:** `length(res) == 2` | `range()`<br>**Note:** `dim(res) == c(2, dim(x))` |
+| Quantiles                | `rvar_quantile()`<br>**Note:** `length(res) == length(probs)` | `quantile()`<br>**Note:** `dim(res) == c(length(probs), dim(x))` |
 | Logical summaries        | `rvar_all()`, `rvar_any()` | `all()`, `any()` |
 | Special value predicates | `rvar_is_finite()`<br>`rvar_is_infinite()`<br>`rvar_is_nan()`<br>`rvar_is_na()`<br>**Note:** `dim(res) == dim(x)`. These functions act within draws but do not summarise over elements.        | `is.finite()`<br>`is.infinite()`<br>`is.nan()`<br>`is.na()`<br>**Note:** `res[i] == TRUE` if `x[i]` has any draws matching predicate (except for `is.finite()`, where all draws in `x[i]` must match) |
 | Diagnostics              | *N/A* | `ess_basic()`, `ess_bulk()`, `ess_quantile()`, `ess_sd()`, `ess_tail()`,<br>`mcse_mean()`, `mcse_quantile()`, `mcse_sd()`<br>`rhat()`, `rhat_basic()`|

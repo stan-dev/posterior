@@ -58,7 +58,7 @@ weight_draws.draws_matrix <- function(x, weights, log = FALSE, ...) {
     x[, ".log_weight"] <- log_weights
   } else {
     # add weights as a new variable
-    log_weights <- draws_matrix(.log_weight = log_weights)
+    log_weights <- draws_matrix(.log_weight = log_weights, .nchains = nchains(x))
     x <- bind_draws(x, log_weights)
   }
   x

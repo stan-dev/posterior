@@ -14,9 +14,8 @@ A numeric array of ranked values with the same size
 and dimension as the input.
 }
 \description{
-Compute ranks for a numeric array. First replace each
+Compute ranks for a numeric array, that is, replace each
 value by its rank. Average rank for ties are used to conserve the
-number of unique values of discrete quantities. Second, normalize
-ranks via the inverse normal transformation.
+number of unique values of discrete quantities.
 }
 \keyword{internal}

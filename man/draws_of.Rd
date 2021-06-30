@@ -5,14 +5,19 @@
 \alias{draws_of<-}
 \title{Get/set array of draws underlying a random variable}
 \usage{
-draws_of(x)
+draws_of(x, with_chains = FALSE)
 
-draws_of(x) <- value
+draws_of(x, with_chains = FALSE) <- value
 }
 \arguments{
 \item{x}{(rvar) An \code{\link{rvar}} object.}
 
-\item{value}{An array.}
+\item{with_chains}{(logical) Should the array of draws include a dimension for chains?
+If \code{FALSE} (the default), chains are not included and the array has dimension
+\code{c(ndraws(x), dim(x))}. If \code{TRUE}, chains are included and the array has
+dimension \code{c(niterations(x), nchains(x), dim(x))}.}
+
+\item{value}{(array) An array of values to use as the backing array of \code{x}.}
 }
 \description{
 Gets/sets the array-representation that backs an \code{\link{rvar}}. Should be used rarely.
@@ -26,5 +31,32 @@ order to do that.
 
 \code{\link{rvar}}s represent draws internally using arrays of arbitrary dimension, which
 is returned by \code{draws_of(x)} and can be set using \code{draws_of(x) <- value}.
-The \strong{first} dimension of these arrays is the index of the draws.
+The \strong{first} dimension of these arrays is the index of the draws. If
+\code{with_chains = TRUE}, then the dimensions of the returned array are modified
+so that the first dimension is the index of the iterations and the second
+dimension is the index of the chains.
+}
+\examples{
+
+x <- rvar(1:10, nchains = 2)
+x
+
+# draws_of() without arguments will return the array of draws without
+# chain information (first dimension is draw)
+draws_of(x)
+
+# draws_of() with with_chains = TRUE will reshape the returned array to
+# include chain information in the second dimension
+draws_of(x, with_chains = TRUE)
+
+# you can also set draws using draws_of(). When with_chains = FALSE the
+# existing chain information will be retained ...
+draws_of(x) <- 2:11
+x
+
+# when with_chains = TRUE the chain information will be set by the
+# second dimension of the assigned array
+draws_of(x, with_chains = TRUE) <- array(2:11, dim = c(2,5))
+x
+
 }

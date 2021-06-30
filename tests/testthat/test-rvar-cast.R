@@ -67,15 +67,68 @@ test_that("as.vector works", {
   expect_equal(as.vector(x), rvar(array(1:12, dim = c(2, 6))))
 })
 
-test_that("as.data.frame works on rvar", {
-  x = rvar(array(1:9, dim = c(3,3)))
-  y = rvar(array(2:10, dim = c(3,3)))
+test_that("as.data.frame and as_tibble work on rvars", {
+  x1 = rvar(array(1:9, dim = c(3,3)),
+    dimnames = list(A = paste0("a", 1:3))
+  )
+  x2 = rvar(array(1:12, dim = c(2,2,3)),
+    dimnames = list(A = paste0("a", 1:2), B = paste0("b", 1:3))
+  )
+  x3 = rvar(array(1:24, dim = c(2,2,2,4)),
+    dimnames = list(A = paste0("a", 1:2), B = paste0("b", 1:2), C = paste0("c", 1:4))
+  )
 
-  expect_equal(as.data.frame(y), data.frame(y = y))
-  expect_equal(names(as.data.frame(y)), "y")
-  x_col <- x
-  dim(x_col) <- c(3,1)
-  expect_equal(as.data.frame(x_col), data.frame(V1 = x))
+  # constructing reference data frames with rvars in them without having that
+  # code call as.data.frame() (defeating the purpose of the test) requires
+  # bypassing the data.frame() constructor being called on an rvar, as it would
+  # call as.data.frame.rvar(). Hence the twisty code below.
+
+  # nulls
+  df0 <- data.frame()
+  df0[["rvar()"]] <- rvar()
+  row.names(df0) <- numeric()
+  expect_equal(as.data.frame(rvar()), df0)
+
+  tibble0 <- as_tibble(df0)
+  names(tibble0) <- "value"
+  expect_equal(as_tibble(rvar()), tibble0)
+
+  # 1-dim arrays
+  df1 <- as.data.frame(mean(x1))
+  names(df1) <- "x1"
+  df1$x1 <- x1
+  dimnames(df1$x1)["A"] <- list(NULL)
+  expect_equal(as.data.frame(x1), df1)
+
+  tibble1 <- as_tibble(df1)
+  names(tibble1) <- "value"
+  expect_equal(as_tibble(x1), tibble1)
+
+  # 2-dim arrays
+  df2 <- as.data.frame(mean(x2))
+  for (i in 1:3) {
+    col <- x2[,i,drop = TRUE]
+    dimnames(col) <- list(NULL)
+    df2[[i]] <- col
+  }
+  expect_equal(as.data.frame(x2), df2)
+  expect_equal(dimnames(as.data.frame(unname(x2))), dimnames(as.data.frame(mean(unname(x2)))))
+
+  tibble2 <- as_tibble(df2)
+  expect_equal(as_tibble(x2), tibble2)
+
+  # 3-dim arrays
+  df3 <- as.data.frame(mean(x3))
+  for (c_i in 1:4) for (b_i in 1:2) {
+    col <- x3[,b_i,c_i,drop = TRUE]
+    dimnames(col) <- list(NULL)
+    df3[[b_i + (c_i - 1) * 2]] <- col
+  }
+  expect_equal(as.data.frame(x3), df3)
+  expect_equal(dimnames(as.data.frame(unname(x3))), dimnames(as.data.frame(mean(unname(x3)))))
+
+  tibble3 <- as_tibble(df3)
+  expect_equal(as_tibble(x3), tibble3)
 })
 
 

@@ -4,7 +4,13 @@
 \alias{rvar}
 \title{Random variables of arbitrary dimension}
 \usage{
-rvar(x = double(), dim = NULL, dimnames = NULL, nchains = 1L)
+rvar(
+  x = double(),
+  dim = NULL,
+  dimnames = NULL,
+  nchains = 1L,
+  with_chains = FALSE
+)
 }
 \arguments{
 \item{x}{(multiple options) The object to convert to an \code{rvar}:
@@ -14,7 +20,9 @@ rvar(x = double(), dim = NULL, dimnames = NULL, nchains = 1L)
 The resulting \code{\link{rvar}} will have dimension \code{dim(x)[-1]}; that is,
 everything except the first dimension is used for the shape of the
 variable, and the first dimension is used to index draws from the
-distribution. See \strong{Examples}.
+distribution (see \strong{Examples}). Optionally,
+if \code{with_chains == TRUE}, the first dimension indexes the iteration and the
+second dimension indexes the chain (see \code{with_chains}).
 }}
 
 \item{dim}{(integer vector) One or more integers giving the maximal indices
@@ -31,6 +39,13 @@ to override the names of the dimensions of the \code{\link{rvar}} to be created 
 \code{\link{rvar}}, not the underlying array.}
 
 \item{nchains}{(positive integer) The number of chains. The default is \code{1}.}
+
+\item{with_chains}{(logical) Does \code{x} include a dimension for chains?
+If \code{FALSE} (the default), chains are not included, the first dimension of
+the input array should index draws, and the \code{nchains} argument can be
+used to determine the number of chains. If \code{TRUE}, the \code{nchains} argument
+is ignored and the second dimension of \code{x} is used to index chains.
+Internally, the array will be converted to a format without the chain index.}
 }
 \value{
 An object of class \code{"rvar"} representing a random variable.
@@ -66,6 +81,8 @@ random number generator functions to efficiently create \code{rvar}s, use \code{
 }
 \examples{
 
+set.seed(1234)
+
 # To create a "scalar" `rvar`, pass a one-dimensional array or a vector
 # whose length (here `4000`) is the desired number of draws:
 x <- rvar(rnorm(4000, mean = 1, sd = 1))
@@ -80,6 +97,16 @@ x
 rows <- 4
 cols <- 3
 x <- rvar(array(rnorm(4000 * rows * cols, mean = 1, sd = 1), dim = c(4000, rows, cols)))
+x
+
+# If the input sample comes from multiple chains, we can indicate that using the
+# nchains argument (here, 1000 draws each from 4 chains):
+x <- rvar(rnorm(4000, mean = 1, sd = 1), nchains = 4)
+x
+
+# Or if the input sample has chain information as its second dimension, we can
+# use with_chains to create the rvar
+x <- rvar(array(rnorm(4000, mean = 1, sd = 1), dim = c(1000, 4)), with_chains = TRUE)
 x
 
 }

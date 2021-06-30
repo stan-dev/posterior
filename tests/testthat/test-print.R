@@ -1,6 +1,8 @@
 test_that("print.draws_matrix runs without errors", {
   x <- as_draws_matrix(example_draws())
-  expect_output(print(x), "A draws_matrix: 400 draws, and 10 variables")
+  expect_output(print(x),
+    "A draws_matrix: 100 iterations, 4 chains, and 10 variables"
+  )
 
   x <- weight_draws(x, rep(1, ndraws(x)))
   expect_output(print(x), "hidden reserved variables \\{'\\.log_weight'\\}")

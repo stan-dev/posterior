@@ -13,16 +13,16 @@ test_that("indices work for NULL", {
 test_that("indices of draws_matrix objects are correct", {
    x <- as_draws_matrix(example_draws())
 
-   expect_equal(iteration_ids(x), 1:NROW(x))
-   expect_equal(chain_ids(x), 1)
+   expect_equal(iteration_ids(x), 1:100)
+   expect_equal(chain_ids(x), 1:4)
    expect_equal(draw_ids(x), 1:NROW(x))
 
-   expect_equal(niterations(x), NROW(x))
-   expect_equal(nchains(x), 1)
+   expect_equal(niterations(x), NROW(x) / 4)
+   expect_equal(nchains(x), 4)
    expect_equal(ndraws(x), NROW(x))
 
    rownames(x) <- NULL
-   expect_equal(iteration_ids(x), 1:NROW(x))
+   expect_equal(draw_ids(x), 1:NROW(x))
 })
 
 test_that("indices of draws_array objects are correct", {
@@ -112,4 +112,17 @@ test_that("indexing draws_matrix with [ and drop works correctly", {
   # drop=TRUE shouldn't do anything if multiple parameters selected
   x3 <- x[,1:2, drop=TRUE]
   expect_s3_class(x3, "draws_matrix")
+})
+
+test_that("indexing draws dimension draws_matrix triggers a warning", {
+  options(posterior.warn_on_merge_chains = TRUE)
+  x <- as_draws_matrix(example_draws())
+  expect_warning(
+    x1 <- x[1:3, ],
+    "Chains were dropped due to manually indexing draws"
+  )
+  x <- merge_chains(x)
+  x2 <- x[1:3, ]
+  expect_equal(x1, x2)
+  options(posterior.warn_on_merge_chains = FALSE)
 })

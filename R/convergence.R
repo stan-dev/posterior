@@ -36,6 +36,7 @@ NULL
 #' @family diagnostics
 #' @template args-conv
 #' @template args-conv-split
+#' @template args-methods-dots
 #' @template return-conv
 #' @template ref-gelman-bda-2013
 #'
@@ -43,13 +44,26 @@ NULL
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' rhat_basic(mu)
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' rhat_basic(d$Sigma)
+#'
 #' @export
-rhat_basic <- function(x, split = TRUE) {
+rhat_basic <- function(x, ...) UseMethod("rhat_basic")
+
+#' @rdname rhat_basic
+#' @export
+rhat_basic.default <- function(x, split = TRUE, ...) {
   split <- as_one_logical(split)
   if (split) {
     x <- .split_chains(x)
   }
   .rhat(x)
+}
+
+#' @rdname rhat_basic
+#' @export
+rhat_basic.rvar <- function(x, split = TRUE, ...) {
+  summarise_rvar_by_element_with_chains(x, rhat_basic, split, ...)
 }
 
 #' Basic version of the effective sample size
@@ -62,6 +76,7 @@ rhat_basic <- function(x, split = TRUE) {
 #' @family diagnostics
 #' @template args-conv
 #' @template args-conv-split
+#' @template args-methods-dots
 #' @template return-conv
 #' @template ref-gelman-bda-2013
 #'
@@ -69,13 +84,26 @@ rhat_basic <- function(x, split = TRUE) {
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_basic(mu)
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' ess_basic(d$Sigma)
+#'
 #' @export
-ess_basic <- function(x, split = TRUE) {
+ess_basic <- function(x, ...) UseMethod("ess_basic")
+
+#' @rdname ess_basic
+#' @export
+ess_basic.default <- function(x, split = TRUE, ...) {
   split <- as_one_logical(split)
   if (split) {
     x <- .split_chains(x)
   }
   .ess(x)
+}
+
+#' @rdname ess_basic
+#' @export
+ess_basic.rvar <- function(x, split = TRUE, ...) {
+  summarise_rvar_by_element_with_chains(x, ess_basic, split, ...)
 }
 
 #' Rhat convergence diagnostic
@@ -86,6 +114,7 @@ ess_basic <- function(x, split = TRUE) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-methods-dots
 #' @template return-conv
 #' @template ref-vehtari-rhat-2019
 #'
@@ -93,11 +122,24 @@ ess_basic <- function(x, split = TRUE) {
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' rhat(mu)
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' rhat(d$Sigma)
+#'
 #' @export
-rhat <- function(x) {
+rhat <- function(x, ...) UseMethod("rhat")
+
+#' @rdname rhat
+#' @export
+rhat.default <- function(x, ...) {
   rhat_bulk <- .rhat(z_scale(.split_chains(x)))
   rhat_tail <- .rhat(z_scale(.split_chains(fold_draws(x))))
   max(rhat_bulk, rhat_tail)
+}
+
+#' @rdname rhat
+#' @export
+rhat.rvar <- function(x, ...) {
+  summarise_rvar_by_element_with_chains(x, rhat, ...)
 }
 
 #' Bulk effective sample size (bulk-ESS)
@@ -110,6 +152,7 @@ rhat <- function(x) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-methods-dots
 #' @template return-conv
 #' @template ref-vehtari-rhat-2019
 #'
@@ -117,9 +160,22 @@ rhat <- function(x) {
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_bulk(mu)
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' ess_bulk(d$Sigma)
+#'
 #' @export
-ess_bulk <- function(x) {
+ess_bulk <- function(x, ...) UseMethod("ess_bulk")
+
+#' @rdname ess_bulk
+#' @export
+ess_bulk.default <- function(x, ...) {
   .ess(z_scale(.split_chains(x)))
+}
+
+#' @rdname ess_bulk
+#' @export
+ess_bulk.rvar <- function(x, ...) {
+  summarise_rvar_by_element_with_chains(x, ess_bulk, ...)
 }
 
 #' Tail effective sample size (tail-ESS)
@@ -132,6 +188,7 @@ ess_bulk <- function(x) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-methods-dots
 #' @template return-conv
 #' @template ref-vehtari-rhat-2019
 #'
@@ -139,11 +196,24 @@ ess_bulk <- function(x) {
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_tail(mu)
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' ess_tail(d$Sigma)
+#'
 #' @export
-ess_tail <- function(x) {
+ess_tail <- function(x, ...) UseMethod("ess_tail")
+
+#' @rdname ess_tail
+#' @export
+ess_tail.default <- function(x, ...) {
   q05_ess <- ess_quantile(x, 0.05)
   q95_ess <- ess_quantile(x, 0.95)
   min(q05_ess, q95_ess)
+}
+
+#' @rdname ess_tail
+#' @export
+ess_tail.rvar <- function(x, ...) {
+  summarise_rvar_by_element_with_chains(x, ess_tail, ...)
 }
 
 #' Effective sample sizes for quantiles
@@ -154,6 +224,7 @@ ess_tail <- function(x) {
 #' @family diagnostics
 #' @template args-conv
 #' @template args-conv-quantile
+#' @template args-methods-dots
 #' @template return-conv-quantile
 #' @template ref-vehtari-rhat-2019
 #'
@@ -161,8 +232,17 @@ ess_tail <- function(x) {
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_quantile(mu, probs = c(0.1, 0.9))
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' ess_quantile(d$mu, probs = c(0.1, 0.9))
+#'
 #' @export
-ess_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
+ess_quantile <- function(x, probs = c(0.05, 0.95), ...) {
+  UseMethod("ess_quantile")
+}
+
+#' @rdname ess_quantile
+#' @export
+ess_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
   probs <- as.numeric(probs)
   if (any(probs < 0 | probs > 1)) {
     stop_no_call("'probs' must contain values between 0 and 1.")
@@ -177,8 +257,14 @@ ess_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
 
 #' @rdname ess_quantile
 #' @export
-ess_median <- function(x) {
-  .ess_quantile(x, prob = 0.5)
+ess_quantile.rvar <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
+  summarise_rvar_by_element_with_chains(x, ess_quantile, probs, names, ...)
+}
+
+#' @rdname ess_quantile
+#' @export
+ess_median <- function(x, ...) {
+  ess_quantile(x, probs = 0.5, names = FALSE, ...)
 }
 
 # ESS of a single quantile
@@ -197,6 +283,7 @@ ess_median <- function(x) {
 #' estimate of a single variable.
 #'
 #' @template args-conv
+#' @template args-methods-dots
 #' @template return-conv
 #' @template ref-gelman-bda-2013
 #'
@@ -204,9 +291,22 @@ ess_median <- function(x) {
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_mean(mu)
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' ess_mean(d$Sigma)
+#'
 #' @export
-ess_mean <- function(x) {
+ess_mean <- function(x, ...) UseMethod("ess_mean")
+
+#' @rdname ess_quantile
+#' @export
+ess_mean.default <- function(x, ...) {
   .ess(.split_chains(x))
+}
+
+#' @rdname ess_mean
+#' @export
+ess_mean.rvar <- function(x, ...) {
+  summarise_rvar_by_element_with_chains(x, ess_mean, ...)
 }
 
 #' Effective sample size for the standard deviation
@@ -218,6 +318,7 @@ ess_mean <- function(x) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-methods-dots
 #' @template return-conv
 #' @template ref-vehtari-rhat-2019
 #'
@@ -225,9 +326,22 @@ ess_mean <- function(x) {
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' ess_sd(mu)
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' ess_sd(d$Sigma)
+#'
 #' @export
-ess_sd <- function(x) {
+ess_sd <- function(x, ...) UseMethod("ess_sd")
+
+#' @rdname ess_sd
+#' @export
+ess_sd.default <- function(x, ...) {
   min(.ess(.split_chains(x)), .ess(.split_chains(x^2)))
+}
+
+#' @rdname ess_sd
+#' @export
+ess_sd.rvar <- function(x, ...) {
+  summarise_rvar_by_element_with_chains(x, ess_sd, ...)
 }
 
 #' Monte Carlo standard error for quantiles
@@ -238,6 +352,7 @@ ess_sd <- function(x) {
 #' @family diagnostics
 #' @template args-conv
 #' @template args-conv-quantile
+#' @template args-methods-dots
 #' @template return-conv-quantile
 #' @template ref-vehtari-rhat-2019
 #'
@@ -245,8 +360,17 @@ ess_sd <- function(x) {
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' mcse_quantile(mu, probs = c(0.1, 0.9))
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' mcse_quantile(d$mu)
+#'
 #' @export
-mcse_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
+mcse_quantile <- function(x, probs = c(0.05, 0.95), ...) {
+  UseMethod("mcse_quantile")
+}
+
+#' @rdname mcse_quantile
+#' @export
+mcse_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
   probs <- as.numeric(probs)
   if (any(probs < 0 | probs > 1)) {
     stop_no_call("'probs' must contain values between 0 and 1.")
@@ -261,8 +385,14 @@ mcse_quantile <- function(x, probs = c(0.05, 0.95), names = TRUE) {
 
 #' @rdname mcse_quantile
 #' @export
-mcse_median <- function(x) {
-  .mcse_quantile(x, prob = 0.5)
+mcse_quantile.rvar <- function(x, probs = c(0.05, 0.95), names = TRUE, ...) {
+  summarise_rvar_by_element_with_chains(x, mcse_quantile, probs, names, ...)
+}
+
+#' @rdname mcse_quantile
+#' @export
+mcse_median <- function(x, ...) {
+  mcse_quantile(x, probs = 0.5, names = FALSE, ...)
 }
 
 # MCSE of a single quantile
@@ -284,6 +414,7 @@ mcse_median <- function(x) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-methods-dots
 #' @template return-conv
 #' @template ref-gelman-bda-2013
 #'
@@ -291,9 +422,22 @@ mcse_median <- function(x) {
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' mcse_mean(mu)
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' mcse_mean(d$Sigma)
+#'
 #' @export
-mcse_mean <- function(x) {
+mcse_mean <- function(x, ...) UseMethod("mcse_mean")
+
+#' @rdname mcse_mean
+#' @export
+mcse_mean.default <- function(x, ...) {
   sd(x) / sqrt(ess_mean(x))
+}
+
+#' @rdname mcse_mean
+#' @export
+mcse_mean.rvar <- function(x, ...) {
+  summarise_rvar_by_element_with_chains(x, mcse_mean, ...)
 }
 
 #' Monte Carlo standard error for the standard deviation
@@ -304,6 +448,7 @@ mcse_mean <- function(x) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-methods-dots
 #' @template return-conv
 #' @template ref-vehtari-rhat-2019
 #'
@@ -311,11 +456,24 @@ mcse_mean <- function(x) {
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' mcse_sd(mu)
 #'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' mcse_sd(d$Sigma)
+#'
 #' @export
-mcse_sd <- function(x) {
+mcse_sd <- function(x, ...) UseMethod("mcse_sd")
+
+#' @rdname mcse_sd
+#' @export
+mcse_sd.default <- function(x, ...) {
   # assumes normality of x and uses Stirling's approximation
   ess_sd <- ess_sd(x)
   sd(x) * sqrt(exp(1) * (1 - 1 / ess_sd)^(ess_sd - 1) - 1)
+}
+
+#' @rdname mcse_sd
+#' @export
+mcse_sd.rvar <- function(x, ...) {
+  summarise_rvar_by_element_with_chains(x, mcse_sd, ...)
 }
 
 #' Compute Quantiles
@@ -327,15 +485,23 @@ mcse_sd <- function(x) {
 #' @template args-conv-quantile
 #' @param na.rm (logical) Should `NA` and `NaN` values be removed from `x` prior
 #'   to computing quantiles? The default is `FALSE`.
-#' @param ... Further arguments passed to [stats::quantile()].
+#' @param ... Arguments passed to individual methods (if applicable) and then
+#'   on to [stats::quantile()].
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' quantile2(mu)
 #'
 #' @export
-quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE,
-                      ...) {
+quantile2 <- function(x, probs = c(0.05, 0.95), na.rm = FALSE, ...) {
+  UseMethod("quantile2")
+}
+
+#' @rdname quantile2
+#' @export
+quantile2.default <- function(
+  x, probs = c(0.05, 0.95), na.rm = FALSE, names = TRUE, ...
+) {
   names <- as_one_logical(names)
   na.rm <- as_one_logical(na.rm)
   if (!na.rm && anyNA(x)) {
@@ -350,6 +516,14 @@ quantile2 <- function(x, probs = c(0.05, 0.95), names = TRUE, na.rm = FALSE,
     names(out) <- NULL
   }
   out
+}
+
+#' @rdname quantile2
+#' @export
+quantile2.rvar <- function(
+  x, probs = c(0.05, 0.95), na.rm = FALSE, names = TRUE, ...
+) {
+  summarise_rvar_by_element_with_chains(x, quantile2, probs, na.rm, names, ...)
 }
 
 # internal ----------------------------------------------------------------
@@ -385,14 +559,16 @@ fft_next_good_size <- function(N) {
 #' @export
 autocovariance <- function(x) {
   N <- length(x)
+  # zero padding makes fft() much faster when N > 1000
   M <- fft_next_good_size(N)
   Mt2 <- 2 * M
   yc <- x - mean(x)
   yc <- c(yc, rep.int(0, Mt2 - N))
-  transform <- fft(yc)
-  ac <- fft(Conj(transform) * transform, inverse = TRUE)
+  # FFT based unnormalized autocovariances
+  ac <- Re(fft(abs(fft(yc))^2, inverse = TRUE)[1:N])
   # use "biased" estimate as recommended by Geyer (1992)
-  ac <- Re(ac)[1:N] / (N^2 * 2)
+  # direct scaling with var(x) avoids need to compute "mask effect"
+  ac <- ac / ac[1] * var(x) * (N - 1) / N
   ac
 }
 
@@ -419,13 +595,14 @@ autocorrelation <- function(x) {
 #' ranks via the inverse normal transformation.
 #'
 #' @template args-scale
+#' @template args-frac-offset
 #' @return A numeric array of rank normalized values with the same size
 #'   and dimension as the input.
 #' @keywords internal
 #' @export
-z_scale <- function(x) {
+z_scale <- function(x, c = 3/8) {
   r <- rank(as.array(x), ties.method = 'average')
-  z <- qnorm(backtransform_ranks(r))
+  z <- qnorm(backtransform_ranks(r, c = c))
   z[is.na(x)] <- NA
   if (!is.null(dim(x))) {
     # output should have the input dimension
@@ -436,20 +613,20 @@ z_scale <- function(x) {
 
 #' Rank uniformization
 #'
-#' Compute rank uniformization for a numeric array. First replace each
-#' value by its rank. Average rank for ties are used to conserve the
-#' number of unique values of discrete quantities. Second, uniformize
-#' ranks to scale `[1/(2S), 1-1/(2S)]`, where `S` is the the number
-#' of values.
+#' Compute rank uniformization for a numeric array. First replace each value by
+#' its rank. Average rank for ties are used to conserve the number of unique
+#' values of discrete quantities. Second, uniformize ranks to the scale
+#' `[1/(2S), 1-1/(2S)]`, where `S` is the number of values.
 #'
 #' @template args-scale
+#' @template args-frac-offset
 #' @return A numeric array of uniformized values with the same size
 #'   and dimension as the input.
 #' @keywords internal
 #' @export
-u_scale <- function(x) {
+u_scale <- function(x, c = 3/8) {
   r <- rank(as.array(x), ties.method = 'average')
-  u <- backtransform_ranks(r)
+  u <- backtransform_ranks(r, c = c)
   u[is.na(x)] <- NA
   if (!is.null(dim(x))) {
     # output should have the input dimension
@@ -460,10 +637,9 @@ u_scale <- function(x) {
 
 #' Rank values
 #'
-#' Compute ranks for a numeric array. First replace each
+#' Compute ranks for a numeric array, that is, replace each
 #' value by its rank. Average rank for ties are used to conserve the
-#' number of unique values of discrete quantities. Second, normalize
-#' ranks via the inverse normal transformation.
+#' number of unique values of discrete quantities.
 #'
 #' @template args-scale
 #' @return A numeric array of ranked values with the same size
@@ -480,12 +656,13 @@ r_scale <- function(x) {
   r
 }
 
-#' Backtransformation of ranks
+#' Back-transformation of ranks
 #'
 #' @param r array of ranks
 #' @param c fractional offset; defaults to c = 3/8 as recommend by Blom (1958)
 #' @noRd
 backtransform_ranks <- function(r, c = 3/8) {
+  c <- as_one_numeric(c)
   S <- length(r)
   (r - c) / (S - 2 * c + 1)
 }

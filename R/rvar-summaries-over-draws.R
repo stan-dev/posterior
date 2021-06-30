@@ -57,7 +57,7 @@
 #'
 #' @name rvar-summaries-over-draws
 #' @seealso [rvar-summaries-within-draws] for summary functions within draws.
-#' [rvar-functions] for density, CDF, and quantile functions of random variables.
+#' [rvar-dist] for density, CDF, and quantile functions of random variables.
 #' @family rvar-summaries
 #' @export
 E <- function(x, ...) {

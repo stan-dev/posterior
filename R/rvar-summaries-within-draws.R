@@ -17,6 +17,9 @@
 #' @param high (logical) For `rvar_mad()`, if `TRUE`, compute the 'hi-median',
 #'   i.e., take the larger of the two middle values for even sample size. See
 #'   `stats::mad()`.
+#' @param probs (numeric vector) For `rvar_quantile()`, probabilities in `[0, 1]`.
+#' @param names (logical) For `rvar_quantile()`, if `TRUE`, the result has a
+#'   `names` attribute.
 #'
 #' @details
 #'
@@ -27,7 +30,8 @@
 #' without the `rvar_` prefix (e.g., `rvar_mean()` calls `mean()` under the hood, etc).
 #'
 #' @return
-#' An [`rvar`] of length 1 (or in the case of `range()`, length 2) with the same number
+#' An [`rvar`] of length 1 (for `range()`, length 2; for `quantile()`, length
+#' equal to `length(probs)`) with the same number
 #' of draws as the input rvar(s) containing the summary statistic computed within
 #' each draw of the input rvar(s).
 #'
@@ -43,9 +47,10 @@
 #' rvar_sum(x)
 #' rvar_prod(x)
 #' rvar_range(x)
+#' rvar_quantile(x, probs = c(0.25, 0.5, 0.75), names = TRUE)
 #'
 #' @seealso [rvar-summaries-over-draws] for summary functions across draws (e.g. expectations).
-#' [rvar-functions] for density, CDF, and quantile functions of random variables.
+#' [rvar-dist] for density, CDF, and quantile functions of random variables.
 #' @family rvar-summaries
 #' @name rvar-summaries-within-draws
 #' @export
@@ -110,6 +115,29 @@ rvar_mad <- function(..., constant = 1.4826, na.rm = FALSE, low = FALSE, high = 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_range <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), range, na.rm = na.rm, .transpose = TRUE)
+
+
+# quantiles ---------------------------------------------------------------
+
+#' @rdname rvar-summaries-within-draws
+#' @export
+rvar_quantile <- function(..., probs, names = FALSE, na.rm = FALSE) {
+  names <- as_one_logical(names)
+  na.rm <- as_one_logical(na.rm)
+  one_prob <- length(probs) == 1
+
+  out <- summarise_rvar_within_draws(c(...), quantile,
+    probs = probs, names = names, na.rm = na.rm,
+    .transpose = !one_prob
+  )
+
+  if (one_prob && names) {
+    # single name does not survive the apply(), restore it manually
+    names(out) <- names(quantile(0, probs))
+  }
+
+  out
+}
 
 
 # logical summaries -------------------------------------------------------

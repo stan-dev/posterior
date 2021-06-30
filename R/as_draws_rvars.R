@@ -61,6 +61,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
     # reset class here as otherwise the draws arrays in the output rvars
     # have type draws_matrix, which makes inspecting them hard
     var_matrix <- unclass(x[, var_i, drop = FALSE])
+    attr(var_matrix, "nchains") <- NULL
 
     if (ncol(var_matrix) == 1) {
       # single variable, no indices
@@ -135,20 +136,18 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
     out
   })
   names(rvars_list) <- var_names
-  .as_draws_rvars(rvars_list, ...)
+  out <- .as_draws_rvars(rvars_list, ...)
+  .nchains <- nchains(x)
+  for (i in seq_along(out)) {
+    attr(out[[i]], "nchains") <- .nchains
+  }
+  out
 }
 
 #' @rdname draws_rvars
 #' @export
 as_draws_rvars.draws_array <- function(x, ...) {
-  out <- as_draws_rvars(as_draws_matrix(x), ...)
-
-  .nchains <- nchains(x)
-  for (i in seq_along(out)) {
-    attr(out[[i]], "nchains") <- .nchains
-  }
-
-  out
+  as_draws_rvars(as_draws_matrix(x), ...)
 }
 
 #' @rdname draws_rvars

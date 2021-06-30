@@ -21,9 +21,9 @@ order_draws <- function(x, ...) {
 #' @rdname order_draws
 #' @export
 order_draws.draws_matrix <- function(x, ...) {
-  iteration_order <- order(iteration_ids(x))
-  if (needs_ordering(iteration_order)) {
-    x <- x[iteration_order, ]
+  draw_order <- order(draw_ids(x))
+  if (needs_ordering(draw_order)) {
+    x <- x[draw_order, ]
   }
   x
 }
