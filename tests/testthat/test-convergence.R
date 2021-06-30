@@ -10,6 +10,7 @@ test_that("rhat diagnostics return reasonable values", {
 
 test_that("ess diagnostics return reasonable values", {
   tau <- extract_variable_matrix(example_draws(), "tau")
+  mu <- extract_variable_matrix(example_draws("multi_normal"), "mu[1]")
 
   ess <- ess_basic(tau)
   expect_true(ess > 250 & ess < 310)
@@ -23,13 +24,17 @@ test_that("ess diagnostics return reasonable values", {
   ess <- ess_bulk(tau)
   expect_true(ess > 230 & ess < 280)
 
+  # some chains are constant for the computed tail quantiles
   ess <- ess_tail(tau)
-  expect_true(ess > 170 & ess < 220)
+  expect_true(is.na(ess))
+  # use a different example to obtain non-NA value
+  ess <- ess_tail(mu)
+  expect_true(ess > 330 & ess < 380)
 
-  ess <- ess_quantile(tau, probs = c(0.1, 0.9))
-  expect_equal(names(ess), c("ess_q10", "ess_q90"))
+  ess <- ess_quantile(tau, probs = c(0.2, 0.8))
+  expect_equal(names(ess), c("ess_q20", "ess_q80"))
   expect_true(ess[1] > 150 & ess[1] < 210)
-  expect_true(ess[2] > 280 & ess[2] < 330)
+  expect_true(ess[2] > 350 & ess[2] < 420)
 
   ess <- ess_median(tau)
   expect_true(ess > 350 & ess < 420)
@@ -44,9 +49,9 @@ test_that("mcse diagnostics return reasonable values", {
   mcse <- mcse_sd(tau)
   expect_true(mcse > 0.15 & mcse < 0.25)
 
-  mcse <- mcse_quantile(tau, probs = c(0.1, 0.9))
-  expect_equal(names(mcse), c("mcse_q10", "mcse_q90"))
-  expect_true(mcse[1] > 0.1 & mcse[1] < 0.15)
+  mcse <- mcse_quantile(tau, probs = c(0.2, 0.8))
+  expect_equal(names(mcse), c("mcse_q20", "mcse_q80"))
+  expect_true(mcse[1] > 0.16 & mcse[1] < 0.21)
   # due to right skewness of tau the 90%ile is way more uncertain
   expect_true(mcse[2] > 0.3 & mcse[2] < 0.7)
 
@@ -83,6 +88,10 @@ test_that("convergence diagnostics handle special cases correctly", {
   expect_true(is.na(ess_basic(x)))
 
   x <- rep(1, 10)
+  expect_true(is.na(rhat_basic(x)))
+  expect_true(is.na(ess_basic(x)))
+
+  x <- cbind(1, rnorm(10))
   expect_true(is.na(rhat_basic(x)))
   expect_true(is.na(ess_basic(x)))
 })

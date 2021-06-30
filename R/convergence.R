@@ -763,5 +763,6 @@ fold_draws <- function(x) {
 
 # should NA be returned by a convergence diagnostic?
 should_return_NA <- function(x) {
-  anyNA(x) || checkmate::anyInfinite(x) || is_constant(x)
+  anyNA(x) || checkmate::anyInfinite(x) || is_constant(x) ||
+    (is.matrix(x) && any(apply(x, 2, is_constant)))
 }
