@@ -155,9 +155,24 @@ is_draws_matrix_like <- function(x) {
   is.matrix(x) || is.array(x) && length(dim(x)) == 2L
 }
 
+#' Extract parts of a `draws_matrix` object
+#'
+#' Extract parts of a `draws_matrix` object. They are strictly defined as
+#' matrices (draws x variable) so dropping any of the
+#' dimensions breaks the expected structure of the object. Accordingly, no
+#' dropping of dimensions is done by default even if the extracted slices are of
+#' length 1. If `drop` is manually set to `TRUE` and any of the dimensions is
+#' actually dropped, this will lead to dropping the `"draws_matrix"` class as
+#' well.
+#'
+#' @param x,i,j,...,drop Same as in the default extraction method but with
+#'   `drop` being set to `FALSE` by default.
+#'
+#' @return An object of class `"draws_matrix"` unless any of the dimensions
+#' was dropped during the extraction.
+#'
 #' @export
 `[.draws_matrix` <- function(x, i, j, ..., drop = FALSE) {
-  # TODO: add a warning that 'drop' can lead to also dropping the class?
   # TODO: allow for argument 'reserved' as in '[.draws_df'
   #   right now this fails because NextMethod() cannot ignore arguments
   out <- NextMethod("[", drop = drop)
