@@ -82,6 +82,7 @@ For lower dimensional targets, gradient boosted models (called via
 MCMC sample, it is recommended to try both of these classifiers.
 }
 \examples{
+\dontrun{
 library(caret)
 x <- example_draws("eight_schools")
 rstar(x)
@@ -96,6 +97,7 @@ hist(rstar(x, uncertainty = TRUE, nsimulations = 100))
 
 # can use other classification methods in caret library
 rstar(x, method = "knn")
+}
 
 }
 \references{
