@@ -52,13 +52,19 @@ an overview of the new random variable datatype
 
 ### Installation
 
-The package is not on CRAN yet, but you can install the latest beta release version via 
+You can install the latest official release version via
 
-```{r install, eval=FALSE}
+```{r install_cran, eval=FALSE}
+install.packages("posterior")
+```
+
+Alternatively, you can install binaries of the current development version via
+
+```{r install_mc_stan, eval=FALSE}
 install.packages("posterior", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
 ```
 
-or the latest development version from GitHub via 
+or directly build the package from GitHub via
 
 ```{r install_github, eval=FALSE}
 # install.packages("remotes")
