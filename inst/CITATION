@@ -9,7 +9,7 @@ bibentry(bibtype = "Misc",
          author = authors,
          year = year,
          note = note,
-         url = "https://mc-stan.org/posterior",
+         url = "https://mc-stan.org/posterior/",
          header = "To cite the posterior R package:"
 )
 

@@ -10,7 +10,7 @@
 #' @description
 #' \if{html}{
 #'    \figure{stanlogo.png}{options: width="50"}
-#'    \url{https://mc-stan.org/posterior}
+#'    \url{https://mc-stan.org/posterior/}
 #' }
 #'
 #' The \pkg{posterior} package is intended to provide useful tools

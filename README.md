@@ -59,7 +59,7 @@ package*](https://mc-stan.org/posterior/articles/posterior.html).
 
 ``` r
 library("posterior")
-#> This is posterior version 0.1.5
+#> This is posterior version 1.0.0
 #> 
 #> Attaching package: 'posterior'
 #> The following objects are masked from 'package:stats':
@@ -157,16 +157,16 @@ summarise_draws(eight_schools_df)
 #> # A tibble: 10 x 10
 #>    variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail
 #>    <chr>    <dbl>  <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl>    <dbl>    <dbl>
-#>  1 mu        4.18   4.16  3.40  3.57  -0.854  9.39  1.02     558.     322.
-#>  2 tau       4.16   3.07  3.58  2.89   0.309 11.0   1.01     246.     202.
-#>  3 theta[1]  6.75   5.97  6.30  4.87  -1.23  18.9   1.01     400.     254.
+#>  1 mu        4.18   4.16  3.40  3.57  -0.854  9.39  1.02     558.      NA 
+#>  2 tau       4.16   3.07  3.58  2.89   0.309 11.0   1.01     246.      NA 
+#>  3 theta[1]  6.75   5.97  6.30  4.87  -1.23  18.9   1.01     400.      NA 
 #>  4 theta[2]  5.25   5.13  4.63  4.25  -1.97  12.5   1.02     564.     372.
-#>  5 theta[3]  3.04   3.99  6.80  4.94 -10.3   11.9   1.01     312.     205.
-#>  6 theta[4]  4.86   4.99  4.92  4.51  -3.57  12.2   1.02     695.     252.
-#>  7 theta[5]  3.22   3.72  5.08  4.38  -5.93  10.8   1.01     523.     306.
-#>  8 theta[6]  3.99   4.14  5.16  4.81  -4.32  11.5   1.02     548.     205.
-#>  9 theta[7]  6.50   5.90  5.26  4.54  -1.19  15.4   1.00     434.     308.
-#> 10 theta[8]  4.57   4.64  5.25  4.89  -3.79  12.2   1.02     355.     146.
+#>  5 theta[3]  3.04   3.99  6.80  4.94 -10.3   11.9   1.01     312.      NA 
+#>  6 theta[4]  4.86   4.99  4.92  4.51  -3.57  12.2   1.02     695.      NA 
+#>  7 theta[5]  3.22   3.72  5.08  4.38  -5.93  10.8   1.01     523.      NA 
+#>  8 theta[6]  3.99   4.14  5.16  4.81  -4.32  11.5   1.02     548.      NA 
+#>  9 theta[7]  6.50   5.90  5.26  4.54  -1.19  15.4   1.00     434.      NA 
+#> 10 theta[8]  4.57   4.64  5.25  4.89  -3.79  12.2   1.02     355.      NA
 ```
 
 Basically, we get a data frame with one row per variable and one column
@@ -292,14 +292,14 @@ dimensions. For example, we can bind `x1` and `x3` together along the
 ``` r
 x4 <- bind_draws(x1, x3, along = "variable")
 print(x4)
-#> # A draws_matrix: 5 draws, and 3 variables
+#> # A draws_matrix: 5 iterations, 1 chains, and 3 variables
 #>     variable
 #> draw alpha beta theta
-#>    1 -2.05    1  0.12
-#>    2 -1.47    1  0.77
-#>    3  0.44    1  1.38
-#>    4 -2.89    1  0.17
-#>    5 -0.48    1  2.07
+#>    1 -0.97    1  2.89
+#>    2  1.39    1  0.92
+#>    3  0.38    1  0.43
+#>    4  1.75    1  2.07
+#>    5  1.11    1  2.39
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -307,19 +307,19 @@ Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
 ``` r
 x5 <- bind_draws(x1, x2, along = "draw")
 print(x5)
-#> # A draws_matrix: 10 draws, and 2 variables
+#> # A draws_matrix: 10 iterations, 1 chains, and 2 variables
 #>     variable
 #> draw alpha beta
-#>   1  -2.05    1
-#>   2  -1.47    1
-#>   3   0.44    1
-#>   4  -2.89    1
-#>   5  -0.48    1
-#>   6  -0.41    2
-#>   7   1.90    2
-#>   8   0.41    2
-#>   9  -0.98    2
-#>   10  0.37    2
+#>   1  -0.97    1
+#>   2   1.39    1
+#>   3   0.38    1
+#>   4   1.75    1
+#>   5   1.11    1
+#>   6   1.31    2
+#>   7  -0.55    2
+#>   8  -2.34    2
+#>   9   1.36    2
+#>   10  0.11    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -336,29 +336,29 @@ x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
 print(x)
-#> # A draws_matrix: 10 draws, and 5 variables
+#> # A draws_matrix: 10 iterations, 1 chains, and 5 variables
 #>     variable
-#> draw    V1    V2     V3    V4    V5
-#>   1   0.67  0.44 -0.615  1.22 -0.82
-#>   2   0.35 -0.42 -0.400  1.26  0.18
-#>   3   0.55  0.64  0.230 -1.45 -0.58
-#>   4   1.04  0.70 -0.789  1.53 -0.65
-#>   5  -1.04  0.79  0.362 -1.10 -1.43
-#>   6  -0.19  0.58  1.005 -0.34 -1.46
-#>   7  -0.98 -0.21 -0.963  0.57 -0.06
-#>   8   0.18  0.85 -0.098 -0.40 -0.66
-#>   9  -0.53 -0.65 -0.289 -1.11 -0.58
-#>   10  0.65 -0.84 -0.826  1.79  0.31
+#> draw      V1      V2    V3     V4    V5
+#>   1   0.9599  0.7988 -0.14 -2.253 -0.30
+#>   2   0.3890  0.0044  1.57  0.515 -0.18
+#>   3   0.0012 -1.0894  1.92  0.019  0.78
+#>   4   0.3277 -0.3510  0.04 -0.786 -0.32
+#>   5  -0.3328  0.6228 -0.49  0.250  0.33
+#>   6  -1.3226 -0.1068 -0.11 -1.288 -1.54
+#>   7   0.1415 -3.0007  0.56  1.848  2.09
+#>   8   1.0390 -0.6165 -0.83 -0.871 -0.62
+#>   9   1.4277  0.2476 -0.70  0.981 -0.58
+#>   10  0.6447 -1.7516 -0.70 -0.673 -0.98
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 x 5
-#>   variable    mean    sd median   mad
-#>   <chr>      <dbl> <dbl>  <dbl> <dbl>
-#> 1 V1        0.0713 0.725  0.268 0.640
-#> 2 V2        0.188  0.647  0.513 0.454
-#> 3 V3       -0.238  0.623 -0.344 0.687
-#> 4 V4        0.198  1.22   0.111 1.75 
-#> 5 V5       -0.575  0.598 -0.618 0.561
+#>   variable   mean    sd median   mad
+#>   <chr>     <dbl> <dbl>  <dbl> <dbl>
+#> 1 V1        0.328 0.783  0.358 0.711
+#> 2 V2       -0.524 1.16  -0.229 0.985
+#> 3 V3        0.111 0.959 -0.124 0.859
+#> 4 V4       -0.226 1.19  -0.327 1.05 
+#> 5 V5       -0.133 1.01  -0.310 0.705
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
@@ -385,7 +385,7 @@ When using **posterior**, please cite it as follows:
 
 -   Bürkner P. C., Gabry J., Kay M., & Vehtari A. (2020). “posterior:
     Tools for Working with Posterior Distributions.” R package version
-    XXX, &lt;URL: <https://mc-stan.org/posterior>&gt;.
+    XXX, &lt;URL: <https://mc-stan.org/posterior/>&gt;.
 
 When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or
 `ess_tail`, please also cite
@@ -410,5 +410,6 @@ assessing convergence of MCMC. *Bayesian Analysis*.
 
 The **posterior** package is licensed under the following licenses:
 
-- Code: BSD 3-clause (https://opensource.org/licenses/BSD-3-Clause)
-- Documentation: CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+-   Code: BSD 3-clause (<https://opensource.org/licenses/BSD-3-Clause>)
+-   Documentation: CC-BY 4.0
+    (<https://creativecommons.org/licenses/by/4.0/>)
