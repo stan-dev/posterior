@@ -131,7 +131,6 @@ as_draws_array.mcmc.list <- function(x, ...) {
     new_dimnames[[3]] <- default_variables(dim(x)[3])
   }
   check_new_variables(new_dimnames[[3]])
-  # TODO: use existing row/col names in any way?
   new_dimnames[[1]] <- as.character(seq_rows(x))
   new_dimnames[[2]] <- as.character(seq_cols(x))
   dimnames(x) <- new_dimnames

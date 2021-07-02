@@ -117,7 +117,6 @@ is_equal <- function(x, y, ...) {
 }
 
 # move elements to the start of a named object
-# TODO: remove this function as it is no longer needed to move meta-columns?
 move_to_start <- function(x, start) {
   assert_named(x)
   start <- intersect(names(x), start)
