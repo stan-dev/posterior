@@ -145,6 +145,18 @@ test_that("matrix multiplication works", {
   ))
   expect_identical(x %**% y, xy_ref)
 
+  # automatic promotion to row/col vector of numeric vectors
+  x_meany_ref = new_rvar(abind::abind(along = 0,
+    x_array[1,] %*% colMeans(y_array),
+    x_array[2,] %*% colMeans(y_array)
+  ))
+  expect_identical(x %**% colMeans(y_array), x_meany_ref)
+
+  meanx_y_ref = new_rvar(abind::abind(along = 0,
+    colMeans(x_array) %*% y_array[1,],
+    colMeans(x_array) %*% y_array[2,]
+  ))
+  expect_identical(colMeans(x_array) %**% y, meanx_y_ref)
 
   # dimension name preservation
   m1 <- as_rvar(diag(1:3))
