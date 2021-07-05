@@ -40,6 +40,13 @@ is defined.}
 \item{value}{(character vector) For \code{variables(x) <- value}, the new variable
 names to use.}
 }
+\value{
+For \code{variables()}, a character vector.
+
+For \code{iteration_ids()}, \code{chain_ids()}, and \code{draw_ids()}, an integer vector.
+
+For \code{niterations()}, \code{nchains()}, and \code{ndraws()}, a scalar integer.
+}
 \description{
 Index variables, iterations, chains, and draws.
 }

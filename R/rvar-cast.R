@@ -192,12 +192,12 @@ vec_restore.rvar <- function(x, ...) {
 #' @param ... Further arguments passed to other functions.
 #' @param x_arg,y_arg Argument names for `x` and `y`.
 #'
-#' @details
+#' @return
 #'
-#' See the corresponding functions in [vctrs-package] for more information.
+#' See the corresponding functions in [vctrs-package] for more information,
+#' or `vignette("s3-vector", package = "vctrs")` for examples.
 #'
-#' @seealso [vctrs::vec_cast()],[vctrs::vec_ptype2()],[vctrs::vec_arith()],
-#' [vctrs::vec_math()]
+#' @seealso [vctrs::vec_cast()], [vctrs::vec_ptype2()]
 #'
 #' @importFrom vctrs vec_ptype vec_ptype2 vec_default_ptype2
 #' @method vec_ptype2 rvar

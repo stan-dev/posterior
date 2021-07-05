@@ -25,6 +25,9 @@
 #' | [rhat()] | Improved, rank-based version of Rhat |
 #' | [rstar()] | R* diagnostic |
 #'
+#' @return
+#' See individual functions for a description of return types.
+#'
 NULL
 
 #' Basic version of the Rhat convergence diagnostic
@@ -487,6 +490,11 @@ mcse_sd.rvar <- function(x, ...) {
 #'   to computing quantiles? The default is `FALSE`.
 #' @param ... Arguments passed to individual methods (if applicable) and then
 #'   on to [stats::quantile()].
+#'
+#' @return
+#' A numeric vector of length `length(probs)`. If `names = TRUE`, it has a
+#' [names] attribute with names like `"q5"`, `"q95"`, etc, based on the values
+#' of `probs`.
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")

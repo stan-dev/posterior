@@ -4,6 +4,9 @@
 \alias{diagnostics}
 \alias{convergence}
 \title{List of available convergence diagnostics}
+\value{
+See individual functions for a description of return types.
+}
 \description{
 A list of available diagnostics and links to their individual help pages.
 }

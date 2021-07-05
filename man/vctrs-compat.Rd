@@ -58,13 +58,13 @@
 
 \item{to}{Type to cast to.}
 }
+\value{
+See the corresponding functions in \link{vctrs-package} for more information,
+or \code{vignette("s3-vector", package = "vctrs")} for examples.
+}
 \description{
 These functions implement compatibility with \link{vctrs-package} for \code{\link{rvar}}s.
 }
-\details{
-See the corresponding functions in \link{vctrs-package} for more information.
-}
 \seealso{
-\code{\link[vctrs:vec_cast]{vctrs::vec_cast()}},\code{\link[vctrs:vec_ptype2]{vctrs::vec_ptype2()}},\code{\link[vctrs:vec_arith]{vctrs::vec_arith()}},
-\code{\link[vctrs:vec_math]{vctrs::vec_math()}}
+\code{\link[vctrs:vec_cast]{vctrs::vec_cast()}}, \code{\link[vctrs:vec_ptype2]{vctrs::vec_ptype2()}}
 }

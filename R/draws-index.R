@@ -19,6 +19,14 @@
 #' similar to how `names(x) <- value` works for vectors and lists. For renaming
 #' specific variables, [rename_variables()] may offer a more convenient approach.
 #'
+#' @return
+#'
+#' For `variables()`, a character vector.
+#'
+#' For `iteration_ids()`, `chain_ids()`, and `draw_ids()`, an integer vector.
+#'
+#' For `niterations()`, `nchains()`, and `ndraws()`, a scalar integer.
+#'
 #' @examples
 #' x <- example_draws()
 #'
