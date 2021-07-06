@@ -96,6 +96,11 @@ Math.rvar <- function(x, ...) {
 `%**%` <- function(x, y) {
   # Fast version of rdo(x %*% y)
 
+  # convert both objects into rvars if they aren't already (this will ensure
+  # we have a 3d draws array for each variable)
+  x <- as_rvar(x)
+  y <- as_rvar(y)
+
   # ensure everything is a matrix by adding dimensions as necessary to make `x`
   # a row vector and `y` a column vector
   ndim_x <- length(dim(x))
@@ -111,11 +116,6 @@ Math.rvar <- function(x, ...) {
   } else if (ndim_y != 2) {
     stop_no_call("Second argument (`y`) is not a vector or matrix, cannot matrix-multiply")
   }
-
-  # convert both objects into rvars if they aren't already (this will give us
-  # a 3d draws array for each variable)
-  x <- as_rvar(x)
-  y <- as_rvar(y)
 
   # conform the draws dimension in both variables
   c(x, y) %<-% conform_rvar_ndraws_nchains(list(x, y))
