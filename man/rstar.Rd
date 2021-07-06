@@ -82,23 +82,23 @@ For lower dimensional targets, gradient boosted models (called via
 MCMC sample, it is recommended to try both of these classifiers.
 }
 \examples{
-\dontrun{
-library(caret)
-x <- example_draws("eight_schools")
-rstar(x)
-rstar(x, split = FALSE)
-rstar(x, method = "gbm")
-# can pass additional arguments to methods
-rstar(x, method = "gbm", verbose = FALSE)
+\donttest{
+if (require("caret", quietly = TRUE)) {
+  x <- example_draws("eight_schools")
+  print(rstar(x))
+  print(rstar(x, split = FALSE))
+  print(rstar(x, method = "gbm"))
+  # can pass additional arguments to methods
+  print(rstar(x, method = "gbm", verbose = FALSE))
 
-# with uncertainty, returns a vector of R* values
-hist(rstar(x, uncertainty = TRUE))
-hist(rstar(x, uncertainty = TRUE, nsimulations = 100))
+  # with uncertainty, returns a vector of R* values
+  hist(rstar(x, uncertainty = TRUE))
+  hist(rstar(x, uncertainty = TRUE, nsimulations = 100))
 
-# can use other classification methods in caret library
-rstar(x, method = "knn")
+  # can use other classification methods in caret library
+  print(rstar(x, method = "knn"))
 }
-
+}
 }
 \references{
 Ben Lambert, Aki Vehtari (2020) R*: A robust MCMC convergence
