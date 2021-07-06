@@ -19,6 +19,12 @@ dimension \code{c(niterations(x), nchains(x), dim(x))}.}
 
 \item{value}{(array) An array of values to use as the backing array of \code{x}.}
 }
+\value{
+If \code{with_chains = FALSE}, an array with dimensions \code{c(ndraws(x), dim(x))}.
+
+If \code{with_chains = TRUE}, an array with dimensions
+\code{c(niterations(x), nchains(x), dim(x))}.
+}
 \description{
 Gets/sets the array-representation that backs an \code{\link{rvar}}. Should be used rarely.
 }

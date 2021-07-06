@@ -154,6 +154,14 @@ new_rvar <- function(x = double(), .nchains = 1L) {
 #' so that the first dimension is the index of the iterations and the second
 #' dimension is the index of the chains.
 #'
+#' @return
+#'
+#' If `with_chains = FALSE`, an array with dimensions `c(ndraws(x), dim(x))`.
+#'
+#' If `with_chains = TRUE`, an array with dimensions
+#' `c(niterations(x), nchains(x), dim(x))`.
+#'
+#'
 #' @examples
 #'
 #' x <- rvar(1:10, nchains = 2)

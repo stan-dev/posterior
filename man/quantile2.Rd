@@ -32,6 +32,11 @@ on to \code{\link[stats:quantile]{stats::quantile()}}.}
 default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many
 values in \code{probs}.}
 }
+\value{
+A numeric vector of length \code{length(probs)}. If \code{names = TRUE}, it has a
+\link{names} attribute with names like \code{"q5"}, \code{"q95"}, etc, based on the values
+of \code{probs}.
+}
 \description{
 Compute quantiles of a sample and return them in a format consistent
 with other summary functions in the \pkg{posterior} package.
