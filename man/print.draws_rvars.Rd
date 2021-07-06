@@ -30,7 +30,7 @@ print. Can be controlled globally via the \code{"posterior.max_variables"}
 \code{getOption("posterior.rvar_summary")} is used (default \verb{"mean_sd}).}
 
 \item{reserved}{(logical) Should reserved variables be included in the
-output? Defaults to \code{FALSE}. See \code{\link{reserved-variables}} for an overview of
+output? Defaults to \code{FALSE}. See \code{\link{reserved_variables}} for an overview of
 currently reserved variable names.}
 
 \item{...}{Further arguments passed to the underlying \code{\link[=print]{print()}} methods.}
