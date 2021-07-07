@@ -20,7 +20,8 @@ Description: Provides useful tools for both users and developers of packages
   for example, subsetting, binding, or mutating draws.
   (c) Provide various summaries of draws in convenient formats.
   (d) Provide lightweight implementations of state of the art posterior 
-  inference diagnostics.
+  inference diagnostics. References: Vehtari et al. (2021) 
+  <doi:10.1214/20-BA1221>.
 Depends: 
   R (>= 3.2.0)
 Imports:
