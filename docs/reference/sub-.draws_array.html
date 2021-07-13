@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Matrix multiplication of random variables — rvar-matmult • posterior</title>
+<title>Extract parts of a draws_array object — [.draws_array • posterior</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,14 @@
 
 
 
-<meta property="og:title" content="Matrix multiplication of random variables — rvar-matmult" />
-<meta property="og:description" content="Matrix multiplication of random variables." />
+<meta property="og:title" content="Extract parts of a draws_array object — [.draws_array" />
+<meta property="og:description" content="Extract parts of a draws_array object. They are strictly defined as arrays
+of 3 dimensions (iteration x chain x variable) so dropping any of the
+dimensions breaks the expected structure of the object. Accordingly, no
+dropping of dimensions is done by default even if the extracted slices are of
+length 1. If drop is manually set to TRUE and any of the dimensions is
+actually dropped, this will lead to dropping the &quot;draws_array&quot; class as
+well." />
 
 
 
@@ -162,82 +168,39 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Matrix multiplication of random variables</h1>
-    <small class="dont-index">Source: <a href='https://github.com/stan-dev/posterior/blob/master/R/rvar-math.R'><code>R/rvar-math.R</code></a></small>
-    <div class="hidden name"><code>rvar-matmult.Rd</code></div>
+    <h1>Extract parts of a <code>draws_array</code> object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/stan-dev/posterior/blob/master/R/as_draws_array.R'><code>R/as_draws_array.R</code></a></small>
+    <div class="hidden name"><code>sub-.draws_array.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Matrix multiplication of random variables.</p>
+    <p>Extract parts of a <code>draws_array</code> object. They are strictly defined as arrays
+of 3 dimensions (iteration x chain x variable) so dropping any of the
+dimensions breaks the expected structure of the object. Accordingly, no
+dropping of dimensions is done by default even if the extracted slices are of
+length 1. If <code>drop</code> is manually set to <code>TRUE</code> and any of the dimensions is
+actually dropped, this will lead to dropping the <code>"draws_array"</code> class as
+well.</p>
     </div>
 
-    <pre class="usage"><span class='va'>x</span> <span class='op'>%**%</span> <span class='va'>y</span></pre>
+    <pre class="usage"># S3 method for draws_array
+[(x, i, j, ..., drop = FALSE)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>(multiple options) The object to be postmultiplied by <code>y</code>:</p><ul>
-<li><p>An <code><a href='rvar.html'>rvar</a></code></p></li>
-<li><p>A <code><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></code> vector or matrix</p></li>
-<li><p>A <code><a href='https://rdrr.io/r/base/logical.html'>logical</a></code> vector or matrix</p></li>
-</ul>
-
-<p>If a vector is used, it is treated as a <em>row</em> vector.</p></td>
-    </tr>
-    <tr>
-      <th>y</th>
-      <td><p>(multiple options) The object to be premultiplied by <code>x</code>:</p><ul>
-<li><p>An <code><a href='rvar.html'>rvar</a></code></p></li>
-<li><p>A <code><a href='https://rdrr.io/r/base/numeric.html'>numeric</a></code> vector or matrix</p></li>
-<li><p>A <code><a href='https://rdrr.io/r/base/logical.html'>logical</a></code> vector or matrix</p></li>
-</ul>
-
-<p>If a vector is used, it is treated as a <em>column</em> vector.</p></td>
+      <th>x, i, j, ..., drop</th>
+      <td><p>Same as in the default extraction method but with
+<code>drop</code> being set to <code>FALSE</code> by default.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An <code><a href='rvar.html'>rvar</a></code> representing the matrix product of <code>x</code> and <code>y</code>.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <p>An object of class <code>"draws_array"</code> unless any of the dimensions
+was dropped during the extraction.</p>
 
-    <p>If <code>x</code> or <code>y</code> are vectors, they are converted into matrices prior to multiplication, with <code>x</code>
-converted to a row vector and <code>y</code> to a column vector. Numerics and logicals can be multiplied
-by <code><a href='rvar.html'>rvar</a></code>s and are broadcasted across all draws of the <code><a href='rvar.html'>rvar</a></code> argument. Tensor multiplication
-is used to efficiently multiply matrices across draws, so if either <code>x</code> or <code>y</code> is an <code><a href='rvar.html'>rvar</a></code>,
-<code>x %**% y</code> will be much faster than <code><a href='rdo.html'>rdo(x %*% y)</a></code>.</p>
-<p>Because <code><a href='rvar.html'>rvar</a></code> is an S3 class and S3 classes cannot properly override <code><a href='https://rdrr.io/r/base/matmult.html'>%*%</a></code>, <code><a href='rvar.html'>rvar</a></code>s use
-<code>%**%</code> for matrix multiplication.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='co'># d has mu (mean vector of length 3) and Sigma (3x3 covariance matrix)</span>
-<span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='draws_rvars.html'>as_draws_rvars</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='st'>"multi_normal"</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>d</span><span class='op'>$</span><span class='va'>Sigma</span>
-</div><div class='output co'>#&gt; rvar&lt;100,4&gt;[3,3] <span style='color: #949494;'>mean ± sd:</span>
-#&gt;      [,1]          [,2]          [,3]         
-#&gt; [1,]  1.28 ± 0.17   0.53 ± 0.20  -0.40 ± 0.28 
-#&gt; [2,]  0.53 ± 0.20   3.67 ± 0.45  -2.10 ± 0.48 
-#&gt; [3,] -0.40 ± 0.28  -2.10 ± 0.48   8.12 ± 0.95 </div><div class='input'>
-<span class='co'># trivial example: multiplication by a non-random matrix</span>
-<span class='va'>d</span><span class='op'>$</span><span class='va'>Sigma</span> <span class='op'>%**%</span> <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>3</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; rvar&lt;100,4&gt;[3,3] <span style='color: #949494;'>mean ± sd:</span>
-#&gt;      [,1]          [,2]          [,3]         
-#&gt; [1,]  1.28 ± 0.17   1.05 ± 0.40  -1.21 ± 0.85 
-#&gt; [2,]  0.53 ± 0.20   7.33 ± 0.89  -6.30 ± 1.44 
-#&gt; [3,] -0.40 ± 0.28  -4.20 ± 0.96  24.35 ± 2.84 </div><div class='input'>
-<span class='co'># Decompose Sigma into R s.t. R'R = Sigma ...</span>
-<span class='va'>R</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/chol.html'>chol</a></span><span class='op'>(</span><span class='va'>d</span><span class='op'>$</span><span class='va'>Sigma</span><span class='op'>)</span>
-<span class='co'># ... and recreate Sigma using matrix multiplication</span>
-<span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>R</span><span class='op'>)</span> <span class='op'>%**%</span> <span class='va'>R</span>
-</div><div class='output co'>#&gt; rvar&lt;100,4&gt;[3,3] <span style='color: #949494;'>mean ± sd:</span>
-#&gt;      [,1]          [,2]          [,3]         
-#&gt; [1,]  1.28 ± 0.17   0.53 ± 0.20  -0.40 ± 0.28 
-#&gt; [2,]  0.53 ± 0.20   3.67 ± 0.45  -2.10 ± 0.48 
-#&gt; [3,] -0.40 ± 0.28  -2.10 ± 0.48   8.12 ± 0.95 </div><div class='input'>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

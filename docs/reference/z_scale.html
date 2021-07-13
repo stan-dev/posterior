@@ -75,7 +75,7 @@ ranks via the inverse normal transformation." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ ranks via the inverse normal transformation." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -136,19 +136,19 @@ ranks via the inverse normal transformation." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -177,7 +177,7 @@ number of unique values of discrete quantities. Second, normalize
 ranks via the inverse normal transformation.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>z_scale</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>z_scale</span><span class='op'>(</span><span class='va'>x</span>, c <span class='op'>=</span> <span class='fl'>3</span><span class='op'>/</span><span class='fl'>8</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -185,6 +185,11 @@ ranks via the inverse normal transformation.</p>
     <tr>
       <th>x</th>
       <td><p>(numeric) A scalar, vector, matrix, or array of values.</p></td>
+    </tr>
+    <tr>
+      <th>c</th>
+      <td><p>(numeric) Fractional offset used in the back-transformation of ranks.
+Defaults to <code>3/8</code>.</p></td>
     </tr>
     </table>
 

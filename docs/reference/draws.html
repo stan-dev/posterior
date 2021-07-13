@@ -73,7 +73,7 @@ package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@ package." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -134,19 +134,19 @@ package." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -214,24 +214,26 @@ which also have their own subclasses of the form <code>"draws_{format}"</code> (
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>30</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"a"</span>, <span class='st'>"b"</span>, <span class='st'>"c"</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  num [1:10, 1:3] -1.40004 0.25532 -2.43726 -0.00557 0.62155 ...
+</div><div class='output co'>#&gt;  num [1:10, 1:3] -0.936 -0.016 -0.827 -1.512 0.935 ...
 #&gt;  - attr(*, "dimnames")=List of 2
 #&gt;   ..$ : NULL
 #&gt;   ..$ : chr [1:3] "a" "b" "c"</div><div class='input'>
 <span class='co'># transform to a draws object</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fu'>as_draws</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  'draws_matrix' num [1:10, 1:3] -1.40004 0.25532 -2.43726 -0.00557 0.62155 ...
+</div><div class='output co'>#&gt;  'draws_matrix' num [1:10, 1:3] -0.936 -0.016 -0.827 -1.512 0.935 ...
 #&gt;  - attr(*, "dimnames")=List of 2
 #&gt;   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
-#&gt;   ..$ variable: chr [1:3] "a" "b" "c"</div><div class='input'>
+#&gt;   ..$ variable: chr [1:3] "a" "b" "c"
+#&gt;  - attr(*, "nchains")= int 1</div><div class='input'>
 <span class='co'># remove the draws classes from the object</span>
 <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span><span class='op'>[</span><span class='op'>-</span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span><span class='op'>)</span><span class='op'>]</span>
 <span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>y</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  num [1:10, 1:3] -1.40004 0.25532 -2.43726 -0.00557 0.62155 ...
+</div><div class='output co'>#&gt;  num [1:10, 1:3] -0.936 -0.016 -0.827 -1.512 0.935 ...
 #&gt;  - attr(*, "dimnames")=List of 2
 #&gt;   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
-#&gt;   ..$ variable: chr [1:3] "a" "b" "c"</div><div class='input'>
+#&gt;   ..$ variable: chr [1:3] "a" "b" "c"
+#&gt;  - attr(*, "nchains")= int 1</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

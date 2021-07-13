@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -133,19 +133,19 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -178,7 +178,15 @@
 <span class='fu'><a href='https://rdrr.io/r/base/format.html'>format</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span>, summary <span class='op'>=</span> <span class='cn'>NULL</span>, digits <span class='op'>=</span> <span class='fl'>2</span>, color <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='co'># S3 method for rvar</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>object</span>, <span class='va'>...</span>, summary <span class='op'>=</span> <span class='cn'>NULL</span>, vec.len <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+<span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span>
+  <span class='va'>object</span>,
+  <span class='va'>...</span>,
+  summary <span class='op'>=</span> <span class='cn'>NULL</span>,
+  vec.len <span class='op'>=</span> <span class='cn'>NULL</span>,
+  indent.str <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep.int</a></span><span class='op'>(</span><span class='st'>" "</span>, <span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='va'>nest.lev</span> <span class='op'>+</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>, collapse <span class='op'>=</span> <span class='st'>".."</span><span class='op'>)</span>,
+  nest.lev <span class='op'>=</span> <span class='fl'>0</span>,
+  give.attr <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -215,11 +223,26 @@ the terminal.</p></td>
 displayed of each vector. If <code>NULL</code>, defaults to
 <code>getOption("str")$vec.len</code>, which defaults to 4.</p></td>
     </tr>
+    <tr>
+      <th>indent.str</th>
+      <td><p>(string) The indentation string to use.</p></td>
+    </tr>
+    <tr>
+      <th>nest.lev</th>
+      <td><p>(nonnegative integer) Current nesting level in the recursive
+calls to <code><a href='https://rdrr.io/r/utils/str.html'>str()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>give.attr</th>
+      <td><p>(logical) If <code>TRUE</code> (default), show attributes as sub
+structures.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>For <code><a href='https://rdrr.io/r/base/print.html'>print()</a></code> and <code><a href='https://rdrr.io/r/utils/str.html'>str()</a></code>, an invisible version of the input object.</p>
+    <p>For <code><a href='https://rdrr.io/r/base/print.html'>print()</a></code>, an invisible version of the input object.</p>
+<p>For <code><a href='https://rdrr.io/r/utils/str.html'>str()</a></code>, nothing; i.e. <code><a href='https://rdrr.io/r/base/invisible.html'>invisible(NULL)</a></code>.</p>
 <p>For <code><a href='https://rdrr.io/r/base/format.html'>format()</a></code>, a character vector of the same dimensions as <code>x</code> where each
 entry is of the form <code>"mean±sd"</code> or <code>"median±mad"</code>, depending on the value
 of <code>summary</code>.</p>
@@ -240,11 +263,11 @@ mean±sd or median±mad form.</p>
 <span class='op'>)</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; rvar&lt;1000&gt;[2,2] <span style='color: #949494;'>mean ± sd:</span><span>
+</div><div class='output co'>#&gt; rvar&lt;1000&gt;[2,2] <span style='color: #949494;'>mean ± sd:</span>
 #&gt;      [,1]      [,2]     
 #&gt; [1,] 1 ± 1.01  2 ± 0.99 
 #&gt; [2,] 3 ± 1.00  4 ± 1.03 </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, summary <span class='op'>=</span> <span class='st'>"median_mad"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; rvar&lt;1000&gt;[2,2] </span><span style='color: #949494;'>median ± mad:</span><span>
+</div><div class='output co'>#&gt; rvar&lt;1000&gt;[2,2] <span style='color: #949494;'>median ± mad:</span>
 #&gt;      [,1]        [,2]       
 #&gt; [1,] 1.0 ± 1.00  2.0 ± 0.98 
 #&gt; [2,] 3.0 ± 1.03  3.9 ± 1.02 </div><div class='input'>
@@ -254,7 +277,7 @@ mean±sd or median±mad form.</p>
 </div><div class='output co'>#&gt;      [,1]       [,2]      
 #&gt; [1,] "1 ± 1.01" "2 ± 0.99"
 #&gt; [2,] "3 ± 1.00" "4 ± 1.03"</div><div class='input'>
-</div></span></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

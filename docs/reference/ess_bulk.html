@@ -76,7 +76,7 @@ see ess_tail()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@ see ess_tail()." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -137,19 +137,19 @@ see ess_tail()." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -179,28 +179,45 @@ rank normalized values using split chains. For the tail effective sample size
 see <code><a href='ess_tail.html'>ess_tail()</a></code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ess_bulk</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>ess_bulk</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>ess_bulk</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for rvar</span>
+<span class='fu'>ess_bulk</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>(matrix) Draws for a single variable (iterations x chains). See
-<code><a href='extract_variable_matrix.html'>extract_variable_matrix()</a></code>.</p></td>
+      <td><p>(multiple options) One of:</p><ul>
+<li><p>A matrix of draws for a single variable (iterations x chains). See
+<code><a href='extract_variable_matrix.html'>extract_variable_matrix()</a></code>.</p></li>
+<li><p>An <code><a href='rvar.html'>rvar</a></code>.</p></li>
+</ul></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Arguments passed to individual methods (if applicable).</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A single numeric value. If any of the draws is non-finite, that is, <code>NA</code>,
-<code>NaN</code>, <code>Inf</code>, or <code>-Inf</code>, the returned output will be (numeric) <code>NA</code>. Also, if
-all draws of a variable are the same (constant), the returned output will be
-(numeric) <code>NA</code> as well. The reason for the latter is that, for constant
-draws, we cannot distinguish between variables that are supposed to be
-constant (e.g.,  a diagonal element of a correlation matrix is always 1) or
-variables that just happened to be constant because of a failure of
-convergence or other problems in the sampling process.</p>
+    <p>If the input is an array, returns a single numeric value. If any of the draws
+is non-finite, that is, <code>NA</code>, <code>NaN</code>, <code>Inf</code>, or <code>-Inf</code>, the returned output
+will be (numeric) <code>NA</code>. Also, if all draws within any of the chains of a
+variable are the same (constant), the returned output will be (numeric) <code>NA</code>
+as well. The reason for the latter is that, for constant draws, we cannot
+distinguish between variables that are supposed to be constant (e.g., a
+diagonal element of a correlation matrix is always 1) or variables that just
+happened to be constant because of a failure of convergence or other problems
+in the sampling process.</p>
+<p>If the input is an <code><a href='rvar.html'>rvar</a></code>, returns an array of the same dimensions as the
+<code><a href='rvar.html'>rvar</a></code>, where each element is equal to the value that would be returned by
+passing the draws array for that element of the <code><a href='rvar.html'>rvar</a></code> to this function.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
@@ -225,6 +242,12 @@ MCMC. <em>arXiv preprint</em> <code>arXiv:1903.08008</code>.</p>
     <pre class="examples"><div class='input'><span class='va'>mu</span> <span class='op'>&lt;-</span> <span class='fu'><a href='extract_variable_matrix.html'>extract_variable_matrix</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"mu"</span><span class='op'>)</span>
 <span class='fu'>ess_bulk</span><span class='op'>(</span><span class='va'>mu</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 558.0173</div><div class='input'>
+<span class='va'>d</span> <span class='op'>&lt;-</span> <span class='fu'><a href='draws_rvars.html'>as_draws_rvars</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='st'>"multi_normal"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'>ess_bulk</span><span class='op'>(</span><span class='va'>d</span><span class='op'>$</span><span class='va'>Sigma</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;          [,1]     [,2]     [,3]
+#&gt; [1,] 742.2907 454.0657 468.3890
+#&gt; [2,] 454.0657 528.7972 434.1141
+#&gt; [3,] 468.3890 434.1141 728.9440</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

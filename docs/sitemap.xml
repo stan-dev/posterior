@@ -139,7 +139,7 @@
     <loc>https://mc-stan.org/posterior/reference/resample_draws.html</loc>
   </url>
   <url>
-    <loc>https://mc-stan.org/posterior/reference/reserved-variables.html</loc>
+    <loc>https://mc-stan.org/posterior/reference/reserved_variables.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rfun.html</loc>
@@ -154,7 +154,7 @@
     <loc>https://mc-stan.org/posterior/reference/rstar.html</loc>
   </url>
   <url>
-    <loc>https://mc-stan.org/posterior/reference/rvar-functions.html</loc>
+    <loc>https://mc-stan.org/posterior/reference/rvar-dist.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar-matmult.html</loc>
@@ -179,6 +179,12 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/split_chains.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/sub-.draws_array.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/sub-.draws_matrix.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/subset_draws.html</loc>
