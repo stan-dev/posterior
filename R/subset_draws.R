@@ -336,7 +336,7 @@ subset_dims <- function(x, ...) {
     slice_index <- chain_ids %in% chain
     for (i in seq_along(x)) {
       draws_of(x[[i]]) <- vec_slice(draws_of(x[[i]]), slice_index)
-      attr(x[[i]], "nchains") <- nchains
+      nchains_rvar(x[[i]]) <- nchains
     }
   }
   if (!is.null(iteration)) {

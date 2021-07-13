@@ -62,7 +62,7 @@ merge_chains.draws_list <- function(x, ...) {
 #' @rdname merge_chains
 #' @export
 merge_chains.rvar <- function(x, ...) {
-  attr(x, "nchains") <- 1L
+  nchains_rvar(x) <- 1L
   x
 }
 

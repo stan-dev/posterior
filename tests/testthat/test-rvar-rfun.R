@@ -10,7 +10,7 @@ test_that("rdo works", {
     x_array[3,,] %*% y_array[3,,],
     x_array[4,,] %*% y_array[4,,]
   ))
-  expect_identical(rdo(x %*% y), xy_ref)
+  expect_equal(rdo(x %*% y), xy_ref)
 })
 
 test_that("rfun works", {
@@ -25,7 +25,7 @@ test_that("rfun works", {
     x_array[3,,] %*% y_array[3,,],
     x_array[4,,] %*% y_array[4,,]
   ))
-  expect_identical(rfun(function(a,b) a %*% b)(x, y), xy_ref)
+  expect_equal(rfun(function(a,b) a %*% b)(x, y), xy_ref)
 })
 
 test_that("rvar_rng works", {

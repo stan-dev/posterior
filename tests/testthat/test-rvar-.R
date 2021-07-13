@@ -123,9 +123,9 @@ test_that("rvars work in tibbles", {
   x = rvar_from_array(x_array)
   df = tibble::tibble(x, y = x + 1)
 
-  expect_identical(df$x, x)
-  expect_identical(df$y, rvar_from_array(x_array + 1))
-  expect_identical(dplyr::mutate(df, z = x)$z, x)
+  expect_equal(df$x, x)
+  expect_equal(df$y, rvar_from_array(x_array + 1))
+  expect_equal(dplyr::mutate(df, z = x)$z, x)
 
   expect_equal(dplyr::mutate(df, z = x * 2)$z, rvar_from_array(x_array * 2))
   expect_equal(

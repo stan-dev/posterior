@@ -384,6 +384,14 @@ nchains.draws_rvars <- function(x) {
 nchains.rvar <- function(x) {
   attr(x, "nchains") %||% 1L
 }
+# for internal use only currently: if you are setting the nchains
+# attribute on an rvar, ALWAYS use this function so that the proxy
+# cache is invalidated
+`nchains_rvar<-` <- function(x, value) {
+  attr(x, "nchains") <- value
+  invalidate_rvar_cache(x)
+}
+
 
 #' @rdname draws-index
 #' @export
