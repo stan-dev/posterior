@@ -114,6 +114,8 @@ test_that("variables can be subsetted via non-scalar selection", {
 })
 
 test_that("subset_draws speed is tolerable with many variables", {
+  # some machines will be slower and so this test is unreliable on CRAN
+  skip_on_cran()
   x <- as_draws_matrix(matrix(rnorm(10 * 300000), nrow = 10))
   tt <- system.time(x2 <- subset_draws(x, colnames(x)))
   expect_equal(x, x2)
