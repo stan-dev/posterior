@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -133,19 +133,19 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -171,9 +171,9 @@
     <p>Gets/sets the array-representation that backs an <code><a href='rvar.html'>rvar</a></code>. Should be used rarely.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>draws_of</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+    <pre class="usage"><span class='fu'>draws_of</span><span class='op'>(</span><span class='va'>x</span>, with_chains <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
-<span class='fu'>draws_of</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>value</span></pre>
+<span class='fu'>draws_of</span><span class='op'>(</span><span class='va'>x</span>, with_chains <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='va'>value</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,11 +183,23 @@
       <td><p>(rvar) An <code><a href='rvar.html'>rvar</a></code> object.</p></td>
     </tr>
     <tr>
+      <th>with_chains</th>
+      <td><p>(logical) Should the array of draws include a dimension for chains?
+If <code>FALSE</code> (the default), chains are not included and the array has dimension
+<code><a href='https://rdrr.io/r/base/c.html'>c(ndraws(x), dim(x))</a></code>. If <code>TRUE</code>, chains are included and the array has
+dimension <code><a href='https://rdrr.io/r/base/c.html'>c(niterations(x), nchains(x), dim(x))</a></code>.</p></td>
+    </tr>
+    <tr>
       <th>value</th>
-      <td><p>An array.</p></td>
+      <td><p>(array) An array of values to use as the backing array of <code>x</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>If <code>with_chains = FALSE</code>, an array with dimensions <code><a href='https://rdrr.io/r/base/c.html'>c(ndraws(x), dim(x))</a></code>.</p>
+<p>If <code>with_chains = TRUE</code>, an array with dimensions
+<code><a href='https://rdrr.io/r/base/c.html'>c(niterations(x), nchains(x), dim(x))</a></code>.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>While <code><a href='rvar.html'>rvar</a></code>s implement fast versions of basic math operations (including
@@ -197,8 +209,56 @@ the <code><a href='rvar.html'>rvar</a></code> abstraction to do what you need to
 order to do that.</p>
 <p><code><a href='rvar.html'>rvar</a></code>s represent draws internally using arrays of arbitrary dimension, which
 is returned by <code>draws_of(x)</code> and can be set using <code>draws_of(x) &lt;- value</code>.
-The <strong>first</strong> dimension of these arrays is the index of the draws.</p>
+The <strong>first</strong> dimension of these arrays is the index of the draws. If
+<code>with_chains = TRUE</code>, then the dimensions of the returned array are modified
+so that the first dimension is the index of the iterations and the second
+dimension is the index of the chains.</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='rvar.html'>rvar</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, nchains <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
+<span class='va'>x</span>
+</div><div class='output co'>#&gt; rvar&lt;5,2&gt;[1] <span style='color: #949494;'>mean ± sd:</span>
+#&gt; [1] 5.5 ± 3 </div><div class='input'>
+<span class='co'># draws_of() without arguments will return the array of draws without</span>
+<span class='co'># chain information (first dimension is draw)</span>
+<span class='fu'>draws_of</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;    [,1]
+#&gt; 1     1
+#&gt; 2     2
+#&gt; 3     3
+#&gt; 4     4
+#&gt; 5     5
+#&gt; 6     6
+#&gt; 7     7
+#&gt; 8     8
+#&gt; 9     9
+#&gt; 10   10</div><div class='input'>
+<span class='co'># draws_of() with with_chains = TRUE will reshape the returned array to</span>
+<span class='co'># include chain information in the second dimension</span>
+<span class='fu'>draws_of</span><span class='op'>(</span><span class='va'>x</span>, with_chains <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; , , 1
+#&gt; 
+#&gt;      [,1] [,2]
+#&gt; [1,]    1    6
+#&gt; [2,]    2    7
+#&gt; [3,]    3    8
+#&gt; [4,]    4    9
+#&gt; [5,]    5   10
+#&gt; </div><div class='input'>
+<span class='co'># you can also set draws using draws_of(). When with_chains = FALSE the</span>
+<span class='co'># existing chain information will be retained ...</span>
+<span class='fu'>draws_of</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>2</span><span class='op'>:</span><span class='fl'>11</span>
+<span class='va'>x</span>
+</div><div class='output co'>#&gt; rvar&lt;5,2&gt;[1] <span style='color: #949494;'>mean ± sd:</span>
+#&gt; [1] 6.5 ± 3 </div><div class='input'>
+<span class='co'># when with_chains = TRUE the chain information will be set by the</span>
+<span class='co'># second dimension of the assigned array</span>
+<span class='fu'>draws_of</span><span class='op'>(</span><span class='va'>x</span>, with_chains <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fl'>2</span><span class='op'>:</span><span class='fl'>11</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>x</span>
+</div><div class='output co'>#&gt; rvar&lt;2,5&gt;[1] <span style='color: #949494;'>mean ± sd:</span>
+#&gt; [1] 6.5 ± 3 </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -76,7 +76,7 @@ See Details." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@ See Details." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -137,19 +137,19 @@ See Details." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -185,7 +185,7 @@ See <strong>Details</strong>.</p>
 <span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for data.frame</span>
-<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, .iteration <span class='op'>=</span> <span class='cn'>NULL</span>, .chain <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for draws_df</span>
 <span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
@@ -227,20 +227,6 @@ For <code>draws_df()</code>: Named
 arguments containing numeric vectors each defining a separate variable.</p></td>
     </tr>
     <tr>
-      <th>.iteration</th>
-      <td><p>(string) The name of a column in the supplied
-<code>data.frame</code> that contain iteration indices. If <code>NULL</code> (the default), the
-<code>".iteration"</code> column is used if it exists. Otherwise, the input is treated
-as being indexed continuously from the first to the last row.</p></td>
-    </tr>
-    <tr>
-      <th>.chain</th>
-      <td><p>(string) The name of a column in the supplied <code>data.frame</code> that
-contains chain indices. If <code>NULL</code> (the default), the <code>".chain"</code> column is
-used if it exists. Otherwise, the input is treated as belonging to a single
-chain.</p></td>
-    </tr>
-    <tr>
       <th>.nchains</th>
       <td><p>(positive integer) The number of chains. The default is <code>1</code>.</p></td>
     </tr>
@@ -258,6 +244,9 @@ columns <code>".iteration"</code>, <code>".chain"</code>, and <code>".draw"</cod
 the <code>".iteration"</code> and <code>".draw"</code> columns is that the former is relative to
 the MCMC chain while the latter ignores the chain information and has all
 unique values. See <strong>Examples</strong>.</p>
+<p>If a <code>data.frame</code>-like object is supplied to <code>as_draws_df</code> that contains
+columns named <code>".iteration"</code> or <code>".chain"</code>, they will be treated as
+iteration and chain indices, respectively. See <strong>Examples</strong>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other formats: 
@@ -303,21 +292,21 @@ unique values. See <strong>Examples</strong>.</p>
 <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>x2</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "draws_df"   "draws"      "tbl_df"     "tbl"        "data.frame"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x2</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; # A draws_df: 10 iterations, 1 chains, and 3 variables
-#&gt;         a     b c
-#&gt; 1   0.862  1.07 1
-#&gt; 2  -0.243 -0.67 1
-#&gt; 3  -0.206  1.11 1
-#&gt; 4   0.019 -0.25 1
-#&gt; 5   0.030 -1.18 1
-#&gt; 6   0.550 -0.98 1
-#&gt; 7  -2.274  1.07 1
-#&gt; 8   2.683  0.13 1
-#&gt; 9  -0.361  0.49 1
-#&gt; 10  0.213 -1.70 1
+#&gt;        a      b c
+#&gt; 1   0.61 -2.612 1
+#&gt; 2  -0.11 -0.156 1
+#&gt; 3   0.17  0.434 1
+#&gt; 4  -0.09 -0.382 1
+#&gt; 5   1.92  0.424 1
+#&gt; 6   1.30  1.063 1
+#&gt; 7   0.75  1.049 1
+#&gt; 8   0.56 -0.038 1
+#&gt; 9  -0.55  0.486 1
+#&gt; 10  1.11  1.673 1
 #&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>x2</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; draws_df [10 × 6] (S3: draws_df/draws/tbl_df/tbl/data.frame)
-#&gt;  $ a         : num [1:10] 0.8621 -0.2432 -0.2061 0.0192 0.0296 ...
-#&gt;  $ b         : num [1:10] 1.074 -0.665 1.114 -0.246 -1.178 ...
+#&gt;  $ a         : num [1:10] 0.6067 -0.1099 0.1722 -0.0903 1.9243 ...
+#&gt;  $ b         : num [1:10] -2.612 -0.156 0.434 -0.382 0.424 ...
 #&gt;  $ c         : num [1:10] 1 1 1 1 1 1 1 1 1 1
 #&gt;  $ .chain    : int [1:10] 1 1 1 1 1 1 1 1 1 1
 #&gt;  $ .iteration: int [1:10] 1 2 3 4 5 6 7 8 9 10
@@ -343,6 +332,23 @@ unique values. See <strong>Examples</strong>.</p>
 #&gt; 5 NA  NA     NA          5     5
 #&gt; 6 NA  NA     NA          6     6
 #&gt; # ... with 8 more variables</div><div class='input'>
+<span class='co'># manually supply chain information</span>
+<span class='va'>xnew</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>, .chain <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>2</span>, each <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>xnew</span> <span class='op'>&lt;-</span> <span class='fu'>as_draws_df</span><span class='op'>(</span><span class='va'>xnew</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>xnew</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; # A draws_df: 5 iterations, 2 chains, and 1 variables
+#&gt;       mu
+#&gt; 1  -0.35
+#&gt; 2   0.95
+#&gt; 3   1.32
+#&gt; 4  -0.30
+#&gt; 5  -0.39
+#&gt; 6  -0.79
+#&gt; 7  -1.06
+#&gt; 8  -0.80
+#&gt; 9  -1.76
+#&gt; 10 -0.69
+#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

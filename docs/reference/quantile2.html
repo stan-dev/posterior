@@ -73,7 +73,7 @@ with other summary functions in the posterior package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -81,7 +81,7 @@ with other summary functions in the posterior package." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -134,19 +134,19 @@ with other summary functions in the posterior package." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -173,25 +173,28 @@ with other summary functions in the posterior package." />
 with other summary functions in the <span class="pkg">posterior</span> package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>quantile2</span><span class='op'>(</span><span class='va'>x</span>, probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.05</span>, <span class='fl'>0.95</span><span class='op'>)</span>, names <span class='op'>=</span> <span class='cn'>TRUE</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>quantile2</span><span class='op'>(</span><span class='va'>x</span>, probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.05</span>, <span class='fl'>0.95</span><span class='op'>)</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for default</span>
+<span class='fu'>quantile2</span><span class='op'>(</span><span class='va'>x</span>, probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.05</span>, <span class='fl'>0.95</span><span class='op'>)</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>, names <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for rvar</span>
+<span class='fu'>quantile2</span><span class='op'>(</span><span class='va'>x</span>, probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.05</span>, <span class='fl'>0.95</span><span class='op'>)</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span>, names <span class='op'>=</span> <span class='cn'>TRUE</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>(matrix) Draws for a single variable (iterations x chains). See
-<code><a href='extract_variable_matrix.html'>extract_variable_matrix()</a></code>.</p></td>
+      <td><p>(multiple options) One of:</p><ul>
+<li><p>A matrix of draws for a single variable (iterations x chains). See
+<code><a href='extract_variable_matrix.html'>extract_variable_matrix()</a></code>.</p></li>
+<li><p>An <code><a href='rvar.html'>rvar</a></code>.</p></li>
+</ul></td>
     </tr>
     <tr>
       <th>probs</th>
       <td><p>(numeric vector) Probabilities in <code>[0, 1]</code>.</p></td>
-    </tr>
-    <tr>
-      <th>names</th>
-      <td><p>(logical) Should the result have a <code>names</code> attribute? The
-default is <code>TRUE</code>, but use <code>FALSE</code> for improved speed if there are many
-values in <code>probs</code>.</p></td>
     </tr>
     <tr>
       <th>na.rm</th>
@@ -200,10 +203,22 @@ to computing quantiles? The default is <code>FALSE</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Further arguments passed to <code><a href='https://rdrr.io/r/stats/quantile.html'>stats::quantile()</a></code>.</p></td>
+      <td><p>Arguments passed to individual methods (if applicable) and then
+on to <code><a href='https://rdrr.io/r/stats/quantile.html'>stats::quantile()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>names</th>
+      <td><p>(logical) Should the result have a <code>names</code> attribute? The
+default is <code>TRUE</code>, but use <code>FALSE</code> for improved speed if there are many
+values in <code>probs</code>.</p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A numeric vector of length <code><a href='https://rdrr.io/r/base/length.html'>length(probs)</a></code>. If <code>names = TRUE</code>, it has a
+<a href='https://rdrr.io/r/base/names.html'>names</a> attribute with names like <code>"q5"</code>, <code>"q95"</code>, etc, based on the values
+of <code>probs</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='va'>mu</span> <span class='op'>&lt;-</span> <span class='fu'><a href='extract_variable_matrix.html'>extract_variable_matrix</a></span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='st'>"mu"</span><span class='op'>)</span>

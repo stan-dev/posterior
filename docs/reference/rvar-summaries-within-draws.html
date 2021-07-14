@@ -74,7 +74,7 @@ rvar_range(), see Details)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -82,7 +82,7 @@ rvar_range(), see Details)." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -135,19 +135,19 @@ rvar_range(), see Details)." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -195,6 +195,8 @@ producing a new random variable of length 1 (except in the case of
 
 <span class='fu'>rvar_range</span><span class='op'>(</span><span class='va'>...</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
+<span class='fu'>rvar_quantile</span><span class='op'>(</span><span class='va'>...</span>, <span class='va'>probs</span>, names <span class='op'>=</span> <span class='cn'>FALSE</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
+
 <span class='fu'>rvar_all</span><span class='op'>(</span><span class='va'>...</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
 <span class='fu'>rvar_any</span><span class='op'>(</span><span class='va'>...</span>, na.rm <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
@@ -229,11 +231,21 @@ the smaller one. See <code><a href='https://rdrr.io/r/stats/mad.html'>stats::mad
 i.e., take the larger of the two middle values for even sample size. See
 <code><a href='https://rdrr.io/r/stats/mad.html'>stats::mad()</a></code>.</p></td>
     </tr>
+    <tr>
+      <th>probs</th>
+      <td><p>(numeric vector) For <code>rvar_quantile()</code>, probabilities in <code>[0, 1]</code>.</p></td>
+    </tr>
+    <tr>
+      <th>names</th>
+      <td><p>(logical) For <code>rvar_quantile()</code>, if <code>TRUE</code>, the result has a
+<code>names</code> attribute.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An <code><a href='rvar.html'>rvar</a></code> of length 1 (or in the case of <code><a href='https://rdrr.io/r/base/range.html'>range()</a></code>, length 2) with the same number
+    <p>An <code><a href='rvar.html'>rvar</a></code> of length 1 (for <code><a href='https://rdrr.io/r/base/range.html'>range()</a></code>, length 2; for <code><a href='https://rdrr.io/r/stats/quantile.html'>quantile()</a></code>, length
+equal to <code><a href='https://rdrr.io/r/base/length.html'>length(probs)</a></code>) with the same number
 of draws as the input rvar(s) containing the summary statistic computed within
 each draw of the input rvar(s).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -245,7 +257,7 @@ without the <code>rvar_</code> prefix (e.g., <code>rvar_mean()</code> calls <cod
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><a href='rvar-summaries-over-draws.html'>rvar-summaries-over-draws</a> for summary functions across draws (e.g. expectations).
-<a href='rvar-functions.html'>rvar-functions</a> for density, CDF, and quantile functions of random variables.</p>
+<a href='rvar-dist.html'>rvar-dist</a> for density, CDF, and quantile functions of random variables.</p>
 <p>Other rvar-summaries: 
 <code><a href='rvar-summaries-over-draws.html'>rvar-summaries-over-draws</a></code>,
 <code><a href='rvar_is_finite.html'>rvar_is_finite</a>()</code></p></div>
@@ -258,17 +270,20 @@ without the <code>rvar_</code> prefix (e.g., <code>rvar_mean()</code> calls <cod
 <span class='co'># These will give similar results to mean(1:4),</span>
 <span class='co'># median(1:4), sum(1:4), prod(1:4), etc</span>
 <span class='fu'>rvar_mean</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] <span style='color: #949494;'>mean ± sd:</span><span>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] <span style='color: #949494;'>mean ± sd:</span>
 #&gt; [1] 2.5 ± 1 </div><div class='input'><span class='fu'>rvar_median</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] </span><span style='color: #949494;'>mean ± sd:</span><span>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] <span style='color: #949494;'>mean ± sd:</span>
 #&gt; [1] 2.5 ± 1.1 </div><div class='input'><span class='fu'>rvar_sum</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] </span><span style='color: #949494;'>mean ± sd:</span><span>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] <span style='color: #949494;'>mean ± sd:</span>
 #&gt; [1] 9.9 ± 4 </div><div class='input'><span class='fu'>rvar_prod</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] </span><span style='color: #949494;'>mean ± sd:</span><span>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] <span style='color: #949494;'>mean ± sd:</span>
 #&gt; [1] 23 ± 97 </div><div class='input'><span class='fu'>rvar_range</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; rvar&lt;4000&gt;[2] </span><span style='color: #949494;'>mean ± sd:</span><span>
-#&gt; [1] 0.02 ± 1.5  4.96 ± 1.5 </div><div class='input'>
-</div></span></pre>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[2] <span style='color: #949494;'>mean ± sd:</span>
+#&gt; [1] 0.02 ± 1.5  4.96 ± 1.5 </div><div class='input'><span class='fu'>rvar_quantile</span><span class='op'>(</span><span class='va'>x</span>, probs <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.25</span>, <span class='fl'>0.5</span>, <span class='fl'>0.75</span><span class='op'>)</span>, names <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[3] <span style='color: #949494;'>mean ± sd:</span>
+#&gt;        25%        50%        75% 
+#&gt; 1.3 ± 1.2  2.5 ± 1.1  3.6 ± 1.2  </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

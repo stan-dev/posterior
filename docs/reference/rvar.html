@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -133,19 +133,19 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -171,7 +171,13 @@
     <p>Random variables backed by arrays of arbitrary dimension</p>
     </div>
 
-    <pre class="usage"><span class='fu'>rvar</span><span class='op'>(</span>x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span>, dim <span class='op'>=</span> <span class='cn'>NULL</span>, dimnames <span class='op'>=</span> <span class='cn'>NULL</span>, nchains <span class='op'>=</span> <span class='fl'>1L</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>rvar</span><span class='op'>(</span>
+  x <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/double.html'>double</a></span><span class='op'>(</span><span class='op'>)</span>,
+  dim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  dimnames <span class='op'>=</span> <span class='cn'>NULL</span>,
+  nchains <span class='op'>=</span> <span class='fl'>1L</span>,
+  with_chains <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -184,7 +190,9 @@
 The resulting <code>rvar</code> will have dimension <code>dim(x)[-1]</code>; that is,
 everything except the first dimension is used for the shape of the
 variable, and the first dimension is used to index draws from the
-distribution. See <strong>Examples</strong>.</p></li>
+distribution (see <strong>Examples</strong>). Optionally,
+if <code>with_chains == TRUE</code>, the first dimension indexes the iteration and the
+second dimension indexes the chain (see <code>with_chains</code>).</p></li>
 </ul></td>
     </tr>
     <tr>
@@ -207,6 +215,15 @@ to override the names of the dimensions of the <code>rvar</code> to be created (
     <tr>
       <th>nchains</th>
       <td><p>(positive integer) The number of chains. The default is <code>1</code>.</p></td>
+    </tr>
+    <tr>
+      <th>with_chains</th>
+      <td><p>(logical) Does <code>x</code> include a dimension for chains?
+If <code>FALSE</code> (the default), chains are not included, the first dimension of
+the input array should index draws, and the <code>nchains</code> argument can be
+used to determine the number of chains. If <code>TRUE</code>, the <code>nchains</code> argument
+is ignored and the second dimension of <code>x</code> is used to index chains.
+Internally, the array will be converted to a format without the chain index.</p></td>
     </tr>
     </table>
 
@@ -244,30 +261,44 @@ random number generator functions to efficiently create <code>rvar</code>s, use 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1234</span><span class='op'>)</span>
+
 <span class='co'># To create a "scalar" `rvar`, pass a one-dimensional array or a vector</span>
 <span class='co'># whose length (here `4000`) is the desired number of draws:</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rvar</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>4000</span>, mean <span class='op'>=</span> <span class='fl'>1</span>, sd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>x</span>
-</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] <span style='color: #949494;'>mean ± sd:</span><span>
-#&gt; [1] 1 ± 0.99 </div><div class='input'>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[1] <span style='color: #949494;'>mean ± sd:</span>
+#&gt; [1] 1 ± 1 </div><div class='input'>
 <span class='co'># Create random vectors by adding an additional dimension:</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>   <span class='co'># length of output vector</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rvar</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>4000</span> <span class='op'>*</span> <span class='va'>n</span>, mean <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='va'>n</span>, each <span class='op'>=</span> <span class='fl'>4000</span><span class='op'>)</span>, sd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4000</span>, <span class='va'>n</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>x</span>
-</div><div class='output co'>#&gt; rvar&lt;4000&gt;[4] </span><span style='color: #949494;'>mean ± sd:</span><span>
-#&gt; [1] 1 ± 0.98  2 ± 1.00  3 ± 0.97  4 ± 0.98 </div><div class='input'>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[4] <span style='color: #949494;'>mean ± sd:</span>
+#&gt; [1] 1 ± 0.99  2 ± 0.99  3 ± 1.00  4 ± 1.02 </div><div class='input'>
 <span class='co'># Create a random matrix:</span>
 <span class='va'>rows</span> <span class='op'>&lt;-</span> <span class='fl'>4</span>
 <span class='va'>cols</span> <span class='op'>&lt;-</span> <span class='fl'>3</span>
 <span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rvar</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>4000</span> <span class='op'>*</span> <span class='va'>rows</span> <span class='op'>*</span> <span class='va'>cols</span>, mean <span class='op'>=</span> <span class='fl'>1</span>, sd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>4000</span>, <span class='va'>rows</span>, <span class='va'>cols</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='va'>x</span>
-</div><div class='output co'>#&gt; rvar&lt;4000&gt;[4,3] </span><span style='color: #949494;'>mean ± sd:</span><span>
+</div><div class='output co'>#&gt; rvar&lt;4000&gt;[4,3] <span style='color: #949494;'>mean ± sd:</span>
 #&gt;      [,1]         [,2]         [,3]        
-#&gt; [1,] 1.03 ± 0.99  1.00 ± 1.00  1.00 ± 0.97 
-#&gt; [2,] 1.01 ± 0.99  1.01 ± 0.99  0.99 ± 1.00 
-#&gt; [3,] 0.99 ± 1.00  1.02 ± 0.99  1.02 ± 1.01 
-#&gt; [4,] 0.99 ± 1.00  0.99 ± 1.02  1.01 ± 1.01 </div><div class='input'>
-</div></span></pre>
+#&gt; [1,] 1.00 ± 0.98  1.00 ± 1.00  0.97 ± 1.00 
+#&gt; [2,] 1.00 ± 1.01  1.01 ± 1.02  0.99 ± 0.99 
+#&gt; [3,] 1.02 ± 1.01  0.99 ± 1.00  1.00 ± 0.99 
+#&gt; [4,] 1.01 ± 1.01  1.02 ± 1.00  1.00 ± 1.01 </div><div class='input'>
+<span class='co'># If the input sample comes from multiple chains, we can indicate that using the</span>
+<span class='co'># nchains argument (here, 1000 draws each from 4 chains):</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rvar</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>4000</span>, mean <span class='op'>=</span> <span class='fl'>1</span>, sd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, nchains <span class='op'>=</span> <span class='fl'>4</span><span class='op'>)</span>
+<span class='va'>x</span>
+</div><div class='output co'>#&gt; rvar&lt;1000,4&gt;[1] <span style='color: #949494;'>mean ± sd:</span>
+#&gt; [1] 0.97 ± 1 </div><div class='input'>
+<span class='co'># Or if the input sample has chain information as its second dimension, we can</span>
+<span class='co'># use with_chains to create the rvar</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>rvar</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/array.html'>array</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>4000</span>, mean <span class='op'>=</span> <span class='fl'>1</span>, sd <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>, dim <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1000</span>, <span class='fl'>4</span><span class='op'>)</span><span class='op'>)</span>, with_chains <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='va'>x</span>
+</div><div class='output co'>#&gt; rvar&lt;1000,4&gt;[1] <span style='color: #949494;'>mean ± sd:</span>
+#&gt; [1] 1 ± 1 </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

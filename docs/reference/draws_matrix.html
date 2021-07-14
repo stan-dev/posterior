@@ -76,7 +76,7 @@ See Details." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@ See Details." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -137,19 +137,19 @@ See Details." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -205,7 +205,7 @@ See <strong>Details</strong>.</p>
 <span class='co'># S3 method for mcmc.list</span>
 <span class='fu'>as_draws_matrix</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
-<span class='fu'>draws_matrix</span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span>
+<span class='fu'>draws_matrix</span><span class='op'>(</span><span class='va'>...</span>, .nchains <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 
 <span class='fu'>is_draws_matrix</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></pre>
 
@@ -223,6 +223,10 @@ Arguments passed to individual methods (if applicable).
 For <code>draws_matrix()</code>: Named
 arguments containing numeric vectors each defining a separate variable.</p></td>
     </tr>
+    <tr>
+      <th>.nchains</th>
+      <td><p>(positive integer) The number of chains. The default is <code>1</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -232,10 +236,7 @@ arguments containing numeric vectors each defining a separate variable.</p></td>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Objects of class <code>"draws_matrix"</code> are matrices (2-D arrays) with
-dimensions <code>"draw"</code> and <code>"variable"</code>. This format does not store any
-information about which MCMC chain the draws are from and so we simply
-refer to the rows as draws and not iterations (unlike for the
-<code><a href='draws_array.html'>draws_array</a></code> format). See <strong>Examples</strong>.</p>
+dimensions <code>"draw"</code> and <code>"variable"</code>. See <strong>Examples</strong>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other formats: 
@@ -249,7 +250,7 @@ refer to the rows as draws and not iterations (unlike for the
     <pre class="examples"><div class='input'><span class='va'>x1</span> <span class='op'>&lt;-</span> <span class='fu'>as_draws_matrix</span><span class='op'>(</span><span class='fu'><a href='example_draws.html'>example_draws</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>x1</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "draws_matrix" "draws"        "matrix"      </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; # A draws_matrix: 400 draws, and 10 variables
+</div><div class='output co'>#&gt; # A draws_matrix: 100 iterations, 4 chains, and 10 variables
 #&gt;     variable
 #&gt; draw   mu tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6]
 #&gt;   1  2.01 2.8     3.96    0.271    -0.74      2.1    0.923      1.7
@@ -266,27 +267,29 @@ refer to the rows as draws and not iterations (unlike for the
 </div><div class='output co'>#&gt;  'draws_matrix' num [1:400, 1:10] 2.01 1.46 5.81 6.85 1.81 ...
 #&gt;  - attr(*, "dimnames")=List of 2
 #&gt;   ..$ draw    : chr [1:400] "1" "2" "3" "4" ...
-#&gt;   ..$ variable: chr [1:10] "mu" "tau" "theta[1]" "theta[2]" ...</div><div class='input'>
+#&gt;   ..$ variable: chr [1:10] "mu" "tau" "theta[1]" "theta[2]" ...
+#&gt;  - attr(*, "nchains")= int 4</div><div class='input'>
 <span class='va'>x2</span> <span class='op'>&lt;-</span> <span class='fu'>draws_matrix</span><span class='op'>(</span>a <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>, b <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>10</span><span class='op'>)</span>, c <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>x2</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] "draws_matrix" "draws"        "matrix"      </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; # A draws_matrix: 10 draws, and 3 variables
+</div><div class='output co'>#&gt; # A draws_matrix: 10 iterations, 1 chains, and 3 variables
 #&gt;     variable
-#&gt; draw      a     b c
-#&gt;   1   0.424 -0.39 1
-#&gt;   2   1.063 -0.79 1
-#&gt;   3   1.049 -1.06 1
-#&gt;   4  -0.038 -0.80 1
-#&gt;   5   0.486 -1.76 1
-#&gt;   6   1.673 -0.69 1
-#&gt;   7  -0.354 -0.56 1
-#&gt;   8   0.946 -0.54 1
-#&gt;   9   1.317  0.23 1
-#&gt;   10 -0.297  0.98 1</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>x2</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;  'draws_matrix' num [1:10, 1:3] 0.4242 1.0631 1.0487 -0.0381 0.4861 ...
+#&gt; draw      a      b c
+#&gt;   1   0.604 -0.855 1
+#&gt;   2  -0.263 -0.287 1
+#&gt;   3  -0.528  0.895 1
+#&gt;   4   0.192  0.067 1
+#&gt;   5  -1.146 -0.163 1
+#&gt;   6   0.846 -0.827 1
+#&gt;   7   0.082  1.877 1
+#&gt;   8  -1.305  0.766 1
+#&gt;   9  -0.945  0.980 1
+#&gt;   10  0.454  1.322 1</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/str.html'>str</a></span><span class='op'>(</span><span class='va'>x2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;  'draws_matrix' num [1:10, 1:3] 0.604 -0.263 -0.528 0.192 -1.146 ...
 #&gt;  - attr(*, "dimnames")=List of 2
 #&gt;   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
-#&gt;   ..$ variable: chr [1:3] "a" "b" "c"</div></pre>
+#&gt;   ..$ variable: chr [1:3] "a" "b" "c"
+#&gt;  - attr(*, "nchains")= int 1</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
