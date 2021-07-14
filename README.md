@@ -43,13 +43,6 @@ You can install the latest official release version via
 install.packages("posterior")
 ```
 
-Alternatively, you can install binaries of the current development
-version via
-
-``` r
-install.packages("posterior", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
-```
-
 or directly build the package from GitHub via
 
 ``` r

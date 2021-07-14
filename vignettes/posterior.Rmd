@@ -27,11 +27,10 @@ from Bayesian models. The primary goals of the package are to:
 
 ## Installation
 
-The package is not on CRAN yet, but you can install the latest beta release 
-version via 
+You can install the latest official release version via
 
 ```{r install, eval=FALSE}
-install.packages("posterior", repos = c("https://mc-stan.org/r-packages/", getOption("repos")))
+install.packages("posterior")
 ```
 
 or the latest development version from GitHub via 
