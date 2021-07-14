@@ -61,7 +61,7 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
     .ndraws <- ndraws(out)
     nchains <- as_one_integer(nchains)
     check_nchains_compat_with_ndraws(nchains, .ndraws)
-    attr(out, "nchains") <- nchains
+    nchains_rvar(out) <- nchains
   }
 
   out
@@ -131,15 +131,29 @@ as_tibble.rvar <- function(x, ...) {
 
 # vctrs proxy / restore --------------------------------------------------------
 
+invalidate_rvar_cache = function(x) {
+  attr(x, "cache") <- new.env(parent = emptyenv())
+  x
+}
+
 #' @importFrom vctrs vec_proxy vec_chop
 #' @export
 vec_proxy.rvar = function(x, ...) {
   # TODO: probably could do something more efficient here and for restore
-  .draws = draws_of(x)
-  out <- vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
-  for (i in seq_along(out)) {
-    attr(out[[i]], "nchains") <- nchains(x)
+  # In the meantime, using caching to help with algorithms that call vec_proxy
+  # repeatedly. See https://github.com/r-lib/vctrs/issues/1411
+
+  out <- attr(x, "cache")$vec_proxy
+  if (is.null(out)) {
+    # proxy is not in the cache, calculate it and store it in the cache
+    .draws = draws_of(x)
+    out <- vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
+    for (i in seq_along(out)) {
+      attr(out[[i]], "nchains") <- nchains(x)
+    }
+    attr(x, "cache")$vec_proxy <- out
   }
+
   out
 }
 
@@ -173,7 +187,12 @@ vec_restore.rvar <- function(x, ...) {
   nchains_or_null <- lapply(x, function(x) if (dim(x)[[2]] %||% 1 == 1) NULL else attr(x, "nchains"))
   .nchains <- Reduce(nchains2_common, nchains_or_null) %||% 1L
 
-  new_rvar(.draws, .nchains = .nchains)
+  out <- new_rvar(.draws, .nchains = .nchains)
+
+  # since we've already spent time calculating it, save the proxy in the cache
+  attr(out, "cache")$vec_proxy <- x
+
+  out
 }
 
 

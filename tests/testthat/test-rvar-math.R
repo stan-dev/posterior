@@ -6,29 +6,29 @@ test_that("math operators works", {
   y_array = array(c(2:13,12:1), dim = c(4,2,3))
   y = new_rvar(y_array)
 
-  expect_identical(log(x), new_rvar(log(x_array)))
+  expect_equal(log(x), new_rvar(log(x_array)))
 
-  expect_identical(-x, new_rvar(-x_array))
+  expect_equal(-x, new_rvar(-x_array))
 
-  expect_identical(x + 2, new_rvar(x_array + 2))
-  expect_identical(2 + x, new_rvar(x_array + 2))
-  expect_identical(x + y, new_rvar(x_array + y_array))
+  expect_equal(x + 2, new_rvar(x_array + 2))
+  expect_equal(2 + x, new_rvar(x_array + 2))
+  expect_equal(x + y, new_rvar(x_array + y_array))
 
-  expect_identical(x - 2, new_rvar(x_array - 2))
-  expect_identical(2 - x, new_rvar(2 - x_array))
-  expect_identical(x - y, new_rvar(x_array - y_array))
+  expect_equal(x - 2, new_rvar(x_array - 2))
+  expect_equal(2 - x, new_rvar(2 - x_array))
+  expect_equal(x - y, new_rvar(x_array - y_array))
 
-  expect_identical(x * 2, new_rvar(x_array * 2))
-  expect_identical(2 * x, new_rvar(x_array * 2))
-  expect_identical(x * y, new_rvar(x_array * y_array))
+  expect_equal(x * 2, new_rvar(x_array * 2))
+  expect_equal(2 * x, new_rvar(x_array * 2))
+  expect_equal(x * y, new_rvar(x_array * y_array))
 
-  expect_identical(x / 2, new_rvar(x_array / 2))
-  expect_identical(2 / x, new_rvar(2 / x_array))
-  expect_identical(x / y, new_rvar(x_array / y_array))
+  expect_equal(x / 2, new_rvar(x_array / 2))
+  expect_equal(2 / x, new_rvar(2 / x_array))
+  expect_equal(x / y, new_rvar(x_array / y_array))
 
-  expect_identical(x ^ 2, new_rvar((x_array) ^ 2))
-  expect_identical(2 ^ x, new_rvar(2 ^ (x_array)))
-  expect_identical(x ^ y, new_rvar(x_array ^ y_array))
+  expect_equal(x ^ 2, new_rvar((x_array) ^ 2))
+  expect_equal(2 ^ x, new_rvar(2 ^ (x_array)))
+  expect_equal(x ^ y, new_rvar(x_array ^ y_array))
 
   # ensure broadcasting of constants retains shape
   z2 <- new_rvar(array(1, dim = c(1,1)))
@@ -42,13 +42,13 @@ test_that("logical operators work", {
   x = as_rvar(x_array)
   y = as_rvar(y_array)
 
-  expect_identical(x | y_array, as_rvar(x_array | y_array))
-  expect_identical(y_array | x, as_rvar(x_array | y_array))
-  expect_identical(x | y, as_rvar(x_array | y_array))
+  expect_equal(x | y_array, as_rvar(x_array | y_array))
+  expect_equal(y_array | x, as_rvar(x_array | y_array))
+  expect_equal(x | y, as_rvar(x_array | y_array))
 
-  expect_identical(x & y_array, as_rvar(x_array & y_array))
-  expect_identical(y_array & x, as_rvar(x_array & y_array))
-  expect_identical(x & y, as_rvar(x_array & y_array))
+  expect_equal(x & y_array, as_rvar(x_array & y_array))
+  expect_equal(y_array & x, as_rvar(x_array & y_array))
+  expect_equal(x & y, as_rvar(x_array & y_array))
 })
 
 test_that("comparison operators work", {
@@ -57,29 +57,29 @@ test_that("comparison operators work", {
   y_array = array(c(2:13,12:1), dim = c(4,2,3))
   y = new_rvar(y_array)
 
-  expect_identical(x < 5, new_rvar(x_array < 5))
-  expect_identical(5 < x, new_rvar(5 < x_array))
-  expect_identical(x < y, new_rvar(x_array < y_array))
+  expect_equal(x < 5, new_rvar(x_array < 5))
+  expect_equal(5 < x, new_rvar(5 < x_array))
+  expect_equal(x < y, new_rvar(x_array < y_array))
 
-  expect_identical(x <= 5, new_rvar(x_array <= 5))
-  expect_identical(5 <= x, new_rvar(5 <= x_array))
-  expect_identical(x <= y, new_rvar(x_array <= y_array))
+  expect_equal(x <= 5, new_rvar(x_array <= 5))
+  expect_equal(5 <= x, new_rvar(5 <= x_array))
+  expect_equal(x <= y, new_rvar(x_array <= y_array))
 
-  expect_identical(x > 5, new_rvar(x_array > 5))
-  expect_identical(5 > x, new_rvar(5 > x_array))
-  expect_identical(x > y, new_rvar(x_array > y_array))
+  expect_equal(x > 5, new_rvar(x_array > 5))
+  expect_equal(5 > x, new_rvar(5 > x_array))
+  expect_equal(x > y, new_rvar(x_array > y_array))
 
-  expect_identical(x >= 5, new_rvar(x_array >= 5))
-  expect_identical(5 >= x, new_rvar(5 >= x_array))
-  expect_identical(x >= y, new_rvar(x_array >= y_array))
+  expect_equal(x >= 5, new_rvar(x_array >= 5))
+  expect_equal(5 >= x, new_rvar(5 >= x_array))
+  expect_equal(x >= y, new_rvar(x_array >= y_array))
 
-  expect_identical(x == 5, new_rvar(x_array == 5))
-  expect_identical(5 == x, new_rvar(5 == x_array))
-  expect_identical(x == y, new_rvar(x_array == y_array))
+  expect_equal(x == 5, new_rvar(x_array == 5))
+  expect_equal(5 == x, new_rvar(5 == x_array))
+  expect_equal(x == y, new_rvar(x_array == y_array))
 
-  expect_identical(x != 5, new_rvar(x_array != 5))
-  expect_identical(5 != x, new_rvar(5 != x_array))
-  expect_identical(x != y, new_rvar(x_array != y_array))
+  expect_equal(x != 5, new_rvar(x_array != 5))
+  expect_equal(5 != x, new_rvar(5 != x_array))
+  expect_equal(x != y, new_rvar(x_array != y_array))
 })
 
 test_that("functions in the Math generic with extra arguments work", {
@@ -131,7 +131,7 @@ test_that("matrix multiplication works", {
     x_array[3,,] %*% y_array[3,,],
     x_array[4,,] %*% y_array[4,,]
   ))
-  expect_identical(x %**% y, xy_ref)
+  expect_equal(x %**% y, xy_ref)
 
 
   x_array = array(1:6, dim = c(2,3))
@@ -143,20 +143,20 @@ test_that("matrix multiplication works", {
     x_array[1,] %*% y_array[1,],
     x_array[2,] %*% y_array[2,]
   ))
-  expect_identical(x %**% y, xy_ref)
+  expect_equal(x %**% y, xy_ref)
 
   # automatic promotion to row/col vector of numeric vectors
   x_meany_ref = new_rvar(abind::abind(along = 0,
     x_array[1,] %*% colMeans(y_array),
     x_array[2,] %*% colMeans(y_array)
   ))
-  expect_identical(x %**% colMeans(y_array), x_meany_ref)
+  expect_equal(x %**% colMeans(y_array), x_meany_ref)
 
   meanx_y_ref = new_rvar(abind::abind(along = 0,
     colMeans(x_array) %*% y_array[1,],
     colMeans(x_array) %*% y_array[2,]
   ))
-  expect_identical(colMeans(x_array) %**% y, meanx_y_ref)
+  expect_equal(colMeans(x_array) %**% y, meanx_y_ref)
 
   # dimension name preservation
   m1 <- as_rvar(diag(1:3))

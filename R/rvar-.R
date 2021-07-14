@@ -121,7 +121,8 @@ new_rvar <- function(x = double(), .nchains = 1L) {
     list(),
     draws = x,
     nchains = .nchains,
-    class = c("rvar", "vctrs_vctr", "list")
+    class = c("rvar", "vctrs_vctr", "list"),
+    cache = new.env(parent = emptyenv())
   )
 }
 
@@ -207,12 +208,13 @@ draws_of <- function(x, with_chains = FALSE) {
 
   if (with_chains) {
     draws <- drop_chain_dim(value)
-    attr(x, "nchains") <- dim(value)[[2]] %||% 1L
+    nchains_rvar(x) <- dim(value)[[2]] %||% 1L
   } else {
     draws <- value
   }
   attr(x, "draws") <- cleanup_draw_dims(draws)
 
+  x <- invalidate_rvar_cache(x)
   x
 }
 
@@ -302,7 +304,13 @@ all.equal.rvar <- function(target, current, ...) {
     ))
   }
 
-  object_result <- all.equal(unclass(target), unclass(current), ...)
+  # ignore cache in comparison
+  .target <- unclass(target)
+  attr(.target, "cache") <- NULL
+  .current <- unclass(current)
+  attr(.current, "cache") <- NULL
+
+  object_result <- all.equal(.target, .current, ...)
   if (!isTRUE(object_result)) {
     result = c(result, object_result)
   }
@@ -392,7 +400,7 @@ conform_rvar_nchains <- function(rvars) {
   .nchains <- Reduce(nchains2_common, nchains_or_null) %||% 1L
 
   for (i in seq_along(rvars)) {
-    attr(rvars[[i]], "nchains") <- .nchains
+    nchains_rvar(rvars[[i]]) <- .nchains
   }
 
   rvars

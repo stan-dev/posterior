@@ -131,7 +131,7 @@ str.rvar <- function(
       }
     }
     str_attr(attributes(draws_of(object)), "draws_of(*)", c("names", "dim", "dimnames", "class"))
-    str_attr(attributes(object), "*", c("draws", "names", "dim", "dimnames", "class", "nchains"))
+    str_attr(attributes(object), "*", c("draws", "names", "dim", "dimnames", "class", "nchains", "cache"))
   }
 
   invisible(NULL)

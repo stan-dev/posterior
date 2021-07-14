@@ -139,7 +139,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
   out <- .as_draws_rvars(rvars_list, ...)
   .nchains <- nchains(x)
   for (i in seq_along(out)) {
-    attr(out[[i]], "nchains") <- .nchains
+    nchains_rvar(out[[i]]) <- .nchains
   }
   out
 }

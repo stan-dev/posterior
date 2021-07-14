@@ -14,8 +14,8 @@ test_that("indexing with [[ works on a vector", {
   x_array_ref = x_array
   dimnames(x_array_ref) <- NULL
 
-  expect_identical(x[[3]], new_rvar(x_array_ref[,3, drop = FALSE]))
-  expect_identical(x[["a2"]], new_rvar(x_array_ref[,2, drop = FALSE]))
+  expect_equal(x[[3]], new_rvar(x_array_ref[,3, drop = FALSE]))
+  expect_equal(x[["a2"]], new_rvar(x_array_ref[,2, drop = FALSE]))
 
   expect_error(x[[]])
   expect_error(x[[NA]])
@@ -42,9 +42,9 @@ test_that("indexing with [[ works on a matrix", {
   x_array_ref = x_array
   dim(x_array_ref) <- c(2,12)
 
-  expect_identical(x[[2]], new_rvar(x_array_ref[,2, drop = TRUE]))
-  expect_identical(x[[12]], new_rvar(x_array_ref[,12, drop = TRUE]))
-  expect_identical(x[[2,3]], new_rvar(x_array[,2,3, drop = TRUE]))
+  expect_equal(x[[2]], new_rvar(x_array_ref[,2, drop = TRUE]))
+  expect_equal(x[[12]], new_rvar(x_array_ref[,12, drop = TRUE]))
+  expect_equal(x[[2,3]], new_rvar(x_array[,2,3, drop = TRUE]))
 
   # invalid indexing should result in errors
   expect_error(x[[1,]])
@@ -68,19 +68,19 @@ test_that("assignment with [[ works", {
   )
   x = new_rvar(x_array)
 
-  expect_identical(
+  expect_equal(
     {x2 <- x; x2[[2]] <- 1; x2},
     new_rvar({xr <- x_array; xr[,2,1] <- 1; xr})
   )
-  expect_identical(
+  expect_equal(
     {x2 <- x; x2[[12]] <- 1; x2},
     new_rvar({xr <- x_array; xr[,4,3] <- 1; xr})
   )
-  expect_identical(
+  expect_equal(
     {x2 <- x; x2[[12]] <- new_rvar(c(1,2)); x2},
     new_rvar({xr <- x_array; xr[,4,3] <- c(1,2); xr})
   )
-  expect_identical(
+  expect_equal(
     {x2 <- x; x2[["a2","b3"]] <- new_rvar(c(1,2)); x2},
     new_rvar({xr <- x_array; xr[,2,3] <- c(1,2); xr})
   )
@@ -100,33 +100,33 @@ test_that("indexing with [ works on a vector", {
   x_array = array(1:20, dim = c(4,5), dimnames = list(A = paste0("a", 1:4), NULL))
   x = rvar_from_array(x_array)
 
-  expect_identical(x[], x)
+  expect_equal(x[], x)
 
-  expect_identical(x[3], rvar_from_array(x_array[3,, drop = FALSE]))
-  expect_identical(x["a2"], rvar_from_array(x_array["a2",, drop = FALSE]))
-  expect_identical(x[c(1,3)], rvar_from_array(x_array[c(1,3),, drop = FALSE]))
-  expect_identical(x[c("a2","a4")], rvar_from_array(x_array[c("a2","a4"),, drop = FALSE]))
+  expect_equal(x[3], rvar_from_array(x_array[3,, drop = FALSE]))
+  expect_equal(x["a2"], rvar_from_array(x_array["a2",, drop = FALSE]))
+  expect_equal(x[c(1,3)], rvar_from_array(x_array[c(1,3),, drop = FALSE]))
+  expect_equal(x[c("a2","a4")], rvar_from_array(x_array[c("a2","a4"),, drop = FALSE]))
 
-  expect_identical(x[c(-1,-3)], rvar_from_array(x_array[c(-1,-3),, drop = FALSE]))
+  expect_equal(x[c(-1,-3)], rvar_from_array(x_array[c(-1,-3),, drop = FALSE]))
 
-  expect_identical(x[TRUE], rvar_from_array(x_array[TRUE,, drop = FALSE]))
-  expect_identical(x[c(TRUE,FALSE)], rvar_from_array(x_array[c(TRUE,FALSE),, drop = FALSE]))
-  expect_identical(x[c(TRUE,FALSE,TRUE)], rvar_from_array(x_array[c(TRUE,FALSE,TRUE),, drop = FALSE]))
-  expect_identical(x[c(TRUE,FALSE,FALSE,TRUE)], rvar_from_array(x_array[c(TRUE,FALSE,FALSE,TRUE),, drop = FALSE]))
+  expect_equal(x[TRUE], rvar_from_array(x_array[TRUE,, drop = FALSE]))
+  expect_equal(x[c(TRUE,FALSE)], rvar_from_array(x_array[c(TRUE,FALSE),, drop = FALSE]))
+  expect_equal(x[c(TRUE,FALSE,TRUE)], rvar_from_array(x_array[c(TRUE,FALSE,TRUE),, drop = FALSE]))
+  expect_equal(x[c(TRUE,FALSE,FALSE,TRUE)], rvar_from_array(x_array[c(TRUE,FALSE,FALSE,TRUE),, drop = FALSE]))
 
   # dropping should preserve names (hence the drop = FALSE on x_array for this test)
-  expect_identical(x["a1", drop = TRUE], rvar_from_array(x_array["a1",, drop = FALSE]))
-  expect_identical(x[1:2, drop = TRUE], rvar_from_array(x_array[1:2,, drop = FALSE]))
+  expect_equal(x["a1", drop = TRUE], rvar_from_array(x_array["a1",, drop = FALSE]))
+  expect_equal(x[1:2, drop = TRUE], rvar_from_array(x_array[1:2,, drop = FALSE]))
 
   # indexing beyond the end of the array should result in NAs, to mimic normal vector indexing
-  expect_identical(x[c(4,5)], rvar_from_array(x_array[c(4,NA_integer_),, drop = FALSE]))
-  expect_identical(x[c(8,9)], rvar_from_array(x_array[c(NA_integer_,NA_integer_),, drop = FALSE]))
+  expect_equal(x[c(4,5)], rvar_from_array(x_array[c(4,NA_integer_),, drop = FALSE]))
+  expect_equal(x[c(8,9)], rvar_from_array(x_array[c(NA_integer_,NA_integer_),, drop = FALSE]))
 
-  expect_identical(x[NA], rvar_from_array(x_array[NA,, drop = FALSE]))
-  expect_identical(x[NA_integer_], rvar_from_array(x_array[NA_integer_,, drop = FALSE]))
-  expect_identical(x[rep(NA_integer_,7)], rvar_from_array(x_array[rep(NA_integer_,7),, drop = FALSE]))
+  expect_equal(x[NA], rvar_from_array(x_array[NA,, drop = FALSE]))
+  expect_equal(x[NA_integer_], rvar_from_array(x_array[NA_integer_,, drop = FALSE]))
+  expect_equal(x[rep(NA_integer_,7)], rvar_from_array(x_array[rep(NA_integer_,7),, drop = FALSE]))
 
-  expect_identical(x[NULL], new_rvar())
+  expect_equal(x[NULL], new_rvar())
 
   expect_error(x[1,1])
 
@@ -143,46 +143,46 @@ test_that("indexing with [ works on an array", {
   )
   x = rvar_from_array(x_array)
 
-  expect_identical(x[], x)
+  expect_equal(x[], x)
 
-  expect_identical(x[2], rvar_from_array(array(x_array[2,1,], dim = c(1,2))))
-  expect_identical(x[2,], rvar_from_array(x_array[2,,, drop = FALSE]))
-  expect_identical(x["a2",], rvar_from_array(x_array["a2",,, drop = FALSE]))
-  expect_identical(x[c(1,2)], rvar_from_array(array(x_array[c(1,2),1,], dim = c(2,2))))
-  expect_identical(x[c(1,2),], rvar_from_array(x_array[c(1,2),,, drop = FALSE]))
-  expect_identical(x[,c(1,3)], rvar_from_array(x_array[,c(1,3),, drop = FALSE]))
-  expect_identical(x[,c("b2","b3")], rvar_from_array(x_array[,c("b2","b3"),, drop = FALSE]))
+  expect_equal(x[2], rvar_from_array(array(x_array[2,1,], dim = c(1,2))))
+  expect_equal(x[2,], rvar_from_array(x_array[2,,, drop = FALSE]))
+  expect_equal(x["a2",], rvar_from_array(x_array["a2",,, drop = FALSE]))
+  expect_equal(x[c(1,2)], rvar_from_array(array(x_array[c(1,2),1,], dim = c(2,2))))
+  expect_equal(x[c(1,2),], rvar_from_array(x_array[c(1,2),,, drop = FALSE]))
+  expect_equal(x[,c(1,3)], rvar_from_array(x_array[,c(1,3),, drop = FALSE]))
+  expect_equal(x[,c("b2","b3")], rvar_from_array(x_array[,c("b2","b3"),, drop = FALSE]))
 
-  expect_identical(x[,c(-1,-3)], rvar_from_array(x_array[,c(-1,-3),, drop = FALSE]))
+  expect_equal(x[,c(-1,-3)], rvar_from_array(x_array[,c(-1,-3),, drop = FALSE]))
 
-  expect_identical(x[TRUE], rvar_from_array(array(x_array, dim = c(12,2))))
-  expect_identical(x[c(TRUE,FALSE)], rvar_from_array(array(x_array, dim = c(12,2))[c(TRUE,FALSE),]))
-  expect_identical(x[c(TRUE,FALSE,TRUE)], rvar_from_array(array(x_array, dim = c(12,2))[c(TRUE,FALSE,TRUE),]))
-  expect_identical(x[c(TRUE,FALSE,FALSE,TRUE)], rvar_from_array(array(x_array, dim = c(12,2))[c(TRUE,FALSE,FALSE,TRUE),]))
+  expect_equal(x[TRUE], rvar_from_array(array(x_array, dim = c(12,2))))
+  expect_equal(x[c(TRUE,FALSE)], rvar_from_array(array(x_array, dim = c(12,2))[c(TRUE,FALSE),]))
+  expect_equal(x[c(TRUE,FALSE,TRUE)], rvar_from_array(array(x_array, dim = c(12,2))[c(TRUE,FALSE,TRUE),]))
+  expect_equal(x[c(TRUE,FALSE,FALSE,TRUE)], rvar_from_array(array(x_array, dim = c(12,2))[c(TRUE,FALSE,FALSE,TRUE),]))
 
-  expect_identical(x[TRUE,], rvar_from_array(x_array[TRUE,,, drop = FALSE]))
-  expect_identical(x[c(TRUE,FALSE),], rvar_from_array(x_array[c(TRUE,FALSE),,, drop = FALSE]))
-  expect_identical(x[c(TRUE,FALSE,TRUE),], rvar_from_array(x_array[c(TRUE,FALSE,TRUE),,, drop = FALSE]))
-  expect_identical(x[c(TRUE,FALSE,FALSE,TRUE),], rvar_from_array(x_array[c(TRUE,FALSE,FALSE,TRUE),,, drop = FALSE]))
+  expect_equal(x[TRUE,], rvar_from_array(x_array[TRUE,,, drop = FALSE]))
+  expect_equal(x[c(TRUE,FALSE),], rvar_from_array(x_array[c(TRUE,FALSE),,, drop = FALSE]))
+  expect_equal(x[c(TRUE,FALSE,TRUE),], rvar_from_array(x_array[c(TRUE,FALSE,TRUE),,, drop = FALSE]))
+  expect_equal(x[c(TRUE,FALSE,FALSE,TRUE),], rvar_from_array(x_array[c(TRUE,FALSE,FALSE,TRUE),,, drop = FALSE]))
 
   # dropping works
-  expect_identical(x["a1",, drop = TRUE], rvar_from_array(x_array["a1",,, drop = TRUE]))
-  expect_identical(x[1:2,, drop = TRUE], rvar_from_array(x_array[1:2,,, drop = TRUE]))
-  expect_identical(x[1,2, drop = TRUE], rvar_from_array(array(x_array[1,2,], dim = c(1,2))))
-  expect_identical(x[1,1:2, drop = TRUE], rvar_from_array(x_array[1,1:2,, drop = TRUE]))
+  expect_equal(x["a1",, drop = TRUE], rvar_from_array(x_array["a1",,, drop = TRUE]))
+  expect_equal(x[1:2,, drop = TRUE], rvar_from_array(x_array[1:2,,, drop = TRUE]))
+  expect_equal(x[1,2, drop = TRUE], rvar_from_array(array(x_array[1,2,], dim = c(1,2))))
+  expect_equal(x[1,1:2, drop = TRUE], rvar_from_array(x_array[1,1:2,, drop = TRUE]))
 
   # indexing beyond the end of the array should result in NAs, to mimic normal vector indexing
-  expect_identical(x[c(4,25)], rvar_from_array(array(x_array[c(4,NA_integer_),1,], dim = c(2,2))))
-  expect_identical(x[c(4,5),], rvar_from_array(x_array[c(4,NA_integer_),,, drop = FALSE]))
-  expect_identical(x[c(8,9),], rvar_from_array(x_array[c(NA_integer_,NA_integer_),,, drop = FALSE]))
+  expect_equal(x[c(4,25)], rvar_from_array(array(x_array[c(4,NA_integer_),1,], dim = c(2,2))))
+  expect_equal(x[c(4,5),], rvar_from_array(x_array[c(4,NA_integer_),,, drop = FALSE]))
+  expect_equal(x[c(8,9),], rvar_from_array(x_array[c(NA_integer_,NA_integer_),,, drop = FALSE]))
 
-  expect_identical(x[NA], rvar_from_array(array(x_array[NA,,], dim = c(12,2))))
-  expect_identical(x[NA,], rvar_from_array(x_array[NA,,, drop = FALSE]))
-  expect_identical(x[NA_integer_], rvar_from_array(array(c(NA_integer_,NA_integer_), dim = c(1,2))))
-  expect_identical(x[NA_integer_,], rvar_from_array(x_array[NA_integer_,,, drop = FALSE]))
-  expect_identical(x[rep(NA_integer_,7)], rvar_from_array(array(rep(NA_integer_,14), dim = c(7,2))))
+  expect_equal(x[NA], rvar_from_array(array(x_array[NA,,], dim = c(12,2))))
+  expect_equal(x[NA,], rvar_from_array(x_array[NA,,, drop = FALSE]))
+  expect_equal(x[NA_integer_], rvar_from_array(array(c(NA_integer_,NA_integer_), dim = c(1,2))))
+  expect_equal(x[NA_integer_,], rvar_from_array(x_array[NA_integer_,,, drop = FALSE]))
+  expect_equal(x[rep(NA_integer_,7)], rvar_from_array(array(rep(NA_integer_,14), dim = c(7,2))))
 
-  expect_identical(x[NULL], new_rvar())
+  expect_equal(x[NULL], new_rvar())
 
   # logical index the length of the array works
   flat_index <- c(
@@ -209,19 +209,19 @@ test_that("assignment with [ works", {
   )
   x = new_rvar(x_array)
 
-  expect_identical(
+  expect_equal(
     {x2 <- x; x2[2,1] <- 1; x2},
     new_rvar({xr <- x_array; xr[,2,1] <- 1; xr})
   )
-  expect_identical(
+  expect_equal(
     {x2 <- x; x2[2,] <- 1; x2},
     new_rvar({xr <- x_array; xr[,2,] <- 1; xr})
   )
-  expect_identical(
+  expect_equal(
     {x2 <- x; x2[,2] <- new_rvar(c(1,2)); x2},
     new_rvar({xr <- x_array; xr[,,2] <- c(1,2); xr})
   )
-  expect_identical(
+  expect_equal(
     {x2 <- x; x2["a2","b3"] <- new_rvar(c(1,2)); x2},
     new_rvar({xr <- x_array; xr[,2,3] <- c(1,2); xr})
   )
