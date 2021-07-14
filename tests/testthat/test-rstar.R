@@ -1,4 +1,3 @@
-require(caret)
 
 test_that("rstar returns reasonable values", {
   x <- example_draws()
