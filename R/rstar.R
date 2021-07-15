@@ -104,7 +104,7 @@ rstar <- function(x, split = TRUE,
     detach(paste0("package:", package), character.only = TRUE)
   })
   for (package in setdiff(c("ggplot2", "lattice", "caret"), .packages())) {
-    if (!suppressPackageStartupMessages(require(package, character.only = TRUE, quietly = TRUE))) {
+    if (!suppressPackageStartupMessages(get("require")(package, character.only = TRUE, quietly = TRUE))) {
       stop_no_call("Package '", package, "' is required for 'rstar' to work.")
     }
     # store in reverse order since we'll unload in reverse
