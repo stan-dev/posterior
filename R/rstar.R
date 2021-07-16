@@ -95,9 +95,20 @@ rstar <- function(x, split = TRUE,
                   nsimulations = 1000,
                   ...) {
 
-  if (!"caret" %in% .packages()) {
-    stop_no_call("Package 'caret' is required for 'rstar' to work. ",
-          "Please use library(caret) to load the package.")
+  # caret requires itself to be attached to the search list (not just loaded).
+  # To avoid polluting the user's namespace we manually attach caret and its
+  # two hard dependencies (ggplot2 and lattice) if they aren't already attached,
+  # and unload any of them we had to attach when this function exits.
+  loaded_packages <- character()
+  on.exit(for (package in loaded_packages) {
+    detach(paste0("package:", package), character.only = TRUE)
+  })
+  for (package in setdiff(c("ggplot2", "lattice", "caret"), .packages())) {
+    if (!suppressPackageStartupMessages(get("require")(package, character.only = TRUE, quietly = TRUE))) {
+      stop_no_call("Package '", package, "' is required for 'rstar' to work.")
+    }
+    # store in reverse order since we'll unload in reverse
+    loaded_packages <- c(package, loaded_packages)
   }
 
   split <- as_one_logical(split)
