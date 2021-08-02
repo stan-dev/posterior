@@ -47,6 +47,9 @@ subset_draws <- function(x, ...) {
 subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
                                       chain = NULL, draw = NULL, regex = FALSE,
                                       unique = TRUE, ...) {
+  if (all_null(variable, iteration, chain, draw)) {
+    return(x)
+  }
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
@@ -65,6 +68,9 @@ subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
 subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
                                      chain = NULL, draw = NULL, regex = FALSE,
                                      unique = TRUE, ...) {
+  if (all_null(variable, iteration, chain, draw)) {
+    return(x)
+  }
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
@@ -86,6 +92,9 @@ subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
 subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
                                   chain = NULL, draw = NULL, regex = FALSE,
                                   unique = TRUE, ...) {
+  if (all_null(variable, iteration, chain, draw)) {
+    return(x)
+  }
   x <- repair_draws(x)
   unique <- as_one_logical(unique)
   variable <- check_existing_variables(variable, x, regex = regex)
@@ -105,6 +114,9 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
 subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
                                     chain = NULL, draw = NULL, regex = FALSE,
                                     unique = TRUE, ...) {
+  if (all_null(variable, iteration, chain, draw)) {
+    return(x)
+  }
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
@@ -126,6 +138,9 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
 subset_draws.draws_rvars <- function(x, variable = NULL, iteration = NULL,
                                      chain = NULL, draw = NULL, regex = FALSE,
                                      unique = TRUE, ...) {
+  if (all_null(variable, iteration, chain, draw)) {
+    return(x)
+  }
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x, unique = unique)

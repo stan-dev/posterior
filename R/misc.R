@@ -111,6 +111,11 @@ as_one_character <- function(x, allow_na = FALSE) {
   x
 }
 
+# check if all inputs are NULL
+all_null <- function(...) {
+  all(ulapply(list(...), is.null))
+}
+
 # check if two objects are equal
 is_equal <- function(x, y, ...) {
   isTRUE(all.equal(x, y, ...))
