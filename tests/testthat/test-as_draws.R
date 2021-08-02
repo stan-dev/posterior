@@ -56,6 +56,11 @@ test_that("transformations to and from draws_df objects work", {
   draws_rvars <- as_draws_rvars(draws_df)
   draws_df2 <- as_draws_df(draws_rvars)
   expect_equal(draws_df, draws_df2)
+
+  # test that a single draw does not lead to a drop of dimensions
+  draws_rvars2 <- subset_draws(draws_rvars, draw = 1)
+  draws_df2 <- as_draws_df(draws_rvars2)
+  expect_equal(subset_draws(draws_df, draw = 1), draws_df2)
 })
 
 test_that("transformations to and from draws_list objects work", {
