@@ -164,20 +164,18 @@ print.draws_df <- function(x, digits = 2,
   niterations <- niterations(x)
   nchains <- nchains(x)
   ndraws <- ndraws(x)
-  nvariables <- nvariables(x)
+  nvariables <- nvariables(x, reserved = reserved)
   header <- paste0(
     "# A draws_df: ", niterations, " iterations, ",
     nchains, " chains, and ", nvariables, " variables\n"
   )
   cat(header)
   sel_draws <- seq_len(min(max_draws, ndraws))
-  sel_variables <- seq_len(min(max_variables, nvariables))
-  y <- x
-  if (!reserved) {
-    y <- remove_reserved_variables(y)
-  }
+  sel_variables <- variables(x, reserved = reserved)
+  seq_variables <- seq_len(min(max_variables, nvariables))
+  sel_variables <- sel_variables[seq_variables]
   y <- .subset_draws(
-    y, draw = sel_draws, variable = sel_variables,
+    x, draw = sel_draws, variable = sel_variables,
     reserved = reserved
   )
   if (!reserved) {

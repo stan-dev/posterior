@@ -26,6 +26,10 @@ test_that("print.draws_df runs without errors", {
 
   x <- weight_draws(x, rep(1, ndraws(x)))
   expect_output(print(x), "'\\.log_weight'")
+
+  x <- subset(x, variable = c("mu", "tau"))
+  x <- mutate_variables(x, tau2 = tau^2)
+  expect_output(print(x), "tau2")
 })
 
 test_that("print.draws_list runs without errors", {
