@@ -321,6 +321,14 @@ test_that("as_draws_rvars correctly reshapes missing, out-of-order, and string a
   expect_equal(as_draws_rvars(as_draws_array(x_rvars2)), x_rvars2)
 })
 
+test_that("as_draws_rvars can accept lists of lists as input", {
+  # for https://github.com/stan-dev/posterior/issues/192
+  draws_list <- as_draws_list(example_draws())
+  list_of_lists <- unclass(draws_list)
+
+  expect_equal(as_draws_rvars(example_draws()), as_draws_rvars(list_of_lists))
+})
+
 test_that("draws_df does not munge variable names", {
   draws_df <- draws_df(`x[1]` = 1:2, `x[2]` = 3:4)
   expect_equal(variables(draws_df), c("x[1]", "x[2]"))
