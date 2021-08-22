@@ -38,7 +38,7 @@ as_draws_rvars.list <- function(x, ...) {
   if (all(vapply(x, is_rvar, logical(1)))) {
     .as_draws_rvars(x, ...)
   } else {
-    as_draws_rvars(as_draws_list(x), ...)
+    NextMethod()
   }
 }
 
