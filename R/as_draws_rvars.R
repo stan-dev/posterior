@@ -35,7 +35,11 @@ as_draws_rvars.draws_rvars <- function(x, ...) {
 #' @rdname draws_rvars
 #' @export
 as_draws_rvars.list <- function(x, ...) {
-  .as_draws_rvars(x, ...)
+  if (all(vapply(x, is_rvar, logical(1)))) {
+    .as_draws_rvars(x, ...)
+  } else {
+    NextMethod()
+  }
 }
 
 #' @export
