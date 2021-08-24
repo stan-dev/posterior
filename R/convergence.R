@@ -536,25 +536,6 @@ quantile2.rvar <- function(
 
 # internal ----------------------------------------------------------------
 
-#' Find the optimal next size for the FFT so that a minimum number of zeros
-#' are padded.
-#' @param N length of the sequence over which to apply FFT
-#' @return the optimal next step size as a single integer
-#' @noRd
-fft_next_good_size <- function(N) {
-  if (N <= 2)
-    return(2)
-  while (TRUE) {
-    m <- N
-    while ((m %% 2) == 0) m <- m / 2
-    while ((m %% 3) == 0) m <- m / 3
-    while ((m %% 5) == 0) m <- m / 5
-    if (m <= 1)
-      return(N)
-    N <- N + 1
-  }
-}
-
 #' Autocovariance estimates
 #'
 #' Compute autocovariance estimates for every lag for the specified
@@ -568,7 +549,7 @@ fft_next_good_size <- function(N) {
 autocovariance <- function(x) {
   N <- length(x)
   # zero padding makes fft() much faster when N > 1000
-  M <- fft_next_good_size(N)
+  M <- nextn(N)
   Mt2 <- 2 * M
   yc <- x - mean(x)
   yc <- c(yc, rep.int(0, Mt2 - N))
