@@ -67,7 +67,7 @@ E <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 mean.rvar <- function(x, ...) {
-  summarise_rvar_by_element(x, mean, ...)
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colMeans2, useNames = FALSE, ...)
 }
 
 #' @rdname rvar-summaries-over-draws
@@ -98,13 +98,51 @@ Pr.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 median.rvar <- function(x, ...) {
-  summarise_rvar_by_element(x, median, ...)
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colMedians, useNames = FALSE, ...)
+}
+
+#' @rdname rvar-summaries-over-draws
+#' @export
+min.rvar <- function(x, ...) {
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colMins, useNames = FALSE, ...)
+}
+
+#' @rdname rvar-summaries-over-draws
+#' @export
+max.rvar <- function(x, ...) {
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colMaxs, useNames = FALSE, ...)
+}
+
+#' @rdname rvar-summaries-over-draws
+#' @export
+sum.rvar <- function(x, ...) {
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colSums2, useNames = FALSE, ...)
+}
+
+#' @rdname rvar-summaries-over-draws
+#' @export
+prod.rvar <- function(x, ...) {
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colProds, useNames = FALSE, ...)
+}
+
+#' @rdname rvar-summaries-over-draws
+#' @export
+all.rvar <- function(x, ...) {
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colAlls, useNames = FALSE, ...)
+}
+
+#' @rdname rvar-summaries-over-draws
+#' @export
+any.rvar <- function(x, ...) {
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colAnys, useNames = FALSE, ...)
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 Summary.rvar <- function(...) {
-  # min, max, sum, prod, all, any
+  # min, max, sum, prod, all, any, range --- these are all defined by more
+  # specific functions to be faster, but I left the generic implementation here
+  # on the off chance anything gets added to this group generic in the future
   f <- get(.Generic)
   summarise_rvar_by_element(.f = f, ...)
 }
@@ -118,7 +156,7 @@ distributional::variance
 #' @rdname rvar-summaries-over-draws
 #' @export
 variance.rvar <- function(x, ...) {
-  summarise_rvar_by_element(x, function(x, ...) var(as.vector(x), ...), ...)
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colVars, useNames = FALSE, ...)
 }
 
 #' @rdname rvar-summaries-over-draws
@@ -140,7 +178,7 @@ sd.default <- function(x, ...) stats::sd(x, ...)
 #' @rdname rvar-summaries-over-draws
 #' @export
 sd.rvar <- function(x, ...) {
-  summarise_rvar_by_element(x, sd, ...)
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colSds, useNames = FALSE, ...)
 }
 
 #' @rdname rvar-summaries-over-draws
@@ -152,7 +190,7 @@ mad.default <- function(x, ...) stats::mad(x, ...)
 #' @rdname rvar-summaries-over-draws
 #' @export
 mad.rvar <- function(x, ...) {
-  summarise_rvar_by_element(x, mad, ...)
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colMads, useNames = FALSE, ...)
 }
 
 
@@ -160,8 +198,10 @@ mad.rvar <- function(x, ...) {
 
 #' @rdname rvar-summaries-over-draws
 #' @export
-range.rvar <- function(...) {
-  summarise_rvar_by_element(.f = range, ...)
+range.rvar <- function(x, ...) {
+  summarise_rvar_by_element_via_matrix(x, function(...) t(matrixStats::colRanges(...)),
+    useNames = FALSE, .extra_dim = 2, .extra_dimnames = list(NULL), ...
+  )
 }
 
 
@@ -169,19 +209,27 @@ range.rvar <- function(...) {
 
 #' @rdname rvar-summaries-over-draws
 #' @export
-is.finite.rvar <- function(x) summarise_rvar_by_element(x, function(x) all(is.finite(x)))
+is.finite.rvar <- function(x) {
+  summarise_rvar_by_element_via_matrix(x, function(x) matrixStats::colAlls(is.finite(x), useNames = FALSE))
+}
 
 #' @rdname rvar-summaries-over-draws
 #' @export
-is.infinite.rvar <- function(x) summarise_rvar_by_element(x, function(x) any(is.infinite(x)))
+is.infinite.rvar <- function(x) {
+  summarise_rvar_by_element_via_matrix(x, function(x) matrixStats::colAnys(is.infinite(x), useNames = FALSE))
+}
 
 #' @rdname rvar-summaries-over-draws
 #' @export
-is.nan.rvar <- function(x) summarise_rvar_by_element(x, function(x) any(is.nan(x)))
+is.nan.rvar <- function(x) {
+  summarise_rvar_by_element_via_matrix(x, function(x) matrixStats::colAnys(is.nan(x), useNames = FALSE))
+}
 
 #' @rdname rvar-summaries-over-draws
 #' @export
-is.na.rvar <- function(x) summarise_rvar_by_element(x, anyNA)
+is.na.rvar <- function(x) {
+  summarise_rvar_by_element_via_matrix(x, matrixStats::colAnyNAs, useNames = FALSE)
+}
 
 #' @export
-anyNA.rvar <- function(x, ...) anyNA(draws_of(x, ...))
+anyNA.rvar <- function(x, ...) anyNA(draws_of(x), ...)

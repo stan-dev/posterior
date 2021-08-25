@@ -679,6 +679,28 @@ summarise_rvar_by_element <- function(x, .f, ...) {
   }
 }
 
+#' apply a summary function across draws of the rvar (i.e., by each element)
+#' by first collapsing dimensions into columns of the draws matrix, applying the
+#' function, then restoring dimensions (so that .f can be a colXXX() function)
+#' @param x an rvar
+#' @param .f a function that takes a matrix and summarises its columns, like colMeans
+#' @param .extra_dim extra dims added by `.f` to the output, e.g. in the case of
+#' matrixStats::colRanges this is `2`
+#' @param .extra_dimnames extra dimension names for dims added by `.f` to the output
+#' @param ... arguments passed to `.f`
+#' @noRd
+summarise_rvar_by_element_via_matrix <- function(x, .f, .extra_dim = NULL, .extra_dimnames = NULL, ...) {
+  .dim <- dim(x)
+  .dimnames <- dimnames(x)
+  dim(x) <- length(x)
+
+  x = .f(draws_of(x), ...)
+
+  dim(x) = c(.extra_dim, .dim)
+  dimnames(x) = c(.extra_dimnames, .dimnames)
+  x
+}
+
 # apply a summary function across draws of the rvar (i.e., by each element)
 # including a chain dimension in the array passed to .f
 summarise_rvar_by_element_with_chains <- function(x, .f, ...) {

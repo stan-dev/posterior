@@ -9,6 +9,12 @@
 \alias{Pr.logical}
 \alias{Pr.rvar}
 \alias{median.rvar}
+\alias{min.rvar}
+\alias{max.rvar}
+\alias{sum.rvar}
+\alias{prod.rvar}
+\alias{all.rvar}
+\alias{any.rvar}
 \alias{Summary.rvar}
 \alias{variance.rvar}
 \alias{var}
@@ -41,6 +47,18 @@ Pr(x, ...)
 
 \method{median}{rvar}(x, ...)
 
+\method{min}{rvar}(x, ...)
+
+\method{max}{rvar}(x, ...)
+
+\method{sum}{rvar}(x, ...)
+
+\method{prod}{rvar}(x, ...)
+
+\method{all}{rvar}(x, ...)
+
+\method{any}{rvar}(x, ...)
+
 \method{Summary}{rvar}(...)
 
 \method{variance}{rvar}(x, ...)
@@ -63,7 +81,7 @@ mad(x, ...)
 
 \method{mad}{rvar}(x, ...)
 
-\method{range}{rvar}(...)
+\method{range}{rvar}(x, ...)
 
 \method{is.finite}{rvar}(x)
 

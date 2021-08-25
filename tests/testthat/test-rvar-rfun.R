@@ -35,7 +35,7 @@ test_that("rvar_rng works", {
   sigma <- rvar_rng(rgamma, 1, shape = 1, rate = 1)
   x <- rvar_rng(rnorm, 10, mu, sigma)
 
-  expect_equal(mean(x), 1:10, tolerance = 0.1)
+  expect_equal(mean(x), array(1:10, dim = 10, dimnames = list(NULL)), tolerance = 0.1)
   expect_equal(apply(draws_of(x), 2, sd), rep(1.7, 10), tolerance = 0.1)
 })
 
