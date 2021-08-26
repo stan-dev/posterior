@@ -54,59 +54,61 @@
 #' @family rvar-summaries
 #' @name rvar-summaries-within-draws
 #' @export
-rvar_mean <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), mean, na.rm = na.rm,
-  .when_empty = stop_no_call("in rvar_mean(): cannot take mean of empty vector")
-)
+rvar_mean <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowMeans2, na.rm = na.rm)
+}
 
 # numeric summaries -------------------------------------------------------
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_median <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), median, na.rm = na.rm,
-  .when_empty = stop_no_call("in rvar_median(): cannot take median of empty vector")
-)
+rvar_median <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowMedians, na.rm = na.rm)
+}
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_sum <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), sum, na.rm = na.rm)
+rvar_sum <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowSums2, na.rm = na.rm)
+}
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_prod <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), prod, na.rm = na.rm)
+rvar_prod <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowProds, na.rm = na.rm)
+}
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_min <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), min, na.rm = na.rm)
+rvar_min <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowMins, na.rm = na.rm)
+}
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_max <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), max, na.rm = na.rm)
+rvar_max <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowMaxs, na.rm = na.rm)
+}
 
 
 # spread ------------------------------------------------------------------
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_sd <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), sd, na.rm = na.rm,
-  .when_empty = stop_no_call("in rvar_sd(): cannot take sd of empty vector")
-)
-
-#' @rdname rvar-summaries-within-draws
-#' @export
-rvar_var <- function(..., na.rm = FALSE) {
-  # var() is silly and gives the covariance matrix instead of the variance
-  # when dim(x) == 2, so convert to a vector to avoid this
-  summarise_rvar_within_draws(c(...), function(x) var(as.vector(x), na.rm = na.rm),
-    .when_empty = stop_no_call("in rvar_var(): cannot take variance of empty vector")
-  )
+rvar_sd <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowSds, na.rm = na.rm)
 }
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_mad <- function(..., constant = 1.4826, na.rm = FALSE, low = FALSE, high = FALSE) {
-  summarise_rvar_within_draws(c(...), mad, constant = constant, na.rm = na.rm, low = low, high = high,
-    .when_empty = stop_no_call("in rvar_mad(): cannot take mad of empty vector")
-  )
+rvar_var <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowVars, na.rm = na.rm)
+}
+
+#' @rdname rvar-summaries-within-draws
+#' @export
+rvar_mad <- function(..., constant = 1.4826, na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowMads, constant = constant, na.rm = na.rm)
 }
 
 
@@ -114,7 +116,9 @@ rvar_mad <- function(..., constant = 1.4826, na.rm = FALSE, low = FALSE, high = 
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_range <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), range, na.rm = na.rm, .transpose = TRUE)
+rvar_range <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowRanges, na.rm = na.rm)
+}
 
 
 # quantiles ---------------------------------------------------------------
@@ -144,11 +148,15 @@ rvar_quantile <- function(..., probs, names = FALSE, na.rm = FALSE) {
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_all <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), all, na.rm = na.rm)
+rvar_all <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowAlls, na.rm = na.rm)
+}
 
 #' @rdname rvar-summaries-within-draws
 #' @export
-rvar_any <- function(..., na.rm = FALSE) summarise_rvar_within_draws(c(...), any, na.rm = na.rm)
+rvar_any <- function(..., na.rm = FALSE) {
+  summarise_rvar_within_draws_via_matrix(c(...), matrixStats::rowAnys, na.rm = na.rm)
+}
 
 
 # special value predicates ------------------------------------------------

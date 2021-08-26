@@ -647,16 +647,36 @@ cleanup_draw_dims <- function(x) {
 # helpers: applying functions over rvars ----------------------------------
 
 # apply a summary function within each draw of the rvar (dropping other dimensions)
-summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_empty = .f()) {
+summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_empty = .f(numeric(0))) {
   draws <- draws_of(x)
   dim <- dim(draws)
-  if (!length(dim)) {
+  if (!length(x)) {
     # x is a NULL rvar, need to return base value for this summary function
     as_rvar(.when_empty)
   } else {
     draws <- apply(draws, 1, .f, ...)
     if (.transpose) draws <- t(draws)
     new_rvar(draws, .nchains = nchains(x))
+  }
+}
+
+#' apply a summary function within each draw of the rvar (dropping other dimensions)
+#' by first collapsing dimensions into columns of the draws matrix
+#' (so that .f can be a rowXXX() function)
+#' @param x an rvar
+#' @param .f a function that takes a matrix and summarises its rows, like rowMeans
+#' @param ... arguments passed to `.f`
+#' @param .when_empty the value to return when `x` has length 0 (e.g. is NULL)
+#' @noRd
+summarise_rvar_within_draws_via_matrix <- function(x, .f, ..., .when_empty = .f(array(numeric(0), dim = c(1,0)))) {
+  .length <- length(x)
+
+  if (!.length) {
+    # x is NULL, need to return base value for this summary function
+    rvar(.when_empty)
+  } else {
+    dim(x) <- .length
+    new_rvar(.f(draws_of(x), ...), .nchains = nchains(x))
   }
 }
 
@@ -692,12 +712,19 @@ summarise_rvar_by_element <- function(x, .f, ...) {
 summarise_rvar_by_element_via_matrix <- function(x, .f, .extra_dim = NULL, .extra_dimnames = NULL, ...) {
   .dim <- dim(x)
   .dimnames <- dimnames(x)
-  dim(x) <- length(x)
+  .length <- length(x)
+  dim(x) <- .length
 
   x = .f(draws_of(x), ...)
 
-  dim(x) = c(.extra_dim, .dim)
-  dimnames(x) = c(.extra_dimnames, .dimnames)
+  if (.length == 1) {
+    # this ensures that scalar rvars are summarized to vectors rather than
+    # to matrices with one column
+    x <- as.vector(x)
+  } else {
+    dim(x) <- c(.extra_dim, .dim)
+    dimnames(x) <- c(.extra_dimnames, .dimnames)
+  }
   x
 }
 

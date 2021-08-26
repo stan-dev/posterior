@@ -16,8 +16,8 @@ test_that("numeric summary functions work", {
   expect_equal(rvar_median(), as_rvar(NA_real_))
   expect_equal(rvar_sum(), as_rvar(0))
   expect_equal(rvar_prod(), as_rvar(1))
-  expect_warning(expect_equal(rvar_min(), as_rvar(Inf)))
-  expect_warning(expect_equal(rvar_max(), as_rvar(-Inf)))
+  expect_equal(rvar_min(), as_rvar(Inf))
+  expect_equal(rvar_max(), as_rvar(-Inf))
 
   # test argument passing
   x[1,2] <- NA
@@ -64,7 +64,7 @@ test_that("rvar_range works", {
   expect_equal(draws_of(rvar_range(x)), t(apply(x_array, 1, range)), check.attributes = FALSE)
 
   # default values on empty input
-  expect_warning(expect_equal(rvar_range(), as_rvar(c(Inf, -Inf))))
+  expect_equal(rvar_range(), as_rvar(c(Inf, -Inf)))
 })
 
 
