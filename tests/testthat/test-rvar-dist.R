@@ -33,6 +33,6 @@ test_that("distributional functions work on an rvar array", {
   q21 <- quantile(4:6, p)
   q12 <- quantile(7:9, p)
   q22 <- quantile(10:12, p)
-  x_quantiles <- array(c(q11, q21, q12, q22), dim = c(9, 2, 2))
+  x_quantiles <- array(c(q11, q21, q12, q22), dim = c(9, 2, 2), dimnames = list(NULL))
   expect_equal(quantile(x, p), x_quantiles)
 })

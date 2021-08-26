@@ -12,8 +12,8 @@ test_that("numeric summary functions work", {
   expect_equal(draws_of(rvar_max(x)), apply(x_array, 1, max), check.attributes = FALSE)
 
   # default values on empty input
-  expect_error(rvar_mean())
-  expect_error(rvar_median())
+  expect_equal(rvar_mean(), as_rvar(NA_real_))
+  expect_equal(rvar_median(), as_rvar(NA_real_))
   expect_equal(rvar_sum(), as_rvar(0))
   expect_equal(rvar_prod(), as_rvar(1))
   expect_warning(expect_equal(rvar_min(), as_rvar(Inf)))
@@ -41,9 +41,9 @@ test_that("spread summary functions work", {
   expect_equal(draws_of(rvar_mad(x, constant = 1)), apply(x_array, 1, mad, constant = 1), check.attributes = FALSE)
 
   # default values on empty input
-  expect_error(rvar_sd())
-  expect_error(rvar_var())
-  expect_error(rvar_mad())
+  expect_equal(rvar_sd(), as_rvar(NA_real_))
+  expect_equal(rvar_var(), as_rvar(NA_real_))
+  expect_equal(rvar_mad(), as_rvar(NA_real_))
 
   # test argument passing on var since it requires some finagling
   x[1,2] <- NA
