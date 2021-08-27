@@ -647,6 +647,9 @@ cleanup_draw_dims <- function(x) {
 # helpers: applying functions over rvars ----------------------------------
 
 # apply a summary function within each draw of the rvar (dropping other dimensions)
+# summarise_rvar_within_draws_via_matrix should be used instead of this function
+# if a faster implementation of .f is available in matrix form (e.g. functions
+# from matrixStats); otherwise this function can be used.
 summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_empty = .f(numeric(0))) {
   draws <- draws_of(x)
   dim <- dim(draws)
@@ -668,16 +671,14 @@ summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_em
 #' @param ... arguments passed to `.f`
 #' @param .when_empty the value to return when `x` has length 0 (e.g. is NULL)
 #' @noRd
-summarise_rvar_within_draws_via_matrix <- function(x, .f, ..., .when_empty = .f(array(numeric(0), dim = c(1,0)))) {
+summarise_rvar_within_draws_via_matrix <- function(x, .f, ...) {
   .length <- length(x)
-
   if (!.length) {
-    # x is NULL, need to return base value for this summary function
-    rvar(.when_empty)
-  } else {
-    dim(x) <- .length
-    new_rvar(.f(draws_of(x), ...), .nchains = nchains(x))
+    x <- rvar()
   }
+
+  dim(x) <- .length
+  new_rvar(.f(draws_of(x), ...), .nchains = nchains(x))
 }
 
 # apply vectorized function to an rvar's draws

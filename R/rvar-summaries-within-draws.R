@@ -128,16 +128,13 @@ rvar_range <- function(..., na.rm = FALSE) {
 rvar_quantile <- function(..., probs, names = FALSE, na.rm = FALSE) {
   names <- as_one_logical(names)
   na.rm <- as_one_logical(na.rm)
-  one_prob <- length(probs) == 1
 
-  out <- summarise_rvar_within_draws(c(...), quantile,
-    probs = probs, names = names, na.rm = na.rm,
-    .transpose = !one_prob
+  out <- summarise_rvar_within_draws_via_matrix(
+    c(...), matrixStats::rowQuantiles, probs = probs, na.rm = na.rm, drop = FALSE
   )
 
-  if (one_prob && names) {
-    # single name does not survive the apply(), restore it manually
-    names(out) <- names(quantile(0, probs))
+  if (!names) {
+    dimnames(out) <- NULL
   }
 
   out

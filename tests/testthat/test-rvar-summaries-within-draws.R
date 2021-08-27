@@ -84,6 +84,9 @@ test_that("rvar_quantile works", {
 
   q50 <- array(apply(x_array, 1, quantile, probs = 0.5), dim = c(4, 1), dimnames = list(1:4, "50%"))
   expect_equal(draws_of(rvar_quantile(x, probs = 0.5, names = TRUE)), q50)
+
+  # passing NULL should still result in a vector with length = length(probs)
+  expect_equal(rvar_quantile(NULL, probs = c(0.25, 0.75)), as_rvar(c(NA_real_, NA_real_)))
 })
 
 
