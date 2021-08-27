@@ -675,12 +675,8 @@ fold_draws <- function(x) {
   }
   nchains <- NCOL(x)
   niterations <- NROW(x)
-  chain_mean <- numeric(nchains)
-  chain_var <- numeric(nchains)
-  for (i in seq_len(nchains)) {
-    chain_mean[i] <- mean(x[, i])
-    chain_var[i] <- var(x[, i])
-  }
+  chain_mean <- matrixStats::colMeans2(x)
+  chain_var <- matrixStats::colVars(x, center=chain_mean)
   var_between <- niterations * var(chain_mean)
   var_within <- mean(chain_var)
   sqrt((var_between / var_within + niterations - 1) / niterations)
@@ -697,14 +693,12 @@ fold_draws <- function(x) {
   if (niterations < 3L || should_return_NA(x)) {
     return(NA_real_)
   }
-  acov_fun <- function(i) autocovariance(x[, i])
-  acov <- lapply(seq_len(nchains), acov_fun)
-  acov <- do.call(cbind, acov)
-  chain_mean <- apply(x, 2, mean)
-  mean_var <- mean(acov[1, ]) * niterations / (niterations - 1)
+  acov <- apply(x, 2, autocovariance)
+  acov_means <- matrixStats::rowMeans2(acov)
+  mean_var <- acov_means[1] * niterations / (niterations - 1)
   var_plus <- mean_var * (niterations - 1) / niterations
   if (nchains > 1) {
-    var_plus <- var_plus + var(chain_mean)
+    var_plus <- var_plus + var(matrixStats::colMeans2(x))
   }
 
   # Geyer's initial positive sequence
@@ -712,13 +706,13 @@ fold_draws <- function(x) {
   t <- 0
   rho_hat_even <- 1
   rho_hat_t[t + 1] <- rho_hat_even
-  rho_hat_odd <- 1 - (mean_var - mean(acov[t + 2, ])) / var_plus
+  rho_hat_odd <- 1 - (mean_var - acov_means[t + 2]) / var_plus
   rho_hat_t[t + 2] <- rho_hat_odd
   while (t < NROW(acov) - 5 && !is.nan(rho_hat_even + rho_hat_odd) &&
          (rho_hat_even + rho_hat_odd > 0)) {
     t <- t + 2
-    rho_hat_even = 1 - (mean_var - mean(acov[t + 1, ])) / var_plus
-    rho_hat_odd = 1 - (mean_var - mean(acov[t + 2, ])) / var_plus
+    rho_hat_even = 1 - (mean_var - acov_means[t + 1]) / var_plus
+    rho_hat_odd = 1 - (mean_var - acov_means[t + 2]) / var_plus
     if ((rho_hat_even + rho_hat_odd) >= 0) {
       rho_hat_t[t + 1] <- rho_hat_even
       rho_hat_t[t + 2] <- rho_hat_odd
@@ -751,7 +745,18 @@ fold_draws <- function(x) {
 }
 
 # should NA be returned by a convergence diagnostic?
-should_return_NA <- function(x) {
-  anyNA(x) || checkmate::anyInfinite(x) || is_constant(x) ||
-    (is.matrix(x) && any(apply(x, 2, is_constant)))
+should_return_NA <- function(x, tol = .Machine$double.eps) {
+  if (anyNA(x) || checkmate::anyInfinite(x)) return(TRUE)
+  if (is.matrix(x)) {
+    # is_constant() vectorized over x columns
+    if (is.logical(x)) {
+      return(any(matrixStats::colAnys(x) == matrixStats::colAlls(x)))
+    } else if (is.integer(x)) {
+      return(any(matrixStats::rowDiffs(matrixStats::colRanges(x)) == 0L))
+    } else {
+      return(any(abs(matrixStats::rowDiffs(matrixStats::colRanges(x))) < tol))
+    }
+  } else {
+    return(is_constant(x, tol=tol))
+  }
 }
