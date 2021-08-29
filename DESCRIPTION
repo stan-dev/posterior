@@ -34,7 +34,8 @@ Imports:
   tensorA,
   pillar,
   distributional,
-  parallel
+  parallel,
+  matrixStats
 Suggests: 
   testthat (>= 2.1.0),
   caret (>= 6.0.84),
