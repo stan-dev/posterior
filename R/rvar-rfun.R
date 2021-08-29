@@ -251,7 +251,7 @@ rvar_rng <- function(.f, n, ..., ndraws = NULL) {
   # of draws so that they can be correctly recycled along the draws of any input
   # rvars. We only convert numeric *vectors*, as (1) scalars can be recycled
   # as-is and (2) matrices and 2d+ arrays cannot be correctly recycled using R's
-  # recycling rules so they are are typically only used as constant arguments to
+  # recycling rules so they are typically only used as constant arguments to
   # random number generator functions (e.g. Sigma for a multivariate normal),
   # so we don't need to worry about them.
   is_numeric_vector_arg <-
