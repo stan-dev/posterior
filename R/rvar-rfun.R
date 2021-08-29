@@ -227,7 +227,7 @@ rdo <- function(expr, dim = NULL, ndraws = NULL) {
 rvar_rng <- function(.f, n, ..., ndraws = NULL) {
   args <- list(...)
 
-  is_rvar_arg <- as.logical(lapply(args, is_rvar))
+  is_rvar_arg <- vapply(args, is_rvar, logical(1))
   rvar_args <- conform_rvar_ndraws_nchains(args[is_rvar_arg])
 
   if (length(rvar_args) < 1) {
@@ -244,12 +244,24 @@ rvar_rng <- function(.f, n, ..., ndraws = NULL) {
       stop_no_call("All arguments to rvar_rng() that are rvars must be single-dimensional (vectors).")
     }
 
-    args[is_rvar_arg] <- lapply(rvar_args, function(x) t(draws_of(x)))
+    args[is_rvar_arg] <- lapply(rvar_args, function(x) as.vector(draws_of(x)))
   }
+
+  # we must manually recycle numeric vector arguments up to the desired number
+  # of draws so that they can be correctly recycled along the draws of any input
+  # rvars. We only convert numeric *vectors*, as (1) scalars can be recycled
+  # as-is and (2) matrices and 2d+ arrays cannot be correctly recycled using R's
+  # recycling rules so they are typically only used as constant arguments to
+  # random number generator functions (e.g. Sigma for a multivariate normal),
+  # so we don't need to worry about them.
+  is_numeric_vector_arg <-
+    vapply(args, function(x) is.numeric(x) && length(x) > 1 && length(dim(x)) <= 1, logical(1)) &
+    !is_rvar_arg
+  args[is_numeric_vector_arg] <- lapply(args[is_numeric_vector_arg], rep, each = ndraws)
 
   nd <- n * ndraws
   args <- c(n = nd, args)
   result <- do.call(.f, args)
-  dim(result) <- c(n, ndraws)
-  new_rvar(t(result), .nchains = nchains)
+  dim(result) <- c(ndraws, n)
+  new_rvar(result, .nchains = nchains)
 }

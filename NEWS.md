@@ -3,6 +3,7 @@
 ### Bug Fixes
 
 * ensure that `as_draws_rvars()` works on lists of lists (#192)
+* fix some vector recycling issues with `rvar_rng` (#195)
 
 
 # posterior 1.0.1
