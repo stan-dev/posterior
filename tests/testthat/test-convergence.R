@@ -131,13 +131,3 @@ test_that("autocovariance returns correct results", {
   ac2 <- acf(x, type = "covariance", lag.max = length(x), plot = FALSE)$acf[, 1, 1]
   expect_equal(ac1, ac2)
 })
-
-test_that("convergence statistics generates correct results for specific draws", {
-  test_draws_array <- readRDS("test_draws.rds")
-  expect_equal(apply(test_draws_array, 3, rhat),
-               c(A=1.0062575, B=1.0742057, C=1.0058017, D=1.0038464, E=0.9994406, F=1.0677546), tolerance=1E-7)
-  expect_equal(apply(test_draws_array, 3, ess_bulk),
-               c(A=1486.74283, B=76.70602, C=2505.98158, D=5637.72396, E=3474.34952, F=81.49604), tolerance=1E-7)
-  expect_equal(apply(test_draws_array, 3, ess_tail),
-               c(A=1560.1916, B=1155.4865, C=1775.9721, D=2807.7938, E=1896.5518, F=1344.6222), tolerance=1E-7)
-})
