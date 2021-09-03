@@ -548,6 +548,11 @@ quantile2.rvar <- function(
 #' @export
 autocovariance <- function(x) {
   N <- length(x)
+  varx <- var(x)
+  if (varx==0) {
+    # if variance is 0, then all autocovariances are 0
+    return(rep(0, N))
+  }
   # zero padding makes fft() much faster when N > 1000
   M <- nextn(N)
   Mt2 <- 2 * M
@@ -557,7 +562,7 @@ autocovariance <- function(x) {
   ac <- Re(fft(abs(fft(yc))^2, inverse = TRUE)[1:N])
   # use "biased" estimate as recommended by Geyer (1992)
   # direct scaling with var(x) avoids need to compute "mask effect"
-  ac <- ac / ac[1] * var(x) * (N - 1) / N
+  ac <- ac / ac[1] * varx * (N - 1) / N
   ac
 }
 
