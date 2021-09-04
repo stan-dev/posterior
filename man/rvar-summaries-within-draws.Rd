@@ -33,7 +33,7 @@ rvar_sd(..., na.rm = FALSE)
 
 rvar_var(..., na.rm = FALSE)
 
-rvar_mad(..., constant = 1.4826, na.rm = FALSE, low = FALSE, high = FALSE)
+rvar_mad(..., constant = 1.4826, na.rm = FALSE)
 
 rvar_range(..., na.rm = FALSE)
 
@@ -53,6 +53,11 @@ summaries are computed? The default is \code{FALSE}.}
 the median absolute deviation. See the details of \code{stats::mad()} for the
 justification for the default value.}
 
+\item{probs}{(numeric vector) For \code{rvar_quantile()}, probabilities in \verb{[0, 1]}.}
+
+\item{names}{(logical) For \code{rvar_quantile()}, if \code{TRUE}, the result has a
+\code{names} attribute.}
+
 \item{low}{(logical) For \code{rvar_mad()}, if \code{TRUE}, compute the 'lo-median',
 i.e., for even sample size, do not average the two middle values, but take
 the smaller one. See \code{stats::mad()}.}
@@ -60,11 +65,6 @@ the smaller one. See \code{stats::mad()}.}
 \item{high}{(logical) For \code{rvar_mad()}, if \code{TRUE}, compute the 'hi-median',
 i.e., take the larger of the two middle values for even sample size. See
 \code{stats::mad()}.}
-
-\item{probs}{(numeric vector) For \code{rvar_quantile()}, probabilities in \verb{[0, 1]}.}
-
-\item{names}{(logical) For \code{rvar_quantile()}, if \code{TRUE}, the result has a
-\code{names} attribute.}
 }
 \value{
 An \code{\link{rvar}} of length 1 (for \code{range()}, length 2; for \code{quantile()}, length
