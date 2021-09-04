@@ -82,12 +82,12 @@ test_that(paste(
   x <- as_draws_array(test_array)
   sum_x <- summarise_draws(x)
   parsum_x <- summarise_draws(x, .cores = cores)
-  expect_identical(sum_x, parsum_x)
+  expect_equal(sum_x, parsum_x)
 
   dimnames(x)$variable[2] <- reserved_variables()[1]
   sum_x <- summarise_draws(x)
   parsum_x <- summarise_draws(x, .cores = cores)
-  expect_identical(sum_x, parsum_x)
+  expect_equal(sum_x, parsum_x)
 
   # test that externally defined summary functions can be found
   mean2 <- function(x) sum(x) / length(x)
