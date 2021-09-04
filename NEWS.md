@@ -1,5 +1,9 @@
 # posterior 1.0.1.9000
 
+### Enhancements
+
+* use `matrixStats` to speed up convergence functions (#190) and `rvar` summaries
+
 ### Bug Fixes
 
 * ensure that `as_draws_rvars()` works on lists of lists (#192)
