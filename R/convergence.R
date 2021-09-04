@@ -751,17 +751,20 @@ fold_draws <- function(x) {
 
 # should NA be returned by a convergence diagnostic?
 should_return_NA <- function(x, tol = .Machine$double.eps) {
-  if (anyNA(x) || checkmate::anyInfinite(x)) return(TRUE)
-  if (is.matrix(x)) {
-    # is_constant() vectorized over x columns
-    if (is.logical(x)) {
-      return(any(matrixStats::colAnys(x) == matrixStats::colAlls(x)))
-    } else if (is.integer(x)) {
-      return(any(matrixStats::rowDiffs(matrixStats::colRanges(x)) == 0L))
-    } else {
-      return(any(abs(matrixStats::rowDiffs(matrixStats::colRanges(x))) < tol))
-    }
-  } else {
-    return(is_constant(x, tol=tol))
+  if (anyNA(x) || checkmate::anyInfinite(x)) {
+    return(TRUE)
   }
+  # checking for constant input per chain is too conservative for ess_tail
+  # so we don't check this for the time being until we find a better solution
+  # if (is.matrix(x)) {
+  #   # is_constant() vectorized over x columns
+  #   if (is.logical(x)) {
+  #     return(any(matrixStats::colAnys(x) == matrixStats::colAlls(x)))
+  #   } else if (is.integer(x)) {
+  #     return(any(matrixStats::rowDiffs(matrixStats::colRanges(x)) == 0L))
+  #   } else {
+  #     return(any(abs(matrixStats::rowDiffs(matrixStats::colRanges(x))) < tol))
+  #   }
+  # }
+  is_constant(x, tol = tol)
 }

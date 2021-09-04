@@ -5,6 +5,12 @@
 * ensure that `as_draws_rvars()` works on lists of lists (#192)
 * fix some vector recycling issues with `rvar_rng` (#195)
 
+### Other Changes
+
+* No longer check for constant-per-chain input in effective
+sample size diagnostics as this is overly conservative 
+especially for `ess_tail`. (#198)
+
 
 # posterior 1.0.1
 
