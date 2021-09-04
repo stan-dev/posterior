@@ -57,14 +57,6 @@ justification for the default value.}
 
 \item{names}{(logical) For \code{rvar_quantile()}, if \code{TRUE}, the result has a
 \code{names} attribute.}
-
-\item{low}{(logical) For \code{rvar_mad()}, if \code{TRUE}, compute the 'lo-median',
-i.e., for even sample size, do not average the two middle values, but take
-the smaller one. See \code{stats::mad()}.}
-
-\item{high}{(logical) For \code{rvar_mad()}, if \code{TRUE}, compute the 'hi-median',
-i.e., take the larger of the two middle values for even sample size. See
-\code{stats::mad()}.}
 }
 \value{
 An \code{\link{rvar}} of length 1 (for \code{range()}, length 2; for \code{quantile()}, length

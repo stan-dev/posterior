@@ -11,12 +11,6 @@
 #' @param constant (scalar real) For `rvar_mad()`, a scale factor for computing
 #'   the median absolute deviation. See the details of `stats::mad()` for the
 #'   justification for the default value.
-#' @param low (logical) For `rvar_mad()`, if `TRUE`, compute the 'lo-median',
-#'   i.e., for even sample size, do not average the two middle values, but take
-#'   the smaller one. See `stats::mad()`.
-#' @param high (logical) For `rvar_mad()`, if `TRUE`, compute the 'hi-median',
-#'   i.e., take the larger of the two middle values for even sample size. See
-#'   `stats::mad()`.
 #' @param probs (numeric vector) For `rvar_quantile()`, probabilities in `[0, 1]`.
 #' @param names (logical) For `rvar_quantile()`, if `TRUE`, the result has a
 #'   `names` attribute.

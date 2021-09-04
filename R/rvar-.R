@@ -718,14 +718,20 @@ summarise_rvar_by_element_via_matrix <- function(x, .f, .extra_dim = NULL, .extr
 
   x = .f(draws_of(x), ...)
 
-  if (.length == 1) {
-    # this ensures that scalar rvars are summarized to vectors rather than
-    # to matrices with one column
-    x <- as.vector(x)
+  if (is.null(.extra_dim) && length(.dim) <= 1) {
+    # this ensures that vector rvars are summarized to vectors rather than
+    # to arrays with one dimension
+    dim(x) <- NULL
+    names(x) <- .dimnames[[1]]
+  } else if (isTRUE(.dim == 1)) {
+    # scalars with extra dimensions should just return vectors
+    dim(x) <- NULL
+    names(x) <- .extra_dimnames[[1]]
   } else {
     dim(x) <- c(.extra_dim, .dim)
     dimnames(x) <- c(.extra_dimnames, .dimnames)
   }
+
   x
 }
 
