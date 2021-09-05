@@ -438,24 +438,6 @@ ndraws.rvar <- function(x) {
 
 # internal ----------------------------------------------------------------
 
-# Find the index in `var_list` where `one_var` is.
-# But allow for vectors.
-# @param one_var One variable to look for, something like `"theta"` or `"theta[2]"`
-# @param var_list Variable list to search, like `c("mu", "theta[1]", "theta[2]")`
-# @return The integer index(es) where `one_var` matches
-# @seealso [which()]
-#
-# This is a small helper function for `check_existing_variables()`
-get_variable_index <- function(one_var, var_list) {
-  one_var <- as_one_character(one_var) # adds about 4 µs
-  if (grepl("\\[.+\\]$", one_var, perl = TRUE)) {
-    idx <- which(one_var == var_list)
-  } else {
-    idx <- grep(paste0("^", one_var, "(\\[.+\\])?$"), var_list, perl = TRUE)
-  }
-  idx
-}
-
 # check validity of existing variable names: e.g., that
 # all `variables` exist in `x` and that no `variables`are reserved words
 # Additionally, this returns the cannonical name, so e.g. "theta" will get
@@ -481,17 +463,32 @@ check_existing_variables <- function(variables, x, regex = FALSE,
     missing_variables <- NULL
     variables <- as.character(all_variables[unique(unlist(tmp))])
   } else if (!scalar_only) {
-    missing_candidates <- setdiff(variables, all_variables)
+    # need to find variables that are matched by either a scalar or vector
+    # variable in x and what the matching variable is, while keeping original
+    # order of `variables` => we'll do two left joins to fill in scalar and
+    # vector variable names, which will also find missing variables (as NAs)
+
+    # because the mapping of scalar variables to variables(x) is one-to-one, can
+    # do the first left join using match instead of merge, which is faster
+    scalar_variables <- all_variables[match(variables, all_variables)]
+
+    # need to use merge for the second join as vector variables may match
+    # multiple variables in `x`
     all_variables_base <- gsub("\\[.*\\]$", "", all_variables)
-    missing_variables <- setdiff(missing_candidates, all_variables_base)
-    vector_variables <- setdiff(missing_candidates, missing_variables)
-    requested_vars <- variables
-    variables <- unique(
-      c(variables[!(variables %in% missing_candidates)],
-        all_variables[all_variables_base %in% vector_variables])
+    variables_df <- merge(
+      # left join seems to rearrange input order, so need to keep it
+      # and the order of variables in x so we can restore them later
+      data.frame(variable = variables, input_order = seq_along(variables), scalar = scalar_variables),
+      data.frame(variable = all_variables_base, vector = all_variables, variable_order = seq_along(all_variables)),
+      by = "variable",
+      sort = FALSE,
+      all.x = TRUE
     )
-    sort_index <- unlist(lapply(requested_vars, get_variable_index, var_list = variables))
-    variables <- variables[sort_index]
+
+    vector_or_scalar <- with(variables_df, ifelse(is.na(vector), scalar, vector))
+    missing_variables <- variables_df$variable[is.na(vector_or_scalar)]
+    variables <- vector_or_scalar[order(variables_df$input_order, variables_df$variable_order)]
+    variables <- variables[!is.na(variables)]
   } else {
     missing_variables <- setdiff(variables, all_variables)
   }
