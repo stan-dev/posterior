@@ -438,8 +438,28 @@ ndraws.rvar <- function(x) {
 
 # internal ----------------------------------------------------------------
 
+# Find the index in `var_list` where `one_var` is.
+# But allow for vectors.
+# @param one_var One variable to look for, something like `"theta"` or `"theta[2]"`
+# @param var_list Variable list to search, like `c("mu", "theta[1]", "theta[2]")`
+# @return The integer index(es) where `one_var` matches
+# @seealso [which()]
+#
+# This is a small helper function for `check_existing_variables()`
+get_variable_index <- function(one_var, var_list) {
+  one_var <- as_one_character(one_var) # adds about 4 µs
+  if (grepl("\\[.+\\]$", one_var, perl = TRUE)) {
+    idx <- which(one_var == var_list)
+  } else {
+    idx <- grep(paste0("^", one_var, "(\\[.+\\])?$"), var_list, perl = TRUE)
+  }
+  idx
+}
+
 # check validity of existing variable names: e.g., that
 # all `variables` exist in `x` and that no `variables`are reserved words
+# Additionally, this returns the cannonical name, so e.g. "theta" will get
+# converted to c("theta[1]", "theta[2]", ...) if those variables exist.
 # @param regex should 'variables' be treated as regular expressions?
 # @param scalar_only should only scalar variables be matched?
 check_existing_variables <- function(variables, x, regex = FALSE,
@@ -465,10 +485,13 @@ check_existing_variables <- function(variables, x, regex = FALSE,
     all_variables_base <- gsub("\\[.*\\]$", "", all_variables)
     missing_variables <- setdiff(missing_candidates, all_variables_base)
     vector_variables <- setdiff(missing_candidates, missing_variables)
+    requested_vars <- variables
     variables <- unique(
       c(variables[!(variables %in% missing_candidates)],
         all_variables[all_variables_base %in% vector_variables])
     )
+    sort_index <- unlist(lapply(requested_vars, get_variable_index, var_list = variables))
+    variables <- variables[sort_index]
   } else {
     missing_variables <- setdiff(variables, all_variables)
   }
