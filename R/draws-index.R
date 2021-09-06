@@ -478,8 +478,14 @@ check_existing_variables <- function(variables, x, regex = FALSE,
     variables_df <- merge(
       # left join seems to rearrange input order, so need to keep it
       # and the order of variables in x so we can restore them later
-      data.frame(variable = variables, input_order = seq_along(variables), scalar = scalar_variables),
-      data.frame(variable = all_variables_base, vector = all_variables, variable_order = seq_along(all_variables)),
+      data.frame(
+        variable = variables, input_order = seq_along(variables), scalar = scalar_variables,
+        stringsAsFactors = FALSE
+      ),
+      data.frame(
+        variable = all_variables_base, vector = all_variables, variable_order = seq_along(all_variables),
+        stringsAsFactors = FALSE
+      ),
       by = "variable",
       sort = FALSE,
       all.x = TRUE
