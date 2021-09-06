@@ -12,12 +12,12 @@ test_that("numeric summary functions work", {
   expect_equal(draws_of(rvar_max(x)), apply(x_array, 1, max), check.attributes = FALSE)
 
   # default values on empty input
-  expect_error(rvar_mean())
-  expect_error(rvar_median())
+  expect_equal(rvar_mean(), as_rvar(NA_real_))
+  expect_equal(rvar_median(), as_rvar(NA_real_))
   expect_equal(rvar_sum(), as_rvar(0))
   expect_equal(rvar_prod(), as_rvar(1))
-  expect_warning(expect_equal(rvar_min(), as_rvar(Inf)))
-  expect_warning(expect_equal(rvar_max(), as_rvar(-Inf)))
+  expect_equal(rvar_min(), as_rvar(Inf))
+  expect_equal(rvar_max(), as_rvar(-Inf))
 
   # test argument passing
   x[1,2] <- NA
@@ -41,9 +41,9 @@ test_that("spread summary functions work", {
   expect_equal(draws_of(rvar_mad(x, constant = 1)), apply(x_array, 1, mad, constant = 1), check.attributes = FALSE)
 
   # default values on empty input
-  expect_error(rvar_sd())
-  expect_error(rvar_var())
-  expect_error(rvar_mad())
+  expect_equal(rvar_sd(), as_rvar(NA_real_))
+  expect_equal(rvar_var(), as_rvar(NA_real_))
+  expect_equal(rvar_mad(), as_rvar(NA_real_))
 
   # test argument passing on var since it requires some finagling
   x[1,2] <- NA
@@ -64,7 +64,7 @@ test_that("rvar_range works", {
   expect_equal(draws_of(rvar_range(x)), t(apply(x_array, 1, range)), check.attributes = FALSE)
 
   # default values on empty input
-  expect_warning(expect_equal(rvar_range(), as_rvar(c(Inf, -Inf))))
+  expect_equal(rvar_range(), as_rvar(c(Inf, -Inf)))
 })
 
 
@@ -84,6 +84,9 @@ test_that("rvar_quantile works", {
 
   q50 <- array(apply(x_array, 1, quantile, probs = 0.5), dim = c(4, 1), dimnames = list(1:4, "50%"))
   expect_equal(draws_of(rvar_quantile(x, probs = 0.5, names = TRUE)), q50)
+
+  # passing NULL should still result in a vector with length = length(probs)
+  expect_equal(rvar_quantile(NULL, probs = c(0.25, 0.75)), as_rvar(c(NA_real_, NA_real_)))
 })
 
 

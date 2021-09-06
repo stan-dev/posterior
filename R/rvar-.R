@@ -647,10 +647,13 @@ cleanup_draw_dims <- function(x) {
 # helpers: applying functions over rvars ----------------------------------
 
 # apply a summary function within each draw of the rvar (dropping other dimensions)
-summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_empty = .f()) {
+# summarise_rvar_within_draws_via_matrix should be used instead of this function
+# if a faster implementation of .f is available in matrix form (e.g. functions
+# from matrixStats); otherwise this function can be used.
+summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_empty = .f(numeric(0))) {
   draws <- draws_of(x)
   dim <- dim(draws)
-  if (!length(dim)) {
+  if (!length(x)) {
     # x is a NULL rvar, need to return base value for this summary function
     as_rvar(.when_empty)
   } else {
@@ -658,6 +661,24 @@ summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_em
     if (.transpose) draws <- t(draws)
     new_rvar(draws, .nchains = nchains(x))
   }
+}
+
+#' apply a summary function within each draw of the rvar (dropping other dimensions)
+#' by first collapsing dimensions into columns of the draws matrix
+#' (so that .f can be a rowXXX() function)
+#' @param x an rvar
+#' @param .f a function that takes a matrix and summarises its rows, like rowMeans
+#' @param ... arguments passed to `.f`
+#' @param .when_empty the value to return when `x` has length 0 (e.g. is NULL)
+#' @noRd
+summarise_rvar_within_draws_via_matrix <- function(x, .f, ...) {
+  .length <- length(x)
+  if (!.length) {
+    x <- rvar()
+  }
+
+  dim(x) <- .length
+  new_rvar(.f(draws_of(x), ...), .nchains = nchains(x))
 }
 
 # apply vectorized function to an rvar's draws
@@ -677,6 +698,41 @@ summarise_rvar_by_element <- function(x, .f, ...) {
     dim <- dim(draws)
     apply(draws, seq_along(dim)[-1], .f, ...)
   }
+}
+
+#' apply a summary function across draws of the rvar (i.e., by each element)
+#' by first collapsing dimensions into columns of the draws matrix, applying the
+#' function, then restoring dimensions (so that .f can be a colXXX() function)
+#' @param x an rvar
+#' @param .f a function that takes a matrix and summarises its columns, like colMeans
+#' @param .extra_dim extra dims added by `.f` to the output, e.g. in the case of
+#' matrixStats::colRanges this is `2`
+#' @param .extra_dimnames extra dimension names for dims added by `.f` to the output
+#' @param ... arguments passed to `.f`
+#' @noRd
+summarise_rvar_by_element_via_matrix <- function(x, .f, .extra_dim = NULL, .extra_dimnames = NULL, ...) {
+  .dim <- dim(x)
+  .dimnames <- dimnames(x)
+  .length <- length(x)
+  dim(x) <- .length
+
+  x = .f(draws_of(x), ...)
+
+  if (is.null(.extra_dim) && length(.dim) <= 1) {
+    # this ensures that vector rvars are summarized to vectors rather than
+    # to arrays with one dimension
+    dim(x) <- NULL
+    names(x) <- .dimnames[[1]]
+  } else if (isTRUE(.dim == 1)) {
+    # scalars with extra dimensions should just return vectors
+    dim(x) <- NULL
+    names(x) <- .extra_dimnames[[1]]
+  } else {
+    dim(x) <- c(.extra_dim, .dim)
+    dimnames(x) <- c(.extra_dimnames, .dimnames)
+  }
+
+  x
 }
 
 # apply a summary function across draws of the rvar (i.e., by each element)

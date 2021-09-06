@@ -62,7 +62,11 @@ cdf.rvar <- function(x, q, ...) {
 #' @rdname rvar-dist
 #' @export
 quantile.rvar <- function(x, probs, ...) {
-  summarise_rvar_by_element(x, function(draws) {
-    quantile(draws, probs, names = FALSE, ...)
-  })
+  summarise_rvar_by_element_via_matrix(x,
+    function(draws) {
+      t(matrixStats::colQuantiles(draws, probs = probs, useNames = TRUE, ...))
+    },
+    .extra_dim = length(probs),
+    .extra_dimnames = list(NULL)
+  )
 }
