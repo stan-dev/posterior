@@ -4,6 +4,8 @@
 
 * ensure that `as_draws_rvars()` works on lists of lists (#192)
 * fix some vector recycling issues with `rvar_rng` (#195)
+* ensure that `subset_draws()` respects input variable order, thanks to
+Karl Dunkle Werner and Alexey Stukalov (#188)
 
 ### Other Changes
 
