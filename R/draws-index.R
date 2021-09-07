@@ -465,36 +465,29 @@ check_existing_variables <- function(variables, x, regex = FALSE,
   } else if (!scalar_only) {
     # need to find variables that are matched by either a scalar or vector
     # variable in x and what the matching variable is, while keeping original
-    # order of `variables` => we'll do two left joins to fill in scalar and
-    # vector variable names, which will also find missing variables (as NAs)
+    # order of input `variables`
 
-    # because the mapping of scalar variables to variables(x) is one-to-one, can
-    # do the first left join using match instead of merge, which is faster
-    scalar_variables <- all_variables[match(variables, all_variables)]
-
-    # need to use merge for the second join as vector variables may match
-    # multiple variables in `x`
-    all_variables_base <- gsub("\\[.*\\]$", "", all_variables, perl = TRUE)
-    variables_df <- merge(
-      # left join seems to rearrange input order, so need to keep it
-      # and the order of variables in x so we can restore them later
-      data.frame(
-        variable = variables, input_order = seq_along(variables), scalar = scalar_variables,
-        stringsAsFactors = FALSE
-      ),
-      data.frame(
-        variable = all_variables_base, vector = all_variables, variable_order = seq_along(all_variables),
-        stringsAsFactors = FALSE
-      ),
-      by = "variable",
-      sort = FALSE,
-      all.x = TRUE
-    )
-
-    vector_or_scalar <- with(variables_df, ifelse(is.na(vector), scalar, vector))
-    missing_variables <- variables_df$variable[is.na(vector_or_scalar)]
-    variables <- vector_or_scalar[order(variables_df$input_order, variables_df$variable_order)]
-    variables <- variables[!is.na(variables)]
+    # find scalar variables (1-to-1 match between all_variables and variables)
+    scalar_input_ixs <- match(all_variables, variables)
+    # find vector variable matches (match all_variables with the indexing stripped)
+    all_variables_base <- all_variables
+    # exclude already matched scalar variables
+    all_variables_base[!is.na(scalar_input_ixs)] <- NA_character_
+    all_variables_base <- gsub("\\[.*\\]$", "", all_variables_base, perl = TRUE)
+    vector_input_ixs <- match(all_variables_base, variables)
+    # compose the vector of indices of matched input variables
+    input_ixs <- c(scalar_input_ixs[!is.na(scalar_input_ixs)],
+                   vector_input_ixs[!is.na(vector_input_ixs)])
+    # compose the vector of indices of matched all_variables
+    all_var_ixs <- seq_along(all_variables)
+    all_var_matched_ixs <- c(all_var_ixs[!is.na(scalar_input_ixs)],
+                             all_var_ixs[!is.na(vector_input_ixs)])
+    # select missed input variables
+    missing_vars_mask <- rep_len(TRUE, length(variables))
+    missing_vars_mask[input_ixs] <- FALSE
+    missing_variables <- variables[missing_vars_mask]
+    # select matched all_variables maintaining the input variables order
+    variables <- all_variables[all_var_matched_ixs[order(input_ixs, all_var_matched_ixs)]]
   } else {
     missing_variables <- setdiff(variables, all_variables)
   }
