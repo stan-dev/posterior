@@ -474,7 +474,7 @@ check_existing_variables <- function(variables, x, regex = FALSE,
 
     # need to use merge for the second join as vector variables may match
     # multiple variables in `x`
-    all_variables_base <- gsub("\\[.*\\]$", "", all_variables)
+    all_variables_base <- gsub("\\[.*\\]$", "", all_variables, perl = TRUE)
     variables_df <- merge(
       # left join seems to rearrange input order, so need to keep it
       # and the order of variables in x so we can restore them later
