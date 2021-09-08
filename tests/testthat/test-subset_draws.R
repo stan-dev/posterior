@@ -137,6 +137,31 @@ test_that("subset_draws preserves variable order", {
   expect_equal(variables(x), c("theta[2]", "theta[1]"))
 })
 
+test_that("subset_draws preserves variable order with vectors", {
+  x <- as_draws_matrix(example_draws())
+  theta_names <- paste0("theta[", 1:8, "]")
+  # Expect variables to be returned in the order listed:
+  v1 <- variables(subset_draws(x, variable = c("theta", "mu")))
+  expect_equal(v1, c(theta_names, "mu"))
+  v2 <- variables(subset_draws(x, variable = c("mu", "theta")))
+  expect_equal(v2, c("mu", theta_names))
+  v3 <- variables(subset_draws(x, variable = c("mu", "theta", "tau")))
+  expect_equal(v3, c("mu", theta_names, "tau"))
+  # No duplication:
+  v4 <- variables(subset_draws(x, variable = c("mu", "mu", "theta")))
+  expect_equal(v4, c("mu", theta_names))
+  v5 <- variables(subset_draws(x, variable = c("mu", "theta", "theta")))
+  expect_equal(v5, c("mu", theta_names))
+  v6 <- variables(subset_draws(x, variable = c("theta", "mu", "theta")))
+  expect_equal(v6, c(theta_names, "mu"))
+
+  # Output is sorted numerically, not alphabetically
+  x2 <- as_draws_matrix(matrix(rep.int(1, 11 * 3), ncol = 11))
+  colnames(x2) <- paste0("a[",1:11,"]")
+  v7 <- variables(subset_draws(x2, variable = "a"))
+  expect_equal(v7, colnames(x2))
+})
+
 test_that("non-unique subsetting for draws_df same as doing it with draws_list", {
   x_df <- as_draws_df(example_draws())
   x_list <- as_draws_list(example_draws())
