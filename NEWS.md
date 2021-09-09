@@ -1,8 +1,9 @@
-# posterior 1.0.1.9000
+# posterior 1.1.0
 
 ### Enhancements
 
-* use `matrixStats` to speed up convergence functions (#190) and `rvar` summaries
+* use `matrixStats` to speed up convergence functions (#190) and 
+`rvar` summaries (#200)
 
 ### Bug Fixes
 
