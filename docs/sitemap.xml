@@ -121,9 +121,6 @@
     <loc>https://mc-stan.org/posterior/reference/quantile2.html</loc>
   </url>
   <url>
-    <loc>https://mc-stan.org/posterior/reference/r_scale.html</loc>
-  </url>
-  <url>
     <loc>https://mc-stan.org/posterior/reference/rdo.html</loc>
   </url>
   <url>
@@ -178,6 +175,9 @@
     <loc>https://mc-stan.org/posterior/reference/rvar_rng.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/r_scale.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/split_chains.html</loc>
   </url>
   <url>
@@ -199,10 +199,10 @@
     <loc>https://mc-stan.org/posterior/reference/vctrs-compat.html</loc>
   </url>
   <url>
-    <loc>https://mc-stan.org/posterior/reference/weight_draws.html</loc>
+    <loc>https://mc-stan.org/posterior/reference/weights.draws.html</loc>
   </url>
   <url>
-    <loc>https://mc-stan.org/posterior/reference/weights.draws.html</loc>
+    <loc>https://mc-stan.org/posterior/reference/weight_draws.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/z_scale.html</loc>

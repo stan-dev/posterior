@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   posterior: posterior.html
   rvar: rvar.html
-last_built: 2021-07-13T22:55Z
+last_built: 2021-09-09T10:10Z
 urls:
   reference: https://mc-stan.org/posterior/reference
   article: https://mc-stan.org/posterior/articles

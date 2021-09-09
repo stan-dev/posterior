@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -92,19 +92,19 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://twitter.com/mcmc_stan">
-    <span class="fas fa-twitter"></span>
+    <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
   <a href="https://github.com/stan-dev/posterior">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
   <a href="https://discourse.mc-stan.org/">
-    <span class="fas fa-users"></span>
+    <span class="fa fa-users"></span>
      
   </a>
 </li>
@@ -118,7 +118,7 @@
 
       
 
-      </header><script src="posterior_files/header-attrs-2.8/header-attrs.js"></script><div class="row">
+      </header><script src="posterior_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>The posterior R package</h1>
@@ -159,7 +159,7 @@
 <a href="#example" class="anchor"></a>Example</h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://mc-stan.org/posterior/">"posterior"</a></span><span class="op">)</span></code></pre></div>
-<pre><code>## This is posterior version 1.0.0</code></pre>
+<pre><code>## This is posterior version 1.1.0</code></pre>
 <pre><code>## 
 ## Attaching package: 'posterior'</code></pre>
 <pre><code>## The following objects are masked from 'package:stats':
@@ -239,7 +239,7 @@
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eight_schools_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/draws_df.html">as_draws_df</a></span><span class="op">(</span><span class="va">eight_schools_array</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">eight_schools_df</span><span class="op">)</span></code></pre></div>
-<pre><code>## draws_df [400 × 13] (S3: draws_df/draws/tbl_df/tbl/data.frame)
+<pre><code>## draws_df [400 x 13] (S3: draws_df/draws/tbl_df/tbl/data.frame)
 ##  $ mu        : num [1:400] 2.01 1.46 5.81 6.85 1.81 ...
 ##  $ tau       : num [1:400] 2.77 6.98 9.68 4.79 2.85 ...
 ##  $ theta[1]  : num [1:400] 3.962 0.124 21.251 14.7 5.96 ...
@@ -285,17 +285,17 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A draws_matrix: 10 iterations, 1 chains, and 5 variables
 ##     variable
-## draw    V1    V2    V3     V4     V5
-##   1  -2.10 -0.71  1.38  2.183  0.081
-##   2  -0.87 -0.47 -0.28  0.665  1.820
-##   3  -1.09  0.20  0.79 -0.125  2.872
-##   4  -1.94  0.36 -0.29 -0.611  0.389
-##   5  -1.80  1.82 -1.08  1.230 -1.899
-##   6  -0.79  0.93  0.17 -0.338 -0.483
-##   7   0.24 -1.78 -0.43 -0.576 -0.424
-##   8   0.57 -0.41 -0.62  2.449  0.921
-##   9  -0.41 -0.69  0.59  0.072 -0.102
-##   10 -0.78  1.30 -0.69  1.245 -1.106</code></pre>
+## draw      V1    V2     V3     V4     V5
+##   1   0.0083 -0.49  0.332 -0.146 -2.620
+##   2  -0.3062  0.64 -1.615  1.530  0.515
+##   3   0.8980 -0.93  0.551  0.329 -2.058
+##   4   0.7022  0.23 -0.915  0.766  1.172
+##   5  -0.1158  0.34 -1.672  0.260 -0.377
+##   6  -0.0322  0.79 -1.476 -0.046  0.404
+##   7  -0.8983 -0.27  0.714  0.396 -0.163
+##   8   0.4117 -1.66 -0.291  0.050 -0.037
+##   9  -0.5325 -0.43  0.072 -0.076  0.434
+##   10  0.1424  0.63  2.272  1.018 -0.184</code></pre>
 <p>Because the matrix was converted to a <code>draws_matrix</code>, all of the methods for working with <code>draws</code> objects described in subsequent sections of this vignette will now be available.</p>
 <p>Instead of <code><a href="../reference/draws_matrix.html">as_draws_matrix()</a></code> we also could have just used <code><a href="../reference/draws.html">as_draws()</a></code>, which attempts to find the closest available format to the input object. In this case the result would be a <code>draws_matrix</code> object either way.</p>
 </div>
@@ -308,17 +308,17 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A draws_matrix: 50 iterations, 1 chains, and 2 variables
 ##     variable
-## draw alpha   beta
-##   1   0.63 -0.043
-##   2  -0.44 -0.494
-##   3   0.56 -1.099
-##   4  -0.68 -1.160
-##   5  -0.35 -0.860
-##   6  -0.88  1.651
-##   7   0.68  0.814
-##   8  -1.32 -0.556
-##   9   0.56  0.214
-##   10 -1.99 -0.562
+## draw  alpha   beta
+##   1  -0.468  0.812
+##   2  -0.411  0.915
+##   3   0.102 -0.556
+##   4   0.728 -2.211
+##   5   0.880  0.934
+##   6  -0.254  0.836
+##   7  -0.588 -0.055
+##   8  -0.846 -0.313
+##   9  -1.359  1.838
+##   10  0.049 -1.340
 ## # ... with 40 more draws</code></pre>
 <p>Analogous functions exist for the other draws formats and are used similarly.</p>
 </div>
@@ -335,7 +335,7 @@
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">sub_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/subset_draws.html">subset_draws</a></span><span class="op">(</span><span class="va">eight_schools_df</span>, variable <span class="op">=</span> <span class="st">"mu"</span>, chain <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, iteration <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">sub_df</span><span class="op">)</span></code></pre></div>
-<pre><code>## draws_df [10 × 4] (S3: draws_df/draws/tbl_df/tbl/data.frame)
+<pre><code>## draws_df [10 x 4] (S3: draws_df/draws/tbl_df/tbl/data.frame)
 ##  $ mu        : num [1:10] 2.01 1.46 5.81 6.85 1.81 ...
 ##  $ .chain    : int [1:10] 1 1 1 1 1 2 2 2 2 2
 ##  $ .iteration: int [1:10] 1 2 3 4 5 1 2 3 4 5
@@ -425,29 +425,29 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x4</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A draws_matrix: 5 iterations, 1 chains, and 3 variables
 ##     variable
-## draw alpha  beta theta
-##    1  0.22 -0.93  0.42
-##    2 -0.24  0.11  1.55
-##    3 -1.17 -0.74  0.51
-##    4 -0.95 -0.74  0.35
-##    5  0.28  0.58  0.62</code></pre>
+## draw  alpha  beta  theta
+##    1 -1.935  0.84 0.0058
+##    2  0.684 -1.26 1.5981
+##    3  1.364 -0.46 0.6236
+##    4  0.377  0.35 4.5714
+##    5 -0.049  0.34 0.7098</code></pre>
 <p>Because <code>x1</code> and <code>x2</code> have the same variables, we can bind them along the <code>'draw'</code> dimension to create a single <code>draws_matrix</code> with more draws:</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/bind_draws.html">bind_draws</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, along <span class="op">=</span> <span class="st">"draw"</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x5</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A draws_matrix: 10 iterations, 1 chains, and 2 variables
 ##     variable
-## draw alpha  beta
-##   1   0.22 -0.93
-##   2  -0.24  0.11
-##   3  -1.17 -0.74
-##   4  -0.95 -0.74
-##   5   0.28  0.58
-##   6   0.36  1.12
-##   7   1.53  1.60
-##   8   0.79  0.36
-##   9   0.46 -1.08
-##   10 -0.17 -1.22</code></pre>
+## draw  alpha   beta
+##   1  -1.935  0.843
+##   2   0.684 -1.256
+##   3   1.364 -0.458
+##   4   0.377  0.346
+##   5  -0.049  0.338
+##   6  -0.369  1.240
+##   7   1.238  1.425
+##   8  -1.691 -0.297
+##   9   1.265 -0.935
+##   10  0.884  0.087</code></pre>
 <p>As with all posterior methods, <code><a href="../reference/bind_draws.html">bind_draws()</a></code> can be used with all draws formats and depending on the format different dimensions are available to bind on. For example, we can bind <code>draws_array</code> objects together by <code>iteration</code>, <code>chain</code>, or <code>variable</code>, but a 2-D <code>draws_matrix</code> with the chains combined can only by bound by <code>draw</code> and <code>variable</code>.</p>
 </div>
 </div>
@@ -464,16 +464,16 @@
 <pre><code>## # A tibble: 10 x 10
 ##    variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail
 ##    &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
-##  1 mu        4.18   4.16  3.40  3.57  -0.854  9.39  1.02     558.      NA 
-##  2 tau       4.16   3.07  3.58  2.89   0.309 11.0   1.01     246.      NA 
-##  3 theta[1]  6.75   5.97  6.30  4.87  -1.23  18.9   1.01     400.      NA 
+##  1 mu        4.18   4.16  3.40  3.57  -0.854  9.39  1.02     558.     322.
+##  2 tau       4.16   3.07  3.58  2.89   0.309 11.0   1.01     246.     202.
+##  3 theta[1]  6.75   5.97  6.30  4.87  -1.23  18.9   1.01     400.     254.
 ##  4 theta[2]  5.25   5.13  4.63  4.25  -1.97  12.5   1.02     564.     372.
-##  5 theta[3]  3.04   3.99  6.80  4.94 -10.3   11.9   1.01     312.      NA 
-##  6 theta[4]  4.86   4.99  4.92  4.51  -3.57  12.2   1.02     695.      NA 
-##  7 theta[5]  3.22   3.72  5.08  4.38  -5.93  10.8   1.01     523.      NA 
-##  8 theta[6]  3.99   4.14  5.16  4.81  -4.32  11.5   1.02     548.      NA 
-##  9 theta[7]  6.50   5.90  5.26  4.54  -1.19  15.4   1.00     434.      NA 
-## 10 theta[8]  4.57   4.64  5.25  4.89  -3.79  12.2   1.02     355.      NA</code></pre>
+##  5 theta[3]  3.04   3.99  6.80  4.94 -10.3   11.9   1.01     312.     205.
+##  6 theta[4]  4.86   4.99  4.92  4.51  -3.57  12.2   1.02     695.     252.
+##  7 theta[5]  3.22   3.72  5.08  4.38  -5.93  10.8   1.01     523.     306.
+##  8 theta[6]  3.99   4.14  5.16  4.81  -4.32  11.5   1.02     548.     205.
+##  9 theta[7]  6.50   5.90  5.26  4.54  -1.19  15.4   1.00     434.     308.
+## 10 theta[8]  4.57   4.64  5.25  4.89  -3.79  12.2   1.02     355.     146.</code></pre>
 <p>The result is a data frame with one row per variable and one column per summary statistic or convergence diagnostic. The summaries <code>rhat</code>, <code>ess_bulk</code>, and <code>ess_tail</code> are described in Vehtari et al. (2020). We can choose which summaries to compute by passing additional arguments, either functions or names of functions. For instance, if we only wanted the mean and its corresponding Monte Carlo Standard Error (MCSE) we could use either of these options:</p>
 <div class="sourceCode" id="cb40"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># the function mcse_mean is provided by the posterior package</span>
@@ -533,16 +533,16 @@
 <pre><code>## # A tibble: 10 x 2
 ##    variable weighted_mean
 ##    &lt;chr&gt;            &lt;dbl&gt;
-##  1 mu                4.15
-##  2 tau               4.04
-##  3 theta[1]          6.57
-##  4 theta[2]          5.12
-##  5 theta[3]          2.81
-##  6 theta[4]          4.87
-##  7 theta[5]          3.13
-##  8 theta[6]          4.27
-##  9 theta[7]          6.25
-## 10 theta[8]          4.73</code></pre>
+##  1 mu                4.24
+##  2 tau               4.14
+##  3 theta[1]          6.80
+##  4 theta[2]          5.26
+##  5 theta[3]          3.53
+##  6 theta[4]          4.83
+##  7 theta[5]          3.40
+##  8 theta[6]          3.77
+##  9 theta[7]          6.42
+## 10 theta[8]          4.20</code></pre>
 </div>
 <div id="specifying-functions-using-lambda-like-syntax" class="section level3">
 <h3 class="hasAnchor">

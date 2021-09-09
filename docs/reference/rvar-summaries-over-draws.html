@@ -74,7 +74,7 @@ the case of range(), see Details)." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -195,6 +195,24 @@ the case of <code><a href='https://rdrr.io/r/base/range.html'>range()</a></code>
 <span class='fu'><a href='https://rdrr.io/r/stats/median.html'>median</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for rvar</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>min</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for rvar</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Extremes.html'>max</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for rvar</span>
+<span class='fu'><a href='https://rdrr.io/r/base/sum.html'>sum</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for rvar</span>
+<span class='fu'><a href='https://rdrr.io/r/base/prod.html'>prod</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for rvar</span>
+<span class='fu'><a href='https://rdrr.io/r/base/all.html'>all</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for rvar</span>
+<span class='fu'><a href='https://rdrr.io/r/base/any.html'>any</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
+
+<span class='co'># S3 method for rvar</span>
 <span class='fu'><a href='https://rdrr.io/r/base/groupGeneric.html'>Summary</a></span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for rvar</span>
@@ -225,7 +243,7 @@ the case of <code><a href='https://rdrr.io/r/base/range.html'>range()</a></code>
 <span class='fu'>mad</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for rvar</span>
-<span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span><span class='op'>(</span><span class='va'>...</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/range.html'>range</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span>
 
 <span class='co'># S3 method for rvar</span>
 <span class='fu'><a href='https://rdrr.io/r/base/is.finite.html'>is.finite</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
@@ -292,12 +310,12 @@ they can be used as summary functions in <code><a href='draws_summary.html'>summ
 
 <span class='co'># These should all be ~= c(1, 2, 3, 4)</span>
 <span class='fu'>E</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.9772733 1.9829572 2.9577323 4.0180367</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.9772733 1.9829572 2.9577323 4.0180367</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/median.html'>median</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.9742794 1.9544914 2.9235341 3.9592717</div><div class='input'>
+</div><div class='output co'>#&gt; [1] 1.004952 1.955997 3.011070 3.963980</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/mean.html'>mean</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 1.004952 1.955997 3.011070 3.963980</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/stats/median.html'>median</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 0.9557178 1.9170014 3.0024683 3.9274693</div><div class='input'>
 <span class='co'># This ...</span>
 <span class='fu'>Pr</span><span class='op'>(</span><span class='va'>x</span> <span class='op'>&lt;</span> <span class='fl'>1.5</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 0.60500 0.40425 0.23525 0.10925</div><div class='input'><span class='co'># ... should be about the same as this:</span>
+</div><div class='output co'>#&gt; [1] 0.59800 0.41100 0.22300 0.10775</div><div class='input'><span class='co'># ... should be about the same as this:</span>
 <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>pnorm</a></span><span class='op'>(</span><span class='fl'>1.5</span>, mean <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>4</span>, sd <span class='op'>=</span> <span class='fl'>2</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; [1] 0.5987063 0.4012937 0.2266274 0.1056498</div><div class='input'>
 </div></pre>

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -165,6 +165,43 @@
       <small>Source: <a href='https://github.com/stan-dev/posterior/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="posterior-110" class="section level1">
+<h1 class="page-header" data-toc-text="1.1.0">
+<a href="#posterior-110" class="anchor"></a>posterior 1.1.0<small> Unreleased </small>
+</h1>
+<div id="enhancements" class="section level3">
+<h3 class="hasAnchor">
+<a href="#enhancements" class="anchor"></a>Enhancements</h3>
+<ul>
+<li>use <code>matrixStats</code> to speed up convergence functions (<a href='https://github.com/stan-dev/posterior/issues/190'>#190</a>) and <code>rvar</code> summaries (<a href='https://github.com/stan-dev/posterior/issues/200'>#200</a>)</li>
+</ul>
+</div>
+<div id="bug-fixes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>Bug Fixes</h3>
+<ul>
+<li>ensure that <code><a href="../reference/draws_rvars.html">as_draws_rvars()</a></code> works on lists of lists (<a href='https://github.com/stan-dev/posterior/issues/192'>#192</a>)</li>
+<li>fix some vector recycling issues with <code>rvar_rng</code> (<a href='https://github.com/stan-dev/posterior/issues/195'>#195</a>)</li>
+<li>ensure that <code><a href="../reference/subset_draws.html">subset_draws()</a></code> respects input variable order, thanks to Karl Dunkle Werner and Alexey Stukalov (<a href='https://github.com/stan-dev/posterior/issues/188'>#188</a>)</li>
+</ul>
+</div>
+<div id="other-changes" class="section level3">
+<h3 class="hasAnchor">
+<a href="#other-changes" class="anchor"></a>Other Changes</h3>
+<ul>
+<li>No longer check for constant-per-chain input in effective sample size diagnostics as this is overly conservative especially for <code>ess_tail</code>. (<a href='https://github.com/stan-dev/posterior/issues/198'>#198</a>)</li>
+</ul>
+</div>
+</div>
+    <div id="posterior-101" class="section level1">
+<h1 class="page-header" data-toc-text="1.0.1">
+<a href="#posterior-101" class="anchor"></a>posterior 1.0.1<small> 2021-07-14 </small>
+</h1>
+<ul>
+<li>ensure that all unit tests pass on all CRAN environments</li>
+<li>fix a problem that sometimes lead to <code>rvar</code>s being unnecessarily slow (<a href='https://github.com/stan-dev/posterior/issues/179'>#179</a>)</li>
+</ul>
+</div>
     <div id="posterior-100" class="section level1">
 <h1 class="page-header" data-toc-text="1.0.0">
 <a href="#posterior-100" class="anchor"></a>posterior 1.0.0<small> 2021-07-13 </small>

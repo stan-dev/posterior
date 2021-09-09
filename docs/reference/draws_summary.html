@@ -77,7 +77,7 @@ or rvar object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -279,16 +279,16 @@ their individual help pages.</p></div>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 10</span>
 #&gt;    variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail
 #&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 1</span> mu        4.18   4.16  3.40  3.57  -<span style='color: #BB0000;'>0.854</span>  9.39  1.02     558.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 2</span> tau       4.16   3.07  3.58  2.89   0.309 11.0   1.01     246.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 3</span> theta[1]  6.75   5.97  6.30  4.87  -<span style='color: #BB0000;'>1.23</span>  18.9   1.01     400.      <span style='color: #BB0000;'>NA</span> 
+#&gt; <span style='color: #BCBCBC;'> 1</span> mu        4.18   4.16  3.40  3.57  -<span style='color: #BB0000;'>0.854</span>  9.39  1.02     558.     322.
+#&gt; <span style='color: #BCBCBC;'> 2</span> tau       4.16   3.07  3.58  2.89   0.309 11.0   1.01     246.     202.
+#&gt; <span style='color: #BCBCBC;'> 3</span> theta[1]  6.75   5.97  6.30  4.87  -<span style='color: #BB0000;'>1.23</span>  18.9   1.01     400.     254.
 #&gt; <span style='color: #BCBCBC;'> 4</span> theta[2]  5.25   5.13  4.63  4.25  -<span style='color: #BB0000;'>1.97</span>  12.5   1.02     564.     372.
-#&gt; <span style='color: #BCBCBC;'> 5</span> theta[3]  3.04   3.99  6.80  4.94 -<span style='color: #BB0000;'>10.3</span>   11.9   1.01     312.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 6</span> theta[4]  4.86   4.99  4.92  4.51  -<span style='color: #BB0000;'>3.57</span>  12.2   1.02     695.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 7</span> theta[5]  3.22   3.72  5.08  4.38  -<span style='color: #BB0000;'>5.93</span>  10.8   1.01     523.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 8</span> theta[6]  3.99   4.14  5.16  4.81  -<span style='color: #BB0000;'>4.32</span>  11.5   1.02     548.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 9</span> theta[7]  6.50   5.90  5.26  4.54  -<span style='color: #BB0000;'>1.19</span>  15.4   1.00     434.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'>10</span> theta[8]  4.57   4.64  5.25  4.89  -<span style='color: #BB0000;'>3.79</span>  12.2   1.02     355.      <span style='color: #BB0000;'>NA</span> </div><div class='input'><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"mean"</span>, <span class='st'>"median"</span><span class='op'>)</span>
+#&gt; <span style='color: #BCBCBC;'> 5</span> theta[3]  3.04   3.99  6.80  4.94 -<span style='color: #BB0000;'>10.3</span>   11.9   1.01     312.     205.
+#&gt; <span style='color: #BCBCBC;'> 6</span> theta[4]  4.86   4.99  4.92  4.51  -<span style='color: #BB0000;'>3.57</span>  12.2   1.02     695.     252.
+#&gt; <span style='color: #BCBCBC;'> 7</span> theta[5]  3.22   3.72  5.08  4.38  -<span style='color: #BB0000;'>5.93</span>  10.8   1.01     523.     306.
+#&gt; <span style='color: #BCBCBC;'> 8</span> theta[6]  3.99   4.14  5.16  4.81  -<span style='color: #BB0000;'>4.32</span>  11.5   1.02     548.     205.
+#&gt; <span style='color: #BCBCBC;'> 9</span> theta[7]  6.50   5.90  5.26  4.54  -<span style='color: #BB0000;'>1.19</span>  15.4   1.00     434.     308.
+#&gt; <span style='color: #BCBCBC;'>10</span> theta[8]  4.57   4.64  5.25  4.89  -<span style='color: #BB0000;'>3.79</span>  12.2   1.02     355.     146.</div><div class='input'><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"mean"</span>, <span class='st'>"median"</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 3</span>
 #&gt;    variable  mean median
 #&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>  <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
@@ -346,29 +346,29 @@ their individual help pages.</p></div>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 4</span>
 #&gt;    variable  rhat ess_bulk ess_tail
 #&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 1</span> mu        1.02     558.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 2</span> tau       1.01     246.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 3</span> theta[1]  1.01     400.      <span style='color: #BB0000;'>NA</span> 
+#&gt; <span style='color: #BCBCBC;'> 1</span> mu        1.02     558.     322.
+#&gt; <span style='color: #BCBCBC;'> 2</span> tau       1.01     246.     202.
+#&gt; <span style='color: #BCBCBC;'> 3</span> theta[1]  1.01     400.     254.
 #&gt; <span style='color: #BCBCBC;'> 4</span> theta[2]  1.02     564.     372.
-#&gt; <span style='color: #BCBCBC;'> 5</span> theta[3]  1.01     312.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 6</span> theta[4]  1.02     695.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 7</span> theta[5]  1.01     523.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 8</span> theta[6]  1.02     548.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'> 9</span> theta[7]  1.00     434.      <span style='color: #BB0000;'>NA</span> 
-#&gt; <span style='color: #BCBCBC;'>10</span> theta[8]  1.02     355.      <span style='color: #BB0000;'>NA</span> </div><div class='input'><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>default_mcse_measures</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+#&gt; <span style='color: #BCBCBC;'> 5</span> theta[3]  1.01     312.     205.
+#&gt; <span style='color: #BCBCBC;'> 6</span> theta[4]  1.02     695.     252.
+#&gt; <span style='color: #BCBCBC;'> 7</span> theta[5]  1.01     523.     306.
+#&gt; <span style='color: #BCBCBC;'> 8</span> theta[6]  1.02     548.     205.
+#&gt; <span style='color: #BCBCBC;'> 9</span> theta[7]  1.00     434.     308.
+#&gt; <span style='color: #BCBCBC;'>10</span> theta[8]  1.02     355.     146.</div><div class='input'><span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, <span class='fu'>default_mcse_measures</span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 6</span>
 #&gt;    variable mcse_mean mcse_median mcse_sd mcse_q5 mcse_q95
 #&gt;    <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>        <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>       <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>   <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>    <span style='color: #949494; font-style: italic;'>&lt;dbl&gt;</span>
-#&gt; <span style='color: #BCBCBC;'> 1</span> mu           0.150       0.319   0.149  <span style='color: #BB0000;'>NA</span>       <span style='color: #BB0000;'>NA</span>    
-#&gt; <span style='color: #BCBCBC;'> 2</span> tau          0.213       0.250   0.156  <span style='color: #BB0000;'>NA</span>       <span style='color: #BB0000;'>NA</span>    
-#&gt; <span style='color: #BCBCBC;'> 3</span> theta[1]     0.319       0.262   0.233  <span style='color: #BB0000;'>NA</span>        1.36 
+#&gt; <span style='color: #BCBCBC;'> 1</span> mu           0.150       0.319   0.149   0.551    0.415
+#&gt; <span style='color: #BCBCBC;'> 2</span> tau          0.213       0.250   0.156   0.114    0.964
+#&gt; <span style='color: #BCBCBC;'> 3</span> theta[1]     0.319       0.262   0.233   0.820    1.36 
 #&gt; <span style='color: #BCBCBC;'> 4</span> theta[2]     0.202       0.213   0.166   0.676    0.848
-#&gt; <span style='color: #BCBCBC;'> 5</span> theta[3]     0.447       0.346   0.329  <span style='color: #BB0000;'>NA</span>        0.623
-#&gt; <span style='color: #BCBCBC;'> 6</span> theta[4]     0.189       0.287   0.154  <span style='color: #BB0000;'>NA</span>       <span style='color: #BB0000;'>NA</span>    
-#&gt; <span style='color: #BCBCBC;'> 7</span> theta[5]     0.232       0.139   0.213  <span style='color: #BB0000;'>NA</span>       <span style='color: #BB0000;'>NA</span>    
-#&gt; <span style='color: #BCBCBC;'> 8</span> theta[6]     0.222       0.421   0.195  <span style='color: #BB0000;'>NA</span>       <span style='color: #BB0000;'>NA</span>    
-#&gt; <span style='color: #BCBCBC;'> 9</span> theta[7]     0.250       0.270   0.178  <span style='color: #BB0000;'>NA</span>       <span style='color: #BB0000;'>NA</span>    
-#&gt; <span style='color: #BCBCBC;'>10</span> theta[8]     0.273       0.372   0.241   0.997   <span style='color: #BB0000;'>NA</span>    </div><div class='input'>
+#&gt; <span style='color: #BCBCBC;'> 5</span> theta[3]     0.447       0.346   0.329   2.18     0.623
+#&gt; <span style='color: #BCBCBC;'> 6</span> theta[4]     0.189       0.287   0.154   0.956    0.449
+#&gt; <span style='color: #BCBCBC;'> 7</span> theta[5]     0.232       0.139   0.213   1.62     0.736
+#&gt; <span style='color: #BCBCBC;'> 8</span> theta[6]     0.222       0.421   0.195   1.16     0.432
+#&gt; <span style='color: #BCBCBC;'> 9</span> theta[7]     0.250       0.270   0.178   0.458    0.622
+#&gt; <span style='color: #BCBCBC;'>10</span> theta[8]     0.273       0.372   0.241   0.997    1.29 </div><div class='input'>
 <span class='co'># compute variance of variables</span>
 <span class='fu'>summarise_draws</span><span class='op'>(</span><span class='va'>x</span>, var <span class='op'>=</span> <span class='fu'>distributional</span><span class='fu'>::</span><span class='va'><a href='https://pkg.mitchelloharawild.com/distributional/reference/variance.html'>variance</a></span><span class='op'>)</span>
 </div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 10 x 17</span>
@@ -384,7 +384,7 @@ their individual help pages.</p></div>
 #&gt; <span style='color: #BCBCBC;'> 8</span> theta[6]  34.8  0.754 -<span style='color: #BB0000;'>3.73</span>    -<span style='color: #BB0000;'>3.03</span>   0.754  24.9  0.060<span style='text-decoration: underline;'>2</span>  0.939 -<span style='color: #BB0000;'>3.73</span>   
 #&gt; <span style='color: #BCBCBC;'> 9</span> theta[7]  30.5  2.41  -<span style='color: #BB0000;'>0.968</span>   -<span style='color: #BB0000;'>1.16</span>   2.41   34.8 -<span style='color: #BB0000;'>2.53</span>   -<span style='color: #BB0000;'>3.50</span>  -<span style='color: #BB0000;'>0.968</span>  
 #&gt; <span style='color: #BCBCBC;'>10</span> theta[8]  25.7  1.01  -<span style='color: #BB0000;'>3.63</span>    -<span style='color: #BB0000;'>1.32</span>   1.01   33.1  0.314  -<span style='color: #BB0000;'>4.44</span>  -<span style='color: #BB0000;'>3.63</span>   
-#&gt; <span style='color: #949494;'># … with 7 more variables: var.10 &lt;dbl&gt;, var.11 &lt;dbl&gt;, var.12 &lt;dbl&gt;,</span>
+#&gt; <span style='color: #949494;'># ... with 7 more variables: var.10 &lt;dbl&gt;, var.11 &lt;dbl&gt;, var.12 &lt;dbl&gt;,</span>
 #&gt; <span style='color: #949494;'>#   var.13 &lt;dbl&gt;, var.14 &lt;dbl&gt;, var.15 &lt;dbl&gt;, var.16 &lt;dbl&gt;</span></div><div class='input'>
 <span class='co'># illustrate use of '.args'</span>
 <span class='va'>ws</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Exponential.html'>rexp</a></span><span class='op'>(</span><span class='fu'><a href='draws-index.html'>ndraws</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span><span class='op'>)</span>

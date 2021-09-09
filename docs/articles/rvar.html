@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -118,13 +118,13 @@
 
       
 
-      </header><script src="rvar_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="rvar_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>rvar: The Random Variable Datatype</h1>
                         <h4 class="author">Matthew Kay</h4>
             
-            <h4 class="date">2021-07-13</h4>
+            <h4 class="date">2021-09-09</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/stan-dev/posterior/blob/master/vignettes/rvar.Rmd"><code>vignettes/rvar.Rmd</code></a></small>
       <div class="hidden name"><code>rvar.Rmd</code></div>
@@ -570,7 +570,7 @@
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rvar_rng.html">rvar_rng</a></span><span class="op">(</span><span class="va">rnorm</span>, <span class="fl">4</span>, <span class="va">mu</span>, <span class="va">sigma</span><span class="op">)</span>
 <span class="va">x</span></code></pre></div>
 <pre><code>## rvar&lt;4000&gt;[4] mean ± sd:
-## [1] 0.96 ± 1.7  2.02 ± 1.7  3.05 ± 1.7  3.96 ± 1.8</code></pre>
+## [1] 1 ± 1.7  2 ± 1.8  3 ± 1.7  4 ± 1.7</code></pre>
 <p>In contrast to the <code><a href="../reference/rfun.html">rfun()</a></code> and <code><a href="../reference/rdo.html">rdo()</a></code> examples above, <code><a href="../reference/rvar_rng.html">rvar_rng()</a></code> takes advantage of the existing vectorization of the underlying random number generating function to execute quickly.</p>
 </div>
 </div>
@@ -638,26 +638,26 @@
 ## , , 1
 ## 
 ##      [,1]       [,2]       [,3]      
-## [1,]  1 ± 0.99   3 ± 0.98   5 ± 1.00 
-## [2,]  2 ± 1.01   4 ± 0.99   6 ± 1.00 
+## [1,]  1 ± 1.00   3 ± 0.98   5 ± 1.00 
+## [2,]  2 ± 1.00   4 ± 1.00   6 ± 1.01 
 ## 
 ## , , 2
 ## 
 ##      [,1]       [,2]       [,3]      
-## [1,]  7 ± 1.00   9 ± 0.99  11 ± 1.00 
-## [2,]  8 ± 1.00  10 ± 1.00  12 ± 1.00 
+## [1,]  7 ± 1.00   9 ± 1.00  11 ± 1.03 
+## [2,]  8 ± 0.98  10 ± 0.99  12 ± 1.00 
 ## 
 ## , , 3
 ## 
 ##      [,1]       [,2]       [,3]      
-## [1,] 13 ± 1.00  15 ± 1.03  17 ± 0.99 
-## [2,] 14 ± 1.00  16 ± 0.98  18 ± 1.00 
+## [1,] 13 ± 1.00  15 ± 1.00  17 ± 0.99 
+## [2,] 14 ± 1.01  16 ± 1.00  18 ± 1.00 
 ## 
 ## , , 4
 ## 
 ##      [,1]       [,2]       [,3]      
-## [1,] 19 ± 0.99  21 ± 0.99  23 ± 1.02 
-## [2,] 20 ± 1.00  22 ± 0.99  24 ± 1.01</code></pre>
+## [1,] 19 ± 0.99  21 ± 0.99  23 ± 0.99 
+## [2,] 20 ± 1.00  22 ± 1.00  24 ± 1.00</code></pre>
 <p>… you can apply functions along the margins using <code><a href="https://rdrr.io/r/base/apply.html">apply()</a></code> (here, a silly example):</p>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/apply.html">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, <span class="va">length</span><span class="op">)</span></code></pre></div>
@@ -675,9 +675,9 @@
 <code class="sourceCode R"><span class="fu"><a href="../reference/rvar_apply.html">rvar_apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, <span class="va">rvar_mean</span><span class="op">)</span></code></pre></div>
 <pre><code>## rvar&lt;4000&gt;[3,4] mean ± sd:
 ##      [,1]         [,2]         [,3]         [,4]        
-## [1,]  1.5 ± 0.71   7.5 ± 0.70  13.5 ± 0.71  19.5 ± 0.71 
-## [2,]  3.5 ± 0.69   9.5 ± 0.70  15.5 ± 0.71  21.5 ± 0.70 
-## [3,]  5.5 ± 0.71  11.5 ± 0.70  17.5 ± 0.70  23.5 ± 0.72</code></pre>
+## [1,]  1.5 ± 0.70   7.5 ± 0.69  13.5 ± 0.71  19.5 ± 0.70 
+## [2,]  3.5 ± 0.70   9.5 ± 0.71  15.5 ± 0.72  21.5 ± 0.70 
+## [3,]  5.5 ± 0.71  11.5 ± 0.72  17.5 ± 0.71  23.5 ± 0.70</code></pre>
 </div>
 <div id="using-rvars-in-data-frames-and-in-ggplot2" class="section level2">
 <h2 class="hasAnchor">
