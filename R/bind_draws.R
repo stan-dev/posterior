@@ -113,18 +113,18 @@ bind_draws.draws_df <- function(x, ..., along = "variable") {
   } else if (along == "chain") {
     check_same_fun_output(dots, variables)
     check_same_fun_output(dots, iteration_ids)
-    nchains <- ulapply(dots, nchains)
+    cumsum_chains <- c(0, cumsum(ulapply(dots, nchains)))
     for (i in seq_along(dots)) {
-      dots[[i]]$.chain <- sum(nchains[i - 1]) + dots[[i]]$.chain
+      dots[[i]]$.chain <- cumsum_chains[i] + dots[[i]]$.chain
       dots[[i]]$.chain <- as.integer(dots[[i]]$.chain)
     }
     out <- do.call(rbind, dots)
   } else if (along == "iteration") {
     check_same_fun_output(dots, variables)
     check_same_fun_output(dots, chain_ids)
-    niterations <- ulapply(dots, niterations)
+    cumsum_iterations <- c(0, cumsum(ulapply(dots, niterations)))
     for (i in seq_along(dots)) {
-      dots[[i]]$.iteration <- sum(niterations[i - 1]) + dots[[i]]$.iteration
+      dots[[i]]$.iteration <- cumsum_iterations[i] + dots[[i]]$.iteration
       dots[[i]]$.iteration <- as.integer(dots[[i]]$.iteration)
     }
     out <- do.call(rbind, dots)

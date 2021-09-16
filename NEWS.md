@@ -1,3 +1,11 @@
+# posterior 1.1.0.9000
+
+### Bug Fixes
+
+* fix hidden variables in `bind_draws.draws_df` when binding 
+more than two objects thanks to Jouni Helske (#204)
+
+
 # posterior 1.1.0
 
 ### Enhancements
