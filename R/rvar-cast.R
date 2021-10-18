@@ -45,13 +45,12 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 
   if (!is.null(dim)) {
     dim(out) <- dim
-  } else if (is.null(dimnames)) {
-    # can only re-use names/dimnames of x if we didn't change dim
-    if (is.vector(x)) {
-      names(out) <- names(x)
-    } else {
-      dimnames(out) <- dimnames(x)
-    }
+  } else if (is.null(dimnames) && is.vector(x)) {
+    # for non-vector-like input (matrices, arrays, etc), vec_cast should
+    # have already copied over the dimnames correctly. For vector-like input,
+    # it doesn't; so as long as the `dim` argument isn't set we can copy
+    # the name over
+    names(out) <- names(x)
   }
   if (!is.null(dimnames)) {
     dimnames(out) <- dimnames
