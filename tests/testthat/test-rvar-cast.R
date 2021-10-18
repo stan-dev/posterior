@@ -28,6 +28,36 @@ test_that("as_rvar preserves dimension names", {
 })
 
 
+# casting to/from rvar/distribution ---------------------------------------
+
+test_that("casting to/from rvar/distribution objects works", {
+  x_dist <- distributional::dist_sample(list(a = c(1,1), b = 3:4))
+  null_dist <- vctrs::vec_ptype(x_dist)
+  x_rvar <- rvar(matrix(c(1,1,3:4), ncol = 2, dimnames = list(NULL, c("a","b"))))
+
+  # casting to rvar
+  expect_equal(vctrs::vec_cast(x_dist, rvar()), x_rvar)
+  expect_equal(as_rvar(x_dist), x_rvar)
+
+  # casting to rvar with a broadcast
+  x_dist_bc <- distributional::dist_sample(list(a = 1, b = 3:4))
+  expect_equal(vctrs::vec_cast(x_dist_bc, rvar()), x_rvar)
+
+  # can't cast non-sample distributions to rvar
+  expect_error(vctrs::vec_cast(distributional::dist_normal(), rvar()))
+
+  # can't cast samples of incompatible sizes to rvar
+  expect_error(vctrs::vec_cast(distributional::dist_sample(list(1:3, 1:2)), rvar()))
+
+  # casting to distribution
+  expect_equal(vctrs::vec_cast(x_rvar, null_dist), x_dist)
+
+  # can't cast multivariate rvars to distributions
+  x_mv <- rvar(array(1:8, dim = c(2,2,2)))
+  expect_error(vctrs::vec_cast(x_mv, null_dist))
+})
+
+
 # type predicates ---------------------------------------------------------
 
 test_that("is.matrix/array on rvar works", {
