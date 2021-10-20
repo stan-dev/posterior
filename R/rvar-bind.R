@@ -2,15 +2,13 @@
 
 #' @export
 c.rvar <- function(...) {
-  args <- list(...)
-
-  if (any(sapply(args, function(arg) !is_rvar(arg) && is.list(arg)))) {
-    # if there is a data frame in args, we should just make the first arg
-    # into a list and then use the list c() implementation
-    args[[1]] <- as.list(args[[1]])
-    return(do.call(c, args))
+  if (!is_rvar(vctrs::vec_ptype_common(...))) {
+    # if the common type of the arguments is not an rvar, fall back to the
+    # vctrs implementation of c()
+    return(vctrs::vec_c(...))
   }
 
+  args <- list(...)
   out <- make_1d(args[[1]], names(args)[[1]])
 
   # process remaining args in succession, binding them to the output

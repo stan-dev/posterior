@@ -159,12 +159,16 @@ test_that("rvars work in tibbles", {
 test_that("broadcast_array works", {
   expect_equal(broadcast_array(5, c(1,2,3,1)), array(rep(5, 6), dim = c(1,2,3,1)))
   expect_equal(
-    broadcast_array(array(1:4, c(1,4)), c(2,4)),
-    array(rep(1:4, each = 2), c(2,4))
+    broadcast_array(array(1:4, c(1,4), dimnames = list("x", letters[1:4])), c(2,4)),
+    array(rep(1:4, each = 2), c(2,4), dimnames = list(NULL, letters[1:4]))
   )
   expect_equal(
     broadcast_array(array(1:4, c(4,1)), c(4,2)),
     array(c(1:4, 1:4), c(4,2))
+  )
+  expect_equal(
+    broadcast_array(array(1:2, dimnames = list(c("a","b"))), c(2,1,1,1)),
+    array(1:2, c(2,1,1,1), dimnames = list(c("a","b"), NULL, NULL, NULL))
   )
 
   expect_error(broadcast_array(array(1:9, dim = c(3,3)), c(1,9)))

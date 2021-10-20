@@ -476,12 +476,18 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     return(x)
   }
 
-  current_dim = dim(x)
+  current_dim <- dim(x)
+  current_dimnames <- dimnames(x)
 
   if (length(current_dim) < length(dim)) {
     # add dimensions of size 1 as necessary so we can broadcast those
-    current_dim[seq(length(current_dim) + 1, length(dim))] = 1
-    dim(x) = current_dim
+    new_dim <- seq(length(current_dim) + 1, length(dim))
+    current_dim[new_dim] <- 1
+    dim(x) <- current_dim
+    if (!is.null(current_dimnames)) {
+      current_dimnames[new_dim] <- list(NULL)
+      dimnames(x) <- current_dimnames
+    }
   } else if (length(current_dim) > length(dim)) {
     stop_no_call(
       "Cannot broadcast array of shape [", paste(current_dim, collapse = ","), "] ",
@@ -506,13 +512,21 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
   }
 
   # move the dims we aren't broadcasting to the front so they are recycled properly
-  perm = c(seq_along(dim)[-dim_to_broadcast], dim_to_broadcast)
+  perm <- c(seq_along(dim)[-dim_to_broadcast], dim_to_broadcast)
 
   # broadcast the other dims
-  x = array(aperm(x, perm), dim[perm])
+  x <- array(aperm(x, perm), dim[perm])
 
   # move dims back to their original order
-  aperm(x, order(perm))
+  x <- aperm(x, order(perm))
+
+  if (!is.null(current_dimnames)) {
+    # restore any dimnames that we did not have to broadcast
+    dim_to_restore <- current_dim == dim
+    dimnames(x)[dim_to_restore] <- current_dimnames[dim_to_restore]
+  }
+
+  x
 }
 
 # broadcast the draws dimension of an rvar to the requested size

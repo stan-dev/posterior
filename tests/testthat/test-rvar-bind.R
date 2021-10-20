@@ -5,7 +5,6 @@ test_that("c works on rvar", {
 
   expect_equal(c(x), x)
   expect_equal(c(x, NULL), x)
-  expect_equal(c(x, list(b = 1)), c(as.list(x), list(b = 1)))
   expect_equal(c(x, y), x_y)
   expect_equal(c(x, NULL, y), x_y)
   expect_equal(c(x, x), rvar(array(c(1:9, 1:9), dim = c(3,6))))

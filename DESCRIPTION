@@ -52,5 +52,5 @@ LazyData: false
 URL: https://mc-stan.org/posterior/, https://discourse.mc-stan.org/
 BugReports: https://github.com/stan-dev/posterior/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr

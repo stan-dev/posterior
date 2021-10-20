@@ -45,13 +45,12 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 
   if (!is.null(dim)) {
     dim(out) <- dim
-  } else if (is.null(dimnames)) {
-    # can only re-use names/dimnames of x if we didn't change dim
-    if (is.vector(x)) {
-      names(out) <- names(x)
-    } else {
-      dimnames(out) <- dimnames(x)
-    }
+  } else if (is.null(dimnames) && is.vector(x)) {
+    # for non-vector-like input (matrices, arrays, etc), vec_cast should
+    # have already copied over the dimnames correctly. For vector-like input,
+    # it doesn't; so as long as the `dim` argument isn't set we can copy
+    # the name over
+    names(out) <- names(x)
   }
   if (!is.null(dimnames)) {
     dimnames(out) <- dimnames
@@ -196,116 +195,80 @@ vec_restore.rvar <- function(x, ...) {
 }
 
 
-# vctrs double-dispatch casting boilerplate ------------------------------------
-# the extra roxygen @method and @export bits in here are necessary for
-# S3 double dispatch. See vignette("s3-vector").
+# vec_ptype performance generic -------------------------------------------
 
-#' rvar vctrs compatibility
-#'
-#' These functions implement compatibility with [vctrs-package] for [`rvar`]s.
-#'
-#' @name vctrs-compat
-#'
-#' @param x,y Vectors.
-#' @param to Type to cast to.
-#' @param ... Further arguments passed to other functions.
-#' @param x_arg,y_arg Argument names for `x` and `y`.
-#'
-#' @return
-#'
-#' See the corresponding functions in [vctrs-package] for more information,
-#' or `vignette("s3-vector", package = "vctrs")` for examples.
-#'
-#' @seealso [vctrs::vec_cast()], [vctrs::vec_ptype2()]
-#'
-#' @importFrom vctrs vec_ptype vec_ptype2 vec_default_ptype2
-#' @method vec_ptype2 rvar
+#' @importFrom vctrs vec_ptype
 #' @export
-#' @export vec_ptype2.rvar
-vec_ptype2.rvar <- function(x, y, ...) UseMethod("vec_ptype2.rvar", y)
-
-#' @rdname vctrs-compat
-#' @method vec_ptype2.rvar default
-#' @export
-vec_ptype2.rvar.default <- function(x, y, ..., x_arg = "x", y_arg = "y") {
-  vec_default_ptype2(x, y, x_arg = x_arg, y_arg = y_arg)
-}
-
-#' @rdname vctrs-compat
-#' @importFrom vctrs vec_cast vec_default_cast
-#' @method vec_cast rvar
-#' @export
-#' @export vec_cast.rvar
-vec_cast.rvar <- function(x, to, ...) UseMethod("vec_cast.rvar")
-
-#' @rdname vctrs-compat
-#' @method vec_cast.rvar default
-#' @export
-vec_cast.rvar.default <- function(x, to, ...) vec_default_cast(x, to)
+vec_ptype.rvar <- function(x, ..., x_arg = "") new_rvar()
 
 
 # identity cast -----------------------------------------------------------
 
-#' @rdname vctrs-compat
-#' @method vec_ptype2.rvar rvar
+#' @importFrom vctrs vec_ptype2
 #' @export
 vec_ptype2.rvar.rvar <- function(x, y, ...) new_rvar()
 
-#' @rdname vctrs-compat
-#' @method vec_cast.rvar rvar
+#' @importFrom vctrs vec_cast
 #' @export
 vec_cast.rvar.rvar <- function(x, to, ...) x
 
 
 # numeric and logical casts -----------------------------------------------
 
-#' @rdname vctrs-compat
-#' @importFrom vctrs vec_ptype2.double
-#' @method vec_ptype2.double rvar
 #' @export
 vec_ptype2.double.rvar <- function(x, y, ...) new_rvar()
 
-#' @rdname vctrs-compat
-#' @method vec_ptype2.rvar double
 #' @export
 vec_ptype2.rvar.double <- function(x, y, ...) new_rvar()
 
-#' @rdname vctrs-compat
-#' @method vec_cast.rvar double
 #' @export
 vec_cast.rvar.double <- function(x, to, ...) new_constant_rvar(x)
 
-#' @rdname vctrs-compat
-#' @importFrom vctrs vec_ptype2.integer
-#' @method vec_ptype2.integer rvar
 #' @export
 vec_ptype2.integer.rvar <- function(x, y, ...) new_rvar()
 
-#' @rdname vctrs-compat
-#' @method vec_ptype2.rvar integer
 #' @export
 vec_ptype2.rvar.integer <- function(x, y, ...) new_rvar()
 
-#' @rdname vctrs-compat
-#' @method vec_cast.rvar integer
 #' @export
 vec_cast.rvar.integer <- function(x, to, ...) new_constant_rvar(x)
 
-#' @rdname vctrs-compat
-#' @importFrom vctrs vec_ptype2.logical
-#' @method vec_ptype2.logical rvar
 #' @export
 vec_ptype2.logical.rvar <- function(x, y, ...) new_rvar()
 
-#' @rdname vctrs-compat
-#' @method vec_ptype2.rvar logical
 #' @export
 vec_ptype2.rvar.logical <- function(x, y, ...) new_rvar()
 
-#' @rdname vctrs-compat
-#' @method vec_cast.rvar logical
 #' @export
 vec_cast.rvar.logical <- function(x, to, ...) new_constant_rvar(x)
+
+
+# casting between rvar and distribution objects ---------------------------
+
+#' @export
+vec_ptype2.distribution.rvar <- function(x, y, ...) x
+
+#' @export
+vec_ptype2.rvar.distribution <- function(x, y, ...) x
+
+#' @export
+vec_cast.rvar.distribution <- function(x, to, ..., x_arg = "", to_arg = "") {
+  x_list <- vctrs::vec_data(x)
+  if (length(dim(to)) > 1 || !is_dist_sample_list(x_list)) {
+    vctrs::stop_incompatible_cast(x, to, x_arg = x_arg, to_arg = to_arg)
+  }
+  x_rvar_list <- lapply(x_list, function(x) rvar(vctrs::field(x, 1)))
+  do.call(c, x_rvar_list)
+}
+
+#' @export
+vec_cast.distribution.rvar <- function(x, to, ..., x_arg = "", to_arg = "") {
+  if (length(dim(x)) > 1) {
+    vctrs::stop_incompatible_cast(x, to, x_arg = x_arg, to_arg = to_arg)
+  }
+  to_vector_list <- apply(draws_of(x), 2, as.vector, simplify = FALSE)
+  distributional::dist_sample(to_vector_list)
+}
 
 
 # helpers: casting --------------------------------------------------------
@@ -322,4 +285,9 @@ new_constant_rvar <- function(x) {
     out <- copy_dimnames(x, dim_i, out, dim_i + 1)
   }
   new_rvar(out)
+}
+
+# is this a list of dist_sample()s?
+is_dist_sample_list <- function(x) {
+  all(vapply(x, inherits, logical(1), "dist_sample"))
 }
