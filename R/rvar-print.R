@@ -105,7 +105,7 @@ str.rvar <- function(
   }
 
   cat0(" ", rvar_type_abbr(object), "  ",
-    paste(format_rvar_draws(.draws, summary = summary), collapse = "  "),
+    paste(format_rvar_draws(.draws, summary = summary, trim = TRUE), collapse = "  "),
     ellipsis, "\n"
   )
 
@@ -141,6 +141,17 @@ str.rvar <- function(
 #' @export
 pillar_shaft.rvar <- function(x, ...) {
   new_pillar_shaft_simple(format(x, color = TRUE, pad_left = " "), align = "right", ...)
+}
+
+#' @importFrom pillar format_glimpse
+#' @export
+format_glimpse.rvar <- function(x, ...) {
+  .dim <- dim(x)
+  if (length(.dim) > 1) {
+    paste0("<rvar[", paste0(.dim, collapse = " x "), "]>")
+  } else {
+    format(x, ..., trim = TRUE)
+  }
 }
 
 # type summaries ----------------------------------------------------------
@@ -180,7 +191,9 @@ rvar_type_abbr <- function(x, dim1 = TRUE) {
 
 # formats a draws array for display as individual "variables" (i.e. maintaining
 # its dimensions except for the dimension representing draws)
-format_rvar_draws <- function(draws, ..., pad_left = "", pad_right = "", summary = NULL, digits = 2, color = FALSE) {
+format_rvar_draws <- function(
+  draws, ..., pad_left = "", pad_right = "", summary = NULL, digits = 2, color = FALSE, trim = FALSE
+) {
   if (prod(dim(draws)) == 0) {
     # NULL: no draws
     return(NULL)
@@ -192,15 +205,15 @@ format_rvar_draws <- function(draws, ..., pad_left = "", pad_right = "", summary
   # these will be mean/sd or median/mad depending on `summary`
   .mean <- apply(draws, summary_dimensions, summary_functions[[1]])
   .sd <- apply(draws, summary_dimensions, summary_functions[[2]])
-  out <- paste0(pad_left, format_mean_sd(.mean, .sd, digits = digits, color = color), pad_right)
+  out <- paste0(pad_left, format_mean_sd(.mean, .sd, digits = digits, color = color, trim = trim), pad_right)
 
   dim(out) <- dim(draws)[summary_dimensions]
   dimnames(out) <- dimnames(draws)[summary_dimensions]
   out
 }
 
-format_mean <- function(x, digits = 2, color = FALSE) {
-  format(x, justify = "right", digits = digits, scientific = 2)
+format_mean <- function(x, digits = 2, color = FALSE, trim = FALSE) {
+  format(x, justify = "right", digits = digits, scientific = 2, trim = trim)
 }
 
 format_sd <- function(x, digits = 2, color = FALSE) {
@@ -213,11 +226,11 @@ format_sd <- function(x, digits = 2, color = FALSE) {
   }
 }
 
-format_mean_sd <- function(.mean, .sd, digits = 2, color = FALSE) {
+format_mean_sd <- function(.mean, .sd, digits = 2, color = FALSE, trim = FALSE) {
   format(paste0(
-    format_mean(.mean, digits = digits, color = color), " ",
+    format_mean(.mean, digits = digits, color = color, trim = trim), " ",
     format_sd(.sd, digits = digits, color = color)),
-  justify = "left")
+  justify = if (trim) "none" else "left", trim = trim)
 }
 
 # check that summary is a valid name of the type of summary to do and

@@ -29,8 +29,6 @@ test_that("basic str.rvar works", {
   x <- rvar(array(1:24, dim = c(2,3,4)))
   x_with_chains <- rvar(array(1:24, dim = c(2,3,4)), nchains = 2)
 
-  # calling str.rvar directly here because for some reason (weird dispatching
-  # rules?) code coverage doesn't capture when we call str() instead
   expect_output(str(rvar()),
     " rvar<1>[0] ",
     fixed = TRUE
@@ -67,6 +65,19 @@ test_that("basic str.rvar works", {
     fixed = TRUE
   )
 
+})
+
+test_that("glimpse on rvar works", {
+  x_vec <- rvar(array(1:24, dim = c(6,4)))
+  x_matrix <- rvar(array(1:24, dim = c(2,3,4)))
+
+  expect_equal(format_glimpse(rvar()), NULL)
+  expect_equal(
+    format_glimpse(x_vec),
+    c("3.5 ± 1.9", "9.5 ± 1.9", "15.5 ± 1.9", "21.5 ± 1.9"),
+    check.attributes = FALSE
+  )
+  expect_equal(format_glimpse(x_matrix), "<rvar[3 x 4]>")
 })
 
 test_that("format summary arg works", {
