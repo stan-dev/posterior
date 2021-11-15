@@ -342,3 +342,9 @@ test_that("draws_df can roundtrip through data.frame", {
   draws_dataframe$.draw <- NULL
   expect_equal(as_draws_df(draws_dataframe), draws_df)
 })
+
+test_that("draws_df drops the draws class when metadata is removed", {
+  draws_df <- as_draws_df(example_draws())
+
+  expect_equal(dplyr::count(draws_df, .chain), tibble::tibble(.chain = 1:4, n = 100L))
+})

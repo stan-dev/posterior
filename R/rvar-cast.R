@@ -266,8 +266,9 @@ vec_cast.distribution.rvar <- function(x, to, ..., x_arg = "", to_arg = "") {
   if (length(dim(x)) > 1) {
     vctrs::stop_incompatible_cast(x, to, x_arg = x_arg, to_arg = to_arg)
   }
-  to_vector_list <- apply(draws_of(x), 2, as.vector, simplify = FALSE)
-  distributional::dist_sample(to_vector_list)
+  x_vector_list <- lapply(vec_proxy(x), as.vector)
+  names(x_vector_list) <- names(x)
+  distributional::dist_sample(x_vector_list)
 }
 
 

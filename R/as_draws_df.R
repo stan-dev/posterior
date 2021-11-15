@@ -204,11 +204,29 @@ is_draws_df_like <- function(x) {
     reserved_vars <- all_reserved_variables(x)
     reserved_vars <- setdiff(reserved_vars, names(out))
     out[, reserved_vars] <- NextMethod("[", j = reserved_vars, drop = FALSE)
-  } else if (!all(reserved_df_variables() %in% names(out))) {
-    warning_no_call("Dropping 'draws_df' class as required metadata was removed.")
-    class(out) <- setdiff(class(out), c("draws_df", "draws"))
+  } else {
+    out <- drop_draws_class_if_metadata_removed(out, warn = TRUE)
   }
   out
+}
+
+# This generic is not exported here as {dplyr} is only in Suggests, so
+# we must export it in .onLoad() for compatibility with r < 3.6. See
+# help("s3_register", package = "vctrs") for more information.
+dplyr_reconstruct.draws_df <- function(data, template) {
+  data <- NextMethod("dplyr_reconstruct")
+  data <- drop_draws_class_if_metadata_removed(data, warn = FALSE)
+  data
+}
+
+# drop "draws_df" and "draws" classes if metadata columns were removed
+# from the data frame
+drop_draws_class_if_metadata_removed <- function(x, warn = TRUE) {
+  if (!all(reserved_df_variables() %in% names(x))) {
+    if (warn) warning_no_call("Dropping 'draws_df' class as required metadata was removed.")
+    class(x) <- setdiff(class(x), c("draws_df", "draws"))
+  }
+  x
 }
 
 # create an empty draws_df object
