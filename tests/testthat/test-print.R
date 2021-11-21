@@ -106,3 +106,15 @@ test_that("print.draws_rvars handles reserved variables correctly", {
     fixed = TRUE
   )
 })
+
+test_that("print.draws_df correctly handles data frames with unrepaired draws", {
+  x <- as_draws_df(list(x = 1:10, y = 2:11))
+  x_slice <- x[c(1,3,5),]
+  expect_output(
+    print(x_slice),
+"x +y
+1 +1 +2
+2 +3 +4
+3 +5 +6"
+  )
+})

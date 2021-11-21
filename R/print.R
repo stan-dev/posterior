@@ -175,7 +175,7 @@ print.draws_df <- function(x, digits = 2,
   seq_variables <- seq_len(min(max_variables, nvariables))
   sel_variables <- sel_variables[seq_variables]
   y <- .subset_draws(
-    x, draw = sel_draws, variable = sel_variables,
+    x[sel_draws,], variable = sel_variables,
     reserved = reserved
   )
   if (!reserved) {
