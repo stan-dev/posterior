@@ -243,6 +243,12 @@ vec_ptype2.rvar.logical <- function(x, y, ...) new_rvar()
 vec_cast.rvar.logical <- function(x, to, ...) new_constant_rvar(x)
 
 
+# character casts ---------------------------------------------------------
+
+#' @export
+vec_cast.character.rvar <- function(x, to, ...) format(x)
+
+
 # casting between rvar and distribution objects ---------------------------
 
 #' @export
