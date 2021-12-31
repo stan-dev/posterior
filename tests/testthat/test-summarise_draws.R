@@ -132,3 +132,24 @@ test_that("summarise_draws errors for invalid cores specification", {
     "Cannot coerce '.cores' to a single integer value"
   )
 })
+
+
+test_that("summarise_draws works with variance()", {
+  draws_array <- as_draws_array(example_draws())
+  draws_matrix <- as_draws_matrix(draws_array)
+  draws_df <- as_draws_df(draws_array)
+  draws_list <- as_draws_list(draws_array)
+  draws_rvars <- as_draws_rvars(draws_array)
+
+  ref <- data.frame(
+    variable = variables(draws_array),
+    variance = as.vector(apply(draws_array, 3, function(x) var(as.vector(x))))
+  )
+  class(ref) <- class_draws_summary()
+
+  expect_equal(summarise_draws(draws_array, variance), ref)
+  expect_equal(summarise_draws(draws_matrix, variance), ref)
+  expect_equal(summarise_draws(draws_df, variance), ref)
+  expect_equal(summarise_draws(draws_list, variance), ref)
+  expect_equal(summarise_draws(draws_rvars, variance), ref)
+})

@@ -161,4 +161,7 @@ test_that("as.data.frame and as_tibble work on rvars", {
   expect_equal(as_tibble(x3), tibble3)
 })
 
-
+test_that("as.character works", {
+  x <- rvar(c(1,1))
+  expect_equal(as.character(x), format(x))
+})
