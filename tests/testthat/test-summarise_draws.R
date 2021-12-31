@@ -152,4 +152,9 @@ test_that("summarise_draws works with variance()", {
   expect_equal(summarise_draws(draws_df, variance), ref)
   expect_equal(summarise_draws(draws_list, variance), ref)
   expect_equal(summarise_draws(draws_rvars, variance), ref)
+
+  # for consistency, draws_matrix and draws_array
+  # have the same implementation of variance()
+  expect_equal(variance(draws_array), var(as.vector(draws_array)))
+  expect_equal(variance(draws_matrix), var(as.vector(draws_matrix)))
 })
