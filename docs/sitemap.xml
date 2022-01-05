@@ -1,7 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://mc-stan.org/posterior/404.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/articles/posterior.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/articles/rvar.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/authors.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/index.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/news/index.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/pull_request_template.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/as_rvar.html</loc>
@@ -20,6 +47,12 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/diagnostics.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/dot-ess.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/dot-rhat.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/draws-index.html</loc>
@@ -76,6 +109,12 @@
     <loc>https://mc-stan.org/posterior/reference/extract_variable_matrix.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/fold_draws.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/index.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/is_rvar.html</loc>
   </url>
   <url>
@@ -121,6 +160,9 @@
     <loc>https://mc-stan.org/posterior/reference/quantile2.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/r_scale.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/rdo.html</loc>
   </url>
   <url>
@@ -134,6 +176,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/resample_draws.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/reserved-variables.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/reserved_variables.html</loc>
@@ -154,13 +199,22 @@
     <loc>https://mc-stan.org/posterior/reference/rvar-dist.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar-functions.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/rvar-matmult.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar-summaries-by-draw.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar-summaries-over-draws.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar-summaries-within-draws.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar-summaries.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar.html</loc>
@@ -173,9 +227,6 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar_rng.html</loc>
-  </url>
-  <url>
-    <loc>https://mc-stan.org/posterior/reference/r_scale.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/split_chains.html</loc>
@@ -199,18 +250,12 @@
     <loc>https://mc-stan.org/posterior/reference/vctrs-compat.html</loc>
   </url>
   <url>
-    <loc>https://mc-stan.org/posterior/reference/weights.draws.html</loc>
-  </url>
-  <url>
     <loc>https://mc-stan.org/posterior/reference/weight_draws.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/weights.draws.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/z_scale.html</loc>
-  </url>
-  <url>
-    <loc>https://mc-stan.org/posterior/articles/posterior.html</loc>
-  </url>
-  <url>
-    <loc>https://mc-stan.org/posterior/articles/rvar.html</loc>
   </url>
 </urlset>

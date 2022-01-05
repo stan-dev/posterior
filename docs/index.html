@@ -29,6 +29,8 @@
 <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-home">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -41,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -70,50 +72,50 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="https://mc-stan.org/rstan">rstan</a>
+      <a href="https://mc-stan.org/rstan" class="external-link">rstan</a>
     </li>
     <li>
-      <a href="https://mc-stan.org/cmdstanr">cmdstanr</a>
+      <a href="https://mc-stan.org/cmdstanr" class="external-link">cmdstanr</a>
     </li>
     <li>
-      <a href="https://mc-stan.org/rstanarm">rstanarm</a>
+      <a href="https://mc-stan.org/rstanarm" class="external-link">rstanarm</a>
     </li>
     <li>
-      <a href="https://mc-stan.org/bayesplot">bayesplot</a>
+      <a href="https://mc-stan.org/bayesplot" class="external-link">bayesplot</a>
     </li>
     <li>
-      <a href="https://mc-stan.org/shinystan">shinystan</a>
+      <a href="https://mc-stan.org/shinystan" class="external-link">shinystan</a>
     </li>
     <li>
-      <a href="https://mc-stan.org/loo">loo</a>
+      <a href="https://mc-stan.org/loo" class="external-link">loo</a>
     </li>
     <li>
-      <a href="https://mc-stan.org/projpred">projpred</a>
+      <a href="https://mc-stan.org/projpred" class="external-link">projpred</a>
     </li>
     <li>
-      <a href="https://mc-stan.org/rstantools">rstantools</a>
+      <a href="https://mc-stan.org/rstantools" class="external-link">rstantools</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="https://mc-stan.org">Stan</a>
+  <a href="https://mc-stan.org" class="external-link">Stan</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://twitter.com/mcmc_stan">
+  <a href="https://twitter.com/mcmc_stan" class="external-link">
     <span class="fa fa-twitter"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://github.com/stan-dev/posterior">
+  <a href="https://github.com/stan-dev/posterior" class="external-link">
     <span class="fa fa-github"></span>
      
   </a>
 </li>
 <li>
-  <a href="https://discourse.mc-stan.org/">
+  <a href="https://discourse.mc-stan.org/" class="external-link">
     <span class="fa fa-users"></span>
      
   </a>
@@ -130,9 +132,8 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="posterior-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#posterior-" class="anchor"></a>posterior <img src="reference/figures/stanlogo.png" align="right" width="120">
+<div class="section level1">
+<div class="page-header"><h1 id="posterior-">posterior <img src="reference/figures/stanlogo.png" align="right" width="120"><a class="anchor" aria-label="anchor" href="#posterior-"></a>
 </h1></div>
 <!-- badges: start -->
 
@@ -150,36 +151,36 @@
 <li>
 <a href="https://mc-stan.org/posterior/articles/rvar.html"><em>rvar: The Random Variable Datatype</em></a>: an overview of the new random variable datatype</li>
 </ul>
-<div id="installation" class="section level3">
-<h3 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h3>
+<div class="section level3">
+<h3 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h3>
 <p>You can install the latest official release version via</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"posterior"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"posterior"</span><span class="op">)</span></code></pre></div>
 <p>or build the developmental version directly from GitHub via</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("remotes")</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"stan-dev/posterior"</span><span class="op">)</span></code></pre></div>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"stan-dev/posterior"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="examples" class="section level3">
-<h3 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h3>
+<div class="section level3">
+<h3 id="examples">Examples<a class="anchor" aria-label="anchor" href="#examples"></a>
+</h3>
 <p>Here we offer a few examples of using the package. For a more detailed overview see the vignette <a href="https://mc-stan.org/posterior/articles/posterior.html"><em>The posterior R package</em></a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://mc-stan.org/posterior/">"posterior"</a></span><span class="op">)</span>
-<span class="co">#&gt; This is posterior version 1.0.1.9001</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://mc-stan.org/posterior/">"posterior"</a></span><span class="op">)</span>
+<span class="co">#&gt; This is posterior version 1.2.0</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; Attaching package: 'posterior'</span>
 <span class="co">#&gt; The following objects are masked from 'package:stats':</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt;     mad, sd, var</span></code></pre></div>
 <p>To demonstrate how to work with the <strong>posterior</strong> package, we will use example posterior draws obtained from the eight schools hierarchical meta-analysis model described in Gelman et al. (2013). Essentially, we have an estimate per school (<code>theta[1]</code> through <code>theta[8]</code>) as well as an overall mean (<code>mu</code>) and standard deviation across schools (<code>tau</code>).</p>
-<div id="draws-formats" class="section level4">
-<h4 class="hasAnchor">
-<a href="#draws-formats" class="anchor"></a>Draws formats</h4>
+<div class="section level4">
+<h4 id="draws-formats">Draws formats<a class="anchor" aria-label="anchor" href="#draws-formats"></a>
+</h4>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eight_schools_array</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/example_draws.html">example_draws</a></span><span class="op">(</span><span class="st">"eight_schools"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">eight_schools_array</span>, max_variables <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eight_schools_array</span>, max_variables <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_array: 100 iterations, 4 chains, and 10 variables</span>
 <span class="co">#&gt; , , variable = mu</span>
 <span class="co">#&gt; </span>
@@ -215,7 +216,7 @@
 <p>The draws for this example come as a <code>draws_array</code> object, that is, an array with dimensions iterations x chains x variables. We can easily transform it to another format, for instance, a data frame with additional meta information.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">eight_schools_df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_df.html">as_draws_df</a></span><span class="op">(</span><span class="va">eight_schools_array</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">eight_schools_df</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">eight_schools_df</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_df: 100 iterations, 4 chains, and 10 variables</span>
 <span class="co">#&gt;      mu tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6]</span>
 <span class="co">#&gt; 1  2.01 2.8     3.96    0.271    -0.74      2.1    0.923      1.7</span>
@@ -232,14 +233,14 @@
 <span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></code></pre></div>
 <p>Different formats are preferable in different situations and hence posterior supports multiple formats and easy conversion between them. For more details on the available formats see <code><a href="reference/draws.html">help("draws")</a></code>. All of the formats are essentially base R object classes and can be used as such. For example, a <code>draws_matrix</code> object is just a <code>matrix</code> with a little more consistency and additional methods.</p>
 </div>
-<div id="summarizing-draws" class="section level4">
-<h4 class="hasAnchor">
-<a href="#summarizing-draws" class="anchor"></a>Summarizing draws</h4>
+<div class="section level4">
+<h4 id="summarizing-draws">Summarizing draws<a class="anchor" aria-label="anchor" href="#summarizing-draws"></a>
+</h4>
 <p>Computing summaries of posterior or prior draws and convergence diagnostics for posterior draws is one of the most common tasks when working with Bayesian models fit using Markov Chain Monte Carlo (MCMC) methods. The <strong>posterior</strong> package provides a flexible interface for this purpose via <code><a href="reference/draws_summary.html">summarise_draws()</a></code>:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># summarise_draws or summarize_draws</span>
 <span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">eight_schools_df</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 10 x 10</span>
+<span class="co">#&gt; # A tibble: 10 × 10</span>
 <span class="co">#&gt;    variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail</span>
 <span class="co">#&gt;    &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;</span>
 <span class="co">#&gt;  1 mu        4.18   4.16  3.40  3.57  -0.854  9.39  1.02     558.     322.</span>
@@ -255,7 +256,7 @@
 <p>Basically, we get a data frame with one row per variable and one column per summary statistic or convergence diagnostic. The summaries <code>rhat</code>, <code>ess_bulk</code>, and <code>ess_tail</code> are described in Vehtari et al. (2020). We can choose which summaries to compute by passing additional arguments, either functions or names of functions. For instance, if we only wanted the mean and its corresponding Monte Carlo Standard Error (MCSE) we would use:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">eight_schools_df</span>, <span class="st">"mean"</span>, <span class="st">"mcse_mean"</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 10 x 3</span>
+<span class="co">#&gt; # A tibble: 10 × 3</span>
 <span class="co">#&gt;    variable  mean mcse_mean</span>
 <span class="co">#&gt;    &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;</span>
 <span class="co">#&gt;  1 mu        4.18     0.150</span>
@@ -270,9 +271,9 @@
 <span class="co">#&gt; 10 theta[8]  4.57     0.273</span></code></pre></div>
 <p>For a function to work with <code>summarise_draws</code>, it needs to take a vector or matrix of numeric values and returns a single numeric value or a named vector of numeric values.</p>
 </div>
-<div id="subsetting-draws" class="section level4">
-<h4 class="hasAnchor">
-<a href="#subsetting-draws" class="anchor"></a>Subsetting draws</h4>
+<div class="section level4">
+<h4 id="subsetting-draws">Subsetting draws<a class="anchor" aria-label="anchor" href="#subsetting-draws"></a>
+</h4>
 <p>Another common task when working with posterior (or prior) draws, is subsetting according to various aspects of the draws (iterations, chains, or variables). <strong>posterior</strong> provides a convenient interface for this purpose via the <code><a href="reference/subset_draws.html">subset_draws()</a></code> method. For example, here is the code to extract the first five iterations of the first two chains of the variable <code>mu</code>:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/subset_draws.html">subset_draws</a></span><span class="op">(</span><span class="va">eight_schools_df</span>, variable <span class="op">=</span> <span class="st">"mu"</span>, chain <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, iteration <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>
@@ -291,14 +292,14 @@
 <span class="co">#&gt; # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span></code></pre></div>
 <p>The same call to <code><a href="reference/subset_draws.html">subset_draws()</a></code> can be used regardless of whether the object is a <code>draws_df</code>, <code>draws_array</code>, <code>draws_list</code>, etc.</p>
 </div>
-<div id="mutating-and-renaming-draws" class="section level4">
-<h4 class="hasAnchor">
-<a href="#mutating-and-renaming-draws" class="anchor"></a>Mutating and renaming draws</h4>
+<div class="section level4">
+<h4 id="mutating-and-renaming-draws">Mutating and renaming draws<a class="anchor" aria-label="anchor" href="#mutating-and-renaming-draws"></a>
+</h4>
 <p>The magic of having obtained draws from the joint posterior (or prior) distribution of a set of variables is that these draws can also be used to obtain draws from any other variable that is a function of the original variables. That is, if are interested in the posterior distribution of, say, <code>phi = (mu + tau)^2</code> all we have to do is to perform the transformation for each of the individual draws to obtain draws from the posterior distribution of the transformed variable. This procedure is automated in the <code>mutate_variables</code> method:</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/mutate_variables.html">mutate_variables</a></span><span class="op">(</span><span class="va">eight_schools_df</span>, phi <span class="op">=</span> <span class="op">(</span><span class="va">mu</span> <span class="op">+</span> <span class="va">tau</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/subset_draws.html">subset_draws</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"mu"</span>, <span class="st">"tau"</span>, <span class="st">"phi"</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/subset_draws.html">subset_draws</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mu"</span>, <span class="st">"tau"</span>, <span class="st">"phi"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_df: 100 iterations, 4 chains, and 3 variables</span>
 <span class="co">#&gt;      mu tau   phi</span>
 <span class="co">#&gt; 1  2.01 2.8  22.8</span>
@@ -322,88 +323,88 @@
 <span class="co">#&gt;  [8] "alpha[6]" "alpha[7]" "alpha[8]"</span></code></pre></div>
 <p>As with all <strong>posterior</strong> methods, <code>mutate_variables</code> and <code>rename_variables</code> can be used with all draws formats.</p>
 </div>
-<div id="binding-draws-together" class="section level4">
-<h4 class="hasAnchor">
-<a href="#binding-draws-together" class="anchor"></a>Binding draws together</h4>
+<div class="section level4">
+<h4 id="binding-draws-together">Binding draws together<a class="anchor" aria-label="anchor" href="#binding-draws-together"></a>
+</h4>
 <p>Suppose we have multiple draws objects that we want to bind together:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, beta <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
-<span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, beta <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
-<span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span><span class="op">(</span>theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html">rexp</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">x1</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, beta <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<span class="va">x2</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span><span class="op">(</span>alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, beta <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>
+<span class="va">x3</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">draws_matrix</a></span><span class="op">(</span>theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>Then, we can use the <code>bind_draws</code> method to bind them along different dimensions. For example, we can bind <code>x1</code> and <code>x3</code> together along the <code>'variable'</code> dimension:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x4</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bind_draws.html">bind_draws</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x3</span>, along <span class="op">=</span> <span class="st">"variable"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x4</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x4</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_matrix: 5 iterations, 1 chains, and 3 variables</span>
 <span class="co">#&gt;     variable</span>
 <span class="co">#&gt; draw alpha beta theta</span>
-<span class="co">#&gt;    1 -0.71    1  0.62</span>
-<span class="co">#&gt;    2  0.32    1  2.61</span>
-<span class="co">#&gt;    3 -0.45    1  2.05</span>
-<span class="co">#&gt;    4 -0.84    1  0.02</span>
-<span class="co">#&gt;    5  0.44    1  0.87</span></code></pre></div>
+<span class="co">#&gt;    1  1.24    1  0.76</span>
+<span class="co">#&gt;    2 -0.42    1  0.77</span>
+<span class="co">#&gt;    3  0.48    1  2.09</span>
+<span class="co">#&gt;    4 -0.31    1  0.18</span>
+<span class="co">#&gt;    5 -1.41    1  0.97</span></code></pre></div>
 <p>Or, we can bind <code>x1</code> and <code>x2</code> together along the <code>'draw'</code> dimension:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x5</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bind_draws.html">bind_draws</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, along <span class="op">=</span> <span class="st">"draw"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x5</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x5</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_matrix: 10 iterations, 1 chains, and 2 variables</span>
 <span class="co">#&gt;     variable</span>
 <span class="co">#&gt; draw alpha beta</span>
-<span class="co">#&gt;   1  -0.71    1</span>
-<span class="co">#&gt;   2   0.32    1</span>
-<span class="co">#&gt;   3  -0.45    1</span>
-<span class="co">#&gt;   4  -0.84    1</span>
-<span class="co">#&gt;   5   0.44    1</span>
-<span class="co">#&gt;   6   1.15    2</span>
-<span class="co">#&gt;   7  -0.29    2</span>
-<span class="co">#&gt;   8   1.16    2</span>
-<span class="co">#&gt;   9   2.60    2</span>
-<span class="co">#&gt;   10 -0.61    2</span></code></pre></div>
+<span class="co">#&gt;   1   1.24    1</span>
+<span class="co">#&gt;   2  -0.42    1</span>
+<span class="co">#&gt;   3   0.48    1</span>
+<span class="co">#&gt;   4  -0.31    1</span>
+<span class="co">#&gt;   5  -1.41    1</span>
+<span class="co">#&gt;   6  -1.75    2</span>
+<span class="co">#&gt;   7  -1.51    2</span>
+<span class="co">#&gt;   8   1.09    2</span>
+<span class="co">#&gt;   9  -1.51    2</span>
+<span class="co">#&gt;   10 -0.46    2</span></code></pre></div>
 <p>As with all <strong>posterior</strong> methods, <code>bind_draws</code> can be used with all draws formats.</p>
 </div>
-<div id="converting-from-regular-r-objects-to-draws-formats" class="section level4">
-<h4 class="hasAnchor">
-<a href="#converting-from-regular-r-objects-to-draws-formats" class="anchor"></a>Converting from regular R objects to draws formats</h4>
+<div class="section level4">
+<h4 id="converting-from-regular-r-objects-to-draws-formats">Converting from regular R objects to draws formats<a class="anchor" aria-label="anchor" href="#converting-from-regular-r-objects-to-draws-formats"></a>
+</h4>
 <p>The <code>eight_schools</code> example already comes in a format natively supported by posterior but we could of course also import the draws from other sources, for example, from common base R objects:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">rnorm</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">10</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/colnames.html">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"V"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">50</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">10</span>, ncol <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"V"</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span>
 <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/draws_matrix.html">as_draws_matrix</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_matrix: 10 iterations, 1 chains, and 5 variables</span>
 <span class="co">#&gt;     variable</span>
-<span class="co">#&gt; draw    V1    V2     V3     V4     V5</span>
-<span class="co">#&gt;   1  -0.81  0.82 -0.939  1.082  0.268</span>
-<span class="co">#&gt;   2  -0.52  0.38  0.895  0.570 -2.713</span>
-<span class="co">#&gt;   3   0.81 -0.71  0.057 -2.169 -0.908</span>
-<span class="co">#&gt;   4   0.54 -0.18 -1.304  0.062  2.039</span>
-<span class="co">#&gt;   5  -0.45  0.39  0.407  0.524 -0.113</span>
-<span class="co">#&gt;   6  -1.34  0.08 -1.328  1.535 -0.041</span>
-<span class="co">#&gt;   7   0.59 -1.59 -0.499  0.330 -0.889</span>
-<span class="co">#&gt;   8  -1.22  0.26  0.245 -1.368  0.731</span>
-<span class="co">#&gt;   9  -1.25 -1.79  0.643 -0.326  0.507</span>
-<span class="co">#&gt;   10 -1.68  0.59 -0.584 -0.126 -0.958</span>
+<span class="co">#&gt; draw     V1     V2    V3     V4     V5</span>
+<span class="co">#&gt;   1   1.190 -1.129 -2.83  0.405 -0.311</span>
+<span class="co">#&gt;   2  -0.433  0.893 -1.69  1.134  2.587</span>
+<span class="co">#&gt;   3  -0.174  0.139  0.47  0.296 -0.481</span>
+<span class="co">#&gt;   4   2.034  0.012 -1.84 -0.313  0.528</span>
+<span class="co">#&gt;   5  -0.041  0.699 -0.81 -0.268 -0.881</span>
+<span class="co">#&gt;   6   0.097  1.265  1.27 -0.748 -1.734</span>
+<span class="co">#&gt;   7  -1.224  1.154  0.91  0.061  0.760</span>
+<span class="co">#&gt;   8  -1.785 -0.305  1.42 -0.513 -0.084</span>
+<span class="co">#&gt;   9   1.312  0.313 -0.52  1.113 -0.451</span>
+<span class="co">#&gt;   10 -0.846  2.159 -0.22 -0.794  1.699</span>
 
 <span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"mean"</span>, <span class="st">"sd"</span>, <span class="st">"median"</span>, <span class="st">"mad"</span><span class="op">)</span>
-<span class="co">#&gt; # A tibble: 5 x 5</span>
-<span class="co">#&gt;   variable    mean    sd  median   mad</span>
-<span class="co">#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 V1       -0.534  0.897 -0.665  0.934</span>
-<span class="co">#&gt; 2 V2       -0.175  0.903  0.170  0.570</span>
-<span class="co">#&gt; 3 V3       -0.241  0.803 -0.221  0.998</span>
-<span class="co">#&gt; 4 V4        0.0112 1.10   0.196  0.664</span>
-<span class="co">#&gt; 5 V5       -0.208  1.27  -0.0769 1.20</span></code></pre></div>
+<span class="co">#&gt; # A tibble: 5 × 5</span>
+<span class="co">#&gt;   variable    mean    sd median   mad</span>
+<span class="co">#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 V1        0.0129 1.20  -0.108 1.37 </span>
+<span class="co">#&gt; 2 V2        0.520  0.923  0.506 0.847</span>
+<span class="co">#&gt; 3 V3       -0.384  1.43  -0.372 1.92 </span>
+<span class="co">#&gt; 4 V4        0.0374 0.698 -0.103 0.681</span>
+<span class="co">#&gt; 5 V5        0.163  1.27  -0.197 1.04</span></code></pre></div>
 <p>Instead of <code><a href="reference/draws_matrix.html">as_draws_matrix()</a></code> we also could have just used <code><a href="reference/draws.html">as_draws()</a></code>, which attempts to find the closest available format to the input object. In this case this would result in a <code>draws_matrix</code> object either way.</p>
 </div>
 </div>
-<div id="contributing-to-posterior" class="section level3">
-<h3 class="hasAnchor">
-<a href="#contributing-to-posterior" class="anchor"></a>Contributing to posterior</h3>
-<p>We welcome contributions! The <strong>posterior</strong> package is under active development. If you find bugs or have ideas for new features (for us or yourself to implement) please open an issue on GitHub (<a href="https://github.com/stan-dev/posterior/issues" class="uri">https://github.com/stan-dev/posterior/issues</a>).</p>
+<div class="section level3">
+<h3 id="contributing-to-posterior">Contributing to posterior<a class="anchor" aria-label="anchor" href="#contributing-to-posterior"></a>
+</h3>
+<p>We welcome contributions! The <strong>posterior</strong> package is under active development. If you find bugs or have ideas for new features (for us or yourself to implement) please open an issue on GitHub (<a href="https://github.com/stan-dev/posterior/issues" class="external-link uri">https://github.com/stan-dev/posterior/issues</a>).</p>
 </div>
-<div id="citing-posterior" class="section level3">
-<h3 class="hasAnchor">
-<a href="#citing-posterior" class="anchor"></a>Citing posterior</h3>
+<div class="section level3">
+<h3 id="citing-posterior">Citing posterior<a class="anchor" aria-label="anchor" href="#citing-posterior"></a>
+</h3>
 <p>Developing and maintaining open source software is an important yet often underappreciated contribution to scientific progress. Thus, whenever you are using open source software (or software in general), please make sure to cite it appropriately so that developers get credit for their work.</p>
 <p>When using <strong>posterior</strong>, please cite it as follows:</p>
 <ul>
@@ -413,21 +414,21 @@
 <ul>
 <li>Vehtari A., Gelman A., Simpson D., Carpenter B., &amp; Bürkner P. C. (2020). Rank-normalization, folding, and localization: An improved Rhat for assessing convergence of MCMC. <em>Bayesian Analysis</em>.</li>
 </ul>
-<p>The same information can be obtained by running <code><a href="https://rdrr.io/r/utils/citation.html">citation("posterior")</a></code>.</p>
+<p>The same information can be obtained by running <code>citation("posterior")</code>.</p>
 </div>
-<div id="references" class="section level3">
-<h3 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h3>
+<div class="section level3">
+<h3 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h3>
 <p>Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki Vehtari A., &amp; Rubin D. B. (2013). <em>Bayesian Data Analysis, Third Edition</em>. Chapman and Hall/CRC.</p>
-<p>Vehtari A., Gelman A., Simpson D., Carpenter B., &amp; Bürkner P. C. (2020). Rank-normalization, folding, and localization: An improved Rhat for assessing convergence of MCMC. <em>Bayesian Analysis</em>.</p>
+<p>Vehtari A., Gelman A., Simpson D., Carpenter B., &amp; Bürkner P. C. (2021). Rank-normalization, folding, and localization: An improved Rhat for assessing convergence of MCMC (with discussion). <em>Bayesian Analysis</em>. 16(2), 667-–718. <a href="doi:10.1214/20-BA1221" class="uri">doi:10.1214/20-BA1221</a></p>
 </div>
-<div id="licensing" class="section level3">
-<h3 class="hasAnchor">
-<a href="#licensing" class="anchor"></a>Licensing</h3>
+<div class="section level3">
+<h3 id="licensing">Licensing<a class="anchor" aria-label="anchor" href="#licensing"></a>
+</h3>
 <p>The <strong>posterior</strong> package is licensed under the following licenses:</p>
 <ul>
-<li>Code: BSD 3-clause (<a href="https://opensource.org/licenses/BSD-3-Clause" class="uri">https://opensource.org/licenses/BSD-3-Clause</a>)</li>
-<li>Documentation: CC-BY 4.0 (<a href="https://creativecommons.org/licenses/by/4.0/" class="uri">https://creativecommons.org/licenses/by/4.0/</a>)</li>
+<li>Code: BSD 3-clause (<a href="https://opensource.org/licenses/BSD-3-Clause" class="external-link uri">https://opensource.org/licenses/BSD-3-Clause</a>)</li>
+<li>Documentation: CC-BY 4.0 (<a href="https://creativecommons.org/licenses/by/4.0/" class="external-link uri">https://creativecommons.org/licenses/by/4.0/</a>)</li>
 </ul>
 </div>
 </div>
@@ -435,60 +436,63 @@
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <div class="links">
-<h2>Links</h2>
+<h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=posterior">https://​cloud.r-project.org/​package=posterior</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/stan-dev/posterior/">https://​github.com/​stan-dev/​posterior/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/stan-dev/posterior/issues">https://​github.com/​stan-dev/​posterior/​issues</a>
-</li>
-<li>Ask a question at <br><a href="https://discourse.mc-stan.org/">https://​discourse.mc-stan.org/​</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=posterior" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/stan-dev/posterior/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/stan-dev/posterior/issues" class="external-link">Report a bug</a></li>
+<li><a href="https://discourse.mc-stan.org/" class="external-link">Ask a question</a></li>
 </ul>
 </div>
+
 <div class="license">
-<h2>License</h2>
+<h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
 <li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/BSD-3-Clause">BSD_3_clause</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li><small><a href="https://opensource.org/licenses/BSD-3-Clause" class="external-link">BSD_3_clause</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
 </ul>
 </div>
+
+
 <div class="citation">
-<h2>Citation</h2>
+<h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html">Citing posterior</a></li>
+<li><a href="authors.html#citation">Citing posterior</a></li>
 </ul>
 </div>
+
 <div class="developers">
-<h2>Developers</h2>
+<h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Paul-Christian Bürkner <br><small class="roles"> Author, maintainer </small>  </li>
 <li>Jonah Gabry <br><small class="roles"> Author </small>  </li>
 <li>Matthew Kay <br><small class="roles"> Author </small>  </li>
 <li>Aki Vehtari <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">All authors...</a></li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
-  <div class="dev-status">
-<h2>Dev status</h2>
+<div class="dev-status">
+<h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://CRAN.R-project.org/package=posterior"><img src="https://www.r-pkg.org/badges/version/posterior" alt="CRAN status"></a></li>
-<li><a href="https://github.com/stan-dev/posterior/actions?workflow=R-CMD-check"><img src="https://github.com/stan-dev/posterior/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/gh/stan-dev/posterior"><img src="https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg" alt="Coverage Status"></a></li>
+<li><a href="https://CRAN.R-project.org/package=posterior" class="external-link"><img src="https://www.r-pkg.org/badges/version/posterior" alt="CRAN status"></a></li>
+<li><a href="https://github.com/stan-dev/posterior/actions?workflow=R-CMD-check" class="external-link"><img src="https://github.com/stan-dev/posterior/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://codecov.io/gh/stan-dev/posterior" class="external-link"><img src="https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg" alt="Coverage Status"></a></li>
 </ul>
 </div>
-</div>
+
+  </div>
 </div>
 
 
       <footer><div class="copyright">
-  <p>Developed by Paul-Christian Bürkner, Jonah Gabry, Matthew Kay, Aki Vehtari.</p>
+  <p></p>
+<p>Developed by Paul-Christian Bürkner, Jonah Gabry, Matthew Kay, Aki Vehtari.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
@@ -496,6 +500,8 @@
 
   
 
+
+  
 
   </body>
 </html>
