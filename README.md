@@ -9,7 +9,7 @@
 status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.org/package=posterior)
 [![R-CMD-check](https://github.com/stan-dev/posterior/workflows/R-CMD-check/badge.svg)](https://github.com/stan-dev/posterior/actions?workflow=R-CMD-check)
 [![Coverage
-Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
+Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://app.codecov.io/gh/stan-dev/posterior)
 <!-- badges: end -->
 
 The **posterior** R package is intended to provide useful tools for both
@@ -294,11 +294,11 @@ print(x4)
 #> # A draws_matrix: 5 iterations, 1 chains, and 3 variables
 #>     variable
 #> draw alpha beta theta
-#>    1  1.24    1  0.76
-#>    2 -0.42    1  0.77
-#>    3  0.48    1  2.09
-#>    4 -0.31    1  0.18
-#>    5 -1.41    1  0.97
+#>    1  1.11    1 0.565
+#>    2 -0.41    1 0.015
+#>    3 -0.28    1 0.591
+#>    4 -0.40    1 1.773
+#>    5 -0.30    1 1.357
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -309,16 +309,16 @@ print(x5)
 #> # A draws_matrix: 10 iterations, 1 chains, and 2 variables
 #>     variable
 #> draw alpha beta
-#>   1   1.24    1
-#>   2  -0.42    1
-#>   3   0.48    1
-#>   4  -0.31    1
-#>   5  -1.41    1
-#>   6  -1.75    2
-#>   7  -1.51    2
-#>   8   1.09    2
-#>   9  -1.51    2
-#>   10 -0.46    2
+#>   1   1.11    1
+#>   2  -0.41    1
+#>   3  -0.28    1
+#>   4  -0.40    1
+#>   5  -0.30    1
+#>   6   0.46    2
+#>   7   0.15    2
+#>   8  -0.60    2
+#>   9   1.84    2
+#>   10  0.62    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -337,27 +337,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 iterations, 1 chains, and 5 variables
 #>     variable
-#> draw     V1     V2    V3     V4     V5
-#>   1   1.190 -1.129 -2.83  0.405 -0.311
-#>   2  -0.433  0.893 -1.69  1.134  2.587
-#>   3  -0.174  0.139  0.47  0.296 -0.481
-#>   4   2.034  0.012 -1.84 -0.313  0.528
-#>   5  -0.041  0.699 -0.81 -0.268 -0.881
-#>   6   0.097  1.265  1.27 -0.748 -1.734
-#>   7  -1.224  1.154  0.91  0.061  0.760
-#>   8  -1.785 -0.305  1.42 -0.513 -0.084
-#>   9   1.312  0.313 -0.52  1.113 -0.451
-#>   10 -0.846  2.159 -0.22 -0.794  1.699
+#> draw    V1     V2     V3     V4    V5
+#>   1   0.22  0.621 -0.580  0.813 -0.91
+#>   2  -0.40 -0.372 -0.112 -0.710  0.46
+#>   3   0.41  0.242  0.496  0.175  0.19
+#>   4   1.01 -0.104  0.582  0.071 -0.45
+#>   5   0.56 -1.592 -0.272 -0.110 -0.26
+#>   6  -0.70 -1.492  0.040  0.531 -0.26
+#>   7   0.70  0.191 -0.655 -0.516 -2.75
+#>   8  -1.06  0.033 -0.141  0.359  1.40
+#>   9   0.75  0.109  0.015 -0.449  1.25
+#>   10  0.31  2.171  1.093 -0.749  0.18
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 × 5
-#>   variable    mean    sd median   mad
-#>   <chr>      <dbl> <dbl>  <dbl> <dbl>
-#> 1 V1        0.0129 1.20  -0.108 1.37 
-#> 2 V2        0.520  0.923  0.506 0.847
-#> 3 V3       -0.384  1.43  -0.372 1.92 
-#> 4 V4        0.0374 0.698 -0.103 0.681
-#> 5 V5        0.163  1.27  -0.197 1.04
+#>   variable    mean    sd  median   mad
+#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
+#> 1 V1        0.178  0.679  0.356  0.545
+#> 2 V2       -0.0193 1.06   0.0712 0.459
+#> 3 V3        0.0466 0.541 -0.0489 0.559
+#> 4 V4       -0.0587 0.539 -0.0196 0.686
+#> 5 V5       -0.114  1.18  -0.0353 0.670
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
@@ -404,7 +404,7 @@ Chapman and Hall/CRC.
 Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2021).
 Rank-normalization, folding, and localization: An improved Rhat for
 assessing convergence of MCMC (with discussion). *Bayesian Analysis*.
-16(2), 667-–718. <doi:10.1214/20-BA1221>
+16(2), 667-–718. doi.org/10.1214/20-BA1221
 
 ### Licensing
 

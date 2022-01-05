@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.org/package=posterior)
 [![R-CMD-check](https://github.com/stan-dev/posterior/workflows/R-CMD-check/badge.svg)](https://github.com/stan-dev/posterior/actions?workflow=R-CMD-check)
 [![Coverage
-Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://codecov.io/gh/stan-dev/posterior)
+Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://app.codecov.io/gh/stan-dev/posterior)
 <!-- badges: end -->
 
 
@@ -260,7 +260,7 @@ Hall/CRC.
 Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2021).
 Rank-normalization, folding, and localization: An improved Rhat for assessing
 convergence of MCMC (with discussion). *Bayesian Analysis*. 16(2), 667-–718.
-doi:10.1214/20-BA1221
+doi.org/10.1214/20-BA1221
 
 ### Licensing
 
