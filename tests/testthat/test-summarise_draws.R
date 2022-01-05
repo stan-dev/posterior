@@ -143,7 +143,8 @@ test_that("summarise_draws works with variance()", {
 
   ref <- data.frame(
     variable = variables(draws_array),
-    variance = as.vector(apply(draws_array, 3, function(x) var(as.vector(x))))
+    variance = as.vector(apply(draws_array, 3, function(x) var(as.vector(x)))),
+    stringsAsFactors = FALSE
   )
   class(ref) <- class_draws_summary()
 
