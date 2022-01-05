@@ -200,6 +200,11 @@ is_draws_array_like <- function(x) {
   out
 }
 
+#' @export
+variance.draws_array <- function(x, ...) {
+  var(as.vector(x))
+}
+
 # convert a list of matrices to an array
 as_array_matrix_list <- function(x) {
   stopifnot(is.list(x))

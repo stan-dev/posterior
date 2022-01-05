@@ -188,6 +188,11 @@ is_draws_matrix_like <- function(x) {
   out
 }
 
+#' @export
+variance.draws_matrix <- function(x, ...) {
+  var(as.vector(x))
+}
+
 # create an empty draws_matrix object
 empty_draws_matrix <- function(variables = character(0), ndraws = 0) {
   assert_character(variables, null.ok = TRUE)

@@ -1,11 +1,13 @@
 
 test_that("rstar returns reasonable values", {
+  skip_if_not_installed("caret")
   x <- example_draws()
   val <- rstar(x)
   expect_true(val > 0.8 & val < 10)
 })
 
 test_that("rstar works with 1d example", {
+  skip_if_not_installed("caret")
   x <- example_draws()
   x <- as_draws_df(x)
   # remove all bar one variable
@@ -15,6 +17,7 @@ test_that("rstar works with 1d example", {
 })
 
 test_that("rstar works with draws_df example", {
+  skip_if_not_installed("caret")
   x <- example_draws()
   x <- as_draws_df(x)
   val <- rstar(x)
@@ -22,6 +25,7 @@ test_that("rstar works with draws_df example", {
 })
 
 test_that("rstar with uncertainty returns vectors of correct length", {
+  skip_if_not_installed("caret")
   x <- example_draws()
   val <- rstar(x, method = "gbm", uncertainty = T, verbose = F)
   expect_equal(length(val), 1000)
@@ -30,18 +34,21 @@ test_that("rstar with uncertainty returns vectors of correct length", {
 })
 
 test_that("incorrect nsimulations values throws error", {
+  skip_if_not_installed("caret")
   x <- example_draws()
   expect_error(rstar(x, method = "knn", nsimulations = 0),
                "'nsimulations' must be greater than or equal to 1.")
 })
 
 test_that("rstar with uncertainty returns reasonable values", {
+  skip_if_not_installed("caret")
   x <- example_draws()
   val <- rstar(x, method = "gbm", uncertainty = T, verbose = F)
   expect_true(max(val) > 0.3 & min(val) < 10)
 })
 
 test_that("rstar accepts different classifiers", {
+  skip_if_not_installed("caret")
   x <- example_draws()
   val <- rstar(x, method = "gbm", verbose=F)
   expect_true(is.numeric(val))
@@ -50,6 +57,7 @@ test_that("rstar accepts different classifiers", {
 })
 
 test_that("rstar accepts different hyperparameters", {
+  skip_if_not_installed("caret")
   x <- example_draws()
 
   # use fast hyperparameters
@@ -76,6 +84,7 @@ test_that("rstar accepts different hyperparameters", {
 })
 
 test_that("rstar accepts different training proportion", {
+  skip_if_not_installed("caret")
   x <- example_draws()
   val1 <- rstar(x, method = "knn")
   val2 <- rstar(x, method = "knn", training_proportion = 0.1)
@@ -83,6 +92,7 @@ test_that("rstar accepts different training proportion", {
 })
 
 test_that("rstar throws error when passed invalid training_proportion", {
+  skip_if_not_installed("caret")
   x <- example_draws()
   expect_error(rstar(x, method = "knn", training_proportion = 0),
                "'training_proportion' must be greater than 0 and less than 1")
@@ -91,6 +101,7 @@ test_that("rstar throws error when passed invalid training_proportion", {
 })
 
 test_that("split-chain R* returns generally higher values", {
+  skip_if_not_installed("caret")
   skip_on_cran()  # reduces test time
   x <- example_draws()
   n <- 10
