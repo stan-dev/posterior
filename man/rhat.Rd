@@ -40,7 +40,7 @@ passing the draws array for that element of the \code{\link{rvar}} to this funct
 \description{
 Compute the Rhat convergence diagnostic for a single variable as the maximum
 of rank normalized split-Rhat and rank normalized folded-split-Rhat as
-proposed in Vehtari et al. (2019).
+proposed in Vehtari et al. (2021).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -52,9 +52,10 @@ rhat(d$Sigma)
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-Paul-Christian Bürkner (2019). Rank-normalization, folding, and
+Paul-Christian Bürkner (2021). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
-MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
+doi:10.1214/20-BA1221
 }
 \seealso{
 Other diagnostics: 

@@ -42,9 +42,11 @@ passing the draws array for that element of the \code{\link{rvar}} to this funct
 }
 \description{
 Compute the basic effective sample size (ESS) estimate for a single variable
-as described in Gelman et al. (2013). For practical applications, we strongly
+as described in Gelman et al. (2013) with some changes according to Vehtari et
+al. (2021). For practical applications, we strongly
 recommend the improved ESS convergence diagnostics implemented in
-\code{\link[=ess_bulk]{ess_bulk()}} and \code{\link[=ess_tail]{ess_tail()}}.
+\code{\link[=ess_bulk]{ess_bulk()}} and \code{\link[=ess_tail]{ess_tail()}}. See Vehtari (2021) for an in-depth
+comparison of different effective sample size estimators.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -58,6 +60,15 @@ ess_basic(d$Sigma)
 Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
 Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
 Hall/CRC.
+
+Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
+Paul-Christian Bürkner (2021). Rank-normalization, folding, and
+localization: An improved R-hat for assessing convergence of
+MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
+doi:10.1214/20-BA1221
+
+Aki Vehtari (2021). Comparison of MCMC effective sample size estimators.
+Retrieved from https://avehtari.github.io/rhat_ess/ess_comparison.html
 }
 \seealso{
 Other diagnostics: 

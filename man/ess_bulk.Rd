@@ -42,7 +42,8 @@ Compute a bulk effective sample size estimate (bulk-ESS) for a single
 variable. Bulk-ESS is useful as a diagnostic for the sampling efficiency in
 the bulk of the posterior. It is defined as the effective sample size for
 rank normalized values using split chains. For the tail effective sample size
-see \code{\link[=ess_tail]{ess_tail()}}.
+see \code{\link[=ess_tail]{ess_tail()}}. See Vehtari (2021) for an in-depth
+comparison of different effective sample size estimators.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -54,9 +55,13 @@ ess_bulk(d$Sigma)
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-Paul-Christian Bürkner (2019). Rank-normalization, folding, and
+Paul-Christian Bürkner (2021). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
-MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
+doi:10.1214/20-BA1221
+
+Aki Vehtari (2021). Comparison of MCMC effective sample size estimators.
+Retrieved from https://avehtari.github.io/rhat_ess/ess_comparison.html
 }
 \seealso{
 Other diagnostics: 

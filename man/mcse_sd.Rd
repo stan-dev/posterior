@@ -52,9 +52,10 @@ mcse_sd(d$Sigma)
 }
 \references{
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
-Paul-Christian Bürkner (2019). Rank-normalization, folding, and
+Paul-Christian Bürkner (2021). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
-MCMC. \emph{arXiv preprint} \code{arXiv:1903.08008}.
+MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
+doi:10.1214/20-BA1221
 }
 \seealso{
 Other diagnostics: 
