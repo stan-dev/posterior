@@ -58,7 +58,7 @@ package*](https://mc-stan.org/posterior/articles/posterior.html).
 
 ``` r
 library("posterior")
-#> This is posterior version 1.1.0.9000
+#> This is posterior version 1.2.0
 #> 
 #> Attaching package: 'posterior'
 #> The following objects are masked from 'package:stats':
@@ -293,12 +293,12 @@ x4 <- bind_draws(x1, x3, along = "variable")
 print(x4)
 #> # A draws_matrix: 5 iterations, 1 chains, and 3 variables
 #>     variable
-#> draw  alpha beta theta
-#>    1 -1.253    1 0.017
-#>    2  0.600    1 2.801
-#>    3  0.099    1 0.038
-#>    4 -0.465    1 0.487
-#>    5  1.083    1 0.468
+#> draw alpha beta theta
+#>    1  1.24    1  0.76
+#>    2 -0.42    1  0.77
+#>    3  0.48    1  2.09
+#>    4 -0.31    1  0.18
+#>    5 -1.41    1  0.97
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -308,17 +308,17 @@ x5 <- bind_draws(x1, x2, along = "draw")
 print(x5)
 #> # A draws_matrix: 10 iterations, 1 chains, and 2 variables
 #>     variable
-#> draw  alpha beta
-#>   1  -1.253    1
-#>   2   0.600    1
-#>   3   0.099    1
-#>   4  -0.465    1
-#>   5   1.083    1
-#>   6  -1.760    2
-#>   7  -0.508    2
-#>   8   0.225    2
-#>   9   1.724    2
-#>   10 -0.610    2
+#> draw alpha beta
+#>   1   1.24    1
+#>   2  -0.42    1
+#>   3   0.48    1
+#>   4  -0.31    1
+#>   5  -1.41    1
+#>   6  -1.75    2
+#>   7  -1.51    2
+#>   8   1.09    2
+#>   9  -1.51    2
+#>   10 -0.46    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -337,27 +337,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 iterations, 1 chains, and 5 variables
 #>     variable
-#> draw       V1    V2      V3    V4      V5
-#>   1   0.23225  0.79  0.9206 -1.03  0.4388
-#>   2   0.74891 -1.03  1.1076 -1.02  0.0022
-#>   3   0.09416  0.38  0.0041 -0.54 -0.2231
-#>   4  -1.43745 -1.41  0.3259  0.48 -0.6852
-#>   5   0.38522 -0.64 -0.9684 -1.95 -1.7178
-#>   6  -1.86075  0.32 -0.6119  1.27 -1.2334
-#>   7   0.29692  1.54 -1.4419  0.78 -0.5525
-#>   8   1.51344 -1.48 -0.8974 -0.41 -1.0528
-#>   9   0.00018  1.88 -0.0676  1.24  0.0918
-#>   10  0.46944  0.32 -0.2938  1.12  0.0751
+#> draw     V1     V2    V3     V4     V5
+#>   1   1.190 -1.129 -2.83  0.405 -0.311
+#>   2  -0.433  0.893 -1.69  1.134  2.587
+#>   3  -0.174  0.139  0.47  0.296 -0.481
+#>   4   2.034  0.012 -1.84 -0.313  0.528
+#>   5  -0.041  0.699 -0.81 -0.268 -0.881
+#>   6   0.097  1.265  1.27 -0.748 -1.734
+#>   7  -1.224  1.154  0.91  0.061  0.760
+#>   8  -1.785 -0.305  1.42 -0.513 -0.084
+#>   9   1.312  0.313 -0.52  1.113 -0.451
+#>   10 -0.846  2.159 -0.22 -0.794  1.699
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 × 5
-#>   variable     mean    sd  median   mad
-#>   <chr>       <dbl> <dbl>   <dbl> <dbl>
-#> 1 V1        0.0442  0.993  0.265  0.348
-#> 2 V2        0.0674  1.18   0.320  1.62 
-#> 3 V3       -0.192   0.823 -0.181  0.907
-#> 4 V4       -0.00569 1.14   0.0368 1.58 
-#> 5 V5       -0.486   0.687 -0.388  0.699
+#>   variable    mean    sd median   mad
+#>   <chr>      <dbl> <dbl>  <dbl> <dbl>
+#> 1 V1        0.0129 1.20  -0.108 1.37 
+#> 2 V2        0.520  0.923  0.506 0.847
+#> 3 V3       -0.384  1.43  -0.372 1.92 
+#> 4 V4        0.0374 0.698 -0.103 0.681
+#> 5 V5        0.163  1.27  -0.197 1.04
 ```
 
 Instead of `as_draws_matrix()` we also could have just used

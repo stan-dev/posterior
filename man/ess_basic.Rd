@@ -58,7 +58,7 @@ ess_basic(d$Sigma)
 }
 \references{
 Andrew Gelman, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari and
-Donald B. Rubin (2013). Bayesian Data Analysis, Third Edition. Chapman and
+Donald B. Rubin (2013). \emph{Bayesian Data Analysis, Third Edition}. Chapman and
 Hall/CRC.
 
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
