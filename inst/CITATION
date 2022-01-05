@@ -15,13 +15,13 @@ bibentry(bibtype = "Misc",
 
 bibentry(bibtype = "Article",
          title = "Rank-normalization, folding, and localization: An improved Rhat
-for assessing convergence of MCMC",
+for assessing convergence of MCMC (with discussion)",
          author = c(person("Aki", "Vehtari"),
                     person("Andrew", "Gelman"),
                     person("Daniel", "Simpson"),
                     person("Bob", "Carpenter"),
                     person("Paul-Christian", "Bürkner")),
-         year = "2020",
+         year = "2021",
          journal = "Bayesian Analysis",
          header = "To cite the MCMC convergence diagnostics:"
 )

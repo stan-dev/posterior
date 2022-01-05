@@ -294,11 +294,11 @@ print(x4)
 #> # A draws_matrix: 5 iterations, 1 chains, and 3 variables
 #>     variable
 #> draw alpha beta theta
-#>    1  1.11    1 0.565
-#>    2 -0.41    1 0.015
-#>    3 -0.28    1 0.591
-#>    4 -0.40    1 1.773
-#>    5 -0.30    1 1.357
+#>    1  0.39    1  2.27
+#>    2 -0.80    1  0.86
+#>    3  0.95    1  1.93
+#>    4  0.38    1  0.67
+#>    5  0.18    1  2.04
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -309,16 +309,16 @@ print(x5)
 #> # A draws_matrix: 10 iterations, 1 chains, and 2 variables
 #>     variable
 #> draw alpha beta
-#>   1   1.11    1
-#>   2  -0.41    1
-#>   3  -0.28    1
-#>   4  -0.40    1
-#>   5  -0.30    1
-#>   6   0.46    2
-#>   7   0.15    2
-#>   8  -0.60    2
-#>   9   1.84    2
-#>   10  0.62    2
+#>   1   0.39    1
+#>   2  -0.80    1
+#>   3   0.95    1
+#>   4   0.38    1
+#>   5   0.18    1
+#>   6   0.13    2
+#>   7   0.10    2
+#>   8  -0.61    2
+#>   9   0.12    2
+#>   10  1.48    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -337,27 +337,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 iterations, 1 chains, and 5 variables
 #>     variable
-#> draw    V1     V2     V3     V4    V5
-#>   1   0.22  0.621 -0.580  0.813 -0.91
-#>   2  -0.40 -0.372 -0.112 -0.710  0.46
-#>   3   0.41  0.242  0.496  0.175  0.19
-#>   4   1.01 -0.104  0.582  0.071 -0.45
-#>   5   0.56 -1.592 -0.272 -0.110 -0.26
-#>   6  -0.70 -1.492  0.040  0.531 -0.26
-#>   7   0.70  0.191 -0.655 -0.516 -2.75
-#>   8  -1.06  0.033 -0.141  0.359  1.40
-#>   9   0.75  0.109  0.015 -0.449  1.25
-#>   10  0.31  2.171  1.093 -0.749  0.18
+#> draw    V1    V2    V3    V4    V5
+#>   1  -0.89  0.37 -0.25 -0.57 -2.85
+#>   2   1.84  0.19  0.39 -0.52  1.26
+#>   3   0.79 -0.74 -1.61  0.99 -0.11
+#>   4  -2.25  0.28 -0.19 -0.33  0.92
+#>   5   0.58  0.35 -0.92  0.56  0.82
+#>   6  -1.38 -0.12 -0.40 -1.23 -0.60
+#>   7  -0.18  1.18 -1.27  0.51  0.78
+#>   8   0.17  1.50 -2.12 -0.45 -0.73
+#>   9  -0.60  0.69 -0.43 -1.40  1.14
+#>   10  0.18  0.96 -1.37 -0.58 -0.63
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 × 5
-#>   variable    mean    sd  median   mad
-#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
-#> 1 V1        0.178  0.679  0.356  0.545
-#> 2 V2       -0.0193 1.06   0.0712 0.459
-#> 3 V3        0.0466 0.541 -0.0489 0.559
-#> 4 V4       -0.0587 0.539 -0.0196 0.686
-#> 5 V5       -0.114  1.18  -0.0353 0.670
+#>   variable      mean    sd   median   mad
+#>   <chr>        <dbl> <dbl>    <dbl> <dbl>
+#> 1 V1       -0.174    1.16  -0.00490 1.03 
+#> 2 V2        0.467    0.651  0.358   0.596
+#> 3 V3       -0.817    0.770 -0.671   0.798
+#> 4 V4       -0.301    0.773 -0.486   0.672
+#> 5 V5       -0.000826 1.27   0.338   1.27
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
@@ -390,8 +390,9 @@ When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or
 `ess_tail`, please also cite
 
 -   Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C.
-    (2020). Rank-normalization, folding, and localization: An improved
-    Rhat for assessing convergence of MCMC. *Bayesian Analysis*.
+    (2021). Rank-normalization, folding, and localization: An improved
+    Rhat for assessing convergence of MCMC (with discussion). *Bayesian
+    Analysis*. 16(2), 667–718. doi.org/10.1214/20-BA1221
 
 The same information can be obtained by running `citation("posterior")`.
 
@@ -404,7 +405,7 @@ Chapman and Hall/CRC.
 Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2021).
 Rank-normalization, folding, and localization: An improved Rhat for
 assessing convergence of MCMC (with discussion). *Bayesian Analysis*.
-16(2), 667-–718. doi.org/10.1214/20-BA1221
+16(2), 667–718. doi.org/10.1214/20-BA1221
 
 ### Licensing
 

@@ -245,9 +245,10 @@ https://mc-stan.org/posterior/>.
 When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or `ess_tail`,
 please also cite
 
-* Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
+* Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2021).
 Rank-normalization, folding, and localization: An improved Rhat for assessing
-convergence of MCMC. *Bayesian Analysis*.
+convergence of MCMC (with discussion). *Bayesian Analysis*. 16(2), 667–718.
+doi.org/10.1214/20-BA1221
 
 The same information can be obtained by running `citation("posterior")`.
 
@@ -259,7 +260,7 @@ Hall/CRC.
 
 Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2021).
 Rank-normalization, folding, and localization: An improved Rhat for assessing
-convergence of MCMC (with discussion). *Bayesian Analysis*. 16(2), 667-–718.
+convergence of MCMC (with discussion). *Bayesian Analysis*. 16(2), 667–718.
 doi.org/10.1214/20-BA1221
 
 ### Licensing
