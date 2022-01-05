@@ -754,7 +754,11 @@ fold_draws <- function(x) {
   # Improved estimate reduces variance in antithetic case
   tau_hat <- -1 + 2 * sum(rho_hat_t[1:max_t]) + rho_hat_t[max_t+1]
   # Safety check for negative values and with max ess equal to ess*log10(ess)
-  tau_hat <- max(tau_hat, 1/log10(ess))
+  tau_bound <- 1 / log10(ess)
+  if (tau_hat < tau_bound) {
+    warning_no_call("The ESS has been capped to avoid negative values.")
+    tau_hat <- tau_bound
+  }
   ess <- ess / tau_hat
   ess
 }

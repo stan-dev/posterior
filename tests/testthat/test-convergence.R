@@ -40,6 +40,12 @@ test_that("ess diagnostics return reasonable values", {
   expect_true(ess > 350 & ess < 420)
 })
 
+test_that("negative ess estimates are avoided with a warning", {
+  x <- stats::arima.sim(list(ar=-0.9), 1000)
+  expect_warning(ess <- ess_basic(x), "The ESS has been capped")
+  expect_equal(ess, 3000)
+})
+
 test_that("mcse diagnostics return reasonable values", {
   tau <- extract_variable_matrix(example_draws(), "tau")
 
