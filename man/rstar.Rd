@@ -83,7 +83,7 @@ MCMC sample, it is recommended to try both of these classifiers.
 }
 \examples{
 \donttest{
-if (require("caret", quietly = TRUE)) {
+if (require("caret", quietly = TRUE) && require("randomForest", quietly = TRUE)) {
   x <- example_draws("eight_schools")
   print(rstar(x))
   print(rstar(x, split = FALSE))
