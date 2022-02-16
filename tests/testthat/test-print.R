@@ -47,7 +47,7 @@ test_that("print.draws_rvars runs without errors", {
   x <- as_draws_rvars(example_draws())
   expect_output(
     print(x),
-    "100 iterations, 4 chains, and 3 variables",
+    "A draws_rvars: 100 iterations, 4 chains, and 3 variables",
     fixed = TRUE
   )
 
