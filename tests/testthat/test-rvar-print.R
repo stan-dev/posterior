@@ -1,4 +1,5 @@
 test_that("basic print.rvar works", {
+  skip_on_os("windows")
   x <- rvar(array(1:12, dim = c(2,2,3)))
   x_with_chains <- rvar(array(1:12, dim = c(2,2,3)), nchains = 2)
 
@@ -26,6 +27,7 @@ NULL",
 })
 
 test_that("basic str.rvar works", {
+  skip_on_os("windows")
   x <- rvar(array(1:24, dim = c(2,3,4)))
   x_with_chains <- rvar(array(1:24, dim = c(2,3,4)), nchains = 2)
 

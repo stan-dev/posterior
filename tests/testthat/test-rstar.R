@@ -1,6 +1,7 @@
 
 test_that("rstar returns reasonable values", {
   skip_if_not_installed("caret")
+  skip_if_not_installed("randomForest")
   x <- example_draws()
   val <- rstar(x)
   expect_true(val > 0.8 & val < 10)
@@ -8,6 +9,7 @@ test_that("rstar returns reasonable values", {
 
 test_that("rstar works with 1d example", {
   skip_if_not_installed("caret")
+  skip_if_not_installed("randomForest")
   x <- example_draws()
   x <- as_draws_df(x)
   # remove all bar one variable
@@ -18,6 +20,7 @@ test_that("rstar works with 1d example", {
 
 test_that("rstar works with draws_df example", {
   skip_if_not_installed("caret")
+  skip_if_not_installed("randomForest")
   x <- example_draws()
   x <- as_draws_df(x)
   val <- rstar(x)
