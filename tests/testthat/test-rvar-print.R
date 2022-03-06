@@ -2,29 +2,54 @@ test_that("basic print.rvar works", {
   x <- rvar(array(1:12, dim = c(2,2,3)))
   x_with_chains <- rvar(array(1:12, dim = c(2,2,3)), nchains = 2)
 
-  expect_output(
-    print(rvar(), color = FALSE),
-    "rvar<1>\\[0\\] mean . sd:\nNULL"
+  out <- capture.output(print(rvar(), color = FALSE))
+  expect_match(
+    out,
+    regexp = "rvar<1>\\[0\\] mean . sd:",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "NULL",
+    all = FALSE
   )
 
-  expect_output(
-    print(x, color = FALSE),
-    paste0(
-      "rvar<2>\\[2,3\\] mean . sd:\n",
-      "     \\[,1\\]         \\[,2\\]         \\[,3\\]        \\n",
-      "\\[1,\\]  1.5 . 0.71   5.5 . 0.71   9.5 . 0.71 \n",
-      "\\[2,\\]  3.5 . 0.71   7.5 . 0.71  11.5 . 0.71"
-    )
+  out <- capture.output(print(x, color = FALSE))
+  expect_match(
+    out,
+    regexp = "rvar<2>\\[2,3\\] mean . sd:",
+    all = FALSE
   )
-
-  expect_output(
-    print(x_with_chains, color = FALSE),
-    paste0(
-      "rvar<1,2>\\[2,3\\] mean . sd:\n",
-      "     \\[,1\\]         \\[,2\\]         \\[,3\\]        \\n",
-      "\\[1,\\]  1.5 . 0.71   5.5 . 0.71   9.5 . 0.71 \n",
-      "\\[2,\\]  3.5 . 0.71   7.5 . 0.71  11.5 . 0.71"
-    )
+  expect_match(
+    out,
+    regexp = "     \\[,1\\]         \\[,2\\]         \\[,3\\]        ",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "\\[1,\\]  1.5 . 0.71   5.5 . 0.71   9.5 . 0.71 ",
+    all = FALSE
+  )
+  out <- capture.output(print(x_with_chains, color = FALSE))
+  expect_match(
+    out,
+    regexp = "rvar<1,2>\\[2,3\\] mean . sd:",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "     \\[,1\\]         \\[,2\\]         \\[,3\\]        ",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "\\[1,\\]  1.5 . 0.71   5.5 . 0.71   9.5 . 0.71 ",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "\\[2,\\]  3.5 . 0.71   7.5 . 0.71  11.5 . 0.71",
+    all = FALSE
   )
 })
 
@@ -35,14 +60,17 @@ test_that("basic str.rvar works", {
   expect_output(str(rvar()),
     " rvar<1>\\[0\\] "
   )
-  expect_output(str(rvar(1:3)),
-    " rvar<3>\\[1\\]  2 . 1"
+  out <- capture.output(str(rvar(1:3)))
+  expect_match(
+    out,
+    regexp = " rvar<3>\\[1\\]  2 . 1",
+    all = FALSE
   )
-  expect_output(str(x, vec.len = 5),
-    " rvar<2>\\[3,4\\]  1.5 . 0.71  3.5 . 0.71  5.5 . 0.71  7.5 . 0.71  9.5 . 0.71 ..."
-  )
-  expect_output(str(x_with_chains, vec.len = 5),
-    " rvar<1,2>\\[3,4\\]  1.5 . 0.71  3.5 . 0.71  5.5 . 0.71  7.5 . 0.71  9.5 . 0.71 ..."
+  out <- capture.output(str(x, vec.len = 5))
+  expect_match(
+    out,
+    regexp = " rvar<2>\\[3,4\\]  1.5 . 0.71  3.5 . 0.71  5.5 . 0.71  7.5 . 0.71  9.5 . 0.71 ...",
+    all = FALSE
   )
 
   x_with_attrs <- x
@@ -50,13 +78,21 @@ test_that("basic str.rvar works", {
   attr(draws_of(x_with_attrs), "foo") = list(1,2)
   attr(x_with_attrs, "bar") = list(1,2)
 
-  expect_output(
-    str(x_with_attrs, vec.len = 5),
-    paste0(
-      " rvar<2>\\[3,4\\]  1.5 . 0.71  3.5 . 0.71  5.5 . 0.71  7.5 . 0.71  9.5 . 0.71 ...\n",
-      " - dimnames\\(\\*\\)=List of 2\n",
-      '  \\.\\.\\$ : chr \\[1:3\\] "a" "b" "c"'
-    )
+  out <- capture.output(str(x_with_attrs, vec.len = 5))
+  expect_match(
+    out,
+    regexp = " rvar<2>\\[3,4\\]  1.5 . 0.71  3.5 . 0.71  5.5 . 0.71  7.5 . 0.71  9.5 . 0.71 ...",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = " - dimnames\\(\\*\\)=List of 2",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = '  \\.\\.\\$ : chr \\[1:3\\] "a" "b" "c"',
+    all = FALSE
   )
 })
 
