@@ -115,6 +115,10 @@ as_draws_list.mcmc.list <- function(x, ...) {
         stop_no_call("All variables in all chains must have the same length.")
       }
     }
+    # data.frames pass as lists but may not have the same behavior later on
+    if (is.data.frame(x[[i]])) {
+      x[[i]] <- as.list(x[[i]])
+    }
   }
   names(x) <- as.character(seq_along(x))
   class(x) <- class_draws_list()

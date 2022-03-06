@@ -197,6 +197,14 @@ test_that("numeric vectors can be transformed to draws_list objects", {
   expect_equal(draws_list, draws_list2)
 })
 
+test_that("lists of data.frames are correctly transformed to draws_list objects", {
+  x <- list(data.frame(y=1:10, x = 0), data.frame(y = 11:20, x = 1))
+  y <- as_draws_list(x)
+  expect_equal(y[[1]]$y, 1:10)
+  expect_true(is.list(y[[1]]))
+  expect_true(!is.data.frame(y[[1]]))
+})
+
 test_that("numeric vectors can be transformed to draws_rvars objects", {
   draws_rvars <- draws_rvars(a = 1:10, b = 11:20, c = 1, .nchains = 2)
   draws_array <- array(c(1:10, 11:20, rep(1, 10)), c(5, 2, 3))
