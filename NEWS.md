@@ -1,3 +1,10 @@
+# posterior 1.2.0++
+
+### Bug Fixes
+
+* Correctly transform lists of data.frames into `draws_list` objects.
+
+
 # posterior 1.2.0
 
 ### Enhancements
