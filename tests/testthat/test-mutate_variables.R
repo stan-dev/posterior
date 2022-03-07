@@ -62,3 +62,9 @@ test_that("mutate_variables works correctly for draws_rvars objects", {
   expect_equal(x$theta_2_sq, x$theta[[2]]^2, check.attributes = FALSE)
 })
 
+test_that("mutate_variables drops variables on assigning NULL", {
+  x <- example_draws()
+  x <- mutate_variables(x, mu = NULL, tau = NULL)
+  expect_equal(variables(x), paste0("theta[", 1:8, "]"))
+})
+

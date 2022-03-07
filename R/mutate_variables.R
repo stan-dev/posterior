@@ -92,6 +92,9 @@ mutate_variables.draws_rvars <- function(.x, ...) {
 # evaluate an expression passed to 'mutate_variables' and check its validity
 .mutate_variable <- function(expr, data, env = caller_env()) {
   out <- eval_tidy(expr, data, env)
+  if (is.null(out)) {
+    return(NULL)
+  }
   if (!is.numeric(out)) {
     stop_no_call("{", as_label(expr), "} does not evaluate to a numeric vector.")
   }
