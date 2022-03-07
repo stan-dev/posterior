@@ -3,6 +3,7 @@
 ### Bug Fixes
 
 * Correctly transform lists of data.frames into `draws_list` objects.
+* Correctly drop variables on assigning `NULL` in `mutate_variables`. (#222)
 
 
 # posterior 1.2.0
