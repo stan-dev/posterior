@@ -5,7 +5,10 @@ test_that("print.draws_matrix runs without errors", {
   )
 
   x <- weight_draws(x, rep(1, ndraws(x)))
-  expect_output(print(x), "hidden reserved variables \\{'\\.log_weight'\\}")
+  expect_output(
+    print(x),
+    "hidden reserved variables ..\\.log_weight.."
+  )
 })
 
 test_that("print.draws_array runs without errors", {
@@ -15,7 +18,10 @@ test_that("print.draws_array runs without errors", {
   )
 
   x <- weight_draws(x, rep(1, ndraws(x)))
-  expect_output(print(x), "hidden reserved variables \\{'\\.log_weight'\\}")
+  expect_output(
+    print(x),
+    "hidden reserved variables ..\\.log_weight.."
+  )
 })
 
 test_that("print.draws_df runs without errors", {
@@ -39,7 +45,10 @@ test_that("print.draws_list runs without errors", {
   )
 
   x <- weight_draws(x, rep(1, ndraws(x)))
-  expect_output(print(x), "hidden reserved variables \\{'\\.log_weight'\\}")
+  expect_output(
+    print(x),
+    "hidden reserved variables ..\\.log_weight.."
+  )
 })
 
 test_that("print.draws_rvars runs without errors", {
@@ -54,8 +63,7 @@ test_that("print.draws_rvars runs without errors", {
   x <- weight_draws(x, rep(1, ndraws(x)))
   expect_output(
     print(x),
-    "hidden reserved variables {'.log_weight'}",
-    fixed = TRUE
+    "hidden reserved variables ..\\.log_weight.."
   )
 })
 
@@ -65,8 +73,7 @@ test_that("print.draws_array handles reserved variables correctly", {
   expect_output(print(x, max_variables = 1), "variable = tau")
   expect_output(
     print(x),
-    "hidden reserved variables {'.log_weight'}",
-    fixed = TRUE
+    "hidden reserved variables ..\\.log_weight.."
   )
 })
 
@@ -76,8 +83,7 @@ test_that("print.draws_matrix handles reserved variables correctly", {
   expect_output(print(x, max_variables = 1), "tau")
   expect_output(
     print(x),
-    "hidden reserved variables {'.log_weight'}",
-    fixed = TRUE
+    "hidden reserved variables ..\\.log_weight.."
   )
 })
 
@@ -98,8 +104,7 @@ test_that("print.draws_list handles reserved variables correctly", {
   expect_output(print(x, max_variables = 1), "tau")
   expect_output(
     print(x),
-    "hidden reserved variables {'.log_weight'}",
-    fixed = TRUE
+    "hidden reserved variables ..\\.log_weight.."
   )
 })
 
@@ -110,8 +115,7 @@ test_that("print.draws_rvars handles reserved variables correctly", {
   expect_output(print(x, max_variables = 1), "tau")
   expect_output(
     print(x),
-    "hidden reserved variables {'.log_weight'}",
-    fixed = TRUE
+    "hidden reserved variables ..\\.log_weight.."
   )
 })
 
