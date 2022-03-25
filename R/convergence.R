@@ -17,6 +17,7 @@
 #' | [ess_bulk()] | Bulk effective sample size |
 #' | [ess_tail()] | Tail effective sample size |
 #' | [ess_quantile()] | Effective sample sizes for quantiles |
+#' | [ess_sd()] | Effective sample sizes for standard deviations |
 #' | [mcse_mean()] | Monte Carlo standard error for the mean |
 #' | [mcse_quantile()] | Monte Carlo standard error for quantiles |
 #' | [mcse_sd()] | Monte Carlo standard error for standard deviations |
@@ -319,6 +320,40 @@ ess_mean.default <- function(x, ...) {
 #' @export
 ess_mean.rvar <- function(x, ...) {
   summarise_rvar_by_element_with_chains(x, ess_mean, ...)
+}
+
+#' Effective sample size for the standard deviation
+#'
+#' Compute an effective sample size estimate for the standard deviation (SD)
+#' estimate of a single variable. This is defined as the effective sample size
+#' estimate for the absolute deviation from mean.
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template args-methods-dots
+#' @template return-conv
+#' @template ref-vehtari-rhat-2019
+#'
+#' @examples
+#' mu <- extract_variable_matrix(example_draws(), "mu")
+#' ess_sd(mu)
+#'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' ess_sd(d$Sigma)
+#'
+#' @export
+ess_sd <- function(x, ...) UseMethod("ess_sd")
+
+#' @rdname ess_sd
+#' @export
+ess_sd.default <- function(x, ...) {
+  .ess(.split_chains(abs(x-mean(x))))
+}
+
+#' @rdname ess_sd
+#' @export
+ess_sd.rvar <- function(x, ...) {
+  summarise_rvar_by_element_with_chains(x, ess_sd, ...)
 }
 
 #' Monte Carlo standard error for quantiles
