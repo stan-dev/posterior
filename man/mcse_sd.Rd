@@ -39,8 +39,8 @@ passing the draws array for that element of the \code{\link{rvar}} to this funct
 }
 \description{
 Compute the Monte Carlo standard error for the standard deviation (SD) of a
-single variable using Stirling's approximation and assuming approximate
-normality.
+single variable without assuming normality using moments of moments and
+first order Taylor series approximation (Kenney and Keeping, 1951, p. 141).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -56,6 +56,8 @@ Paul-Christian Bürkner (2021). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
 MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
 doi:10.1214/20-BA1221
+
+J. F. Kenney & E. S. Keeping (1951). \emph{Mathematics of Statistics, Vol. II.}
 }
 \seealso{
 Other diagnostics: 

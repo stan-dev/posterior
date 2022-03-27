@@ -325,9 +325,8 @@ ess_mean.rvar <- function(x, ...) {
 #' Effective sample size for the standard deviation
 #'
 #' Compute an effective sample size estimate for the standard deviation (SD)
-#' estimate of a single variable. This is defined as minimum of the effective
-#' sample size estimate for the mean and the the effective sample size estimate
-#' for the mean of the squared value.
+#' estimate of a single variable. This is defined as the effective sample size
+#' estimate for the absolute deviation from mean.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -348,7 +347,7 @@ ess_sd <- function(x, ...) UseMethod("ess_sd")
 #' @rdname ess_sd
 #' @export
 ess_sd.default <- function(x, ...) {
-  min(.ess(.split_chains(x)), .ess(.split_chains(x^2)))
+  .ess(.split_chains(abs(x-mean(x))))
 }
 
 #' @rdname ess_sd
@@ -456,14 +455,15 @@ mcse_mean.rvar <- function(x, ...) {
 #' Monte Carlo standard error for the standard deviation
 #'
 #' Compute the Monte Carlo standard error for the standard deviation (SD) of a
-#' single variable using Stirling's approximation and assuming approximate
-#' normality.
+#' single variable without assuming normality using moments of moments and
+#' first order Taylor series approximation (Kenney and Keeping, 1951, p. 141).
 #'
 #' @family diagnostics
 #' @template args-conv
 #' @template args-methods-dots
 #' @template return-conv
 #' @template ref-vehtari-rhat-2021
+#' @template ref-kenney-stats-1951
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
@@ -478,9 +478,21 @@ mcse_sd <- function(x, ...) UseMethod("mcse_sd")
 #' @rdname mcse_sd
 #' @export
 mcse_sd.default <- function(x, ...) {
-  # assumes normality of x and uses Stirling's approximation
-  ess_sd <- ess_sd(x)
-  sd(x) * sqrt(exp(1) * (1 - 1 / ess_sd)^(ess_sd - 1) - 1)
+  # var/sd are not a simple expectation of g(X), e.g. variance
+  # has (X-E[X])^2. The following ESS is based on a relevant quantity
+  # in the computation and is empirically a good choice.
+  sims_c <- x - mean(x)
+  ess <- ess_mean(abs(sims_c))
+  # Variance of variance estimate by Kenney and Keeping (1951, p. 141),
+  # which doesn't assume normality of sims.
+  Evar <- mean(sims_c^2)
+  varvar <- (mean(sims_c^4) - Evar^2) / ess
+  # The first order Taylor series approximation of variance of sd.
+  # Kenney and Keeping (1951, p. 141) write "...since fluctuations of
+  # any moment are of order N^{-1/2}, squares and higher powers of
+  # differentials of the moments can be neglected "
+  varsd <- varvar / Evar / 4
+  sqrt(varsd)
 }
 
 #' @rdname mcse_sd

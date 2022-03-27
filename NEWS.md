@@ -1,3 +1,10 @@
+# posterior 1.2.1++
+
+### Enhancements
+
+* Improve the `mcse_sd` function to not make a normality assumption. (#232)
+
+
 # posterior 1.2.1
 
 ### Bug Fixes
