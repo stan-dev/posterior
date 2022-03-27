@@ -39,9 +39,8 @@ passing the draws array for that element of the \code{\link{rvar}} to this funct
 }
 \description{
 Compute an effective sample size estimate for the standard deviation (SD)
-estimate of a single variable. This is defined as minimum of the effective
-sample size estimate for the mean and the the effective sample size estimate
-for the mean of the squared value.
+estimate of a single variable. This is defined as the effective sample size
+estimate for the absolute deviation from mean.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
