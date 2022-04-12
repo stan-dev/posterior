@@ -18,8 +18,9 @@ is defined.}
 \item{weights}{(numeric vector) A vector of positive weights of length
 \code{ndraws(x)}. The weights will be internally normalized. If \code{weights} is not
 specified, an attempt will be made to extract any weights already stored in
-the draws object (via \code{\link[=weight_draws]{weight_draws()}}). How exactly the weights influence
-the resampling depends on the \code{method} argument.}
+the draws object (via \code{\link[=weight_draws]{weight_draws()}}). If no weights are stored in the
+draws object, equal weight is supplied to each draw. How exactly the
+weights influence the resampling depends on the \code{method} argument.}
 
 \item{method}{(string) The resampling method to use:
 \itemize{
