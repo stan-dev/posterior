@@ -22,7 +22,7 @@ predicting a chain uniformly at random."><!-- mathjax --><script src="https://cd
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
       </span>
     </div>
 
@@ -213,7 +213,7 @@ diagnostic with uncertainty using gradient-boosted machines.
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># \donttest{</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://github.com/topepo/caret/" class="external-link">"caret"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://github.com/topepo/caret/" class="external-link">"caret"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://www.stat.berkeley.edu/~breiman/RandomForests/" class="external-link">"randomForest"</a></span>, quietly <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span class="r-in">  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="example_draws.html">example_draws</a></span><span class="op">(</span><span class="st">"eight_schools"</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">rstar</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">rstar</span><span class="op">(</span><span class="va">x</span>, split <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
@@ -228,6 +228,13 @@ diagnostic with uncertainty using gradient-boosted machines.
 <span class="r-in">  <span class="co"># can use other classification methods in caret library</span></span>
 <span class="r-in">  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">rstar</span><span class="op">(</span><span class="va">x</span>, method <span class="op">=</span> <span class="st">"knn"</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"><span class="op">}</span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> randomForest 4.7-1</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Type rfNews() to see new features/changes/bug fixes.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘randomForest’</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:ggplot2’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     margin</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.866667</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.333333</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iter   TrainDeviance   ValidDeviance   StepSize   Improve</span>
@@ -249,7 +256,7 @@ diagnostic with uncertainty using gradient-boosted machines.
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.466667</span>
 <span class="r-plt img"><img src="rstar-1.png" alt="" width="700" height="433"></span>
 <span class="r-plt img"><img src="rstar-2.png" alt="" width="700" height="433"></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.533333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1.4</span>
 <span class="r-in"><span class="co"># }</span></span>
 </code></pre></div>
     </div>
@@ -265,7 +272,7 @@ diagnostic with uncertainty using gradient-boosted machines.
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer></div>

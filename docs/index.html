@@ -43,7 +43,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
       </span>
     </div>
 
@@ -338,11 +338,11 @@
 <span class="co">#&gt; # A draws_matrix: 5 iterations, 1 chains, and 3 variables</span>
 <span class="co">#&gt;     variable</span>
 <span class="co">#&gt; draw alpha beta theta</span>
-<span class="co">#&gt;    1  1.24    1  0.76</span>
-<span class="co">#&gt;    2 -0.42    1  0.77</span>
-<span class="co">#&gt;    3  0.48    1  2.09</span>
-<span class="co">#&gt;    4 -0.31    1  0.18</span>
-<span class="co">#&gt;    5 -1.41    1  0.97</span></code></pre></div>
+<span class="co">#&gt;    1  0.39    1  2.27</span>
+<span class="co">#&gt;    2 -0.80    1  0.86</span>
+<span class="co">#&gt;    3  0.95    1  1.93</span>
+<span class="co">#&gt;    4  0.38    1  0.67</span>
+<span class="co">#&gt;    5  0.18    1  2.04</span></code></pre></div>
 <p>Or, we can bind <code>x1</code> and <code>x2</code> together along the <code>'draw'</code> dimension:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">x5</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bind_draws.html">bind_draws</a></span><span class="op">(</span><span class="va">x1</span>, <span class="va">x2</span>, along <span class="op">=</span> <span class="st">"draw"</span><span class="op">)</span>
@@ -350,16 +350,16 @@
 <span class="co">#&gt; # A draws_matrix: 10 iterations, 1 chains, and 2 variables</span>
 <span class="co">#&gt;     variable</span>
 <span class="co">#&gt; draw alpha beta</span>
-<span class="co">#&gt;   1   1.24    1</span>
-<span class="co">#&gt;   2  -0.42    1</span>
-<span class="co">#&gt;   3   0.48    1</span>
-<span class="co">#&gt;   4  -0.31    1</span>
-<span class="co">#&gt;   5  -1.41    1</span>
-<span class="co">#&gt;   6  -1.75    2</span>
-<span class="co">#&gt;   7  -1.51    2</span>
-<span class="co">#&gt;   8   1.09    2</span>
-<span class="co">#&gt;   9  -1.51    2</span>
-<span class="co">#&gt;   10 -0.46    2</span></code></pre></div>
+<span class="co">#&gt;   1   0.39    1</span>
+<span class="co">#&gt;   2  -0.80    1</span>
+<span class="co">#&gt;   3   0.95    1</span>
+<span class="co">#&gt;   4   0.38    1</span>
+<span class="co">#&gt;   5   0.18    1</span>
+<span class="co">#&gt;   6   0.13    2</span>
+<span class="co">#&gt;   7   0.10    2</span>
+<span class="co">#&gt;   8  -0.61    2</span>
+<span class="co">#&gt;   9   0.12    2</span>
+<span class="co">#&gt;   10  1.48    2</span></code></pre></div>
 <p>As with all <strong>posterior</strong> methods, <code>bind_draws</code> can be used with all draws formats.</p>
 </div>
 <div class="section level4">
@@ -373,27 +373,27 @@
 <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; # A draws_matrix: 10 iterations, 1 chains, and 5 variables</span>
 <span class="co">#&gt;     variable</span>
-<span class="co">#&gt; draw     V1     V2    V3     V4     V5</span>
-<span class="co">#&gt;   1   1.190 -1.129 -2.83  0.405 -0.311</span>
-<span class="co">#&gt;   2  -0.433  0.893 -1.69  1.134  2.587</span>
-<span class="co">#&gt;   3  -0.174  0.139  0.47  0.296 -0.481</span>
-<span class="co">#&gt;   4   2.034  0.012 -1.84 -0.313  0.528</span>
-<span class="co">#&gt;   5  -0.041  0.699 -0.81 -0.268 -0.881</span>
-<span class="co">#&gt;   6   0.097  1.265  1.27 -0.748 -1.734</span>
-<span class="co">#&gt;   7  -1.224  1.154  0.91  0.061  0.760</span>
-<span class="co">#&gt;   8  -1.785 -0.305  1.42 -0.513 -0.084</span>
-<span class="co">#&gt;   9   1.312  0.313 -0.52  1.113 -0.451</span>
-<span class="co">#&gt;   10 -0.846  2.159 -0.22 -0.794  1.699</span>
+<span class="co">#&gt; draw    V1    V2    V3    V4    V5</span>
+<span class="co">#&gt;   1  -0.89  0.37 -0.25 -0.57 -2.85</span>
+<span class="co">#&gt;   2   1.84  0.19  0.39 -0.52  1.26</span>
+<span class="co">#&gt;   3   0.79 -0.74 -1.61  0.99 -0.11</span>
+<span class="co">#&gt;   4  -2.25  0.28 -0.19 -0.33  0.92</span>
+<span class="co">#&gt;   5   0.58  0.35 -0.92  0.56  0.82</span>
+<span class="co">#&gt;   6  -1.38 -0.12 -0.40 -1.23 -0.60</span>
+<span class="co">#&gt;   7  -0.18  1.18 -1.27  0.51  0.78</span>
+<span class="co">#&gt;   8   0.17  1.50 -2.12 -0.45 -0.73</span>
+<span class="co">#&gt;   9  -0.60  0.69 -0.43 -1.40  1.14</span>
+<span class="co">#&gt;   10  0.18  0.96 -1.37 -0.58 -0.63</span>
 
 <span class="fu"><a href="reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">x</span>, <span class="st">"mean"</span>, <span class="st">"sd"</span>, <span class="st">"median"</span>, <span class="st">"mad"</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 5 × 5</span>
-<span class="co">#&gt;   variable    mean    sd median   mad</span>
-<span class="co">#&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 V1        0.0129 1.20  -0.108 1.37 </span>
-<span class="co">#&gt; 2 V2        0.520  0.923  0.506 0.847</span>
-<span class="co">#&gt; 3 V3       -0.384  1.43  -0.372 1.92 </span>
-<span class="co">#&gt; 4 V4        0.0374 0.698 -0.103 0.681</span>
-<span class="co">#&gt; 5 V5        0.163  1.27  -0.197 1.04</span></code></pre></div>
+<span class="co">#&gt;   variable      mean    sd   median   mad</span>
+<span class="co">#&gt;   &lt;chr&gt;        &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 V1       -0.174    1.16  -0.00490 1.03 </span>
+<span class="co">#&gt; 2 V2        0.467    0.651  0.358   0.596</span>
+<span class="co">#&gt; 3 V3       -0.817    0.770 -0.671   0.798</span>
+<span class="co">#&gt; 4 V4       -0.301    0.773 -0.486   0.672</span>
+<span class="co">#&gt; 5 V5       -0.000826 1.27   0.338   1.27</span></code></pre></div>
 <p>Instead of <code><a href="reference/draws_matrix.html">as_draws_matrix()</a></code> we also could have just used <code><a href="reference/draws.html">as_draws()</a></code>, which attempts to find the closest available format to the input object. In this case this would result in a <code>draws_matrix</code> object either way.</p>
 </div>
 </div>
@@ -412,7 +412,7 @@
 </ul>
 <p>When using the MCMC convergence diagnostics <code>rhat</code>, <code>ess_bulk</code>, or <code>ess_tail</code>, please also cite</p>
 <ul>
-<li>Vehtari A., Gelman A., Simpson D., Carpenter B., &amp; Bürkner P. C. (2020). Rank-normalization, folding, and localization: An improved Rhat for assessing convergence of MCMC. <em>Bayesian Analysis</em>.</li>
+<li>Vehtari A., Gelman A., Simpson D., Carpenter B., &amp; Bürkner P. C. (2021). Rank-normalization, folding, and localization: An improved Rhat for assessing convergence of MCMC (with discussion). <em>Bayesian Analysis</em>. 16(2), 667–718. doi.org/10.1214/20-BA1221</li>
 </ul>
 <p>The same information can be obtained by running <code>citation("posterior")</code>.</p>
 </div>
@@ -420,7 +420,7 @@
 <h3 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h3>
 <p>Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki Vehtari A., &amp; Rubin D. B. (2013). <em>Bayesian Data Analysis, Third Edition</em>. Chapman and Hall/CRC.</p>
-<p>Vehtari A., Gelman A., Simpson D., Carpenter B., &amp; Bürkner P. C. (2021). Rank-normalization, folding, and localization: An improved Rhat for assessing convergence of MCMC (with discussion). <em>Bayesian Analysis</em>. 16(2), 667-–718. <a href="doi:10.1214/20-BA1221" class="uri">doi:10.1214/20-BA1221</a></p>
+<p>Vehtari A., Gelman A., Simpson D., Carpenter B., &amp; Bürkner P. C. (2021). Rank-normalization, folding, and localization: An improved Rhat for assessing convergence of MCMC (with discussion). <em>Bayesian Analysis</em>. 16(2), 667–718. doi.org/10.1214/20-BA1221</p>
 </div>
 <div class="section level3">
 <h3 id="licensing">Licensing<a class="anchor" aria-label="anchor" href="#licensing"></a>
@@ -477,7 +477,7 @@
 <ul class="list-unstyled">
 <li><a href="https://CRAN.R-project.org/package=posterior" class="external-link"><img src="https://www.r-pkg.org/badges/version/posterior" alt="CRAN status"></a></li>
 <li><a href="https://github.com/stan-dev/posterior/actions?workflow=R-CMD-check" class="external-link"><img src="https://github.com/stan-dev/posterior/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/gh/stan-dev/posterior" class="external-link"><img src="https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg" alt="Coverage Status"></a></li>
+<li><a href="https://app.codecov.io/gh/stan-dev/posterior" class="external-link"><img src="https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg" alt="Coverage Status"></a></li>
 </ul>
 </div>
 
@@ -492,7 +492,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
       </footer>
