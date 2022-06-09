@@ -52,6 +52,7 @@ test_that("print.draws_list runs without errors", {
 })
 
 test_that("print.draws_rvars runs without errors", {
+  skip_on_cran()
   skip_on_os("windows")
   x <- as_draws_rvars(example_draws())
   out <- capture.output(print(x))
