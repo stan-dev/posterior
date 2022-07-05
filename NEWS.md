@@ -8,7 +8,8 @@
 
 * Support remaining modes of `diag()` for `rvar`s (#246).
 * Better parsing for named indices in `as_draws_rvars()`, including nested use
-of `[`, like `x[y[1],2]` (#243)
+of `[`, like `x[y[1],2]` (#243).
+* Allow 0-length `rvar`s with `ndraws() > 1` (#242). 
 
 
 # posterior 1.2.2

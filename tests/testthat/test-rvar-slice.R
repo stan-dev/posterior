@@ -126,7 +126,7 @@ test_that("indexing with [ works on a vector", {
   expect_equal(x[NA_integer_], rvar_from_array(x_array[NA_integer_,, drop = FALSE]))
   expect_equal(x[rep(NA_integer_,7)], rvar_from_array(x_array[rep(NA_integer_,7),, drop = FALSE]))
 
-  expect_equal(x[NULL], new_rvar())
+  expect_equal(x[NULL], new_rvar(array(numeric(), dim = c(5, 0))))
 
   expect_error(x[1,1])
 
@@ -182,7 +182,7 @@ test_that("indexing with [ works on an array", {
   expect_equal(x[NA_integer_,], rvar_from_array(x_array[NA_integer_,,, drop = FALSE]))
   expect_equal(x[rep(NA_integer_,7)], rvar_from_array(array(rep(NA_integer_,14), dim = c(7,2))))
 
-  expect_equal(x[NULL], new_rvar())
+  expect_equal(x[NULL], new_rvar(array(numeric(), dim = c(2, 0))))
 
   # logical index the length of the array works
   flat_index <- c(

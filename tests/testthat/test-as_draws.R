@@ -371,3 +371,9 @@ test_that("as_draws_rvars can parse nested and malformed indices", {
   )
   expect_equal(as_draws_rvars(draws_df), draws_rvars)
 })
+
+test_that("draws_rvars broadcasts 0-length rvars to the size of other rvars", {
+  draws <- draws_rvars(x = rvar(), y = rvar(1:10))
+
+  expect_equal(draws_of(draws$x), array(numeric(), dim = c(10, 0), dimnames = list(1:10)))
+})

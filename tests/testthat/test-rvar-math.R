@@ -199,10 +199,10 @@ test_that("diag works", {
   expect_equal(diag(sigma_diag, nrow = 2, ncol = 2), Sigma_ref[1:2,1:2])
   expect_equal(diag(sigma_diag, nrow = 2, ncol = 3), Sigma_ref[1:2,])
   expect_equal(diag(sigma_diag, nrow = 1, ncol = 3), Sigma_ref[1,])
-  expect_equal(diag(sigma_diag, nrow = 0, ncol = 3), rvar())
+  expect_equal(diag(sigma_diag, nrow = 0, ncol = 3), rvar(array(numeric(), dim = c(400,0)), nchains = 4))
   expect_equal(diag(sigma_diag, ncol = 2), Sigma_ref[,1:2])
   expect_equal(diag(sigma_diag, ncol = 1), Sigma_ref[,1])
-  expect_equal(diag(sigma_diag, ncol = 0), rvar())
+  expect_equal(diag(sigma_diag, ncol = 0), rvar(array(numeric(), dim = c(400,0)), nchains = 4))
   expect_equal(diag(sigma_diag, nrow = 4), cbind(rbind(Sigma_ref, 0), c(rvar(0), 0, 0, Sigma[1,1])))
 
   # ensure our override of base diag does not break its weird corner cases
