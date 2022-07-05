@@ -107,7 +107,7 @@ rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = 1L, with_c
 
 #' @importFrom vctrs new_vctr
 new_rvar <- function(x = double(), .nchains = 1L) {
-  if (length(x) == 0) {
+  if (is.null(x)) {
     x <- double()
   }
 
@@ -637,7 +637,9 @@ cleanup_draw_dims <- function(x) {
     # canonical NULL rvar is 1 draw of nothing
     # this ensures that (e.g.) extending a null rvar
     # with x[1] = something works.
-    dim(x) <- c(1, 0)
+    ndraws = NROW(x)
+    if (ndraws == 0) ndraws = 1
+    dim(x) <- c(ndraws, 0)
   }
   else if (length(dim(x)) <= 1) {
     # 1d vectors get treated as a single variable
