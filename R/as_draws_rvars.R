@@ -50,13 +50,21 @@ as_draws_rvars.rvar <- function(x, ...) {
 #' @rdname draws_rvars
 #' @export
 as_draws_rvars.draws_matrix <- function(x, ...) {
+  .variables <- variables(x)
   if (ndraws(x) == 0) {
-    return(empty_draws_rvars(variables(x)))
+    return(empty_draws_rvars(.variables))
   }
 
   # split x[y,z] names into base name and indices
-  vars_indices <- strsplit(variables(x), "(\\[|\\])")
-  vars <- sapply(vars_indices, `[[`, 1)
+  #
+  #                    ----- base name -> vars_indices[[i]][[2]]
+  #                    ||||| lazy-matched (.*? not .*) so that indices match as much as they can
+  #                    |||||
+  #                    |||||      ---- optional indices -> vars_indices[[i]][[3]]
+  #                    |||||      ||||
+  matches <- regexec("^(.*?)(?:\\[(.*)\\])?$", .variables)
+  vars_indices <- regmatches(.variables, matches)
+  vars <- vapply(vars_indices, `[[`, i = 2, character(1))
 
   # pull out each var into its own rvar
   var_names <- unique(vars)
@@ -78,7 +86,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
       # first, pull out the list of indices into a data frame
       # where each column is an index variable
-      indices <- sapply(vars_indices[var_i], `[[`, 2)
+      indices <- vapply(vars_indices[var_i], `[[`, i = 3, character(1))
       indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")),
                                stringsAsFactors = FALSE)
       unique_indices <- vector("list", length(indices))

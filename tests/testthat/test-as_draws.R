@@ -356,3 +356,18 @@ test_that("draws_df drops the draws class when metadata is removed", {
 
   expect_equal(dplyr::count(draws_df, .chain), tibble::tibble(.chain = 1:4, n = 100L))
 })
+
+test_that("as_draws_rvars can parse nested and malformed indices", {
+  draws_df <- draws_df(`x[y[1],1]` = 1:2, `x[y[2,1]` = 3:4, `x[y[2,2]` = 4:5, `y[` = 5:6, `y]` = 6:7)
+
+  draws_rvars <- draws_rvars(
+    x = rvar(array(
+      c(1:4, NA_real_, NA_real_, 4:5),
+      dim = c(2, 2, 2),
+      dimnames = list(NULL, c("y[1]", "y[2"), NULL)
+    )),
+    `y[` = rvar(5:6),
+    `y]` = rvar(6:7)
+  )
+  expect_equal(as_draws_rvars(draws_df), draws_rvars)
+})

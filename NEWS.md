@@ -1,3 +1,11 @@
+# posterior 1.2.2.9000
+
+### Bug Fixes
+
+* Better parsing for named indices in `as_draws_rvars()`, including nested use
+of `[`, like `x[y[1],2]` (#243)
+
+
 # posterior 1.2.2
 
 ### Enhancements
