@@ -553,8 +553,8 @@ broadcast_draws <- function(x, .ndraws, keep_constants = FALSE) {
 flatten_array = function(x, x_name = NULL) {
   # determine new dimension names in the form x,y,z
   # start with numeric names
-  dimname_lists = lapply(dim(x), seq_len)
-  .dimnames = dimnames(x)
+  dimname_lists <- lapply(dim(x), seq_len)
+  .dimnames <- dimnames(x)
   if (!is.null(.dimnames)) {
     # where character names are provided, use those instead of the numeric names
     dimname_lists = lapply(seq_along(dimname_lists), function(i) .dimnames[[i]] %||% dimname_lists[[i]])
@@ -563,16 +563,17 @@ flatten_array = function(x, x_name = NULL) {
   dimname_grid <- expand.grid(dimname_lists)
   new_names <- apply(dimname_grid, 1, paste0, collapse = ",")
 
-  dim(x) <- prod(dim(x))
+  .length <- length(x)
+  dim(x) <- .length
 
   # update variable names
   if (is.null(x_name)) {
     # no base name for x provided, just use index names
     names(x) <- new_names
-  } else if (length(x) > 1) {
+  } else if (.length > 1) {
     # rename the variables with their indices in brackets
     names(x) <- paste0(x_name, "[", new_names %||% seq_along(x), "]")
-  } else {
+  } else if (.length == 1) {
     # just one variable, use the provided base name
     names(x) <- x_name
   }

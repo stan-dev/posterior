@@ -377,3 +377,51 @@ test_that("draws_rvars broadcasts 0-length rvars to the size of other rvars", {
 
   expect_equal(draws_of(draws$x), array(numeric(), dim = c(10, 0), dimnames = list(1:10)))
 })
+
+test_that("0-length rvars can be cast to draws formats", {
+  rvar0 <- rvar(array(numeric(), dim = c(10, 0)), nchains = 2)
+
+  draws_rvars <- as_draws_rvars(rvar0)
+  expect_equal(ndraws(draws_rvars), 10)
+  expect_equal(niterations(draws_rvars), 5)
+  expect_equal(nchains(draws_rvars), 2)
+  expect_equal(nvariables(draws_rvars), 1)
+
+  draws_matrix <- as_draws_matrix(rvar0)
+  expect_equal(ndraws(draws_matrix), 10)
+  expect_equal(niterations(draws_matrix), 5)
+  expect_equal(nchains(draws_matrix), 2)
+  # draws_matrix can't represent 0-length variables, they are dropped
+  expect_equal(nvariables(draws_matrix), 0)
+
+  draws_array <- as_draws_array(rvar0)
+  expect_equal(ndraws(draws_array), 10)
+  expect_equal(niterations(draws_array), 5)
+  expect_equal(nchains(draws_array), 2)
+  # draws_array can't represent 0-length variables, they are dropped
+  expect_equal(nvariables(draws_array), 0)
+
+  draws_df <- as_draws_df(rvar0)
+  expect_equal(ndraws(draws_df), 10)
+  expect_equal(niterations(draws_df), 5)
+  expect_equal(nchains(draws_df), 2)
+  # draws_df can't represent 0-length variables, they are dropped
+  expect_equal(nvariables(draws_df), 0)
+
+  draws_list <- as_draws_list(rvar0)
+  expect_equal(nchains(draws_list), 2)
+  # draws_df can't represent 0-length variables, or the iterations / draws
+  # containing them, they are dropped
+  expect_equal(ndraws(draws_list), 0)
+  expect_equal(niterations(draws_list), 0)
+  expect_equal(nvariables(draws_list), 0)
+
+  # now a draws_rvars with one 0-length and one non-0-length variable
+  y <- rvar(1:10, nchains = 2)
+  draws_rvars_xy <- draws_rvars(x = rvar0, y = y)
+  draws_rvars_y <- draws_rvars(y = y)
+  expect_equal(as_draws_matrix(draws_rvars_xy), as_draws_matrix(draws_rvars_y))
+  expect_equal(as_draws_array(draws_rvars_xy), as_draws_array(draws_rvars_y))
+  expect_equal(as_draws_df(draws_rvars_xy), as_draws_df(draws_rvars_y))
+  expect_equal(as_draws_list(draws_rvars_xy), as_draws_list(draws_rvars_y))
+})
