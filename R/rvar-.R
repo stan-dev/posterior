@@ -127,7 +127,7 @@ new_rvar <- function(x = double(), .nchains = 1L) {
 }
 
 #' @importFrom methods setOldClass
-setOldClass("rvar")
+setOldClass(c("rvar", "vctrs_vctr", "list"))
 
 
 # manipulating raw draws array --------------------------------------------
