@@ -2,6 +2,7 @@
 
 ### Bug Fixes
 
+* Support remaining modes of `diag()` for `rvar`s (#246).
 * Better parsing for named indices in `as_draws_rvars()`, including nested use
 of `[`, like `x[y[1],2]` (#243)
 
