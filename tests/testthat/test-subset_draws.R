@@ -97,6 +97,22 @@ test_that("subset_draws works correctly for draws_rvars objects", {
   expect_equal(variables(x_sub, reserved = TRUE), c("mu", ".log_weight"))
 })
 
+test_that("subset_draws works correctly for rvar objects", {
+  x <- as_draws_rvars(example_draws())$theta
+
+  expect_error(subset_draws(x, variable = "mu"), "Cannot subset an rvar by variable")
+
+  x_sub <- subset_draws(x, iteration = c(1, 1, 2), unique = FALSE)
+  expect_equal(niterations(x_sub), 3)
+  expect_equal(draws_of(x_sub)[1], draws_of(x_sub)[2])
+
+  expect_message(
+    x_sub <- subset_draws(x, draw = c(1, 200, 10)),
+    "Merging chains in order to subset via 'draw'"
+  )
+  expect_equal(niterations(x_sub), 3)
+})
+
 test_that("variables can be subsetted via regular expressions", {
   x <- as_draws_df(example_draws())
   x_sub <- subset_draws(x, variable = c("theta\\[", "m"), regex = TRUE)

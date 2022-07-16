@@ -4,11 +4,14 @@
 \alias{thin_draws}
 \alias{thin}
 \alias{thin_draws.draws}
+\alias{thin_draws.rvar}
 \title{Thin \code{draws} objects}
 \usage{
 thin_draws(x, thin, ...)
 
 \method{thin_draws}{draws}(x, thin, ...)
+
+\method{thin_draws}{rvar}(x, thin, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
