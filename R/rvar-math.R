@@ -174,6 +174,10 @@ chol.rvar <- function(x, ...) {
   new_rvar(result, .nchains = nchains(x))
 }
 
+#' @importFrom methods setGeneric
+#' @export
+setGeneric("diag")
+
 #' Matrix diagonals (including for random variables)
 #'
 #' Extract the diagonal of a matrix or construct a matrix, including random
@@ -211,28 +215,12 @@ chol.rvar <- function(x, ...) {
 #'
 #' diag(as_rvar(1:3))
 #'
+#' @importFrom methods setMethod callNextMethod
 #' @export
-diag <- function(x = 1, nrow, ncol, names = TRUE) {
-  UseMethod("diag")
-}
-
-#' @rdname diag
-#' @export
-diag.default <- function(x = 1, nrow, ncol, names = TRUE) {
-  # base::diag() has a bunch of logic based on missingness of arguments that
-  # is very persnickety. If we just do base::diag(x, nrow, ncol, names) here
-  # it will not work properly. There is probably a better way to do this.
-  args <- alist(x = x, nrow = nrow, ncol = ncol, names = names)
-  args <- args[c(!missing(x), !missing(nrow), !missing(ncol), !missing(names))]
-  do.call(base::diag, args)
-}
-
-#' @rdname diag
-#' @export
-diag.rvar <- function(x = 1, nrow, ncol, names = TRUE) {
+setMethod("diag", signature(x = "rvar"), function(x = 1, nrow, ncol, names = TRUE) {
   if (length(dim(x)) > 1) {
     # base implementation of diag() works on rvars except when x is a vector
-    NextMethod()
+    callNextMethod()
   } else {
     if (missing(nrow)) {
       nrow <- length(x)
@@ -247,7 +235,7 @@ diag.rvar <- function(x = 1, nrow, ncol, names = TRUE) {
     out[cbind(i, i)] <- x
     out
   }
-}
+})
 
 
 # transpose and permutation -----------------------------------------------
