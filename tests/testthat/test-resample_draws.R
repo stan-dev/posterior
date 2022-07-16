@@ -68,3 +68,19 @@ test_that("resample_draws uses stored weights when available", {
   # .log_weight variable has been dropped
   expect_true(!".log_weight" %in% variables(x_rs, reserved = TRUE))
 })
+
+test_that("resample_draws works on rvars", {
+  set.seed(1234)
+  x <- rvar(1:10000)
+  w <- 1:10000 / 777
+
+  x_rs <- resample_draws(x, w, method = "stratified")
+  mean_rs <- mean(x_rs)
+  expect_true(mean_rs > 6660 && mean_rs < 6670)
+  expect_true(is_rvar(x_rs))
+
+  # without weights
+  x_rs <- resample_draws(x, method = "stratified")
+  mean_rs <- mean(x_rs)
+  expect_true(mean_rs > 4990 && mean_rs < 5010)
+})

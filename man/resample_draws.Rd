@@ -3,11 +3,14 @@
 \name{resample_draws}
 \alias{resample_draws}
 \alias{resample_draws.draws}
+\alias{resample_draws.rvar}
 \title{Resample \code{draws} objects}
 \usage{
 resample_draws(x, ...)
 
 \method{resample_draws}{draws}(x, weights = NULL, method = "stratified", ndraws = NULL, ...)
+
+\method{resample_draws}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method

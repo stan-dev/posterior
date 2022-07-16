@@ -88,6 +88,12 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
   subset_draws(x, draw = draw_ids, unique = FALSE)
 }
 
+#' @rdname resample_draws
+#' @export
+resample_draws.rvar <- function(x, ...) {
+  resample_draws(draws_rvars(x = x), ...)$x
+}
+
 # simple random resampling with replacement
 # @return index vector of length 'ndraws'
 .resample_simple <- function(weights, ndraws, ...) {
