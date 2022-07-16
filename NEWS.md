@@ -1,5 +1,9 @@
 # posterior 1.2.2.9000
 
+### Enhancements
+
+* Add an implementation of `drop()` for `rvar`s.
+
 ### Bug Fixes
 
 * Support remaining modes of `diag()` for `rvar`s (#246).

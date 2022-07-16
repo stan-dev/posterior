@@ -22,9 +22,10 @@ Description: Provides useful tools for both users and developers of packages
   (d) Provide lightweight implementations of state of the art posterior 
   inference diagnostics. References: Vehtari et al. (2021) 
   <doi:10.1214/20-BA1221>.
-Depends: 
+Depends:
   R (>= 3.2.0)
 Imports:
+  methods,
   abind,
   checkmate,
   rlang (>= 0.4.7),
