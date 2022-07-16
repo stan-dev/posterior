@@ -26,6 +26,21 @@ test_that("rfun works", {
     x_array[4,,] %*% y_array[4,,]
   ))
   expect_equal(rfun(function(a,b) a %*% b)(x, y), xy_ref)
+
+  expect_error(rfun(function(a,b) a %*% b, rvar_args = "c"), "All arguments .* must be names of formal arguments of `.f`")
+})
+
+test_that("rfun works on functions without rvar arguments", {
+  i <- 0
+  f <- function(x) {
+    i <<- i + 1
+    i
+  }
+  expect_equal(rfun(f, rvar_args = NULL, ndraws = 10)(NULL), rvar(1:10))
+})
+
+test_that("rdo allows setting the dimensions of the result", {
+  expect_equal(rdo(1:10, dim = c(2,5), ndraws = 1), rvar(array(1:10, dim = c(1,2,5))))
 })
 
 test_that("rvar_rng works", {
@@ -64,4 +79,8 @@ test_that("rvar_rng recycling works with numeric and rvar arguments", {
   ones <- rvar(array(1:8, dim = c(2,4)))
   ref <- rvar(array(c(11, 22, 33, 44, 15, 26, 37, 48), dim = c(2,4)))
   expect_equal(rvar_rng(rfake, 4, tens, ones), ref)
+})
+
+test_that("rvar_rng requires rvar arguments to be 1 dimensional", {
+  expect_error(rvar_rng(rnorm, 1, as_rvar(matrix(1:4, nrow = 2))), "must be single-dimensional")
 })

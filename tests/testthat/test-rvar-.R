@@ -50,6 +50,13 @@ test_that("rvar constructor using with_chains works", {
   expect_error(rvar(1, with_chains = TRUE))
 })
 
+test_that("NULL rvar creates a 0-length numeric rvar with 1 draw", {
+  expect_equal(rvar(), rvar(numeric()))
+  expect_equal(rvar(NULL), rvar(numeric()))
+  expect_equal(as_rvar(NULL), rvar(numeric()))
+  expect_equal(draws_of(rvar()), array(numeric(), dim = c(1, 0), dimnames = list(1, NULL)))
+})
+
 # draws_of ----------------------------------------------------------------
 
 test_that("draws_of using with_chains works", {
@@ -111,6 +118,9 @@ test_that("unique.rvar and duplicated.rvar work", {
   unique_x_2 <- rvar(array(c(1,2, 2,3, 1,2, 3,3), dim = c(2, 2, 2)))
   expect_equal(unique(x), unique_x)
   expect_equal(unique(x, MARGIN = 2), unique_x_2)
+
+  expect_error(unique(x, MARGIN = 0), "MARGIN = 0 is invalid")
+  expect_error(unique(x, MARGIN = 3), "MARGIN = 3 is invalid")
 })
 
 # tibbles -----------------------------------------------------------------

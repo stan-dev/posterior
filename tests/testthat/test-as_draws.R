@@ -329,6 +329,20 @@ test_that("as_draws_rvars correctly reshapes missing, out-of-order, and string a
   expect_equal(as_draws_rvars(as_draws_array(x_rvars2)), x_rvars2)
 })
 
+test_that("as_draws_rvars handles integer indices < 1", {
+  draws_df <- draws_df(`x[-1]` = 1:2, `x[-3]` = 3:4, `x[-2]` = 5:6)
+
+  x <- rvar(array(c(3:4, 5:6, 1:2), dim = c(2, 3), dimnames = list(NULL, -3:-1)))
+  expect_equal(as_draws_rvars(draws_df), draws_rvars(x = x))
+})
+
+test_that("as_draws_rvars and draws_rvars handle unnamed variables", {
+  # as_draws_rvars should provide a default name
+  expect_equal(as_draws_rvars(list(rvar(1:2))), draws_rvars(`...1` = rvar(1:2)))
+  # draws_rvars should throw an error
+  expect_error(draws_rvars(rvar(1:2)), "All variables must be named")
+})
+
 test_that("as_draws_rvars can accept lists of lists as input", {
   # for https://github.com/stan-dev/posterior/issues/192
   draws_list <- as_draws_list(example_draws())
@@ -416,6 +430,14 @@ test_that("0-length rvars can be cast to draws formats", {
   expect_equal(niterations(draws_list), 0)
   expect_equal(nvariables(draws_list), 0)
 
+  # a zero-length draws_rvars with no names should also be equivalent
+  draws_rvars_0 <- draws_rvars(x = rvar0)
+  names(draws_rvars_0) <- NULL
+  expect_equal(as_draws_matrix(draws_rvars_0), as_draws_matrix(draws_rvars))
+  expect_equal(as_draws_array(draws_rvars_0), as_draws_array(draws_rvars))
+  expect_equal(as_draws_df(draws_rvars_0), as_draws_df(draws_rvars))
+  expect_equal(as_draws_list(draws_rvars_0), as_draws_list(draws_rvars))
+
   # now a draws_rvars with one 0-length and one non-0-length variable
   y <- rvar(1:10, nchains = 2)
   draws_rvars_xy <- draws_rvars(x = rvar0, y = y)
@@ -424,4 +446,5 @@ test_that("0-length rvars can be cast to draws formats", {
   expect_equal(as_draws_array(draws_rvars_xy), as_draws_array(draws_rvars_y))
   expect_equal(as_draws_df(draws_rvars_xy), as_draws_df(draws_rvars_y))
   expect_equal(as_draws_list(draws_rvars_xy), as_draws_list(draws_rvars_y))
+
 })

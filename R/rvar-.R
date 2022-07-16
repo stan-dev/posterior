@@ -291,7 +291,7 @@ anyDuplicated.rvar <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
 # then return the corresponding margin for draws_of(x)
 check_rvar_margin <- function(x, MARGIN) {
   if (!(1 <= MARGIN && MARGIN <= length(dim(x)))) {
-    stop_no_call("MARGIN = ", MARGIN, " is invalid for dim = ", paste0(dim(x), collapse = ","))
+    stop_no_call("MARGIN = ", MARGIN, " is invalid for length(dim(x)) = ", length(dim(x)))
   }
   MARGIN + 1
 }
@@ -328,13 +328,16 @@ all.equal.rvar <- function(target, current, ...) {
 check_rvar_yank_index = function(x, i, ...) {
   index <- dots_list(i, ..., .preserve_empty = TRUE, .ignore_empty = "none")
 
-  if (any(lengths(index)) > 1) {
+  index_lengths <- lengths(index)
+  if (any(index_lengths == 0)) {
+    stop_no_call("Cannot select zero elements with `[[` in an rvar.")
+  } else if (any(index_lengths > 1)) {
     stop_no_call("Cannot select more than one element per index with `[[` in an rvar.")
-  } else if (any(sapply(index, function(x) is_missing(x) || is.na(x)))) {
+  } else if (any(vapply(index, function(x) is_missing(x) || is.na(x), logical(1)))) {
     stop_no_call("Missing indices not allowed with `[[` in an rvar.")
-  } else if (any(sapply(index, is.logical))) {
+  } else if (any(vapply(index, is.logical, logical(1)))) {
     stop_no_call("Logical indices not allowed with `[[` in an rvar.")
-  } else if (any(sapply(index, function(x) x < 0))) {
+  } else if (any(vapply(index, function(x) x < 0, logical(1)))) {
     stop_no_call("subscript out of bounds")
   }
 

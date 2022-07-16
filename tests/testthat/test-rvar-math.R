@@ -222,6 +222,8 @@ test_that("Cholesky decomposition works", {
   )
 
   expect_equal(chol(Sigma), rdo(chol(Sigma)))
+
+  expect_error(chol(rvar(1)), "must be a random matrix")
 })
 
 # array transpose and permutation -----------------------------------------

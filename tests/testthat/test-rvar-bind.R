@@ -9,6 +9,10 @@ test_that("c works on rvar", {
   expect_equal(c(x, NULL, y), x_y)
   expect_equal(c(x, x), rvar(array(c(1:9, 1:9), dim = c(3,6))))
 
+  expect_equal(c(z = x),
+    rvar(array(1:9, dim = c(3,3), dimnames = list(NULL, c("z1","z2","z3"))))
+  )
+
   expect_equal(c(z = c(x, y)),
     rvar(array(c(1:9, 2:10), dim = c(3,6), dimnames = list(NULL, c("z1","z2","z3","z.a","z.b","z.c"))))
   )

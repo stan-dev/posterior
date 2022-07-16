@@ -60,12 +60,7 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
   rvar_args <- as.character(rvar_args %||% arg_names)
 
   if (!all(rvar_args %in% arg_names)) {
-    stop_no_call("must specify names of formal arguments for 'rfun'")
-  }
-
-  collisions <- arg_names %in% c("FUN", "SIMPLIFY", "USE.NAMES")
-  if (any(collisions)) {
-    stop_no_call("'.f' may not have argument(s) named ", comma(arg_names[collisions]))
+    stop_no_call("All arguments specified by `rvar_args` must be names of formal arguments of `.f`")
   }
 
   FUNV <- function() {
@@ -89,9 +84,7 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
       # ndraws times
       list_of_draws <- replicate(ndraws, do.call(.f, args), simplify = FALSE)
     } else {
-      list_of_draws <- do.call(mapply, c(FUN = .f, rvar_args, MoreArgs = list(args[!is_rvar_arg]),
-        SIMPLIFY = FALSE, USE.NAMES = FALSE
-      ))
+      list_of_draws <- .mapply(.f, rvar_args, MoreArgs = args[!is_rvar_arg])
     }
     # Need to add a first dimension before unchopping (this will be the draws dimension)
     # Doing this + vec_unchop is faster than doing abind::abind(list_of_draws, along = 0)
