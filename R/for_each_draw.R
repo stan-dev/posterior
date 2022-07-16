@@ -1,4 +1,4 @@
-#' Loop ("walk") over draws
+#' Loop over draws
 #'
 #' Executes an expression once for every draw in a `draws` object.
 #'
@@ -14,30 +14,38 @@
 #' to act as R vectors and arrays) when being referred to in `expr`.
 #'
 #' Within `expr`, use `.draw` to refer to the draw index, which will be a value
-#' between 1 and `ndraws(x)`.
+#' between 1 and `ndraws(x)`. `expr` is executed in the calling environment of
+#' `for_each_draw()`, so it can use variables in that environment (however, due
+#' to the use of data masking, to modify variables in that environment, one
+#' must use `<<-`.)
 #' @importFrom rlang eval_tidy
 #' @export
-walk_draws <- function(x, expr) {
+for_each_draw <- function(x, expr) {
   x <- as_draws_rvars(x)
   expr <- enquo(expr)
+  env <- parent.frame()
 
   for (i in seq_len(ndraws(x))) {
     variables <- lapply(x, function(variable) {
-      draws <- draws_of(variable)[i, ]
+      draws <- draws_of(variable)
+      .dim <- dim(variable)
+      ndim <- length(.dim)
 
-      # need to restore dimensions in case subsetting
-      # dropped any other than the first ...
-      if (identical(dim(variable), 1L)) {
-        # ... but don't do this for length-1 arrays, which we'll leave
-        # as is so they are treated as scalars
-        draws <- drop(draws)
+      if (ndim <= 1) {
+        # treat 0- and 1-dimensional arrays as vectors
+        draws <- draws[i, ]
+        dim(draws) <- NULL
+        names(draws) <- names(variable)
       } else {
-        dim(draws) <- dim(variable)
+        dim(draws) <- c(NROW(draws), length(variable))
+        draws <- draws[i, ]
+        dim(draws) <- .dim
+        dimnames(draws) <- dimnames(variable)
       }
 
       draws
     })
     variables$.draw = i
-    eval_tidy(expr, data = variables)
+    eval_tidy(expr, data = variables, env = env)
   }
 }
