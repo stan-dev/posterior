@@ -448,3 +448,19 @@ test_that("0-length rvars can be cast to draws formats", {
   expect_equal(as_draws_list(draws_rvars_xy), as_draws_list(draws_rvars_y))
 
 })
+
+test_that("1-length rvars can be cast to other formats", {
+  # scalars should stay as scalars...
+  x <- rvar(1:10)
+  expect_equal(as_draws_array(x), draws_array(x = 1:10))
+  expect_equal(as_draws_df(x), draws_df(x = 1:10))
+  expect_equal(as_draws_list(x), draws_list(x = 1:10))
+  expect_equal(as_draws_matrix(x), draws_matrix(x = 1:10))
+
+  # ... but extra dims should not be dropped
+  x <- rvar(array(1:10, dim = c(10, 1, 1)))
+  expect_equal(as_draws_array(x), draws_array(`x[1,1]` = 1:10))
+  expect_equal(as_draws_df(x), draws_df(`x[1,1]` = 1:10))
+  expect_equal(as_draws_list(x), draws_list(`x[1,1]` = 1:10))
+  expect_equal(as_draws_matrix(x), draws_matrix(`x[1,1]` = 1:10))
+})

@@ -11,6 +11,8 @@
 of `[`, like `x[y[1],2]` (#243).
 * Allow 0-length `rvar`s with `ndraws() > 1` (#242). 
 * Ensure 0-length `rvar`s can be cast to `draws` formats (#242).
+* Don't treat length-1 `rvar`s with more than 1 dimension as scalars when 
+casting to other formats (#248).
 
 
 # posterior 1.2.2

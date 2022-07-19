@@ -567,18 +567,19 @@ flatten_array = function(x, x_name = NULL) {
   new_names <- apply(dimname_grid, 1, paste0, collapse = ",")
 
   .length <- length(x)
+  old_dim <- dim(x)
   dim(x) <- .length
 
   # update variable names
   if (is.null(x_name)) {
     # no base name for x provided, just use index names
     names(x) <- new_names
-  } else if (.length > 1) {
+  } else if (.length == 1 && (isTRUE(old_dim == 1) || length(old_dim) == 0)) {
+    # scalar, use the provided base name
+    names(x) <- x_name
+  } else if (.length >= 1) {
     # rename the variables with their indices in brackets
     names(x) <- paste0(x_name, "[", new_names %||% seq_along(x), "]")
-  } else if (.length == 1) {
-    # just one variable, use the provided base name
-    names(x) <- x_name
   }
 
   x
