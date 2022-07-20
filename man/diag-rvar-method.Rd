@@ -10,10 +10,7 @@
 \item{x}{(numeric,rvar) a matrix, vector, 1D array, missing, or a 1- or
 2-dimensional \code{\link{rvar}}.}
 
-\item{nrow}{optional dimensions for the result when \code{x} is
-    not a matrix.}
-
-\item{ncol}{optional dimensions for the result when \code{x} is
+\item{nrow, ncol}{optional dimensions for the result when \code{x} is
     not a matrix.}
 
 \item{names}{(when \code{x} is a matrix) logical indicating if the
