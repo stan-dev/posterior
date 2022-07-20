@@ -10,7 +10,7 @@ test_that("basic print.rvar works", {
   )
   expect_match(
     out,
-    regexp = "NULL",
+    regexp = "rvar\\(\\)",
     all = FALSE
   )
 
@@ -101,7 +101,7 @@ test_that("glimpse on rvar works", {
   x_vec <- rvar(array(1:24, dim = c(6,4)))
   x_matrix <- rvar(array(1:24, dim = c(2,3,4)))
 
-  expect_equal(format_glimpse(rvar()), NULL)
+  expect_equal(format_glimpse(rvar()), character(0))
   expect_equal(
     format_glimpse(x_vec),
     c("3.5 ± 1.9", "9.5 ± 1.9", "15.5 ± 1.9", "21.5 ± 1.9"),
