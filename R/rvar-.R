@@ -225,12 +225,6 @@ draws_of <- function(x, with_chains = FALSE) {
 # misc standard methods --------------------------------------------------
 
 #' @export
-levels.rvar <- function(x) {
-  # TODO: implement for factor-like rvars
-  NULL
-}
-
-#' @export
 rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
   # flatten before rep()ing
   dim(x) <- length(x)

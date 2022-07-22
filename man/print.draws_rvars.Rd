@@ -25,9 +25,14 @@ to print.}
 print. Can be controlled globally via the \code{"posterior.max_variables"}
 \link[base:options]{option}.}
 
-\item{summary}{(string) The style of summary to display: \code{"mean_sd"} displays
-\verb{mean±sd}, \code{"median_mad"} displays \verb{median±mad}. If \code{NULL},
-\code{getOption("posterior.rvar_summary")} is used (default \verb{"mean_sd}).}
+\item{summary}{(string) The style of summary to display:
+\itemize{
+\item \code{"mean_sd"} displays \verb{mean ± sd}
+\item \code{"median_mad"} displays \verb{median ± mad}
+\item \code{"mode_entropy"} displays \verb{mode ± entropy}, and is used automatically for
+factor-like \code{\link{rvar}}s
+\item \code{NULL} uses \code{getOption("posterior.rvar_summary")} (default \verb{"mean_sd})
+}}
 
 \item{reserved}{(logical) Should reserved variables be included in the
 output? Defaults to \code{FALSE}. See \code{\link{reserved_variables}} for an overview of

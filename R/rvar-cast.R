@@ -147,9 +147,21 @@ vec_proxy.rvar = function(x, ...) {
     # proxy is not in the cache, calculate it and store it in the cache
     .draws = draws_of(x)
     out <- vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
-    for (i in seq_along(out)) {
-      attr(out[[i]], "nchains") <- nchains(x)
+
+    if (is.factor(.draws)) {
+      .class <- c(if (is.ordered(.draws)) "ordered", "factor")
+      .levels <- levels(.draws)
+      for (i in seq_along(out)) {
+        attr(out[[i]], "levels") <- .levels
+        attr(out[[i]], "class") <- .class
+      }
     }
+
+    .nchains <- nchains(x)
+    for (i in seq_along(out)) {
+      attr(out[[i]], "nchains") <- .nchains
+    }
+
     attr(x, "cache")$vec_proxy <- out
   }
 
@@ -173,7 +185,6 @@ vec_restore.rvar <- function(x, ...) {
     # N.B. could potentially do this with vec_cast as well (as long as the first
     # dimension is the slicing index)
     x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
-
   }
   # broadcast dimensions and bind together
   new_dim <- dim_common(lapply(x, dim))
@@ -182,6 +193,33 @@ vec_restore.rvar <- function(x, ...) {
   if (!is.null(.draws)) {
     .draws <- aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)]))
   }
+
+  # if this is a factor, make it one again
+  # TODO: factor this out into something like conform_rvar_draws_subtype()
+  # and use union() and match() to conform levels
+  if (length(x) > 0) {
+    # check for factors
+    is_factor <- unique(vapply(x, is.factor, logical(1)))
+    if (isTRUE(is_factor)) {
+      # combining factors; to be conservative they must be compatible
+      .levels <- unique(lapply(x, levels))
+      if (length(.levels) > 1) {
+        stop_no_call("Cannot combine factor rvars with different levels.")
+      }
+      .levels <- .levels[[1]]
+
+      .ordered <- unique(vapply(x, is.ordered, logical(1)))
+      if (length(.ordered) > 1) {
+        stop_no_call("Cannot combine ordered and unordered factor rvars.")
+      }
+
+      attr(.draws, "levels") <- .levels
+      attr(.draws, "class") <- c(if (.ordered) "ordered", "factor")
+    } else if (length(is_factor) > 1) {
+      stop_no_call("Cannot combine factor rvars with non-factor rvars.")
+    }
+  }
+
   # determine the number of chains
   nchains_or_null <- lapply(x, function(x) if (dim(x)[[2]] %||% 1 == 1) NULL else attr(x, "nchains"))
   .nchains <- Reduce(nchains2_common, nchains_or_null) %||% 1L
@@ -247,6 +285,24 @@ vec_cast.rvar.logical <- function(x, to, ...) new_constant_rvar(x)
 
 #' @export
 vec_cast.character.rvar <- function(x, to, ...) format(x)
+
+#' @export
+vec_cast.rvar.character <- function(x, to, ...) new_constant_rvar(as.factor(x))
+
+
+# factor casts ---------------------------------------------------------
+
+#' @export
+vec_cast.factor.rvar <- function(x, to, ...) as.factor(format(x))
+
+#' @export
+vec_cast.rvar.factor <- function(x, to, ...) new_constant_rvar(x)
+
+#' @export
+vec_cast.ordered.rvar <- function(x, to, ...) as.ordered(format(x))
+
+#' @export
+vec_cast.rvar.ordered <- function(x, to, ...) new_constant_rvar(x)
 
 
 # casting between rvar and distribution objects ---------------------------

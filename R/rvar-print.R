@@ -53,20 +53,26 @@
 #'
 #' @importFrom utils str lsf.str
 #' @export
-print.rvar <- function(x, ..., summary = NULL, digits = 2, color = TRUE) {
+print.rvar <- function(x, ..., summary = NULL, digits = 2, color = TRUE, width = getOption("width")) {
   # \u00b1 = plus/minus sign
-  summary_functions <- get_summary_functions(summary)
-  summary_string <- paste0(paste(summary_functions, collapse = " \u00b1 "), ":")
+  summary_functions <- get_summary_functions(draws_of(x), summary)
+  summary_string <- paste0(paste(names(summary_functions), collapse = " \u00b1 "), ":")
   if (color) {
     summary_string <- pillar::style_subtle(summary_string)
   }
   cat0(rvar_type_abbr(x), " ", summary_string, "\n")
+
   x_string <- format(x, summary = summary, digits = digits, color = FALSE, pad_right = " ")
   if (length(x_string) == 0) {
     cat0("rvar()\n")
   } else {
     print(x_string, quote = FALSE)
   }
+
+  if (is_rvar_factor(x)) {
+    cat0(format_levels(levels(x), is_rvar_ordered(x), width = width), "\n")
+  }
+
   invisible(x)
 }
 
@@ -103,7 +109,7 @@ str.rvar <- function(
   dim(.draws) <- c(.dim[1], prod(.dim[-1]))
 
   if (dim(.draws)[[2]] > vec.len) {
-    .draws <- .draws[, 1:vec.len]
+    .draws <- .draws[, 1:vec.len, drop = FALSE]
     ellipsis <- " ..."
   } else {
     ellipsis <- ""
@@ -113,6 +119,12 @@ str.rvar <- function(
     paste(format_rvar_draws(.draws, summary = summary, trim = TRUE), collapse = "  "),
     ellipsis, "\n"
   )
+
+  # LEVELS
+  # for factor-like rvars
+  if (is_rvar_factor(object)) {
+    cat0(indent.str, "- ", format_levels(levels(object), is_rvar_ordered(object), max_level = vec.len))
+  }
 
   # ATTRIBUTES
   # we have to be a bit clever about this to hide internal structure we don't
@@ -135,7 +147,7 @@ str.rvar <- function(
         }
       }
     }
-    str_attr(attributes(draws_of(object)), "draws_of(*)", c("names", "dim", "dimnames", "class"))
+    str_attr(attributes(draws_of(object)), "draws_of(*)", c("names", "dim", "dimnames", "class", "levels"))
     str_attr(attributes(object), "*", c("draws", "names", "dim", "dimnames", "class", "nchains", "cache"))
   }
 
@@ -188,7 +200,13 @@ rvar_type_abbr <- function(x, dim1 = TRUE) {
     paste0(",", nchains(x))
   }
 
-  paste0("rvar<", niterations(x), chain_str, ">", dim_str)
+  type_str <- paste0(
+    "rvar",
+    if (is_rvar_ordered(x)) "_ordered"
+    else if (is_rvar_factor(x)) "_factor"
+  )
+
+  paste0(type_str, "<", niterations(x), chain_str, ">", dim_str)
 }
 
 
@@ -202,13 +220,19 @@ format_rvar_draws <- function(
   if (length(draws) == 0) {
     return(character())
   }
-  summary_functions <- get_summary_functions(summary)
+  summary_functions <- get_summary_functions(draws, summary)
 
   summary_dimensions <- seq_len(length(dim(draws)) - 1) + 1
 
   # these will be mean/sd or median/mad depending on `summary`
   .mean <- apply(draws, summary_dimensions, summary_functions[[1]])
+  if (is.factor(draws)) {
+    # factor-like objects get converted to numerics when sliced by apply(), so
+    # we have restore the level corresponding to the summarized value
+    .mean <- levels(draws)[round(as.numeric(.mean))]
+  }
   .sd <- apply(draws, summary_dimensions, summary_functions[[2]])
+
   out <- paste0(pad_left, format_mean_sd(.mean, .sd, digits = digits, color = color, trim = trim), pad_right)
 
   dim(out) <- dim(draws)[summary_dimensions]
@@ -237,14 +261,54 @@ format_mean_sd <- function(.mean, .sd, digits = 2, color = FALSE, trim = FALSE) 
   justify = if (trim) "none" else "left", trim = trim)
 }
 
+format_levels <- function(levels, ordered = FALSE, max_level = NULL, width = getOption("width")) {
+  levels <- encodeString(levels)
+  n_levels <- length(levels)
+  header <- paste(format(n_levels), "levels: ")
+
+  sep <- if (ordered) " < " else " "
+  width <- width - (nchar(header, "width") + 3L + 1L + 3L)
+  levels_cumwidth <- cumsum(nchar(levels, "width") + nchar(sep, "width"))
+
+  max_level <- max_level %||% if (n_levels <= 1L || levels_cumwidth[n_levels] <= width) {
+    n_levels
+  } else {
+    max(1L, which.max(levels_cumwidth > width) - 1L)
+  }
+  drop <- n_levels > max_level
+
+  paste0(
+    header,
+    paste(
+      if (drop) c(levels[1L:max(1, max_level - 1)], "...", if (max_level > 1) levels[n_levels])
+      else levels,
+      collapse = sep
+    )
+  )
+}
+
 # check that summary is a valid name of the type of summary to do and
-# return a vector of two elements, where the first is mean or median and the
-# second is sd or mad
-get_summary_functions <- function(summary = NULL) {
+# return a vector of two elements, where the first is the point summary function
+# (mean, median, mode) and the second is the uncertainty function ()
+get_summary_functions <- function(draws, summary = NULL) {
+  if (is.factor(draws)) {
+    summary = "mode_entropy"
+  }
+
   if (is.null(summary)) summary <- getOption("posterior.rvar_summary", "mean_sd")
   switch(summary,
-    mean_sd = c("mean", "sd"),
-    median_mad = c("median", "mad"),
+    mean_sd = list(mean = "mean", sd = "sd"),
+    median_mad = list(median = "median", mad = "mad"),
+    mode_entropy = list(mode = .mode, entropy = "entropy"),
     stop_no_call('`summary` must be one of "mean_sd" or "median_mad"')
   )
+}
+
+entropy <- function(x) {
+  p = prop.table(table(x)); -sum(p * log(p))
+}
+
+.mode <- function(x) {
+  x_table <- table(x, useNA = "ifany")
+  names(x_table)[which.max(x_table)]
 }
