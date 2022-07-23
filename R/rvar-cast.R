@@ -145,29 +145,44 @@ vec_proxy.rvar = function(x, ...) {
   out <- attr(x, "cache")$vec_proxy
   if (is.null(out)) {
     # proxy is not in the cache, calculate it and store it in the cache
-    .draws = draws_of(x)
-    out <- vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
-
-    # TODO: factor this out
-    # if (is.factor(.draws)) {
-    #   .class <- c(if (is.ordered(.draws)) "ordered", "factor")
-    #   .levels <- levels(.draws)
-    #   for (i in seq_along(out)) {
-    #     attr(out[[i]], "levels") <- .levels
-    #     attr(out[[i]], "class") <- .class
-    #   }
-    # }
-
-    .nchains <- nchains(x)
-    for (i in seq_along(out)) {
-      attr(out[[i]], "nchains") <- .nchains
-    }
-
+    out <- make_rvar_proxy(x)
     attr(x, "cache")$vec_proxy <- out
   }
 
   out
 }
+
+#' Make a cacheable proxy for vec_proxy.rvar
+#' @noRd
+make_rvar_proxy = function(x) UseMethod("make_rvar_proxy")
+
+#' @export
+make_rvar_proxy.rvar = function(x) {
+  .draws = draws_of(x)
+  out <- vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
+
+  .nchains <- nchains(x)
+  for (i in seq_along(out)) {
+    attr(out[[i]], "nchains") <- .nchains
+  }
+
+  out
+}
+
+#' @export
+make_rvar_proxy.rvar_factor = function(x) {
+  out <- NextMethod()
+
+  .class <- c(if (is_rvar_ordered(x)) "ordered", "factor")
+  .levels <- levels(x)
+  for (i in seq_along(out)) {
+    attr(out[[i]], "levels") <- .levels
+    attr(out[[i]], "class") <- .class
+  }
+
+  out
+}
+
 
 #' @importFrom vctrs vec_restore
 #' @export
@@ -198,28 +213,28 @@ vec_restore.rvar <- function(x, ...) {
   # if this is a factor, make it one again
   # TODO: factor this out into something like conform_rvar_draws_subtype()
   # and use union() and match() to conform levels
-  # if (length(x) > 0) {
-  #   # check for factors
-  #   is_factor <- unique(vapply(x, is.factor, logical(1)))
-  #   if (isTRUE(is_factor)) {
-  #     # combining factors; to be conservative they must be compatible
-  #     .levels <- unique(lapply(x, levels))
-  #     if (length(.levels) > 1) {
-  #       stop_no_call("Cannot combine factor rvars with different levels.")
-  #     }
-  #     .levels <- .levels[[1]]
-  #
-  #     .ordered <- unique(vapply(x, is.ordered, logical(1)))
-  #     if (length(.ordered) > 1) {
-  #       stop_no_call("Cannot combine ordered and unordered factor rvars.")
-  #     }
-  #
-  #     attr(.draws, "levels") <- .levels
-  #     attr(.draws, "class") <- c(if (.ordered) "ordered", "factor")
-  #   } else if (length(is_factor) > 1) {
-  #     stop_no_call("Cannot combine factor rvars with non-factor rvars.")
-  #   }
-  # }
+  if (length(x) > 0) {
+    # check for factors
+    is_factor <- unique(vapply(x, is.factor, logical(1)))
+    if (isTRUE(is_factor)) {
+      # combining factors; to be conservative they must be compatible
+      .levels <- unique(lapply(x, levels))
+      if (length(.levels) > 1) {
+        stop_no_call("Cannot combine factor rvars with different levels.")
+      }
+      .levels <- .levels[[1]]
+
+      .ordered <- unique(vapply(x, is.ordered, logical(1)))
+      if (length(.ordered) > 1) {
+        stop_no_call("Cannot combine ordered and unordered factor rvars.")
+      }
+
+      attr(.draws, "levels") <- .levels
+      attr(.draws, "class") <- c(if (.ordered) "ordered", "factor")
+    } else if (length(is_factor) > 1) {
+      stop_no_call("Cannot combine factor rvars with non-factor rvars.")
+    }
+  }
 
   # determine the number of chains
   nchains_or_null <- lapply(x, function(x) if (dim(x)[[2]] %||% 1 == 1) NULL else attr(x, "nchains"))
@@ -233,77 +248,161 @@ vec_restore.rvar <- function(x, ...) {
   out
 }
 
+vec_restore.rvar_factor = function(x, ...) {
 
-# vec_ptype performance generic -------------------------------------------
+}
+
+# vec_ptype performance generics -------------------------------------------
 
 #' @importFrom vctrs vec_ptype
 #' @export
 vec_ptype.rvar <- function(x, ..., x_arg = "") new_rvar()
+#' @export
+vec_ptype.rvar_factor <- function(x, ..., x_arg = "") new_rvar(factor())
+#' @export
+vec_ptype.rvar_ordered <- function(x, ..., x_arg = "") new_rvar(ordered(NULL))
 
 
-# identity cast -----------------------------------------------------------
+# identity casts -----------------------------------------------------------
 
 #' @importFrom vctrs vec_ptype2
-#' @export
-vec_ptype2.rvar.rvar <- function(x, y, ...) new_rvar()
-
 #' @importFrom vctrs vec_cast
 #' @export
+vec_ptype2.rvar.rvar <- function(x, y, ...) new_rvar()
+#' @export
 vec_cast.rvar.rvar <- function(x, to, ...) x
+
+#' @export
+vec_ptype2.rvar_factor.rvar_factor <- function(x, y, ...) new_rvar(factor())
+#' @export
+vec_cast.rvar_factor.rvar_factor <- function(x, to, ...) x
+
+#' @export
+vec_ptype2.rvar_ordered.rvar_ordered <- function(x, y, ...) new_rvar(ordered(NULL))
+#' @export
+vec_cast.rvar_ordered.rvar_ordered <- function(x, to, ...) x
 
 
 # numeric and logical casts -----------------------------------------------
 
+# double <-> rvar
 #' @export
 vec_ptype2.double.rvar <- function(x, y, ...) new_rvar()
-
 #' @export
 vec_ptype2.rvar.double <- function(x, y, ...) new_rvar()
-
 #' @export
 vec_cast.rvar.double <- function(x, to, ...) new_constant_rvar(x)
 
+# integer <-> rvar
 #' @export
 vec_ptype2.integer.rvar <- function(x, y, ...) new_rvar()
-
 #' @export
 vec_ptype2.rvar.integer <- function(x, y, ...) new_rvar()
-
 #' @export
 vec_cast.rvar.integer <- function(x, to, ...) new_constant_rvar(x)
 
+# logical <-> rvar
 #' @export
 vec_ptype2.logical.rvar <- function(x, y, ...) new_rvar()
-
 #' @export
 vec_ptype2.rvar.logical <- function(x, y, ...) new_rvar()
-
 #' @export
 vec_cast.rvar.logical <- function(x, to, ...) new_constant_rvar(x)
 
 
 # character casts ---------------------------------------------------------
 
+# rvar -> character
 #' @export
 vec_cast.character.rvar <- function(x, to, ...) format(x)
+#' @export
+vec_cast.character.rvar_factor <- function(x, to, ...) format(x)
+#' @export
+vec_cast.character.rvar_ordered <- function(x, to, ...) format(x)
 
+# character -> rvar
 #' @export
 vec_cast.rvar.character <- function(x, to, ...) new_constant_rvar(as.factor(x))
+#' @export
+vec_cast.rvar_factor.character <- function(x, to, ...) new_constant_rvar(as.factor(x))
+#' @export
+vec_cast.rvar_ordered.character <- function(x, to, ...) new_constant_rvar(as.ordered(x))
 
 
 # factor casts ---------------------------------------------------------
 
+# factor <-> rvar
 #' @export
-vec_cast.factor.rvar <- function(x, to, ...) as.factor(format(x))
-
+vec_ptype2.factor.rvar <- function(x, y, ...) new_rvar(factor())
+#' @export
+vec_ptype2.rvar.factor <- function(x, y, ...) new_rvar(factor())
 #' @export
 vec_cast.rvar.factor <- function(x, to, ...) new_constant_rvar(x)
 
+# factor <-> rvar_factor
 #' @export
-vec_cast.ordered.rvar <- function(x, to, ...) as.ordered(format(x))
+vec_ptype2.factor.rvar_factor <- function(x, y, ...) new_rvar(factor())
+#' @export
+vec_ptype2.rvar_factor.factor <- function(x, y, ...) new_rvar(factor())
+#' @export
+vec_cast.rvar_factor.factor <- function(x, to, ...) new_constant_rvar(x)
 
+# factor <-> rvar_ordered
+#' @export
+vec_ptype2.factor.rvar_ordered <- function(x, y, ...) new_rvar(factor())
+#' @export
+vec_ptype2.rvar_ordered.factor <- function(x, y, ...) new_rvar(factor())
+#' @export
+vec_cast.rvar_ordered.factor <- function(x, to, ...) new_constant_rvar(x)
+
+# ordered <-> rvar
+#' @export
+vec_ptype2.ordered.rvar <- function(x, y, ...) new_rvar(ordered())
+#' @export
+vec_ptype2.rvar.ordered <- function(x, y, ...) new_rvar(ordered())
 #' @export
 vec_cast.rvar.ordered <- function(x, to, ...) new_constant_rvar(x)
+
+# ordered <-> rvar_factor
+#' @export
+vec_ptype2.ordered.rvar_factor <- function(x, y, ...) new_rvar(ordered())
+#' @export
+vec_ptype2.rvar_factor.ordered <- function(x, y, ...) new_rvar(ordered())
+#' @export
+vec_cast.rvar_factor.ordered <- function(x, to, ...) new_constant_rvar(x)
+
+# ordered <-> rvar_ordered
+#' @export
+vec_ptype2.ordered.rvar_ordered <- function(x, y, ...) new_rvar(ordered())
+#' @export
+vec_ptype2.rvar_ordered.ordered <- function(x, y, ...) new_rvar(ordered())
+#' @export
+vec_cast.rvar_ordered.ordered <- function(x, to, ...) new_constant_rvar(x)
+
+
+# subtype casts -----------------------------------------------------------
+
+#' @export
+vec_cast.rvar_factor.rvar <- function(x, to, ...) .as_rvar_factor_rvar(x)
+#' @export
+vec_cast.rvar_ordered.rvar <- function(x, to, ...) .as_rvar_factor_rvar(x, as.ordered)
+#' @export
+vec_cast.rvar_factor.rvar_ordered <- function(x, to, ...) .as_rvar_factor_rvar(x)
+#' @export
+vec_cast.rvar_ordered.rvar_factor <- function(x, to, ...) .as_rvar_factor_rvar(x, as.ordered)
+#' @export
+vec_cast.rvar.rvar_ordered <- function(x, to, ...) x
+#' @export
+vec_cast.rvar.rvar_factor <- function(x, to, ...) x
+
+.as_rvar_factor_rvar <- function(x, as_factor = as.factor) {
+  .draws <- draws_of(x)
+  factor_draws <- as_factor(.draws)
+  dim(factor_draws) <- dim(.draws)
+  dimnames(factor_draws) <- dimnames(.draws)
+  draws_of(x) <- factor_draws
+  x
+}
 
 
 # casting between rvar and distribution objects ---------------------------

@@ -60,7 +60,7 @@ print.rvar <- function(x, ..., summary = NULL, digits = 2, color = TRUE, width =
   if (color) {
     summary_string <- pillar::style_subtle(summary_string)
   }
-  cat0(rvar_type_abbr(x), " ", summary_string, "\n")
+  cat0(rvar_type_full(x), " ", summary_string, "\n")
 
   x_string <- format(x, summary = summary, digits = digits, color = FALSE, pad_right = " ")
   if (length(x_string) == 0) {
@@ -115,7 +115,7 @@ str.rvar <- function(
     ellipsis <- ""
   }
 
-  cat0(" ", rvar_type_abbr(object), "  ",
+  cat0(" ", rvar_type_full(object), "  ",
     paste(format_rvar_draws(.draws, summary = summary, trim = TRUE), collapse = "  "),
     ellipsis, "\n"
   )
@@ -178,14 +178,22 @@ format_glimpse.rvar <- function(x, ...) {
 vec_ptype_abbr.rvar <- function(x, ...) {
   "rvar"
 }
+#' @export
+vec_ptype_abbr.rvar_factor <- function(x, ...) {
+  "rvar_fct"
+}
+#' @export
+vec_ptype_abbr.rvar_ordered <- function(x, ...) {
+  "rvar_ord"
+}
 
 #' @importFrom vctrs vec_ptype_full
 #' @export
 vec_ptype_full.rvar <- function(x, ...) {
-  rvar_type_abbr(x, dim1 = FALSE)
+  rvar_type_full(x, dim1 = FALSE)
 }
 
-rvar_type_abbr <- function(x, dim1 = TRUE) {
+rvar_type_full <- function(x, dim1 = TRUE) {
   .dim <- dim(draws_of(x))
 
   dim_str <- if (dim1) {

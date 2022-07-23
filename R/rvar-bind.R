@@ -69,7 +69,10 @@ bind_rvars <- function(args, arg_exprs, deparse.level = 1, axis = 1) {
 
 #' broadcast two rvars to compatible dimensions and bind along the `axis` dimension
 #' @noRd
-broadcast_and_bind_rvars <- function(x, y, axis = 1) {
+broadcast_and_bind_rvars <- function(x, y, axis = 1) UseMethod("broadcast_and_bind_rvars")
+
+#' @export
+broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
   if (!length(x)) return(y)
   if (!length(y)) return(x)
 
@@ -94,6 +97,19 @@ broadcast_and_bind_rvars <- function(x, y, axis = 1) {
   # bind along desired axis
   result <- new_rvar(abind(draws_x, draws_y, along = draws_axis), .nchains = nchains(x))
 }
+
+#' @export
+broadcast_and_bind_rvars.rvar_ordered <- function(x, y, axis = 1) {
+  result <- NextMethod()
+
+  if (is_rvar_ordered(y) && identical(levels(x), levels(y))) {
+    # when combining two ordered factors with identical levels, preserve level order
+    class(draws_of(result)) <- c("ordered", "factor")
+  }
+
+  result
+}
+
 
 #' Deparse argument names roughly following the rules of the deparse.level
 #' argument to cbind / rbind

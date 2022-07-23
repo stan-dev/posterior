@@ -212,7 +212,10 @@ draws_of <- function(x, with_chains = FALSE) {
   } else {
     draws <- value
   }
-  attr(x, "draws") <- cleanup_rvar_draws(draws)
+
+  draws <- cleanup_rvar_draws(draws)
+  attr(x, "draws") <- draws
+  class(x) <- get_rvar_class(draws)
 
   x <- invalidate_rvar_cache(x)
   x
@@ -319,37 +322,25 @@ get_rvar_class <- function(x) {
   UseMethod("get_rvar_class")
 }
 
-#'@export
+#' @export
 get_rvar_class.default <- function(x) {
   c("rvar", "vctrs_vctr", "list")
 }
 
-#'@export
+#' @export
 get_rvar_class.factor <- function(x) {
   c("rvar_factor", NextMethod())
 }
 
-#'@export
+#' @export
 get_rvar_class.ordered <- function(x) {
   c("rvar_ordered", NextMethod())
 }
 
-#'@export
-get_rvar_class.logical <- function(x) {
-  c("rvar_logical", "rvar_numberlike", NextMethod())
-}
-
-#'@export
-get_rvar_class.numeric <- function(x) {
-  c("rvar_numeric", "rvar_numberlike", NextMethod())
-}
-
 #' @importFrom methods setOldClass
-setOldClass(get_rvar_class(NULL))
+setOldClass(get_rvar_class(numeric()))
 setOldClass(get_rvar_class(factor()))
 setOldClass(get_rvar_class(ordered(NULL)))
-setOldClass(get_rvar_class(logical()))
-setOldClass(get_rvar_class(numeric()))
 
 
 # helpers: validation -----------------------------------------------------------------
@@ -514,6 +505,8 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
 
   current_dim <- dim(x)
   current_dimnames <- dimnames(x)
+  current_levels <- levels(x)
+  current_class <- class(x)
 
   if (length(current_dim) < length(dim)) {
     # add dimensions of size 1 as necessary so we can broadcast those
@@ -561,6 +554,10 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     dim_to_restore <- current_dim == dim
     dimnames(x)[dim_to_restore] <- current_dimnames[dim_to_restore]
   }
+
+  # restore class and levels
+  levels(x) <- current_levels
+  class(x) <- current_class
 
   x
 }
@@ -694,11 +691,15 @@ cleanup_rvar_draws <- function(x) {
     rownames(x) <- as.character(seq_rows(x))
   }
 
-  # if x is factor-like (with "level" attr), make it a factor
-  if (!is.factor(x) && !is.null(attr(x, "levels"))) {
+  # if x is factor-like (character or with "levels" attr), make it a factor
+  if (!is.factor(x) && !is.null(attr(x, "levels")) || is.character(x)) {
     .dim <- dim(x)
     .dimnames <- dimnames(x)
-    x <- factor(x, labels = attr(x, "levels"))
+    x <- if (is.character(x)) {
+      factor(x)
+    } else {
+      factor(x, labels = attr(x, "levels"))
+    }
     dim(x) <- .dim
     dimnames(x) <- .dimnames
   }
