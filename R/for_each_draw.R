@@ -18,6 +18,28 @@
 #' `for_each_draw()`, so it can use variables in that environment (however, due
 #' to the use of data masking, to modify variables in that environment, one
 #' must use `<<-`.)
+#'
+#' @examples
+#' eight_schools <- as_draws_rvars(example_draws())
+#'
+#' plot(1, type = "n",
+#'   xlim = c(1, length(eight_schools$theta)),
+#'   ylim = range(range(eight_schools$theta)),
+#'   xlab = "school", ylab = "theta"
+#' )
+#'
+#' # use for_each_draw() to make a parallel coordinates plot of all draws
+#' # of eight_schools$theta. Use resample_draws(eight_schools, n = ...)
+#' # in place of eight_schools if a smaller sample is desired for the plot.
+#' for_each_draw(eight_schools, {
+#'   lines(seq_along(theta), theta, col = rgb(1, 0, 0, 0.05))
+#' })
+#'
+#' # add means and 90% intervals
+#' lines(seq_along(eight_schools$theta), mean(eight_schools$theta))
+#' with(summarise_draws(eight_schools$theta),
+#'   segments(seq_along(eight_schools$theta), y0 = q5, y1 = q95)
+#' )
 #' @importFrom rlang eval_tidy
 #' @export
 for_each_draw <- function(x, expr) {
