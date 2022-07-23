@@ -2,6 +2,9 @@
 
 ### Enhancements
 
+* Implement `for_each_draw(x, expr)`, which executes `expr` once for each draw
+  of `x`, exposing variables in `x` as arrays of the shape implied by the
+  indices in their names (#224).
 * Implement `subset_draws()`, `thin_draws()`, and `resample_draws()` for `rvar`s (#225).
 * Allow `weights` to be optional in `resample_draws()` (#225).
 * Add an implementation of `drop()` for `rvar`s.

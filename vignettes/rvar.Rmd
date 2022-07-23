@@ -474,7 +474,7 @@ into a `draws_rvars()` object, then loops over each draw of `x`, executing the
 provided expression, `expr`. The expression can use the variables in `x` as if
 they were regular R arrays.
 
-One application of `for_each_draws()` is in constructing base-R plots of individual
+One application of `for_each_draw()` is in constructing base-R plots of individual
 draws (for `ggplot2`-based plotting of `rvar`s, see the next section and the
 [ggdist](https://mjskay.github.io/ggdist/) package). For example, it can be used
 to construct a parallel coordinates plot:
