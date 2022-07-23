@@ -7,7 +7,14 @@
 \alias{str.rvar}
 \title{Print or format a random variable}
 \usage{
-\method{print}{rvar}(x, ..., summary = NULL, digits = 2, color = TRUE)
+\method{print}{rvar}(
+  x,
+  ...,
+  summary = NULL,
+  digits = 2,
+  color = TRUE,
+  width = getOption("width")
+)
 
 \method{format}{rvar}(x, ..., summary = NULL, digits = 2, color = FALSE)
 

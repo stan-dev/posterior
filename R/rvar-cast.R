@@ -148,14 +148,15 @@ vec_proxy.rvar = function(x, ...) {
     .draws = draws_of(x)
     out <- vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
 
-    if (is.factor(.draws)) {
-      .class <- c(if (is.ordered(.draws)) "ordered", "factor")
-      .levels <- levels(.draws)
-      for (i in seq_along(out)) {
-        attr(out[[i]], "levels") <- .levels
-        attr(out[[i]], "class") <- .class
-      }
-    }
+    # TODO: factor this out
+    # if (is.factor(.draws)) {
+    #   .class <- c(if (is.ordered(.draws)) "ordered", "factor")
+    #   .levels <- levels(.draws)
+    #   for (i in seq_along(out)) {
+    #     attr(out[[i]], "levels") <- .levels
+    #     attr(out[[i]], "class") <- .class
+    #   }
+    # }
 
     .nchains <- nchains(x)
     for (i in seq_along(out)) {
@@ -197,28 +198,28 @@ vec_restore.rvar <- function(x, ...) {
   # if this is a factor, make it one again
   # TODO: factor this out into something like conform_rvar_draws_subtype()
   # and use union() and match() to conform levels
-  if (length(x) > 0) {
-    # check for factors
-    is_factor <- unique(vapply(x, is.factor, logical(1)))
-    if (isTRUE(is_factor)) {
-      # combining factors; to be conservative they must be compatible
-      .levels <- unique(lapply(x, levels))
-      if (length(.levels) > 1) {
-        stop_no_call("Cannot combine factor rvars with different levels.")
-      }
-      .levels <- .levels[[1]]
-
-      .ordered <- unique(vapply(x, is.ordered, logical(1)))
-      if (length(.ordered) > 1) {
-        stop_no_call("Cannot combine ordered and unordered factor rvars.")
-      }
-
-      attr(.draws, "levels") <- .levels
-      attr(.draws, "class") <- c(if (.ordered) "ordered", "factor")
-    } else if (length(is_factor) > 1) {
-      stop_no_call("Cannot combine factor rvars with non-factor rvars.")
-    }
-  }
+  # if (length(x) > 0) {
+  #   # check for factors
+  #   is_factor <- unique(vapply(x, is.factor, logical(1)))
+  #   if (isTRUE(is_factor)) {
+  #     # combining factors; to be conservative they must be compatible
+  #     .levels <- unique(lapply(x, levels))
+  #     if (length(.levels) > 1) {
+  #       stop_no_call("Cannot combine factor rvars with different levels.")
+  #     }
+  #     .levels <- .levels[[1]]
+  #
+  #     .ordered <- unique(vapply(x, is.ordered, logical(1)))
+  #     if (length(.ordered) > 1) {
+  #       stop_no_call("Cannot combine ordered and unordered factor rvars.")
+  #     }
+  #
+  #     attr(.draws, "levels") <- .levels
+  #     attr(.draws, "class") <- c(if (.ordered) "ordered", "factor")
+  #   } else if (length(is_factor) > 1) {
+  #     stop_no_call("Cannot combine factor rvars with non-factor rvars.")
+  #   }
+  # }
 
   # determine the number of chains
   nchains_or_null <- lapply(x, function(x) if (dim(x)[[2]] %||% 1 == 1) NULL else attr(x, "nchains"))

@@ -111,7 +111,7 @@ new_rvar <- function(x = double(), .nchains = 1L) {
     x <- double()
   }
 
-  x <- cleanup_draw_dims(as.array(x))
+  x <- cleanup_rvar_draws(x)
 
   .ndraws <- dim(x)[[1]]
   .nchains <- as_one_integer(.nchains)
@@ -121,13 +121,10 @@ new_rvar <- function(x = double(), .nchains = 1L) {
     list(),
     draws = x,
     nchains = .nchains,
-    class = c("rvar", "vctrs_vctr", "list"),
+    class = get_rvar_class(x),
     cache = new.env(parent = emptyenv())
   )
 }
-
-#' @importFrom methods setOldClass
-setOldClass(c("rvar", "vctrs_vctr", "list"))
 
 
 # manipulating raw draws array --------------------------------------------
@@ -215,7 +212,7 @@ draws_of <- function(x, with_chains = FALSE) {
   } else {
     draws <- value
   }
-  attr(x, "draws") <- cleanup_draw_dims(draws)
+  attr(x, "draws") <- cleanup_rvar_draws(draws)
 
   x <- invalidate_rvar_cache(x)
   x
@@ -314,6 +311,45 @@ all.equal.rvar <- function(target, current, ...) {
 
   if (is.null(result)) TRUE else result
 }
+
+
+# helpers: classes --------------------------------------------------------
+
+get_rvar_class <- function(x) {
+  UseMethod("get_rvar_class")
+}
+
+#'@export
+get_rvar_class.default <- function(x) {
+  c("rvar", "vctrs_vctr", "list")
+}
+
+#'@export
+get_rvar_class.factor <- function(x) {
+  c("rvar_factor", NextMethod())
+}
+
+#'@export
+get_rvar_class.ordered <- function(x) {
+  c("rvar_ordered", NextMethod())
+}
+
+#'@export
+get_rvar_class.logical <- function(x) {
+  c("rvar_logical", "rvar_numberlike", NextMethod())
+}
+
+#'@export
+get_rvar_class.numeric <- function(x) {
+  c("rvar_numeric", "rvar_numberlike", NextMethod())
+}
+
+#' @importFrom methods setOldClass
+setOldClass(get_rvar_class(NULL))
+setOldClass(get_rvar_class(factor()))
+setOldClass(get_rvar_class(ordered(NULL)))
+setOldClass(get_rvar_class(logical()))
+setOldClass(get_rvar_class(numeric()))
 
 
 # helpers: validation -----------------------------------------------------------------
@@ -631,10 +667,11 @@ drop_chain_dim <- function(x) {
   out
 }
 
-#' Clean up the dimensions of an array of draws. Ensures that dim and dimnames
-#' are set, that the array has at least two dimensions (first one is draws), etc.
+#' Clean up the data type and dimensions of an array of draws intended to back an rvar.
+#' Ensures that dim and dimnames are set, that the array has at least two dimensions
+#' (first one is draws), etc.
 #' @noRd
-cleanup_draw_dims <- function(x) {
+cleanup_rvar_draws <- function(x) {
   if (length(x) == 0) {
     # canonical NULL rvar is at least 1 draw of nothing
     # this ensures that (e.g.) extending a null rvar
@@ -655,6 +692,15 @@ cleanup_draw_dims <- function(x) {
   # ensure we have an index for draws
   if (length(rownames(x)) == 0) {
     rownames(x) <- as.character(seq_rows(x))
+  }
+
+  # if x is factor-like (with "level" attr), make it a factor
+  if (!is.factor(x) && !is.null(attr(x, "levels"))) {
+    .dim <- dim(x)
+    .dimnames <- dimnames(x)
+    x <- factor(x, labels = attr(x, "levels"))
+    dim(x) <- .dim
+    dimnames(x) <- .dimnames
   }
 
   x
