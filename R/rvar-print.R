@@ -61,7 +61,12 @@ print.rvar <- function(x, ..., summary = NULL, digits = 2, color = TRUE) {
     summary_string <- pillar::style_subtle(summary_string)
   }
   cat0(rvar_type_abbr(x), " ", summary_string, "\n")
-  print(format(x, summary = summary, digits = digits, color = FALSE, pad_right = " "), quote = FALSE)
+  x_string <- format(x, summary = summary, digits = digits, color = FALSE, pad_right = " ")
+  if (length(x_string) == 0) {
+    cat0("rvar()\n")
+  } else {
+    print(x_string, quote = FALSE)
+  }
   invisible(x)
 }
 
@@ -194,9 +199,8 @@ rvar_type_abbr <- function(x, dim1 = TRUE) {
 format_rvar_draws <- function(
   draws, ..., pad_left = "", pad_right = "", summary = NULL, digits = 2, color = FALSE, trim = FALSE
 ) {
-  if (prod(dim(draws)) == 0) {
-    # NULL: no draws
-    return(NULL)
+  if (length(draws) == 0) {
+    return(character())
   }
   summary_functions <- get_summary_functions(summary)
 

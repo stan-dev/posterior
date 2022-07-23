@@ -1,6 +1,6 @@
 Package: posterior
 Title: Tools for Working with Posterior Distributions
-Version: 1.2.2
+Version: 1.2.2.9000
 Date: 2022-06-09
 Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
@@ -22,9 +22,10 @@ Description: Provides useful tools for both users and developers of packages
   (d) Provide lightweight implementations of state of the art posterior 
   inference diagnostics. References: Vehtari et al. (2021) 
   <doi:10.1214/20-BA1221>.
-Depends: 
+Depends:
   R (>= 3.2.0)
 Imports:
+  methods,
   abind,
   checkmate,
   rlang (>= 0.4.7),
@@ -52,5 +53,5 @@ LazyData: false
 URL: https://mc-stan.org/posterior/, https://discourse.mc-stan.org/
 BugReports: https://github.com/stan-dev/posterior/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr

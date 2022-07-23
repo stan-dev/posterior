@@ -107,7 +107,7 @@ rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = 1L, with_c
 
 #' @importFrom vctrs new_vctr
 new_rvar <- function(x = double(), .nchains = 1L) {
-  if (length(x) == 0) {
+  if (is.null(x)) {
     x <- double()
   }
 
@@ -125,6 +125,9 @@ new_rvar <- function(x = double(), .nchains = 1L) {
     cache = new.env(parent = emptyenv())
   )
 }
+
+#' @importFrom methods setOldClass
+setOldClass(c("rvar", "vctrs_vctr", "list"))
 
 
 # manipulating raw draws array --------------------------------------------
@@ -288,7 +291,7 @@ anyDuplicated.rvar <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
 # then return the corresponding margin for draws_of(x)
 check_rvar_margin <- function(x, MARGIN) {
   if (!(1 <= MARGIN && MARGIN <= length(dim(x)))) {
-    stop_no_call("MARGIN = ", MARGIN, " is invalid for dim = ", paste0(dim(x), collapse = ","))
+    stop_no_call("MARGIN = ", MARGIN, " is invalid for length(dim(x)) = ", length(dim(x)))
   }
   MARGIN + 1
 }
@@ -325,13 +328,16 @@ all.equal.rvar <- function(target, current, ...) {
 check_rvar_yank_index = function(x, i, ...) {
   index <- dots_list(i, ..., .preserve_empty = TRUE, .ignore_empty = "none")
 
-  if (any(lengths(index)) > 1) {
+  index_lengths <- lengths(index)
+  if (any(index_lengths == 0)) {
+    stop_no_call("Cannot select zero elements with `[[` in an rvar.")
+  } else if (any(index_lengths > 1)) {
     stop_no_call("Cannot select more than one element per index with `[[` in an rvar.")
-  } else if (any(sapply(index, function(x) is_missing(x) || is.na(x)))) {
+  } else if (any(vapply(index, function(x) is_missing(x) || is.na(x), logical(1)))) {
     stop_no_call("Missing indices not allowed with `[[` in an rvar.")
-  } else if (any(sapply(index, is.logical))) {
+  } else if (any(vapply(index, is.logical, logical(1)))) {
     stop_no_call("Logical indices not allowed with `[[` in an rvar.")
-  } else if (any(sapply(index, function(x) x < 0))) {
+  } else if (any(vapply(index, function(x) x < 0, logical(1)))) {
     stop_no_call("subscript out of bounds")
   }
 
@@ -550,8 +556,8 @@ broadcast_draws <- function(x, .ndraws, keep_constants = FALSE) {
 flatten_array = function(x, x_name = NULL) {
   # determine new dimension names in the form x,y,z
   # start with numeric names
-  dimname_lists = lapply(dim(x), seq_len)
-  .dimnames = dimnames(x)
+  dimname_lists <- lapply(dim(x), seq_len)
+  .dimnames <- dimnames(x)
   if (!is.null(.dimnames)) {
     # where character names are provided, use those instead of the numeric names
     dimname_lists = lapply(seq_along(dimname_lists), function(i) .dimnames[[i]] %||% dimname_lists[[i]])
@@ -560,18 +566,20 @@ flatten_array = function(x, x_name = NULL) {
   dimname_grid <- expand.grid(dimname_lists)
   new_names <- apply(dimname_grid, 1, paste0, collapse = ",")
 
-  dim(x) <- prod(dim(x))
+  .length <- length(x)
+  old_dim <- dim(x)
+  dim(x) <- .length
 
   # update variable names
   if (is.null(x_name)) {
     # no base name for x provided, just use index names
     names(x) <- new_names
-  } else if (length(x) > 1) {
+  } else if (.length == 1 && (isTRUE(old_dim == 1) || length(old_dim) == 0)) {
+    # scalar, use the provided base name
+    names(x) <- x_name
+  } else if (.length >= 1) {
     # rename the variables with their indices in brackets
     names(x) <- paste0(x_name, "[", new_names %||% seq_along(x), "]")
-  } else {
-    # just one variable, use the provided base name
-    names(x) <- x_name
   }
 
   x
@@ -634,10 +642,11 @@ drop_chain_dim <- function(x) {
 #' @noRd
 cleanup_draw_dims <- function(x) {
   if (length(x) == 0) {
-    # canonical NULL rvar is 1 draw of nothing
+    # canonical NULL rvar is at least 1 draw of nothing
     # this ensures that (e.g.) extending a null rvar
     # with x[1] = something works.
-    dim(x) <- c(1, 0)
+    ndraws <- max(NROW(x), 1)
+    dim(x) <- c(ndraws, 0)
   }
   else if (length(dim(x)) <= 1) {
     # 1d vectors get treated as a single variable

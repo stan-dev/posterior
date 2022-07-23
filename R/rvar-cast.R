@@ -39,7 +39,7 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
   if (!is_rvar(out)) {
     out <- vec_cast(out, new_rvar())
   }
-  if (!length(out)) {
+  if (is.null(out)) {
     out <- rvar()
   }
 

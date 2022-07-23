@@ -6,6 +6,9 @@ rvar_from_array = function(x) {
   new_rvar(aperm(x, c(last_dim, seq_len(last_dim - 1))))
 }
 
+
+# [[ indexing -------------------------------------------------------------
+
 test_that("indexing with [[ works on a vector", {
   x_array <- array(1:20, dim = c(5,4), dimnames = list(NULL, A = paste0("a", 1:4)))
   x = new_rvar(x_array)
@@ -18,18 +21,19 @@ test_that("indexing with [[ works on a vector", {
   expect_equal(x[["a2"]], new_rvar(x_array_ref[,2, drop = FALSE]))
 
   expect_error(x[[]])
-  expect_error(x[[NA]])
-  expect_error(x[[NA_integer_]])
-  expect_error(x[[6]])
-  expect_error(x[[1,1]])
-  expect_error(x[[1,1,1]])
-  expect_error(x[[NULL]])
-  expect_error(x[[-1]])
+  expect_error(x[[NA]], "Missing indices not allowed")
+  expect_error(x[[NA_integer_]], "Missing indices not allowed")
+  expect_error(x[[6]], "out of bounds")
+  expect_error(x[[1,1]], "out of bounds")
+  expect_error(x[[1,1,1]], "out of bounds")
+  expect_error(x[[NULL]], "Cannot select zero elements")
+  expect_error(x[[1:2]], "Cannot select more than one element")
+  expect_error(x[[-1]], "out of bounds")
 
   # different behavior from base vectors
   # base vectors convert these to numeric
-  expect_error(x[[TRUE]])
-  expect_error(x[[FALSE]])
+  expect_error(x[[TRUE]], "Logical indices not allowed")
+  expect_error(x[[FALSE]], "Logical indices not allowed")
 })
 
 test_that("indexing with [[ works on a matrix", {
@@ -47,9 +51,9 @@ test_that("indexing with [[ works on a matrix", {
   expect_equal(x[[2,3]], new_rvar(x_array[,2,3, drop = TRUE]))
 
   # invalid indexing should result in errors
-  expect_error(x[[1,]])
-  expect_error(x[[1,1,1]])
-  expect_error(x[[13]])
+  expect_error(x[[1,]], "Missing indices not allowed")
+  expect_error(x[[1,1,1]], "out of bounds")
+  expect_error(x[[13]], "out of bounds")
 
   # different from base vectors
   # don't allow name-based [[ indexing on 2+D arrays
@@ -60,6 +64,9 @@ test_that("indexing with [[ works on a matrix", {
   x_null[[1]] <- 5
   expect_equal(x_null, rvar(5))
 })
+
+
+# [[ assignment -----------------------------------------------------------
 
 test_that("assignment with [[ works", {
   x_array = array(
@@ -85,6 +92,8 @@ test_that("assignment with [[ works", {
     new_rvar({xr <- x_array; xr[,2,3] <- c(1,2); xr})
   )
 
+  expect_error({x2 <- x; x2[[1,1,1]] <- 1}, "out of bounds")
+
   # constant should have ndraws increased to value when assigned to
   x = new_rvar(array(1:2, dim = c(1,2)))
   expect_equal(
@@ -92,9 +101,12 @@ test_that("assignment with [[ works", {
     new_rvar(array(c(1,2,2,2), dim = c(2,2)))
   )
 
-  expect_error({x2 <- x; x2[[-1]] <- 1})
+  expect_error({x2 <- x; x2[[-1]] <- 1}, "out of bounds")
   expect_error({x2 <- rvar(1:10); x2[[2]] <- c(4,5,6)})
 })
+
+
+# [ indexing --------------------------------------------------------------
 
 test_that("indexing with [ works on a vector", {
   x_array = array(1:20, dim = c(4,5), dimnames = list(A = paste0("a", 1:4), NULL))
@@ -126,7 +138,7 @@ test_that("indexing with [ works on a vector", {
   expect_equal(x[NA_integer_], rvar_from_array(x_array[NA_integer_,, drop = FALSE]))
   expect_equal(x[rep(NA_integer_,7)], rvar_from_array(x_array[rep(NA_integer_,7),, drop = FALSE]))
 
-  expect_equal(x[NULL], new_rvar())
+  expect_equal(x[NULL], new_rvar(array(numeric(), dim = c(5, 0))))
 
   expect_error(x[1,1])
 
@@ -182,7 +194,7 @@ test_that("indexing with [ works on an array", {
   expect_equal(x[NA_integer_,], rvar_from_array(x_array[NA_integer_,,, drop = FALSE]))
   expect_equal(x[rep(NA_integer_,7)], rvar_from_array(array(rep(NA_integer_,14), dim = c(7,2))))
 
-  expect_equal(x[NULL], new_rvar())
+  expect_equal(x[NULL], new_rvar(array(numeric(), dim = c(2, 0))))
 
   # logical index the length of the array works
   flat_index <- c(
@@ -200,7 +212,13 @@ test_that("indexing with [ works on an array", {
   x_array <- array(1:24, dim = c(2,2,3,2))
   x <- rvar_from_array(x_array)
   expect_equal(x[rbind(c(1,2,3),c(2,2,3),c(2,1,1))], x[c(11,12,2)])
+
+  # indexing while leaving remaining indices to be filled in automatically
+  expect_equal(x[1,], x[1,,])
 })
+
+
+# [ assignment ------------------------------------------------------------
 
 test_that("assignment with [ works", {
   x_array = array(

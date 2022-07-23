@@ -174,6 +174,70 @@ chol.rvar <- function(x, ...) {
   new_rvar(result, .nchains = nchains(x))
 }
 
+#' @importFrom methods setGeneric
+#' @export
+setGeneric("diag")
+
+#' Matrix diagonals (including for random variables)
+#'
+#' Extract the diagonal of a matrix or construct a matrix, including random
+#' matrices (2-dimensional [`rvar`]s). Makes [`base::diag()`] generic.
+#'
+#' @inheritParams base::diag
+#' @param x (numeric,rvar) a matrix, vector, 1D array, missing, or a 1- or
+#' 2-dimensional [`rvar`].
+#'
+#' @details
+#' Makes [`base::diag()`] into a generic function. See that function's documentation
+#' for usage with [`numeric`]s and for usage of [`diag<-`], which is also supported
+#' by [`rvar`].
+#'
+#' @return
+#'
+#' For [`rvar`]s, has two modes:
+#'
+#' 1. `x` is a matrix-like [`rvar`]: it returns the diagonal as a vector-like [`rvar`]
+#' 2. `x` is a vector-like [`rvar`]: it returns a matrix-like [`rvar`] with `x` as
+#' the diagonal and zero for off-diagonal entries.
+#'
+#' @seealso [`base::diag()`]
+#'
+#' @examples
+#'
+#' # Sigma is a 3x3 covariance matrix
+#' Sigma <- as_draws_rvars(example_draws("multi_normal"))$Sigma
+#' Sigma
+#'
+#' diag(Sigma)
+#'
+#' diag(Sigma) <- 1:3
+#' Sigma
+#'
+#' diag(as_rvar(1:3))
+#'
+#' @importFrom methods setMethod callNextMethod
+#' @export
+setMethod("diag", signature(x = "rvar"), function(x = 1, nrow, ncol, names = TRUE) {
+  if (length(dim(x)) > 1) {
+    # base implementation of diag() works on rvars except when x is a vector
+    callNextMethod()
+  } else {
+    if (missing(nrow)) {
+      nrow <- length(x)
+    }
+    if (missing(ncol)) {
+      ncol <- nrow
+    }
+    out <- as_rvar(matrix(rep(0, nrow * ncol), nrow = nrow, ncol = ncol))
+    n <- min(nrow, ncol)
+    x <- rep_len(x, n)
+    i <- seq_len(n)
+    out[cbind(i, i)] <- x
+    out
+  }
+})
+
+
 # transpose and permutation -----------------------------------------------
 
 #' @export

@@ -178,7 +178,8 @@ test_that("matrix multiplication works", {
 test_that("diag works", {
   Sigma <- as_draws_rvars(example_draws("multi_normal"))$Sigma
 
-  expect_equal(diag(Sigma), c(Sigma[1,1], Sigma[2,2], Sigma[3,3]))
+  sigma_diag <- c(Sigma[1,1], Sigma[2,2], Sigma[3,3])
+  expect_equal(diag(Sigma), sigma_diag)
 
   Sigma_ref <- Sigma
   Sigma_ref[1,1] <- 2
@@ -188,6 +189,27 @@ test_that("diag works", {
   Sigma_test <- Sigma
   diag(Sigma_test) <- 2:4
   expect_equal(Sigma_test, Sigma_ref)
+
+  Sigma_ref <- Sigma
+  Sigma_ref[1,2:3] <- 0
+  Sigma_ref[2,c(1,3)] <- 0
+  Sigma_ref[3,1:2] <- 0
+  expect_equal(diag(sigma_diag), Sigma_ref)
+  expect_equal(diag(sigma_diag, nrow = 2), Sigma_ref[1:2,1:2])
+  expect_equal(diag(sigma_diag, nrow = 2, ncol = 2), Sigma_ref[1:2,1:2])
+  expect_equal(diag(sigma_diag, nrow = 2, ncol = 3), Sigma_ref[1:2,])
+  expect_equal(diag(sigma_diag, nrow = 1, ncol = 3), Sigma_ref[1,])
+  expect_equal(diag(sigma_diag, nrow = 0, ncol = 3), rvar(array(numeric(), dim = c(400,0)), nchains = 4))
+  expect_equal(diag(sigma_diag, ncol = 2), Sigma_ref[,1:2])
+  expect_equal(diag(sigma_diag, ncol = 1), Sigma_ref[,1])
+  expect_equal(diag(sigma_diag, ncol = 0), rvar(array(numeric(), dim = c(400,0)), nchains = 4))
+  expect_equal(diag(sigma_diag, nrow = 4), cbind(rbind(Sigma_ref, 0), c(rvar(0), 0, 0, Sigma[1,1])))
+
+  # ensure our override of base diag does not break its weird corner cases
+  expect_equal(diag(matrix(1:9, nrow = 3)), c(1, 5, 9))
+  expect_equal(diag(1:2), matrix(c(1, 0, 0, 2), nrow = 2))
+  expect_equal(diag(3L), matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1), nrow = 3))
+  expect_equal(diag(nrow = 3), matrix(c(1, 0, 0, 0, 1, 0, 0, 0, 1), nrow = 3))
 })
 
 test_that("Cholesky decomposition works", {
@@ -200,6 +222,8 @@ test_that("Cholesky decomposition works", {
   )
 
   expect_equal(chol(Sigma), rdo(chol(Sigma)))
+
+  expect_error(chol(rvar(1)), "must be a random matrix")
 })
 
 # array transpose and permutation -----------------------------------------

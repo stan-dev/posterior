@@ -329,6 +329,20 @@ test_that("as_draws_rvars correctly reshapes missing, out-of-order, and string a
   expect_equal(as_draws_rvars(as_draws_array(x_rvars2)), x_rvars2)
 })
 
+test_that("as_draws_rvars handles integer indices < 1", {
+  draws_df <- draws_df(`x[-1]` = 1:2, `x[-3]` = 3:4, `x[-2]` = 5:6)
+
+  x <- rvar(array(c(3:4, 5:6, 1:2), dim = c(2, 3), dimnames = list(NULL, -3:-1)))
+  expect_equal(as_draws_rvars(draws_df), draws_rvars(x = x))
+})
+
+test_that("as_draws_rvars and draws_rvars handle unnamed variables", {
+  # as_draws_rvars should provide a default name
+  expect_equal(as_draws_rvars(list(rvar(1:2))), draws_rvars(`...1` = rvar(1:2)))
+  # draws_rvars should throw an error
+  expect_error(draws_rvars(rvar(1:2)), "All variables must be named")
+})
+
 test_that("as_draws_rvars can accept lists of lists as input", {
   # for https://github.com/stan-dev/posterior/issues/192
   draws_list <- as_draws_list(example_draws())
@@ -355,4 +369,98 @@ test_that("draws_df drops the draws class when metadata is removed", {
   draws_df <- as_draws_df(example_draws())
 
   expect_equal(dplyr::count(draws_df, .chain), tibble::tibble(.chain = 1:4, n = 100L))
+})
+
+test_that("as_draws_rvars can parse nested and malformed indices", {
+  draws_df <- draws_df(`x[y[1],1]` = 1:2, `x[y[2,1]` = 3:4, `x[y[2,2]` = 4:5, `y[` = 5:6, `y]` = 6:7)
+
+  draws_rvars <- draws_rvars(
+    x = rvar(array(
+      c(1:4, NA_real_, NA_real_, 4:5),
+      dim = c(2, 2, 2),
+      dimnames = list(NULL, c("y[1]", "y[2"), NULL)
+    )),
+    `y[` = rvar(5:6),
+    `y]` = rvar(6:7)
+  )
+  expect_equal(as_draws_rvars(draws_df), draws_rvars)
+})
+
+test_that("draws_rvars broadcasts 0-length rvars to the size of other rvars", {
+  draws <- draws_rvars(x = rvar(), y = rvar(1:10))
+
+  expect_equal(draws_of(draws$x), array(numeric(), dim = c(10, 0), dimnames = list(1:10)))
+})
+
+test_that("0-length rvars can be cast to draws formats", {
+  rvar0 <- rvar(array(numeric(), dim = c(10, 0)), nchains = 2)
+
+  draws_rvars <- as_draws_rvars(rvar0)
+  expect_equal(ndraws(draws_rvars), 10)
+  expect_equal(niterations(draws_rvars), 5)
+  expect_equal(nchains(draws_rvars), 2)
+  expect_equal(nvariables(draws_rvars), 1)
+
+  draws_matrix <- as_draws_matrix(rvar0)
+  expect_equal(ndraws(draws_matrix), 10)
+  expect_equal(niterations(draws_matrix), 5)
+  expect_equal(nchains(draws_matrix), 2)
+  # draws_matrix can't represent 0-length variables, they are dropped
+  expect_equal(nvariables(draws_matrix), 0)
+
+  draws_array <- as_draws_array(rvar0)
+  expect_equal(ndraws(draws_array), 10)
+  expect_equal(niterations(draws_array), 5)
+  expect_equal(nchains(draws_array), 2)
+  # draws_array can't represent 0-length variables, they are dropped
+  expect_equal(nvariables(draws_array), 0)
+
+  draws_df <- as_draws_df(rvar0)
+  expect_equal(ndraws(draws_df), 10)
+  expect_equal(niterations(draws_df), 5)
+  expect_equal(nchains(draws_df), 2)
+  # draws_df can't represent 0-length variables, they are dropped
+  expect_equal(nvariables(draws_df), 0)
+
+  draws_list <- as_draws_list(rvar0)
+  expect_equal(nchains(draws_list), 2)
+  # draws_df can't represent 0-length variables, or the iterations / draws
+  # containing them, they are dropped
+  expect_equal(ndraws(draws_list), 0)
+  expect_equal(niterations(draws_list), 0)
+  expect_equal(nvariables(draws_list), 0)
+
+  # a zero-length draws_rvars with no names should also be equivalent
+  draws_rvars_0 <- draws_rvars(x = rvar0)
+  names(draws_rvars_0) <- NULL
+  expect_equal(as_draws_matrix(draws_rvars_0), as_draws_matrix(draws_rvars))
+  expect_equal(as_draws_array(draws_rvars_0), as_draws_array(draws_rvars))
+  expect_equal(as_draws_df(draws_rvars_0), as_draws_df(draws_rvars))
+  expect_equal(as_draws_list(draws_rvars_0), as_draws_list(draws_rvars))
+
+  # now a draws_rvars with one 0-length and one non-0-length variable
+  y <- rvar(1:10, nchains = 2)
+  draws_rvars_xy <- draws_rvars(x = rvar0, y = y)
+  draws_rvars_y <- draws_rvars(y = y)
+  expect_equal(as_draws_matrix(draws_rvars_xy), as_draws_matrix(draws_rvars_y))
+  expect_equal(as_draws_array(draws_rvars_xy), as_draws_array(draws_rvars_y))
+  expect_equal(as_draws_df(draws_rvars_xy), as_draws_df(draws_rvars_y))
+  expect_equal(as_draws_list(draws_rvars_xy), as_draws_list(draws_rvars_y))
+
+})
+
+test_that("1-length rvars can be cast to other formats", {
+  # scalars should stay as scalars...
+  x <- rvar(1:10)
+  expect_equal(as_draws_array(x), draws_array(x = 1:10))
+  expect_equal(as_draws_df(x), draws_df(x = 1:10))
+  expect_equal(as_draws_list(x), draws_list(x = 1:10))
+  expect_equal(as_draws_matrix(x), draws_matrix(x = 1:10))
+
+  # ... but extra dims should not be dropped
+  x <- rvar(array(1:10, dim = c(10, 1, 1)))
+  expect_equal(as_draws_array(x), draws_array(`x[1,1]` = 1:10))
+  expect_equal(as_draws_df(x), draws_df(`x[1,1]` = 1:10))
+  expect_equal(as_draws_list(x), draws_list(`x[1,1]` = 1:10))
+  expect_equal(as_draws_matrix(x), draws_matrix(`x[1,1]` = 1:10))
 })

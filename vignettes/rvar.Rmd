@@ -180,6 +180,7 @@ includes:
 | Cumulative functions        | `cumsum()`, `cumprod()`, `cummax()`, `cummin()` |
 | Array transposition         | `t()`, `aperm()` |
 | Matrix decomposition        | `chol()` |
+| Matrix diagonals            | `diag()` |
 
 ## Expectations and summary functions
 
@@ -476,5 +477,4 @@ data.frame(x = c("a","b","c"), y)
 
 This makes them convenient for adding predictions to a data frame alongside
 the data used to generate the predictions. `rvar`s can then be visualized with ggplot2
-using the `stat_dist_...` family of geometries in the [ggdist](https://mjskay.github.io/ggdist/)
-package.
+using the `xdist` and `ydist` aesthetics with the stat_...` family of geometries in the [ggdist](https://mjskay.github.io/ggdist/) package.

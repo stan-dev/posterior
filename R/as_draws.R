@@ -104,7 +104,7 @@ check_draws_object <- function(x) {
 # use the 'unique' naming strategy of tibble
 # @param nvariables number of variables
 default_variables <- function(nvariables) {
-  paste0("...", seq_len(nvariables))
+  sprintf("...%s", seq_len(nvariables))
 }
 
 # validate draws vectors per variable
