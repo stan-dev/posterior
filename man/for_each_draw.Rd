@@ -15,8 +15,13 @@ variables in \code{x} by name. This expression will be executed once per draw
 of \code{x}, where references to variables in \code{x} resolve to the value of that
 variable in that draw. The expression supports \link{quasiquotation}.}
 }
+\value{
+As \code{for_each_draw()} is used primarily for its side effects (the expression
+executed for each draw of \code{x}), it returns the input \code{x} invisibly.
+}
 \description{
-Executes an expression once for every draw in a \code{draws} object.
+Executes an expression once for every draw in a \code{draws} object. Used
+primarily for its side effects and returns the input \code{x} invisibly.
 }
 \details{
 If \code{x} is not in the \code{\link{draws_rvars}} format, it is first converted to that

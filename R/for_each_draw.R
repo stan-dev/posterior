@@ -1,6 +1,7 @@
 #' Loop over draws
 #'
-#' Executes an expression once for every draw in a `draws` object.
+#' Executes an expression once for every draw in a `draws` object. Used
+#' primarily for its side effects and returns the input `x` invisibly.
 #'
 #' @template args-methods-x
 #' @param expr (expression) A bare expression that can contain references to
@@ -18,6 +19,10 @@
 #' `for_each_draw()`, so it can use variables in that environment (however, due
 #' to the use of data masking, to modify variables in that environment, one
 #' must use `<<-`.)
+#'
+#' @returns
+#' As `for_each_draw()` is used primarily for its side effects (the expression
+#' executed for each draw of `x`), it returns the input `x` invisibly.
 #'
 #' @examples
 #' eight_schools <- as_draws_rvars(example_draws())
@@ -43,12 +48,12 @@
 #' @importFrom rlang eval_tidy
 #' @export
 for_each_draw <- function(x, expr) {
-  x <- as_draws_rvars(x)
+  x_rvars <- as_draws_rvars(x)
   expr <- enquo(expr)
   env <- parent.frame()
 
-  for (i in seq_len(ndraws(x))) {
-    variables <- lapply(x, function(variable) {
+  for (i in seq_len(ndraws(x_rvars))) {
+    variables <- lapply(x_rvars, function(variable) {
       draws <- draws_of(variable)
       .dim <- dim(variable)
       ndim <- length(.dim)
@@ -70,4 +75,6 @@ for_each_draw <- function(x, expr) {
     variables$.draw = i
     eval_tidy(expr, data = variables, env = env)
   }
+
+  invisible(x)
 }
