@@ -738,6 +738,18 @@ while_preserving_dims <- function(f, x, ...) {
   x
 }
 
+#' Execute x <- f(x, ...) but preserve class and levels of x.
+#' Useful for functions that do not change the length of x but which levels.
+#' @noRd
+while_preserving_levels <- function(f, x, ...) {
+  .class <- oldClass(x)
+  .levels <- levels(x)
+  x <- f(x, ...)
+  oldClass(x) <- .class
+  levels(x) <- .levels
+  x
+}
+
 
 # helpers: applying functions over rvars ----------------------------------
 

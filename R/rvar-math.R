@@ -262,6 +262,6 @@ t.rvar = function(x) {
 
 #' @export
 aperm.rvar = function(a, perm, ...) {
-  .draws <- aperm(draws_of(a), c(1, perm + 1), ...)
-  new_rvar(.draws, .nchains = nchains(a))
+  draws_of(a) <- while_preserving_levels(aperm, draws_of(a), c(1, perm + 1), ...)
+  a
 }

@@ -41,6 +41,7 @@ as_rvar_ordered <- function(x) {
 #' @export
 unique.rvar_factor <- function(x, incomparables = FALSE, MARGIN = 1, ...) {
   draws_margin <- check_rvar_margin(x, MARGIN)
+
   .draws <- draws_of(x)
   .levels <- levels(.draws)
   .class <- oldClass(.draws)

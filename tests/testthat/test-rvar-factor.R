@@ -72,55 +72,10 @@ test_that("rvar_factors work in tibbles", {
   expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref2)
 })
 
-# TODO: finish converting tests below
-
-# broadcasting ------------------------------------------------------------
-
-test_that("broadcast_array works", {
-  expect_equal(broadcast_array(5, c(1,2,3,1)), array(rep(5, 6), dim = c(1,2,3,1)))
-  expect_equal(
-    broadcast_array(array(1:4, c(1,4), dimnames = list("x", letters[1:4])), c(2,4)),
-    array(rep(1:4, each = 2), c(2,4), dimnames = list(NULL, letters[1:4]))
-  )
-  expect_equal(
-    broadcast_array(array(1:4, c(4,1)), c(4,2)),
-    array(c(1:4, 1:4), c(4,2))
-  )
-  expect_equal(
-    broadcast_array(array(1:2, dimnames = list(c("a","b"))), c(2,1,1,1)),
-    array(1:2, c(2,1,1,1), dimnames = list(c("a","b"), NULL, NULL, NULL))
-  )
-
-  expect_error(broadcast_array(array(1:9, dim = c(3,3)), c(1,9)))
-  expect_error(broadcast_array(array(1:9, dim = c(3,3)), c(9)))
-})
-
-
-# conforming chains / draws -----------------------------------------------
-
-test_that("warnings for unequal draws/chains are correct", {
-  options(posterior.warn_on_merge_chains = TRUE)
-  expect_warning(
-    expect_equal(rvar(1:10) + rvar(1:10, nchains = 2), rvar(1:10 + 1:10)),
-    "Chains were dropped due to chain information not matching"
-  )
-  options(posterior.warn_on_merge_chains = FALSE)
-
-  expect_error(
-    draws_rvars(x = rvar(1:10), y = rvar(1:11)),
-    "variables have different number of draws"
-  )
-
-  expect_error(
-    rvar(1:10, nchains = 0),
-    "chains must be >= 1"
-  )
-})
-
 # rep ---------------------------------------------------------------------
 
 test_that("rep works", {
-  x_array = array(1:10, dim = c(5,2))
+  x_array = array(letters[1:10], dim = c(5,2))
   x = rvar(x_array)
 
   expect_equal(rep(x, times = 3), new_rvar(cbind(x_array, x_array, x_array)))
@@ -135,23 +90,29 @@ test_that("rep works", {
 # all.equal ---------------------------------------------------------------------
 
 test_that("all.equal works", {
-  x_array = array(1:10, dim = c(5,2))
-  x = rvar(x_array)
+  x_array <- array(letters[1:10], dim = c(5,2))
+  x <- rvar(x_array)
+  x_array_ordered <- ordered(x_array)
+  dim(x_array_ordered) <- c(5,2)
+  x_ordered <- rvar(x_array_ordered)
 
   expect_true(all.equal(x, x))
-  expect_true(!isTRUE(all.equal(x, x + 1)))
+  expect_true(!isTRUE(all.equal(x, x_ordered)))
   expect_true(!isTRUE(all.equal(x, "a")))
 })
 
 # apply functions ---------------------------------------------------------
 
 test_that("apply family functions work", {
-  x_array = array(1:24, dim = c(2,3,4))
+  x_array = array(c("a","a","a","a", letters[1:20]), dim = c(2,3,4), dimnames = list(NULL, letters[1:3], NULL))
   x = rvar(x_array)
 
-  expect_equal(lapply(x, function(x) sum(draws_of(x))), as.list(apply(draws_of(x), 2, sum)))
-  expect_equal(sapply(x, function(x) sum(draws_of(x))), apply(draws_of(x), 2, sum))
-  expect_equal(vapply(x, function(x) sum(draws_of(x)), numeric(1)), apply(draws_of(x), 2, sum))
-  expect_equal(apply(x, 1, function(x) sum(draws_of(x))), apply(draws_of(x), 2, sum))
-  expect_equal(apply(x, 1:2, function(x) sum(draws_of(x))), apply(draws_of(x), 2:3, sum))
+  expect_equal(lapply(x, function(x) sum(draws_of(x) == "a")), list(a = 2, b = 2, c = 1))
+  expect_equal(sapply(x, function(x) sum(draws_of(x) == "a")), c(a = 2, b = 2, c = 1))
+  expect_equal(vapply(x, function(x) sum(draws_of(x) == "a"), numeric(1)), c(a = 2, b = 2, c = 1))
+  expect_equal(apply(x, 1, function(x) sum(draws_of(x) == "a")), c(a = 2, b = 2, c = 1))
+  expect_equal(
+    apply(x, 1:2, function(x) sum(draws_of(x) == "a")),
+    array(c(2, 2, 1, rep(0, 9)), dim = c(3, 4), dimnames = list(c("a","b","c"), NULL))
+  )
 })

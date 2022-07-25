@@ -106,7 +106,23 @@ as.vector.rvar <- function(x, mode = "any") {
 
 #' @export
 as.list.rvar <- function(x, ...) {
-  apply(draws_of(x), 2, new_rvar, .nchains = nchains(x))
+  x_dim <- dim(x)
+  if (length(x_dim) >= 2) {
+    is <- seq_len(x_dim[[1]])
+    names(is) <- dimnames(x)[[1]]
+    lapply(is, function(i) {
+      out <- x[i,]
+      .dim <- dim(out)
+      .dimnames <- dimnames(out)
+      dim(out) <- .dim[-1]
+      dimnames(out) <- .dimnames[-1]
+      out
+    })
+  } else {
+    is <- seq_along(x)
+    names(is) <- dimnames(x)[[1]]
+    lapply(seq_along(x), function(i) x[[i]])
+  }
 }
 
 #' @importFrom rlang as_label
@@ -228,28 +244,6 @@ vec_restore.rvar_factor = function(x, to, ...) {
   x_character <- lapply(x, while_preserving_dims, f = as.character)
   out <- vec_restore.rvar(x_character, ...)
   combine_rvar_factor_levels(out, lapply(x, levels), is_rvar_ordered(to))
-  # .draws <- draws_of(out)
-  #
-  # unique_levels <- unique(lapply(x, levels))
-  # if (length(unique_levels) == 1) {
-  #   # levels are the same in all variables, so preserve level order when binding
-  #   .levels <- unique_levels[[1]]
-  #   if (!identical(.levels, levels(out))) {
-  #     .draws <- while_preserving_dims(factor, .draws, .levels)
-  #   }
-  #   if (is_rvar_ordered(to)) {
-  #     # only keep the "ordered" class when the levels were all the same (this
-  #     # mimics base-R, which demotes to unordered factor when combining ordered
-  #     # factors with different levels)
-  #     oldClass(.draws) <- c("ordered", "factor")
-  #   }
-  # }
-  # if (!is.factor(.draws)) {
-  #   .draws <- while_preserving_dims(factor, .draws)
-  # }
-  # draws_of(out) <- .draws
-  #
-  # out
 }
 
 

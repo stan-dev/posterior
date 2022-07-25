@@ -224,16 +224,3 @@ test_that("all.equal works", {
   expect_true(!isTRUE(all.equal(x, x + 1)))
   expect_true(!isTRUE(all.equal(x, "a")))
 })
-
-# apply functions ---------------------------------------------------------
-
-test_that("apply family functions work", {
-  x_array = array(1:24, dim = c(2,3,4))
-  x = rvar(x_array)
-
-  expect_equal(lapply(x, function(x) sum(draws_of(x))), as.list(apply(draws_of(x), 2, sum)))
-  expect_equal(sapply(x, function(x) sum(draws_of(x))), apply(draws_of(x), 2, sum))
-  expect_equal(vapply(x, function(x) sum(draws_of(x)), numeric(1)), apply(draws_of(x), 2, sum))
-  expect_equal(apply(x, 1, function(x) sum(draws_of(x))), apply(draws_of(x), 2, sum))
-  expect_equal(apply(x, 1:2, function(x) sum(draws_of(x))), apply(draws_of(x), 2:3, sum))
-})
