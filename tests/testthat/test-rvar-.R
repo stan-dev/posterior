@@ -1,11 +1,3 @@
-# function for making rvars from arrays that expects last index to be
-# draws (for testing so that when array structure changes tests don't have to)
-rvar_from_array = function(x) {
-  .dim = dim(x)
-  last_dim = length(.dim)
-  new_rvar(aperm(x, c(last_dim, seq_len(last_dim - 1))))
-}
-
 # creating rvars ----------------------------------------------------------
 
 test_that("rvar creation with custom dim works", {
@@ -106,8 +98,8 @@ test_that("draws_of using with_chains works", {
 # unique, duplicated, etc -------------------------------------------------
 
 test_that("unique.rvar and duplicated.rvar work", {
-  x <- rvar_from_array(matrix(c(1,2,1, 1,2,1, 3,3,3), nrow = 3))
-  unique_x <- rvar_from_array(matrix(c(1,2, 1,2, 3,3), nrow = 2))
+  x <- rvar(matrix(c(1,1,3, 2,2,3, 1,1,3), nrow = 3))
+  unique_x <- rvar(matrix(c(1,1,3, 2,2,3), nrow = 3))
 
   expect_equal(unique(x), unique_x)
   expect_equal(as.vector(duplicated(x)), c(FALSE, FALSE, TRUE))
@@ -129,26 +121,26 @@ test_that("rvars work in tibbles", {
   skip_if_not_installed("dplyr")
   skip_if_not_installed("tidyr")
 
-  x_array = array(1:20, dim = c(4,5))
-  x = rvar_from_array(x_array)
+  x_array = array(1:20, dim = c(5,4))
+  x = rvar(x_array)
   df = tibble::tibble(x, y = x + 1)
 
   expect_equal(df$x, x)
-  expect_equal(df$y, rvar_from_array(x_array + 1))
+  expect_equal(df$y, rvar(x_array + 1))
   expect_equal(dplyr::mutate(df, z = x)$z, x)
 
-  expect_equal(dplyr::mutate(df, z = x * 2)$z, rvar_from_array(x_array * 2))
+  expect_equal(dplyr::mutate(df, z = x * 2)$z, rvar(x_array * 2))
   expect_equal(
     dplyr::mutate(dplyr::group_by(df, 1:4), z = x * 2)$z,
-    rvar_from_array(x_array * 2)
+    rvar(x_array * 2)
   )
 
   df = tibble::tibble(g = letters[1:4], x)
   ref = tibble::tibble(
-    a = rvar_from_array(x_array[1,, drop = FALSE]),
-    b = rvar_from_array(x_array[2,, drop = FALSE]),
-    c = rvar_from_array(x_array[3,, drop = FALSE]),
-    d = rvar_from_array(x_array[4,, drop = FALSE])
+    a = rvar(x_array[,1, drop = FALSE]),
+    b = rvar(x_array[,2, drop = FALSE]),
+    c = rvar(x_array[,3, drop = FALSE]),
+    d = rvar(x_array[,4, drop = FALSE])
   )
   expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref)
   expect_equal(tidyr::pivot_longer(ref, a:d, names_to = "g", values_to = "x"), df)

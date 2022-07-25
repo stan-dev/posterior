@@ -715,17 +715,26 @@ cleanup_rvar_draws <- function(x) {
 
   # if x is factor-like (character or with "levels" attr), make it a factor
   if (!is.factor(x) && !is.null(attr(x, "levels")) || is.character(x)) {
-    .dim <- dim(x)
-    .dimnames <- dimnames(x)
     x <- if (is.character(x)) {
-      factor(x)
+      while_preserving_dims(factor, x)
     } else {
-      factor(x, labels = attr(x, "levels"))
+      while_preserving_dims(factor, x, labels = attr(x, "levels"))
     }
-    dim(x) <- .dim
-    dimnames(x) <- .dimnames
   }
 
+  x
+}
+
+#' Execute x <- f(x, ...) but preserve dimensions and dimension names of x.
+#' Useful for functions that do not change the length of x but which drop
+#' dimensions.
+#' @noRd
+while_preserving_dims <- function(f, x, ...) {
+  .dim <- dim(x)
+  .dimnames <- dimnames(x)
+  x <- f(x, ...)
+  dim(x) <- .dim
+  dimnames(x) <- .dimnames
   x
 }
 

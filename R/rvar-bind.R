@@ -2,7 +2,8 @@
 
 #' @export
 c.rvar <- function(...) {
-  if (!is_rvar(vctrs::vec_ptype_common(...))) {
+  common_type <- vctrs::vec_ptype_common(...)
+  if (!is_rvar(common_type)) {
     # if the common type of the arguments is not an rvar, fall back to the
     # vctrs implementation of c()
     return(vctrs::vec_c(...))
@@ -14,7 +15,7 @@ c.rvar <- function(...) {
   # process remaining args in succession, binding them to the output
   for (i in seq_along(args)[-1]) {
     arg_name <- names(args)[[i]]
-    arg <- make_1d(as_rvar(args[[i]]), arg_name)
+    arg <- make_1d(vec_cast(args[[i]], common_type), arg_name)
     out <- broadcast_and_bind_rvars(out, arg)
   }
 
@@ -99,15 +100,9 @@ broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
 }
 
 #' @export
-broadcast_and_bind_rvars.rvar_ordered <- function(x, y, axis = 1) {
+broadcast_and_bind_rvars.rvar_factor <- function(x, y, axis = 1) {
   result <- NextMethod()
-
-  if (is_rvar_ordered(y) && identical(levels(x), levels(y))) {
-    # when combining two ordered factors with identical levels, preserve level order
-    class(draws_of(result)) <- c("ordered", "factor")
-  }
-
-  result
+  combine_rvar_factor_levels(result, list(levels(x), levels(y)), is_rvar_ordered(x) && is_rvar_ordered(y))
 }
 
 

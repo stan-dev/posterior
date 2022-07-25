@@ -200,7 +200,7 @@ vec_restore.rvar <- function(x, ...) {
 
     # N.B. could potentially do this with vec_cast as well (as long as the first
     # dimension is the slicing index)
-    x[sapply(x, is.null)] <- list(array(NA, dim = c(1,1)))
+    x[lengths(x) == 0] <- list(array(NA, dim = c(1,1)))
   }
   # broadcast dimensions and bind together
   new_dim <- dim_common(lapply(x, dim))
@@ -208,32 +208,6 @@ vec_restore.rvar <- function(x, ...) {
   # move draws dimension back to the front
   if (!is.null(.draws)) {
     .draws <- aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)]))
-  }
-
-  # if this is a factor, make it one again
-  # TODO: factor this out into something like conform_rvar_draws_subtype()
-  # and use union() and match() to conform levels
-  if (length(x) > 0) {
-    # check for factors
-    is_factor <- unique(vapply(x, is.factor, logical(1)))
-    if (isTRUE(is_factor)) {
-      # combining factors; to be conservative they must be compatible
-      .levels <- unique(lapply(x, levels))
-      if (length(.levels) > 1) {
-        stop_no_call("Cannot combine factor rvars with different levels.")
-      }
-      .levels <- .levels[[1]]
-
-      .ordered <- unique(vapply(x, is.ordered, logical(1)))
-      if (length(.ordered) > 1) {
-        stop_no_call("Cannot combine ordered and unordered factor rvars.")
-      }
-
-      attr(.draws, "levels") <- .levels
-      attr(.draws, "class") <- c(if (.ordered) "ordered", "factor")
-    } else if (length(is_factor) > 1) {
-      stop_no_call("Cannot combine factor rvars with non-factor rvars.")
-    }
   }
 
   # determine the number of chains
@@ -248,9 +222,36 @@ vec_restore.rvar <- function(x, ...) {
   out
 }
 
-vec_restore.rvar_factor = function(x, ...) {
-
+#' @export
+vec_restore.rvar_factor = function(x, to, ...) {
+  # first, bind the factors as character vectors into an rvar_factor
+  x_character <- lapply(x, while_preserving_dims, f = as.character)
+  out <- vec_restore.rvar(x_character, ...)
+  combine_rvar_factor_levels(out, lapply(x, levels), is_rvar_ordered(to))
+  # .draws <- draws_of(out)
+  #
+  # unique_levels <- unique(lapply(x, levels))
+  # if (length(unique_levels) == 1) {
+  #   # levels are the same in all variables, so preserve level order when binding
+  #   .levels <- unique_levels[[1]]
+  #   if (!identical(.levels, levels(out))) {
+  #     .draws <- while_preserving_dims(factor, .draws, .levels)
+  #   }
+  #   if (is_rvar_ordered(to)) {
+  #     # only keep the "ordered" class when the levels were all the same (this
+  #     # mimics base-R, which demotes to unordered factor when combining ordered
+  #     # factors with different levels)
+  #     oldClass(.draws) <- c("ordered", "factor")
+  #   }
+  # }
+  # if (!is.factor(.draws)) {
+  #   .draws <- while_preserving_dims(factor, .draws)
+  # }
+  # draws_of(out) <- .draws
+  #
+  # out
 }
+
 
 # vec_ptype performance generics -------------------------------------------
 
@@ -308,6 +309,14 @@ vec_ptype2.logical.rvar <- function(x, y, ...) new_rvar()
 vec_ptype2.rvar.logical <- function(x, y, ...) new_rvar()
 #' @export
 vec_cast.rvar.logical <- function(x, to, ...) new_constant_rvar(x)
+
+# logical <-> rvar_factor
+#' @export
+vec_ptype2.logical.rvar_factor <- function(x, y, ...) new_rvar(factor())
+#' @export
+vec_ptype2.rvar_factor.logical <- function(x, y, ...) new_rvar(factor())
+#' @export
+vec_cast.rvar_factor.logical <- function(x, to, ...) new_constant_rvar(as.factor(x))
 
 
 # character casts ---------------------------------------------------------
