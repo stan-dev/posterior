@@ -313,10 +313,12 @@ get_summary_functions <- function(draws, summary = NULL) {
 }
 
 entropy <- function(x) {
+  if (anyNA(x)) return(NA_real_)
   p = prop.table(table(x)); -sum(p * log(p))
 }
 
 .mode <- function(x) {
-  x_table <- table(x, useNA = "ifany")
+  if (anyNA(x)) return(NA_character_)
+  x_table <- table(x)
   names(x_table)[which.max(x_table)]
 }

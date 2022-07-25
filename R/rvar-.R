@@ -473,9 +473,31 @@ check_rvar_dims_first <- function(x, y) {
 
 # helpers: arrays/lists -----------------------------------------------------------------
 
-# convert into a list of draws for applying a function draw-wise
-list_of_draws <- function(x) {
-  lapply(apply(draws_of(x), 1, list), `[[`, 1)
+#' Get one draw from a draws_rvars as a list of base-R variables
+#' @param x a draws_rvars
+#' @param i a draw index
+#' @returns a named list of vectors and arrays
+#' @noRd
+get_variables_from_one_draw <- function(x, i) {
+  lapply(x, function(variable) {
+    draws <- draws_of(variable)
+    .dim <- dim(variable)
+    ndim <- length(.dim)
+
+    if (ndim <= 1) {
+      # treat 0- and 1-dimensional arrays as vectors
+      draws <- draws[i, ]
+      dim(draws) <- NULL
+      names(draws) <- names(variable)
+    } else {
+      dim(draws) <- c(NROW(draws), length(variable))
+      draws <- draws[i, ]
+      dim(draws) <- .dim
+      dimnames(draws) <- dimnames(variable)
+    }
+
+    draws
+  })
 }
 
 dim2_common <- function(dim_x, dim_y) {
@@ -506,7 +528,7 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
   current_dim <- dim(x)
   current_dimnames <- dimnames(x)
   current_levels <- levels(x)
-  current_class <- class(x)
+  current_class <- oldClass(x)
 
   if (length(current_dim) < length(dim)) {
     # add dimensions of size 1 as necessary so we can broadcast those
@@ -557,7 +579,7 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
 
   # restore class and levels
   levels(x) <- current_levels
-  class(x) <- current_class
+  oldClass(x) <- current_class
 
   x
 }

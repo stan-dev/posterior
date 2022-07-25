@@ -71,20 +71,18 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
 
     # convert arguments that are rvars into draws the function can be applied over
     is_rvar_arg <- (arg_names %in% rvar_args) & as.logical(lapply(args, is_rvar))
-    rvar_args <- conform_rvar_ndraws_nchains(args[is_rvar_arg])
-    .nchains <- if (length(rvar_args) < 1) {
-      1
-    } else {
-      nchains(rvar_args[[1]])
-    }
-    rvar_args <- lapply(rvar_args, list_of_draws)
+    rvar_args <- as_draws_rvars(args[is_rvar_arg])
+    .nchains <- max(1, nchains(rvar_args))
 
     if (length(rvar_args) == 0) {
       # no rvar arguments, so just create a random variable by applying this function
       # ndraws times
       list_of_draws <- replicate(ndraws, do.call(.f, args), simplify = FALSE)
     } else {
-      list_of_draws <- .mapply(.f, rvar_args, MoreArgs = args[!is_rvar_arg])
+      list_of_draws <- lapply(seq_len(ndraws(rvar_args)), function(i) {
+        variables <- get_variables_from_one_draw(rvar_args, i)
+        do.call(.f, c(variables, args[!is_rvar_arg]))
+      })
     }
     # Need to add a first dimension before unchopping (this will be the draws dimension)
     # Doing this + vec_unchop is faster than doing abind::abind(list_of_draws, along = 0)
