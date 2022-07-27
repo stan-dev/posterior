@@ -100,19 +100,3 @@ test_that("all.equal works", {
   expect_true(!isTRUE(all.equal(x, x_ordered)))
   expect_true(!isTRUE(all.equal(x, "a")))
 })
-
-# apply functions ---------------------------------------------------------
-
-test_that("apply family functions work", {
-  x_array = array(c("a","a","a","a", letters[1:20]), dim = c(2,3,4), dimnames = list(NULL, letters[1:3], NULL))
-  x = rvar(x_array)
-
-  expect_equal(lapply(x, function(x) sum(draws_of(x) == "a")), list(a = 2, b = 2, c = 1))
-  expect_equal(sapply(x, function(x) sum(draws_of(x) == "a")), c(a = 2, b = 2, c = 1))
-  expect_equal(vapply(x, function(x) sum(draws_of(x) == "a"), numeric(1)), c(a = 2, b = 2, c = 1))
-  expect_equal(apply(x, 1, function(x) sum(draws_of(x) == "a")), c(a = 2, b = 2, c = 1))
-  expect_equal(
-    apply(x, 1:2, function(x) sum(draws_of(x) == "a")),
-    array(c(2, 2, 1, rep(0, 9)), dim = c(3, 4), dimnames = list(c("a","b","c"), NULL))
-  )
-})

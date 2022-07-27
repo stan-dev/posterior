@@ -74,6 +74,9 @@ broadcast_and_bind_rvars <- function(x, y, axis = 1) UseMethod("broadcast_and_bi
 
 #' @export
 broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
+  # TODO: should really replace this with something that takes a list of rvars,
+  # conforms their chains, broadcasts them all to common dimensions and uses a
+  # single abind to bind them.
   if (!length(x)) return(y)
   if (!length(y)) return(x)
 
@@ -95,8 +98,12 @@ broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
   new_dim[draws_axis] <- dim(draws_y)[draws_axis]
   draws_y <- broadcast_array(draws_y, new_dim)
 
+  # factors may not bind properly with abind, so convert them to characters first
+  if (is.factor(draws_x)) draws_x <- while_preserving_dims(as.character, draws_x)
+  if (is.factor(draws_y)) draws_y <- while_preserving_dims(as.character, draws_y)
+
   # bind along desired axis
-  result <- new_rvar(abind(draws_x, draws_y, along = draws_axis), .nchains = nchains(x))
+  result <- new_rvar(abind(draws_x, draws_y, along = draws_axis, use.dnns = TRUE), .nchains = nchains(x))
 }
 
 #' @export
