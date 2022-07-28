@@ -7,8 +7,9 @@
 #' @param weights (numeric vector) A vector of positive weights of length
 #'   `ndraws(x)`. The weights will be internally normalized. If `weights` is not
 #'   specified, an attempt will be made to extract any weights already stored in
-#'   the draws object (via [weight_draws()]). How exactly the weights influence
-#'   the resampling depends on the `method` argument.
+#'   the draws object (via [weight_draws()]). If no weights are stored in the
+#'   draws object, equal weight is supplied to each draw. How exactly the
+#'   weights influence the resampling depends on the `method` argument.
 #' @param method (string) The resampling method to use:
 #'  * `"simple"`: simple random resampling with replacement
 #'  * `"simple_no_replace"`: simple random resampling without replacement
@@ -68,8 +69,7 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
   if (is.null(weights)) {
     weights <- weights(x, normalize = TRUE)
     if (is.null(weights)) {
-      stop_no_call("No weights are provided and none can ",
-                   "be found within the draws object.")
+      weights <- rep.int(1/ndraws_total, ndraws_total)
     }
     # resampling invalidates stored weights
     x <- remove_variables(x, ".log_weight")
@@ -86,6 +86,12 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
   method_fun <- get(method_fun, asNamespace("posterior"))
   draw_ids <- method_fun(weights = weights, ndraws = ndraws, ...)
   subset_draws(x, draw = draw_ids, unique = FALSE)
+}
+
+#' @rdname resample_draws
+#' @export
+resample_draws.rvar <- function(x, ...) {
+  resample_draws(draws_rvars(x = x), ...)$x
 }
 
 # simple random resampling with replacement

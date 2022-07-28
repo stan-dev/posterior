@@ -38,3 +38,9 @@ thin_draws.draws <- function(x, thin, ...) {
   iteration_ids <- seq(1, niterations, by = thin)
   subset_draws(x, iteration = iteration_ids)
 }
+
+#' @rdname thin_draws
+#' @export
+thin_draws.rvar <- function(x, thin, ...) {
+  thin_draws(draws_rvars(x = x), thin, ...)$x
+}

@@ -466,6 +466,44 @@ Or along multiple dimensions:
 rvar_apply(x, c(2,3), rvar_mean)
 ```
 
+## Looping over `draws` and `rvar`s
+
+The `rvar` datatype is also used in `for_each_draw()`, which allows you to loop
+over draws in a `draws` object or an `rvar`. `for_each_draw(x, expr)` converts `x`
+into a `draws_rvars()` object, then loops over each draw of `x`, executing the
+provided expression, `expr`. The expression can use the variables in `x` as if
+they were regular R arrays.
+
+One application of `for_each_draw()` is in constructing base-R plots of individual
+draws (for `ggplot2`-based plotting of `rvar`s, see the next section and the
+[ggdist](https://mjskay.github.io/ggdist/) package). For example, it can be used
+to construct a parallel coordinates plot:
+
+```{r eight_schools_parcoord, fig.width = 6, fig.height = 4}
+eight_schools <- as_draws_rvars(example_draws())
+
+plot(1, type = "n",
+  xlim = c(1, length(eight_schools$theta)),
+  ylim = range(range(eight_schools$theta)),
+  xlab = "school", ylab = "theta"
+)
+
+# use for_each_draw() to make a parallel coordinates plot of all draws
+# of eight_schools$theta
+for_each_draw(eight_schools, {
+  lines(seq_along(theta), theta, col = rgb(1, 0, 0, 0.05))
+})
+
+# add means and 90% intervals
+lines(seq_along(eight_schools$theta), mean(eight_schools$theta))
+with(summarise_draws(eight_schools$theta), 
+  segments(seq_along(eight_schools$theta), y0 = q5, y1 = q95)
+)
+```
+
+As `for_each_draw()` will be slower than most other ways of manipulating draws, 
+this function should generally not be used unless needed.
+
 
 ## Using `rvar`s in data frames and in ggplot2
 
@@ -477,4 +515,6 @@ data.frame(x = c("a","b","c"), y)
 
 This makes them convenient for adding predictions to a data frame alongside
 the data used to generate the predictions. `rvar`s can then be visualized with ggplot2
-using the `xdist` and `ydist` aesthetics with the stat_...` family of geometries in the [ggdist](https://mjskay.github.io/ggdist/) package.
+by passing them to the `xdist` and `ydist` aesthetics of the `stat_...` family of
+geometries in the [ggdist](https://mjskay.github.io/ggdist/) package, 
+such as `stat_halfeye()`, `stat_lineribbon()`, and `stat_dotsinterval()`.

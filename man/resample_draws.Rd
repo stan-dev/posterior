@@ -3,11 +3,14 @@
 \name{resample_draws}
 \alias{resample_draws}
 \alias{resample_draws.draws}
+\alias{resample_draws.rvar}
 \title{Resample \code{draws} objects}
 \usage{
 resample_draws(x, ...)
 
 \method{resample_draws}{draws}(x, weights = NULL, method = "stratified", ndraws = NULL, ...)
+
+\method{resample_draws}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
@@ -18,8 +21,9 @@ is defined.}
 \item{weights}{(numeric vector) A vector of positive weights of length
 \code{ndraws(x)}. The weights will be internally normalized. If \code{weights} is not
 specified, an attempt will be made to extract any weights already stored in
-the draws object (via \code{\link[=weight_draws]{weight_draws()}}). How exactly the weights influence
-the resampling depends on the \code{method} argument.}
+the draws object (via \code{\link[=weight_draws]{weight_draws()}}). If no weights are stored in the
+draws object, equal weight is supplied to each draw. How exactly the
+weights influence the resampling depends on the \code{method} argument.}
 
 \item{method}{(string) The resampling method to use:
 \itemize{

@@ -7,6 +7,7 @@
 \alias{subset_draws.draws_df}
 \alias{subset_draws.draws_list}
 \alias{subset_draws.draws_rvars}
+\alias{subset_draws.rvar}
 \alias{subset.draws}
 \title{Subset \code{draws} objects}
 \usage{
@@ -66,6 +67,8 @@ subset_draws(x, ...)
   unique = TRUE,
   ...
 )
+
+\method{subset_draws}{rvar}(x, variable = NULL, ...)
 
 \method{subset}{draws}(x, ...)
 }
