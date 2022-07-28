@@ -37,20 +37,32 @@ must use \verb{<<-}.)
 \examples{
 eight_schools <- as_draws_rvars(example_draws())
 
+
+# 1. A simple example --- looping over draws and printing each draw
+# NOTE: You probably don't want to do this in practice! This example is
+# just intended to show what for_each_draw() is doing. If you just want to
+# print the draws of an rvar, it is probably better to use draws_of()
+for_each_draw(eight_schools, {
+  print(mu)
+})
+
+
+# 2. A more complex example --- building a parallel coordinates plot
+# First, construct the plot bounds
 plot(1, type = "n",
   xlim = c(1, length(eight_schools$theta)),
   ylim = range(range(eight_schools$theta)),
   xlab = "school", ylab = "theta"
 )
 
-# use for_each_draw() to make a parallel coordinates plot of all draws
+# Then, use for_each_draw() to make a parallel coordinates plot of all draws
 # of eight_schools$theta. Use resample_draws(eight_schools, n = ...)
 # in place of eight_schools if a smaller sample is desired for the plot.
 for_each_draw(eight_schools, {
   lines(seq_along(theta), theta, col = rgb(1, 0, 0, 0.05))
 })
 
-# add means and 90\% intervals
+# Finally, add means and 90\% intervals
 lines(seq_along(eight_schools$theta), mean(eight_schools$theta))
 with(summarise_draws(eight_schools$theta),
   segments(seq_along(eight_schools$theta), y0 = q5, y1 = q95)
