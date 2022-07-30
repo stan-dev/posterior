@@ -315,7 +315,7 @@ vec_cast.rvar_factor.logical <- function(x, to, ...) new_constant_rvar(as.factor
 
 # character casts ---------------------------------------------------------
 
-# rvar -> character
+# rvar_[factor|ordered] -> character
 #' @export
 vec_cast.character.rvar <- function(x, to, ...) format(x)
 #' @export
@@ -326,8 +326,20 @@ vec_cast.character.rvar_ordered <- function(x, to, ...) format(x)
 # character -> rvar
 #' @export
 vec_cast.rvar.character <- function(x, to, ...) new_constant_rvar(as.factor(x))
+
+# character -> rvar_factor
+#' @export
+vec_ptype2.character.rvar_factor <- function(x, y, ...) new_rvar(factor())
+#' @export
+vec_ptype2.rvar_factor.character <- function(x, y, ...) new_rvar(factor())
 #' @export
 vec_cast.rvar_factor.character <- function(x, to, ...) new_constant_rvar(as.factor(x))
+
+# character -> rvar_ordered (character has no inherent order so we go to rvar_factor)
+#' @export
+vec_ptype2.character.rvar_ordered <- function(x, y, ...) new_rvar(factor())
+#' @export
+vec_ptype2.rvar_ordered.character <- function(x, y, ...) new_rvar(factor())
 #' @export
 vec_cast.rvar_ordered.character <- function(x, to, ...) new_constant_rvar(as.ordered(x))
 
@@ -360,25 +372,25 @@ vec_cast.rvar_ordered.factor <- function(x, to, ...) new_constant_rvar(x)
 
 # ordered <-> rvar
 #' @export
-vec_ptype2.ordered.rvar <- function(x, y, ...) new_rvar(ordered())
+vec_ptype2.ordered.rvar <- function(x, y, ...) new_rvar(ordered(NULL))
 #' @export
-vec_ptype2.rvar.ordered <- function(x, y, ...) new_rvar(ordered())
+vec_ptype2.rvar.ordered <- function(x, y, ...) new_rvar(ordered(NULL))
 #' @export
 vec_cast.rvar.ordered <- function(x, to, ...) new_constant_rvar(x)
 
 # ordered <-> rvar_factor
 #' @export
-vec_ptype2.ordered.rvar_factor <- function(x, y, ...) new_rvar(ordered())
+vec_ptype2.ordered.rvar_factor <- function(x, y, ...) new_rvar(ordered(NULL))
 #' @export
-vec_ptype2.rvar_factor.ordered <- function(x, y, ...) new_rvar(ordered())
+vec_ptype2.rvar_factor.ordered <- function(x, y, ...) new_rvar(ordered(NULL))
 #' @export
 vec_cast.rvar_factor.ordered <- function(x, to, ...) new_constant_rvar(x)
 
 # ordered <-> rvar_ordered
 #' @export
-vec_ptype2.ordered.rvar_ordered <- function(x, y, ...) new_rvar(ordered())
+vec_ptype2.ordered.rvar_ordered <- function(x, y, ...) new_rvar(ordered(NULL))
 #' @export
-vec_ptype2.rvar_ordered.ordered <- function(x, y, ...) new_rvar(ordered())
+vec_ptype2.rvar_ordered.ordered <- function(x, y, ...) new_rvar(ordered(NULL))
 #' @export
 vec_cast.rvar_ordered.ordered <- function(x, to, ...) new_constant_rvar(x)
 

@@ -82,7 +82,7 @@ test_that("rvar_apply works with rvar_factor", {
   levels(ref) <- c(levels(ref), "XXX")
   ref["a2","b1","c1"] <- "XXX"
   ref["a1","b1","c2"] <- "XXX"
-  ref["a2","b2","c2"] <- "XXX"
+  ref["a2","b3","c2"] <- "XXX"
   ref["a1","b3","c3"] <- "XXX"
-  expect_equal(rvar_apply(x, 1:3, function(x) if ("d" %in% draws_of(x)) rvar("XXX") else x), ref)
+  expect_equal(rvar_apply(x, 1:3, function(x) if ("d" %in% draws_of(x)) rvar("XXX") else drop(x)), ref)
 })

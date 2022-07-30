@@ -1,3 +1,74 @@
+#' Factor random variables of arbitrary dimension
+#'
+#' Random variables backed by [factor]-like arrays of arbitrary dimension.
+#'
+#' @name rvar_factor
+#'
+#' @inheritDotParams rvar
+#' @param x (multiple options) The object to convert to an `rvar`:
+#'   * A vector of draws from a distribution.
+#'   * An array where the first dimension represents draws from a distribution.
+#'     The resulting [`rvar`] will have dimension `dim(x)[-1]`; that is,
+#'     everything except the first dimension is used for the shape of the
+#'     variable, and the first dimension is used to index draws from the
+#'     distribution (see **Examples**). Optionally,
+#'     if `with_chains == TRUE`, the first dimension indexes the iteration and the
+#'     second dimension indexes the chain (see `with_chains`).
+#'
+#' @details
+#'
+#' A subtype of [rvar()] that represents a (possibly multidimensional) sample of
+#' a [factor] or an [ordered] factor. It is otherwise very similar to the basic [rvar()]:
+#' it is backed by a multidimensional array with draws as the first dimension.
+#' The primary difference is that the backing array has class `"factor"` (for [rvar_factor()])
+#' or `c("ordered", "factor")` (for [rvar_ordered()]). If you
+#' pass a [factor] or [ordered] factor to [rvar()] it will automatically return
+#' an object with the classes `"rvar_factor"` or `c("rvar_ordered", "rvar_factor")`.
+#'
+#' See [rvar()] for more details on the internals of the random variable datatype.
+#'
+#' @seealso [as_rvar_factor()] to convert objects to `rvar_factor`s. See [rdo()], [rfun()], and
+#' [rvar_rng()] for higher-level interfaces for creating `rvar`s.
+#'
+#' @return An object of class `"rvar_factor"` representing a `factor`-like random variable.
+#'
+#' @examples
+#'
+#' # TODO: update examples
+#'
+#' set.seed(1234)
+#'
+#' # To create a "scalar" `rvar`, pass a one-dimensional array or a vector
+#' # whose length (here `4000`) is the desired number of draws:
+#' x <- rvar(rnorm(4000, mean = 1, sd = 1))
+#' x
+#'
+#' # Create random vectors by adding an additional dimension:
+#' n <- 4   # length of output vector
+#' x <- rvar(array(rnorm(4000 * n, mean = rep(1:n, each = 4000), sd = 1), dim = c(4000, n)))
+#' x
+#'
+#' # Create a random matrix:
+#' rows <- 4
+#' cols <- 3
+#' x <- rvar(array(rnorm(4000 * rows * cols, mean = 1, sd = 1), dim = c(4000, rows, cols)))
+#' x
+#'
+#' # If the input sample comes from multiple chains, we can indicate that using the
+#' # nchains argument (here, 1000 draws each from 4 chains):
+#' x <- rvar(rnorm(4000, mean = 1, sd = 1), nchains = 4)
+#' x
+#'
+#' # Or if the input sample has chain information as its second dimension, we can
+#' # use with_chains to create the rvar
+#' x <- rvar(array(rnorm(4000, mean = 1, sd = 1), dim = c(1000, 4)), with_chains = TRUE)
+#' x
+#'
+#' @export
+rvar_factor <- function(x = factor(), ...) {
+
+  rvar(vec_cast(x, factor()), ...)
+}
 
 # factor-like rvar methods ------------------------------------------------
 

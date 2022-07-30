@@ -1,3 +1,6 @@
+
+# c.rvar ------------------------------------------------------------------
+
 test_that("c works on rvar", {
   x <- rvar(array(1:9, dim = c(3,3)))
   y <- rvar(array(2:10, dim = c(3,3), dimnames = list(NULL, c("a","b","c"))))
@@ -24,6 +27,35 @@ test_that("c works on rvar", {
   expect_equal(c(x_col), x)
   expect_equal(c(x_col, y), x_y)
 })
+
+test_that("c works on rvar_factor", {
+  x <- rvar(array(letters[1:9], dim = c(3,3)))
+  y <- rvar(array(letters[2:10], dim = c(3,3), dimnames = list(NULL, c("a","b","c"))))
+  x_y <- rvar(array(letters[c(1:9, 2:10)], dim = c(3,6), dimnames = list(NULL, c("","","","a","b","c"))))
+
+  expect_equal(c(x), x)
+  expect_equal(c(x, NULL), x)
+  expect_equal(c(x, y), x_y)
+  expect_equal(c(x, NULL, y), x_y)
+  expect_equal(c(x, x), rvar(array(letters[c(1:9, 1:9)], dim = c(3,6))))
+
+  expect_equal(c(x, "a"), rvar(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4))))
+  expect_equal(c(x, factor("a")), rvar(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4))))
+  expect_equal(c(x, "X"), rvar(array(c(letters[1:9], "X", "X", "X"), dim = c(3,4))))
+  expect_equal(c(x, factor("X")), rvar(array(c(letters[1:9], "X", "X", "X"), dim = c(3,4))))
+  expect_equal(c(x, ordered("X")), rvar(array(c(letters[1:9], "X", "X", "X"), dim = c(3,4))))
+
+  expect_error(c(x, 5), "Can't combine")
+  expect_error(c(x, 5L), "Can't combine")
+
+  x_col <- x
+  dim(x_col) <- c(3,1)
+  expect_equal(c(x_col), x)
+  expect_equal(c(x_col, y), x_y)
+})
+
+
+# cbind.rvar --------------------------------------------------------------
 
 test_that("cbind works on rvar", {
   x = rvar(array(1:9, dim = c(3,3)))
@@ -76,6 +108,9 @@ test_that("cbind works on rvar with data frames", {
   expect_equal(cbind(data.frame(x), y + 1), data.frame(x = x, `y + 1` = y + 1, check.names = FALSE))
   expect_equal(cbind(x + 1, data.frame(y)), data.frame(`x + 1` = x + 1, y = y, check.names = FALSE))
 })
+
+
+# rbind.rvar --------------------------------------------------------------
 
 test_that("rbind works on rvar", {
   x <- rvar(array(1:9, dim = c(3,3)))
