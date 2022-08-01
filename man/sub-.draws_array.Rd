@@ -23,3 +23,4 @@ length 1. If \code{drop} is manually set to \code{TRUE} and any of the dimension
 actually dropped, this will lead to dropping the \code{"draws_array"} class as
 well.
 }
+\keyword{internal}

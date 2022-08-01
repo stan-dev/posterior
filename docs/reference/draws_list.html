@@ -21,7 +21,7 @@ See Details."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -151,17 +151,24 @@ See <strong>Details</strong>.</p>
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>An object to convert to a <code>draws_list</code> object.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>For <code>as_draws_list()</code>:
 Arguments passed to individual methods (if applicable).
 For <code>draws_list()</code>: Named
 arguments containing numeric vectors each defining a separate variable.</p></dd>
+
+
 <dt>.nchains</dt>
 <dd><p>(positive integer) The number of chains. The default is <code>1</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>draws_list</code> object, which has classes
+    
+
+<p>A <code>draws_list</code> object, which has classes
 <code>c("draws_list", "draws", "list")</code>.</p>
     </div>
     <div id="details">
@@ -273,10 +280,10 @@ number of saved iterations per chain. See <strong>Examples</strong>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [chain = 1]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $a</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  0.56 -0.23 -0.75 -1.42  0.75 -0.92 -0.34  1.23 -0.42  0.11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1]  0.44 -2.00  0.83  0.31  1.70  0.27 -1.27  1.13 -1.25 -1.26</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $b</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] -1.052 -0.701 -0.816 -1.957 -0.272  0.401 -2.000 -0.664 -1.801  0.012</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] -0.25  0.32  2.09 -0.03 -1.47 -0.40  0.08  0.15 -1.10  0.18</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $c</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 1 1 1 1 1 1 1 1 1 1</span>
@@ -284,8 +291,8 @@ number of saved iterations per chain. See <strong>Examples</strong>.</p>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">x2</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> List of 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ 1:List of 3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ a: num [1:10] 0.563 -0.231 -0.751 -1.42 0.751 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ b: num [1:10] -1.052 -0.701 -0.816 -1.957 -0.272 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ a: num [1:10] 0.439 -1.996 0.831 0.311 1.701 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ b: num [1:10] -0.2501 0.316 2.0879 -0.0297 -1.4734 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ c: num [1:10] 1 1 1 1 1 1 1 1 1 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "class")= chr [1:3] "draws_list" "draws" "list"</span>
 </code></pre></div>
@@ -302,7 +309,7 @@ number of saved iterations per chain. See <strong>Examples</strong>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

@@ -189,6 +189,7 @@ is_draws_array_like <- function(x) {
 #' @return An object of class `"draws_array"` unless any of the dimensions
 #' was dropped during the extraction.
 #'
+#' @keywords internal
 #' @export
 `[.draws_array` <- function(x, i, j, ..., drop = FALSE) {
   # TODO: allow for argument 'reserved' as in '[.draws_df'

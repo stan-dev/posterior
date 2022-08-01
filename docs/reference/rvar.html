@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -129,6 +129,8 @@ distribution (see <strong>Examples</strong>). Optionally,
 if <code>with_chains == TRUE</code>, the first dimension indexes the iteration and the
 second dimension indexes the chain (see <code>with_chains</code>).</p></li>
 </ul></dd>
+
+
 <dt>dim</dt>
 <dd><p>(integer vector) One or more integers giving the maximal indices
 in each dimension to override the dimensions of the <code>rvar</code> to be created
@@ -136,14 +138,20 @@ in each dimension to override the dimensions of the <code>rvar</code> to be crea
 <strong>NOTE:</strong> This argument controls the dimensions of the <code>rvar</code>, not the
 underlying array, so you cannot change the number of draws using this
 argument.</p></dd>
+
+
 <dt>dimnames</dt>
 <dd><p>(list) Character vectors giving the names in each dimension
 to override the names of the dimensions of the <code>rvar</code> to be created (see
 <code><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames()</a></code>). If <code>NULL</code> (the default), this is determined by the input.
 <strong>NOTE:</strong> This argument controls the names of the dimensions of the
 <code>rvar</code>, not the underlying array.</p></dd>
+
+
 <dt>nchains</dt>
 <dd><p>(positive integer) The number of chains. The default is <code>1</code>.</p></dd>
+
+
 <dt>with_chains</dt>
 <dd><p>(logical) Does <code>x</code> include a dimension for chains?
 If <code>FALSE</code> (the default), chains are not included, the first dimension of
@@ -151,10 +159,13 @@ the input array should index draws, and the <code>nchains</code> argument can be
 used to determine the number of chains. If <code>TRUE</code>, the <code>nchains</code> argument
 is ignored and the second dimension of <code>x</code> is used to index chains.
 Internally, the array will be converted to a format without the chain index.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An object of class <code>"rvar"</code> representing a random variable.</p>
+    
+
+<p>An object of class <code>"rvar"</code> representing a random variable.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -243,7 +254,7 @@ random number generator functions to efficiently create <code>rvar</code>s, use 
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

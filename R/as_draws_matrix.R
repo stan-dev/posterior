@@ -171,6 +171,7 @@ is_draws_matrix_like <- function(x) {
 #' @return An object of class `"draws_matrix"` unless any of the dimensions
 #' was dropped during the extraction.
 #'
+#' @keywords internal
 #' @export
 `[.draws_matrix` <- function(x, i, j, ..., drop = FALSE) {
   # TODO: allow for argument 'reserved' as in '[.draws_df'

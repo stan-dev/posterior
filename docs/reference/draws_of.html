@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -117,18 +117,27 @@
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>(rvar) An <code><a href="rvar.html">rvar</a></code> object.</p></dd>
+
+
 <dt>with_chains</dt>
 <dd><p>(logical) Should the array of draws include a dimension for chains?
 If <code>FALSE</code> (the default), chains are not included and the array has dimension
 <code>c(ndraws(x), dim(x))</code>. If <code>TRUE</code>, chains are included and the array has
 dimension <code>c(niterations(x), nchains(x), dim(x))</code>.</p></dd>
+
+
 <dt>value</dt>
 <dd><p>(array) An array of values to use as the backing array of <code>x</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If <code>with_chains = FALSE</code>, an array with dimensions <code>c(ndraws(x), dim(x))</code>.
-If <code>with_chains = TRUE</code>, an array with dimensions
+    
+
+<p>If <code>with_chains = FALSE</code>, an array with dimensions <code>c(ndraws(x), dim(x))</code>.</p>
+
+
+<p>If <code>with_chains = TRUE</code>, an array with dimensions
 <code>c(niterations(x), nchains(x), dim(x))</code>.</p>
     </div>
     <div id="details">
@@ -210,7 +219,7 @@ dimension is the index of the chains.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

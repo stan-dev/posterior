@@ -19,7 +19,7 @@ rvar_range(), see Details)."><!-- mathjax --><script src="https://cdnjs.cloudfla
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -143,22 +143,33 @@ producing a new random variable of length 1 (except in the case of
     <h2>Arguments</h2>
     <dl><dt>...</dt>
 <dd><p>(rvar) One or more <code><a href="rvar.html">rvar</a></code>s.</p></dd>
+
+
 <dt>na.rm</dt>
 <dd><p>(logical) Should <code>NA</code>s be removed from the input before
 summaries are computed? The default is <code>FALSE</code>.</p></dd>
+
+
 <dt>constant</dt>
 <dd><p>(scalar real) For <code>rvar_mad()</code>, a scale factor for computing
 the median absolute deviation. See the details of <code><a href="https://rdrr.io/r/stats/mad.html" class="external-link">stats::mad()</a></code> for the
 justification for the default value.</p></dd>
+
+
 <dt>probs</dt>
 <dd><p>(numeric vector) For <code>rvar_quantile()</code>, probabilities in <code>[0, 1]</code>.</p></dd>
+
+
 <dt>names</dt>
 <dd><p>(logical) For <code>rvar_quantile()</code>, if <code>TRUE</code>, the result has a
 <code>names</code> attribute.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code><a href="rvar.html">rvar</a></code> of length 1 (for <code><a href="https://rdrr.io/r/base/range.html" class="external-link">range()</a></code>, length 2; for <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile()</a></code>, length
+    
+
+<p>An <code><a href="rvar.html">rvar</a></code> of length 1 (for <code><a href="https://rdrr.io/r/base/range.html" class="external-link">range()</a></code>, length 2; for <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile()</a></code>, length
 equal to <code>length(probs)</code>) with the same number
 of draws as the input rvar(s) containing the summary statistic computed within
 each draw of the input rvar(s).</p>
@@ -221,7 +232,7 @@ without the <code>rvar_</code> prefix (e.g., <code>rvar_mean()</code> calls <cod
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

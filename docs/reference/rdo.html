@@ -18,7 +18,7 @@ producing a new rvar."><!-- mathjax --><script src="https://cdnjs.cloudflare.com
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -118,6 +118,8 @@ producing a new <code><a href="rvar.html">rvar</a></code>.</p>
     <dl><dt>expr</dt>
 <dd><p>(expression) A bare expression that can (optionally) contain
 <code><a href="rvar.html">rvar</a></code>s. The expression supports quasiquotation.</p></dd>
+
+
 <dt>dim</dt>
 <dd><p>(integer vector) One or more integers giving the maximal indices
 in each dimension to override the dimensions of the <code><a href="rvar.html">rvar</a></code> to be created
@@ -125,16 +127,21 @@ in each dimension to override the dimensions of the <code><a href="rvar.html">rv
 <strong>NOTE:</strong> This argument controls the dimensions of the <code><a href="rvar.html">rvar</a></code>, not the
 underlying array, so you cannot change the number of draws using this
 argument.</p></dd>
+
+
 <dt>ndraws</dt>
 <dd><p>(positive integer) The number of draws used to construct new
 random variables if no <code><a href="rvar.html">rvar</a></code>s are supplied in <code>expr</code>. If <code>NULL</code>,
 <code>getOption("posterior.rvar_ndraws")</code> is used (default 4000). If <code>expr</code>
 contains <code><a href="rvar.html">rvar</a></code>s, the number of draws in the provided <code><a href="rvar.html">rvar</a></code>s is used
 instead of the value of this argument.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code><a href="rvar.html">rvar</a></code>.</p>
+    
+
+<p>An <code><a href="rvar.html">rvar</a></code>.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -183,7 +190,7 @@ using <code><a href="rvar_rng.html">rvar_rng()</a></code>, and/or using operatio
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

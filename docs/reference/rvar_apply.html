@@ -19,7 +19,7 @@ and the final result is always an rvar."><!-- mathjax --><script src="https://cd
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -119,23 +119,34 @@ and the final result is always an <code><a href="rvar.html">rvar</a></code>.</p>
     <h2>Arguments</h2>
     <dl><dt>.x</dt>
 <dd><p>An array or an <code><a href="rvar.html">rvar</a></code>.</p></dd>
+
+
 <dt>.margin</dt>
 <dd><p>(multiple options) The subscripts which the function will be applied over:</p><ul><li><p>An integer vector. E.g., for a matrix <code>1</code> indicates rows, <code>2</code> indicates
 columns, <code>c(1, 2)</code> indicates rows and columns.</p></li>
 <li><p>A character vector of dimension names if <code>.x</code> has named dimensions.</p></li>
 </ul></dd>
+
+
 <dt>.f</dt>
 <dd><p>(function) The function to be applied. The function <code>.f</code> must
 return an <code><a href="rvar.html">rvar</a></code> and the dimensions of the result of <code>.f</code> applied to each
 margin of <code>.x</code> must be able to be broadcasted to a common shape (otherwise
 the resulting <code><a href="rvar.html">rvar</a></code> cannot be simplified). See <strong>Details</strong>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Optional arguments passed to <code>.f</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>An <code><a href="rvar.html">rvar</a></code>.
-If the result of each call to <code>.f</code> returns an <code><a href="rvar.html">rvar</a></code> of dimension <code>d</code> after
+    
+
+<p>An <code><a href="rvar.html">rvar</a></code>.</p>
+
+
+<p>If the result of each call to <code>.f</code> returns an <code><a href="rvar.html">rvar</a></code> of dimension <code>d</code> after
 being broadcast to a common shape, then <code>rvar_apply()</code> returns an <code><a href="rvar.html">rvar</a></code> of
 dimension <code>c(d, dim(.x)[.margin])</code>. If the last dimension of the result would
 be <code>1</code>, it is dropped (other dimensions equal to <code>1</code> are retained). If <code>d</code> is
@@ -192,7 +203,7 @@ be simplified into an <code><a href="rvar.html">rvar</a></code>, you can use the
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

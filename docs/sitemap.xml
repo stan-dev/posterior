@@ -46,6 +46,9 @@
     <loc>https://mc-stan.org/posterior/reference/chol.rvar.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/diag-rvar-method.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/diagnostics.html</loc>
   </url>
   <url>
@@ -82,6 +85,9 @@
     <loc>https://mc-stan.org/posterior/reference/draws_summary.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/drop-rvar-method.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/ess_basic.html</loc>
   </url>
   <url>
@@ -110,6 +116,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/fold_draws.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/for_each_draw.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/index.html</loc>

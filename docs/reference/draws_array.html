@@ -21,7 +21,7 @@ See Details."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/lib
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -151,17 +151,24 @@ See <strong>Details</strong>.</p>
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>An object to convert to a <code>draws_array</code> object.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>For <code>as_draws_array()</code>:
 Arguments passed to individual methods (if applicable).
 For <code>draws_array()</code>: Named
 arguments containing numeric vectors each defining a separate variable.</p></dd>
+
+
 <dt>.nchains</dt>
 <dd><p>(positive integer) The number of chains. The default is <code>1</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>draws_array</code> object, which has classes
+    
+
+<p>A <code>draws_array</code> object, which has classes
 <code>c("draws_array", "draws", "array")</code>.</p>
     </div>
     <div id="details">
@@ -242,22 +249,22 @@ arguments containing numeric vectors each defining a separate variable.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> , , variable = a</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          chain</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> iteration     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         1  1.66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         2  0.58</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         3  1.19</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         4 -1.31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         5 -0.37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> iteration    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         1 0.56</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         2 1.70</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         3 1.04</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         4 1.15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         5 0.42</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> , , variable = b</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          chain</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> iteration     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         1  0.62</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         2  0.10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         3  0.60</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         4 -0.47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         5 -0.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         1 -0.12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         2  1.59</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         3 -0.37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         4  0.51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         5 -0.90</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> , , variable = c</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -271,7 +278,7 @@ arguments containing numeric vectors each defining a separate variable.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # ... with 5 more iterations</span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">x2</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  'draws_array' num [1:10, 1, 1:3] 1.663 0.576 1.191 -1.309 -0.368 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  'draws_array' num [1:10, 1, 1:3] 0.562 1.699 1.036 1.15 0.416 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "dimnames")=List of 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ iteration: chr [1:10] "1" "2" "3" "4" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ chain    : chr "1"</span>
@@ -290,7 +297,7 @@ arguments containing numeric vectors each defining a separate variable.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

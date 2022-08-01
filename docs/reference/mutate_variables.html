@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -130,6 +130,8 @@
     <h2>Arguments</h2>
     <dl><dt>.x</dt>
 <dd><p>(draws) A <code><a href="draws.html">draws</a></code> object.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Name-value pairs of expressions, each with either length 1 or the
 same length as in the entire input (i.e., number of iterations or draws).
@@ -137,10 +139,13 @@ The name of each argument will be the name of a new variable, and the value
 will be its corresponding value. Use a <code>NULL</code> value in <code>mutate_variables</code>
 to drop a variable. New variables overwrite existing variables of the same
 name.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>Returns a <code><a href="draws.html">draws</a></code> object of the same format as <code>.x</code>, with variables mutated
+    
+
+<p>Returns a <code><a href="draws.html">draws</a></code> object of the same format as <code>.x</code>, with variables mutated
 according to the expressions provided in <code>...</code>.</p>
     </div>
     <div id="details">
@@ -208,7 +213,7 @@ coerced to an <code><a href="rvar.html">rvar</a></code> object if it is not alre
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

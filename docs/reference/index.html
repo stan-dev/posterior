@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -106,7 +106,7 @@
           <p class="section-desc"></p><p>Pacakge overview and global options</p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="posterior-package.html">posterior-package</a></code> </p>
+          <p><code><a href="posterior-package.html">posterior-package</a></code> <code><a href="posterior-package.html">posterior</a></code> </p>
         </td>
         <td><p>Tools for working with posterior (and prior) distributions</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
@@ -169,6 +169,10 @@
           <p><code><a href="example_draws.html">example_draws()</a></code> </p>
         </td>
         <td><p>Example <code>draws</code> objects</p></td>
+      </tr><tr><td>
+          <p><code><a href="reserved_variables.html">reserved_variables()</a></code> </p>
+        </td>
+        <td><p>Reserved variables</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="working-with-draws-objects">Working with draws objects <a href="#working-with-draws-objects" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>Functions for modifying <code>draws</code> objects and extracting their contents</p>
@@ -238,7 +242,7 @@
         </td>
         <td><p>Summaries of <code>draws</code> objects</p></td>
       </tr><tr><td>
-          <p><code><a href="diagnostics.html">diagnostics</a></code> </p>
+          <p><code><a href="diagnostics.html">diagnostics</a></code> <code><a href="diagnostics.html">convergence</a></code> </p>
         </td>
         <td><p>List of available convergence diagnostics</p></td>
       </tr><tr><td>
@@ -353,6 +357,18 @@
           <p><code><a href="draws_of.html">draws_of()</a></code> <code><a href="draws_of.html">`draws_of&lt;-`()</a></code> </p>
         </td>
         <td><p>Get/set array of draws underlying a random variable</p></td>
+      </tr><tr><td>
+          <p><code><a href="diag-rvar-method.html">diag(<i>&lt;rvar&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Matrix diagonals (including for random variables)</p></td>
+      </tr><tr><td>
+          <p><code><a href="drop-rvar-method.html">drop(<i>&lt;rvar&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Drop redundant dimensions</p></td>
+      </tr><tr><td>
+          <p><code><a href="for_each_draw.html">for_each_draw()</a></code> </p>
+        </td>
+        <td><p>Loop over draws</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -366,7 +382,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

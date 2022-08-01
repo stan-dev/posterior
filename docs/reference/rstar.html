@@ -22,7 +22,7 @@ predicting a chain uniformly at random."><!-- mathjax --><script src="https://cd
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -134,35 +134,55 @@ predicting a chain uniformly at random.</p>
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>(draws) A <code><a href="draws_df.html">draws_df</a></code> object or one coercible to a <code>draws_df</code> object.</p></dd>
+
+
 <dt>split</dt>
 <dd><p>(logical) Should the estimate be computed on split chains? The
 default is <code>TRUE</code>.</p></dd>
+
+
 <dt>uncertainty</dt>
 <dd><p>(logical). Indicates whether to provide a vector of R*
 values representing uncertainty in the calculated value (if <code>TRUE</code>) or a
 single value (if <code>FALSE</code>). The default is <code>TRUE.</code></p></dd>
+
+
 <dt>method</dt>
 <dd><p>(string) The machine learning classifier to use (must be
 available in the <span class="pkg">caret</span> package). The default is <code>"rf"</code>, which calls
 the random forest classifier.</p></dd>
+
+
 <dt>hyperparameters</dt>
 <dd><p>(named list) Hyperparameter settings passed to the classifier.
 The default for the random forest classifier (<code>method = "rf"</code>) is
 <code>list(mtry = floor(sqt(nvariables(x))))</code>.
 The default for the gradient-based model (<code>method = "gbm"</code>) is
 <code>list(interaction.depth = 3, n.trees = 50, shrinkage = 0.1, n.minobsinnode = 10)</code>.</p></dd>
+
+
 <dt>training_proportion</dt>
 <dd><p>(positive real) The proportion (in <code>(0,1)</code>) of
 iterations in used to train the classifier. The default is <code>0.7</code>.</p></dd>
+
+
 <dt>nsimulations</dt>
 <dd><p>(positive integer) The number of R* values in the
 returned vector if <code>uncertainty</code> is <code>TRUE</code>. The default is <code>1000.</code></p></dd>
+
+
 <dt>...</dt>
 <dd><p>Other arguments passed to <code><a href="https://rdrr.io/pkg/caret/man/train.html" class="external-link">caret::train()</a></code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A numeric vector of length 1 (by default) or length <code>nsimulations</code>(if <code>uncertainty = TRUE</code>).</p>
+    
+
+<p>A numeric vector of length 1 (by default) or length <code>nsimulations</code></p>
+
+
+<p>(if <code>uncertainty = TRUE</code>).</p>
     </div>
     <div id="details">
     <h2>Details</h2>
@@ -272,7 +292,7 @@ diagnostic with uncertainty using gradient-boosted machines.
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

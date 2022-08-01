@@ -80,7 +80,7 @@ reference:
       - starts_with("print")
       - variables # will include everything from draws-index.R
       - example_draws
-      - reserved-variables
+      - reserved_variables
   - title: "Working with draws objects"
     desc: >
       Functions for modifying `draws` objects and extracting their contents
@@ -123,5 +123,6 @@ reference:
       - rdo
       - rfun
       - draws_of
-      - vctrs-compat
-
+      - diag,rvar-method
+      - drop,rvar-method
+      - for_each_draw

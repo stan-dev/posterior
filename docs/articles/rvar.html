@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -127,7 +127,7 @@
                         <h4 data-toc-skip class="author">Matthew
 Kay</h4>
             
-            <h4 data-toc-skip class="date">2022-06-09</h4>
+            <h4 data-toc-skip class="date">2022-08-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/stan-dev/posterior/blob/HEAD/vignettes/rvar.Rmd" class="external-link"><code>vignettes/rvar.Rmd</code></a></small>
       <div class="hidden name"><code>rvar.Rmd</code></div>
@@ -410,6 +410,10 @@ under the hood). Because the normal matrix multiplication operator in R
 <tr class="even">
 <td align="left">Matrix decomposition</td>
 <td align="left"><code><a href="https://rdrr.io/r/base/chol.html" class="external-link">chol()</a></code></td>
+</tr>
+<tr class="odd">
+<td align="left">Matrix diagonals</td>
+<td align="left"><code><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag()</a></code></td>
 </tr>
 </tbody>
 </table>
@@ -883,11 +887,51 @@ margin of an array:</p>
 <span class="co">## [3,]  5.5 ± 0.71  11.5 ± 0.72  17.5 ± 0.71  23.5 ± 0.70</span></code></pre>
 </div>
 <div class="section level2">
+<h2 id="looping-over-draws-and-rvars">Looping over <code>draws</code> and <code>rvar</code>s<a class="anchor" aria-label="anchor" href="#looping-over-draws-and-rvars"></a>
+</h2>
+<p>The <code>rvar</code> datatype is also used in
+<code><a href="../reference/for_each_draw.html">for_each_draw()</a></code>, which allows you to loop over draws in a
+<code>draws</code> object or an <code>rvar</code>.
+<code>for_each_draw(x, expr)</code> converts <code>x</code> into a
+<code><a href="../reference/draws_rvars.html">draws_rvars()</a></code> object, then loops over each draw of
+<code>x</code>, executing the provided expression, <code>expr</code>.
+The expression can use the variables in <code>x</code> as if they were
+regular R arrays.</p>
+<p>One application of <code><a href="../reference/for_each_draw.html">for_each_draw()</a></code> is in constructing
+base-R plots of individual draws (for <code>ggplot2</code>-based
+plotting of <code>rvar</code>s, see the next section and the <a href="https://mjskay.github.io/ggdist/" class="external-link">ggdist</a> package). For
+example, it can be used to construct a parallel coordinates plot:</p>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">eight_schools</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/draws_rvars.html">as_draws_rvars</a></span><span class="op">(</span><span class="fu"><a href="../reference/example_draws.html">example_draws</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">1</span>, type <span class="op">=</span> <span class="st">"n"</span>,
+  xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">eight_schools</span><span class="op">$</span><span class="va">theta</span><span class="op">)</span><span class="op">)</span>,
+  ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/range.html" class="external-link">range</a></span><span class="op">(</span><span class="va">eight_schools</span><span class="op">$</span><span class="va">theta</span><span class="op">)</span><span class="op">)</span>,
+  xlab <span class="op">=</span> <span class="st">"school"</span>, ylab <span class="op">=</span> <span class="st">"theta"</span>
+<span class="op">)</span>
+
+<span class="co"># use for_each_draw() to make a parallel coordinates plot of all draws</span>
+<span class="co"># of eight_schools$theta</span>
+<span class="fu"><a href="../reference/for_each_draw.html">for_each_draw</a></span><span class="op">(</span><span class="va">eight_schools</span>, <span class="op">{</span>
+  <span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">theta</span><span class="op">)</span>, <span class="va">theta</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grDevices/rgb.html" class="external-link">rgb</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span>
+<span class="op">}</span><span class="op">)</span>
+
+<span class="co"># add means and 90% intervals</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">eight_schools</span><span class="op">$</span><span class="va">theta</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">eight_schools</span><span class="op">$</span><span class="va">theta</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">eight_schools</span><span class="op">$</span><span class="va">theta</span><span class="op">)</span>, 
+  <span class="fu"><a href="https://rdrr.io/r/graphics/segments.html" class="external-link">segments</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">eight_schools</span><span class="op">$</span><span class="va">theta</span><span class="op">)</span>, y0 <span class="op">=</span> <span class="va">q5</span>, y1 <span class="op">=</span> <span class="va">q95</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
+<p><img src="rvar_files/figure-html/eight_schools_parcoord-1.png" width="576"></p>
+<p>As <code><a href="../reference/for_each_draw.html">for_each_draw()</a></code> will be slower than most other ways
+of manipulating draws, this function should generally not be used unless
+needed.</p>
+</div>
+<div class="section level2">
 <h2 id="using-rvars-in-data-frames-and-in-ggplot2">Using <code>rvar</code>s in data frames and in ggplot2<a class="anchor" aria-label="anchor" href="#using-rvars-in-data-frames-and-in-ggplot2"></a>
 </h2>
 <p><code>rvar</code>s can be used as columns in
 <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame()</a></code> or <code>tibble()</code> objects:</p>
-<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>,<span class="st">"b"</span>,<span class="st">"c"</span><span class="op">)</span>, <span class="va">y</span><span class="op">)</span></code></pre></div>
 <pre><code><span class="co">##   x                    y</span>
 <span class="co">## 1 a 2.997187 ± 1.0017769</span>
@@ -895,8 +939,11 @@ margin of an array:</p>
 <span class="co">## 3 c 1.028725 ± 1.0021676</span></code></pre>
 <p>This makes them convenient for adding predictions to a data frame
 alongside the data used to generate the predictions. <code>rvar</code>s
-can then be visualized with ggplot2 using the <code>stat_dist_...</code>
-family of geometries in the <a href="https://mjskay.github.io/ggdist/" class="external-link">ggdist</a> package.</p>
+can then be visualized with ggplot2 by passing them to the
+<code>xdist</code> and <code>ydist</code> aesthetics of the
+<code>stat_...</code> family of geometries in the <a href="https://mjskay.github.io/ggdist/" class="external-link">ggdist</a> package, such as
+<code>stat_halfeye()</code>, <code>stat_lineribbon()</code>, and
+<code>stat_dotsinterval()</code>.</p>
 </div>
   </div>
 
@@ -917,7 +964,7 @@ family of geometries in the <a href="https://mjskay.github.io/ggdist/" class="ex
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer>

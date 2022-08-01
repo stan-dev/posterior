@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -130,38 +130,61 @@
     <h2>Arguments</h2>
     <dl><dt>x, object</dt>
 <dd><p>(rvar) The <code><a href="rvar.html">rvar</a></code> to print.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Further arguments passed to the underlying <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> methods.</p></dd>
+
+
 <dt>summary</dt>
 <dd><p>(string) The style of summary to display: <code>"mean_sd"</code> displays
 <code>mean±sd</code>, <code>"median_mad"</code> displays <code>median±mad</code>. If <code>NULL</code>,
 <code>getOption("posterior.rvar_summary")</code> is used (default <code>"mean_sd</code>).</p></dd>
+
+
 <dt>digits</dt>
 <dd><p>(nonnegative integer) The minimum number of significant digits
 to print.</p></dd>
+
+
 <dt>color</dt>
 <dd><p>(logical) Whether or not to use color when formatting the
 output. If <code>TRUE</code>, the <code><a href="https://pillar.r-lib.org/reference/style_subtle.html" class="external-link">pillar::style_num()</a></code> functions may be used to
 produce strings containing control sequences to produce colored output on
 the terminal.</p></dd>
+
+
 <dt>vec.len</dt>
 <dd><p>(nonnegative integer) How many 'first few' elements are
 displayed of each vector. If <code>NULL</code>, defaults to
 <code>getOption("str")$vec.len</code>, which defaults to 4.</p></dd>
+
+
 <dt>indent.str</dt>
 <dd><p>(string) The indentation string to use.</p></dd>
+
+
 <dt>nest.lev</dt>
 <dd><p>(nonnegative integer) Current nesting level in the recursive
 calls to <code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code>.</p></dd>
+
+
 <dt>give.attr</dt>
 <dd><p>(logical) If <code>TRUE</code> (default), show attributes as sub
 structures.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>For <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, an invisible version of the input object.
-For <code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code>, nothing; i.e. <code>invisible(NULL)</code>.
-For <code><a href="https://rdrr.io/r/base/format.html" class="external-link">format()</a></code>, a character vector of the same dimensions as <code>x</code> where each
+    
+
+<p>For <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>, an invisible version of the input object.</p>
+
+
+<p>For <code><a href="https://rdrr.io/r/utils/str.html" class="external-link">str()</a></code>, nothing; i.e. <code>invisible(NULL)</code>.</p>
+
+
+<p>For <code><a href="https://rdrr.io/r/base/format.html" class="external-link">format()</a></code>, a character vector of the same dimensions as <code>x</code> where each
 entry is of the form <code>"mean±sd"</code> or <code>"median±mad"</code>, depending on the value
 of <code>summary</code>.</p>
     </div>
@@ -216,7 +239,7 @@ mean±sd or median±mad form.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

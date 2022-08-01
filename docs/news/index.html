@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -103,7 +103,25 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.2.2" id="posterior-122">posterior 1.2.2<a class="anchor" aria-label="anchor" href="#posterior-122"></a></h2>
+<h2 class="page-header" data-toc-text="1.3.0" id="posterior-130">posterior 1.3.0<a class="anchor" aria-label="anchor" href="#posterior-130"></a></h2>
+<div class="section level4">
+<h4 id="enhancements-1-3-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-3-0"></a></h4>
+<ul><li>Implement <code>for_each_draw(x, expr)</code>, which executes <code>expr</code> once for each draw of <code>x</code>, exposing variables in <code>x</code> as arrays of the shape implied by the indices in their names (<a href="https://github.com/stan-dev/posterior/issues/224" class="external-link">#224</a>).</li>
+<li>Implement <code><a href="../reference/subset_draws.html">subset_draws()</a></code>, <code><a href="../reference/thin_draws.html">thin_draws()</a></code>, and <code><a href="../reference/resample_draws.html">resample_draws()</a></code> for <code>rvar</code>s (<a href="https://github.com/stan-dev/posterior/issues/225" class="external-link">#225</a>).</li>
+<li>Allow <code>weights</code> to be optional in <code><a href="../reference/resample_draws.html">resample_draws()</a></code> (<a href="https://github.com/stan-dev/posterior/issues/225" class="external-link">#225</a>).</li>
+<li>Add an implementation of <code><a href="https://rdrr.io/r/base/drop.html" class="external-link">drop()</a></code> for <code>rvar</code>s.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-1-3-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-3-0"></a></h4>
+<ul><li>Support remaining modes of <code><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag()</a></code> for <code>rvar</code>s (<a href="https://github.com/stan-dev/posterior/issues/246" class="external-link">#246</a>).</li>
+<li>Better parsing for named indices in <code><a href="../reference/draws_rvars.html">as_draws_rvars()</a></code>, including nested use of <code>[</code>, like <code>x[y[1],2]</code> (<a href="https://github.com/stan-dev/posterior/issues/243" class="external-link">#243</a>).</li>
+<li>Allow 0-length <code>rvar</code>s with <code>ndraws() &gt; 1</code> (<a href="https://github.com/stan-dev/posterior/issues/242" class="external-link">#242</a>).</li>
+<li>Ensure 0-length <code>rvar</code>s can be cast to <code>draws</code> formats (<a href="https://github.com/stan-dev/posterior/issues/242" class="external-link">#242</a>).</li>
+<li>Don’t treat length-1 <code>rvar</code>s with more than 1 dimension as scalars when casting to other formats (<a href="https://github.com/stan-dev/posterior/issues/248" class="external-link">#248</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.2" id="posterior-122">posterior 1.2.2<small>2022-06-09</small><a class="anchor" aria-label="anchor" href="#posterior-122"></a></h2>
 <div class="section level4">
 <h4 id="enhancements-1-2-2">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-2-2"></a></h4>
 <ul><li>Improve the <code>mcse_sd</code> function to not make a normality assumption. (<a href="https://github.com/stan-dev/posterior/issues/232" class="external-link">#232</a>)</li>
@@ -176,7 +194,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

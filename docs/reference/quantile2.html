@@ -18,7 +18,7 @@ with other summary functions in the posterior package."><!-- mathjax --><script 
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -126,22 +126,33 @@ with other summary functions in the <span class="pkg">posterior</span> package.<
 <code><a href="extract_variable_matrix.html">extract_variable_matrix()</a></code>.</p></li>
 <li><p>An <code><a href="rvar.html">rvar</a></code>.</p></li>
 </ul></dd>
+
+
 <dt>probs</dt>
 <dd><p>(numeric vector) Probabilities in <code>[0, 1]</code>.</p></dd>
+
+
 <dt>na.rm</dt>
 <dd><p>(logical) Should <code>NA</code> and <code>NaN</code> values be removed from <code>x</code> prior
 to computing quantiles? The default is <code>FALSE</code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Arguments passed to individual methods (if applicable) and then
 on to <code><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">stats::quantile()</a></code>.</p></dd>
+
+
 <dt>names</dt>
 <dd><p>(logical) Should the result have a <code>names</code> attribute? The
 default is <code>TRUE</code>, but use <code>FALSE</code> for improved speed if there are many
 values in <code>probs</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A numeric vector of length <code>length(probs)</code>. If <code>names = TRUE</code>, it has a
+    
+
+<p>A numeric vector of length <code>length(probs)</code>. If <code>names = TRUE</code>, it has a
 <a href="https://rdrr.io/r/base/names.html" class="external-link">names</a> attribute with names like <code>"q5"</code>, <code>"q95"</code>, etc, based on the values
 of <code>probs</code>.</p>
     </div>
@@ -167,7 +178,7 @@ of <code>probs</code>.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

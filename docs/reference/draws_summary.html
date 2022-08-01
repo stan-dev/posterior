@@ -22,7 +22,7 @@ or rvar object."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -145,27 +145,38 @@ or <code>rvar</code> object.</p>
     <h2>Arguments</h2>
     <dl><dt>.x, object</dt>
 <dd><p>(draws) A <code>draws</code> object or one coercible to a <code>draws</code> object.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Name-value pairs of summary or <a href="diagnostics.html">diagnostic</a>
 functions. The provided names will be used as the names of the columns in
 the result <em>unless</em> the function returns a named vector, in which case the
 latter names are used. The functions can be specified in any format
 supported by <a href="https://rlang.r-lib.org/reference/as_function.html" class="external-link">as_function()</a>. See <strong>Examples</strong>.</p></dd>
+
+
 <dt>.args</dt>
 <dd><p>(named list) Optional arguments passed to the summary functions.</p></dd>
+
+
 <dt>.cores</dt>
 <dd><p>(positive integer) The number of cores to use for computing
 summaries for different variables in parallel. Coerced to integer if
 possible, otherwise errors. The default is <code>.cores = 1</code>, in which case no
 parallelization is implemented. By default, a socket cluster is used on
 Windows and forks otherwise.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>The <code>summarise_draws()</code> methods return a <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> data frame.
+    
+
+<p>The <code>summarise_draws()</code> methods return a <a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a> data frame.
 The first column (<code>"variable"</code>) contains the variable names and the remaining
-columns contain summary statistics and diagnostics.
-The functions <code>default_summary_measures()</code>, <code>default_convergence_measures()</code>,
+columns contain summary statistics and diagnostics.</p>
+
+
+<p>The functions <code>default_summary_measures()</code>, <code>default_convergence_measures()</code>,
 and <code>default_mcse_measures()</code> return character vectors of names of the
 default measures.</p>
     </div>
@@ -326,16 +337,16 @@ their individual help pages.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 10 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    variable weighted.mean</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> mu                4.07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> tau               4.20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> theta[1]          6.44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> theta[2]          5.30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> theta[3]          2.80</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> theta[4]          4.67</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> theta[5]          3.18</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> theta[6]          3.62</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> theta[7]          6.20</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> theta[8]          4.46</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span> mu                4.14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span> tau               4.48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span> theta[1]          7.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span> theta[2]          5.35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span> theta[3]          3.22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span> theta[4]          5.07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span> theta[5]          3.06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span> theta[6]          3.93</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span> theta[7]          6.88</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> theta[8]          4.08</span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>
@@ -351,7 +362,7 @@ their individual help pages.</p></div>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>

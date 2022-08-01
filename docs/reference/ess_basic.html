@@ -22,7 +22,7 @@ comparison of different effective sample size estimators."><!-- mathjax --><scri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -134,23 +134,35 @@ comparison of different effective sample size estimators.</p>
 <code><a href="extract_variable_matrix.html">extract_variable_matrix()</a></code>.</p></li>
 <li><p>An <code><a href="rvar.html">rvar</a></code>.</p></li>
 </ul></dd>
+
+
 <dt>...</dt>
 <dd><p>Arguments passed to individual methods (if applicable).</p></dd>
+
+
 <dt>split</dt>
 <dd><p>(logical) Should the estimate be computed on split chains? The
 default is <code>TRUE</code>.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>If the input is an array, returns a single numeric value. If any of the draws
+    
+
+<p>If the input is an array, returns a single numeric value. If any of the draws
 is non-finite, that is, <code>NA</code>, <code>NaN</code>, <code>Inf</code>, or <code>-Inf</code>, the returned output
 will be (numeric) <code>NA</code>. Also, if all draws within any of the chains of a
-variable are the same (constant), the returned output will be (numeric) <code>NA</code>as well. The reason for the latter is that, for constant draws, we cannot
+variable are the same (constant), the returned output will be (numeric) <code>NA</code></p>
+
+
+<p>as well. The reason for the latter is that, for constant draws, we cannot
 distinguish between variables that are supposed to be constant (e.g., a
 diagonal element of a correlation matrix is always 1) or variables that just
 happened to be constant because of a failure of convergence or other problems
-in the sampling process.
-If the input is an <code><a href="rvar.html">rvar</a></code>, returns an array of the same dimensions as the
+in the sampling process.</p>
+
+
+<p>If the input is an <code><a href="rvar.html">rvar</a></code>, returns an array of the same dimensions as the
 <code><a href="rvar.html">rvar</a></code>, where each element is equal to the value that would be returned by
 passing the draws array for that element of the <code><a href="rvar.html">rvar</a></code> to this function.</p>
     </div>
@@ -209,7 +221,7 @@ Retrieved from https://avehtari.github.io/rhat_ess/ess_comparison.html</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
       </footer></div>
