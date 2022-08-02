@@ -8,6 +8,7 @@
 * Implement `subset_draws()`, `thin_draws()`, and `resample_draws()` for `rvar`s (#225).
 * Allow `weights` to be optional in `resample_draws()` (#225).
 * Add an implementation of `drop()` for `rvar`s.
+* Speed up subsetting of `draws_list` objects. (#229, #250)
 
 ### Bug Fixes
 

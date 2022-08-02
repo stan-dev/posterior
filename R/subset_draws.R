@@ -327,9 +327,7 @@ subset_dims <- function(x, ...) {
   }
   if (!is.null(iteration)) {
     for (i in seq_along(x)) {
-      for (j in seq_along(x[[i]])) {
-        x[[i]][[j]] <- x[[i]][[j]][iteration]
-      }
+      x[[i]] <- lapply(x[[i]], `[`, iteration)
     }
   }
   x
