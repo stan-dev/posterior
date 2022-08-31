@@ -54,7 +54,7 @@ merge_chains.draws_list <- function(x, ...) {
   }
   out <- empty_draws_list(variables(x), nchains = 1)
   for (v in variables(out)) {
-    out[[1]][[v]] <- ulapply(x, "[[", v)
+    out[[1]][[v]] <- unname(ulapply(x, "[[", v))
   }
   out
 }
