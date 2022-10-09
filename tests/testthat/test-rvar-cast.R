@@ -4,7 +4,6 @@ test_that("as_rvar works", {
   expect_equal(draws_of(as_rvar(1L)), matrix(1L, dimnames = list("1", NULL)))
   expect_equal(draws_of(as_rvar(c(TRUE, FALSE))), matrix(c(TRUE, FALSE), nrow = 1, dimnames = list("1", NULL)))
   expect_equal(draws_of(as_rvar(1:3L)), matrix(1:3L, nrow = 1, dimnames = list("1", NULL)))
-  expect_equal(draws_of(as_rvar(1:3L)), matrix(1:3L, nrow = 1, dimnames = list("1", NULL)))
 
   expect_equal(nchains(as_rvar(1, nchains = 2)), 2)
 
@@ -25,6 +24,51 @@ test_that("as_rvar preserves dimension names", {
   names(x) <- c("a","b","c")
   x_rvar <- as_rvar(x)
   expect_equal(names(x_rvar), names(x))
+})
+
+
+# as_rvar_factor -----------------------------------------------------------------
+
+test_that("as_rvar_factor works", {
+  expect_equal(
+    draws_of(as_rvar_factor(1L)),
+    structure(matrix(1L, dimnames = list("1", NULL)), levels = "1", class = "factor")
+  )
+  expect_equal(
+    draws_of(as_rvar_factor(c(TRUE, FALSE))),
+    structure(matrix(c(2, 1), nrow = 1, dimnames = list("1", NULL)), levels = c("FALSE","TRUE"), class = "factor")
+  )
+  expect_equal(
+    draws_of(as_rvar_factor(letters[1:3])),
+    structure(matrix(1:3, nrow = 1, dimnames = list("1", NULL)), levels = letters[1:3], class = "factor")
+  )
+  expect_equal(
+    draws_of(as_rvar_factor(factor(letters[1:3], levels = letters[3:1]))),
+    structure(matrix(3:1, nrow = 1, dimnames = list("1", NULL)), levels = letters[3:1], class = "factor")
+  )
+
+  expect_equal(nchains(as_rvar_factor(1, nchains = 2)), 2)
+})
+
+test_that("as_rvar_ordered works", {
+  expect_equal(
+    draws_of(as_rvar_ordered(1L)),
+    structure(matrix(1L, dimnames = list("1", NULL)), levels = "1", class = c("ordered", "factor"))
+  )
+  expect_equal(
+    draws_of(as_rvar_ordered(c(TRUE, FALSE))),
+    structure(matrix(c(2, 1), nrow = 1, dimnames = list("1", NULL)), levels = c("FALSE","TRUE"), class = c("ordered", "factor"))
+  )
+  expect_equal(
+    draws_of(as_rvar_ordered(letters[1:3])),
+    structure(matrix(1:3, nrow = 1, dimnames = list("1", NULL)), levels = letters[1:3], class = c("ordered", "factor"))
+  )
+  expect_equal(
+    draws_of(as_rvar_ordered(ordered(letters[1:3], levels = letters[3:1]))),
+    structure(matrix(3:1, nrow = 1, dimnames = list("1", NULL)), levels = letters[3:1], class = c("ordered", "factor"))
+  )
+
+  expect_equal(nchains(as_rvar_ordered(1, nchains = 2)), 2)
 })
 
 
