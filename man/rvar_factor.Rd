@@ -5,9 +5,23 @@
 \alias{rvar_ordered}
 \title{Factor random variables of arbitrary dimension}
 \usage{
-rvar_factor(x = factor(), ...)
+rvar_factor(
+  x = factor(),
+  dim = NULL,
+  dimnames = NULL,
+  nchains = NULL,
+  with_chains = FALSE,
+  ...
+)
 
-rvar_ordered(x = ordered(NULL), ...)
+rvar_ordered(
+  x = ordered(NULL),
+  dim = NULL,
+  dimnames = NULL,
+  nchains = NULL,
+  with_chains = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{(multiple options) The object to convert to an \code{rvar}:
@@ -23,30 +37,50 @@ second dimension indexes the chain (see \code{with_chains}).
 \item An \code{rvar}.
 }}
 
-\item{...}{
-  Arguments passed on to \code{\link[=rvar]{rvar}}
-  \describe{
-    \item{\code{dim}}{(integer vector) One or more integers giving the maximal indices
+\item{dim}{(integer vector) One or more integers giving the maximal indices
 in each dimension to override the dimensions of the \code{\link{rvar}} to be created
 (see \code{\link[=dim]{dim()}}). If \code{NULL} (the default), \code{dim} is determined by the input.
 \strong{NOTE:} This argument controls the dimensions of the \code{\link{rvar}}, not the
 underlying array, so you cannot change the number of draws using this
 argument.}
-    \item{\code{dimnames}}{(list) Character vectors giving the names in each dimension
+
+\item{dimnames}{(list) Character vectors giving the names in each dimension
 to override the names of the dimensions of the \code{\link{rvar}} to be created (see
 \code{\link[=dimnames]{dimnames()}}). If \code{NULL} (the default), this is determined by the input.
 \strong{NOTE:} This argument controls the names of the dimensions of the
 \code{\link{rvar}}, not the underlying array.}
-    \item{\code{nchains}}{(positive integer) The number of chains. The if \code{NULL} (the default),
+
+\item{nchains}{(positive integer) The number of chains. The if \code{NULL} (the default),
 \code{1} is used unless \code{x} is already an \code{\link{rvar}}, in which case the number of
 chains it has is used.}
-    \item{\code{with_chains}}{(logical) Does \code{x} include a dimension for chains?
+
+\item{with_chains}{(logical) Does \code{x} include a dimension for chains?
 If \code{FALSE} (the default), chains are not included, the first dimension of
 the input array should index draws, and the \code{nchains} argument can be
 used to determine the number of chains. If \code{TRUE}, the \code{nchains} argument
 is ignored and the second dimension of \code{x} is used to index chains.
 Internally, the array will be converted to a format without the chain index.
 Ignored when \code{x} is already an \code{\link{rvar}}.}
+
+\item{...}{
+  Arguments passed on to \code{\link[base:factor]{base::factor}}
+  \describe{
+    \item{\code{levels}}{an optional vector of the unique values (as character strings)
+    that \code{x} might have taken.  The default is the unique set of
+    values taken by \code{\link[base]{as.character}(x)}, sorted into
+    increasing order \emph{of \code{x}}.  Note that this set can be
+    specified as smaller than \code{sort(unique(x))}.}
+    \item{\code{labels}}{\emph{either} an optional character vector of
+    labels for the levels (in the same order as \code{levels} after
+    removing those in \code{exclude}), \emph{or} a character string of
+    length 1.  Duplicated values in \code{labels} can be used to map
+    different values of \code{x} to the same factor level.}
+    \item{\code{exclude}}{a vector of values to be excluded when forming the
+    set of levels.  This may be factor with the same level set as \code{x}
+    or should be a \code{character}.}
+    \item{\code{ordered}}{logical flag to determine if the levels should be regarded
+    as ordered (in the order given).}
+    \item{\code{nmax}}{an upper bound on the number of levels; see \sQuote{Details}.}
   }}
 }
 \value{

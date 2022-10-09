@@ -5,7 +5,7 @@
 #' @name rvar_factor
 #'
 #' @inheritParams rvar
-#' @inheritDotParams rvar
+#' @inheritDotParams base::factor
 #'
 #' @details
 #'
@@ -59,30 +59,15 @@
 #' rvar(y_array)
 #'
 #' @export
-rvar_factor <- function(x = factor(), ...) {
-  out <- rvar(x, ...)
-  if (!is_rvar_factor(out)) {
-    # rvar() will automatically convert to a factor if the input is factor-like;
-    # so we only need to handle the case here where input is numeric.
-    out <- .rvar_to_rvar_factor(out)
-  }
-  out
+rvar_factor <- function(x = factor(), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE, ...) {
+  out <- rvar(x, dim = dim, dimnames = dimnames, nchains = nchains, with_chains = with_chains)
+  .rvar_to_rvar_factor(out, ...)
 }
 
 #' @rdname rvar_factor
 #' @export
-rvar_ordered <- function(x = ordered(NULL), ...) {
-  out <- rvar(x, ...)
-  if (!is_rvar_ordered(out)) {
-    if (is_rvar_factor(out)) {
-      # factor but not ordered => just update the class (instead of using
-      # as.ordered()) so that levels / etc are preserved
-      oldClass(draws_of(out)) <- c("ordered", "factor")
-    } else {
-      out <- .rvar_to_rvar_factor(out, as.ordered)
-    }
-  }
-  out
+rvar_ordered <- function(x = ordered(NULL), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE, ...) {
+  rvar_factor(x, dim = dim, dimnames = dimnames, nchains = nchains, with_chains = with_chains, ordered = TRUE, ...)
 }
 
 # factor-like rvar methods ------------------------------------------------

@@ -16,10 +16,15 @@
 #' treats the first dimension of `x` as the draws dimension. As a result, `as_rvar()`
 #' is useful for creating constants.
 #'
+#' While `as_rvar()` attempts to pick the most suitable subtype of [`rvar`] based on the
+#' type of `x` (possibly returning a an [`rvar_factor`] or [`rvar_ordered`]),
+#' `as_rvar_numeric()` always coerces the draws of the output [`rvar`] to be [`numeric`],
+#' and always returns a base [`rvar`], never a subtype.
+#'
 #' @seealso [rvar()] to construct [`rvar`]s directly.  See [rdo()], [rfun()], and
 #' [rvar_rng()] for higher-level interfaces for creating `rvar`s.
 #'
-#' @return An object of class `"rvar"` representing a random variable.
+#' @return An object of class `"rvar"` (or one of its subtypes) representing a random variable.
 #'
 #' @examples
 #'
@@ -31,6 +36,11 @@
 #' as_rvar(1:4)
 #' as_rvar(matrix(1:10, nrow = 5))
 #' as_rvar(array(1:12, dim = c(2, 3, 2)))
+#'
+#' # as_rvar_numeric() coerces subtypes of rvar to the base rvar type
+#' y <- as_rvar_factor(c("a", "b", "c"))
+#' y
+#' as_rvar_numeric(y)
 #'
 #' @export
 as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
@@ -65,6 +75,14 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
     nchains_rvar(out) <- nchains
   }
 
+  out
+}
+
+#' @rdname as_rvar
+#' @export
+as_rvar_numeric <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
+  out <- as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
+  draws_of(out) <- while_preserving_dims(as.numeric, draws_of(out))
   out
 }
 
@@ -418,18 +436,26 @@ vec_cast.rvar_ordered.ordered <- function(x, to, ...) new_constant_rvar(x)
 #' @export
 vec_cast.rvar_factor.rvar <- function(x, to, ...) .rvar_to_rvar_factor(x)
 #' @export
-vec_cast.rvar_ordered.rvar <- function(x, to, ...) .rvar_to_rvar_factor(x, as.ordered)
+vec_cast.rvar_ordered.rvar <- function(x, to, ...) .rvar_to_rvar_factor(x, ordered = TRUE)
 #' @export
 vec_cast.rvar_factor.rvar_ordered <- function(x, to, ...) .rvar_to_rvar_factor(x)
 #' @export
-vec_cast.rvar_ordered.rvar_factor <- function(x, to, ...) .rvar_to_rvar_factor(x, as.ordered)
+vec_cast.rvar_ordered.rvar_factor <- function(x, to, ...) .rvar_to_rvar_factor(x, ordered = TRUE)
 #' @export
 vec_cast.rvar.rvar_ordered <- function(x, to, ...) x
 #' @export
 vec_cast.rvar.rvar_factor <- function(x, to, ...) x
 
-.rvar_to_rvar_factor <- function(x, as_factor = as.factor) {
-  draws_of(x) <- while_preserving_dims(as_factor, draws_of(x))
+.rvar_to_rvar_factor <- function(x, ordered = FALSE, ...) {
+  if (
+    ...length() == 0 &&
+    ((ordered && is_rvar_ordered(x)) || (!ordered && is_rvar_factor(x)))
+  ) {
+    # already correct type and nothing is being passed to factor() to change it
+    return(x)
+  }
+
+  draws_of(x) <- while_preserving_dims(factor, draws_of(x), ordered = ordered, ...)
   x
 }
 

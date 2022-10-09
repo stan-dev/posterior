@@ -2,9 +2,12 @@
 % Please edit documentation in R/rvar-cast.R
 \name{as_rvar}
 \alias{as_rvar}
+\alias{as_rvar_numeric}
 \title{Coerce to a random variable}
 \usage{
 as_rvar(x, dim = NULL, dimnames = NULL, nchains = NULL)
+
+as_rvar_numeric(x, dim = NULL, dimnames = NULL, nchains = NULL)
 }
 \arguments{
 \item{x}{(multiple options) An object that can be converted to an \code{\link{rvar}},
@@ -26,7 +29,7 @@ to override the names of the dimensions of the \code{\link{rvar}} to be created 
 \item{nchains}{(positive integer) The number of chains. The default is \code{1}.}
 }
 \value{
-An object of class \code{"rvar"} representing a random variable.
+An object of class \code{"rvar"} (or one of its subtypes) representing a random variable.
 }
 \description{
 Convert \code{x} to an \code{\link{rvar}} object.
@@ -39,6 +42,11 @@ For numeric or logical vectors or arrays, returns an \code{\link{rvar}} with a s
 the same dimensions as \code{x}. This is in contrast to the \code{\link[=rvar]{rvar()}} constructor, which
 treats the first dimension of \code{x} as the draws dimension. As a result, \code{as_rvar()}
 is useful for creating constants.
+
+While \code{as_rvar()} attempts to pick the most suitable subtype of \code{\link{rvar}} based on the
+type of \code{x} (possibly returning a an \code{\link{rvar_factor}} or \code{\link{rvar_ordered}}),
+\code{as_rvar_numeric()} always coerces the draws of the output \code{\link{rvar}} to be \code{\link{numeric}},
+and always returns a base \code{\link{rvar}}, never a subtype.
 }
 \examples{
 
@@ -50,6 +58,11 @@ x
 as_rvar(1:4)
 as_rvar(matrix(1:10, nrow = 5))
 as_rvar(array(1:12, dim = c(2, 3, 2)))
+
+# as_rvar_numeric() coerces subtypes of rvar to the base rvar type
+y <- as_rvar_factor(c("a", "b", "c"))
+y
+as_rvar_numeric(y)
 
 }
 \seealso{
