@@ -4,16 +4,8 @@
 #'
 #' @name rvar_factor
 #'
+#' @inheritParams rvar
 #' @inheritDotParams rvar
-#' @param x (multiple options) The object to convert to an `rvar`:
-#'   * A vector of draws from a distribution.
-#'   * An array where the first dimension represents draws from a distribution.
-#'     The resulting [`rvar`] will have dimension `dim(x)[-1]`; that is,
-#'     everything except the first dimension is used for the shape of the
-#'     variable, and the first dimension is used to index draws from the
-#'     distribution (see **Examples**). Optionally,
-#'     if `with_chains == TRUE`, the first dimension indexes the iteration and the
-#'     second dimension indexes the chain (see `with_chains`).
 #'
 #' @details
 #'
@@ -38,31 +30,33 @@
 #'
 #' set.seed(1234)
 #'
-#' # To create a "scalar" `rvar`, pass a one-dimensional array or a vector
+#' # To create a "scalar" `rvar_factor`, pass a one-dimensional array or a vector
 #' # whose length (here `4000`) is the desired number of draws:
-#' x <- rvar(rnorm(4000, mean = 1, sd = 1))
+#' x <- rvar(sample(c("a","a","a","b","c"), 4000, replace = TRUE))
 #' x
 #'
 #' # Create random vectors by adding an additional dimension:
-#' n <- 4   # length of output vector
-#' x <- rvar(array(rnorm(4000 * n, mean = rep(1:n, each = 4000), sd = 1), dim = c(4000, n)))
-#' x
+#' x_array <- array(c(
+#'     sample(c("a","a","a","b","c"), 4000, replace = TRUE),
+#'     sample(c("a","a","b","c","c"), 4000, replace = TRUE),
+#'     sample(c("b","b","b","b","c"), 4000, replace = TRUE),
+#'     sample(c("d","d","b","b","c"), 4000, replace = TRUE)
+#'   ), dim = c(4000, 4))
+#' rvar_factor(x_array)
 #'
-#' # Create a random matrix:
-#' rows <- 4
-#' cols <- 3
-#' x <- rvar(array(rnorm(4000 * rows * cols, mean = 1, sd = 1), dim = c(4000, rows, cols)))
-#' x
+#' # You can also create ordered factors
+#' rvar_ordered(x_array)
 #'
-#' # If the input sample comes from multiple chains, we can indicate that using the
-#' # nchains argument (here, 1000 draws each from 4 chains):
-#' x <- rvar(rnorm(4000, mean = 1, sd = 1), nchains = 4)
-#' x
+#' # Unlike base factors, rvar factors can be matrices or arrays:
+#' rvar_factor(x_array, dim = c(2, 2))
 #'
-#' # Or if the input sample has chain information as its second dimension, we can
-#' # use with_chains to create the rvar
-#' x <- rvar(array(rnorm(4000, mean = 1, sd = 1), dim = c(1000, 4)), with_chains = TRUE)
-#' x
+#' # If the input to rvar() is an array with a `"levels"` attribute, it
+#' # will automatically be treated as an `rvar_factor()`:
+#' y_array <- t(array(rbinom(3000, 1, c(0.1, 0.5, 0.9)) + 1, dim = c(3, 1000)))
+#' rvar(y_array)
+#' # with levels
+#' attr(y_array, "levels") = c("a", "b")
+#' rvar(y_array)
 #'
 #' @export
 rvar_factor <- function(x = factor(), ...) {
@@ -76,6 +70,7 @@ rvar_factor <- function(x = factor(), ...) {
 }
 
 #' @rdname rvar_factor
+#' @export
 rvar_ordered <- function(x = ordered(NULL), ...) {
   out <- rvar(x, ...)
   if (!is_rvar_ordered(out)) {
@@ -106,24 +101,69 @@ levels.rvar <- function(x) {
 
 # type predicates and casting ---------------------------------------------------------
 
+#' Is `x` a factor random variable?
+#'
+#' Test if `x` is an [`rvar_factor`] or [`rvar_ordered`].
+#'
+#' @inheritParams is_rvar
+#'
+#' @seealso [as_rvar_factor()] and [as_rvar_ordered()] to convert objects to
+#' `rvar_factor`s and `rvar_ordered`s.
+#'
+#' @return `TRUE` if `x` is an [`rvar_factor`] or [`rvar_ordered`], `FALSE` otherwise.
+#'
 #' @export
 is_rvar_factor <- function(x) {
   inherits(x, "rvar_factor")
 }
 
+#' @rdname is_rvar_factor
 #' @export
 is_rvar_ordered <- function(x) {
   inherits(x, "rvar_ordered")
 }
 
+#' Coerce to a factor random variable
+#'
+#' Convert `x` to an [`rvar_factor`] or [`rvar_ordered`] object.
+#'
+#' @inheritParams as_rvar
+#'
+#' @details For objects that are already [`rvar`]s, returns them (with modified dimensions
+#' if `dim` is not `NULL`), possibly adding levels using the unique values of the draws of
+#' the `rvar` (if the object is not already factor-like).
+#'
+#' For numeric, logical, factor, or character vectors or arrays, returns an [`rvar_factor`]
+#' or [`rvar_ordered`] with a single draw and the same dimensions as `x`. This is in contrast
+#' to the [rvar_factor()] and [rvar_ordered()] constructors, which treats the first dimension
+#' of `x` as the draws dimension. As a result, `as_rvar_factor()` and `as_rvar_ordered()`
+#' are useful for creating constants.
+#'
+#' @seealso [rvar()], [rvar_factor()], and [rvar_ordered()] to construct [`rvar`]s directly.
+#' See [rdo()], [rfun()], and [rvar_rng()] for higher-level interfaces for creating `rvar`s.
+#'
+#' @return An object of class `"rvar_factor"` or `"rvar_ordered"` representing a random variable.
+#'
+#' @examples
+#'
+#' # You can use as_rvar_factor() to create "constant" rvars (having only one draw):
+#' x <- as_rvar_factor("a")
+#' x
+#'
+#' # Such constants can be of arbitrary shape:
+#' as_rvar_factor(letters[1:4])
+#' as_rvar_ordered(matrix(letters[1:10], nrow = 5))
+#' as_rvar_factor(array(letters[1:12], dim = c(2, 3, 2)))
+#'
 #' @export
-as_rvar_factor <- function(x) {
-  vec_cast(x, new_rvar(factor()))
+as_rvar_factor <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
+  .as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains, ptype = new_rvar(factor()))
 }
 
+#' @rdname as_rvar_factor
 #' @export
-as_rvar_ordered <- function(x) {
-  vec_cast(x, new_rvar(ordered(NULL)))
+as_rvar_ordered <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
+  .as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains, ptype = new_rvar(ordered(NULL)))
 }
 
 

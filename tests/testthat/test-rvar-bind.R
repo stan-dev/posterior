@@ -41,9 +41,9 @@ test_that("c works on rvar_factor", {
 
   expect_equal(c(x, "a"), rvar(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4))))
   expect_equal(c(x, factor("a")), rvar(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4))))
-  expect_equal(c(x, "X"), rvar(array(c(letters[1:9], "X", "X", "X"), dim = c(3,4))))
-  expect_equal(c(x, factor("X")), rvar(array(c(letters[1:9], "X", "X", "X"), dim = c(3,4))))
-  expect_equal(c(x, ordered("X")), rvar(array(c(letters[1:9], "X", "X", "X"), dim = c(3,4))))
+  expect_equal(c(x, "xx"), rvar(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4))))
+  expect_equal(c(x, factor("xx")), rvar(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4))))
+  expect_equal(c(x, ordered("xx")), rvar(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4))))
 
   expect_error(c(x, 5), "Can't combine")
   expect_error(c(x, 5L), "Can't combine")

@@ -11,6 +11,8 @@
 #'   output. If `TRUE`, the [pillar::style_num()] functions may be used to
 #'   produce strings containing control sequences to produce colored output on
 #'   the terminal.
+#' @param width The maxmimum width used to print out lists of factor levels
+#'   for [`rvar_factor`]s. See [format()].
 #' @param vec.len (nonnegative integer) How many 'first few' elements are
 #'   displayed of each vector. If `NULL`, defaults to
 #'   `getOption("str")$vec.len`, which defaults to 4.

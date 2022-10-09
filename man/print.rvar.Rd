@@ -11,12 +11,12 @@
   x,
   ...,
   summary = NULL,
-  digits = 2,
+  digits = NULL,
   color = TRUE,
   width = getOption("width")
 )
 
-\method{format}{rvar}(x, ..., summary = NULL, digits = 2, color = FALSE)
+\method{format}{rvar}(x, ..., summary = NULL, digits = NULL, color = FALSE)
 
 \method{str}{rvar}(
   object,
@@ -43,12 +43,15 @@ factor-like \code{\link{rvar}}s
 }}
 
 \item{digits}{(nonnegative integer) The minimum number of significant digits
-to print.}
+to print. If \code{NULL}, defaults to \code{getOption("posterior.digits", 2)}.}
 
 \item{color}{(logical) Whether or not to use color when formatting the
 output. If \code{TRUE}, the \code{\link[pillar:style_subtle]{pillar::style_num()}} functions may be used to
 produce strings containing control sequences to produce colored output on
 the terminal.}
+
+\item{width}{The maxmimum width used to print out lists of factor levels
+for \code{\link{rvar_factor}}s. See \code{\link[=format]{format()}}.}
 
 \item{vec.len}{(nonnegative integer) How many 'first few' elements are
 displayed of each vector. If \code{NULL}, defaults to

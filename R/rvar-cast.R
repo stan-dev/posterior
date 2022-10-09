@@ -34,13 +34,15 @@
 #'
 #' @export
 as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
+  .as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
+}
+.as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL, ptype = new_rvar()) {
   out <- x
 
-  if (!is_rvar(out)) {
-    out <- vec_cast(out, new_rvar())
-  }
   if (is.null(out)) {
     out <- rvar()
+  } else {
+    out <- vec_cast(out, ptype)
   }
 
   if (!is.null(dim)) {
@@ -310,7 +312,7 @@ vec_ptype2.logical.rvar_factor <- function(x, y, ...) new_rvar(factor())
 #' @export
 vec_ptype2.rvar_factor.logical <- function(x, y, ...) new_rvar(factor())
 #' @export
-vec_cast.rvar_factor.logical <- function(x, to, ...) new_constant_rvar(as.factor(x))
+vec_cast.rvar_factor.logical <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.factor, x))
 
 
 # character casts ---------------------------------------------------------
@@ -325,7 +327,7 @@ vec_cast.character.rvar_ordered <- function(x, to, ...) format(x)
 
 # character -> rvar
 #' @export
-vec_cast.rvar.character <- function(x, to, ...) new_constant_rvar(as.factor(x))
+vec_cast.rvar.character <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.factor, x))
 
 # character -> rvar_factor
 #' @export
@@ -333,7 +335,7 @@ vec_ptype2.character.rvar_factor <- function(x, y, ...) new_rvar(factor())
 #' @export
 vec_ptype2.rvar_factor.character <- function(x, y, ...) new_rvar(factor())
 #' @export
-vec_cast.rvar_factor.character <- function(x, to, ...) new_constant_rvar(as.factor(x))
+vec_cast.rvar_factor.character <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.factor, x))
 
 # character -> rvar_ordered (character has no inherent order so we go to rvar_factor)
 #' @export
@@ -341,7 +343,7 @@ vec_ptype2.character.rvar_ordered <- function(x, y, ...) new_rvar(factor())
 #' @export
 vec_ptype2.rvar_ordered.character <- function(x, y, ...) new_rvar(factor())
 #' @export
-vec_cast.rvar_ordered.character <- function(x, to, ...) new_constant_rvar(as.ordered(x))
+vec_cast.rvar_ordered.character <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.ordered, x))
 
 
 # factor casts ---------------------------------------------------------
