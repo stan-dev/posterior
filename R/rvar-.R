@@ -13,15 +13,19 @@
 #'     distribution (see **Examples**). Optionally,
 #'     if `with_chains == TRUE`, the first dimension indexes the iteration and the
 #'     second dimension indexes the chain (see `with_chains`).
+#'   * An `rvar`.
 #' @template args-rvar-dim
 #' @template args-rvar-dimnames
-#' @param nchains (positive integer) The number of chains. The default is `1`.
+#' @param nchains (positive integer) The number of chains. The if `NULL` (the default),
+#' `1` is used unless `x` is already an [`rvar`], in which case the number of
+#' chains it has is used.
 #' @param with_chains (logical) Does `x` include a dimension for chains?
 #' If `FALSE` (the default), chains are not included, the first dimension of
 #' the input array should index draws, and the `nchains` argument can be
 #' used to determine the number of chains. If `TRUE`, the `nchains` argument
 #' is ignored and the second dimension of `x` is used to index chains.
 #' Internally, the array will be converted to a format without the chain index.
+#' Ignored when `x` is already an [`rvar`].
 #'
 #' @details
 #'
@@ -86,11 +90,19 @@
 #' x
 #'
 #' @export
-rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = 1L, with_chains = FALSE) {
+rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE) {
+  if (is_rvar(x)) {
+    nchains <- nchains %||% nchains(x)
+    with_chains = FALSE
+    x <- draws_of(x)
+  }
+
   with_chains <- as_one_logical(with_chains)
   if (with_chains) {
     nchains <- dim(x)[[2]] %||% 1L
     x <- drop_chain_dim(x)
+  } else {
+    nchains <- nchains %||% 1L
   }
 
   out <- new_rvar(x, .nchains = nchains)
