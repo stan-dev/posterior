@@ -726,12 +726,10 @@ cleanup_rvar_draws <- function(x) {
   }
 
   # if x is factor-like (character or with "levels" attr), make it a factor
-  if (!is.factor(x) && !is.null(attr(x, "levels")) || is.character(x)) {
-    x <- if (is.character(x)) {
-      while_preserving_dims(factor, x)
-    } else {
-      while_preserving_dims(factor, x, labels = attr(x, "levels"))
-    }
+  if (is.character(x)) {
+    x <- while_preserving_dims(factor, x)
+  } else if (!is.factor(x) && !is.null(attr(x, "levels"))) {
+    x <- while_preserving_dims(factor, x, labels = attr(x, "levels"))
   }
 
   x

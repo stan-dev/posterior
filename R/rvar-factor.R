@@ -66,8 +66,28 @@
 #'
 #' @export
 rvar_factor <- function(x = factor(), ...) {
+  out <- rvar(x, ...)
+  if (!is_rvar_factor(out)) {
+    # rvar() will automatically convert to a factor if the input is factor-like;
+    # so we only need to handle the case here where input is numeric.
+    out <- .rvar_to_rvar_factor(out)
+  }
+  out
+}
 
-  rvar(vec_cast(x, factor()), ...)
+#' @rdname rvar_factor
+rvar_ordered <- function(x = ordered(NULL), ...) {
+  out <- rvar(x, ...)
+  if (!is_rvar_ordered(out)) {
+    if (is_rvar_factor(out)) {
+      # factor but not ordered => just update the class (instead of using
+      # as.ordered()) so that levels / etc are preserved
+      oldClass(draws_of(out)) <- c("ordered", "factor")
+    } else {
+      out <- .rvar_to_rvar_factor(out, as.ordered)
+    }
+  }
+  out
 }
 
 # factor-like rvar methods ------------------------------------------------

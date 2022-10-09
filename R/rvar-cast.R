@@ -398,24 +398,20 @@ vec_cast.rvar_ordered.ordered <- function(x, to, ...) new_constant_rvar(x)
 # subtype casts -----------------------------------------------------------
 
 #' @export
-vec_cast.rvar_factor.rvar <- function(x, to, ...) .as_rvar_factor_rvar(x)
+vec_cast.rvar_factor.rvar <- function(x, to, ...) .rvar_to_rvar_factor(x)
 #' @export
-vec_cast.rvar_ordered.rvar <- function(x, to, ...) .as_rvar_factor_rvar(x, as.ordered)
+vec_cast.rvar_ordered.rvar <- function(x, to, ...) .rvar_to_rvar_factor(x, as.ordered)
 #' @export
-vec_cast.rvar_factor.rvar_ordered <- function(x, to, ...) .as_rvar_factor_rvar(x)
+vec_cast.rvar_factor.rvar_ordered <- function(x, to, ...) .rvar_to_rvar_factor(x)
 #' @export
-vec_cast.rvar_ordered.rvar_factor <- function(x, to, ...) .as_rvar_factor_rvar(x, as.ordered)
+vec_cast.rvar_ordered.rvar_factor <- function(x, to, ...) .rvar_to_rvar_factor(x, as.ordered)
 #' @export
 vec_cast.rvar.rvar_ordered <- function(x, to, ...) x
 #' @export
 vec_cast.rvar.rvar_factor <- function(x, to, ...) x
 
-.as_rvar_factor_rvar <- function(x, as_factor = as.factor) {
-  .draws <- draws_of(x)
-  factor_draws <- as_factor(.draws)
-  dim(factor_draws) <- dim(.draws)
-  dimnames(factor_draws) <- dimnames(.draws)
-  draws_of(x) <- factor_draws
+.rvar_to_rvar_factor <- function(x, as_factor = as.factor) {
+  draws_of(x) <- while_preserving_dims(as_factor, draws_of(x))
   x
 }
 
