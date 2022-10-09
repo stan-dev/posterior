@@ -97,6 +97,39 @@ test_that("cbind works on rvar", {
   expect_equal(cbind(x, NULL, y), cbind(x, y))
 })
 
+test_that("cbind works on rvar_factor", {
+  x = rvar(array(letters[1:9], dim = c(3,3)))
+  y = rvar(array(letters[2:10], dim = c(3,3)))
+
+  expect_equal(cbind(rvar(array(letters[1:9], dim = c(3,3)))), rvar_factor(array(letters[1:9], dim = c(3,3,1))))
+  expect_equal(cbind(x), rvar_factor(array(letters[1:9], dim = c(3,3,1), dimnames = list(NULL, NULL, "x"))))
+
+  expect_equal(cbind(x, y, deparse.level = 0), rvar_factor(array(letters[c(1:9, 2:10)], dim = c(3,3,2))))
+  expect_equal(cbind(a = x, y, deparse.level = 0),
+    rvar_factor(array(letters[c(1:9, 2:10)], dim = c(3,3,2), dimnames = list(NULL, NULL, c("a", ""))))
+  )
+  expect_equal(cbind(a = x, y),
+    rvar_factor(array(letters[c(1:9, 2:10)], dim = c(3,3,2), dimnames = list(NULL, NULL, c("a", "y"))))
+  )
+  expect_equal(cbind(x, b = y, deparse.level = 0),
+    rvar_factor(array(letters[c(1:9, 2:10)], dim = c(3,3,2), dimnames = list(NULL, NULL, c("", "b"))))
+  )
+
+  x_col <- x
+  dim(x_col) <- c(3,1)
+  expect_equal(cbind(x_col, y, deparse.level = 0), rvar_factor(array(letters[c(1:9, 2:10)], dim = c(3,3,2))))
+  expect_equal(cbind(a = x_col, y),
+    rvar(array(letters[c(1:9, 2:10)], dim = c(3,3,2), dimnames = list(NULL, NULL, c("", "y"))))
+  )
+  dimnames(x_col)[[2]] = "b"
+  expect_equal(cbind(a = x_col, y),
+    rvar_factor(array(letters[c(1:9, 2:10)], dim = c(3,3,2), dimnames = list(NULL, NULL, c("b", "y"))))
+  )
+
+  expect_equal(cbind(NULL, x), cbind(x))
+  expect_equal(cbind(x, NULL, y), cbind(x, y))
+})
+
 test_that("cbind works on rvar with data frames", {
   # these do not work on R < 4 for some reason related to how data frames
   # handle binding (so, not much we can do about it?)
@@ -147,4 +180,38 @@ test_that("rbind works on rvar", {
   expect_equal(rbind(x, NULL, y), rbind(x, y))
 
   expect_equal(rbind(data.frame(x), data.frame(x = y)), data.frame(x = c(x, y)))
+})
+
+test_that("rbind works on rvar_factor", {
+  x <- rvar_factor(array(letters[1:9], dim = c(3,3)))
+  y <- rvar_factor(array(letters[2:10], dim = c(3,3)))
+  x_y_array <- abind(
+    array(letters[1:9], dim = c(3,1,3)),
+    array(letters[2:10], dim = c(3,1,3)),
+    along = 2
+  )
+
+  expect_equal(rbind(rvar(array(letters[1:9], dim = c(3,3)))), rvar_factor(array(letters[1:9], dim = c(3,1,3))))
+  expect_equal(rbind(x), rvar(array(letters[1:9], dim = c(3,1,3), dimnames = list(NULL, "x", NULL))))
+
+  expect_equal(rbind(x, y, deparse.level = 0), rvar_factor(x_y_array))
+  expect_equal(rbind(a = x, y, deparse.level = 0), rvar_factor(x_y_array, dimnames = list(c("a",""), NULL)))
+  expect_equal(rbind(a = x, y), rvar_factor(x_y_array, dimnames = list(c("a","y"), NULL)))
+  expect_equal(rbind(x, b = y, deparse.level = 0), rvar_factor(x_y_array, dimnames = list(c("","b"), NULL)))
+
+  x_row <- x
+  dim(x_row) <- c(1,3)
+  expect_equal(rbind(x_row, y, deparse.level = 0), rvar_factor(x_y_array))
+  expect_equal(rbind(a = x_row, y), rvar_factor(x_y_array, dimnames = list(c("","y"), NULL)))
+  dimnames(x_row)[[1]] = "b"
+  expect_equal(rbind(a = x_row, y), rvar_factor(x_y_array, dimnames = list(c("b","y"), NULL)))
+
+  expect_equal(rbind(NULL, x), rbind(x))
+  expect_equal(rbind(x, NULL, y), rbind(x, y))
+
+  # rbind does not work with rvar_factor because it treats anything with non-null
+  # levels() as a factor and skips the rvar code entirely, causing an error. So
+  # we'll test with dplyr::bind_rows() instead
+  skip_if_not_installed("dplyr")
+  expect_equal(dplyr::bind_rows(data.frame(x), data.frame(x = y)), data.frame(x = c(x, y)))
 })

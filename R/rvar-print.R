@@ -53,7 +53,8 @@
 #'
 #' @importFrom utils str lsf.str
 #' @export
-print.rvar <- function(x, ..., summary = NULL, digits = 2, color = TRUE, width = getOption("width")) {
+print.rvar <- function(x, ..., summary = NULL, digits = NULL, color = TRUE, width = getOption("width")) {
+  digits <- digits %||% getOption("posterior.digits", 2)
   # \u00b1 = plus/minus sign
   summary_functions <- get_summary_functions(draws_of(x), summary)
   summary_string <- paste0(paste(names(summary_functions), collapse = " \u00b1 "), ":")
@@ -78,7 +79,8 @@ print.rvar <- function(x, ..., summary = NULL, digits = 2, color = TRUE, width =
 
 #' @rdname print.rvar
 #' @export
-format.rvar <- function(x, ..., summary = NULL, digits = 2, color = FALSE) {
+format.rvar <- function(x, ..., summary = NULL, digits = NULL, color = FALSE) {
+  digits <- digits %||% getOption("posterior.digits", 2)
   format_rvar_draws(draws_of(x), ..., summary = summary, digits = digits, color = color)
 }
 
