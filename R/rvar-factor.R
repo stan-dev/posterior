@@ -113,6 +113,7 @@ is_rvar_ordered <- function(x) {
 #' Convert `x` to an [`rvar_factor`] or [`rvar_ordered`] object.
 #'
 #' @inheritParams as_rvar
+#' @inheritDotParams base::factor
 #'
 #' @details For objects that are already [`rvar`]s, returns them (with modified dimensions
 #' if `dim` is not `NULL`), possibly adding levels using the unique values of the draws of
@@ -141,14 +142,16 @@ is_rvar_ordered <- function(x) {
 #' as_rvar_factor(array(letters[1:12], dim = c(2, 3, 2)))
 #'
 #' @export
-as_rvar_factor <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
-  .as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains, ptype = new_rvar(factor()))
+as_rvar_factor <- function(x, dim = NULL, dimnames = NULL, nchains = NULL, ...) {
+  out <- .as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains, ptype = new_rvar(factor()))
+  .rvar_to_rvar_factor(out, ...)
 }
 
 #' @rdname as_rvar_factor
 #' @export
-as_rvar_ordered <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
-  .as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains, ptype = new_rvar(ordered(NULL)))
+as_rvar_ordered <- function(x, dim = NULL, dimnames = NULL, nchains = NULL, ...) {
+  out <- .as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains, ptype = new_rvar(ordered(NULL)))
+  .rvar_to_rvar_factor(out, ordered = TRUE, ...)
 }
 
 

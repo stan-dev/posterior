@@ -5,9 +5,9 @@
 \alias{as_rvar_ordered}
 \title{Coerce to a factor random variable}
 \usage{
-as_rvar_factor(x, dim = NULL, dimnames = NULL, nchains = NULL)
+as_rvar_factor(x, dim = NULL, dimnames = NULL, nchains = NULL, ...)
 
-as_rvar_ordered(x, dim = NULL, dimnames = NULL, nchains = NULL)
+as_rvar_ordered(x, dim = NULL, dimnames = NULL, nchains = NULL, ...)
 }
 \arguments{
 \item{x}{(multiple options) An object that can be converted to an \code{\link{rvar}},
@@ -27,6 +27,27 @@ to override the names of the dimensions of the \code{\link{rvar}} to be created 
 \code{\link{rvar}}, not the underlying array.}
 
 \item{nchains}{(positive integer) The number of chains. The default is \code{1}.}
+
+\item{...}{
+  Arguments passed on to \code{\link[base:factor]{base::factor}}
+  \describe{
+    \item{\code{levels}}{an optional vector of the unique values (as character strings)
+    that \code{x} might have taken.  The default is the unique set of
+    values taken by \code{\link[base]{as.character}(x)}, sorted into
+    increasing order \emph{of \code{x}}.  Note that this set can be
+    specified as smaller than \code{sort(unique(x))}.}
+    \item{\code{labels}}{\emph{either} an optional character vector of
+    labels for the levels (in the same order as \code{levels} after
+    removing those in \code{exclude}), \emph{or} a character string of
+    length 1.  Duplicated values in \code{labels} can be used to map
+    different values of \code{x} to the same factor level.}
+    \item{\code{exclude}}{a vector of values to be excluded when forming the
+    set of levels.  This may be factor with the same level set as \code{x}
+    or should be a \code{character}.}
+    \item{\code{ordered}}{logical flag to determine if the levels should be regarded
+    as ordered (in the order given).}
+    \item{\code{nmax}}{an upper bound on the number of levels; see \sQuote{Details}.}
+  }}
 }
 \value{
 An object of class \code{"rvar_factor"} or \code{"rvar_ordered"} representing a random variable.

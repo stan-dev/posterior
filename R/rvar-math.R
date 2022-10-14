@@ -7,10 +7,14 @@ Ops.rvar <- function(e1, e2) {
 
   if (missing(e2)) {
     # unary operators
-    return(rvar_apply_vec_fun(f, e1))
+    rvar_apply_vec_fun(f, e1)
+  } else {
+    .Ops.rvar(f, e1, as_rvar(e2))
   }
+}
 
-  c(e1, e2) %<-% conform_rvar_nchains(list(as_rvar(e1), as_rvar(e2)))
+.Ops.rvar <- function(f, e1, e2) {
+  c(e1, e2) %<-% conform_rvar_nchains(list(e1, e2))
   draws_x <- draws_of(e1)
   draws_y <- draws_of(e2)
 
@@ -30,6 +34,31 @@ Ops.rvar <- function(e1, e2) {
 }
 
 #' @export
+Ops.rvar_factor <- function(e1, e2) {
+  if (missing(e2) || !(.Generic %in% c("==", "!="))) {
+    stop_no_call("Cannot apply `", .Generic, "` operator to rvar_factor objects.")
+  }
+
+  .Ops.rvar(get(.Generic), as_rvar(e1), as_rvar(e2))
+}
+
+#' @export
+Ops.rvar_ordered <- function(e1, e2) {
+  if (missing(e2) || !(.Generic %in% c("==", "!=", "<", ">", "<=", ">="))) {
+    stop_no_call("Cannot apply `", .Generic, "` operator to rvar_ordered objects.")
+  }
+
+  if (is.character(e1)) {
+    e1 <- as_rvar_ordered(e1, levels = levels(e2))
+  }
+  if (is.character(e2)) {
+    e2 <- as_rvar_ordered(e2, levels = levels(e1))
+  }
+
+  .Ops.rvar(get(.Generic), as_rvar(e1), as_rvar(e2))
+}
+
+#' @export
 Math.rvar <- function(x, ...) {
   f <- get(.Generic)
 
@@ -42,6 +71,10 @@ Math.rvar <- function(x, ...) {
   }
 }
 
+#' @export
+Math.rvar_factor <- function(x, ...) {
+  stop_no_call("Cannot apply `", .Generic, "` function to rvar_factor objects.")
+}
 
 # matrix stuff ---------------------------------------------------
 
@@ -101,6 +134,10 @@ Math.rvar <- function(x, ...) {
   x <- as_rvar(x)
   y <- as_rvar(y)
 
+  if (is_rvar_factor(x) || is_rvar_factor(y)) {
+    stop_no_call("Cannot apply `%**%` operator to rvar_factor objects.")
+  }
+
   # ensure everything is a matrix by adding dimensions as necessary to make `x`
   # a row vector and `y` a column vector
   ndim_x <- length(dim(x))
@@ -155,7 +192,7 @@ Math.rvar <- function(x, ...) {
 #' @export
 chol.rvar <- function(x, ...) {
   # ensure x is a matrix
-  if (length(dim(x)) != 2) {
+  if (length(dim(x)) != 2 || is_rvar_factor(x)) {
     stop_no_call("`x` must be a random matrix")
   }
 

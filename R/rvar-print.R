@@ -318,7 +318,9 @@ get_summary_functions <- function(draws, summary = NULL) {
 
 entropy <- function(x) {
   if (anyNA(x)) return(NA_real_)
-  p = prop.table(table(x)); -sum(p * log(p))
+  p <- prop.table(table(x))
+  p <- p[p > 0]
+  -sum(p * log(p))
 }
 
 .mode <- function(x) {
