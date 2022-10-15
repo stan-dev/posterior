@@ -59,7 +59,12 @@ print.rvar <- function(x, ..., summary = NULL, digits = NULL, color = TRUE, widt
   digits <- digits %||% getOption("posterior.digits", 2)
   # \u00b1 = plus/minus sign
   summary_functions <- get_summary_functions(draws_of(x), summary)
-  summary_string <- paste0(paste(names(summary_functions), collapse = " \u00b1 "), ":")
+  plus_minus <- summary_functions[[2]] != "entropy"
+  summary_string <- if (plus_minus) {
+    paste0(paste(names(summary_functions), collapse = " \u00b1 "), ":")
+  } else {
+    paste0(paste(names(summary_functions), collapse = " <"), ">:")
+  }
   if (color) {
     summary_string <- pillar::style_subtle(summary_string)
   }
@@ -67,7 +72,7 @@ print.rvar <- function(x, ..., summary = NULL, digits = NULL, color = TRUE, widt
 
   x_string <- format(x, summary = summary, digits = digits, color = FALSE, pad_right = " ")
   if (length(x_string) == 0) {
-    cat0("rvar()\n")
+    cat0(rvar_class(x), "()\n")
   } else {
     print(x_string, quote = FALSE)
   }
@@ -127,7 +132,7 @@ str.rvar <- function(
   # LEVELS
   # for factor-like rvars
   if (is_rvar_factor(object)) {
-    cat0(indent.str, "- ", format_levels(levels(object), is_rvar_ordered(object), max_level = vec.len))
+    cat0(indent.str, "- ", format_levels(levels(object), is_rvar_ordered(object), max_level = vec.len), "\n")
   }
 
   # ATTRIBUTES
@@ -212,13 +217,15 @@ rvar_type_full <- function(x, dim1 = TRUE) {
     paste0(",", nchains(x))
   }
 
-  type_str <- paste0(
+  paste0(rvar_class(x), "<", niterations(x), chain_str, ">", dim_str)
+}
+
+rvar_class <- function(x) {
+  paste0(
     "rvar",
     if (is_rvar_ordered(x)) "_ordered"
     else if (is_rvar_factor(x)) "_factor"
   )
-
-  paste0(type_str, "<", niterations(x), chain_str, ">", dim_str)
 }
 
 
@@ -233,6 +240,7 @@ format_rvar_draws <- function(
     return(character())
   }
   summary_functions <- get_summary_functions(draws, summary)
+  plus_minus <- summary_functions[[2]] != "entropy"
 
   summary_dimensions <- seq_len(length(dim(draws)) - 1) + 1
 
@@ -245,7 +253,11 @@ format_rvar_draws <- function(
   }
   .sd <- apply(draws, summary_dimensions, summary_functions[[2]])
 
-  out <- paste0(pad_left, format_mean_sd(.mean, .sd, digits = digits, color = color, trim = trim), pad_right)
+  out <- paste0(
+    pad_left,
+    format_mean_sd(.mean, .sd, digits = digits, color = color, trim = trim, plus_minus = plus_minus),
+    pad_right
+  )
 
   dim(out) <- dim(draws)[summary_dimensions]
   dimnames(out) <- dimnames(draws)[summary_dimensions]
@@ -256,9 +268,15 @@ format_mean <- function(x, digits = 2, color = FALSE, trim = FALSE) {
   format(x, justify = "right", digits = digits, scientific = 2, trim = trim)
 }
 
-format_sd <- function(x, digits = 2, color = FALSE) {
-  # \u00b1 = plus/minus sign
-  sd_string <- paste0("\u00b1 ", format(x, justify = "left", trim = TRUE, digits = digits, scientific = 2))
+format_sd <- function(x, digits = 2, color = FALSE, plus_minus = TRUE) {
+  sd_formatted <- format(x, justify = "left", trim = TRUE, digits = digits, scientific = 2)
+  sd_string <- if (plus_minus) {
+    # \u00b1 = plus/minus sign
+    paste0("\u00b1 ", sd_formatted)
+  } else {
+    paste0("<", sd_formatted, ">")
+  }
+
   if (color) {
     pillar::style_subtle(sd_string)
   } else {
@@ -266,10 +284,10 @@ format_sd <- function(x, digits = 2, color = FALSE) {
   }
 }
 
-format_mean_sd <- function(.mean, .sd, digits = 2, color = FALSE, trim = FALSE) {
+format_mean_sd <- function(.mean, .sd, digits = 2, color = FALSE, trim = FALSE, plus_minus = TRUE) {
   format(paste0(
     format_mean(.mean, digits = digits, color = color, trim = trim), " ",
-    format_sd(.sd, digits = digits, color = color)),
+    format_sd(.sd, digits = digits, color = color, plus_minus = plus_minus)),
   justify = if (trim) "none" else "left", trim = trim)
 }
 
