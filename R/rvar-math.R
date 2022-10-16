@@ -30,7 +30,7 @@ Ops.rvar <- function(e1, e2) {
   draws_x <- broadcast_array(draws_x, new_dim, broadcast_scalars = broadcast_scalars)
   draws_y <- broadcast_array(draws_y, new_dim, broadcast_scalars = broadcast_scalars)
 
-  new_rvar(f(draws_x, draws_y), .nchains = nchains(e1))
+  new_rvar(while_preserving_dims(f, draws_x, draws_y), .nchains = nchains(e1))
 }
 
 #' @export
