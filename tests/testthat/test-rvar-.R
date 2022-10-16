@@ -49,6 +49,17 @@ test_that("NULL rvar creates a 0-length numeric rvar with 1 draw", {
   expect_equal(draws_of(rvar()), array(numeric(), dim = c(1, 0), dimnames = list(1, NULL)))
 })
 
+test_that("creating an rvar from an existing rvar works", {
+  x_array <- array(1:20, dim = c(4,5))
+  x <- rvar(x_array)
+  x_4 <- rvar(x_array, nchains = 4)
+
+  expect_equal(rvar(x), x)
+  expect_equal(rvar(x_4), x_4)
+  expect_equal(rvar(x, nchains = 4), x_4)
+  expect_equal(rvar(x_4, nchains = 1), x)
+})
+
 # draws_of ----------------------------------------------------------------
 
 test_that("draws_of using with_chains works", {
