@@ -230,7 +230,12 @@ bind_draws.NULL <- function(x, ..., along = "variable") {
   if (!length(dots)) {
     stop_no_call("All objects passed to 'bind_draws' are NULL.")
   }
-  do.call(bind_draws, dots)
+  do.call("bind_draws", dots)
+}
+
+#' @export
+bind_draws.list <- function(x, ..., along = "variable") {
+  do.call("bind_draws", c(x, ..., along = along))
 }
 
 # check if function output is the same across objects

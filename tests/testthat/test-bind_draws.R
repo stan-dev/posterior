@@ -193,6 +193,21 @@ test_that("bind_draws works for draws_rvars objects", {
   expect_equal(draws_new, draws1)
 })
 
+test_that("bind_draws works for list objects", {
+  draws1 <- as_draws_df(example_draws())
+  draws2 <- subset_draws(draws1, chain = 2)
+  draws3 <-  subset_draws(draws1, chain = 3)
+
+  draws12 <- bind_draws(draws1, draws2, along = "chain")
+  draws_all <- bind_draws(draws1, draws2, draws3, along = "chain")
+  expect_equal(bind_draws(list(draws1, draws2), along = "chain"), draws12)
+  expect_equal(bind_draws(list(draws1, draws2, draws3), along = "chain"), draws_all)
+
+  draws4 <-  subset_draws(draws1, chain = 4)
+  draws_all <- bind_draws(draws2, draws3, draws4, along = "iteration")
+  expect_equal(bind_draws(list(draws2, draws3, draws4), along = "iteration"), draws_all)
+})
+
 test_that("bind_draws errors if all NULL", {
   expect_error(bind_draws(NULL, NULL), "All objects passed to 'bind_draws' are NULL")
 })
