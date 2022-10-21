@@ -13,7 +13,7 @@ Ops.rvar <- function(e1, e2) {
   }
 }
 
-.Ops.rvar <- function(f, e1, e2) {
+.Ops.rvar <- function(f, e1, e2, preserve_dims = FALSE) {
   c(e1, e2) %<-% conform_rvar_nchains(list(e1, e2))
   draws_x <- draws_of(e1)
   draws_y <- draws_of(e2)
@@ -30,7 +30,24 @@ Ops.rvar <- function(e1, e2) {
   draws_x <- broadcast_array(draws_x, new_dim, broadcast_scalars = broadcast_scalars)
   draws_y <- broadcast_array(draws_y, new_dim, broadcast_scalars = broadcast_scalars)
 
-  new_rvar(while_preserving_dims(f, draws_x, draws_y), .nchains = nchains(e1))
+  draws <- f(draws_x, draws_y)
+
+  # for factors, we must copy the dims back over after, because base-R factor
+  # operations destroy dims (while base-R numeric array operations do not)
+  if (preserve_dims) {
+    # in the case where one of e1 or e2 is scalar and the other is not,
+    # we need to source the dims from whichever is *not* scalar, which will be
+    # the longer of the two. In any other case, we give preference to e1
+    # (draws_x) to be consistent with base R behavior
+    dim_source <- if (length(draws_y) > length(draws_x)) {
+      draws_y
+    } else {
+      draws_x
+    }
+    draws <- while_preserving_dims(function(...) draws, dim_source)
+  }
+
+  new_rvar(draws, .nchains = nchains(e1))
 }
 
 #' @export
@@ -39,7 +56,7 @@ Ops.rvar_factor <- function(e1, e2) {
     stop_no_call("Cannot apply `", .Generic, "` operator to rvar_factor objects.")
   }
 
-  .Ops.rvar(get(.Generic), as_rvar(e1), as_rvar(e2))
+  .Ops.rvar(get(.Generic), as_rvar(e1), as_rvar(e2), preserve_dims = TRUE)
 }
 
 #' @export
@@ -55,7 +72,7 @@ Ops.rvar_ordered <- function(e1, e2) {
     e2 <- as_rvar_ordered(e2, levels = levels(e1))
   }
 
-  .Ops.rvar(get(.Generic), as_rvar(e1), as_rvar(e2))
+  .Ops.rvar(get(.Generic), as_rvar(e1), as_rvar(e2), preserve_dims = TRUE)
 }
 
 #' @export
