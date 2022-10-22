@@ -466,3 +466,18 @@ test_that("1-length rvars can be cast to other formats", {
   expect_equal(as_draws_list(x), draws_list(`x[1,1]` = 1:10))
   expect_equal(as_draws_matrix(x), draws_matrix(`x[1,1]` = 1:10))
 })
+
+
+# discrete variables ------------------------------------------------------
+
+test_that("conversion between formats supporting discrete variables work", {
+  draws_rvars <- draws_rvars(
+    y = rvar_factor(array(letters[1:24], dim = c(2,2,3,2)), with_chains = TRUE),
+    z = rvar_ordered(array(letters[1:12], dim = c(2,2,3)), with_chains = TRUE),
+    x = rvar(array(1:12, dim = c(2,2,3)), with_chains = TRUE)
+  )
+
+  draws_df <- as_draws_df(draws_rvars)
+  expect_equal(levels(draws_df[["z[1]"]]), levels(draws_rvars$z))
+  expect_equal(as_draws_rvars(draws_df), draws_rvars)
+})

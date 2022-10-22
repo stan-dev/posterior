@@ -68,7 +68,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
   # pull out each var into its own rvar
   var_names <- unique(vars)
-  rvars_list <- lapply(var_names, function (var) {
+  rvars_list <- lapply(var_names, function(var) {
     var_i <- vars == var
     # reset class here as otherwise the draws arrays in the output rvars
     # have type draws_matrix, which makes inspecting them hard

@@ -646,6 +646,21 @@ flatten_array = function(x, x_name = NULL) {
   x
 }
 
+#' Fast conversion of rvar draws to a flattened data frame. Equivalent to
+#' as.data.frame(draws_of(flatten_array(x, name))) except it works with
+#' factor rvars (as.data.frame does not work on array-like factors)
+#' @noRd
+flatten_rvar_draws_to_df <- function(x, x_name = NULL) {
+  if (length(x) == 0) {
+    data.frame(row.names = draw_ids(x))
+  } else {
+    draws <- draws_of(flatten_array(x, x_name))
+    cols <- lapply(seq_len(ncol(draws)), function(i) unname(draws[, i]))
+    names(cols) <- colnames(draws)
+    vctrs::new_data_frame(cols)
+  }
+}
+
 #' copy the dimension names (and name of the dimension) from dimension src_i
 #' in array src to dimension dst_i in array dst
 #' @noRd

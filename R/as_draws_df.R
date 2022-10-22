@@ -108,7 +108,21 @@ as_draws_df.draws_list <- function(x, ...) {
 #' @rdname draws_df
 #' @export
 as_draws_df.draws_rvars <- function(x, ...) {
-  as_draws_df(as_draws_array(x), ...)
+  if (ndraws(x) == 0L) {
+    return(empty_draws_df(variables(x)))
+  }
+  out <- do.call(cbind, lapply(seq_along(x), function(i) {
+    # flatten each rvar so it only has two dimensions: draws and variables
+    # this also collapses indices into variable names in the format "var[i,j,k,...]"
+    flatten_rvar_draws_to_df(x[[i]], names(x)[[i]])
+  }))
+  iteration_ids <- iteration_ids(x)
+  chain_ids <- chain_ids(x)
+  out[[".chain"]] <- rep(chain_ids, each = max(iteration_ids))
+  out[[".iteration"]] <- rep(iteration_ids, max(chain_ids))
+  out[[".draw"]] <- draw_ids(x)
+  class(out) <- class_draws_df()
+  out
 }
 
 #' @rdname draws_df
