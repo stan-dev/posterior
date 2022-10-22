@@ -477,7 +477,19 @@ test_that("conversion between formats supporting discrete variables work", {
     x = rvar(array(1:12, dim = c(2,2,3)), with_chains = TRUE)
   )
 
-  draws_df <- as_draws_df(draws_rvars)
-  expect_equal(levels(draws_df[["z[1]"]]), levels(draws_rvars$z))
-  expect_equal(as_draws_rvars(draws_df), draws_rvars)
+  draws <- list(
+    df = as_draws_df(draws_rvars),
+    list = as_draws_list(draws_rvars),
+    rvars = draws_rvars
+  )
+
+  expect_equal(levels(draws$df[["z[1]"]]), levels(draws_rvars$z))
+  expect_equal(levels(draws$list[[1]][["z[1]"]]), levels(draws_rvars$z))
+
+  for (type in names(draws)) {
+    expect_equal(as_draws_df(draws[[!!type]]), draws$df)
+    expect_equal(as_draws_list(draws[[!!type]]), draws$list)
+    expect_equal(as_draws_rvars(draws[[!!type]]), draws$rvars)
+  }
+
 })

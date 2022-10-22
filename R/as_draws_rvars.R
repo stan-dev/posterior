@@ -50,6 +50,13 @@ as_draws_rvars.rvar <- function(x, ...) {
 #' @rdname draws_rvars
 #' @export
 as_draws_rvars.draws_matrix <- function(x, ...) {
+  .as_draws_rvars.draws_matrix(x, ...)
+}
+
+#' Helper for as_draws_rvars.draws_matrix and as_draws_rvars.draws_df()
+#' @param x_at A function taking a logical vector along variables(x) and returning a matrix of draws
+#' @noRd
+.as_draws_rvars.draws_matrix <- function(x, ..., x_at = function(var_i) unclass(x[, var_i, drop = FALSE])) {
   .variables <- variables(x, reserved = TRUE)
   if (ndraws(x) == 0) {
     return(empty_draws_rvars(.variables))
@@ -70,9 +77,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
   var_names <- unique(vars)
   rvars_list <- lapply(var_names, function(var) {
     var_i <- vars == var
-    # reset class here as otherwise the draws arrays in the output rvars
-    # have type draws_matrix, which makes inspecting them hard
-    var_matrix <- unclass(x[, var_i, drop = FALSE])
+    var_matrix <- x_at(var_i)
     attr(var_matrix, "nchains") <- NULL
 
     if (ncol(var_matrix) == 1) {
@@ -164,7 +169,18 @@ as_draws_rvars.draws_array <- function(x, ...) {
 
 #' @rdname draws_rvars
 #' @export
-as_draws_rvars.draws_df <- as_draws_rvars.draws_array
+as_draws_rvars.draws_df <- function(x, ...) {
+  x_df <- as.data.frame(x, optional = TRUE)[, variables(x, reserved = TRUE), drop = FALSE]
+  data_frame_to_matrix <- function(df) {
+    if (any(vapply(df, is.factor, logical(1)))) {
+      # as.matrix() does not convert factor columns correctly, must do this ourselves
+      while_preserving_dims(function(df) do.call(c, df), df)
+    } else {
+      as.matrix(df)
+    }
+  }
+  .as_draws_rvars.draws_matrix(x, ..., x_at = function(var_i) data_frame_to_matrix(x_df[, var_i, drop = FALSE]))
+}
 
 #' @rdname draws_rvars
 #' @export
