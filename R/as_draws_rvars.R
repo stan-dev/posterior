@@ -184,7 +184,9 @@ as_draws_rvars.draws_df <- function(x, ...) {
 
 #' @rdname draws_rvars
 #' @export
-as_draws_rvars.draws_list <- as_draws_rvars.draws_array
+as_draws_rvars.draws_list <- function(x, ...) {
+  as_draws_rvars(as_draws_df(x), ...)
+}
 
 #' @rdname draws_rvars
 #' @export
