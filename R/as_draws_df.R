@@ -95,8 +95,7 @@ as_draws_df.draws_list <- function(x, ...) {
   iteration_ids <- iteration_ids(x)
   chain_ids <- chain_ids(x)
   vars <- names(x[[1L]])
-  x <- do.call(rbind.data.frame, x)
-  colnames(x) <- vars
+  x <- do.call(vctrs::vec_rbind, lapply(x, vctrs::new_data_frame))
   x <- tibble::as_tibble(x)
   x[[".chain"]] <- rep(chain_ids, each = max(iteration_ids))
   x[[".iteration"]] <- rep(iteration_ids, max(chain_ids))
