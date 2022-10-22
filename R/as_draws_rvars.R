@@ -50,7 +50,7 @@ as_draws_rvars.rvar <- function(x, ...) {
 #' @rdname draws_rvars
 #' @export
 as_draws_rvars.draws_matrix <- function(x, ...) {
-  .variables <- variables(x)
+  .variables <- variables(x, reserved = TRUE)
   if (ndraws(x) == 0) {
     return(empty_draws_rvars(.variables))
   }
