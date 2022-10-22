@@ -211,7 +211,6 @@ test_that("rbind works on rvar_factor", {
 
   # rbind does not work with rvar_factor because it treats anything with non-null
   # levels() as a factor and skips the rvar code entirely, causing an error. So
-  # we'll test with dplyr::bind_rows() instead
-  skip_if_not_installed("dplyr")
-  expect_equal(dplyr::bind_rows(data.frame(x), data.frame(x = y)), data.frame(x = c(x, y)))
+  # we'll test with vctrs::vec_rbind() instead
+  expect_equal(vctrs::vec_rbind(data.frame(x), data.frame(x = y)), data.frame(x = c(x, y)))
 })

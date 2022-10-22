@@ -61,6 +61,8 @@ as_draws_matrix.draws_df <- function(x, ...) {
   draws <- x$.draw
   x <- remove_reserved_df_variables(x)
   class(x) <- class(x)[-1L]
+  non_numeric_cols <- vapply(x, function(x_i) !is.numeric(x_i) && !is.logical(x_i), logical(1))
+  x[, non_numeric_cols] <- lapply(unclass(x)[non_numeric_cols], as.numeric)
   x <- .as_draws_matrix(x)
   rownames(x) <- draws
   attr(x, "nchains") <- nchains

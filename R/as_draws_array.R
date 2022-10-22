@@ -59,6 +59,8 @@ as_draws_array.draws_df <- function(x, ...) {
   iterations <- iteration_ids(x)
   chains <- chain_ids(x)
   out <- vector("list", length(chains))
+  non_numeric_cols <- vapply(x, function(x_i) !is.numeric(x_i) && !is.logical(x_i), logical(1))
+  x[, non_numeric_cols] <- lapply(unclass(x)[non_numeric_cols], as.numeric)
   for (i in seq_along(out)) {
     if (length(chains) == 1) {
       out[[i]] <- x

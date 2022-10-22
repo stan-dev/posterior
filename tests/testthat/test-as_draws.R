@@ -491,5 +491,34 @@ test_that("conversion between formats supporting discrete variables work", {
     expect_equal(as_draws_list(draws[[!!type]]), draws$list)
     expect_equal(as_draws_rvars(draws[[!!type]]), draws$rvars)
   }
+})
 
+test_that("lossy conversion to formats that don't support discrete variables works", {
+  draws_rvars <- draws_rvars(
+    y = rvar_factor(array(letters[1:24], dim = c(2,2,3,2)), with_chains = TRUE),
+    z = rvar_ordered(array(letters[1:12], dim = c(2,2,3)), with_chains = TRUE),
+    x = rvar(array(1:12, dim = c(2,2,3)), with_chains = TRUE)
+  )
+
+  draws <- list(
+    df = as_draws_df(draws_rvars),
+    list = as_draws_list(draws_rvars),
+    rvars = draws_rvars
+  )
+
+  lossy_draws_rvars <- draws_rvars(
+    y = rvar_factor(array(1:24, dim = c(2,2,3,2)), with_chains = TRUE),
+    z = rvar_ordered(array(1:12, dim = c(2,2,3)), with_chains = TRUE),
+    x = rvar(array(1:12, dim = c(2,2,3)), with_chains = TRUE)
+  )
+
+  lossy_draws <- list(
+    array = as_draws_array(lossy_draws_rvars),
+    matrix = as_draws_matrix(lossy_draws_rvars)
+  )
+
+  for (type in names(draws)) {
+    expect_equal(as_draws_array(draws[[!!type]]), lossy_draws$array)
+    expect_equal(as_draws_matrix(draws[[!!type]]), lossy_draws$matrix)
+  }
 })
