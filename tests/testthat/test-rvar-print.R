@@ -231,4 +231,16 @@ test_that("vec_ptype_abbr and vec_ptype_full work", {
   expect_equal(vec_ptype_full(rvar(1:3)), "rvar<3>")
   expect_equal(vec_ptype_full(x), "rvar<2>[,4]")
   expect_equal(vec_ptype_full(x_with_chains), "rvar<1,2>[,4]")
+
+  x_fct <- rvar_factor(array(letters[1:24], dim = c(2,3,4)))
+  expect_equal(vec_ptype_abbr(x_fct, suffix_shape = FALSE), "rvar_fct")
+
+  x_ord <- rvar_ordered(array(letters[1:24], dim = c(2,3,4)))
+  expect_equal(vec_ptype_abbr(x_ord, suffix_shape = FALSE), "rvar_ord")
+})
+
+test_that("formatting NA rvars works", {
+  expect_equal(c(format(rvar(c(NA, 1)))), "NA \u00b1 NA")
+  expect_equal(c(format(rvar_factor(c(NA, 1)))), "NA <NA>")
+  expect_equal(c(format(rvar_ordered(c(NA, 1)))), "NA <NA>")
 })

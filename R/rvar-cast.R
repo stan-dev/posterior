@@ -141,7 +141,7 @@ as.list.rvar <- function(x, ...) {
   } else {
     is <- seq_along(x)
     names(is) <- dimnames(x)[[1]]
-    lapply(seq_along(x), function(i) x[[i]])
+    lapply(is, function(i) x[[i]])
   }
 }
 
