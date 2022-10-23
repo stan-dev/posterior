@@ -115,7 +115,7 @@ rvar_mad <- function(..., constant = 1.4826, na.rm = FALSE) {
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_range <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_range", matrixStats::rowRanges, na.rm = na.rm)
+  summarise_rvar_within_draws_via_matrix(c(...), "rvar_range", matrixStats::rowRanges, na.rm = na.rm, .ordered_okay = TRUE)
 }
 
 
@@ -128,9 +128,11 @@ rvar_quantile <- function(..., probs, names = FALSE, na.rm = FALSE) {
   na.rm <- as_one_logical(na.rm)
   x <- c(...)
 
+  type <- if (is_rvar_ordered(x)) 1 else 7
+
   out <- summarise_rvar_within_draws_via_matrix(
-    x, "rvar_quantile", matrixStats::rowQuantiles, probs = probs,
-    na.rm = na.rm, drop = FALSE
+    x, "rvar_quantile", matrixStats::rowQuantiles, probs = probs, type = type,
+    na.rm = na.rm, drop = FALSE, .ordered_okay = TRUE
   )
 
   if (!names) {

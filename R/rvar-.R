@@ -815,7 +815,7 @@ summarise_rvar_within_draws_via_matrix <- function(x, .name, .f, ..., .ordered_o
   if (.ordered_okay && is_rvar_ordered(x)) {
     .levels <- levels(x)
     .draws <- .f(draws_of(as_rvar_numeric(x)), ...)
-    .draws <- ordered(.levels[round(.draws)], .levels)
+    .draws <- while_preserving_dims(function(.draws) ordered(.levels[round(.draws)], .levels), .draws)
   } else if (is_rvar_factor(x)) {
     stop_no_call("Cannot apply `", .name, "` function to rvar_factor objects.")
   } else {
