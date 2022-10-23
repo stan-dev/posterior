@@ -38,6 +38,7 @@
 #' entry is of the form `"mean±sd"` or `"median±mad"`, depending on the value
 #' of `summary`.
 #'
+#' @template ref-tastle-wierman-2007
 #' @examples
 #'
 #' set.seed(5678)
@@ -59,7 +60,7 @@ print.rvar <- function(x, ..., summary = NULL, digits = NULL, color = TRUE, widt
   digits <- digits %||% getOption("posterior.digits", 2)
   # \u00b1 = plus/minus sign
   summary_functions <- get_summary_functions(draws_of(x), summary)
-  plus_minus <- summary_functions[[2]] != "entropy"
+  plus_minus <- summary_functions[[1]] != ".mode"
   summary_string <- if (plus_minus) {
     paste0(paste(names(summary_functions), collapse = " \u00b1 "), ":")
   } else {
@@ -240,7 +241,7 @@ format_rvar_draws <- function(
     return(character())
   }
   summary_functions <- get_summary_functions(draws, summary)
-  plus_minus <- summary_functions[[2]] != "entropy"
+  plus_minus <- summary_functions[[1]] != ".mode"
 
   summary_dimensions <- seq_len(length(dim(draws)) - 1) + 1
 
@@ -321,7 +322,9 @@ format_levels <- function(levels, ordered = FALSE, max_level = NULL, width = get
 # return a vector of two elements, where the first is the point summary function
 # (mean, median, mode) and the second is the uncertainty function ()
 get_summary_functions <- function(draws, summary = NULL) {
-  if (is.factor(draws)) {
+  if (is.ordered(draws)) {
+    summary = "mode_dissent"
+  } else if (is.factor(draws)) {
     summary = "mode_entropy"
   }
 
@@ -329,7 +332,8 @@ get_summary_functions <- function(draws, summary = NULL) {
   switch(summary,
     mean_sd = list(mean = "mean", sd = "sd"),
     median_mad = list(median = "median", mad = "mad"),
-    mode_entropy = list(mode = .mode, entropy = "entropy"),
+    mode_entropy = list(mode = ".mode", entropy = "entropy"),
+    mode_dissent = list(mode = ".mode", dissent = "dissent"),
     stop_no_call('`summary` must be one of "mean_sd" or "median_mad"')
   )
 }
@@ -338,7 +342,16 @@ entropy <- function(x) {
   if (anyNA(x)) return(NA_real_)
   p <- prop.table(table(x))
   p <- p[p > 0]
-  -sum(p * log(p))
+  -sum(p * log2(p))
+}
+
+dissent <- function(x) {
+  if (anyNA(x)) return(NA_real_)
+  if (length(x) == 0) return(0)
+  x <- as.numeric(x)
+  p <- prop.table(table(x))
+  x_i <- as.numeric(names(p))
+  -sum(p * log2(1 - abs(x_i - mean(x)) / diff(range(x))))
 }
 
 .mode <- function(x) {
