@@ -56,6 +56,26 @@ Ops.rvar_factor <- function(e1, e2) {
     stop_no_call("Cannot apply `", .Generic, "` operator to rvar_factor objects.")
   }
 
+  .Ops.rvar_factor(.Generic, e1, e2)
+}
+
+.Ops.rvar_factor <- function(.Generic, e1, e2, ordered = FALSE) {
+  # if one arg is a character vector, must convert it to a factor first, and
+  # if the operation is comparison must make sure that it is a level in the
+  # factor object we are comparing to (otherwise we end up with NAs)
+  if (is.character(e1)) {
+    if (.Generic %in% c("==", "!=")) {
+      levels(e2) <- c(levels(e2), setdiff(e1, levels(e2)))
+    }
+    e1 <- as_rvar_factor(e1, levels = levels(e2), ordered = ordered)
+  }
+  if (is.character(e2)) {
+    if (.Generic %in% c("==", "!=")) {
+      levels(e1) <- c(levels(e1), setdiff(e2, levels(e1)))
+    }
+    e2 <- as_rvar_factor(e2, levels = levels(e1), ordered = ordered)
+  }
+
   .Ops.rvar(get(.Generic), as_rvar(e1), as_rvar(e2), preserve_dims = TRUE)
 }
 
@@ -65,14 +85,7 @@ Ops.rvar_ordered <- function(e1, e2) {
     stop_no_call("Cannot apply `", .Generic, "` operator to rvar_ordered objects.")
   }
 
-  if (is.character(e1)) {
-    e1 <- as_rvar_ordered(e1, levels = levels(e2))
-  }
-  if (is.character(e2)) {
-    e2 <- as_rvar_ordered(e2, levels = levels(e1))
-  }
-
-  .Ops.rvar(get(.Generic), as_rvar(e1), as_rvar(e2), preserve_dims = TRUE)
+  .Ops.rvar_factor(.Generic, e1, e2, ordered = TRUE)
 }
 
 #' @export
@@ -306,7 +319,7 @@ t.rvar = function(x) {
     dimnames(.draws) = c(.dimnames[1], list(NULL), .dimnames[2])
     result <- new_rvar(.draws, .nchains = nchains(x))
   } else if (ndim == 3) {
-    .draws <- aperm(.draws, c(1, 3, 2))
+    .draws <- while_preserving_levels(aperm, .draws, c(1, 3, 2))
     result <- new_rvar(.draws, .nchains = nchains(x))
   } else {
     stop_no_call("argument is not a random vector or matrix")

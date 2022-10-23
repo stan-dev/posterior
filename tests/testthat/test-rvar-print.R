@@ -1,4 +1,7 @@
-test_that("basic print.rvar works", {
+
+# print -------------------------------------------------------------------
+
+test_that("print(<rvar>) works", {
   x <- rvar(array(1:12, dim = c(2,2,3)))
   x_with_chains <- rvar(array(1:12, dim = c(2,2,3)), nchains = 2)
 
@@ -53,7 +56,62 @@ test_that("basic print.rvar works", {
   )
 })
 
-test_that("basic str.rvar works", {
+test_that("print(<rvar_factor>) works", {
+  x <- rvar_factor(array(letters[1:12], dim = c(2,2,3)), nchains = 2)
+
+  out <- capture.output(print(x, color = FALSE))
+  expect_match(
+    out,
+    regexp = "rvar_factor<1,2>\\[2,3\\] mode <entropy>:",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "\\[1,\\] a <1>  e <1>  i <1> ",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "\\[2,\\] c <1>  g <1>  k <1> ",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "12 levels: a b c d e f g h i j k l",
+    all = FALSE
+  )
+})
+
+test_that("print(<rvar_ordered>) works", {
+  x <- rvar_ordered(array(letters[1:12], dim = c(2,2,3)), nchains = 2)
+
+  out <- capture.output(print(x, color = FALSE))
+  expect_match(
+    out,
+    regexp = "rvar_ordered<1,2>\\[2,3\\] mode <dissent>:",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "\\[1,\\] a <1>  e <1>  i <1> ",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "\\[2,\\] c <1>  g <1>  k <1> ",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "12 levels: a < b < c < d < e < f < g < h < i < j < k < l",
+    all = FALSE
+  )
+})
+
+
+# str ---------------------------------------------------------------------
+
+test_that("str(<rvar>) works", {
   x <- rvar(array(1:24, dim = c(2,3,4)))
   x_with_chains <- rvar(array(1:24, dim = c(2,3,4)), nchains = 2)
 
@@ -74,9 +132,9 @@ test_that("basic str.rvar works", {
   )
 
   x_with_attrs <- x
-  dimnames(x_with_attrs)[1] = list(c("a","b","c"))
-  attr(draws_of(x_with_attrs), "foo") = list(1,2)
-  attr(x_with_attrs, "bar") = list(1,2)
+  dimnames(x_with_attrs)[1] <- list(c("a","b","c"))
+  attr(draws_of(x_with_attrs), "foo") <- list(1,2)
+  attr(x_with_attrs, "bar") <- list(1,2)
 
   out <- capture.output(str(x_with_attrs, vec.len = 5))
   expect_match(
@@ -95,6 +153,53 @@ test_that("basic str.rvar works", {
     all = FALSE
   )
 })
+
+test_that("str(<rvar_factor>) works", {
+  x <- rvar_factor(array(letters[1:24], dim = c(2,3,4)), nchains = 2)
+  attr(x, "foo") <- "bar"
+
+  out <- capture.output(str(x, vec.len = 5))
+  expect_match(
+    out,
+    regexp = " rvar_factor<1,2>\\[3,4\\]  a <1>  c <1>  e <1>  g <1>  i <1> \\.\\.\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = " - 24 levels: a b c d \\.\\.\\. x",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = ' - attr\\(\\*, "foo"\\)= chr "bar"',
+    all = FALSE
+  )
+})
+
+test_that("str(<rvar_ordered>) works", {
+  x <- rvar_ordered(array(letters[1:24], dim = c(2,3,4)), nchains = 2)
+  attr(x, "foo") <- "bar"
+
+  out <- capture.output(str(x, vec.len = 5))
+  expect_match(
+    out,
+    regexp = " rvar_ordered<1,2>\\[3,4\\]  a <1>  c <1>  e <1>  g <1>  i <1> \\.\\.\\.",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = " - 24 levels: a < b < c < d < \\.\\.\\. < x",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = ' - attr\\(\\*, "foo"\\)= chr "bar"',
+    all = FALSE
+  )
+})
+
+
+# other -------------------------------------------------------------------
 
 test_that("glimpse on rvar works", {
   skip_on_cran()
