@@ -21,6 +21,12 @@ test_that("c works on rvar", {
   )
 
   expect_equal(c(x, 5), rvar(array(c(1:9, 5, 5, 5), dim = c(3,4))))
+  expect_equal(vctrs::vec_c(5, x), rvar(array(c(5, 5, 5, 1:9), dim = c(3,4))))
+  expect_equal(c(x, 5L), rvar(array(c(1:9, 5, 5, 5), dim = c(3,4))))
+  expect_equal(vctrs::vec_c(5L, x), rvar(array(c(5, 5, 5, 1:9), dim = c(3,4))))
+
+  expect_equal(c(x == 1, TRUE), rvar(array(c(1:9 == 1, TRUE, TRUE, TRUE), dim = c(3,4))))
+  expect_equal(vctrs::vec_c(TRUE, x == TRUE), rvar(array(c(TRUE, TRUE, TRUE, 1:9 == 1), dim = c(3,4))))
 
   x_col <- x
   dim(x_col) <- c(3,1)
@@ -40,13 +46,18 @@ test_that("c works on rvar_factor", {
   expect_equal(c(x, x), rvar(array(letters[c(1:9, 1:9)], dim = c(3,6))))
 
   expect_equal(c(x, "a"), rvar(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4))))
+  expect_equal(vctrs::vec_c("a", x), rvar(array(c("a", "a", "a", letters[1:9]), dim = c(3,4))))
   expect_equal(c(x, factor("a")), rvar(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4))))
+  expect_equal(vctrs::vec_c(factor("a"), x), rvar(array(c("a", "a", "a", letters[1:9]), dim = c(3,4))))
   expect_equal(c(x, "xx"), rvar(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4))))
   expect_equal(c(x, factor("xx")), rvar(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4))))
   expect_equal(c(x, ordered("xx")), rvar(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4))))
+  expect_equal(vec_c(ordered("xx"), x), rvar_factor(array(c("xx", "xx", "xx", letters[1:9]), dim = c(3,4)), levels = c("xx", letters[1:9])))
 
   expect_error(c(x, 5), "Can't combine")
   expect_error(c(x, 5L), "Can't combine")
+  expect_error(c(rvar(), factor("a")), "Can't combine")
+  expect_error(vctrs::vec_c(factor("a"), rvar()), "Can't combine")
 
   x_col <- x
   dim(x_col) <- c(3,1)
@@ -71,14 +82,21 @@ test_that("c works on rvar_ordered", {
   x_y_fct <- rvar_factor(array(letters[c(1:9, 2:10)], dim = c(3,6), dimnames = list(NULL, c("","","","a","b","c"))))
   expect_equal(c(x, y), x_y)
 
-  expect_equal(c(x, "a"), rvar_factor(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4)), levels = letters))
+  expect_equal(c(x, "a"), rvar_ordered(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4)), levels = letters))
+  expect_equal(vctrs::vec_c("a", x), rvar_ordered(array(c("a", "a", "a", letters[1:9]), dim = c(3,4)), levels = letters))
   expect_equal(c(x, factor("a")), rvar_factor(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4)), levels = letters))
+  expect_equal(vctrs::vec_c(factor("a"), x), rvar_factor(array(c("a", "a", "a", letters[1:9]), dim = c(3,4)), levels = letters))
   expect_equal(c(x, "xx"), rvar_factor(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4)), levels = c(letters, "xx")))
   expect_equal(c(x, factor("xx")), rvar_factor(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4)), levels = c(letters, "xx")))
   expect_equal(c(x, ordered("xx")), rvar_factor(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4)), levels = c(letters, "xx")))
+  expect_equal(vctrs::vec_c(ordered("xx"), x), rvar_factor(array(c("xx", "xx", "xx", letters[1:9]), dim = c(3,4)), levels = c("xx", letters)))
+  expect_equal(vctrs::vec_c(ordered("a"), x), rvar_factor(array(c("a", "a", "a", letters[1:9]), dim = c(3,4)), levels = letters))
+  expect_equal(vctrs::vec_c(ordered("a", levels = letters), x), rvar_ordered(array(c("a", "a", "a", letters[1:9]), dim = c(3,4)), levels = letters))
 
   expect_error(c(x, 5), "Can't combine")
   expect_error(c(x, 5L), "Can't combine")
+  expect_error(c(rvar(), ordered("a")), "Can't combine")
+  expect_error(vctrs::vec_c(ordered("a"), rvar()), "Can't combine")
 
   x_col <- x
   dim(x_col) <- c(3,1)

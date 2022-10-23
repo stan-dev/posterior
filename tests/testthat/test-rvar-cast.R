@@ -81,6 +81,11 @@ test_that("as_rvar_factor works", {
   )
 
   expect_equal(nchains(as_rvar_factor(1, nchains = 2)), 2)
+
+  expect_equal(
+    as_rvar_factor(rvar(array(1:12, dim = c(2,2,3)))),
+    rvar_factor(array(as.character(1:12), dim = c(2,2,3)), levels = as.character(1:12))
+  )
 })
 
 test_that("as_rvar_ordered works", {
@@ -114,8 +119,19 @@ test_that("as_rvar_ordered works", {
   )
 
   expect_equal(nchains(as_rvar_ordered(1, nchains = 2)), 2)
+
+  expect_equal(
+    as_rvar_ordered(rvar(array(1:12, dim = c(2,2,3)))),
+    rvar_ordered(array(as.character(1:12), dim = c(2,2,3)), levels = as.character(1:12))
+  )
 })
 
+test_that("as_rvar(<character>) produces an rvar_factor ", {
+  expect_equal(
+    draws_of(as_rvar(array(letters[1:4], dim = c(2,2)))),
+    structure(1:4L, levels = letters[1:4], dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = "factor")
+  )
+})
 
 # casting to/from rvar/distribution ---------------------------------------
 
@@ -265,5 +281,9 @@ test_that("as.data.frame and as_tibble work on rvars", {
 
 test_that("as.character works", {
   x <- rvar(c(1,1))
+  expect_equal(as.character(x), format(x))
+  x <- rvar_factor(letters[1:2])
+  expect_equal(as.character(x), format(x))
+  x <- rvar_ordered(letters[1:2])
   expect_equal(as.character(x), format(x))
 })

@@ -203,19 +203,14 @@ combine_rvar_factor_levels <- function(x, list_of_levels, ordered = FALSE) {
   if (length(unique_levels) == 1) {
     # levels are the same in all variables, so preserve level order when binding
     .levels <- unique_levels[[1]]
-    if (!identical(.levels, levels(x))) {
-      .draws <- while_preserving_dims(factor, .draws, .levels)
-    }
-    if (ordered) {
-      # only keep the "ordered" class when the levels were all the same (this
-      # mimics base-R, which demotes to unordered factor when combining ordered
-      # factors with different levels)
-      oldClass(.draws) <- c("ordered", "factor")
-    }
+    # We only keep the "ordered" class when the levels were all the same (this
+    # mimics base-R, which demotes to unordered factor when combining ordered
+    # factors with different levels)
+    .draws <- while_preserving_dims(factor, .draws, .levels, ordered = ordered)
   } else {
     # levels are not the same in all variables, so preserve any old levels by
-    # merging them together
-    .levels <- Reduce(union, list_of_levels)
+    # merging them together, but do not apply the "ordered" class
+    .levels <- unique(do.call(c, list_of_levels))
     .draws <- while_preserving_dims(factor, .draws, .levels)
   }
   if (!is.factor(.draws)) {
