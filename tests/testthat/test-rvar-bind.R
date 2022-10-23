@@ -52,7 +52,7 @@ test_that("c works on rvar_factor", {
   expect_equal(c(x, "xx"), rvar(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4))))
   expect_equal(c(x, factor("xx")), rvar(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4))))
   expect_equal(c(x, ordered("xx")), rvar(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4))))
-  expect_equal(vec_c(ordered("xx"), x), rvar_factor(array(c("xx", "xx", "xx", letters[1:9]), dim = c(3,4)), levels = c("xx", letters[1:9])))
+  expect_equal(vctrs::vec_c(ordered("xx"), x), rvar_factor(array(c("xx", "xx", "xx", letters[1:9]), dim = c(3,4)), levels = c("xx", letters[1:9])))
 
   expect_error(c(x, 5), "Can't combine")
   expect_error(c(x, 5L), "Can't combine")

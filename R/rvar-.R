@@ -799,18 +799,30 @@ summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_em
 #' by first collapsing dimensions into columns of the draws matrix
 #' (so that .f can be a rowXXX() function)
 #' @param x an rvar
+#' @param name function name to use for error messages
 #' @param .f a function that takes a matrix and summarises its rows, like rowMeans
 #' @param ... arguments passed to `.f`
-#' @param .when_empty the value to return when `x` has length 0 (e.g. is NULL)
+#' @param .ordered_okay can this function be applied to rvar_ordereds?
 #' @noRd
-summarise_rvar_within_draws_via_matrix <- function(x, .f, ...) {
+summarise_rvar_within_draws_via_matrix <- function(x, .name, .f, ..., .ordered_okay = FALSE) {
   .length <- length(x)
   if (!.length) {
     x <- rvar()
   }
 
   dim(x) <- .length
-  new_rvar(.f(draws_of(x), ...), .nchains = nchains(x))
+
+  if (.ordered_okay && is_rvar_ordered(x)) {
+    .levels <- levels(x)
+    .draws <- .f(draws_of(as_rvar_numeric(x)), ...)
+    .draws <- ordered(.levels[round(.draws)], .levels)
+  } else if (is_rvar_factor(x)) {
+    stop_no_call("Cannot apply `", .name, "` function to rvar_factor objects.")
+  } else {
+    .draws <- .f(draws_of(x), ...)
+  }
+
+  new_rvar(.draws, .nchains = nchains(x))
 }
 
 # apply vectorized function to an rvar's draws
@@ -836,19 +848,32 @@ summarise_rvar_by_element <- function(x, .f, ...) {
 #' by first collapsing dimensions into columns of the draws matrix, applying the
 #' function, then restoring dimensions (so that .f can be a colXXX() function)
 #' @param x an rvar
+#' @param name function name to use for error messages
 #' @param .f a function that takes a matrix and summarises its columns, like colMeans
 #' @param .extra_dim extra dims added by `.f` to the output, e.g. in the case of
 #' matrixStats::colRanges this is `2`
 #' @param .extra_dimnames extra dimension names for dims added by `.f` to the output
+#' @param .ordered_okay can this function be applied to rvar_ordereds?
+#' @param .factor_okay can this function be applied to rvar_factors?
 #' @param ... arguments passed to `.f`
 #' @noRd
-summarise_rvar_by_element_via_matrix <- function(x, .f, .extra_dim = NULL, .extra_dimnames = NULL, ...) {
+summarise_rvar_by_element_via_matrix <- function(
+  x, .name, .f, .extra_dim = NULL, .extra_dimnames = NULL, .ordered_okay = TRUE, .factor_okay = FALSE, ...
+) {
   .dim <- dim(x)
   .dimnames <- dimnames(x)
   .length <- length(x)
   dim(x) <- .length
 
-  x = .f(draws_of(x), ...)
+  if (!is_rvar_factor(x) || .factor_okay) {
+    x <- .f(draws_of(x), ...)
+  } else if (.ordered_okay && is_rvar_ordered(x)) {
+    .levels <- levels(x)
+    x <- .f(draws_of(as_rvar_numeric(x)), ...)
+    x <- ordered(.levels[round(x)], .levels)
+  } else {
+    stop_no_call("Cannot apply `", .name, "` function to rvar_factor objects.")
+  }
 
   if (is.null(.extra_dim) && length(.dim) <= 1) {
     # this ensures that vector rvars are summarized to vectors rather than

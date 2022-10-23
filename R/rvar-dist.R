@@ -88,6 +88,7 @@ cdf.rvar_ordered <- function(x, q, ...) {
 #' @export
 quantile.rvar <- function(x, probs, ...) {
   summarise_rvar_by_element_via_matrix(x,
+    "quantile",
     function(draws) {
       t(matrixStats::colQuantiles(draws, probs = probs, useNames = TRUE, ...))
     },
