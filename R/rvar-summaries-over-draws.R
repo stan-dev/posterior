@@ -195,7 +195,7 @@ mad.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 mad.rvar_ordered <- function(x, ...) {
-  mad(as_rvar_numeric(x, ...))
+  mad(as_rvar_numeric(x), ...)
 }
 
 
