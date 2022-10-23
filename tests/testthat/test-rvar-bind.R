@@ -54,6 +54,38 @@ test_that("c works on rvar_factor", {
   expect_equal(c(x_col, y), x_y)
 })
 
+test_that("c works on rvar_ordered", {
+  x <- rvar_ordered(array(letters[1:9], dim = c(3,3)), levels = letters)
+  y <- rvar_ordered(array(letters[2:10], dim = c(3,3), dimnames = list(NULL, c("a","b","c"))), levels = letters)
+  x_y <- rvar_ordered(array(letters[c(1:9, 2:10)], dim = c(3,6), dimnames = list(NULL, c("","","","a","b","c"))), levels = letters)
+
+  expect_equal(c(x), x)
+  expect_equal(c(x, NULL), x)
+  expect_equal(c(x, y), x_y)
+  expect_equal(c(x, NULL, y), x_y)
+  expect_equal(c(x, x), rvar_ordered(array(letters[c(1:9, 1:9)], dim = c(3,6)), levels = letters))
+
+  # demotion to factor when levels aren't all in common
+  x_partial <- rvar_ordered(array(letters[1:9], dim = c(3,3)))
+  y_partial <- rvar_ordered(array(letters[2:10], dim = c(3,3), dimnames = list(NULL, c("a","b","c"))))
+  x_y_fct <- rvar_factor(array(letters[c(1:9, 2:10)], dim = c(3,6), dimnames = list(NULL, c("","","","a","b","c"))))
+  expect_equal(c(x, y), x_y)
+
+  expect_equal(c(x, "a"), rvar_factor(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4)), levels = letters))
+  expect_equal(c(x, factor("a")), rvar_factor(array(c(letters[1:9], "a", "a", "a"), dim = c(3,4)), levels = letters))
+  expect_equal(c(x, "xx"), rvar_factor(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4)), levels = c(letters, "xx")))
+  expect_equal(c(x, factor("xx")), rvar_factor(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4)), levels = c(letters, "xx")))
+  expect_equal(c(x, ordered("xx")), rvar_factor(array(c(letters[1:9], "xx", "xx", "xx"), dim = c(3,4)), levels = c(letters, "xx")))
+
+  expect_error(c(x, 5), "Can't combine")
+  expect_error(c(x, 5L), "Can't combine")
+
+  x_col <- x
+  dim(x_col) <- c(3,1)
+  expect_equal(c(x_col), x)
+  expect_equal(c(x_col, y), x_y)
+})
+
 
 # cbind.rvar --------------------------------------------------------------
 

@@ -350,8 +350,12 @@ dissent <- function(x) {
   if (length(x) == 0) return(0)
   x <- as.numeric(x)
   p <- prop.table(table(x))
-  x_i <- as.numeric(names(p))
-  -sum(p * log2(1 - abs(x_i - mean(x)) / diff(range(x))))
+  if (length(p) == 1) {
+    0
+  } else {
+    x_i <- as.numeric(names(p))
+    -sum(p * log2(1 - abs(x_i - mean(x)) / diff(range(x))))
+  }
 }
 
 .mode <- function(x) {

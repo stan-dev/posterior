@@ -156,12 +156,13 @@ test_that("str(<rvar>) works", {
 
 test_that("str(<rvar_factor>) works", {
   x <- rvar_factor(array(letters[1:24], dim = c(2,3,4)), nchains = 2)
+  x[[1]] <- "a"
   attr(x, "foo") <- "bar"
 
   out <- capture.output(str(x, vec.len = 5))
   expect_match(
     out,
-    regexp = " rvar_factor<1,2>\\[3,4\\]  a <1>  c <1>  e <1>  g <1>  i <1> \\.\\.\\.",
+    regexp = " rvar_factor<1,2>\\[3,4\\]  a <0>  c <1>  e <1>  g <1>  i <1> \\.\\.\\.",
     all = FALSE
   )
   expect_match(
@@ -178,12 +179,13 @@ test_that("str(<rvar_factor>) works", {
 
 test_that("str(<rvar_ordered>) works", {
   x <- rvar_ordered(array(letters[1:24], dim = c(2,3,4)), nchains = 2)
+  x[[1]] <- "a"
   attr(x, "foo") <- "bar"
 
   out <- capture.output(str(x, vec.len = 5))
   expect_match(
     out,
-    regexp = " rvar_ordered<1,2>\\[3,4\\]  a <1>  c <1>  e <1>  g <1>  i <1> \\.\\.\\.",
+    regexp = " rvar_ordered<1,2>\\[3,4\\]  a <0>  c <1>  e <1>  g <1>  i <1> \\.\\.\\.",
     all = FALSE
   )
   expect_match(
