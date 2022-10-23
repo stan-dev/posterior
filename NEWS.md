@@ -2,8 +2,14 @@
 
 ### Enhancements
 
+* New `rvar_factor()` and `rvar_ordered()` subtypes of `rvar()` that work
+  analogously to `factor()` and `ordered()` (#149).
 * Allow lists of draws objects to be passed as the first argument to 
   `bind_draws()` (#253).
+* `print.rvar()` and `format.rvar()` now default to a smaller number of
+  significant digits in more cases, including when printing in data frames.
+  This is controlled by the new `"posterior.digits"` option (see 
+  `help("posterior-package")`).
 
 
 # posterior 1.3.1
