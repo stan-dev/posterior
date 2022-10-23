@@ -1,6 +1,15 @@
+# posterior 1.3.1.9000
+
+### Enhancements
+
+* Allow lists of draws objects to be passed as the first argument to 
+  `bind_draws()` (#253).
+
+
 # posterior 1.3.1
 
 * Minor release that fixes some CRAN check failures.
+
 
 # posterior 1.3.0
 
