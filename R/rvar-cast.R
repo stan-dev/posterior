@@ -171,11 +171,10 @@ invalidate_rvar_cache = function(x) {
   x
 }
 
-#' @importFrom vctrs vec_proxy vec_chop
+#' @importFrom vctrs vec_proxy
 #' @export
 vec_proxy.rvar = function(x, ...) {
-  # TODO: probably could do something more efficient here and for restore
-  # In the meantime, using caching to help with algorithms that call vec_proxy
+  # Using caching to help with algorithms that call vec_proxy
   # repeatedly. See https://github.com/r-lib/vctrs/issues/1411
 
   out <- attr(x, "cache")$vec_proxy
@@ -190,80 +189,80 @@ vec_proxy.rvar = function(x, ...) {
 
 #' Make a cacheable proxy for vec_proxy.rvar
 #' @noRd
-make_rvar_proxy = function(x) UseMethod("make_rvar_proxy")
-
-#' @export
-make_rvar_proxy.rvar = function(x) {
-  .draws = draws_of(x)
-  out <- vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
-
-  .nchains <- nchains(x)
-  for (i in seq_along(out)) {
-    attr(out[[i]], "nchains") <- .nchains
-  }
-
-  out
-}
-
-#' @export
-make_rvar_proxy.rvar_factor = function(x) {
-  out <- NextMethod()
-
-  .class <- c(if (is_rvar_ordered(x)) "ordered", "factor")
-  .levels <- levels(x)
-  for (i in seq_along(out)) {
-    attr(out[[i]], "levels") <- .levels
-    attr(out[[i]], "class") <- .class
-  }
-
-  out
+make_rvar_proxy = function(x) {
+  nchains <- nchains(x)
+  draws <- draws_of(x)
+  is <- seq_len(NROW(x))
+  names(is) <- rownames(x)
+  lapply(is, function(i) {
+    list(
+      index = i,
+      nchains = nchains,
+      draws = draws
+    )
+  })
 }
 
 
 #' @importFrom vctrs vec_restore
 #' @export
 vec_restore.rvar <- function(x, ...) {
-  if (length(x) > 0) {
-    # need to handle the case of creating NAs from NULL entries so that
-    # vec_init() works properly: vec_init requires vec_slice(x, NA_integer_)
-    # to give you back NA values, but this breaks because we use lists as proxies.
-    # When using a list as a proxy, a proxy entry in `x` that is equal to NULL
-    # actually corresponds to an NA value due to the way that list indexing
-    # works: when you do something like list()[c(NA_integer_,NA_integer_)]
-    # you get back list(NULL, NULL), but when you do something like
-    # double()[c(NA_integer_,NA_integer_)] you get back c(NA, NA).
-    # So we have to make the NULL values be NA values to mimic vector indexing.
+  if (length(x) == 0) return(rvar())
 
-    # N.B. could potentially do this with vec_cast as well (as long as the first
-    # dimension is the slicing index)
-    x[lengths(x) == 0] <- list(array(NA, dim = c(1,1)))
+  # need to handle the case of creating NAs from NULL entries so that
+  # vec_init() works properly: vec_init requires vec_slice(x, NA_integer_)
+  # to give you back NA values, but this breaks because we use lists as proxies.
+  # When using a list as a proxy, a proxy entry in `x` that is equal to NULL
+  # actually corresponds to an NA value due to the way that list indexing
+  # works: when you do something like list()[c(NA_integer_,NA_integer_)]
+  # you get back list(NULL, NULL), but when you do something like
+  # double()[c(NA_integer_,NA_integer_)] you get back c(NA, NA).
+  # So we have to make the NULL values be NA values to mimic vector indexing.
+  # N.B. could potentially do this with vec_cast as well (as long as the first
+  # dimension is the slicing index)
+  x[lengths(x) == 0] <- make_rvar_proxy(rvar(NA_real_))
+
+  # find runs where the same underlying draws are in the proxy
+  different_draws_from_previous <- vapply(seq_along(x)[-1], FUN.VALUE = logical(1), function(i) {
+    !identical(x[[i]]$draws, x[[i - 1]]$draws) || !identical(x[[i]]$nchains, x[[i - 1]]$nchains)
+  })
+  draws_groups <- cumsum(c(TRUE, different_draws_from_previous))
+
+  # convert each run into a slice on an rvar and bind the resulting rvars together
+  groups <- split(x, draws_groups)
+  rvars <- lapply(groups, function(x) {
+    i <- vapply(x, `[[`, "index", FUN.VALUE = numeric(1))
+    rvar <- new_rvar(x[[1]]$draws, .nchains = x[[1]]$nchains)
+    if (length(dim(rvar)) > 1) rvar[i, ] else cbind(rvar[i])
+  })
+  out <- bind_rvars(rvars, arg_exprs = NULL, deparse.level = 0, axis = 1)
+
+  if (all(lengths(lapply(groups, dim)) <= 1)) {
+    # input was a bunch of vectors, ensure output is also a vector
+    dim(out) <- length(out)
   }
-  # broadcast dimensions and bind together
-  new_dim <- dim_common(lapply(x, dim))
-  .draws <- abind(lapply(x, broadcast_array, new_dim), along = 1)
-  # move draws dimension back to the front
-  if (!is.null(.draws)) {
-    .draws <- aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)]))
-  }
-
-  # determine the number of chains
-  nchains_or_null <- lapply(x, function(x) if (dim(x)[[2]] %||% 1 == 1) NULL else attr(x, "nchains"))
-  .nchains <- Reduce(nchains2_common, nchains_or_null) %||% 1L
-
-  out <- new_rvar(.draws, .nchains = .nchains)
 
   # since we've already spent time calculating it, save the proxy in the cache
-  attr(out, "cache")$vec_proxy <- x
+  # - but only if the proxy only has one group (else we'd have to recalculate
+  # the bind above again, which is usually more expensive than generating the
+  # proxy itself)
+  if (length(groups) == 1) {
+    attr(out, "cache")$vec_proxy <- x
+  }
 
   out
 }
 
 #' @export
 vec_restore.rvar_factor = function(x, to, ...) {
-  # first, bind the factors as character vectors into an rvar_factor
-  x_character <- lapply(x, while_preserving_dims, f = as.character)
-  out <- vec_restore.rvar(x_character, ...)
-  combine_rvar_factor_levels(out, lapply(x, levels), is_rvar_ordered(to))
+  x[lengths(x) == 0] <- make_rvar_proxy(rvar_factor(NA_integer_))
+  vec_restore.rvar(x, ...)
+}
+
+#' @export
+vec_restore.rvar_ordered = function(x, to, ...) {
+  x[lengths(x) == 0] <- make_rvar_proxy(rvar_ordered(NA_integer_))
+  vec_restore.rvar(x, ...)
 }
 
 
@@ -481,7 +480,9 @@ vec_cast.distribution.rvar <- function(x, to, ..., x_arg = "", to_arg = "") {
   if (length(dim(x)) > 1) {
     vctrs::stop_incompatible_cast(x, to, x_arg = x_arg, to_arg = to_arg)
   }
-  x_vector_list <- lapply(vec_proxy(x), as.vector)
+  .draws <- draws_of(x)
+  x_array_list <- vctrs::vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
+  x_vector_list <- lapply(x_array_list, as.vector)
   names(x_vector_list) <- names(x)
   distributional::dist_sample(x_vector_list)
 }

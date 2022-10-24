@@ -15,6 +15,8 @@
   significant digits in more cases, including when printing in data frames.
   This is controlled by the new `"posterior.digits"` option (see 
   `help("posterior-package")`).
+* Implemented faster `vec_proxy.rvar()` and `vec_restore.rvar()`, improving
+  performance of `rvar`s in `tibble`s (and elsewhere `vctrs` is used).
 
 
 # posterior 1.3.1
