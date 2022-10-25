@@ -287,3 +287,46 @@ test_that("as.character works", {
   x <- rvar_ordered(letters[1:2])
   expect_equal(as.character(x), format(x))
 })
+
+test_that("proxy restore works", {
+  x1 = rvar(array(1:9, dim = c(3,3)),
+    dimnames = list(A = paste0("a", 1:3))
+  )
+  x2 = rvar(array(1:12, dim = c(2,2,3)),
+    dimnames = list(A = paste0("a", 1:2), B = paste0("b", 1:3))
+  )
+  x3 = rvar(array(1:24, dim = c(2,2,2,4)),
+    dimnames = list(A = paste0("a", 1:2), B = paste0("b", 1:2), C = paste0("c", 1:4))
+  )
+
+  expect_equal(vec_restore(vec_proxy(unname(x1)), rvar()), unname(x1))
+  expect_equal(vec_restore(vec_proxy(unname(x2)), rvar()), unname(x2))
+  expect_equal(vec_restore(vec_proxy(unname(x3)), rvar()), unname(x3))
+  expect_equal(vec_restore(vec_proxy(x1), rvar()), x1)
+  expect_equal(vec_restore(vec_proxy(x2), rvar()), x2)
+  expect_equal(vec_restore(vec_proxy(x3), rvar()), x3)
+
+  expect_equal(
+    vec_restore(c(
+      vec_proxy(vctrs::vec_init(rvar(), 2)),
+      vec_proxy(rvar(1:10, nchains = 2))
+    ), rvar()),
+    rvar(array(c(rep(NA, 10), rep(NA, 10), 1:10), dim = c(10, 3)), nchains = 2)
+  )
+
+  expect_equal(
+    vec_restore(c(
+      vec_proxy(vctrs::vec_init(rvar_factor(), 2)),
+      vec_proxy(rvar_factor(letters[1:10], nchains = 2))
+    ), rvar_factor()),
+    rvar_factor(array(letters[c(rep(NA, 10), rep(NA, 10), 1:10)], dim = c(10, 3)), nchains = 2)
+  )
+
+  expect_equal(
+    vec_restore(c(
+      vec_proxy(vctrs::vec_init(rvar_ordered(), 2)),
+      vec_proxy(rvar_ordered(letters[1:10], nchains = 2))
+    ), rvar_ordered()),
+    rvar_ordered(array(letters[c(rep(NA, 10), rep(NA, 10), 1:10)], dim = c(10, 3)), nchains = 2)
+  )
+})

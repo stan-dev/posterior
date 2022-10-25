@@ -200,9 +200,11 @@ combine_rvar_factor_levels <- function(x, list_of_levels, ordered = FALSE) {
   .draws <- draws_of(x)
 
   unique_levels <- unique(list_of_levels)
-  if (length(unique_levels) == 1) {
+  # zero-length levels lists don't count (since can only come from factors with only missing values)
+  unique_levels <- unique_levels[lengths(unique_levels) > 0]
+  if (length(unique_levels) <= 1) {
     # levels are the same in all variables, so preserve level order when binding
-    .levels <- unique_levels[[1]]
+    .levels <- unique_levels[1][[1]]
     # We only keep the "ordered" class when the levels were all the same (this
     # mimics base-R, which demotes to unordered factor when combining ordered
     # factors with different levels)

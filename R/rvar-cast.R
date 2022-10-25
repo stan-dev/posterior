@@ -220,7 +220,7 @@ vec_restore.rvar <- function(x, ...) {
   # So we have to make the NULL values be NA values to mimic vector indexing.
   # N.B. could potentially do this with vec_cast as well (as long as the first
   # dimension is the slicing index)
-  x[lengths(x) == 0] <- make_rvar_proxy(rvar(NA_real_))
+  x[lengths(x) == 0] <- make_rvar_proxy(new_rvar(NA_real_))
 
   # find runs where the same underlying draws are in the proxy
   different_draws_from_previous <- vapply(seq_along(x)[-1], FUN.VALUE = logical(1), function(i) {
@@ -233,13 +233,23 @@ vec_restore.rvar <- function(x, ...) {
   rvars <- lapply(groups, function(x) {
     i <- vapply(x, `[[`, "index", FUN.VALUE = numeric(1))
     rvar <- new_rvar(x[[1]]$draws, .nchains = x[[1]]$nchains)
-    if (length(dim(rvar)) > 1) rvar[i, ] else cbind(rvar[i])
+    if (length(dim(rvar)) > 1) {
+      rvar[i, ]
+    } else {
+      rvar <- rvar[i]
+      .dimnames <- dimnames(rvar)
+      dim(rvar) <- c(length(rvar), 1)
+      dimnames(rvar) <- c(.dimnames, NULL)
+      rvar
+    }
   })
   out <- bind_rvars(rvars, arg_exprs = NULL, deparse.level = 0, axis = 1)
 
-  if (all(lengths(lapply(groups, dim)) <= 1)) {
+  if (all(lengths(lapply(groups, function(x) dim(x[[1]]$draws))) <= 2)) {
     # input was a bunch of vectors, ensure output is also a vector
+    .dimnames <- dimnames(out)
     dim(out) <- length(out)
+    dimnames(out) <- .dimnames[1]
   }
 
   # since we've already spent time calculating it, save the proxy in the cache
