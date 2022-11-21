@@ -85,13 +85,13 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
       })
     }
     # Need to add a first dimension before unchopping (this will be the draws dimension)
-    # Doing this + vec_unchop is faster than doing abind::abind(list_of_draws, along = 0)
+    # Doing this + list_unchop is faster than doing abind::abind(list_of_draws, along = 0)
     list_of_draws <- lapply(list_of_draws, function(x) {
       x <- as.array(x)
       dim(x) <- c(1, dim(x))
       x
     })
-    new_rvar(vctrs::vec_unchop(list_of_draws), .nchains = .nchains)
+    new_rvar(vctrs::list_unchop(list_of_draws), .nchains = .nchains)
   }
   formals(FUNV) <- formals(.f)
   FUNV
