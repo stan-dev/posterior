@@ -67,12 +67,12 @@ test_that("print(<rvar_factor>) works", {
   )
   expect_match(
     out,
-    regexp = "\\[1,\\] a <1>  e <1>  i <1> ",
+    regexp = "\\[1,\\] a <0\\.28>  e <0\\.28>  i <0\\.28> ",
     all = FALSE
   )
   expect_match(
     out,
-    regexp = "\\[2,\\] c <1>  g <1>  k <1> ",
+    regexp = "\\[2,\\] c <0\\.28>  g <0\\.28>  k <0\\.28> ",
     all = FALSE
   )
   expect_match(
@@ -162,7 +162,7 @@ test_that("str(<rvar_factor>) works", {
   out <- capture.output(str(x, vec.len = 5))
   expect_match(
     out,
-    regexp = " rvar_factor<1,2>\\[3,4\\]  a <0>  c <1>  e <1>  g <1>  i <1> \\.\\.\\.",
+    regexp = " rvar_factor<1,2>\\[3,4\\]  a <0\\.00>  c <0\\.22>  e <0\\.22>  g <0\\.22>  i <0\\.22> \\.\\.\\.",
     all = FALSE
   )
   expect_match(

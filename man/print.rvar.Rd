@@ -38,12 +38,13 @@
 \item \code{"mean_sd"} displays \verb{mean ± sd}
 \item \code{"median_mad"} displays \verb{median ± mad}
 \item \code{"mode_entropy"} displays \verb{mode <entropy>}, and is used automatically for
-\code{\link{rvar_factor}}s. It shows base-2 entropy.
+\code{\link{rvar_factor}}s. It shows normalized entropy, which ranges from
+0 (all probability in one category) to 1 (uniform). See \code{\link[=entropy]{entropy()}}.
 \item \code{"mode_dissent"} displays \verb{mode <dissent>}, and is used automatically for
 \code{\link{rvar_ordered}}s. It shows Tastle and Wierman's (2007) \emph{dissention}
 measure, which ranges from 0 (all probability in one category) through
 0.5 (uniform) to 1 (bimodal: all probability split equally between the
-first and last category).
+first and last category). See \code{\link[=dissent]{dissent()}}.
 \item \code{NULL} uses \code{getOption("posterior.rvar_summary")} (default \verb{"mean_sd})
 }}
 

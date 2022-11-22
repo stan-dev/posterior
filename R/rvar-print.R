@@ -245,14 +245,9 @@ format_rvar_draws <- function(
 
   summary_dimensions <- seq_len(length(dim(draws)) - 1) + 1
 
-  # these will be mean/sd or median/mad depending on `summary`
-  .mean <- apply(draws, summary_dimensions, summary_functions[[1]])
-  if (is.factor(draws)) {
-    # factor-like objects get converted to numerics when sliced by apply(), so
-    # we have restore the level corresponding to the summarized value
-    .mean <- levels(draws)[round(as.numeric(.mean))]
-  }
-  .sd <- apply(draws, summary_dimensions, summary_functions[[2]])
+  # these will be mean/sd, median/mad, mode/entropy, mode/dissent depending on `summary`
+  .mean <- .apply_factor(draws, summary_dimensions, summary_functions[[1]])
+  .sd <- .apply_factor(draws, summary_dimensions, summary_functions[[2]])
 
   out <- paste0(
     pad_left,
@@ -336,30 +331,4 @@ get_summary_functions <- function(draws, summary = NULL) {
     mode_dissent = list(mode = ".mode", dissent = "dissent"),
     stop_no_call('`summary` must be one of "mean_sd" or "median_mad"')
   )
-}
-
-entropy <- function(x) {
-  if (anyNA(x)) return(NA_real_)
-  p <- prop.table(table(x))
-  p <- p[p > 0]
-  -sum(p * log2(p))
-}
-
-dissent <- function(x) {
-  if (anyNA(x)) return(NA_real_)
-  if (length(x) == 0) return(0)
-  x <- as.numeric(x)
-  p <- prop.table(table(x))
-  if (length(p) == 1) {
-    0
-  } else {
-    x_i <- as.numeric(names(p))
-    -sum(p * log2(1 - abs(x_i - mean(x)) / diff(range(x))))
-  }
-}
-
-.mode <- function(x) {
-  if (anyNA(x)) return(NA_character_)
-  x_table <- table(x)
-  names(x_table)[which.max(x_table)]
 }

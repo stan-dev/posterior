@@ -775,6 +775,27 @@ while_preserving_levels <- function(f, x, ...) {
   x
 }
 
+#' a version of apply() that works on factor-like arrays
+#' apply() strips classes of slices of x before passing them to FUN, which
+#' breaks apply() when used with factor-like arrays; this variant ensures
+#' levels and classes are preserved for slices of factors passed to FUN
+#' @noRd
+.apply_factor <- function(X, MARGIN, FUN, ...) {
+  if (is.factor(X)) {
+    .class <- oldClass(X)
+    .levels <- levels(X)
+    FUN <- match.fun(FUN)
+    .f <- function(x, ...) {
+      oldClass(x) <- .class
+      levels(x) <- .levels
+      FUN(x, ...)
+    }
+  } else {
+    .f <- FUN
+  }
+  apply(X, MARGIN, .f, ...)
+}
+
 
 # helpers: applying functions over rvars ----------------------------------
 
@@ -840,7 +861,7 @@ summarise_rvar_by_element <- function(x, .f, ...) {
   } else {
     draws <- draws_of(x)
     dim <- dim(draws)
-    apply(draws, seq_along(dim)[-1], .f, ...)
+    .apply_factor(draws, seq_along(dim)[-1], .f, ...)
   }
 }
 
