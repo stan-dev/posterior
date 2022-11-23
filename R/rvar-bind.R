@@ -10,6 +10,9 @@ c.rvar <- function(...) {
   }
 
   args <- list(...)
+  # drop NULLs (for compatibility with R < 4: in R >= 4, NULLs will have already been dropped)
+  args[vapply(args, is.null, logical(1))] <- NULL
+
   out <- make_1d(args[[1]], names(args)[[1]])
 
   # process remaining args in succession, binding them to the output
