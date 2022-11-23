@@ -126,6 +126,14 @@ test_that("unique.rvar and duplicated.rvar work", {
   expect_error(unique(x, MARGIN = 3), "MARGIN = 3 is invalid")
 })
 
+# match and %in% ----------------------------------------------------------
+
+test_that("%in% works on rvars", {
+  x <- rvar(matrix(c(1,1,3, 2,2,3, 1,2,3), nrow = 3))
+  res <- rvar(matrix(c(TRUE,TRUE,TRUE, FALSE,FALSE,TRUE, TRUE,FALSE,TRUE), nrow = 3))
+  expect_equal(x %in% c(1, 3), res)
+})
+
 # tibbles -----------------------------------------------------------------
 
 test_that("rvars work in tibbles", {

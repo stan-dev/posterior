@@ -3,7 +3,8 @@
 ### Enhancements
 
 * Added new `rvar_factor()` and `rvar_ordered()` subtypes of `rvar()` that work
-  analogously to `factor()` and `ordered()` (#149).
+  analogously to `factor()` and `ordered()` (#149). See the new section on
+  `rvar_factor`s in `vignette("rvar")`.
 * The `draws_df()`, `draws_list()`, and `draws_rvars()` formats now support
   discrete variables stored as `factors` / `ordered`s (or `rvar_factor`s /
   `rvar_ordered`s). If converted to formats that do not support discrete
