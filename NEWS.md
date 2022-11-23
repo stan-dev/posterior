@@ -9,6 +9,10 @@
   `rvar_ordered`s). If converted to formats that do not support discrete
   variables with named levels (`draws_matrix()` and `draws_array()`), 
   factor-like variables are converted to `numeric`s.
+* Made `match()` and `%in%` generic and added support for `rvar`s to both
+  functions.
+* Added `modal_category()`, `entropy()`, and `dissent()` functions for
+  summarizing discrete draws.
 * Allow lists of draws objects to be passed as the first argument to 
   `bind_draws()` (#253).
 * `print.rvar()` and `format.rvar()` now default to a smaller number of

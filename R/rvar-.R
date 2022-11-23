@@ -328,6 +328,57 @@ all.equal.rvar <- function(target, current, ...) {
 }
 
 
+# match -------------------------------------------------------------------
+
+#' Value Matching
+#'
+#' Generic version of [base::match()]. For base vectors, returns a vector of the
+#' positions of (first) matches of its first argument in its second. For [rvar]s,
+#' returns an [rvar] of the matches.
+#'
+#' @inheritDotParams base::match
+#' @param x (multiple options) the values to be matched. Can be:
+#'  - A base vector: see [base::match()]
+#'  - An [rvar]
+#' @param table (vector) the values to be matched against.
+#'
+#' @details
+#' For more information on how match behaves with base vectors, see [base::match()].
+#'
+#' When `x` is an [rvar], the draws of `x` are matched against `table` using
+#' [base::match()], and the result is returned as an [rvar].
+#'
+#' The implementation of `%in%` here is identical to \code{base::%in%}, except
+#' it uses the generic version of `match()` so that non-base vectors (such
+#' as [rvar]s) are supported.
+#'
+#' @returns
+#' When `x` is a base vector, a vector of the same length as `x`.
+#'
+#' When `x` is an [rvar], an [rvar] the same shape as `x`.
+#' @examples
+#' x <- rvar(c("a","b","b","c","d"))
+#' x %in% c("b","d")
+#'
+#' # for additional examples, see base::match()
+#' @export
+match <- function(x, table, ...) UseMethod("match")
+#' @rdname match
+#' @export
+match.default <- function(x, ...) base::match(x, ...)
+#' @rdname match
+#' @export
+match.rvar <- function(x, ...) {
+  draws_of(x) <- while_preserving_dims(base::match, draws_of(x), ...)
+  x
+}
+#' @rdname match
+#' @export
+`%in%` <- function(x, table) {
+  match(x, table, nomatch = 0L) > 0L
+}
+
+
 # helpers: classes --------------------------------------------------------
 
 get_rvar_class <- function(x) {
