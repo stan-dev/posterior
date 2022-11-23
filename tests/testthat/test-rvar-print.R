@@ -93,12 +93,12 @@ test_that("print(<rvar_ordered>) works", {
   )
   expect_match(
     out,
-    regexp = "\\[1,\\] a <1>  e <1>  i <1> ",
+    regexp = "\\[1,\\] a <0.067>  e <0.067>  i <0.067> ",
     all = FALSE
   )
   expect_match(
     out,
-    regexp = "\\[2,\\] c <1>  g <1>  k <1> ",
+    regexp = "\\[2,\\] c <0.067>  g <0.067>  k <0.067> ",
     all = FALSE
   )
   expect_match(
@@ -185,7 +185,7 @@ test_that("str(<rvar_ordered>) works", {
   out <- capture.output(str(x, vec.len = 5))
   expect_match(
     out,
-    regexp = " rvar_ordered<1,2>\\[3,4\\]  a <0>  c <1>  e <1>  g <1>  i <1> \\.\\.\\.",
+    regexp = " rvar_ordered<1,2>\\[3,4\\]  a <0\\.000>  c <0\\.032>  e <0\\.032>  g <0\\.032>  i <0\\.032> \\.\\.\\.",
     all = FALSE
   )
   expect_match(

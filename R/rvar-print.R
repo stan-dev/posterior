@@ -60,7 +60,7 @@ print.rvar <- function(x, ..., summary = NULL, digits = NULL, color = TRUE, widt
   digits <- digits %||% getOption("posterior.digits", 2)
   # \u00b1 = plus/minus sign
   summary_functions <- get_summary_functions(draws_of(x), summary)
-  plus_minus <- summary_functions[[1]] != ".mode"
+  plus_minus <- summary_functions[[1]] != "modal_category"
   summary_string <- if (plus_minus) {
     paste0(paste(names(summary_functions), collapse = " \u00b1 "), ":")
   } else {
@@ -241,7 +241,7 @@ format_rvar_draws <- function(
     return(character())
   }
   summary_functions <- get_summary_functions(draws, summary)
-  plus_minus <- summary_functions[[1]] != ".mode"
+  plus_minus <- summary_functions[[1]] != "modal_category"
 
   summary_dimensions <- seq_len(length(dim(draws)) - 1) + 1
 
@@ -327,8 +327,8 @@ get_summary_functions <- function(draws, summary = NULL) {
   switch(summary,
     mean_sd = list(mean = "mean", sd = "sd"),
     median_mad = list(median = "median", mad = "mad"),
-    mode_entropy = list(mode = ".mode", entropy = "entropy"),
-    mode_dissent = list(mode = ".mode", dissent = "dissent"),
+    mode_entropy = list(mode = "modal_category", entropy = "entropy"),
+    mode_dissent = list(mode = "modal_category", dissent = "dissent"),
     stop_no_call('`summary` must be one of "mean_sd" or "median_mad"')
   )
 }
