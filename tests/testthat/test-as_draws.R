@@ -518,7 +518,13 @@ test_that("lossy conversion to formats that don't support discrete variables wor
   )
 
   for (type in names(draws)) {
-    expect_equal(as_draws_array(draws[[!!type]]), lossy_draws$array)
-    expect_equal(as_draws_matrix(draws[[!!type]]), lossy_draws$matrix)
+    expect_warning(
+      expect_equal(as_draws_array(draws[[!!type]]), lossy_draws$array),
+      "draws_array does not support non-numeric variables"
+    )
+    expect_warning(
+      expect_equal(as_draws_matrix(draws[[!!type]]), lossy_draws$matrix),
+      "draws_matrix does not support non-numeric variables"
+    )
   }
 })
