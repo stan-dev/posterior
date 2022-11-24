@@ -192,7 +192,7 @@ modal_category <- function(x) {
 #' @rdname modal_category
 #' @export
 modal_category.default <- function(x) {
-  if (anyNA(x)) return(NA_character_)
+  if (anyNA(x)) return(NA)
   tab <- simple_table(x)
   tab$x[which.max(tab$count)]
 }
