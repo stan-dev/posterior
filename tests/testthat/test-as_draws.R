@@ -507,8 +507,8 @@ test_that("lossy conversion to formats that don't support discrete variables wor
   )
 
   lossy_draws_rvars <- draws_rvars(
-    y = rvar_factor(array(1:24, dim = c(2,2,3,2)), with_chains = TRUE),
-    z = rvar_ordered(array(1:12, dim = c(2,2,3)), with_chains = TRUE),
+    y = rvar(array(1:24, dim = c(2,2,3,2)), with_chains = TRUE),
+    z = rvar(array(1:12, dim = c(2,2,3)), with_chains = TRUE),
     x = rvar(array(1:12, dim = c(2,2,3)), with_chains = TRUE)
   )
 
