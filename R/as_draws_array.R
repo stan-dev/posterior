@@ -58,12 +58,8 @@ as_draws_array.draws_df <- function(x, ...) {
   }
   iterations <- iteration_ids(x)
   chains <- chain_ids(x)
+  x <- check_variables_are_numeric(x, to = "draws_array")
   out <- vector("list", length(chains))
-  non_numeric_cols <- vapply(x, function(x_i) !is.numeric(x_i) && !is.logical(x_i), logical(1))
-  if (any(non_numeric_cols)) {
-    warning_no_call("draws_array does not support non-numeric variables (e.g., factors). Converting non-numeric variables to numeric.")
-  }
-  x[, non_numeric_cols] <- lapply(unclass(x)[non_numeric_cols], as.numeric)
   for (i in seq_along(out)) {
     if (length(chains) == 1) {
       out[[i]] <- x
@@ -97,11 +93,12 @@ as_draws_array.draws_rvars <- function(x, ...) {
     return(empty_draws_array(variables(x)))
   }
 
-  factor_variables <- vapply(x, is_rvar_factor, logical(1))
-  if (any(factor_variables)) {
-    warning_no_call("draws_array does not support non-numeric variables (e.g., factors). Converting non-numeric variables to numeric.")
-  }
+  x <- check_variables_are_numeric(
+    x, to = "draws_array", is_non_numeric = is_rvar_factor, convert = FALSE
+  )
 
+  # cbind discards class information when applied to vectors, which converts
+  # the underlying factors to numeric
   draws <- do.call(cbind, lapply(seq_along(x), function(i) {
     # flatten each rvar so it only has two dimensions: draws and variables
     # this also collapses indices into variable names in the format "var[i,j,k,...]"
