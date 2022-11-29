@@ -363,15 +363,18 @@ all.equal.rvar <- function(target, current, ...) {
 #' # for additional examples, see base::match()
 #' @export
 match <- function(x, table, ...) UseMethod("match")
+
 #' @rdname match
 #' @export
 match.default <- function(x, ...) base::match(x, ...)
+
 #' @rdname match
 #' @export
 match.rvar <- function(x, ...) {
   draws_of(x) <- while_preserving_dims(base::match, draws_of(x), ...)
   x
 }
+
 #' @rdname match
 #' @export
 `%in%` <- function(x, table) {
@@ -703,13 +706,14 @@ flatten_array = function(x, x_name = NULL) {
 #' @noRd
 flatten_rvar_draws_to_df <- function(x, x_name = NULL) {
   if (length(x) == 0) {
-    data.frame(row.names = draw_ids(x))
+    out <- data.frame(row.names = draw_ids(x))
   } else {
     draws <- draws_of(flatten_array(x, x_name))
     cols <- lapply(seq_len(ncol(draws)), function(i) unname(draws[, i]))
     names(cols) <- colnames(draws)
-    vctrs::new_data_frame(cols)
+    out <- vctrs::new_data_frame(cols)
   }
+  out
 }
 
 #' copy the dimension names (and name of the dimension) from dimension src_i
@@ -792,12 +796,21 @@ cleanup_rvar_draws <- function(x) {
   }
 
   # if x is factor-like (character or with "levels" attr), make it a factor
+  x <- as_factor_if_factor_like(x)
+
+  x
+}
+
+#' convert factor-like objects (character vectors or numerics with "levels"
+#' attributes) to factors. Leaves non-factor-like objects alone.
+#' @param x a vector or array (including factor-like arrays with "levels" attributes)
+#' @noRd
+as_factor_if_factor_like <- function(x) {
   if (is.character(x)) {
     x <- while_preserving_dims(factor, x)
   } else if (!is.factor(x) && !is.null(attr(x, "levels"))) {
     x <- while_preserving_dims(factor, x, labels = attr(x, "levels"))
   }
-
   x
 }
 
