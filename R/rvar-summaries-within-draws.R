@@ -128,6 +128,9 @@ rvar_quantile <- function(..., probs, names = FALSE, na.rm = FALSE) {
   na.rm <- as_one_logical(na.rm)
   x <- c(...)
 
+  # use type 1 for ordered rvar because it is the inverse of the ECDF of
+  # a discrete distribution (hence appropriate for ordinal samples), otherwise
+  # use type 7 (the default), which is intended for continuous samples
   type <- if (is_rvar_ordered(x)) 1 else 7
 
   out <- summarise_rvar_within_draws_via_matrix(
