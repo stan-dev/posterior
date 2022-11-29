@@ -76,8 +76,11 @@ test_that("rvar_apply works with rvar_factor", {
   expect_equal(rvar_apply(x, c(1,2), `[[`, 3), x[,,3, drop = TRUE])
   expect_equal(rvar_apply(x, c(1,3), `[[`, 1), x[,1,, drop = TRUE])
 
-  # test that binding results together does broadcasting: x["a1",] has a mean
-  # < 18 and ref["a2",] has mean > 18 and will be replaced with 0 with this
+  # if the rvar is ordered is preserved
+  expect_equal(rvar_apply(rvar_ordered(x), 1, identity), rvar_ordered(x))
+
+  # test that binding results together does broadcasting: cells with "d"
+  # will be replaced with all "XXX" draws with this
   ref <- x
   levels(ref) <- c(levels(ref), "XXX")
   ref["a2","b1","c1"] <- "XXX"

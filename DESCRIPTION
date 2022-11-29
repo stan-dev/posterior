@@ -28,7 +28,7 @@ Imports:
   methods,
   abind,
   checkmate,
-  rlang (>= 0.4.7),
+  rlang (>= 1.0.6),
   stats,
   tibble (>= 3.0.0),
   vctrs (>= 0.5.0),

@@ -25,9 +25,6 @@
 #' @return An object of class `"rvar_factor"` representing a `factor`-like random variable.
 #'
 #' @examples
-#'
-#' # TODO: update examples
-#'
 #' set.seed(1234)
 #'
 #' # To create a "scalar" `rvar_factor`, pass a one-dimensional array or a vector
@@ -46,6 +43,10 @@
 #'
 #' # You can also create ordered factors
 #' rvar_ordered(x_array)
+#'
+#' # arguments of factor() and ordered() are passed down by the constructor
+#' # e.g. we can reorder levels of an ordered factor:
+#' rvar_ordered(x_array, levels = c("d","c","b","a"))
 #'
 #' # Unlike base factors, rvar factors can be matrices or arrays:
 #' rvar_factor(x_array, dim = c(2, 2))

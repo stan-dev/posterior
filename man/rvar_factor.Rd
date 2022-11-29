@@ -101,9 +101,6 @@ an object with the classes \code{"rvar_factor"} or \code{c("rvar_ordered", "rvar
 See \code{\link[=rvar]{rvar()}} for more details on the internals of the random variable datatype.
 }
 \examples{
-
-# TODO: update examples
-
 set.seed(1234)
 
 # To create a "scalar" `rvar_factor`, pass a one-dimensional array or a vector
@@ -122,6 +119,10 @@ rvar_factor(x_array)
 
 # You can also create ordered factors
 rvar_ordered(x_array)
+
+# arguments of factor() and ordered() are passed down by the constructor
+# e.g. we can reorder levels of an ordered factor:
+rvar_ordered(x_array, levels = c("d","c","b","a"))
 
 # Unlike base factors, rvar factors can be matrices or arrays:
 rvar_factor(x_array, dim = c(2, 2))
