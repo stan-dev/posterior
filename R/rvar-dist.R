@@ -74,7 +74,11 @@ cdf.rvar <- function(x, q, ...) {
 #' @rdname rvar-dist
 #' @export
 cdf.rvar_factor <- function(x, q, ...) {
-  stop_no_call("cdf() cannot be calculated for rvar_factor() objects.")
+  # CDF is not defined for unordered distributions
+  # generate an all-NA array of the appropriate shape
+  out <- rep_len(NA, length(x) * length(q))
+  if (length(x) > 1) dim(out) <- c(length(q), dim(x))
+  out
 }
 
 #' @rdname rvar-dist
@@ -100,7 +104,9 @@ quantile.rvar <- function(x, probs, ...) {
 #' @rdname rvar-dist
 #' @export
 quantile.rvar_factor <- function(x, probs, ...) {
-  stop_no_call("quantile() cannot be calculated for rvar_factor() objects.")
+  # quantile function is not defined for unordered distributions
+  # generate an all-NA array of the appropriate shape (CDF has the same output)
+  cdf.rvar_factor(x, probs)
 }
 
 #' @rdname rvar-dist

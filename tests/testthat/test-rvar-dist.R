@@ -44,8 +44,9 @@ test_that("distributional functions work on an rvar_factor", {
 
   expect_equal(density(x, letters[1:6]), c(0, .3, .2, .4, .1, NA))
 
-  expect_error(cdf(x, letters[1:5]), "cdf\\(\\) cannot be calculated for rvar_factor")
-  expect_error(quantile(x, 1:4/4), "quantile\\(\\) cannot be calculated for rvar_factor")
+  expect_equal(cdf(x, letters[1:5]), c(NA, NA, NA, NA, NA))
+
+  expect_equal(quantile(x, 1:4/4), c(NA, NA, NA, NA))
 })
 
 test_that("distributional functions work on an rvar_ordered", {
