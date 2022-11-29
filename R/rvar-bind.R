@@ -73,7 +73,9 @@ bind_rvars <- function(args, arg_exprs, deparse.level = 1, axis = 1) {
 
 #' broadcast two rvars to compatible dimensions and bind along the `axis` dimension
 #' @noRd
-broadcast_and_bind_rvars <- function(x, y, axis = 1) UseMethod("broadcast_and_bind_rvars")
+broadcast_and_bind_rvars <- function(x, y, axis = 1) {
+  UseMethod("broadcast_and_bind_rvars")
+}
 
 #' @export
 broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
@@ -106,13 +108,18 @@ broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
   if (is.factor(draws_y)) draws_y <- while_preserving_dims(as.character, draws_y)
 
   # bind along desired axis
-  result <- new_rvar(abind(draws_x, draws_y, along = draws_axis, use.dnns = TRUE), .nchains = nchains(x))
+  result <- new_rvar(
+    abind(draws_x, draws_y, along = draws_axis, use.dnns = TRUE),
+    .nchains = nchains(x)
+  )
 }
 
 #' @export
 broadcast_and_bind_rvars.rvar_factor <- function(x, y, axis = 1) {
   result <- NextMethod()
-  combine_rvar_factor_levels(result, list(levels(x), levels(y)), is_rvar_ordered(x) && is_rvar_ordered(y))
+  combine_rvar_factor_levels(
+    result, list(levels(x), levels(y)), is_rvar_ordered(x) && is_rvar_ordered(y)
+  )
 }
 
 

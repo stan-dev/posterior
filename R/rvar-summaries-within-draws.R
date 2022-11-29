@@ -49,7 +49,9 @@
 #' @name rvar-summaries-within-draws
 #' @export
 rvar_mean <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_mean", matrixStats::rowMeans2, na.rm = na.rm)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_mean", matrixStats::rowMeans2, na.rm = na.rm
+  )
 }
 
 # numeric summaries -------------------------------------------------------
@@ -57,31 +59,41 @@ rvar_mean <- function(..., na.rm = FALSE) {
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_median <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_median", matrixStats::rowMedians, na.rm = na.rm, .ordered_okay = TRUE)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_median", matrixStats::rowMedians, na.rm = na.rm, .ordered_okay = TRUE
+  )
 }
 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_sum <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_sum", matrixStats::rowSums2, na.rm = na.rm)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_sum", matrixStats::rowSums2, na.rm = na.rm
+  )
 }
 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_prod <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_prod", matrixStats::rowProds, na.rm = na.rm)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_prod", matrixStats::rowProds, na.rm = na.rm
+  )
 }
 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_min <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_min", matrixStats::rowMins, na.rm = na.rm, .ordered_okay = TRUE)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_min", matrixStats::rowMins, na.rm = na.rm, .ordered_okay = TRUE
+  )
 }
 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_max <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_max", matrixStats::rowMaxs, na.rm = na.rm, .ordered_okay = TRUE)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_max", matrixStats::rowMaxs, na.rm = na.rm, .ordered_okay = TRUE
+  )
 }
 
 
@@ -90,13 +102,17 @@ rvar_max <- function(..., na.rm = FALSE) {
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_sd <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_sd", matrixStats::rowSds, na.rm = na.rm)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_sd", matrixStats::rowSds, na.rm = na.rm
+  )
 }
 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_var <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_var", matrixStats::rowVars, na.rm = na.rm)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_var", matrixStats::rowVars, na.rm = na.rm
+  )
 }
 
 #' @rdname rvar-summaries-within-draws
@@ -106,7 +122,9 @@ rvar_mad <- function(..., constant = 1.4826, na.rm = FALSE) {
   if (is_rvar_ordered(x)) {
     x <- as_rvar_numeric(x)
   }
-  summarise_rvar_within_draws_via_matrix(x, "rvar_mad", matrixStats::rowMads, constant = constant, na.rm = na.rm)
+  summarise_rvar_within_draws_via_matrix(
+    x, "rvar_mad", matrixStats::rowMads, constant = constant, na.rm = na.rm
+  )
 }
 
 
@@ -115,7 +133,9 @@ rvar_mad <- function(..., constant = 1.4826, na.rm = FALSE) {
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_range <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_range", matrixStats::rowRanges, na.rm = na.rm, .ordered_okay = TRUE)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_range", matrixStats::rowRanges, na.rm = na.rm, .ordered_okay = TRUE
+  )
 }
 
 
@@ -151,13 +171,17 @@ rvar_quantile <- function(..., probs, names = FALSE, na.rm = FALSE) {
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_all <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_all", matrixStats::rowAlls, na.rm = na.rm)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_all", matrixStats::rowAlls, na.rm = na.rm
+  )
 }
 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_any <- function(..., na.rm = FALSE) {
-  summarise_rvar_within_draws_via_matrix(c(...), "rvar_any", matrixStats::rowAnys, na.rm = na.rm)
+  summarise_rvar_within_draws_via_matrix(
+    c(...), "rvar_any", matrixStats::rowAnys, na.rm = na.rm
+  )
 }
 
 

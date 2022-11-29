@@ -174,12 +174,17 @@ as_draws_rvars.draws_df <- function(x, ...) {
   data_frame_to_matrix <- function(df) {
     if (any(vapply(df, is.factor, logical(1)))) {
       # as.matrix() does not convert factor columns correctly, must do this ourselves
-      while_preserving_dims(function(df) do.call(function(...) vctrs::vec_c(..., .name_spec = rlang::zap()), df), df)
+      while_preserving_dims(
+        function(df) do.call(function(...) vctrs::vec_c(..., .name_spec = rlang::zap()), df),
+        df
+      )
     } else {
       as.matrix(df)
     }
   }
-  .as_draws_rvars.draws_matrix(x, ..., x_at = function(var_i) data_frame_to_matrix(x_df[, var_i, drop = FALSE]))
+  .as_draws_rvars.draws_matrix(
+    x, ..., x_at = function(var_i) data_frame_to_matrix(x_df[, var_i, drop = FALSE])
+  )
 }
 
 #' @rdname draws_rvars

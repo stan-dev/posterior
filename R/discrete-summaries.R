@@ -60,12 +60,14 @@ entropy.default <- function(x) {
   if (anyNA(x)) return(NA_real_)
   p <- prop.table(simple_table(x)$count)
   n <- length(p)
+
   if (n == 1) {
-    0
+    out <- 0
   } else {
     p <- p[p > 0]
-    -sum(p * log(p)) / log(n)
+    out <- -sum(p * log(p)) / log(n)
   }
+  out
 }
 #' @rdname entropy
 #' @export
@@ -131,20 +133,24 @@ dissent <- function(x) {
 dissent.default <- function(x) {
   if (anyNA(x)) return(NA_real_)
   if (length(x) == 0) return(0)
+
   if (is.factor(x)) {
     d <- length(levels(x)) - 1
     x <- as.numeric(x)
   } else {
     d <- diff(range(x))
   }
+
   tab <- simple_table(x)
   p <- prop.table(tab$count)
+
   if (length(p) == 1) {
-    0
+    out <- 0
   } else {
     x_i <- tab$x
-    -sum(p * log2(1 - abs(x_i - mean(x)) / d))
+    out <- -sum(p * log2(1 - abs(x_i - mean(x)) / d))
   }
+  out
 }
 #' @rdname dissent
 #' @export

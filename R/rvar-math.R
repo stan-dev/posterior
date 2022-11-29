@@ -39,10 +39,10 @@ Ops.rvar <- function(e1, e2) {
     # we need to source the dims from whichever is *not* scalar, which will be
     # the longer of the two. In any other case, we give preference to e1
     # (draws_x) to be consistent with base R behavior
-    dim_source <- if (length(draws_y) > length(draws_x)) {
-      draws_y
+    if (length(draws_y) > length(draws_x)) {
+      dim_source <- draws_y
     } else {
-      draws_x
+      dim_source <- draws_x
     }
     draws <- while_preserving_dims(function(...) draws, dim_source)
   }

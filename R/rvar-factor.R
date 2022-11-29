@@ -59,15 +59,25 @@
 #' rvar(y_array)
 #'
 #' @export
-rvar_factor <- function(x = factor(), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE, ...) {
-  out <- rvar(x, dim = dim, dimnames = dimnames, nchains = nchains, with_chains = with_chains)
+rvar_factor <- function(
+  x = factor(), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE, ...
+) {
+
+  out <- rvar(
+    x, dim = dim, dimnames = dimnames, nchains = nchains, with_chains = with_chains
+  )
   .rvar_to_rvar_factor(out, ...)
 }
 
 #' @rdname rvar_factor
 #' @export
-rvar_ordered <- function(x = ordered(NULL), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE, ...) {
-  rvar_factor(x, dim = dim, dimnames = dimnames, nchains = nchains, with_chains = with_chains, ordered = TRUE, ...)
+rvar_ordered <- function(
+  x = ordered(NULL), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE, ...
+) {
+
+  rvar_factor(
+    x, dim = dim, dimnames = dimnames, nchains = nchains, with_chains = with_chains, ordered = TRUE, ...
+  )
 }
 
 # factor-like rvar methods ------------------------------------------------
@@ -143,14 +153,18 @@ is_rvar_ordered <- function(x) {
 #'
 #' @export
 as_rvar_factor <- function(x, dim = NULL, dimnames = NULL, nchains = NULL, ...) {
-  out <- .as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains, ptype = new_rvar(factor()))
+  out <- .as_rvar(
+    x, dim = dim, dimnames = dimnames, nchains = nchains, ptype = new_rvar(factor())
+  )
   .rvar_to_rvar_factor(out, ...)
 }
 
 #' @rdname as_rvar_factor
 #' @export
 as_rvar_ordered <- function(x, dim = NULL, dimnames = NULL, nchains = NULL, ...) {
-  out <- .as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains, ptype = new_rvar(ordered(NULL)))
+  out <- .as_rvar(
+    x, dim = dim, dimnames = dimnames, nchains = nchains, ptype = new_rvar(ordered(NULL))
+  )
   .rvar_to_rvar_factor(out, ordered = TRUE, ...)
 }
 

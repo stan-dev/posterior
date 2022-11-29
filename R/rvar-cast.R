@@ -127,22 +127,24 @@ as.vector.rvar <- function(x, mode = "any") {
 #' @export
 as.list.rvar <- function(x, ...) {
   x_dim <- dim(x)
+
   if (length(x_dim) >= 2) {
     is <- seq_len(x_dim[[1]])
     names(is) <- dimnames(x)[[1]]
-    lapply(is, function(i) {
-      out <- x[i,]
-      .dim <- dim(out)
-      .dimnames <- dimnames(out)
-      dim(out) <- .dim[-1]
-      dimnames(out) <- .dimnames[-1]
-      out
+    out <- lapply(is, function(i) {
+      out_i <- x[i,]
+      .dim <- dim(out_i)
+      .dimnames <- dimnames(out_i)
+      dim(out_i) <- .dim[-1]
+      dimnames(out_i) <- .dimnames[-1]
+      out_i
     })
   } else {
     is <- seq_along(x)
     names(is) <- dimnames(x)[[1]]
-    lapply(is, function(i) x[[i]])
+    out <- lapply(is, function(i) x[[i]])
   }
+  out
 }
 
 #' @importFrom rlang as_label
