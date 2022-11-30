@@ -16,6 +16,8 @@
 #'   latter names are used. The functions can be specified in any format
 #'   supported by [as_function()][rlang::as_function]. See **Examples**.
 #' @param .args (named list) Optional arguments passed to the summary functions.
+#' @param .num_args (named list) Optional arguments passed to
+#'   [num()][tibble::num] for pretty printing of summaries.
 #' @param .cores (positive integer) The number of cores to use for computing
 #'   summaries for different variables in parallel. Coerced to integer if
 #'   possible, otherwise errors. The default is `.cores = 1`, in which case no
@@ -97,7 +99,8 @@ summarise_draws.default <- function(.x, ...) {
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.draws <- function(.x, ..., .args = list(), .cores = 1) {
+summarise_draws.draws <- function(.x, ..., .args = list(),
+                                  .num_args = list(), .cores = 1) {
   if (ndraws(.x) == 0L) {
     return(empty_draws_summary())
   }
@@ -219,6 +222,11 @@ summarise_draws.draws <- function(.x, ..., .args = list(), .cores = 1) {
       )
     }
     out <- do.call("rbind", summary_list)
+  }
+  for (i in seq_cols(out)) {
+    if (is.numeric(out[[i]])) {
+      out[[i]] <- do.call(tibble::num, c(list(out[[i]]), .num_args))
+    }
   }
   out
 }

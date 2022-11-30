@@ -17,7 +17,7 @@ summarise_draws(.x, ...)
 
 summarize_draws(.x, ...)
 
-\method{summarise_draws}{draws}(.x, ..., .args = list(), .cores = 1)
+\method{summarise_draws}{draws}(.x, ..., .args = list(), .num_args = list(), .cores = 1)
 
 \method{summary}{draws}(object, ...)
 
@@ -41,6 +41,9 @@ latter names are used. The functions can be specified in any format
 supported by \link[rlang:as_function]{as_function()}. See \strong{Examples}.}
 
 \item{.args}{(named list) Optional arguments passed to the summary functions.}
+
+\item{.num_args}{(named list) Optional arguments passed to
+\link[tibble:num]{num()} for pretty printing of summaries.}
 
 \item{.cores}{(positive integer) The number of cores to use for computing
 summaries for different variables in parallel. Coerced to integer if

@@ -120,6 +120,13 @@ test_that(paste(
   expect_identical(sum_x, parsum_x)
 })
 
+test_that("summarise_draws supports tibble::num correctly", {
+  x <- example_draws()
+  expect_output(
+    print(summarise_draws(x, .num_args = list(sigfig = 2, notation="dec"))),
+    "<dec:2>"
+  )
+})
 
 test_that("summarise_draws errors for invalid cores specification", {
   x <- example_draws()
