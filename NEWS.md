@@ -4,6 +4,7 @@
 
 * Allow lists of draws objects to be passed as the first argument to 
   `bind_draws()` (#253).
+* Improving formatting of `summarise_draws` output via `tibble::num`.
 
 
 # posterior 1.3.1
