@@ -4,7 +4,7 @@ test_that("summarise_draws works correctly", {
   expect_true(all(default_convergence_measures() %in% names(sum_x)))
   expect_true(all(c("q5", "q95") %in% names(sum_x)))
   expect_equal(sum_x$variable, variables(x))
-  expect_equal(mean(x$mu), sum_x$mean[sum_x$variable == "mu"])
+  expect_equal(mean(x$mu), as.numeric(sum_x$mean[sum_x$variable == "mu"]))
 
   sum_x <- summarise_draws(x, mean, median)
   expect_true(all(c("mean", "median") %in% names(sum_x)))
@@ -150,10 +150,12 @@ test_that("summarise_draws works with variance()", {
 
   ref <- data.frame(
     variable = variables(draws_array),
-    variance = as.vector(apply(draws_array, 3, function(x) var(as.vector(x)))),
+    variance = tibble::num(as.vector(
+      apply(draws_array, 3, function(x) var(as.vector(x)))
+    )),
     stringsAsFactors = FALSE
   )
-  class(ref) <- class_draws_summary()
+  class(ref) <- posterior:::class_draws_summary()
 
   expect_equal(summarise_draws(draws_array, variance), ref)
   expect_equal(summarise_draws(draws_matrix, variance), ref)
