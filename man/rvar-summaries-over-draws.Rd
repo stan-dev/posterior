@@ -26,6 +26,7 @@
 \alias{mad}
 \alias{mad.default}
 \alias{mad.rvar}
+\alias{mad.rvar_ordered}
 \alias{range.rvar}
 \alias{is.finite.rvar}
 \alias{is.infinite.rvar}
@@ -80,6 +81,8 @@ mad(x, ...)
 \method{mad}{default}(x, ...)
 
 \method{mad}{rvar}(x, ...)
+
+\method{mad}{rvar_ordered}(x, ...)
 
 \method{range}{rvar}(x, ...)
 

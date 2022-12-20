@@ -3,15 +3,30 @@
 \name{rvar-dist}
 \alias{rvar-dist}
 \alias{density.rvar}
+\alias{density.rvar_factor}
 \alias{cdf.rvar}
+\alias{cdf.rvar_factor}
+\alias{cdf.rvar_ordered}
 \alias{quantile.rvar}
+\alias{quantile.rvar_factor}
+\alias{quantile.rvar_ordered}
 \title{Density, CDF, and quantile functions of random variables}
 \usage{
 \method{density}{rvar}(x, at, ...)
 
+\method{density}{rvar_factor}(x, at, ...)
+
 \method{cdf}{rvar}(x, q, ...)
 
+\method{cdf}{rvar_factor}(x, q, ...)
+
+\method{cdf}{rvar_ordered}(x, q, ...)
+
 \method{quantile}{rvar}(x, probs, ...)
+
+\method{quantile}{rvar_factor}(x, probs, ...)
+
+\method{quantile}{rvar_ordered}(x, probs, ...)
 }
 \arguments{
 \item{x}{(rvar) An \code{\link{rvar}} object.}

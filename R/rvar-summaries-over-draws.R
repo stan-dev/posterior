@@ -67,7 +67,9 @@ E <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 mean.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colMeans2, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "mean", matrixStats::colMeans2, useNames = FALSE, .ordered_okay = FALSE, ...
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
@@ -98,43 +100,57 @@ Pr.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 median.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colMedians, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "median", matrixStats::colMedians, useNames = FALSE, ...
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 min.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colMins, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "min", matrixStats::colMins, useNames = FALSE, ...
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 max.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colMaxs, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "max", matrixStats::colMaxs, useNames = FALSE, ...
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 sum.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colSums2, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "sum", matrixStats::colSums2, useNames = FALSE, .ordered_okay = FALSE, ...
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 prod.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colProds, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "prod", matrixStats::colProds, useNames = FALSE, .ordered_okay = FALSE, ...
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 all.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colAlls, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "all", matrixStats::colAlls, useNames = FALSE, .ordered_okay = FALSE, ...
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 any.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colAnys, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "any", matrixStats::colAnys, useNames = FALSE, .ordered_okay = FALSE, ...
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
@@ -156,7 +172,9 @@ distributional::variance
 #' @rdname rvar-summaries-over-draws
 #' @export
 variance.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colVars, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "variance", matrixStats::colVars, useNames = FALSE, .ordered_okay = FALSE, ...
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
@@ -178,7 +196,9 @@ sd.default <- function(x, ...) stats::sd(x, ...)
 #' @rdname rvar-summaries-over-draws
 #' @export
 sd.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colSds, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "sd", matrixStats::colSds, useNames = FALSE, .ordered_okay = FALSE, ...
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
@@ -190,7 +210,14 @@ mad.default <- function(x, ...) stats::mad(x, ...)
 #' @rdname rvar-summaries-over-draws
 #' @export
 mad.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colMads, useNames = FALSE, ...)
+  summarise_rvar_by_element_via_matrix(
+    x, "mad", matrixStats::colMads, useNames = FALSE, .ordered_okay = FALSE, ...
+  )
+}
+#' @rdname rvar-summaries-over-draws
+#' @export
+mad.rvar_ordered <- function(x, ...) {
+  mad(as_rvar_numeric(x), ...)
 }
 
 
@@ -199,7 +226,8 @@ mad.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 range.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(x, function(...) t(matrixStats::colRanges(...)),
+  summarise_rvar_by_element_via_matrix(
+    x, "range", function(...) t(matrixStats::colRanges(...)),
     useNames = FALSE, .extra_dim = 2, .extra_dimnames = list(NULL), ...
   )
 }
@@ -210,25 +238,33 @@ range.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 is.finite.rvar <- function(x) {
-  summarise_rvar_by_element_via_matrix(x, function(x) matrixStats::colAlls(is.finite(x), useNames = FALSE))
+  summarise_rvar_by_element_via_matrix(
+    x, "is.finite", function(x) matrixStats::colAlls(is.finite(x), useNames = FALSE), .factor_okay = TRUE
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 is.infinite.rvar <- function(x) {
-  summarise_rvar_by_element_via_matrix(x, function(x) matrixStats::colAnys(is.infinite(x), useNames = FALSE))
+  summarise_rvar_by_element_via_matrix(
+    x, "is.inifite", function(x) matrixStats::colAnys(is.infinite(x), useNames = FALSE), .factor_okay = TRUE
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 is.nan.rvar <- function(x) {
-  summarise_rvar_by_element_via_matrix(x, function(x) matrixStats::colAnys(is.nan(x), useNames = FALSE))
+  summarise_rvar_by_element_via_matrix(
+    x, "is.nan", function(x) matrixStats::colAnys(is.nan(x), useNames = FALSE), .factor_okay = TRUE
+  )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 is.na.rvar <- function(x) {
-  summarise_rvar_by_element_via_matrix(x, matrixStats::colAnyNAs, useNames = FALSE)
+  summarise_rvar_by_element_via_matrix(
+    x, "is.na", matrixStats::colAnyNAs, useNames = FALSE, .factor_okay = TRUE
+  )
 }
 
 #' @export

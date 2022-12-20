@@ -47,6 +47,18 @@ density.rvar <- function(x, at, ...) {
   })
 }
 
+#' @rdname rvar-dist
+#' @export
+density.rvar_factor <- function(x, at, ...) {
+  at <- as.numeric(factor(at, levels = levels(x)))
+  nbins <- nlevels(x)
+
+  summarise_rvar_by_element(x, function(draws) {
+    props <- prop.table(tabulate(draws, nbins = nbins))[at]
+    props
+  })
+}
+
 #' @importFrom distributional cdf
 #' @export
 distributional::cdf
@@ -61,12 +73,46 @@ cdf.rvar <- function(x, q, ...) {
 
 #' @rdname rvar-dist
 #' @export
+cdf.rvar_factor <- function(x, q, ...) {
+  # CDF is not defined for unordered distributions
+  # generate an all-NA array of the appropriate shape
+  out <- rep_len(NA, length(x) * length(q))
+  if (length(x) > 1) dim(out) <- c(length(q), dim(x))
+  out
+}
+
+#' @rdname rvar-dist
+#' @export
+cdf.rvar_ordered <- function(x, q, ...) {
+  q <- as.numeric(factor(q, levels = levels(x)))
+  cdf.rvar(x, q, ...)
+}
+
+#' @rdname rvar-dist
+#' @export
 quantile.rvar <- function(x, probs, ...) {
   summarise_rvar_by_element_via_matrix(x,
+    "quantile",
     function(draws) {
       t(matrixStats::colQuantiles(draws, probs = probs, useNames = TRUE, ...))
     },
     .extra_dim = length(probs),
     .extra_dimnames = list(NULL)
   )
+}
+
+#' @rdname rvar-dist
+#' @export
+quantile.rvar_factor <- function(x, probs, ...) {
+  # quantile function is not defined for unordered distributions
+  # generate an all-NA array of the appropriate shape (CDF has the same output)
+  cdf.rvar_factor(x, probs)
+}
+
+#' @rdname rvar-dist
+#' @export
+quantile.rvar_ordered <- function(x, probs, ...) {
+  # `type` must be in 1:3 because x is discrete
+  out <- quantile(as_rvar_numeric(x), probs, type = 1, ...)
+  while_preserving_dims(function(out) levels(x)[out], out)
 }
