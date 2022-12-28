@@ -17,7 +17,8 @@
 #'   supported by [as_function()][rlang::as_function]. See **Examples**.
 #' @param .args (named list) Optional arguments passed to the summary functions.
 #' @param .num_args (named list) Optional arguments passed to
-#'   [num()][tibble::num] for pretty printing of summaries.
+#'   [num()][tibble::num] for pretty printing of summaries. Can be controlled
+#'   globally via the `posterior.num_args` [option][base::options].
 #' @param .cores (positive integer) The number of cores to use for computing
 #'   summaries for different variables in parallel. Coerced to integer if
 #'   possible, otherwise errors. The default is `.cores = 1`, in which case no
@@ -78,6 +79,9 @@
 #' ws <- rexp(ndraws(x))
 #' summarise_draws(x, weighted.mean, .args = list(w = ws))
 #'
+#' # adjust how numerical summaries are printed
+#' summarise_draws(x, .num_args = list(sigfig = 2, notation = "dec"))
+#'
 NULL
 
 #' @rdname draws_summary
@@ -99,8 +103,12 @@ summarise_draws.default <- function(.x, ...) {
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.draws <- function(.x, ..., .args = list(),
-                                  .num_args = list(), .cores = 1) {
+summarise_draws.draws <- function(
+    .x, ..., .args = list(),
+    .num_args = getOption("posterior.num_args", list()),
+    .cores = 1
+  ) {
+
   if (ndraws(.x) == 0L) {
     return(empty_draws_summary())
   }
