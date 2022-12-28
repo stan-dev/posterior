@@ -30,7 +30,7 @@ Imports:
   checkmate,
   rlang (>= 1.0.6),
   stats,
-  tibble (>= 3.0.0),
+  tibble (>= 3.1.0),
   vctrs (>= 0.5.0),
   tensorA,
   pillar,

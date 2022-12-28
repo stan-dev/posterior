@@ -16,6 +16,7 @@
   summarizing discrete draws.
 * Allow lists of draws objects to be passed as the first argument to 
   `bind_draws()` (#253).
+* Improving formatting of `summarise_draws` output via `tibble::num`.
 * `print.rvar()` and `format.rvar()` now default to a smaller number of
   significant digits in more cases, including when printing in data frames.
   This is controlled by the new `"posterior.digits"` option (see 
