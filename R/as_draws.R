@@ -100,6 +100,32 @@ check_draws_object <- function(x) {
   x
 }
 
+#' check all variables in an object are numeric, converting non-numeric
+#' to numeric with a warning. Used when converting to draws_array or
+#' draws_matrix formats (which don't support non-numeric variables).
+#' @param x A draws_df, draws_list, or draws_rvars object
+#' @param is_non_numeric function that checks if a variable is non-numeric
+#' @param convert convert non-numeric variables to numeric?
+#' @noRd
+check_variables_are_numeric <- function(
+  x, to = "draws_array",
+  is_non_numeric = function(x_i) !is.numeric(x_i) && !is.logical(x_i),
+  convert = TRUE
+) {
+
+  non_numeric_cols <- vapply(x, is_non_numeric, logical(1))
+  if (any(non_numeric_cols)) {
+    warning_no_call(
+      to,
+      " does not support non-numeric variables (e.g., factors). Converting non-numeric variables to numeric."
+    )
+  }
+  if (convert) {
+    x[, non_numeric_cols] <- lapply(unclass(x)[non_numeric_cols], as.numeric)
+  }
+  x
+}
+
 # define default variable names
 # use the 'unique' naming strategy of tibble
 # @param nvariables number of variables

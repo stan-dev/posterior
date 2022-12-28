@@ -38,11 +38,15 @@ as in \code{print.draws_array()}, \code{print.draws_df()}, \code{print.draws_lis
 \item \code{posterior.max_variables}: Maximum number of variables to print.
 }
 
-The following option is used to format and print \code{\link{rvar}} objects,
+The following options are used to format and print \code{\link{rvar}} objects,
 as in \code{print.rvar()} and \code{print.draws_rvars()}:
 \itemize{
 \item \code{posterior.rvar_summary}: What style of summary to display:
-\code{"mean_sd"} displays \verb{mean±sd}, \code{"median_mad"} displays \verb{median±mad}.
+\code{"mean_sd"} displays \verb{mean ± sd}, \code{"median_mad"} displays \verb{median ± mad}.
+\item \code{posterior.digits}: How many significant digits are displayed. This
+defaults to a smaller value (\code{2}) than \code{getOption("digits")} because
+\code{\link{rvar}}s print two numbers (point summary and uncertainty) next to
+each other.
 }
 
 The following option is used to construct new \code{\link{rvar}} objects,

@@ -36,6 +36,20 @@ test_that("math operators works", {
   expect_equal(z2 + z4, new_rvar(array(3, dim = c(1,1,1,1))))
 })
 
+test_that("math operators work on rvar_factors", {
+  x_array = array(letters[1:24], dim = c(4,2,3), dimnames = list(NULL,letters[1:2],letters[3:5]))
+  x = rvar_factor(x_array)
+  x_ordered = rvar_ordered(x_array)
+
+  expect_error(log(x), "Cannot apply `log` function to rvar_factor")
+  expect_error(x + 1, "Cannot apply `\\+` operator to rvar_factor")
+  expect_error(1 + x, "Cannot apply `\\+` operator to rvar_factor")
+
+  expect_error(log(x_ordered), "Cannot apply `log` function to rvar_factor")
+  expect_error(x_ordered + 1, "Cannot apply `\\+` operator to rvar_ordered")
+  expect_error(1 + x_ordered, "Cannot apply `\\+` operator to rvar_ordered")
+})
+
 test_that("logical operators work", {
   x_array = c(TRUE,TRUE,FALSE,FALSE)
   y_array = c(TRUE,FALSE,TRUE,FALSE)
@@ -80,6 +94,77 @@ test_that("comparison operators work", {
   expect_equal(x != 5, new_rvar(x_array != 5))
   expect_equal(5 != x, new_rvar(5 != x_array))
   expect_equal(x != y, new_rvar(x_array != y_array))
+})
+
+test_that("comparison operators work on rvar_factors", {
+  x_array = array(1:24, dim = c(4,2,3))
+  x_array_letters = array(letters[1:24], dim = c(4,2,3))
+  x = rvar_factor(x_array_letters, levels = letters)
+  y_array = array(c(2:13,12:1), dim = c(4,2,3))
+  y_array_letters = array(letters[c(2:13,12:1)], dim = c(4,2,3))
+  y = rvar_factor(y_array_letters, levels = letters)
+
+  expect_error(x < "e", "Cannot apply `<` operator to rvar_factor")
+  expect_error(x > "e", "Cannot apply `>` operator to rvar_factor")
+  expect_error(x <= "e", "Cannot apply `<=` operator to rvar_factor")
+  expect_error(x >= "e", "Cannot apply `>=` operator to rvar_factor")
+
+  expect_equal(x == "e", new_rvar(x_array == 5))
+  expect_equal("e" == x, new_rvar(5 == x_array))
+  expect_equal(x == y, new_rvar(x_array == y_array))
+  expect_equal(x == "XX", new_rvar(x_array == 0))
+  expect_equal("XX" == x, new_rvar(0 == x_array))
+
+  expect_equal(x != "e", new_rvar(x_array != 5))
+  expect_equal("e" != x, new_rvar(5 != x_array))
+  expect_equal(x != y, new_rvar(x_array != y_array))
+  expect_equal(x != "XX", new_rvar(x_array != 0))
+  expect_equal("XX" != x, new_rvar(0 != x_array))
+})
+
+test_that("comparison operators work on rvar_ordereds", {
+  x_array = array(1:24, dim = c(4,2,3))
+  x_array_letters = array(letters[1:24], dim = c(4,2,3))
+  x = rvar_ordered(x_array_letters, levels = letters)
+  y_array = array(c(2:13,12:1), dim = c(4,2,3))
+  y_array_letters = array(letters[c(2:13,12:1)], dim = c(4,2,3))
+  y = rvar_ordered(y_array_letters, levels = letters)
+
+  expect_equal(x < "e", new_rvar(x_array < 5))
+  expect_equal("e" < x, new_rvar(5 < x_array))
+  expect_equal(x < y, new_rvar(x_array < y_array))
+  expect_equal(x < "XX", new_rvar(x_array < NA))
+  expect_equal("XX" < x, new_rvar(NA < x_array))
+
+  expect_equal(x <= "e", new_rvar(x_array <= 5))
+  expect_equal("e" <= x, new_rvar(5 <= x_array))
+  expect_equal(x <= y, new_rvar(x_array <= y_array))
+  expect_equal(x <= "XX", new_rvar(x_array <= NA))
+  expect_equal("XX" <= x, new_rvar(NA <= x_array))
+
+  expect_equal(x > "e", new_rvar(x_array > 5))
+  expect_equal("e" > x, new_rvar(5 > x_array))
+  expect_equal(x > y, new_rvar(x_array > y_array))
+  expect_equal(x > "XX", new_rvar(x_array > NA))
+  expect_equal("XX" > x, new_rvar(NA > x_array))
+
+  expect_equal(x >= "e", new_rvar(x_array >= 5))
+  expect_equal("e" >= x, new_rvar(5 >= x_array))
+  expect_equal(x >= y, new_rvar(x_array >= y_array))
+  expect_equal(x >= "XX", new_rvar(x_array >= NA))
+  expect_equal("XX" >= x, new_rvar(NA >= x_array))
+
+  expect_equal(x == "e", new_rvar(x_array == 5))
+  expect_equal("e" == x, new_rvar(5 == x_array))
+  expect_equal(x == y, new_rvar(x_array == y_array))
+  expect_equal(x == "XX", new_rvar(x_array == 0))
+  expect_equal("XX" == x, new_rvar(0 == x_array))
+
+  expect_equal(x != "e", new_rvar(x_array != 5))
+  expect_equal("e" != x, new_rvar(5 != x_array))
+  expect_equal(x != y, new_rvar(x_array != y_array))
+  expect_equal(x != "XX", new_rvar(x_array != 0))
+  expect_equal("XX" != x, new_rvar(0 != x_array))
 })
 
 test_that("functions in the Math generic with extra arguments work", {
@@ -172,6 +257,8 @@ test_that("matrix multiplication works", {
 
   expect_error(x %**% 1, "not a vector or matrix")
   expect_error(1 %**% x, "not a vector or matrix")
+  expect_error(rvar_factor("a") %**% x, "Cannot apply `%\\*\\*%` operator to rvar_factor")
+  expect_error(x %**% rvar_factor("a"), "Cannot apply `%\\*\\*%` operator to rvar_factor")
 
 })
 
@@ -248,6 +335,32 @@ test_that("vector transpose works", {
   expect_equal(t(t(x)), x_t_t)
 })
 
+test_that("vector transpose works on rvar_factor", {
+  x_array = array(letters[1:6], dim = c(2,3), dimnames = list(NULL, c("a","b","c")))
+  x = rvar_factor(x_array)
+  x_array_t = array(letters[1:6], dim = c(2,1,3), dimnames = list(NULL, NULL, c("a","b","c")))
+  x_t = rvar_factor(x_array_t)
+  x_array_t_t = array(letters[1:6], dim = c(2,3,1), dimnames = list(NULL, c("a","b","c"), NULL))
+  x_t_t = rvar_factor(x_array_t_t)
+
+  # ensure it works with dimnames...
+  expect_equal(t(x), x_t)
+  expect_equal(t(t(x)), x_t_t)
+})
+
+test_that("vector transpose works on rvar_ordered", {
+  x_array = array(letters[1:6], dim = c(2,3), dimnames = list(NULL, c("a","b","c")))
+  x = rvar_ordered(x_array)
+  x_array_t = array(letters[1:6], dim = c(2,1,3), dimnames = list(NULL, NULL, c("a","b","c")))
+  x_t = rvar_ordered(x_array_t)
+  x_array_t_t = array(letters[1:6], dim = c(2,3,1), dimnames = list(NULL, c("a","b","c"), NULL))
+  x_t_t = rvar_ordered(x_array_t_t)
+
+  # ensure it works with dimnames...
+  expect_equal(t(x), x_t)
+  expect_equal(t(t(x)), x_t_t)
+})
+
 test_that("matrix transpose works", {
   x_array = array(1:24, dim = c(4,3,2))
   x = new_rvar(x_array)
@@ -255,10 +368,29 @@ test_that("matrix transpose works", {
 
   expect_error(t(rvar()))
   expect_equal(t(x), x_t)
+  expect_equal(t(t(x)), x)
   expect_equal(t(new_rvar(array(1:10, c(1,10)))), new_rvar(array(1:10, c(1,1,10))))
   expect_equal(t(new_rvar(array(1:10, c(2,1,5)))), new_rvar(array(1:10, c(2,5,1))))
   expect_equal(t(new_rvar(array(1:10, c(2,1,5)))), new_rvar(array(1:10, c(2,5,1))))
   expect_equal(t(new_rvar(array(1:10, c(2,5)))), new_rvar(array(1:10, c(2,1,5))))
+})
+
+test_that("matrix transpose works on rvar_factor", {
+  x_array = array(letters[1:24], dim = c(4,3,2))
+  x = rvar_factor(x_array)
+  x_t = rvar_factor(aperm(x_array, c(1,3,2)))
+
+  expect_equal(t(x), x_t)
+  expect_equal(t(t(x)), x)
+})
+
+test_that("matrix transpose works on rvar_ordered", {
+  x_array = array(letters[1:24], dim = c(4,3,2))
+  x = rvar_ordered(x_array)
+  x_t = rvar_ordered(aperm(x_array, c(1,3,2)))
+
+  expect_equal(t(x), x_t)
+  expect_equal(t(t(x)), x)
 })
 
 test_that("array permutation works", {
@@ -268,6 +400,28 @@ test_that("array permutation works", {
   )
   x = new_rvar(x_array)
   x_perm = new_rvar(aperm(x_array, c(1,2,4,3)))
+
+  expect_equal(aperm(x, c(1,3,2)), x_perm)
+})
+
+test_that("array permutation works on rvar_factor", {
+  x_array = array(
+    letters[1:24], dim = c(2,2,3,2),
+    dimnames = list(NULL, A = paste0("a", 1:2), B = paste0("b", 1:3), C = paste0("c", 1:2))
+  )
+  x = rvar_factor(x_array)
+  x_perm = rvar_factor(aperm(x_array, c(1,2,4,3)))
+
+  expect_equal(aperm(x, c(1,3,2)), x_perm)
+})
+
+test_that("array permutation works on rvar_ordered", {
+  x_array = array(
+    letters[1:24], dim = c(2,2,3,2),
+    dimnames = list(NULL, A = paste0("a", 1:2), B = paste0("b", 1:3), C = paste0("c", 1:2))
+  )
+  x = rvar_ordered(x_array)
+  x_perm = rvar_ordered(aperm(x_array, c(1,2,4,3)))
 
   expect_equal(aperm(x, c(1,3,2)), x_perm)
 })
