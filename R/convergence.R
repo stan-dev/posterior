@@ -486,7 +486,7 @@ mcse_sd.default <- function(x, ...) {
   # has (X-E[X])^2. The following ESS is based on a relevant quantity
   # in the computation and is empirically a good choice.
   sims_c <- x - mean(x)
-  ess <- ess_mean(abs(sims_c))
+  ess <- ess_mean((sims_c)^2)
   # Variance of variance estimate by Kenney and Keeping (1951, p. 141),
   # which doesn't assume normality of sims.
   Evar <- mean(sims_c^2)
