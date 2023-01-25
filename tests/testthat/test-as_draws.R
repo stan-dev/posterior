@@ -351,6 +351,14 @@ test_that("as_draws_rvars can accept lists of lists as input", {
   expect_equal(as_draws_rvars(example_draws()), as_draws_rvars(list_of_lists))
 })
 
+test_that("as_draws_rvars preserves dims of length-1 arrays", {
+  draws_array <- draws_array(`x[1,1,1]` = 1:5)
+  expect_equal(
+    draws_of(as_draws_rvars(draws_array)$x),
+    array(1:5, dim = c(5, 1, 1, 1), dimnames = list(1:5, NULL, NULL, NULL))
+  )
+})
+
 test_that("draws_df does not munge variable names", {
   draws_df <- draws_df(`x[1]` = 1:2, `x[2]` = 3:4)
   expect_equal(variables(draws_df), c("x[1]", "x[2]"))

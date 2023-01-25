@@ -24,6 +24,10 @@
 * Implemented faster `vec_proxy.rvar()` and `vec_restore.rvar()`, improving
   performance of `rvar`s in `tibble`s (and elsewhere `vctrs` is used).
 
+### Bug Fixes
+
+* Ensure that `as_draws_rvars()` preserves dimensions of length-1 arrays (#265).
+
 
 # posterior 1.3.1
 
