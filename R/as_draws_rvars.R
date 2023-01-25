@@ -79,8 +79,9 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
     var_i <- vars == var
     var_matrix <- x_at(var_i)
     attr(var_matrix, "nchains") <- NULL
+    var_indices <- vars_indices[var_i]
 
-    if (ncol(var_matrix) == 1) {
+    if (ncol(var_matrix) == 1 && nchar(var_indices[[1]][[3]]) == 0) {
       # single variable, no indices
       out <- rvar(var_matrix)
       dimnames(out) <- NULL
@@ -91,7 +92,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
       # first, pull out the list of indices into a data frame
       # where each column is an index variable
-      indices <- vapply(vars_indices[var_i], `[[`, i = 3, character(1))
+      indices <- vapply(var_indices, `[[`, i = 3, character(1))
       indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")),
                                stringsAsFactors = FALSE)
       unique_indices <- vector("list", length(indices))
