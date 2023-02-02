@@ -175,6 +175,10 @@ test_that("is.matrix/array on rvar works", {
   expect_true(is.array(x_arr))
 })
 
+test_that("vec_is_list(<rvar>) is FALSE", {
+  expect_equal(vctrs::vec_is_list(rvar()), FALSE)
+})
+
 
 # type conversion -----------------------------------------------------------
 

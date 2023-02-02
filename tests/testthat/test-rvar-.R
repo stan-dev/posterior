@@ -134,7 +134,7 @@ test_that("%in% works on rvars", {
   expect_equal(x %in% c(1, 3), res)
 })
 
-# tibbles -----------------------------------------------------------------
+# tibbles / dplyr --------------------------------------------------------------
 
 test_that("rvars work in tibbles", {
   skip_if_not_installed("dplyr")
@@ -173,6 +173,12 @@ test_that("rvars work in tibbles", {
     d = c(rvar(NA), NA, NA, df$x[[4]]),
   )
   expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref2)
+
+  expect_equal(dplyr::first(df$x), x[1])
+
+  z = cbind(a = x, b = x + 1)
+  df$z = z
+  expect_equal(dplyr::mutate(dplyr::rowwise(df), w = z[,"b"])$w, z[,"b"])
 })
 
 # broadcasting ------------------------------------------------------------

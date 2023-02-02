@@ -390,7 +390,7 @@ get_rvar_class <- function(x) {
 
 #' @export
 get_rvar_class.default <- function(x) {
-  c("rvar", "vctrs_vctr", "list")
+  c("rvar", "vctrs_vctr")
 }
 
 #' @export
