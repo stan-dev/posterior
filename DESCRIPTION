@@ -46,6 +46,7 @@ Suggests:
   dplyr,
   tidyr,
   knitr,
+  ggplot2,
   rmarkdown
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
