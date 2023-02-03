@@ -27,7 +27,8 @@
 ### Bug Fixes
 
 * Ensure that `as_draws_rvars()` preserves dimensions of length-1 arrays (#265).
-* Fix some minor compatibility issues with `rvar`, `vctrs`, and `dplyr` (#267, #269).
+* Fix some minor compatibility issues with `rvar`, `vctrs`, `dplyr`, and
+  `ggplot2` (#267, #269).
 
 
 # posterior 1.3.1

@@ -224,8 +224,7 @@ is_draws_df_like <- function(x) {
 }
 
 # This generic is not exported here as {dplyr} is only in Suggests, so
-# we must export it in .onLoad() for compatibility with r < 3.6. See
-# help("s3_register", package = "vctrs") for more information.
+# we must export it in .onLoad() for compatibility with R < 3.6.
 dplyr_reconstruct.draws_df <- function(data, template) {
   data <- NextMethod("dplyr_reconstruct")
   data <- drop_draws_class_if_metadata_removed(data, warn = FALSE)
