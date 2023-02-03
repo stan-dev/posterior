@@ -11,7 +11,7 @@ test_that("0-length rvar factors are constructured correctly", {
   expect_equal(draws_of(rvar(ordered(NULL))), ref)
 })
 
-test_that("rvar() input with a levels attribute creates an rvar_factor", {
+test_that("rvar_factor() input with a levels attribute preserves levels", {
   x_array <- matrix(1:10, nrow = 2)
   attr(x_array, "levels") <- letters[1:10]
 
@@ -19,7 +19,7 @@ test_that("rvar() input with a levels attribute creates an rvar_factor", {
   dim(ref_draws) <- c(2, 5)
   dimnames(ref_draws) <- list(1:2, NULL)
 
-  x <- rvar(x_array)
+  x <- rvar_factor(x_array)
   expect_equal(draws_of(x), ref_draws)
   expect_true(inherits(x, "rvar_factor"))
 })

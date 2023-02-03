@@ -51,18 +51,24 @@
 #' # Unlike base factors, rvar factors can be matrices or arrays:
 #' rvar_factor(x_array, dim = c(2, 2))
 #'
-#' # If the input to rvar() is an array with a `"levels"` attribute, it
-#' # will automatically be treated as an `rvar_factor()`:
+#' # If the input to rvar_factor() is an array with a `"levels"` attribute, it
+#' # will use those as the levels of the factor
 #' y_array <- t(array(rbinom(3000, 1, c(0.1, 0.5, 0.9)) + 1, dim = c(3, 1000)))
 #' rvar(y_array)
 #' # with levels
 #' attr(y_array, "levels") = c("a", "b")
-#' rvar(y_array)
+#' rvar_factor(y_array)
 #'
 #' @export
 rvar_factor <- function(
   x = factor(), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE, ...
 ) {
+
+  # to ensure we pick up levels already attached to x (if there are any), we
+  # need to convert x to a factor here if it has levels
+  if (!is.factor(x) && !is.null(attr(x, "levels"))) {
+    x <- while_preserving_dims(factor, x, labels = attr(x, "levels"))
+  }
 
   out <- rvar(
     x, dim = dim, dimnames = dimnames, nchains = nchains, with_chains = with_chains
