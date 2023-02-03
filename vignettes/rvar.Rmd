@@ -101,17 +101,17 @@ to constructing and manipulating `rvar`s are described below.
 
 You can also use `rvar`s to represent discrete distributions, using the `rvar_factor()`
 and `rvar_ordered()` subtypes. If you attempt to create an `rvar` using character
-values, it will automatically be treated as an `rvar_factor`:
+values or a `factor`, it will automatically be treated as an `rvar_factor`:
 
 ```{r rvar_factor}
 x <- rvar(sample(c("a","b","c"), 4000, prob = c(0.7, 0.2, 0.1), replace = TRUE))
 x
 ```
 
-Objects with a `levels` attribute will also automatically be converted to an
-`rvar_factor()`. This (along with automatic conversion of character values) 
-means output from `rstanarm::posterior_predict()` and `brms::posterior_predict()` 
-will be converted into `rvar_factor`s if wrapped in `rvar()`.
+Numeric arrays with a `"levels"` attribute can also be passed to `rvar_factor()`.
+This (along with conversion of character values) means output from 
+`rstanarm::posterior_predict()` and `brms::posterior_predict()` on categorical
+models can be passed directly to `rvar_factor()`.
 
 The default display shows the mode (as returned by `modal_category()`) and
 normalized entropy (`entropy()`), which is Shannon entropy scaled by the maximum

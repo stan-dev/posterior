@@ -806,22 +806,11 @@ cleanup_rvar_draws <- function(x) {
     rownames(x) <- as.character(seq_rows(x))
   }
 
-  # if x is factor-like (character or with "levels" attr), make it a factor
-  x <- as_factor_if_factor_like(x)
-
-  x
-}
-
-#' convert factor-like objects (character vectors or numerics with "levels"
-#' attributes) to factors. Leaves non-factor-like objects alone.
-#' @param x a vector or array (including factor-like arrays with "levels" attributes)
-#' @noRd
-as_factor_if_factor_like <- function(x) {
+  # if x is a character array, make it a factor
   if (is.character(x)) {
     x <- while_preserving_dims(factor, x)
-  } else if (!is.factor(x) && !is.null(attr(x, "levels"))) {
-    x <- while_preserving_dims(factor, x, labels = attr(x, "levels"))
   }
+
   x
 }
 
