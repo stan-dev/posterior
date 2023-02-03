@@ -382,6 +382,17 @@ match.rvar <- function(x, ...) {
 }
 
 
+# ggplot2::scale_type -----------------------------------------------------
+
+# This generic is not exported here as {ggplot2} is only in Suggests, so
+# we must export it in .onLoad() for compatibility with R < 3.6.
+scale_type.rvar <- function(x) {
+  # ensure that rvars used in ggplot2 aesthetics (as in e.g. ggdist) are passed
+  # through without modification and without raising a warning
+  "identity"
+}
+
+
 # helpers: classes --------------------------------------------------------
 
 get_rvar_class <- function(x) {

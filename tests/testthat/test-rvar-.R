@@ -181,6 +181,17 @@ test_that("rvars work in tibbles", {
   expect_equal(dplyr::mutate(dplyr::rowwise(df), w = z[,"b"])$w, z[,"b"])
 })
 
+
+# ggplot2 -----------------------------------------------------------------
+
+test_that("scale_type(<rvar>) works", {
+  skip_if_not_installed("ggplot2")
+
+  expect_no_condition(ggplot2::scale_type(rvar()))
+  expect_equal(ggplot2::scale_type(rvar()), "identity")
+})
+
+
 # broadcasting ------------------------------------------------------------
 
 test_that("broadcast_array works", {
