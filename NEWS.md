@@ -1,4 +1,4 @@
-# posterior 1.3.1.9000
+# posterior 1.4.0
 
 ### Enhancements
 

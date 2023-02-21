@@ -1,7 +1,7 @@
 Package: posterior
 Title: Tools for Working with Posterior Distributions
-Version: 1.3.1.9000
-Date: 2022-09-06
+Version: 1.4.0
+Date: 2023-02-21
 Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
              person("Matthew", "Kay", email = "mjskay@northwestern.edu", role = c("aut")),
@@ -54,5 +54,5 @@ LazyData: false
 URL: https://mc-stan.org/posterior/, https://discourse.mc-stan.org/
 BugReports: https://github.com/stan-dev/posterior/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 VignetteBuilder: knitr
