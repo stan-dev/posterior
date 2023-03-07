@@ -1,5 +1,14 @@
 # posterior 1.4.0
 
+### Bug Fixes
+
+* Delay applying `tibble::num()` formatting to output from `summarise_draws()` 
+  until `print()` is called so that summary output can be easily converted to a 
+  vanilla data frame (#275).
+
+
+# posterior 1.4.0
+
 ### Enhancements
 
 * Added new `rvar_factor()` and `rvar_ordered()` subtypes of `rvar()` that work
