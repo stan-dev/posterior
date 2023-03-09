@@ -264,8 +264,8 @@ rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
 
 #' @method rep.int rvar
 #' @export
-rep.int.rvar <- function(x, times) {
-  rep(x, times = times)
+rep.int.rvar <- function(x, times, ...) {
+  rep(x, times = times, ...)
 }
 
 #' @method rep_len rvar

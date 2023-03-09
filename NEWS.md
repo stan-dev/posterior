@@ -1,4 +1,4 @@
-# posterior 1.4.0
+# posterior 1.4.1
 
 ### Bug Fixes
 
