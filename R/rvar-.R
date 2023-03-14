@@ -262,9 +262,8 @@ rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
   out
 }
 
-#' @method rep.int rvar
-#' @export
-rep.int.rvar <- function(x, times, ...) {
+#' @rawNamespace S3method(rep.int,rvar,rep_int_rvar)
+rep_int_rvar <- function(x, times, ...) {
   rep(x, times = times, ...)
 }
 
