@@ -32,7 +32,7 @@ extract_variable_matrix.draws <- function(x, variable, ...) {
   variable <- as_one_character(variable)
   out <- .subset_draws(x, variable = variable, reserved = FALSE)
   out <- as_draws_array(out)
-  out <- drop_dims_or_classes(out, dims = 3, reset_class = TRUE)
+  out <- drop_dims_or_classes(out, dims = 3, reset_class = FALSE)
   class(out) <- "matrix"
   out
 }

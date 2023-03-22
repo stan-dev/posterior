@@ -93,7 +93,7 @@ remove_reserved_variable_names <- function(variables, reserved) {
   if (!reserved && length(variables)) {
     # can't use setdiff() here as in the edge case where someone
     # manually creates duplicate columns it will give incorrect results
-    variables <- variables[!variables %in% reserved_variables()]
+    variables <- variables[!variables %in% reserved_variables(variables)]
   }
   variables
 }

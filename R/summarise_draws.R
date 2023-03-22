@@ -238,16 +238,16 @@ summarise_draws.draws <- function(
 
 #' @rdname draws_summary
 #' @export
-summary.draws <- function(object, ...) {
-  summarise_draws(object, ...)
-}
-
-#' @rdname draws_summary
-#' @export
 summarise_draws.rvar <- function(.x, ...) {
   x <- draws_rvars(x = .x)
   names(x) <- deparse_pretty(substitute(.x))
   summarise_draws(x, ...)
+}
+
+#' @rdname draws_summary
+#' @export
+summary.draws <- function(object, ...) {
+  summarise_draws(object, ...)
 }
 
 #' @rdname draws_summary
@@ -326,9 +326,10 @@ empty_draws_summary <- function(dimensions = "variable") {
   out
 }
 
-
 create_summary_list <- function(x, v, funs, .args) {
   draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
+  # this will leave draws of class 'draws_array', which works with everything
+  # we tried to far and prevents distributional::variance from misbehaving
   args <- c(list(draws), .args)
   v_summary <- named_list(names(funs))
   for (m in names(funs)) {

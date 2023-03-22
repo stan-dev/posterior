@@ -3,6 +3,7 @@
 \name{reserved_variables}
 \alias{reserved_variables}
 \alias{reserved_variables.default}
+\alias{reserved_variables.character}
 \alias{reserved_variables.draws_matrix}
 \alias{reserved_variables.draws_array}
 \alias{reserved_variables.draws_df}
@@ -13,6 +14,8 @@
 reserved_variables(x, ...)
 
 \method{reserved_variables}{default}(x, ...)
+
+\method{reserved_variables}{character}(x, ...)
 
 \method{reserved_variables}{draws_matrix}(x, ...)
 
