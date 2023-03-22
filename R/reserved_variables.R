@@ -97,5 +97,5 @@ all_reserved_variables <- function(x = NULL) {
 }
 
 regex_reserved_variables <- function(x) {
-  paste0("^", x, "($|.+)")
+  paste0("^", x, "($|_.+)")
 }
