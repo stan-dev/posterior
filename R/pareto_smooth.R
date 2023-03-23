@@ -74,6 +74,20 @@ pareto_k_diagmsg <- function(k, S) {
   message(msg)
 }
 
+##' Pareto-khat
+##'
+##' Calculate pareto-khat value given draws
+##' @template args-method-x
+##' @param ndraws_tail (numeric) number of draws for the tail. Default is max(ceiling(3 * sqrt(length(draws))), S / 5)
+##' @param tail which tail
+##' @param r_eff relative effective. Default is "auto"
+##' @param verbose (logical) Should a diagnostic message be displayed? Default is `TRUE`.
+##' @template args-methods-dots
+##' @return List of Pareto-smoothing diagnostics
+pareto_khat <- function(x, ...) {
+  UseMethod("pareto_khat")
+}
+
 # To do ----
 #   - use r_eff (scalar, vector, or NULL to compute r_eff from draws)
 #   - support "left" and both "tails"
@@ -82,18 +96,6 @@ pareto_k_diagmsg <- function(k, S) {
 #   - if draws is a draws matrix or similar object with multiple parameters
 #   and r_eff is a vector, then how to structure the output?
 
-##' Pareto-khat
-##'
-##' Calculate pareto-khat value given draws
-##' @param draws
-##' @param ndraws_tail number of draws for the tail. Default is max(ceiling(3 * sqrt(length(draws))), S / 5)
-##' @param tail which tail
-##' @param r_eff relative effective. Default is "auto"
-##' @param diagmsg display diagnostic message?
-##' @return list
-pareto_khat <- function(x, ...) {
-  UseMethod("pareto_khat")
-}
 
 pareto_khat.default <- function(x, ...) {
   x <- as_draws(x)
@@ -105,13 +107,13 @@ pareto_khat.draws <- function(x,
                               ndraws_tail = "default",
                               tail = c("right", "left", "both"),
                               r_eff = NULL,
-                              diagmsg = TRUE) {
+                              verbose = TRUE) {
 
-  if (is.null(r_eff) {
+  if (is.null(r_eff)) {
     r_eff <- 1 # TODO: calculate this
   }
 
-  S <- ndraws(x)
+  S <- length(x)
 
   if (ndraws_tail == "default") {
     ndraws_tail <- max(ceiling(3 * sqrt(length(x))), S / 5)
@@ -160,7 +162,7 @@ pareto_khat.draws <- function(x,
 
   convergence_rate <- ps_convergence_rate(k, S)
 
-  if (diagmsg) {
+  if (verbose) {
     pareto_k_diagmsg(k, S)
   }
 
