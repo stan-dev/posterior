@@ -3,8 +3,9 @@
 #' Given Pareto-k computes the minimum sample size for reliable Pareto
 #' smoothed estimate (to have small probability of large error)
 ##' @param k
+##' @param ... unused
 ##' @return minimum sample size
-ps_min_ss <- function(k) {
+ps_min_ss <- function(k, ...) {
   # Eq (11) in PSIS paper
   10^(1 / (1 - max(0, k)))
 }
@@ -14,10 +15,12 @@ ps_min_ss <- function(k) {
 ##' Pareto-smoothing k-hat threshold
 ##'
 ##' Given sample size S computes khat threshold for reliable Pareto
-##' smoothed estimate (to have small probability of large error)
+##' smoothed estimate (to have small probability of large error). See
+##' section 3.2.4, equation (13).
 ##' @param S sample size
+##' @param ... unused
 ##' @return threshold
-ps_khat_threshold <- function(S) {
+ps_khat_threshold <- function(S, ...) {
   1 - 1 / log10(S)
 }
 
@@ -29,8 +32,9 @@ ps_khat_threshold <- function(S) {
 ##' convergence rate of PSIS estimate RMSE
 ##' @param k pareto-k values
 ##' @param S sample size
+##' @param ... unused
 ##' @return convergence rate
-ps_convergence_rate <- function(k, S) {
+ps_convergence_rate <- function(k, S, ...) {
   # allow array of k's
   rate <- numeric(length(k))
   # k<0 bounded distribution
@@ -56,8 +60,9 @@ ps_convergence_rate <- function(k, S) {
 ##' Given S and scalar and k, form a diagnostic message string
 ##' @param k pareto-k values
 ##' @param S sample size
+##' @param ... unused
 ##' @return diagnostic message
-pareto_k_diagmsg <- function(k, S) {
+pareto_k_diagmsg <- function(k, S, ...) {
   msg <- paste0('With k=', round(k,2), ' and S=', round(S,0), ':\n')
   if (k > 1) {
     msg <- paste0(msg,'All estimates are unreliable. If the distribution of ratios is bounded,\nfurther draws may improve the estimates, but it is not possible to predict\nwhether any feasible sample size is sufficient.')
@@ -77,8 +82,9 @@ pareto_k_diagmsg <- function(k, S) {
 ##' Pareto-khat
 ##'
 ##' Calculate pareto-khat value given draws
-##' @template args-method-x
-##' @param ndraws_tail (numeric) number of draws for the tail. Default is max(ceiling(3 * sqrt(length(draws))), S / 5)
+##' @template args-methods-x
+##' @param x object for which method is defined
+##' @param ndraws_tail (numeric) number of draws for the tail. Default is max(ceiling(3 * sqrt(length(draws))), S / 5) (Supplementary H)
 ##' @param tail which tail
 ##' @param r_eff relative effective. Default is "auto"
 ##' @param verbose (logical) Should a diagnostic message be displayed? Default is `TRUE`.
@@ -98,16 +104,46 @@ pareto_khat <- function(x, ...) {
 
 
 pareto_khat.default <- function(x, ...) {
-  x <- as_draws(x)
-  pareto_khat(x, ...)
+  #  x <- as_draws(x)
+  pareto_khat.draws(x, ...)
 }
 
 
-pareto_khat.draws <- function(x,
-                              ndraws_tail = "default",
-                              tail = c("right", "left", "both"),
-                              r_eff = NULL,
-                              verbose = TRUE) {
+pareto_khat.default <- function(x,
+                                ndraws_tail = "default",
+                                tail = c("right", "left"),
+                                r_eff = NULL,
+                                verbose = FALSE,
+                                extra_diags = FALSE) {
+
+  tail <- match.arg(tail)
+
+  # flip sign to do left tail
+  if (tail == "left") {
+    original_x <- x
+    x <- -x
+  }
+
+  out <- .pareto_khat(
+    x,
+    ndraws_tail = ndraws_tail,
+    r_eff = r_eff,
+    verbose = verbose,
+    extra_diags = extra_diags
+  )
+
+
+  names(out) <- paste(names(out), tail, sep = "_")
+  out
+
+}
+
+
+.pareto_khat <- function(x,
+                         ndraws_tail = "default",
+                         r_eff = NULL,
+                         verbose = FALSE,
+                         extra_diags = FALSE) {
 
   if (is.null(r_eff)) {
     r_eff <- 1 # TODO: calculate this
@@ -118,8 +154,6 @@ pareto_khat.draws <- function(x,
   if (ndraws_tail == "default") {
     ndraws_tail <- max(ceiling(3 * sqrt(length(x))), S / 5)
   }
-
-  tail <- match.arg(tail)
 
   if (ndraws_tail >= 5) {
     ord <- sort.int(x, index.return = TRUE)
@@ -139,11 +173,9 @@ pareto_khat.draws <- function(x,
       sigma <- fit$sigma
       if (is.finite(k)) {
         p <- (seq_len(ndraws_tail) - 0.5) / ndraws_tail
-        tail <- qgpd(p = p, mu = cutoff, k = k, sigma = sigma)
-      } else {
-        tail <- draws_tail
+        draws_tail <- qgpd(p = p, mu = cutoff, k = k, sigma = sigma)
       }
-      x[ord$ix[tail_ids]] <- tail
+      x[ord$ix[tail_ids]] <- draws_tail
     }
   } else {
     warning(
@@ -156,21 +188,49 @@ pareto_khat.draws <- function(x,
   # truncate at max of raw draws
   x[x > ord$x[S]] <- ord$x[S]
 
-  min_ss <- ps_min_ss(k)
+  other_diags <- list()
 
-  khat_threshold <- ps_khat_threshold(S)
+  if (extra_diags) {
 
-  convergence_rate <- ps_convergence_rate(k, S)
+    min_ss <- ps_min_ss(k)
+
+    khat_threshold <- ps_khat_threshold(S)
+
+    convergence_rate <- ps_convergence_rate(k, S)
+
+    other_diags <- list(
+      "sigma" = sigma,
+      "min_ss" = min_ss,
+      "khat_threshold" = khat_threshold,
+      "convergence_rate" = convergence_rate
+    )
+  }
 
   if (verbose) {
     pareto_k_diagmsg(k, S)
   }
-
-  list(
-    "k" = k,
-    "sigma" = sigma,
-    "min_ss" = min_ss,
-    "khat_threshold" = khat_threshold,
-    "convergence_rate" = convergence_rate
+  c(
+    list(
+      "k" = k
+    ),
+    other_diags
   )
+}
+
+pareto_smooth_tail <- function(x, cutoff) {
+
+  len <- length(x)
+
+  # save time not sorting since x already sorted
+  fit <- gpdfit(x - cutoff, sort_x = FALSE)
+  k <- fit$k
+  sigma <- fit$sigma
+  if (is.finite(k)) {
+    p <- (seq_len(len) - 0.5) / len
+    qq <- qgpd(p, k, sigma) + cutoff
+    tail <- log(qq)
+  } else {
+    tail <- x
+  }
+  list(tail = tail, k = k)
 }
