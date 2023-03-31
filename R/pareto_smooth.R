@@ -102,13 +102,6 @@ pareto_khat <- function(x, ...) {
 #   - if draws is a draws matrix or similar object with multiple parameters
 #   and r_eff is a vector, then how to structure the output?
 
-
-pareto_khat.default <- function(x, ...) {
-  #  x <- as_draws(x)
-  pareto_khat.draws(x, ...)
-}
-
-
 pareto_khat.default <- function(x,
                                 ndraws_tail = "default",
                                 tail = c("right", "left"),
