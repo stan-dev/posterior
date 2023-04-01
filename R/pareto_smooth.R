@@ -63,17 +63,22 @@ ps_convergence_rate <- function(k, S, ...) {
 ##' @param S sample size
 ##' @param ... unused
 ##' @return diagnostic message
-pareto_k_diagmsg <- function(k, S, ...) {
-  msg <- paste0('With k=', round(k,2), ' and S=', round(S,0), ':\n')
+pareto_k_diagmsg <- function(diags, ...) {
+  k <- diags$k
+  sigma <- diags$sigma
+  min_ss <- diags$min_ss
+  khat_threshold <- diags$khat_threshold
+  convergence_rate <- diags$convergence_rate
+  msg <- NULL
   if (k > 1) {
     msg <- paste0(msg,'All estimates are unreliable. If the distribution of ratios is bounded,\n',
                   'further draws may improve the estimates, but it is not possible to predict\n',
                   'whether any feasible sample size is sufficient.')
   } else {
-    if (k > ps_khat_threshold(S)) {
-      msg <- paste0(msg, 'S is too small, and sample size larger than ', round(ps_min_ss(k),0), ' is neeeded for reliable results.\n')
+    if (k > khat_threshold) {
+      msg <- paste0(msg, 'S is too small, and sample size larger than ', round(min_ss, 0), ' is neeeded for reliable results.\n')
     } else {
-      msg <- paste0(msg, 'To halve the RMSE, approximately ', round(2^(2/ps_convergence_rate(k,S)),1), ' times bigger S is needed.\n')
+      msg <- paste0(msg, 'To halve the RMSE, approximately ', round(2^(2/convergence_rate),1), ' times bigger S is needed.\n')
     }
   }
   if (k > 0.7 && k < 1) {
@@ -94,6 +99,7 @@ pareto_k_diagmsg <- function(k, S, ...) {
 ##' @param r_eff relative effective. Default is "auto"
 ##' @param verbose (logical) Should a diagnostic message be displayed?
 ##'   Default is `TRUE`.
+##' @param extra_diags include extra pareto-k diagnostics?
 ##' @template args-methods-dots
 ##' @return List of Pareto-smoothing diagnostics
 pareto_khat <- function(x, ...) {
@@ -113,7 +119,7 @@ pareto_khat.default <- function(x,
                                 tail = c("both", "right", "left"),
                                 r_eff = NULL,
                                 verbose = FALSE,
-                                extra_diags = FALSE) {
+                                extra_diags = FALSE, ...) {
 
   tail <- match.arg(tail)
 
@@ -126,7 +132,6 @@ pareto_khat.default <- function(x,
       x,
       ndraws_tail = ndraws_tail,
       r_eff = r_eff,
-      verbose = verbose,
       extra_diags = extra_diags
     )
 
@@ -134,16 +139,11 @@ pareto_khat.default <- function(x,
       original_x,
       ndraws_tail = ndraws_tail,
       r_eff = r_eff,
-      verbose = verbose,
       extra_diags = extra_diags
     )
 
     # take max of khats and corresponding diagnostics
-    if (khat_left$k >= khat_right$k) {
-      out <- khat_left
-    } else {
-      out <- khat_right
-    }
+    k <- max(khat_right, khat_left)
 
   }  else {
 
@@ -154,25 +154,55 @@ pareto_khat.default <- function(x,
       x <- -x
     }
 
-    out <- .pareto_khat(
+    k <- .pareto_khat(
       x,
       ndraws_tail = ndraws_tail,
-      r_eff = r_eff,
-      verbose = verbose,
-      extra_diags = extra_diags
+      r_eff = r_eff
     )
-    names(out) <- paste(names(out), tail, sep = "_")
+    
   }
-  
+
+  out <- list(pareto_k = k)
+
+  if (extra_diags) {
+    diags <- .pareto_k_extra_diags(k, length(x))
+    out <- c(out, diags)
+  }
+
+  if (verbose) {
+    if (!extra_diags) {
+      diags <- .pareto_k_extra_diags(k, length(x))
+      }
+    pareto_k_diagmsg(
+      k = k,
+      diags = diags
+    )
+  }
+
+  names(out) <- paste(names(out), substring(tail, 1, 1), sep = "_")
   out
 
 }
 
+.pareto_k_extra_diags <- function(k, S, ...) {
+
+    min_ss <- ps_min_ss(k)
+
+    khat_threshold <- ps_khat_threshold(S)
+
+    convergence_rate <- ps_convergence_rate(k, S)
+
+    other_diags <- list(
+#      "sigma" = sigma,
+      "min_ss" = min_ss,
+      "khat_threshold" = khat_threshold,
+      "convergence_rate" = convergence_rate
+    )
+}
 
 .pareto_khat <- function(x,
                          ndraws_tail = "default",
                          r_eff = NULL,
-                         verbose = FALSE,
                          extra_diags = FALSE) {
 
   if (is.null(r_eff)) {
@@ -218,33 +248,7 @@ pareto_khat.default <- function(x,
   # truncate at max of raw draws
   x[x > ord$x[S]] <- ord$x[S]
 
-  other_diags <- list()
-
-  if (extra_diags) {
-
-    min_ss <- ps_min_ss(k)
-
-    khat_threshold <- ps_khat_threshold(S)
-
-    convergence_rate <- ps_convergence_rate(k, S)
-
-    other_diags <- list(
-      "sigma" = sigma,
-      "min_ss" = min_ss,
-      "khat_threshold" = khat_threshold,
-      "convergence_rate" = convergence_rate
-    )
-  }
-
-  if (verbose) {
-    pareto_k_diagmsg(k, S)
-  }
-  c(
-    list(
-      "k" = k
-    ),
-    other_diags
-  )
+  k
 }
 
 pareto_smooth_tail <- function(x, cutoff) {
