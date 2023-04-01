@@ -55,6 +55,7 @@ ps_convergence_rate <- function(k, S, ...) {
 }
 
 
+
 ##' Pareto-k diagnostic message
 ##'
 ##' Given S and scalar and k, form a diagnostic message string
@@ -65,7 +66,9 @@ ps_convergence_rate <- function(k, S, ...) {
 pareto_k_diagmsg <- function(k, S, ...) {
   msg <- paste0('With k=', round(k,2), ' and S=', round(S,0), ':\n')
   if (k > 1) {
-    msg <- paste0(msg,'All estimates are unreliable. If the distribution of ratios is bounded,\nfurther draws may improve the estimates, but it is not possible to predict\nwhether any feasible sample size is sufficient.')
+    msg <- paste0(msg,'All estimates are unreliable. If the distribution of ratios is bounded,\n',
+                  'further draws may improve the estimates, but it is not possible to predict\n',
+                  'whether any feasible sample size is sufficient.')
   } else {
     if (k > ps_khat_threshold(S)) {
       msg <- paste0(msg, 'S is too small, and sample size larger than ', round(ps_min_ss(k),0), ' is neeeded for reliable results.\n')
@@ -84,10 +87,13 @@ pareto_k_diagmsg <- function(k, S, ...) {
 ##' Calculate pareto-khat value given draws
 ##' @template args-methods-x
 ##' @param x object for which method is defined
-##' @param ndraws_tail (numeric) number of draws for the tail. Default is max(ceiling(3 * sqrt(length(draws))), S / 5) (Supplementary H)
+##' @param ndraws_tail (numeric) number of draws for the tail. Default
+##'   is max(ceiling(3 * sqrt(length(draws))), S / 5) (Supplementary
+##'   H)
 ##' @param tail which tail
 ##' @param r_eff relative effective. Default is "auto"
-##' @param verbose (logical) Should a diagnostic message be displayed? Default is `TRUE`.
+##' @param verbose (logical) Should a diagnostic message be displayed?
+##'   Default is `TRUE`.
 ##' @template args-methods-dots
 ##' @return List of Pareto-smoothing diagnostics
 pareto_khat <- function(x, ...) {
@@ -104,29 +110,60 @@ pareto_khat <- function(x, ...) {
 
 pareto_khat.default <- function(x,
                                 ndraws_tail = "default",
-                                tail = c("right", "left"),
+                                tail = c("both", "right", "left"),
                                 r_eff = NULL,
                                 verbose = FALSE,
                                 extra_diags = FALSE) {
 
   tail <- match.arg(tail)
 
-  # flip sign to do left tail
-  if (tail == "left") {
+  if (tail == "both") {
+    # left first
     original_x <- x
-    x <- -x
+    x <- -x    
+
+    khat_left <- .pareto_khat(
+      x,
+      ndraws_tail = ndraws_tail,
+      r_eff = r_eff,
+      verbose = verbose,
+      extra_diags = extra_diags
+    )
+
+    khat_right <- .pareto_khat(
+      original_x,
+      ndraws_tail = ndraws_tail,
+      r_eff = r_eff,
+      verbose = verbose,
+      extra_diags = extra_diags
+    )
+
+    # take max of khats and corresponding diagnostics
+    if (khat_left$k >= khat_right$k) {
+      out <- khat_left
+    } else {
+      out <- khat_right
+    }
+
+  }  else {
+
+    if (tail == "left") {
+      # flip sign to do left tail
+      
+      original_x <- x
+      x <- -x
+    }
+
+    out <- .pareto_khat(
+      x,
+      ndraws_tail = ndraws_tail,
+      r_eff = r_eff,
+      verbose = verbose,
+      extra_diags = extra_diags
+    )
+    names(out) <- paste(names(out), tail, sep = "_")
   }
-
-  out <- .pareto_khat(
-    x,
-    ndraws_tail = ndraws_tail,
-    r_eff = r_eff,
-    verbose = verbose,
-    extra_diags = extra_diags
-  )
-
-
-  names(out) <- paste(names(out), tail, sep = "_")
+  
   out
 
 }
