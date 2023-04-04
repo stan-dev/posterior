@@ -179,7 +179,6 @@ pareto_khat.default <- function(x,
     )
   }
 
-  names(out) <- paste(names(out), substring(tail, 1, 1), sep = "_")
   out
 
 }
@@ -212,7 +211,8 @@ pareto_khat.default <- function(x,
   S <- length(x)
 
   if (ndraws_tail == "default") {
-    ndraws_tail <- max(ceiling(3 * sqrt(length(x))), S / 5)
+    # Appendix H in PSIS paper
+    ndraws_tail <- ifelse(S > 225, ceiling(3 * sqrt(S/r_eff)), S / 5)
   }
 
   if (ndraws_tail >= 5) {
