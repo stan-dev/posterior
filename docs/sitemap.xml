@@ -34,6 +34,9 @@
     <loc>https://mc-stan.org/posterior/reference/as_rvar.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/as_rvar_factor.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/autocorrelation.html</loc>
   </url>
   <url>
@@ -50,6 +53,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/diagnostics.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/dissent.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/dot-ess.html</loc>
@@ -86,6 +92,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/drop-rvar-method.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/entropy.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/ess_basic.html</loc>
@@ -127,6 +136,12 @@
     <loc>https://mc-stan.org/posterior/reference/is_rvar.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/is_rvar_factor.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/match.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/mcse_mean.html</loc>
   </url>
   <url>
@@ -137,6 +152,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/merge_chains.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/modal_category.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/mutate_variables.html</loc>
@@ -230,6 +248,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar_apply.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar_factor.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar_is_finite.html</loc>

@@ -2,19 +2,23 @@
 
 #' @export
 c.rvar <- function(...) {
-  if (!is_rvar(vctrs::vec_ptype_common(...))) {
+  common_type <- vctrs::vec_ptype_common(...)
+  if (!is_rvar(common_type)) {
     # if the common type of the arguments is not an rvar, fall back to the
     # vctrs implementation of c()
     return(vctrs::vec_c(...))
   }
 
   args <- list(...)
+  # drop NULLs (for compatibility with R < 4: in R >= 4, NULLs will have already been dropped)
+  args[vapply(args, is.null, logical(1))] <- NULL
+
   out <- make_1d(args[[1]], names(args)[[1]])
 
   # process remaining args in succession, binding them to the output
   for (i in seq_along(args)[-1]) {
     arg_name <- names(args)[[i]]
-    arg <- make_1d(as_rvar(args[[i]]), arg_name)
+    arg <- make_1d(vec_cast(args[[i]], common_type), arg_name)
     out <- broadcast_and_bind_rvars(out, arg)
   }
 
@@ -70,6 +74,14 @@ bind_rvars <- function(args, arg_exprs, deparse.level = 1, axis = 1) {
 #' broadcast two rvars to compatible dimensions and bind along the `axis` dimension
 #' @noRd
 broadcast_and_bind_rvars <- function(x, y, axis = 1) {
+  UseMethod("broadcast_and_bind_rvars")
+}
+
+#' @export
+broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
+  # TODO: should really replace this with something that takes a list of rvars,
+  # conforms their chains, broadcasts them all to common dimensions and uses a
+  # single abind to bind them.
   if (!length(x)) return(y)
   if (!length(y)) return(x)
 
@@ -91,9 +103,25 @@ broadcast_and_bind_rvars <- function(x, y, axis = 1) {
   new_dim[draws_axis] <- dim(draws_y)[draws_axis]
   draws_y <- broadcast_array(draws_y, new_dim)
 
+  # factors may not bind properly with abind, so convert them to characters first
+  if (is.factor(draws_x)) draws_x <- while_preserving_dims(as.character, draws_x)
+  if (is.factor(draws_y)) draws_y <- while_preserving_dims(as.character, draws_y)
+
   # bind along desired axis
-  result <- new_rvar(abind(draws_x, draws_y, along = draws_axis), .nchains = nchains(x))
+  result <- new_rvar(
+    abind(draws_x, draws_y, along = draws_axis, use.dnns = TRUE),
+    .nchains = nchains(x)
+  )
 }
+
+#' @export
+broadcast_and_bind_rvars.rvar_factor <- function(x, y, axis = 1) {
+  result <- NextMethod()
+  combine_rvar_factor_levels(
+    result, list(levels(x), levels(y)), is_rvar_ordered(x) && is_rvar_ordered(y)
+  )
+}
+
 
 #' Deparse argument names roughly following the rules of the deparse.level
 #' argument to cbind / rbind

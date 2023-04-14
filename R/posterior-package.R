@@ -36,11 +36,15 @@
 #' * `posterior.max_chains`: Maximum number of chains to print.
 #' * `posterior.max_variables`: Maximum number of variables to print.
 #'
-#' The following option is used to format and print [`rvar`] objects,
+#' The following options are used to format and print [`rvar`] objects,
 #' as in `print.rvar()` and `print.draws_rvars()`:
 #'
 #' * `posterior.rvar_summary`: What style of summary to display:
-#' `"mean_sd"` displays `mean±sd`, `"median_mad"` displays `median±mad`.
+#' `"mean_sd"` displays `mean ± sd`, `"median_mad"` displays `median ± mad`.
+#' * `posterior.digits`: How many significant digits are displayed. This
+#' defaults to a smaller value (`2`) than `getOption("digits")` because
+#' [`rvar`]s print two numbers (point summary and uncertainty) next to
+#' each other.
 #'
 #' The following option is used to construct new [`rvar`] objects,
 #' as in `rfun()` and `rdo()`:

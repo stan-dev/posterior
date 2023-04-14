@@ -58,6 +58,7 @@ as_draws_array.draws_df <- function(x, ...) {
   }
   iterations <- iteration_ids(x)
   chains <- chain_ids(x)
+  x <- check_variables_are_numeric(x, to = "draws_array")
   out <- vector("list", length(chains))
   for (i in seq_along(out)) {
     if (length(chains) == 1) {
@@ -92,6 +93,12 @@ as_draws_array.draws_rvars <- function(x, ...) {
     return(empty_draws_array(variables(x)))
   }
 
+  x <- check_variables_are_numeric(
+    x, to = "draws_array", is_non_numeric = is_rvar_factor, convert = FALSE
+  )
+
+  # cbind discards class information when applied to vectors, which converts
+  # the underlying factors to numeric
   draws <- do.call(cbind, lapply(seq_along(x), function(i) {
     # flatten each rvar so it only has two dimensions: draws and variables
     # this also collapses indices into variable names in the format "var[i,j,k,...]"

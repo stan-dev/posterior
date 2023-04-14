@@ -4,7 +4,6 @@ test_that("as_rvar works", {
   expect_equal(draws_of(as_rvar(1L)), matrix(1L, dimnames = list("1", NULL)))
   expect_equal(draws_of(as_rvar(c(TRUE, FALSE))), matrix(c(TRUE, FALSE), nrow = 1, dimnames = list("1", NULL)))
   expect_equal(draws_of(as_rvar(1:3L)), matrix(1:3L, nrow = 1, dimnames = list("1", NULL)))
-  expect_equal(draws_of(as_rvar(1:3L)), matrix(1:3L, nrow = 1, dimnames = list("1", NULL)))
 
   expect_equal(nchains(as_rvar(1, nchains = 2)), 2)
 
@@ -12,6 +11,15 @@ test_that("as_rvar works", {
   expect_equal(
     draws_of(as_rvar(1:6, dim = c(2,3), dimnames = list(letters[1:2], letters[1:3]))),
     array(1:6, dim = c(1,2,3), dimnames = list("1", letters[1:2], letters[1:3]))
+  )
+
+  expect_equal(
+    draws_of(as_rvar(factor(letters[1:3], levels = letters[3:1]))),
+    structure(matrix(3:1, nrow = 1, dimnames = list("1", NULL)), levels = letters[3:1], class = "factor")
+  )
+  expect_equal(
+    draws_of(as_rvar(ordered(letters[1:3], levels = letters[3:1]))),
+    structure(matrix(3:1, nrow = 1, dimnames = list("1", NULL)), levels = letters[3:1], class = c("ordered", "factor"))
   )
 })
 
@@ -27,6 +35,103 @@ test_that("as_rvar preserves dimension names", {
   expect_equal(names(x_rvar), names(x))
 })
 
+
+# as_rvar_numeric ---------------------------------------------------------
+
+test_that("as_rvar_numeric works", {
+  x_array = array(
+    1:24, dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x <- rvar(x_array)
+  x_array_letters = array(
+    letters[1:24], dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x_fct <- rvar_factor(x_array)
+  x_ord <- rvar_ordered(x_array)
+
+  expect_equal(as_rvar_numeric(x_fct), x)
+  expect_equal(as_rvar_numeric(x_ord), x)
+})
+
+
+# as_rvar_factor -----------------------------------------------------------------
+
+test_that("as_rvar_factor works", {
+  expect_equal(
+    draws_of(as_rvar_factor(array(1:4, dim = c(2,2)))),
+    structure(1:4L, levels = c("1", "2", "3", "4"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = "factor")
+  )
+  expect_equal(
+    draws_of(as_rvar_factor(array(c(TRUE, TRUE, FALSE, FALSE), dim = c(2,2)))),
+    structure(c(2, 2, 1, 1), levels = c("FALSE", "TRUE"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = "factor")
+  )
+  expect_equal(
+    draws_of(as_rvar_factor(array(letters[1:4], dim = c(2,2)))),
+    structure(1:4L, levels = letters[1:4], dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = "factor")
+  )
+  expect_equal(
+    draws_of(as_rvar_factor(`dim<-`(factor(letters[1:4], levels = letters[4:1]), c(2,2)))),
+    structure(4:1, dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), levels = letters[4:1], class = "factor")
+  )
+  expect_equal(
+    draws_of(as_rvar_factor(`dim<-`(ordered(letters[1:4], levels = letters[4:1]), c(2,2)))),
+    structure(4:1, dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), levels = letters[4:1], class = c("ordered", "factor"))
+  )
+
+  expect_equal(nchains(as_rvar_factor(1, nchains = 2)), 2)
+
+  expect_equal(
+    as_rvar_factor(rvar(array(1:12, dim = c(2,2,3)))),
+    rvar_factor(array(as.character(1:12), dim = c(2,2,3)), levels = as.character(1:12))
+  )
+})
+
+test_that("as_rvar_ordered works", {
+  expect_equal(
+    draws_of(as_rvar_ordered(array(1:4, dim = c(2,2)))),
+    structure(1:4L, levels = c("1", "2", "3", "4"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"))
+  )
+  expect_equal(
+    draws_of(as_rvar_ordered(as_rvar(array(1:4, dim = c(2,2))))),
+    structure(1:4L, levels = c("1", "2", "3", "4"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"))
+  )
+  expect_equal(
+    draws_of(as_rvar_ordered(as_rvar_factor(array(1:4, dim = c(2,2))))),
+    structure(1:4L, levels = c("1", "2", "3", "4"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"))
+  )
+  expect_equal(
+    draws_of(as_rvar_ordered(array(c(TRUE, TRUE, FALSE, FALSE), dim = c(2,2)))),
+    structure(c(2, 2, 1, 1), levels = c("FALSE", "TRUE"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"))
+  )
+  expect_equal(
+    draws_of(as_rvar_ordered(array(letters[1:4], dim = c(2,2)))),
+    structure(1:4L, levels = letters[1:4], dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"))
+  )
+  expect_equal(
+    draws_of(as_rvar_ordered(`dim<-`(factor(letters[1:4], levels = letters[4:1]), c(2,2)))),
+    structure(4:1, dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), levels = letters[4:1], class = c("ordered", "factor"))
+  )
+  expect_equal(
+    draws_of(as_rvar_ordered(`dim<-`(ordered(letters[1:4], levels = letters[4:1]), c(2,2)))),
+    structure(4:1, dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), levels = letters[4:1], class = c("ordered", "factor"))
+  )
+
+  expect_equal(nchains(as_rvar_ordered(1, nchains = 2)), 2)
+
+  expect_equal(
+    as_rvar_ordered(rvar(array(1:12, dim = c(2,2,3)))),
+    rvar_ordered(array(as.character(1:12), dim = c(2,2,3)), levels = as.character(1:12))
+  )
+})
+
+test_that("as_rvar(<character>) produces an rvar_factor ", {
+  expect_equal(
+    draws_of(as_rvar(array(letters[1:4], dim = c(2,2)))),
+    structure(1:4L, levels = letters[1:4], dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = "factor")
+  )
+})
 
 # casting to/from rvar/distribution ---------------------------------------
 
@@ -70,15 +175,19 @@ test_that("is.matrix/array on rvar works", {
   expect_true(is.array(x_arr))
 })
 
+test_that("vec_is_list(<rvar>) is FALSE", {
+  expect_equal(vctrs::vec_is_list(rvar()), FALSE)
+})
+
 
 # type conversion -----------------------------------------------------------
 
 test_that("as.list works", {
-  x_array = array(
+  x_array <- array(
     1:24, dim = c(2,4,3),
     dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
   )
-  x = new_rvar(x_array)
+  x <- new_rvar(x_array)
 
   expect_equal(as.list(x),
     list(
@@ -86,6 +195,19 @@ test_that("as.list works", {
       a2 = new_rvar(x_array[,2,]),
       a3 = new_rvar(x_array[,3,]),
       a4 = new_rvar(x_array[,4,])
+    )
+  )
+
+  x_array <- array(
+    1:12, dim = c(6, 2),
+    dimnames = list(NULL, A = paste0("a", 1:2))
+  )
+  x <- new_rvar(x_array)
+
+  expect_equal(as.list(x),
+    list(
+      a1 = new_rvar(x_array[,1]),
+      a2 = new_rvar(x_array[,2])
     )
   )
 })
@@ -164,4 +286,51 @@ test_that("as.data.frame and as_tibble work on rvars", {
 test_that("as.character works", {
   x <- rvar(c(1,1))
   expect_equal(as.character(x), format(x))
+  x <- rvar_factor(letters[1:2])
+  expect_equal(as.character(x), format(x))
+  x <- rvar_ordered(letters[1:2])
+  expect_equal(as.character(x), format(x))
+})
+
+test_that("proxy restore works", {
+  x1 = rvar(array(1:9, dim = c(3,3)),
+    dimnames = list(A = paste0("a", 1:3))
+  )
+  x2 = rvar(array(1:12, dim = c(2,2,3)),
+    dimnames = list(A = paste0("a", 1:2), B = paste0("b", 1:3))
+  )
+  x3 = rvar(array(1:24, dim = c(2,2,2,4)),
+    dimnames = list(A = paste0("a", 1:2), B = paste0("b", 1:2), C = paste0("c", 1:4))
+  )
+
+  expect_equal(vec_restore(vec_proxy(unname(x1)), rvar()), unname(x1))
+  expect_equal(vec_restore(vec_proxy(unname(x2)), rvar()), unname(x2))
+  expect_equal(vec_restore(vec_proxy(unname(x3)), rvar()), unname(x3))
+  expect_equal(vec_restore(vec_proxy(x1), rvar()), x1)
+  expect_equal(vec_restore(vec_proxy(x2), rvar()), x2)
+  expect_equal(vec_restore(vec_proxy(x3), rvar()), x3)
+
+  expect_equal(
+    vec_restore(c(
+      vec_proxy(vctrs::vec_init(rvar(), 2)),
+      vec_proxy(rvar(1:10, nchains = 2))
+    ), rvar()),
+    rvar(array(c(rep(NA, 10), rep(NA, 10), 1:10), dim = c(10, 3)), nchains = 2)
+  )
+
+  expect_equal(
+    vec_restore(c(
+      vec_proxy(vctrs::vec_init(rvar_factor(), 2)),
+      vec_proxy(rvar_factor(letters[1:10], nchains = 2))
+    ), rvar_factor()),
+    rvar_factor(array(letters[c(rep(NA, 10), rep(NA, 10), 1:10)], dim = c(10, 3)), nchains = 2)
+  )
+
+  expect_equal(
+    vec_restore(c(
+      vec_proxy(vctrs::vec_init(rvar_ordered(), 2)),
+      vec_proxy(rvar_ordered(letters[1:10], nchains = 2))
+    ), rvar_ordered()),
+    rvar_ordered(array(letters[c(rep(NA, 10), rep(NA, 10), 1:10)], dim = c(10, 3)), nchains = 2)
+  )
 })

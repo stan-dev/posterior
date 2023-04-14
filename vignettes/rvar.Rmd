@@ -97,6 +97,57 @@ Manual construction and modification of `rvar`s in this way is not always recomm
 unless you need it for performance reasons: several other higher-level interfaces
 to constructing and manipulating `rvar`s are described below.
 
+### `rvar_factor` and `rvar_ordered` subtypes {#rvar_factor}
+
+You can also use `rvar`s to represent discrete distributions, using the `rvar_factor()`
+and `rvar_ordered()` subtypes. If you attempt to create an `rvar` using character
+values or a `factor`, it will automatically be treated as an `rvar_factor`:
+
+```{r rvar_factor}
+x <- rvar(sample(c("a","b","c"), 4000, prob = c(0.7, 0.2, 0.1), replace = TRUE))
+x
+```
+
+Numeric arrays with a `"levels"` attribute can also be passed to `rvar_factor()`.
+This (along with conversion of character values) means output from 
+`rstanarm::posterior_predict()` and `brms::posterior_predict()` on categorical
+models can be passed directly to `rvar_factor()`.
+
+The default display shows the mode (as returned by `modal_category()`) and
+normalized entropy (`entropy()`), which is Shannon entropy scaled by the maximum
+possible entropy for a distribution with the same number of levels: thus 0
+means all probability is concentrated in one category, and 1 means the distribution
+is uniform.
+
+You can construct an ordered factor using `rvar_ordered()` (or by passing an
+`ordered()` vector to `rvar()`):
+
+```{r rvar_ordered}
+x <- rvar_ordered(sample(c("a","b","c"), 4000, prob = c(0.7, 0.2, 0.1), replace = TRUE))
+x
+```
+
+For `rvar_ordered()`, the default display is mode and dissention (`dissent()`),
+which is 0 when all probability is concentrated in one category, and 1 when
+the distribution is bimodal at opposite ends of the scale.
+
+`rvar_factor`s attempt to mimic `factor()` and `rvar_ordered`s attempt to mimic
+`ordered()`s, by implementing factor-specific functions like `levels()`. Comparison
+operations are also implemented where valid. For example, in `x` as defined above, 
+approximately 90% of draws should be less than `"b"` (which means the `"a"` and
+`"b"` levels):
+
+```{r x_lte_b}
+x <= "b"
+```
+
+`rvar`s also supply an implementation of `match()` and `%in%`, which can be
+especially useful with `rvar_factor`s:
+
+```{r x_in_ac}
+x %in% c("a", "c")
+```
+
 ## The `draws_rvars` datatype
 
 The `draws_rvars()` datatype, like all `draws` datatypes in posterior, contains
@@ -171,6 +222,7 @@ includes:
 | Arithmetic operators        | `+`, `-`, `*`, `/`, `^`, `%%`, `%/%` |
 | Logical operators           | `&`, `|`, `!` |
 | Comparison operators        | `==`, `!=`, `<`, `<=`, `>=`, `>` |
+| Value matching              | `match()`, `%in%` |
 | Matrix multiplication       | `%**%` |
 | Basic functions             | `abs()`, `sign()`<br>`sqrt()`<br>`floor()`, `ceiling()`, `trunc()`, `round()`, `signif()` |
 | Logarithms and exponentials | `exp()`, `expm1()`<br>`log()`, `log10()`, `log2()`, `log1p()` |

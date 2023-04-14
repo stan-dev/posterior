@@ -1,3 +1,50 @@
+# posterior 1.4.1
+
+### Bug Fixes
+
+* Delay applying `tibble::num()` formatting to output from `summarise_draws()` 
+  until `print()` is called so that summary output can be easily converted to a 
+  vanilla data frame (#275).
+
+
+# posterior 1.4.0
+
+### Enhancements
+
+* Added new `rvar_factor()` and `rvar_ordered()` subtypes of `rvar()` that work
+  analogously to `factor()` and `ordered()` (#149). See the new section on
+  `rvar_factor`s in `vignette("rvar")`.
+* The `draws_df()`, `draws_list()`, and `draws_rvars()` formats now support
+  discrete variables stored as `factors` / `ordered`s (or `rvar_factor`s /
+  `rvar_ordered`s). If converted to formats that do not support discrete
+  variables with named levels (`draws_matrix()` and `draws_array()`), 
+  factor-like variables are converted to `numeric`s.
+* Made `match()` and `%in%` generic and added support for `rvar`s to both
+  functions.
+* Added `modal_category()`, `entropy()`, and `dissent()` functions for
+  summarizing discrete draws.
+* Allow lists of draws objects to be passed as the first argument to 
+  `bind_draws()` (#253).
+* Improving formatting of `summarise_draws` output via `tibble::num`.
+* `print.rvar()` and `format.rvar()` now default to a smaller number of
+  significant digits in more cases, including when printing in data frames.
+  This is controlled by the new `"posterior.digits"` option (see 
+  `help("posterior-package")`).
+* Implemented faster `vec_proxy.rvar()` and `vec_restore.rvar()`, improving
+  performance of `rvar`s in `tibble`s (and elsewhere `vctrs` is used).
+
+### Bug Fixes
+
+* Ensure that `as_draws_rvars()` preserves dimensions of length-1 arrays (#265).
+* Fix some minor compatibility issues with `rvar`, `vctrs`, `dplyr`, and
+  `ggplot2` (#267, #269).
+
+
+# posterior 1.3.1
+
+* Minor release that fixes some CRAN check failures.
+
+
 # posterior 1.3.0
 
 ### Enhancements

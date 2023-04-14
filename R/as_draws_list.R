@@ -68,7 +68,7 @@ as_draws_list.draws_df <- function(x, ...) {
 #' @rdname draws_list
 #' @export
 as_draws_list.draws_rvars <- function(x, ...) {
-  as_draws_list(as_draws_array(x), ...)
+  as_draws_list(as_draws_df(x), ...)
 }
 
 #' @rdname draws_list

@@ -1,11 +1,3 @@
-# function for making rvars from arrays that expects last index to be
-# draws (for testing so that when array structure changes tests don't have to)
-rvar_from_array = function(x) {
-  .dim = dim(x)
-  last_dim = length(.dim)
-  new_rvar(aperm(x, c(last_dim, seq_len(last_dim - 1))))
-}
-
 # creating rvars ----------------------------------------------------------
 
 test_that("rvar creation with custom dim works", {
@@ -57,6 +49,17 @@ test_that("NULL rvar creates a 0-length numeric rvar with 1 draw", {
   expect_equal(draws_of(rvar()), array(numeric(), dim = c(1, 0), dimnames = list(1, NULL)))
 })
 
+test_that("creating an rvar from an existing rvar works", {
+  x_array <- array(1:20, dim = c(4,5))
+  x <- rvar(x_array)
+  x_4 <- rvar(x_array, nchains = 4)
+
+  expect_equal(rvar(x), x)
+  expect_equal(rvar(x_4), x_4)
+  expect_equal(rvar(x, nchains = 4), x_4)
+  expect_equal(rvar(x_4, nchains = 1), x)
+})
+
 # draws_of ----------------------------------------------------------------
 
 test_that("draws_of using with_chains works", {
@@ -106,8 +109,8 @@ test_that("draws_of using with_chains works", {
 # unique, duplicated, etc -------------------------------------------------
 
 test_that("unique.rvar and duplicated.rvar work", {
-  x <- rvar_from_array(matrix(c(1,2,1, 1,2,1, 3,3,3), nrow = 3))
-  unique_x <- rvar_from_array(matrix(c(1,2, 1,2, 3,3), nrow = 2))
+  x <- rvar(matrix(c(1,1,3, 2,2,3, 1,1,3), nrow = 3))
+  unique_x <- rvar(matrix(c(1,1,3, 2,2,3), nrow = 3))
 
   expect_equal(unique(x), unique_x)
   expect_equal(as.vector(duplicated(x)), c(FALSE, FALSE, TRUE))
@@ -123,32 +126,40 @@ test_that("unique.rvar and duplicated.rvar work", {
   expect_error(unique(x, MARGIN = 3), "MARGIN = 3 is invalid")
 })
 
-# tibbles -----------------------------------------------------------------
+# match and %in% ----------------------------------------------------------
+
+test_that("%in% works on rvars", {
+  x <- rvar(matrix(c(1,1,3, 2,2,3, 1,2,3), nrow = 3))
+  res <- rvar(matrix(c(TRUE,TRUE,TRUE, FALSE,FALSE,TRUE, TRUE,FALSE,TRUE), nrow = 3))
+  expect_equal(x %in% c(1, 3), res)
+})
+
+# tibbles / dplyr --------------------------------------------------------------
 
 test_that("rvars work in tibbles", {
   skip_if_not_installed("dplyr")
   skip_if_not_installed("tidyr")
 
-  x_array = array(1:20, dim = c(4,5))
-  x = rvar_from_array(x_array)
+  x_array = array(1:20, dim = c(5,4))
+  x = rvar(x_array)
   df = tibble::tibble(x, y = x + 1)
 
   expect_equal(df$x, x)
-  expect_equal(df$y, rvar_from_array(x_array + 1))
+  expect_equal(df$y, rvar(x_array + 1))
   expect_equal(dplyr::mutate(df, z = x)$z, x)
 
-  expect_equal(dplyr::mutate(df, z = x * 2)$z, rvar_from_array(x_array * 2))
+  expect_equal(dplyr::mutate(df, z = x * 2)$z, rvar(x_array * 2))
   expect_equal(
     dplyr::mutate(dplyr::group_by(df, 1:4), z = x * 2)$z,
-    rvar_from_array(x_array * 2)
+    rvar(x_array * 2)
   )
 
   df = tibble::tibble(g = letters[1:4], x)
   ref = tibble::tibble(
-    a = rvar_from_array(x_array[1,, drop = FALSE]),
-    b = rvar_from_array(x_array[2,, drop = FALSE]),
-    c = rvar_from_array(x_array[3,, drop = FALSE]),
-    d = rvar_from_array(x_array[4,, drop = FALSE])
+    a = rvar(x_array[,1, drop = FALSE]),
+    b = rvar(x_array[,2, drop = FALSE]),
+    c = rvar(x_array[,3, drop = FALSE]),
+    d = rvar(x_array[,4, drop = FALSE])
   )
   expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref)
   expect_equal(tidyr::pivot_longer(ref, a:d, names_to = "g", values_to = "x"), df)
@@ -162,7 +173,24 @@ test_that("rvars work in tibbles", {
     d = c(rvar(NA), NA, NA, df$x[[4]]),
   )
   expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref2)
+
+  expect_equal(dplyr::first(df$x), x[1])
+
+  z = cbind(a = x, b = x + 1)
+  df$z = z
+  expect_equal(dplyr::mutate(dplyr::rowwise(df), w = z[,"b"])$w, z[,"b"])
 })
+
+
+# ggplot2 -----------------------------------------------------------------
+
+test_that("scale_type(<rvar>) works", {
+  skip_if_not_installed("ggplot2")
+
+  expect_no_condition(ggplot2::scale_type(rvar()))
+  expect_equal(ggplot2::scale_type(rvar()), "identity")
+})
+
 
 # broadcasting ------------------------------------------------------------
 
@@ -231,17 +259,4 @@ test_that("all.equal works", {
   expect_true(all.equal(x, x))
   expect_true(!isTRUE(all.equal(x, x + 1)))
   expect_true(!isTRUE(all.equal(x, "a")))
-})
-
-# apply functions ---------------------------------------------------------
-
-test_that("apply family functions work", {
-  x_array = array(1:24, dim = c(2,3,4))
-  x = rvar(x_array)
-
-  expect_equal(lapply(x, function(x) sum(draws_of(x))), as.list(apply(draws_of(x), 2, sum)))
-  expect_equal(sapply(x, function(x) sum(draws_of(x))), apply(draws_of(x), 2, sum))
-  expect_equal(vapply(x, function(x) sum(draws_of(x)), numeric(1)), apply(draws_of(x), 2, sum))
-  expect_equal(apply(x, 1, function(x) sum(draws_of(x))), apply(draws_of(x), 2, sum))
-  expect_equal(apply(x, 1:2, function(x) sum(draws_of(x))), apply(draws_of(x), 2:3, sum))
 })

@@ -18,7 +18,7 @@
 is defined.}
 
 \item{digits}{(nonnegative integer) The minimum number of significant digits
-to print.}
+to print. If \code{NULL}, defaults to \code{getOption("posterior.digits", 2)}.}
 
 \item{max_draws}{(positive integer) The maximum number of draws to print. Can
 be controlled globally via the \code{"posterior.max_draws"}

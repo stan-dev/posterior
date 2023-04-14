@@ -109,6 +109,9 @@ reference:
       - starts_with("mcse")
       - quantile2
       - rstar
+      - entropy
+      - dissent
+      - modal_category
   - title: "Functionality specific to the rvar datatype"
     desc: >
       The `draws_rvar` format (a structured list of `rvar` objects) has the same
@@ -119,10 +122,13 @@ reference:
       - chol.rvar
       - starts_with("rvar")
       - is_rvar
+      - is_rvar_factor
       - as_rvar
+      - as_rvar_factor
       - rdo
       - rfun
       - draws_of
       - diag,rvar-method
       - drop,rvar-method
       - for_each_draw
+      - match

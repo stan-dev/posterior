@@ -4,7 +4,7 @@ test_that("summarise_draws works correctly", {
   expect_true(all(default_convergence_measures() %in% names(sum_x)))
   expect_true(all(c("q5", "q95") %in% names(sum_x)))
   expect_equal(sum_x$variable, variables(x))
-  expect_equal(mean(x$mu), sum_x$mean[sum_x$variable == "mu"])
+  expect_equal(mean(x$mu), as.numeric(sum_x$mean[sum_x$variable == "mu"]))
 
   sum_x <- summarise_draws(x, mean, median)
   expect_true(all(c("mean", "median") %in% names(sum_x)))
@@ -120,6 +120,13 @@ test_that(paste(
   expect_identical(sum_x, parsum_x)
 })
 
+test_that("summarise_draws supports tibble::num correctly", {
+  x <- example_draws()
+  expect_output(
+    print(summarise_draws(x, .num_args = list(sigfig = 2, notation="dec"))),
+    "<dec:2>"
+  )
+})
 
 test_that("summarise_draws errors for invalid cores specification", {
   x <- example_draws()
@@ -143,10 +150,13 @@ test_that("summarise_draws works with variance()", {
 
   ref <- data.frame(
     variable = variables(draws_array),
-    variance = as.vector(apply(draws_array, 3, function(x) var(as.vector(x)))),
+    variance = as.vector(
+      apply(draws_array, 3, function(x) var(as.vector(x)))
+    ),
     stringsAsFactors = FALSE
   )
-  class(ref) <- class_draws_summary()
+  class(ref) <- posterior:::class_draws_summary()
+  attr(ref, "num_args") <- list()
 
   expect_equal(summarise_draws(draws_array, variance), ref)
   expect_equal(summarise_draws(draws_matrix, variance), ref)
@@ -158,4 +168,22 @@ test_that("summarise_draws works with variance()", {
   # have the same implementation of variance()
   expect_equal(variance(draws_array), var(as.vector(draws_array)))
   expect_equal(variance(draws_matrix), var(as.vector(draws_matrix)))
+})
+
+
+test_that("draws summaries can be converted to data frames", {
+  draws_matrix <- as_draws_matrix(example_draws())
+
+  ref <- data.frame(
+    variable = variables(draws_matrix),
+    mean = as.vector(colMeans(draws_matrix)),
+    # include quantiles here to ensure we test on some negative numbers,
+    # which would cause problems if formatted prematurely (#275)
+    q5 = as.vector(apply(draws_matrix, 2, quantile, probs = 0.05)),
+    q95 = as.vector(apply(draws_matrix, 2, quantile, probs = 0.95)),
+    stringsAsFactors = FALSE
+  )
+  attr(ref, "num_args") <- list()
+
+  expect_equal(as.data.frame(summarise_draws(draws_matrix, mean, quantile2)), ref)
 })

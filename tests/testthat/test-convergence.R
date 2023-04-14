@@ -63,6 +63,13 @@ test_that("mcse diagnostics return reasonable values", {
 
   mcse <- mcse_median(tau)
   expect_true(mcse > 0.2 & mcse < 0.3)
+
+  # check if issue #252 remains fixed
+  se <- mcse_quantile(tau, c(0.999999, 1))
+  expect_equivalent(se[1], se[2])
+
+  se <- mcse_quantile(tau, c(0.000001, 0))
+  expect_equivalent(se[1], se[2])
 })
 
 test_that("convergence diagnostics accept vectors as input", {

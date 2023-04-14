@@ -16,6 +16,9 @@
 #'   latter names are used. The functions can be specified in any format
 #'   supported by [as_function()][rlang::as_function]. See **Examples**.
 #' @param .args (named list) Optional arguments passed to the summary functions.
+#' @param .num_args (named list) Optional arguments passed to
+#'   [num()][tibble::num] for pretty printing of summaries. Can be controlled
+#'   globally via the `posterior.num_args` [option][base::options].
 #' @param .cores (positive integer) The number of cores to use for computing
 #'   summaries for different variables in parallel. Coerced to integer if
 #'   possible, otherwise errors. The default is `.cores = 1`, in which case no
@@ -76,6 +79,9 @@
 #' ws <- rexp(ndraws(x))
 #' summarise_draws(x, weighted.mean, .args = list(w = ws))
 #'
+#' # adjust how numerical summaries are printed
+#' summarise_draws(x, .num_args = list(sigfig = 2, notation = "dec"))
+#'
 NULL
 
 #' @rdname draws_summary
@@ -97,7 +103,12 @@ summarise_draws.default <- function(.x, ...) {
 
 #' @rdname draws_summary
 #' @export
-summarise_draws.draws <- function(.x, ..., .args = list(), .cores = 1) {
+summarise_draws.draws <- function(
+    .x, ..., .args = list(),
+    .num_args = getOption("posterior.num_args", list()),
+    .cores = 1
+  ) {
+
   if (ndraws(.x) == 0L) {
     return(empty_draws_summary())
   }
@@ -220,6 +231,8 @@ summarise_draws.draws <- function(.x, ..., .args = list(), .cores = 1) {
     }
     out <- do.call("rbind", summary_list)
   }
+
+  attr(out, "num_args") <- .num_args
   out
 }
 
@@ -243,6 +256,40 @@ summary.rvar <- function(object, ...) {
   .x <- draws_rvars(x = object)
   names(.x) <- deparse_pretty(substitute(object))
   summarise_draws(.x, ...)
+}
+
+#' Print summaries of `draws` objects
+#'
+#' Print output from [summarise_draws()].
+#' @param x (draws_summary) A `"draws_summary"` object as output by [summarise_draws()].
+#' @param num_args (named list) Optional arguments passed to
+#'   [num()][tibble::num] for pretty printing of summaries. If `NULL`
+#'   (the default), uses the arguments stored in the `"num_args"` attribute of
+#'   `x`, as set by the `.num_args` argument of [summarise_draws()], which
+#'   itself can be controlled globally via the `posterior.num_args`
+#'   [option][base::options].
+#' @param ... Additional arguments passed to [tibble::print.tbl_df()]
+#' @returns
+#' An invisible version of the input object.
+#' @examples
+#' x <- example_draws("eight_schools")
+#'
+#' # adjust how summaries are printed when calling summarise_draws()...
+#' summarise_draws(x, .num_args = list(sigfig = 2, notation = "dec"))
+#'
+#' # ... or when printing
+#' s <- summarise_draws(x)
+#' print(s, num_args = list(sigfig = 2, notation = "dec"))
+#' print(s, num_args = list(digits = 3))
+#' @export
+print.draws_summary <- function(x, ..., num_args = NULL) {
+  num_args <- num_args %||% attr(x, "num_args")
+  for (i in seq_cols(x)) {
+    if (is.numeric(x[[i]])) {
+      x[[i]] <- do.call(tibble::num, c(list(x[[i]]), num_args))
+    }
+  }
+  NextMethod()
 }
 
 #' @rdname draws_summary

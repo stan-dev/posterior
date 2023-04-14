@@ -7,10 +7,14 @@ Ops.rvar <- function(e1, e2) {
 
   if (missing(e2)) {
     # unary operators
-    return(rvar_apply_vec_fun(f, e1))
+    rvar_apply_vec_fun(f, e1)
+  } else {
+    .Ops.rvar(f, e1, as_rvar(e2))
   }
+}
 
-  c(e1, e2) %<-% conform_rvar_nchains(list(as_rvar(e1), as_rvar(e2)))
+.Ops.rvar <- function(f, e1, e2, preserve_dims = FALSE) {
+  c(e1, e2) %<-% conform_rvar_nchains(list(e1, e2))
   draws_x <- draws_of(e1)
   draws_y <- draws_of(e2)
 
@@ -26,7 +30,62 @@ Ops.rvar <- function(e1, e2) {
   draws_x <- broadcast_array(draws_x, new_dim, broadcast_scalars = broadcast_scalars)
   draws_y <- broadcast_array(draws_y, new_dim, broadcast_scalars = broadcast_scalars)
 
-  new_rvar(f(draws_x, draws_y), .nchains = nchains(e1))
+  draws <- f(draws_x, draws_y)
+
+  # for factors, we must copy the dims back over after, because base-R factor
+  # operations destroy dims (while base-R numeric array operations do not)
+  if (preserve_dims) {
+    # in the case where one of e1 or e2 is scalar and the other is not,
+    # we need to source the dims from whichever is *not* scalar, which will be
+    # the longer of the two. In any other case, we give preference to e1
+    # (draws_x) to be consistent with base R behavior
+    if (length(draws_y) > length(draws_x)) {
+      dim_source <- draws_y
+    } else {
+      dim_source <- draws_x
+    }
+    draws <- while_preserving_dims(function(...) draws, dim_source)
+  }
+
+  new_rvar(draws, .nchains = nchains(e1))
+}
+
+#' @export
+Ops.rvar_factor <- function(e1, e2) {
+  if (missing(e2) || !(.Generic %in% c("==", "!="))) {
+    stop_no_call("Cannot apply `", .Generic, "` operator to rvar_factor objects.")
+  }
+
+  .Ops.rvar_factor(.Generic, e1, e2)
+}
+
+.Ops.rvar_factor <- function(.Generic, e1, e2, ordered = FALSE) {
+  # if one arg is a character vector, must convert it to a factor first, and
+  # if the operation is comparison must make sure that it is a level in the
+  # factor object we are comparing to (otherwise we end up with NAs)
+  if (is.character(e1)) {
+    if (.Generic %in% c("==", "!=")) {
+      levels(e2) <- c(levels(e2), setdiff(e1, levels(e2)))
+    }
+    e1 <- as_rvar_factor(e1, levels = levels(e2), ordered = ordered)
+  }
+  if (is.character(e2)) {
+    if (.Generic %in% c("==", "!=")) {
+      levels(e1) <- c(levels(e1), setdiff(e2, levels(e1)))
+    }
+    e2 <- as_rvar_factor(e2, levels = levels(e1), ordered = ordered)
+  }
+
+  .Ops.rvar(get(.Generic), as_rvar(e1), as_rvar(e2), preserve_dims = TRUE)
+}
+
+#' @export
+Ops.rvar_ordered <- function(e1, e2) {
+  if (missing(e2) || !(.Generic %in% c("==", "!=", "<", ">", "<=", ">="))) {
+    stop_no_call("Cannot apply `", .Generic, "` operator to rvar_ordered objects.")
+  }
+
+  .Ops.rvar_factor(.Generic, e1, e2, ordered = TRUE)
 }
 
 #' @export
@@ -42,6 +101,10 @@ Math.rvar <- function(x, ...) {
   }
 }
 
+#' @export
+Math.rvar_factor <- function(x, ...) {
+  stop_no_call("Cannot apply `", .Generic, "` function to rvar_factor objects.")
+}
 
 # matrix stuff ---------------------------------------------------
 
@@ -101,6 +164,10 @@ Math.rvar <- function(x, ...) {
   x <- as_rvar(x)
   y <- as_rvar(y)
 
+  if (is_rvar_factor(x) || is_rvar_factor(y)) {
+    stop_no_call("Cannot apply `%**%` operator to rvar_factor objects.")
+  }
+
   # ensure everything is a matrix by adding dimensions as necessary to make `x`
   # a row vector and `y` a column vector
   ndim_x <- length(dim(x))
@@ -155,7 +222,7 @@ Math.rvar <- function(x, ...) {
 #' @export
 chol.rvar <- function(x, ...) {
   # ensure x is a matrix
-  if (length(dim(x)) != 2) {
+  if (length(dim(x)) != 2 || is_rvar_factor(x)) {
     stop_no_call("`x` must be a random matrix")
   }
 
@@ -252,7 +319,7 @@ t.rvar = function(x) {
     dimnames(.draws) = c(.dimnames[1], list(NULL), .dimnames[2])
     result <- new_rvar(.draws, .nchains = nchains(x))
   } else if (ndim == 3) {
-    .draws <- aperm(.draws, c(1, 3, 2))
+    .draws <- while_preserving_levels(aperm, .draws, c(1, 3, 2))
     result <- new_rvar(.draws, .nchains = nchains(x))
   } else {
     stop_no_call("argument is not a random vector or matrix")
@@ -262,6 +329,6 @@ t.rvar = function(x) {
 
 #' @export
 aperm.rvar = function(a, perm, ...) {
-  .draws <- aperm(draws_of(a), c(1, perm + 1), ...)
-  new_rvar(.draws, .nchains = nchains(a))
+  draws_of(a) <- while_preserving_levels(aperm, draws_of(a), c(1, perm + 1), ...)
+  a
 }

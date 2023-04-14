@@ -65,25 +65,7 @@ for_each_draw <- function(x, expr) {
   env <- parent.frame()
 
   for (i in seq_len(ndraws(x_rvars))) {
-    variables <- lapply(x_rvars, function(variable) {
-      draws <- draws_of(variable)
-      .dim <- dim(variable)
-      ndim <- length(.dim)
-
-      if (ndim <= 1) {
-        # treat 0- and 1-dimensional arrays as vectors
-        draws <- draws[i, ]
-        dim(draws) <- NULL
-        names(draws) <- names(variable)
-      } else {
-        dim(draws) <- c(NROW(draws), length(variable))
-        draws <- draws[i, ]
-        dim(draws) <- .dim
-        dimnames(draws) <- dimnames(variable)
-      }
-
-      draws
-    })
+    variables <- get_variables_from_one_draw(x_rvars, i)
     variables$.draw = i
     eval_tidy(expr, data = variables, env = env)
   }

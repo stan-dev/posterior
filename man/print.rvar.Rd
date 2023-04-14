@@ -7,9 +7,16 @@
 \alias{str.rvar}
 \title{Print or format a random variable}
 \usage{
-\method{print}{rvar}(x, ..., summary = NULL, digits = 2, color = TRUE)
+\method{print}{rvar}(
+  x,
+  ...,
+  summary = NULL,
+  digits = NULL,
+  color = TRUE,
+  width = getOption("width")
+)
 
-\method{format}{rvar}(x, ..., summary = NULL, digits = 2, color = FALSE)
+\method{format}{rvar}(x, ..., summary = NULL, digits = NULL, color = FALSE)
 
 \method{str}{rvar}(
   object,
@@ -26,17 +33,31 @@
 
 \item{...}{Further arguments passed to the underlying \code{\link[=print]{print()}} methods.}
 
-\item{summary}{(string) The style of summary to display: \code{"mean_sd"} displays
-\verb{mean±sd}, \code{"median_mad"} displays \verb{median±mad}. If \code{NULL},
-\code{getOption("posterior.rvar_summary")} is used (default \verb{"mean_sd}).}
+\item{summary}{(string) The style of summary to display:
+\itemize{
+\item \code{"mean_sd"} displays \verb{mean ± sd}
+\item \code{"median_mad"} displays \verb{median ± mad}
+\item \code{"mode_entropy"} displays \verb{mode <entropy>}, and is used automatically for
+\code{\link{rvar_factor}}s. It shows normalized entropy, which ranges from
+0 (all probability in one category) to 1 (uniform). See \code{\link[=entropy]{entropy()}}.
+\item \code{"mode_dissent"} displays \verb{mode <dissent>}, and is used automatically for
+\code{\link{rvar_ordered}}s. It shows Tastle and Wierman's (2007) \emph{dissention}
+measure, which ranges from 0 (all probability in one category) through
+0.5 (uniform) to 1 (bimodal: all probability split equally between the
+first and last category). See \code{\link[=dissent]{dissent()}}.
+\item \code{NULL} uses \code{getOption("posterior.rvar_summary")} (default \verb{"mean_sd})
+}}
 
 \item{digits}{(nonnegative integer) The minimum number of significant digits
-to print.}
+to print. If \code{NULL}, defaults to \code{getOption("posterior.digits", 2)}.}
 
 \item{color}{(logical) Whether or not to use color when formatting the
 output. If \code{TRUE}, the \code{\link[pillar:style_subtle]{pillar::style_num()}} functions may be used to
 produce strings containing control sequences to produce colored output on
 the terminal.}
+
+\item{width}{The maxmimum width used to print out lists of factor levels
+for \code{\link{rvar_factor}}s. See \code{\link[=format]{format()}}.}
 
 \item{vec.len}{(nonnegative integer) How many 'first few' elements are
 displayed of each vector. If \code{NULL}, defaults to
@@ -84,4 +105,10 @@ str(x)
 
 format(x)
 
+}
+\references{
+William J. Tastle, Mark J. Wierman (2007). Consensus and dissention: A measure
+of ordinal dispersion. \emph{International Journal of Approximate Reasoning}.
+45(3), 531--545.
+\doi{10.1016/j.ijar.2006.06.024}.
 }
