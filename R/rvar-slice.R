@@ -1,4 +1,4 @@
-#' @importFrom rlang eval_tidy is_missing missing_arg dots_list
+#' @importFrom rlang inject is_missing missing_arg dots_list
 #' @export
 `[[.rvar` <- function(x, i, ...) {
   index <- check_rvar_yank_index(x, i, ...)
@@ -16,7 +16,7 @@
     out <- new_rvar(.draws, .nchains = nchains(x))
   } else if (length(index) == length(dim(x))) {
     # multiple element selection => must have exactly the right number of dims
-    .draws <- eval_tidy(expr(draws_of(x)[, !!!index, drop = FALSE]))
+    .draws <- inject(draws_of(x)[, !!!index, drop = FALSE])
     # must do drop manually in case the draws dimension has only 1 draw
     dim(.draws) <- c(ndraws(x), 1)
     out <- new_rvar(.draws, .nchains = nchains(x))
@@ -55,28 +55,44 @@
     }
   } else if (length(index) == length(dim(x))) {
     # multiple element selection => must have exactly the right number of dims
-    x <- eval_tidy(expr({
+    x <- inject({
       draws_of(x)[, !!!index] <- draws_of(value)
       x
-    }))
+    })
   } else {
     stop_no_call("subscript out of bounds")
   }
   x
 }
 
-#' @importFrom rlang dots_list eval_tidy is_missing missing_arg expr
+#' @importFrom rlang dots_list inject is_missing missing_arg expr
 #' @export
 `[.rvar` <- function(x, ..., drop = FALSE) {
   check_rvar_subset_indices(x, ...)
-  .draws = draws_of(x)
-  .dim = dim(.draws)
+  index <- dots_list(..., .ignore_empty = "none", .preserve_empty = TRUE)
+
+  # check for indexing of draws
+  if (length(index) == 1 && is_rvar(index[[1]])) {
+    # indexing by a scalar rvar, use it as a draws index
+    # this kind of indexing must ignore chains
+    nchains_rvar(x) <- 1L
+    nchains_rvar(index[[1]]) <- 1L
+    list(x, i) %<-% conform_rvar_ndraws_nchains(list(x, index[[1]]))
+    index <- list()
+    draws_index <- list(draws_of(i))
+  } else {
+    # not indexing draws, so draws_index is empty
+    # must store draws_index as a list to safely pass around the missing argument
+    draws_index <- list(missing_arg())
+  }
+
+  .draws <- draws_of(x)
+  .dim <- dim(.draws)
 
   # clean up the indices: because we have to index using the multi-index
   # notation x[,...] (to account for draws) and this notation has slightly
   # different semantics for NAs from the way that x[i] works, have to do a bit
   # of translation here
-  index = dots_list(..., .ignore_empty = "none", .preserve_empty = TRUE)
   for (i in seq_along(index)) {
     if (is.numeric(index[[i]])) {
       # numeric indices outside the range of the corresponding dimension
@@ -120,9 +136,9 @@
     index[seq(length(index) + 1, length(dim(.draws)) - 1)] = list(missing_arg())
   }
 
-  x <- eval_tidy(expr(
-    new_rvar(.draws[, !!!index, drop = FALSE], .nchains = nchains(x))
-  ))
+  x <- inject(
+    new_rvar(.draws[!!!draws_index, !!!index, drop = FALSE], .nchains = nchains(x))
+  )
 
   if (drop) {
     x <- drop(x)
