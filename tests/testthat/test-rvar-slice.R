@@ -217,6 +217,25 @@ test_that("indexing with [ works on an array", {
   expect_equal(x[1,], x[1,,])
 })
 
+test_that("indexing with x[<rvar>] for logical index works", {
+  .dimnames <- list(1:4, A = paste0("a", 1:3), B = paste0("b", 1:2))
+  x_array <- array(1:24, dim = c(4,3,2), dimnames = .dimnames)
+  x <- rvar(x_array, nchains = 2)
+  x_1_chain <- rvar(x_array)
+
+  expect_equal(x[rvar(FALSE)], rvar())
+  expect_equal(x[rvar(NA)], rvar(array(
+    rep(NA_integer_, 24), dim = c(4,3,2), dimnames = c(list(rep(NA, 4)), .dimnames[-1])
+  )))
+  expect_equal(x[rvar(TRUE)], x_1_chain)
+  expect_equal(x[rvar(c(TRUE,FALSE,TRUE,FALSE))], rvar(x_array[c(TRUE,FALSE,TRUE,FALSE),,]))
+
+  expect_error(x[rvar(1:4)], "scalar logical")
+  expect_error(x[rvar(c(TRUE,TRUE))], "different number of draws")
+  expect_error(x[rvar(c(TRUE,TRUE,TRUE,TRUE,TRUE))], "different number of draws")
+  expect_error(x[as_rvar(c(TRUE,FALSE))], "scalar logical")
+})
+
 
 # [ assignment ------------------------------------------------------------
 
@@ -285,4 +304,41 @@ test_that("assignment with [ works", {
   x <- rvar_from_array(x_array)
   x[c(11,12,2)] <- rvar(matrix(1:6, nrow = 2))
   expect_equal(x, x_ref)
+})
+
+test_that("assignment with x[<rvar>] for logical index works", {
+  .dimnames <- list(1:4, A = paste0("a", 1:3), B = paste0("b", 1:2))
+  x_array <- array(1:24, dim = c(4,3,2), dimnames = .dimnames)
+  x <- rvar(x_array, nchains = 2)
+  x_1_chain <- rvar(x_array)
+
+  expect_equal({x2 <- x; x2[rvar(FALSE)] <- 1; x2}, x)
+  expect_equal({x2 <- x; x2[rvar(NA)] <- 1; x2}, x)
+  expect_equal({x2 <- x; x2[rvar(TRUE)] <- x_1_chain + 1; x2}, x + 1)
+
+  ref_array <- x_array
+  ref_array[1,,] <- 99:101
+  ref_array[3,,] <- 99:101
+  ref <- rvar(ref_array, nchains = 2)
+  expect_equal({x2 <- x; x2[rvar(c(TRUE,FALSE,TRUE,FALSE))] <- 99:101; x2}, ref)
+  ref_array[1,,] <- 99
+  ref_array[3,,] <- 100
+  ref <- rvar(ref_array, nchains = 2)
+  expect_equal({x2 <- x; x2[rvar(c(TRUE,FALSE,TRUE,FALSE))] <- rvar(c(99, 100)); x2}, ref)
+  ref_array[1,,] <- 99
+  ref_array[3,,] <- 99
+  ref <- rvar(ref_array, nchains = 2)
+  expect_equal({x2 <- x; x2[rvar(c(TRUE,FALSE,TRUE,FALSE))] <- 99; x2}, ref)
+  expect_equal(
+    {x2 <- x; x2[rvar(c(TRUE,FALSE,TRUE,FALSE))] <- x2[rvar(c(TRUE,FALSE,TRUE,FALSE))]; x2},
+    x
+  )
+  ref_array <- x_array
+  ref_array[2,,] <- 1
+  ref_array[4,,] <- 1
+  ref <- rvar(ref_array, nchains = 2)
+  expect_equal({x2 <- x; x2[rvar(c(NA,TRUE,FALSE,TRUE))] <- 1; x2}, ref)
+
+  expect_error({x2 <- x; x2[as_rvar(c(TRUE,FALSE))] <- c(99,100)}, "scalar logical")
+  expect_error({x2 <- x; x2[rvar(c(TRUE,FALSE,TRUE,FALSE))] <- c(99,100)}, "Cannot broadcast")
 })

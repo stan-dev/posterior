@@ -1,5 +1,11 @@
 # posterior (development version)
 
+### Enhancements
+
+* Added support for indexing draws in `rvar`s via `[.rvar` and `[<-.rvar`. A 
+  single, scalar logical `rvar` can now be used to slice an `rvar` by its
+  draws; e.g. using `x[i]` or `x[i] <- y` where `i` is an `rvar` (#282).
+
 ### Bug Fixes
 
 * Ensure `rfun()` works with primitive functions (#290) and dots arguments (#291).

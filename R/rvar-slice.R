@@ -73,11 +73,16 @@
 
   # check for indexing of draws
   if (length(index) == 1 && is_rvar(index[[1]])) {
+    i <- index[[1]]
+    if (!is.logical(draws_of(i)) || length(i) != 1) {
+      stop_no_call("`x[i]` for rvars `x` and `i` is only supported when `i` is a scalar logical rvar.")
+    }
+
     # indexing by a scalar rvar, use it as a draws index
     # this kind of indexing must ignore chains
     nchains_rvar(x) <- 1L
-    nchains_rvar(index[[1]]) <- 1L
-    c(x, i) %<-% conform_rvar_ndraws(list(x, index[[1]]))
+    nchains_rvar(i) <- 1L
+    c(x, i) %<-% conform_rvar_ndraws(list(x, i))
     index <- list()
     draws_index <- list(draws_of(i))
   } else {
@@ -150,7 +155,7 @@
 #' @export
 `[<-.rvar` <- function(x, i, ..., value) {
   if (missing(i)) i = missing_arg()
-  if (length(dim(x)) == 1 && !missing(i) && any(i > length(x), na.rm = TRUE)) {
+  if (length(dim(x)) == 1 && !missing(i) && is.numeric(i) && any(i > length(x), na.rm = TRUE)) {
     # unidimensional indexing allows array extension; extend the array
     # before we do the assignment
     x <- x[seq_len(max(i, na.rm = TRUE))]
@@ -159,20 +164,20 @@
   value <- vec_cast(value, x)
 
   # check to see if we're doing any draw indexing
-  if (!missing(i) && is_rvar(i) && length(i) == 1L && missing(...)) {
+  if (!missing(i) && is_rvar(i)) {
+    if (!is.logical(draws_of(i)) || length(i) != 1L || !missing(...)) {
+      stop_no_call("`x[i]` for rvars `x` and `i` is only supported when `i` is a single, scalar logical rvar.")
+    }
+
     # for the purposes of this kind of assignment, we check draws only, not chains,
     # as chain information is irrelevant when subsetting by draw
     c(x, i) %<-% conform_rvar_ndraws(list(x, i))
     draws_index <- draws_of(i)
 
-    # necessary number of draws in value is determined by whether or not
+    # necessary number of draws in `value` is determined by whether or not
     # we're doing logical indexing
-    value_ndraws <- if (is.logical(draws_index)) {
-      sum(draws_index)
-    } else {
-      length(i)
-    }
-    value <- broadcast_draws(value, value_ndraws)
+    value_ndraws <- sum(draws_index, na.rm = TRUE)
+    draws_of(value) <- broadcast_array(draws_of(value), c(value_ndraws, dim(x)), broadcast_scalars = FALSE)
     i <- missing_arg()
   } else {
     c(x, value) %<-% conform_rvar_ndraws_nchains(list(x, value))
