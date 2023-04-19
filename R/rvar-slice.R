@@ -77,7 +77,7 @@
     # this kind of indexing must ignore chains
     nchains_rvar(x) <- 1L
     nchains_rvar(index[[1]]) <- 1L
-    list(x, i) %<-% conform_rvar_ndraws_nchains(list(x, index[[1]]))
+    c(x, i) %<-% conform_rvar_ndraws(list(x, index[[1]]))
     index <- list()
     draws_index <- list(draws_of(i))
   } else {
@@ -157,7 +157,27 @@
   }
 
   value <- vec_cast(value, x)
-  c(x, value) %<-% conform_rvar_ndraws_nchains(list(x, value))
+
+  # check to see if we're doing any draw indexing
+  if (!missing(i) && is_rvar(i) && length(i) == 1L && missing(...)) {
+    # for the purposes of this kind of assignment, we check draws only, not chains,
+    # as chain information is irrelevant when subsetting by draw
+    c(x, i) %<-% conform_rvar_ndraws(list(x, i))
+    draws_index <- draws_of(i)
+
+    # necessary number of draws in value is determined by whether or not
+    # we're doing logical indexing
+    value_ndraws <- if (is.logical(draws_index)) {
+      sum(draws_index)
+    } else {
+      length(i)
+    }
+    value <- broadcast_draws(value, value_ndraws)
+    i <- missing_arg()
+  } else {
+    c(x, value) %<-% conform_rvar_ndraws_nchains(list(x, value))
+    draws_index <- missing_arg()
+  }
 
   if (missing(...)) {
     # index over entire array: flatten array so that the  index
@@ -165,7 +185,7 @@
     original_dim <- dim(draws_of(x))
     original_dimnames <- dimnames(draws_of(x))
 
-    if (is.matrix(i) && ncol(i) == length(original_dim) - 1) {
+    if (!missing(i) && is.matrix(i) && ncol(i) == length(original_dim) - 1) {
       # matrix-based indexing, like x[cbind(2,1,2)] <- y
       # => translate matrix-based indices into unidimensional indices
       i <- matrix_to_index(i, original_dim[-1])
@@ -173,7 +193,7 @@
 
     #flatten and assign
     dim(x) <- length(x)
-    draws_of(x)[,i] <- draws_of(value)
+    draws_of(x)[draws_index,i] <- draws_of(value)
 
     # unflatten and restore dimnames
     dim(draws_of(x)) <- original_dim

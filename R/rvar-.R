@@ -509,12 +509,10 @@ conform_rvar_nchains <- function(rvars) {
   rvars
 }
 
-# given two rvars, conform their number of draws and chains
+# given two rvars, conform their number of draws
 # so they can be used together (or throw an error if they can't be)
 # @param keep_constants keep constants as 1-draw rvars
-conform_rvar_ndraws_nchains <- function(rvars, keep_constants = FALSE) {
-  rvars <- conform_rvar_nchains(rvars)
-
+conform_rvar_ndraws <- function(rvars, keep_constants = FALSE) {
   # broadcast to a common number of chains. If keep_constants = TRUE,
   # constants will not be broadcast.
   .ndraws = Reduce(ndraws2_common, lapply(rvars, ndraws))
@@ -522,6 +520,15 @@ conform_rvar_ndraws_nchains <- function(rvars, keep_constants = FALSE) {
     rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws, keep_constants)
   }
 
+  rvars
+}
+
+# given two rvars, conform their number of draws and chains
+# so they can be used together (or throw an error if they can't be)
+# @param keep_constants keep constants as 1-draw rvars
+conform_rvar_ndraws_nchains <- function(rvars, keep_constants = FALSE) {
+  rvars <- conform_rvar_nchains(rvars)
+  rvars <- conform_rvar_ndraws(rvars)
   rvars
 }
 
