@@ -225,10 +225,10 @@ test_that("indexing with x[<rvar>] for logical index works", {
 
   expect_equal(x[rvar(FALSE)], rvar())
   expect_equal(x[rvar(NA)], rvar(array(
-    rep(NA_integer_, 24), dim = c(4,3,2), dimnames = c(list(rep(NA, 4)), .dimnames[-1])
-  )))
+    rep(NA_integer_, 24), dim = c(4,3,2), dimnames = .dimnames)
+  ))
   expect_equal(x[rvar(TRUE)], x_1_chain)
-  expect_equal(x[rvar(c(TRUE,FALSE,TRUE,FALSE))], rvar(x_array[c(TRUE,FALSE,TRUE,FALSE),,]))
+  expect_equal(x[rvar(c(TRUE,FALSE,TRUE,FALSE))], repair_draws(rvar(x_array[c(TRUE,FALSE,TRUE,FALSE),,])))
 
   expect_error(x[rvar(1:4)], "scalar logical")
   expect_error(x[rvar(c(TRUE,TRUE))], "different number of draws")

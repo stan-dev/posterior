@@ -86,7 +86,7 @@ repair_draws.rvar <- function(x, order = TRUE, ...) {
       x <- merge_chains(x)
     }
   }
-  rownames(draws_of(x)) <- as.character(seq_rows(draws_of(x)))
+  rownames(draws_of(x)) <- seq_rows(draws_of(x))
   x
 }
 

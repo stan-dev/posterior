@@ -145,6 +145,11 @@
     new_rvar(.draws[!!!draws_index, !!!index, drop = FALSE], .nchains = nchains(x))
   )
 
+  if (!is_missing(draws_index[[1]])) {
+    # if we subsetted draws, replace draw ids with sequential ids
+    rownames(draws_of(x)) <- seq_len(ndraws(x))
+  }
+
   if (drop) {
     x <- drop(x)
   }
