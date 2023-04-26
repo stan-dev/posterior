@@ -111,6 +111,7 @@ test_that("print.draws_list handles reserved variables correctly", {
 })
 
 test_that("print.draws_rvars handles reserved variables correctly", {
+  skip_on_cran()
   skip_on_os("windows")
   x <- as_draws_rvars(example_draws())
   variables(x)[1] <- ".log_weight" # reserved name

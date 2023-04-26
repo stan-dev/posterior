@@ -19,7 +19,7 @@
 is defined.}
 
 \item{digits}{(nonnegative integer) The minimum number of significant digits
-to print.}
+to print. If \code{NULL}, defaults to \code{getOption("posterior.digits", 2)}.}
 
 \item{max_iterations}{(positive integer) The maximum number of iterations to
 print. Can be controlled globally via the \code{"posterior.max_iterations"}

@@ -351,6 +351,14 @@ test_that("as_draws_rvars can accept lists of lists as input", {
   expect_equal(as_draws_rvars(example_draws()), as_draws_rvars(list_of_lists))
 })
 
+test_that("as_draws_rvars preserves dims of length-1 arrays", {
+  draws_array <- draws_array(`x[1,1,1]` = 1:5)
+  expect_equal(
+    draws_of(as_draws_rvars(draws_array)$x),
+    array(1:5, dim = c(5, 1, 1, 1), dimnames = list(1:5, NULL, NULL, NULL))
+  )
+})
+
 test_that("draws_df does not munge variable names", {
   draws_df <- draws_df(`x[1]` = 1:2, `x[2]` = 3:4)
   expect_equal(variables(draws_df), c("x[1]", "x[2]"))
@@ -366,6 +374,8 @@ test_that("draws_df can roundtrip through data.frame", {
 })
 
 test_that("draws_df drops the draws class when metadata is removed", {
+  skip_if_not_installed("dplyr")
+
   draws_df <- as_draws_df(example_draws())
 
   expect_equal(dplyr::count(draws_df, .chain), tibble::tibble(.chain = 1:4, n = 100L))
@@ -463,4 +473,66 @@ test_that("1-length rvars can be cast to other formats", {
   expect_equal(as_draws_df(x), draws_df(`x[1,1]` = 1:10))
   expect_equal(as_draws_list(x), draws_list(`x[1,1]` = 1:10))
   expect_equal(as_draws_matrix(x), draws_matrix(`x[1,1]` = 1:10))
+})
+
+
+# discrete variables ------------------------------------------------------
+
+test_that("conversion between formats supporting discrete variables work", {
+  draws_rvars <- draws_rvars(
+    y = rvar_factor(array(letters[1:24], dim = c(2,2,3,2)), with_chains = TRUE),
+    z = rvar_ordered(array(letters[1:12], dim = c(2,2,3)), with_chains = TRUE),
+    x = rvar(array(1:12, dim = c(2,2,3)), with_chains = TRUE)
+  )
+
+  draws <- list(
+    df = as_draws_df(draws_rvars),
+    list = as_draws_list(draws_rvars),
+    rvars = draws_rvars
+  )
+
+  expect_equal(levels(draws$df[["z[1]"]]), levels(draws_rvars$z))
+  expect_equal(levels(draws$list[[1]][["z[1]"]]), levels(draws_rvars$z))
+
+  for (type in names(draws)) {
+    expect_equal(as_draws_df(draws[[!!type]]), draws$df)
+    expect_equal(as_draws_list(draws[[!!type]]), draws$list)
+    expect_equal(as_draws_rvars(draws[[!!type]]), draws$rvars)
+  }
+})
+
+test_that("lossy conversion to formats that don't support discrete variables works", {
+  draws_rvars <- draws_rvars(
+    y = rvar_factor(array(letters[1:24], dim = c(2,2,3,2)), with_chains = TRUE),
+    z = rvar_ordered(array(letters[1:12], dim = c(2,2,3)), with_chains = TRUE),
+    x = rvar(array(1:12, dim = c(2,2,3)), with_chains = TRUE)
+  )
+
+  draws <- list(
+    df = as_draws_df(draws_rvars),
+    list = as_draws_list(draws_rvars),
+    rvars = draws_rvars
+  )
+
+  lossy_draws_rvars <- draws_rvars(
+    y = rvar(array(1:24, dim = c(2,2,3,2)), with_chains = TRUE),
+    z = rvar(array(1:12, dim = c(2,2,3)), with_chains = TRUE),
+    x = rvar(array(1:12, dim = c(2,2,3)), with_chains = TRUE)
+  )
+
+  lossy_draws <- list(
+    array = as_draws_array(lossy_draws_rvars),
+    matrix = as_draws_matrix(lossy_draws_rvars)
+  )
+
+  for (type in names(draws)) {
+    expect_warning(
+      expect_equal(as_draws_array(draws[[!!type]]), lossy_draws$array),
+      "draws_array does not support non-numeric variables"
+    )
+    expect_warning(
+      expect_equal(as_draws_matrix(draws[[!!type]]), lossy_draws$matrix),
+      "draws_matrix does not support non-numeric variables"
+    )
+  }
 })

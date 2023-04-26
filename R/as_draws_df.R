@@ -95,8 +95,7 @@ as_draws_df.draws_list <- function(x, ...) {
   iteration_ids <- iteration_ids(x)
   chain_ids <- chain_ids(x)
   vars <- names(x[[1L]])
-  x <- do.call(rbind.data.frame, x)
-  colnames(x) <- vars
+  x <- do.call(vctrs::vec_rbind, lapply(x, vctrs::new_data_frame))
   x <- tibble::as_tibble(x)
   x[[".chain"]] <- rep(chain_ids, each = max(iteration_ids))
   x[[".iteration"]] <- rep(iteration_ids, max(chain_ids))
@@ -108,7 +107,21 @@ as_draws_df.draws_list <- function(x, ...) {
 #' @rdname draws_df
 #' @export
 as_draws_df.draws_rvars <- function(x, ...) {
-  as_draws_df(as_draws_array(x), ...)
+  if (ndraws(x) == 0L) {
+    return(empty_draws_df(variables(x)))
+  }
+  out <- do.call(cbind, lapply(seq_along(x), function(i) {
+    # flatten each rvar so it only has two dimensions: draws and variables
+    # this also collapses indices into variable names in the format "var[i,j,k,...]"
+    flatten_rvar_draws_to_df(x[[i]], names(x)[[i]])
+  }))
+  iteration_ids <- iteration_ids(x)
+  chain_ids <- chain_ids(x)
+  out[[".chain"]] <- rep(chain_ids, each = max(iteration_ids))
+  out[[".iteration"]] <- rep(iteration_ids, max(chain_ids))
+  out[[".draw"]] <- draw_ids(x)
+  class(out) <- class_draws_df()
+  out
 }
 
 #' @rdname draws_df
@@ -211,8 +224,7 @@ is_draws_df_like <- function(x) {
 }
 
 # This generic is not exported here as {dplyr} is only in Suggests, so
-# we must export it in .onLoad() for compatibility with r < 3.6. See
-# help("s3_register", package = "vctrs") for more information.
+# we must export it in .onLoad() for compatibility with R < 3.6.
 dplyr_reconstruct.draws_df <- function(data, template) {
   data <- NextMethod("dplyr_reconstruct")
   data <- drop_draws_class_if_metadata_removed(data, warn = FALSE)

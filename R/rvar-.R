@@ -13,15 +13,19 @@
 #'     distribution (see **Examples**). Optionally,
 #'     if `with_chains == TRUE`, the first dimension indexes the iteration and the
 #'     second dimension indexes the chain (see `with_chains`).
+#'   * An `rvar`.
 #' @template args-rvar-dim
 #' @template args-rvar-dimnames
-#' @param nchains (positive integer) The number of chains. The default is `1`.
+#' @param nchains (positive integer) The number of chains. The if `NULL` (the default),
+#' `1` is used unless `x` is already an [`rvar`], in which case the number of
+#' chains it has is used.
 #' @param with_chains (logical) Does `x` include a dimension for chains?
 #' If `FALSE` (the default), chains are not included, the first dimension of
 #' the input array should index draws, and the `nchains` argument can be
 #' used to determine the number of chains. If `TRUE`, the `nchains` argument
 #' is ignored and the second dimension of `x` is used to index chains.
 #' Internally, the array will be converted to a format without the chain index.
+#' Ignored when `x` is already an [`rvar`].
 #'
 #' @details
 #'
@@ -86,11 +90,19 @@
 #' x
 #'
 #' @export
-rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = 1L, with_chains = FALSE) {
+rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE) {
+  if (is_rvar(x)) {
+    nchains <- nchains %||% nchains(x)
+    with_chains = FALSE
+    x <- draws_of(x)
+  }
+
   with_chains <- as_one_logical(with_chains)
   if (with_chains) {
     nchains <- dim(x)[[2]] %||% 1L
     x <- drop_chain_dim(x)
+  } else {
+    nchains <- nchains %||% 1L
   }
 
   out <- new_rvar(x, .nchains = nchains)
@@ -111,7 +123,7 @@ new_rvar <- function(x = double(), .nchains = 1L) {
     x <- double()
   }
 
-  x <- cleanup_draw_dims(as.array(x))
+  x <- cleanup_rvar_draws(x)
 
   .ndraws <- dim(x)[[1]]
   .nchains <- as_one_integer(.nchains)
@@ -121,13 +133,10 @@ new_rvar <- function(x = double(), .nchains = 1L) {
     list(),
     draws = x,
     nchains = .nchains,
-    class = c("rvar", "vctrs_vctr", "list"),
+    class = get_rvar_class(x),
     cache = new.env(parent = emptyenv())
   )
 }
-
-#' @importFrom methods setOldClass
-setOldClass(c("rvar", "vctrs_vctr", "list"))
 
 
 # manipulating raw draws array --------------------------------------------
@@ -215,7 +224,10 @@ draws_of <- function(x, with_chains = FALSE) {
   } else {
     draws <- value
   }
-  attr(x, "draws") <- cleanup_draw_dims(draws)
+
+  draws <- cleanup_rvar_draws(draws)
+  attr(x, "draws") <- draws
+  class(x) <- get_rvar_class(draws)
 
   x <- invalidate_rvar_cache(x)
   x
@@ -223,12 +235,6 @@ draws_of <- function(x, with_chains = FALSE) {
 
 
 # misc standard methods --------------------------------------------------
-
-#' @export
-levels.rvar <- function(x) {
-  # TODO: implement for factor-like rvars
-  NULL
-}
 
 #' @export
 rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
@@ -256,10 +262,9 @@ rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
   out
 }
 
-#' @method rep.int rvar
-#' @export
-rep.int.rvar <- function(x, times) {
-  rep(x, times = times)
+#' @rawNamespace S3method(rep.int,rvar,rep_int_rvar)
+rep_int_rvar <- function(x, times, ...) {
+  rep(x, times = times, ...)
 }
 
 #' @method rep_len rvar
@@ -320,6 +325,98 @@ all.equal.rvar <- function(target, current, ...) {
 
   if (is.null(result)) TRUE else result
 }
+
+
+# match and %in% ----------------------------------------------------------
+
+#' Value Matching
+#'
+#' Generic version of [base::match()]. For base vectors, returns a vector of the
+#' positions of (first) matches of its first argument in its second. For [rvar]s,
+#' returns an [rvar] of the matches.
+#'
+#' @inheritDotParams base::match
+#' @param x (multiple options) the values to be matched. Can be:
+#'  - A base vector: see [base::match()]
+#'  - An [rvar]
+#' @param table (vector) the values to be matched against.
+#'
+#' @details
+#' For more information on how match behaves with base vectors, see [base::match()].
+#'
+#' When `x` is an [rvar], the draws of `x` are matched against `table` using
+#' [base::match()], and the result is returned as an [rvar].
+#'
+#' The implementation of `%in%` here is identical to \code{base::%in%}, except
+#' it uses the generic version of `match()` so that non-base vectors (such
+#' as [rvar]s) are supported.
+#'
+#' @returns
+#' When `x` is a base vector, a vector of the same length as `x`.
+#'
+#' When `x` is an [rvar], an [rvar] the same shape as `x`.
+#' @examples
+#' x <- rvar(c("a","b","b","c","d"))
+#' x %in% c("b","d")
+#'
+#' # for additional examples, see base::match()
+#' @export
+match <- function(x, table, ...) UseMethod("match")
+
+#' @rdname match
+#' @export
+match.default <- function(x, ...) base::match(x, ...)
+
+#' @rdname match
+#' @export
+match.rvar <- function(x, ...) {
+  draws_of(x) <- while_preserving_dims(base::match, draws_of(x), ...)
+  x
+}
+
+#' @rdname match
+#' @export
+`%in%` <- function(x, table) {
+  match(x, table, nomatch = 0L) > 0L
+}
+
+
+# ggplot2::scale_type -----------------------------------------------------
+
+# This generic is not exported here as {ggplot2} is only in Suggests, so
+# we must export it in .onLoad() for compatibility with R < 3.6.
+scale_type.rvar <- function(x) {
+  # ensure that rvars used in ggplot2 aesthetics (as in e.g. ggdist) are passed
+  # through without modification and without raising a warning
+  "identity"
+}
+
+
+# helpers: classes --------------------------------------------------------
+
+get_rvar_class <- function(x) {
+  UseMethod("get_rvar_class")
+}
+
+#' @export
+get_rvar_class.default <- function(x) {
+  c("rvar", "vctrs_vctr")
+}
+
+#' @export
+get_rvar_class.factor <- function(x) {
+  c("rvar_factor", NextMethod())
+}
+
+#' @export
+get_rvar_class.ordered <- function(x) {
+  c("rvar_ordered", NextMethod())
+}
+
+#' @importFrom methods setOldClass
+setOldClass(get_rvar_class(numeric()))
+setOldClass(get_rvar_class(factor()))
+setOldClass(get_rvar_class(ordered(NULL)))
 
 
 # helpers: validation -----------------------------------------------------------------
@@ -452,9 +549,31 @@ check_rvar_dims_first <- function(x, y) {
 
 # helpers: arrays/lists -----------------------------------------------------------------
 
-# convert into a list of draws for applying a function draw-wise
-list_of_draws <- function(x) {
-  lapply(apply(draws_of(x), 1, list), `[[`, 1)
+#' Get one draw from a draws_rvars as a list of base-R variables
+#' @param x a draws_rvars
+#' @param i a draw index
+#' @returns a named list of vectors and arrays
+#' @noRd
+get_variables_from_one_draw <- function(x, i) {
+  lapply(x, function(variable) {
+    draws <- draws_of(variable)
+    .dim <- dim(variable)
+    ndim <- length(.dim)
+
+    if (ndim <= 1) {
+      # treat 0- and 1-dimensional arrays as vectors
+      draws <- draws[i, ]
+      dim(draws) <- NULL
+      names(draws) <- names(variable)
+    } else {
+      dim(draws) <- c(NROW(draws), length(variable))
+      draws <- draws[i, ]
+      dim(draws) <- .dim
+      dimnames(draws) <- dimnames(variable)
+    }
+
+    draws
+  })
 }
 
 dim2_common <- function(dim_x, dim_y) {
@@ -484,6 +603,8 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
 
   current_dim <- dim(x)
   current_dimnames <- dimnames(x)
+  current_levels <- levels(x)
+  current_class <- oldClass(x)
 
   if (length(current_dim) < length(dim)) {
     # add dimensions of size 1 as necessary so we can broadcast those
@@ -531,6 +652,10 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     dim_to_restore <- current_dim == dim
     dimnames(x)[dim_to_restore] <- current_dimnames[dim_to_restore]
   }
+
+  # restore class and levels
+  levels(x) <- current_levels
+  oldClass(x) <- current_class
 
   x
 }
@@ -585,6 +710,22 @@ flatten_array = function(x, x_name = NULL) {
   x
 }
 
+#' Fast conversion of rvar draws to a flattened data frame. Equivalent to
+#' as.data.frame(draws_of(flatten_array(x, name))) except it works with
+#' factor rvars (as.data.frame does not work on array-like factors)
+#' @noRd
+flatten_rvar_draws_to_df <- function(x, x_name = NULL) {
+  if (length(x) == 0) {
+    out <- data.frame(row.names = draw_ids(x))
+  } else {
+    draws <- draws_of(flatten_array(x, x_name))
+    cols <- lapply(seq_len(ncol(draws)), function(i) unname(draws[, i]))
+    names(cols) <- colnames(draws)
+    out <- vctrs::new_data_frame(cols)
+  }
+  out
+}
+
 #' copy the dimension names (and name of the dimension) from dimension src_i
 #' in array src to dimension dst_i in array dst
 #' @noRd
@@ -637,10 +778,11 @@ drop_chain_dim <- function(x) {
   out
 }
 
-#' Clean up the dimensions of an array of draws. Ensures that dim and dimnames
-#' are set, that the array has at least two dimensions (first one is draws), etc.
+#' Clean up the data type and dimensions of an array of draws intended to back an rvar.
+#' Ensures that dim and dimnames are set, that the array has at least two dimensions
+#' (first one is draws), etc.
 #' @noRd
-cleanup_draw_dims <- function(x) {
+cleanup_rvar_draws <- function(x) {
   if (length(x) == 0) {
     # canonical NULL rvar is at least 1 draw of nothing
     # this ensures that (e.g.) extending a null rvar
@@ -663,7 +805,58 @@ cleanup_draw_dims <- function(x) {
     rownames(x) <- as.character(seq_rows(x))
   }
 
+  # if x is a character array, make it a factor
+  if (is.character(x)) {
+    x <- while_preserving_dims(factor, x)
+  }
+
   x
+}
+
+#' Execute x <- f(x, ...) but preserve dimensions and dimension names of x.
+#' Useful for functions that do not change the length of x but which drop
+#' dimensions.
+#' @noRd
+while_preserving_dims <- function(f, x, ...) {
+  .dim <- dim(x)
+  .dimnames <- dimnames(x)
+  x <- f(x, ...)
+  dim(x) <- .dim
+  dimnames(x) <- .dimnames
+  x
+}
+
+#' Execute x <- f(x, ...) but preserve class and levels of x.
+#' Useful for functions that do not change the length of x but which levels.
+#' @noRd
+while_preserving_levels <- function(f, x, ...) {
+  .class <- oldClass(x)
+  .levels <- levels(x)
+  x <- f(x, ...)
+  oldClass(x) <- .class
+  levels(x) <- .levels
+  x
+}
+
+#' a version of apply() that works on factor-like arrays
+#' apply() strips classes of slices of x before passing them to FUN, which
+#' breaks apply() when used with factor-like arrays; this variant ensures
+#' levels and classes are preserved for slices of factors passed to FUN
+#' @noRd
+.apply_factor <- function(X, MARGIN, FUN, ...) {
+  if (is.factor(X)) {
+    .class <- oldClass(X)
+    .levels <- levels(X)
+    FUN <- match.fun(FUN)
+    .f <- function(x, ...) {
+      oldClass(x) <- .class
+      levels(x) <- .levels
+      FUN(x, ...)
+    }
+  } else {
+    .f <- FUN
+  }
+  apply(X, MARGIN, .f, ...)
 }
 
 
@@ -690,18 +883,30 @@ summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_em
 #' by first collapsing dimensions into columns of the draws matrix
 #' (so that .f can be a rowXXX() function)
 #' @param x an rvar
+#' @param name function name to use for error messages
 #' @param .f a function that takes a matrix and summarises its rows, like rowMeans
 #' @param ... arguments passed to `.f`
-#' @param .when_empty the value to return when `x` has length 0 (e.g. is NULL)
+#' @param .ordered_okay can this function be applied to rvar_ordereds?
 #' @noRd
-summarise_rvar_within_draws_via_matrix <- function(x, .f, ...) {
+summarise_rvar_within_draws_via_matrix <- function(x, .name, .f, ..., .ordered_okay = FALSE) {
   .length <- length(x)
   if (!.length) {
     x <- rvar()
   }
 
   dim(x) <- .length
-  new_rvar(.f(draws_of(x), ...), .nchains = nchains(x))
+
+  if (.ordered_okay && is_rvar_ordered(x)) {
+    .levels <- levels(x)
+    .draws <- .f(draws_of(as_rvar_numeric(x)), ...)
+    .draws <- while_preserving_dims(function(.draws) ordered(.levels[round(.draws)], .levels), .draws)
+  } else if (is_rvar_factor(x)) {
+    stop_no_call("Cannot apply `", .name, "` function to rvar_factor objects.")
+  } else {
+    .draws <- .f(draws_of(x), ...)
+  }
+
+  new_rvar(.draws, .nchains = nchains(x))
 }
 
 # apply vectorized function to an rvar's draws
@@ -719,7 +924,7 @@ summarise_rvar_by_element <- function(x, .f, ...) {
   } else {
     draws <- draws_of(x)
     dim <- dim(draws)
-    apply(draws, seq_along(dim)[-1], .f, ...)
+    .apply_factor(draws, seq_along(dim)[-1], .f, ...)
   }
 }
 
@@ -727,19 +932,32 @@ summarise_rvar_by_element <- function(x, .f, ...) {
 #' by first collapsing dimensions into columns of the draws matrix, applying the
 #' function, then restoring dimensions (so that .f can be a colXXX() function)
 #' @param x an rvar
+#' @param name function name to use for error messages
 #' @param .f a function that takes a matrix and summarises its columns, like colMeans
 #' @param .extra_dim extra dims added by `.f` to the output, e.g. in the case of
 #' matrixStats::colRanges this is `2`
 #' @param .extra_dimnames extra dimension names for dims added by `.f` to the output
+#' @param .ordered_okay can this function be applied to rvar_ordereds?
+#' @param .factor_okay can this function be applied to rvar_factors?
 #' @param ... arguments passed to `.f`
 #' @noRd
-summarise_rvar_by_element_via_matrix <- function(x, .f, .extra_dim = NULL, .extra_dimnames = NULL, ...) {
+summarise_rvar_by_element_via_matrix <- function(
+  x, .name, .f, .extra_dim = NULL, .extra_dimnames = NULL, .ordered_okay = TRUE, .factor_okay = FALSE, ...
+) {
   .dim <- dim(x)
   .dimnames <- dimnames(x)
   .length <- length(x)
   dim(x) <- .length
 
-  x = .f(draws_of(x), ...)
+  if (!is_rvar_factor(x) || .factor_okay) {
+    x <- .f(draws_of(x), ...)
+  } else if (.ordered_okay && is_rvar_ordered(x)) {
+    .levels <- levels(x)
+    x <- .f(draws_of(as_rvar_numeric(x)), ...)
+    x <- ordered(.levels[round(x)], .levels)
+  } else {
+    stop_no_call("Cannot apply `", .name, "` function to rvar_factor objects.")
+  }
 
   if (is.null(.extra_dim) && length(.dim) <= 1) {
     # this ensures that vector rvars are summarized to vectors rather than

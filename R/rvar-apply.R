@@ -66,17 +66,23 @@ rvar_apply <- function(.x, .margin, .f, ...) {
   # bind the output into an rvar along the first dimension (which the
   # marginal dimensions flattened into a single dim)
   out <- rvar_list[[1]]
+  .dimnames <- dimnames(out)
   dim(out) <- c(1, dim(out))
+  if (length(out)) dimnames(out) <- c(list(NULL), .dimnames)
   # process remaining rvars in succession, binding them to the output
   for (i in seq_along(rvar_list)[-1]) {
     rvar_i <- rvar_list[[i]]
+    .dimnames <- dimnames(rvar_i)
     dim(rvar_i) <- c(1, dim(rvar_i))
+    if (length(rvar_i)) dimnames(rvar_i) <- c(list(NULL), .dimnames)
     out <- broadcast_and_bind_rvars(out, rvar_i, 1)
   }
 
   if (length(out) > 0) {
     # restore the shape of the marginal dimensions
+    .dimnames <- dimnames(out)
     dim(out) <- c(marginal_dim, dim(out)[-1])
+    dimnames(out) <- c(list(NULL), .dimnames[-1])
     # if the last dimension is 1, drop it
     n_dim <- length(dim(out))
     if (dim(out)[[n_dim]] == 1) {

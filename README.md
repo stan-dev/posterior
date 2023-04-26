@@ -17,23 +17,23 @@ users and developers of packages for fitting Bayesian models or working
 with output from Bayesian models. The primary goals of the package are
 to:
 
--   Efficiently convert between many different useful formats of draws
-    (samples) from posterior or prior distributions.
--   Provide consistent methods for operations commonly performed on
-    draws, for example, subsetting, binding, or mutating draws.
--   Provide various summaries of draws in convenient formats.
--   Provide lightweight implementations of state of the art posterior
-    inference diagnostics.
+- Efficiently convert between many different useful formats of draws
+  (samples) from posterior or prior distributions.
+- Provide consistent methods for operations commonly performed on draws,
+  for example, subsetting, binding, or mutating draws.
+- Provide various summaries of draws in convenient formats.
+- Provide lightweight implementations of state of the art posterior
+  inference diagnostics.
 
 If you are new to **posterior** we recommend starting with these
 vignettes:
 
--   [*The posterior R
-    package*](https://mc-stan.org/posterior/articles/posterior.html): an
-    introduction to the package and its main functionality
--   [*rvar: The Random Variable
-    Datatype*](https://mc-stan.org/posterior/articles/rvar.html): an
-    overview of the new random variable datatype
+- [*The posterior R
+  package*](https://mc-stan.org/posterior/articles/posterior.html): an
+  introduction to the package and its main functionality
+- [*rvar: The Random Variable
+  Datatype*](https://mc-stan.org/posterior/articles/rvar.html): an
+  overview of the new random variable datatype
 
 ### Installation
 
@@ -58,12 +58,15 @@ package*](https://mc-stan.org/posterior/articles/posterior.html).
 
 ``` r
 library("posterior")
-#> This is posterior version 1.2.0
+#> This is posterior version 1.4.0
 #> 
 #> Attaching package: 'posterior'
 #> The following objects are masked from 'package:stats':
 #> 
 #>     mad, sd, var
+#> The following objects are masked from 'package:base':
+#> 
+#>     %in%, match
 ```
 
 To demonstrate how to work with the **posterior** package, we will use
@@ -155,7 +158,7 @@ this purpose via `summarise_draws()`:
 summarise_draws(eight_schools_df)
 #> # A tibble: 10 × 10
 #>    variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail
-#>    <chr>    <dbl>  <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl>    <dbl>    <dbl>
+#>    <chr>    <num>  <num> <num> <num>   <num> <num> <num>    <num>    <num>
 #>  1 mu        4.18   4.16  3.40  3.57  -0.854  9.39  1.02     558.     322.
 #>  2 tau       4.16   3.07  3.58  2.89   0.309 11.0   1.01     246.     202.
 #>  3 theta[1]  6.75   5.97  6.30  4.87  -1.23  18.9   1.01     400.     254.
@@ -180,7 +183,7 @@ would use:
 summarise_draws(eight_schools_df, "mean", "mcse_mean")
 #> # A tibble: 10 × 3
 #>    variable  mean mcse_mean
-#>    <chr>    <dbl>     <dbl>
+#>    <chr>    <num>     <num>
 #>  1 mu        4.18     0.150
 #>  2 tau       4.16     0.213
 #>  3 theta[1]  6.75     0.319
@@ -293,12 +296,12 @@ x4 <- bind_draws(x1, x3, along = "variable")
 print(x4)
 #> # A draws_matrix: 5 iterations, 1 chains, and 3 variables
 #>     variable
-#> draw alpha beta theta
-#>    1  0.39    1  2.27
-#>    2 -0.80    1  0.86
-#>    3  0.95    1  1.93
-#>    4  0.38    1  0.67
-#>    5  0.18    1  2.04
+#> draw alpha beta  theta
+#>    1 -0.73    1 0.1472
+#>    2  1.10    1 0.0028
+#>    3 -1.05    1 2.4725
+#>    4 -0.42    1 0.1425
+#>    5 -1.04    1 0.6180
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -309,16 +312,16 @@ print(x5)
 #> # A draws_matrix: 10 iterations, 1 chains, and 2 variables
 #>     variable
 #> draw alpha beta
-#>   1   0.39    1
-#>   2  -0.80    1
-#>   3   0.95    1
-#>   4   0.38    1
-#>   5   0.18    1
-#>   6   0.13    2
-#>   7   0.10    2
-#>   8  -0.61    2
-#>   9   0.12    2
-#>   10  1.48    2
+#>   1  -0.73    1
+#>   2   1.10    1
+#>   3  -1.05    1
+#>   4  -0.42    1
+#>   5  -1.04    1
+#>   6   0.58    2
+#>   7   0.55    2
+#>   8   0.49    2
+#>   9   0.31    2
+#>   10 -0.13    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -337,27 +340,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 iterations, 1 chains, and 5 variables
 #>     variable
-#> draw    V1    V2    V3    V4    V5
-#>   1  -0.89  0.37 -0.25 -0.57 -2.85
-#>   2   1.84  0.19  0.39 -0.52  1.26
-#>   3   0.79 -0.74 -1.61  0.99 -0.11
-#>   4  -2.25  0.28 -0.19 -0.33  0.92
-#>   5   0.58  0.35 -0.92  0.56  0.82
-#>   6  -1.38 -0.12 -0.40 -1.23 -0.60
-#>   7  -0.18  1.18 -1.27  0.51  0.78
-#>   8   0.17  1.50 -2.12 -0.45 -0.73
-#>   9  -0.60  0.69 -0.43 -1.40  1.14
-#>   10  0.18  0.96 -1.37 -0.58 -0.63
+#> draw    V1      V2     V3    V4     V5
+#>   1  -0.70 -0.1115  0.379 -0.83  0.284
+#>   2   0.61  0.0351  1.244  1.16 -0.055
+#>   3   0.25 -0.7284 -1.146  0.70 -1.180
+#>   4  -0.13  1.1477  0.141 -0.45  0.930
+#>   5  -0.91  0.0087 -1.047 -0.52 -1.838
+#>   6  -2.10  1.8572 -0.278 -0.17 -1.127
+#>   7  -0.72  0.3286 -0.244 -2.05 -0.873
+#>   8  -0.66  0.4930  1.385 -1.91  1.759
+#>   9   0.60  1.4737  1.054 -0.48 -0.479
+#>   10  0.20  1.3198  0.058 -0.56 -1.750
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 × 5
-#>   variable      mean    sd   median   mad
-#>   <chr>        <dbl> <dbl>    <dbl> <dbl>
-#> 1 V1       -0.174    1.16  -0.00490 1.03 
-#> 2 V2        0.467    0.651  0.358   0.596
-#> 3 V3       -0.817    0.770 -0.671   0.798
-#> 4 V4       -0.301    0.773 -0.486   0.672
-#> 5 V5       -0.000826 1.27   0.338   1.27
+#>   variable   mean    sd  median   mad
+#>   <chr>     <num> <num>   <num> <num>
+#> 1 V1       -0.355 0.834 -0.396  0.820
+#> 2 V2        0.582 0.829  0.411  0.933
+#> 3 V3        0.155 0.885  0.0994 0.987
+#> 4 V4       -0.512 0.990 -0.499  0.492
+#> 5 V5       -0.433 1.17  -0.676  1.17
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
@@ -382,17 +385,17 @@ for their work.
 
 When using **posterior**, please cite it as follows:
 
--   Bürkner P. C., Gabry J., Kay M., & Vehtari A. (2020). “posterior:
-    Tools for Working with Posterior Distributions.” R package version
-    XXX, \<URL: <https://mc-stan.org/posterior/>\>.
+- Bürkner P. C., Gabry J., Kay M., & Vehtari A. (2020). “posterior:
+  Tools for Working with Posterior Distributions.” R package version
+  XXX, \<URL: <https://mc-stan.org/posterior/>\>.
 
 When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or
 `ess_tail`, please also cite
 
--   Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C.
-    (2021). Rank-normalization, folding, and localization: An improved
-    Rhat for assessing convergence of MCMC (with discussion). *Bayesian
-    Analysis*. 16(2), 667–718. doi.org/10.1214/20-BA1221
+- Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C.
+  (2021). Rank-normalization, folding, and localization: An improved
+  Rhat for assessing convergence of MCMC (with discussion). *Bayesian
+  Analysis*. 16(2), 667–718. doi.org/10.1214/20-BA1221
 
 The same information can be obtained by running `citation("posterior")`.
 
@@ -411,6 +414,6 @@ assessing convergence of MCMC (with discussion). *Bayesian Analysis*.
 
 The **posterior** package is licensed under the following licenses:
 
--   Code: BSD 3-clause (<https://opensource.org/licenses/BSD-3-Clause>)
--   Documentation: CC-BY 4.0
-    (<https://creativecommons.org/licenses/by/4.0/>)
+- Code: BSD 3-clause (<https://opensource.org/license/bsd-3-clause/>)
+- Documentation: CC-BY 4.0
+  (<https://creativecommons.org/licenses/by/4.0/>)

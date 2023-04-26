@@ -50,7 +50,14 @@ as_draws_rvars.rvar <- function(x, ...) {
 #' @rdname draws_rvars
 #' @export
 as_draws_rvars.draws_matrix <- function(x, ...) {
-  .variables <- variables(x)
+  .as_draws_rvars.draws_matrix(x, ...)
+}
+
+#' Helper for as_draws_rvars.draws_matrix and as_draws_rvars.draws_df()
+#' @param x_at A function taking a logical vector along variables(x) and returning a matrix of draws
+#' @noRd
+.as_draws_rvars.draws_matrix <- function(x, ..., x_at = function(var_i) unclass(x[, var_i, drop = FALSE])) {
+  .variables <- variables(x, reserved = TRUE)
   if (ndraws(x) == 0) {
     return(empty_draws_rvars(.variables))
   }
@@ -68,14 +75,13 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
   # pull out each var into its own rvar
   var_names <- unique(vars)
-  rvars_list <- lapply(var_names, function (var) {
+  rvars_list <- lapply(var_names, function(var) {
     var_i <- vars == var
-    # reset class here as otherwise the draws arrays in the output rvars
-    # have type draws_matrix, which makes inspecting them hard
-    var_matrix <- unclass(x[, var_i, drop = FALSE])
+    var_matrix <- x_at(var_i)
     attr(var_matrix, "nchains") <- NULL
+    var_indices <- vars_indices[var_i]
 
-    if (ncol(var_matrix) == 1) {
+    if (ncol(var_matrix) == 1 && nchar(var_indices[[1]][[3]]) == 0) {
       # single variable, no indices
       out <- rvar(var_matrix)
       dimnames(out) <- NULL
@@ -86,7 +92,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
       # first, pull out the list of indices into a data frame
       # where each column is an index variable
-      indices <- vapply(vars_indices[var_i], `[[`, i = 3, character(1))
+      indices <- vapply(var_indices, `[[`, i = 3, character(1))
       indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")),
                                stringsAsFactors = FALSE)
       unique_indices <- vector("list", length(indices))
@@ -164,11 +170,29 @@ as_draws_rvars.draws_array <- function(x, ...) {
 
 #' @rdname draws_rvars
 #' @export
-as_draws_rvars.draws_df <- as_draws_rvars.draws_array
+as_draws_rvars.draws_df <- function(x, ...) {
+  x_df <- as.data.frame(x, optional = TRUE)[, variables(x, reserved = TRUE), drop = FALSE]
+  data_frame_to_matrix <- function(df) {
+    if (any(vapply(df, is.factor, logical(1)))) {
+      # as.matrix() does not convert factor columns correctly, must do this ourselves
+      while_preserving_dims(
+        function(df) do.call(function(...) vctrs::vec_c(..., .name_spec = rlang::zap()), df),
+        df
+      )
+    } else {
+      as.matrix(df)
+    }
+  }
+  .as_draws_rvars.draws_matrix(
+    x, ..., x_at = function(var_i) data_frame_to_matrix(x_df[, var_i, drop = FALSE])
+  )
+}
 
 #' @rdname draws_rvars
 #' @export
-as_draws_rvars.draws_list <- as_draws_rvars.draws_array
+as_draws_rvars.draws_list <- function(x, ...) {
+  as_draws_rvars(as_draws_df(x), ...)
+}
 
 #' @rdname draws_rvars
 #' @export
