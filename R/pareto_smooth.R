@@ -1,86 +1,69 @@
-##' Pareto khat diagnostic
-##'
-##' Calculate pareto khat value from pareto smoothing the tail of
-##' x
-##'
-##' @family diagnostics
-##' @template args-methods-x
-##' @param ndraws_tail (numeric) number of draws for the tail. Default
-##'   is max(ceiling(3 * sqrt(length(draws))), S / 5) (Supplementary
-##'   H)
-##' @param tail Which tail to smooth? (one of "right", "left", or "both").
-##' @param r_eff relative effeciency. If "mcmc", it will be calculated
-##'   automatically.
-##' @param verbose (logical) Should diagnostic messages be printed?
-##'   Default is `FALSE`.
-##' @param extra_diags (logical) Should extra pareto smoothing
-##'   diagnostics be included in output? Default is `FALSE`.
-##' @template args-methods-dots
-##' @return numeric vector of pareto-smoothing diagnostics
-##'
-##' @examples
-##' mu <- extract_variable_matrix(example_draws(), "mu")
-##' pareto_khat(mu)
-##'
-##' d <- as_draws_rvars(example_draws("multi_normal"))
-##' pareto_khat(d$Sigma)
-##' 
-##' @export
+#' Pareto khat diagnostic
+#'
+#' Estimate Pareto k value from Pareto smoothing the tail(s) of x. For
+#' further details see Vehtari et al. (2022).
+#'
+#' @template args-pareto
+#' @template args-methods-dots
+#' @return numeric vector of Pareto smoothing diagnostics
+#'
+#' @examples
+#' mu <- extract_variable_matrix(example_draws(), "mu")
+#' pareto_khat(mu)
+#'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' pareto_khat(d$Sigma)
+#' 
+#' @export
 pareto_khat <- function(x, ...) UseMethod("pareto_khat")
 
-##' @rdname pareto_khat
-##' @export
+#' @rdname pareto_khat
+#' @export
 pareto_khat.default <- function(x,
                                 ...) {
   pareto_smooth.default(x, return_smoothed = FALSE, ...)
 }
 
-##' @rdname pareto_smooth
-##' @export
+#' @rdname pareto_khat
+#' @export
 pareto_khat.rvar <- function(x, ...) {
   summarise_rvar_by_element(x, pareto_khat.default, ...)
 }
 
-##' Pareto smoothing
-##'
-##' Smooth the tail of the input with pareto-smoothing.
-##' 
-##' @template args-methods-x
-##' @param ndraws_tail (numeric) number of draws for the tail. If
-##'   `NULL` , it will be calculated as max(ceiling(3 *
-##'   sqrt(length(x))), length(x) / 5) (Supplementary H)
-##' @param tail Which tail to smooth? (one of "right", "left", or
-##'   "both").
-##' @param r_eff relative effeciency. If "mcmc", it will be calculated
-##'   automatically.
-##' @param verbose (logical) Should diagnostic messages be printed?
-##'   Default is `FALSE`.
-##' @param extra_diags (logical) Should extra pareto smoothing
-##'   diagnostics be included in output? Default is `FALSE`.
-##' @template args-methods-dots
-##' @return List of smoothed values and numeric pareto-smoothing
-##'   diagnostics.
-##'
-##' @examples
-##' mu <- extract_variable_matrix(example_draws(), "mu")
-##' pareto_smooth(mu)
-##'
-##' d <- as_draws_rvars(example_draws("multi_normal"))
-##' pareto_smooth(d$Sigma)
+#' Pareto smoothing
+#'
+#' Smooth the tail(s) of x by fitting a generalized Pareto
+#' distribution. For further details see Vehtari et al. (2022).
+#'
+#' @template args-pareto
+#' @template args-methods-dots
+#' @param return_smoothed (logical) Should the smoothed x be
+#'   returned? If `TRUE`, returns smoothed x. If `FALSE`, acts the
+#'   same as `pareto_khat`. Default is `TRUE`.
+#' @return List containing vector of smoothed values and vector of
+#'   pareto smoothing diagnostics.
+#'
+#' @examples
+#' mu <- extract_variable_matrix(example_draws(), "mu")
+#' pareto_smooth(mu)
+#'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' pareto_smooth(d$Sigma)
+#' @export
 pareto_smooth <- function(x, ...) UseMethod("pareto_smooth")
 
-##' @rdname pareto_smooth
-##' @export
+#' @rdname pareto_smooth
+#' @export
 pareto_smooth.rvar <- function(x, ...) {
   summarise_rvar_by_element(x, pareto_smooth, ...)
 }
 
 
-##' @rdname pareto_smooth
-##' @export
+#' @rdname pareto_smooth
+#' @export
 pareto_smooth.default <- function(x,
                                   tail = c("both", "right", "left"),
-                                  r_eff = "mcmc",
+                                  r_eff = NULL,
                                   ndraws_tail = NULL,
                                   extra_diags = FALSE,
                                   verbose = FALSE,
@@ -91,7 +74,7 @@ pareto_smooth.default <- function(x,
   S <- length(x)
 
   # automatically calculate relative efficiency
-  if (r_eff == "mcmc") {
+  if (is.null(r_eff)) {
     r_eff <- ess_basic(x) / S
   }
 
@@ -110,11 +93,19 @@ pareto_smooth.default <- function(x,
     }
 
     # left tail
-    smoothed <- .pareto_smooth_tail(x, ndraws_tail = ndraws_tail, tail = "left")
+    smoothed <- .pareto_smooth_tail(
+      x,
+      ndraws_tail = ndraws_tail,
+      tail = "left"
+    )
     left_k <- smoothed$k
 
     # right tail
-    smoothed <-.pareto_smooth_tail(x = smoothed$x, ndraws_tail = ndraws_tail, tail = "right")
+    smoothed <-.pareto_smooth_tail(
+      x = smoothed$x,
+      ndraws_tail = ndraws_tail,
+      tail = "right"
+    )
     right_k <- smoothed$k
 
     k <- max(left_k, right_k)
@@ -145,7 +136,7 @@ pareto_smooth.default <- function(x,
       diags = diags
     )
   }
-    if (return_smoothed) {
+  if (return_smoothed) {
     out <- list(x = x, diagnostics = diags)
   } else {
     out <- diags
@@ -225,45 +216,45 @@ pareto_smooth.default <- function(x,
 
   convergence_rate <- ps_convergence_rate(k, S)
 
-    other_diags <- list(
-      "min_ss" = min_ss,
-      "khat_threshold" = khat_threshold,
-      "convergence_rate" = convergence_rate
-    )
+  other_diags <- list(
+    "min_ss" = min_ss,
+    "khat_threshold" = khat_threshold,
+    "convergence_rate" = convergence_rate
+  )
 }
 
-##' Pareto-smoothing minimum sample-size
-##'
+#' Pareto-smoothing minimum sample-size
+#'
 #' Given Pareto-k computes the minimum sample size for reliable Pareto
 #' smoothed estimate (to have small probability of large error)
-##' @param k pareto k value
-##' @param ... unused
-##' @return minimum sample size
+#' @param k pareto k value
+#' @param ... unused
+#' @return minimum sample size
 ps_min_ss <- function(k, ...) {
   # Eq (11) in PSIS paper
   10^(1 / (1 - max(0, k)))
 }
 
-##' Pareto-smoothing k-hat threshold
-##'
-##' Given sample size S computes khat threshold for reliable Pareto
-##' smoothed estimate (to have small probability of large error). See
-##' section 3.2.4, equation (13).
-##' @param S sample size
-##' @param ... unused
-##' @return threshold
+#' Pareto-smoothing k-hat threshold
+#'
+#' Given sample size S computes khat threshold for reliable Pareto
+#' smoothed estimate (to have small probability of large error). See
+#' section 3.2.4, equation (13).
+#' @param S sample size
+#' @param ... unused
+#' @return threshold
 ps_khat_threshold <- function(S, ...) {
   1 - 1 / log10(S)
 }
 
-##' Pareto-smoothing convergence rate
-##'
-##' Given S and scalar or array of k's, compute the relative
-##' convergence rate of PSIS estimate RMSE
-##' @param k pareto-k values
-##' @param S sample size
-##' @param ... unused
-##' @return convergence rate
+#' Pareto-smoothing convergence rate
+#'
+#' Given S and scalar or array of k's, compute the relative
+#' convergence rate of PSIS estimate RMSE
+#' @param k pareto-k values
+#' @param S sample size
+#' @param ... unused
+#' @return convergence rate
 ps_convergence_rate <- function(k, S, ...) {
   # allow array of k's
   rate <- numeric(length(k))
@@ -289,13 +280,12 @@ ps_tail_length <- function(S, r_eff, ...) {
   ifelse(S > 225, ceiling(3 * sqrt(S / r_eff)), S / 5)
 }
 
-##' Pareto-k diagnostic message
-##'
-##' Given S and scalar and k, form a diagnostic message string
-##' @param k pareto-k values
-##' @param S sample size
-##' @param ... unused
-##' @return diagnostic message
+#' Pareto-k diagnostic message
+#'
+#' Given S and scalar and k, form a diagnostic message string
+#' @param diags (numeric) named vector of diagnostic values
+#' @param ... unused
+#' @return diagnostic message
 pareto_k_diagmsg <- function(diags, ...) {
   k <- diags$k
   min_ss <- diags$min_ss

@@ -126,7 +126,6 @@ rgpd <- function(n, mu = 0, sigma = 1, k = 0) {
 #' @details Here the parameter \eqn{k} is the negative of \eqn{k} in Zhang &
 #'   Stephens (2009).
 #'
-#' @seealso [psis()], [pareto-k-diagnostic]
 #'
 #' @references
 #' Zhang, J., and Stephens, M. A. (2009). A new and efficient estimation method
