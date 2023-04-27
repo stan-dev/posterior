@@ -46,7 +46,8 @@ from MCMC.}
 
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
 \code{ndraws_tail} is not specified, it will be calculated as
-max(ceiling(3 * sqrt(length(x))), length(x) / 5).}
+ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
+length(x) / 5 otherwise (see Appendix H in Vehtari et al. (2022)).}
 
 \item{extra_diags}{(logical) Should extra Pareto smoothing
 diagnostics be included in output? If \code{TRUE}, \code{min_ss},
