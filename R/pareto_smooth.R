@@ -121,7 +121,7 @@ pareto_smooth.default <- function(x,
     x <- smoothed$x
   }
 
-  diags <- c(k = k)
+  diags <- list(k = k)
 
   if (extra_diags) {
     ext_diags <- .pareto_smooth_extra_diags(k, S)
