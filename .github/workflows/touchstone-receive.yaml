@@ -4,21 +4,16 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
   cancel-in-progress: true
 
-on: 
+on:
   issue_comment:
     types: ['created', 'edited']
 
 jobs:
   prepare:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
     if:
       github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, '/benchmark') &&
-      (
-        github.event.comment.author_association == 'OWNER' ||
-        github.event.comment.author_association == 'MEMBER' ||
-        github.event.comment.author_association == 'COLLABORATOR' 
-      )
+      startsWith(github.event.comment.body, '/benchmark')
     outputs:
       config: ${{ steps.read_touchstone_config.outputs.config }}
     steps:
@@ -54,4 +49,4 @@ jobs:
           cache-version: 1
           benchmarking_repo: ${{ matrix.config.benchmarking_repo }}
           benchmarking_ref: ${{ matrix.config.benchmarking_ref }}
-          benchmarking_path: ${{ matrix.config.benchmarking_path }} 
+          benchmarking_path: ${{ matrix.config.benchmarking_path }}
