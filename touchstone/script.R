@@ -11,7 +11,7 @@ touchstone::branch_install()
 # benchmark a function call from your package (two calls per branch)
 touchstone::benchmark_run(
   # expr_before_benchmark = source("dir/data.R"), #<-- OPTIONAL setup before benchmark
-  random_test = rnorm(1000), #<- TODO put the call you want to benchmark here
+  random_test = rnorm(1000), #<- put the call you want to benchmark here
   n = 2
 )
 
