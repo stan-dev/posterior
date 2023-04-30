@@ -15,16 +15,5 @@ touchstone::benchmark_run(
   n = 2
 )
 
-# TODO OPTIONAL benchmark any R expression (six calls per branch)
-# touchstone::benchmark_run(
-#   more = {
-#     if (TRUE) {
-#       y <- yourpkg::f2(x = 3)
-#     }
-#   }, #<- TODO put the call you want to benchmark here
-#   n = 6
-# )
-
-
 # create artifacts used downstream in the GitHub Action
 touchstone::benchmark_analyze()

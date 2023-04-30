@@ -5,20 +5,15 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  pull_request:
-    branches:
-      - touchstone
+  issue_comment:
+    types: ['created', 'edited']
 
 jobs:
   prepare:
     runs-on: ubuntu-latest
     if:
-      true &&
-      (
-        github.event.comment.author_association == 'OWNER' ||
-        github.event.comment.author_association == 'MEMBER' ||
-        github.event.comment.author_association == 'COLLABORATOR'
-      )
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/benchmark')
     outputs:
       config: ${{ steps.read_touchstone_config.outputs.config }}
     steps:
@@ -55,4 +50,3 @@ jobs:
           benchmarking_repo: ${{ matrix.config.benchmarking_repo }}
           benchmarking_ref: ${{ matrix.config.benchmarking_ref }}
           benchmarking_path: ${{ matrix.config.benchmarking_path }}
-          force_upstream: true
