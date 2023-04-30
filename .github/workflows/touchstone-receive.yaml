@@ -6,8 +6,6 @@ concurrency:
 
 on:
   pull_request:
-    branches:
-      - touchstone
 
 jobs:
   prepare:
