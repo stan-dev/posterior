@@ -381,6 +381,27 @@ match.rvar <- function(x, ...) {
 }
 
 
+# ifelse ------------------------------------------------------------------
+
+#' @importFrom vctrs vec_cast_common
+rvar_ifelse = function(test, yes, no) {
+  if (!is.logical(draws_of(test))) {
+    stop_no_call("`rvar_ifelse(test, yes, no)` requires `test` to be a logical rvar")
+  }
+  c(yes, no) %<-% vec_cast_common(yes, no)
+  c(test, yes, no) %<-% conform_array_dims(conform_rvar_ndraws(list(test, yes, no)))
+
+  test_draws <- draws_of(test)
+  false_draws <- test_draws %in% FALSE
+  draws_of(yes)[false_draws] <- draws_of(no)[false_draws]
+
+  na_draws <- is.na(test_draws)
+  draws_of(yes)[na_draws] <- NA_real_
+
+  yes
+}
+
+
 # ggplot2::scale_type -----------------------------------------------------
 
 # This generic is not exported here as {ggplot2} is only in Suggests, so
@@ -434,7 +455,7 @@ check_rvar_yank_index = function(x, i, ...) {
     stop_no_call("Missing indices not allowed with `[[` in an rvar.")
   } else if (any(vapply(index, is.logical, logical(1)))) {
     stop_no_call("Logical indices not allowed with `[[` in an rvar.")
-  } else if (any(vapply(index, function(x) x < 0, logical(1)))) {
+  } else if (any(vapply(index, function(x) is.numeric(x) && x < 0, logical(1)))) {
     stop_no_call("subscript out of bounds")
   }
 
@@ -523,7 +544,7 @@ conform_rvar_ndraws <- function(rvars, keep_constants = FALSE) {
   rvars
 }
 
-# given two rvars, conform their number of draws and chains
+# given multiple rvars, conform their number of draws and chains
 # so they can be used together (or throw an error if they can't be)
 # @param keep_constants keep constants as 1-draw rvars
 conform_rvar_ndraws_nchains <- function(rvars, keep_constants = FALSE) {
@@ -599,6 +620,12 @@ dim2_common <- function(dim_x, dim_y) {
 
 dim_common <- function(dims) {
   Reduce(dim2_common, dims)
+}
+
+# given a list of arrays, broadcast their dimensions to be equal
+conform_array_dims <- function(arrays) {
+  .dim <- dim_common(lapply(arrays, dim))
+  lapply(arrays, broadcast_array, .dim)
 }
 
 broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {

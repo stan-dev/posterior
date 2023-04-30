@@ -11,7 +11,19 @@
       # would prevent single-element by-name selection for 1d rvars)
       dim(x) <- prod(.dim)
     }
-    .draws <- draws_of(x)[, i, drop = FALSE]
+    if (is_rvar(index[[1]])) {
+      # x[[i]] where i is a scalar numeric rvar
+      i_rvar <- index[[1]]
+      if (!is.numeric(draws_of(i_rvar)) || length(i_rvar) != 1) {
+        stop_no_call("`x[[i]]` for rvars `x` and `i` is only supported when `i` is a scalar numeric rvar.")
+      }
+      c(x, i_rvar) %<-% conform_rvar_ndraws_nchains(list(x, i_rvar))
+      i <- matrix_to_index(cbind(seq_len(ndraws(x)), draws_of(i_rvar)), c(ndraws(x), length(x)))
+      .draws <- draws_of(x)[i]
+    } else {
+      # x[[i]] where i is a scalar numeric or character
+      .draws <- draws_of(x)[, i, drop = FALSE]
+    }
     dimnames(.draws) <- NULL
     out <- new_rvar(.draws, .nchains = nchains(x))
   } else if (length(index) == length(dim(x))) {
