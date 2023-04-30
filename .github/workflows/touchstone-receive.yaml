@@ -5,15 +5,13 @@ concurrency:
   cancel-in-progress: true
 
 on:
-  issue_comment:
-    types: ['created', 'edited']
+  pull-request:
+    branches:
+      - '*'
 
 jobs:
   prepare:
     runs-on: ubuntu-latest
-    if:
-      github.event.issue.pull_request &&
-      startsWith(github.event.comment.body, '/benchmark')
     outputs:
       config: ${{ steps.read_touchstone_config.outputs.config }}
     steps:
