@@ -5,13 +5,15 @@ concurrency:
   cancel-in-progress: true
 
 on: 
-  pull_request:
+  issue_comment:
+    types: ['created', 'edited']
 
 jobs:
   prepare:
     runs-on: ubuntu-latest 
     if:
-      true &&
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/benchmark') &&
       (
         github.event.comment.author_association == 'OWNER' ||
         github.event.comment.author_association == 'MEMBER' ||
