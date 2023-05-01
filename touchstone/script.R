@@ -1,36 +1,33 @@
+# touchstone setup --------------------------------------------------------
+
 # see `help(run_script, package = 'touchstone')` on how to run this
 # interactively
 
 # OPTIONAL: Add directories you want to be available in this file or during the
 # benchmarks.
-# touchstone::pin_assets("bench")
+# touchstone::pin_assets("path/to/file/or/dir")
 
 # installs branches to benchmark
 touchstone::branch_install()
 
-# benchmarks for this package are stored in bench/bench-*.R
-# add calls to touchstone::run_benchmark() there to create benchmarks
-# bench_files <- dir(touchstone::path_pinned_asset("bench"), "bench-.*\\.R", full.names = TRUE)
-# for (file in bench_files) {
-#   source(file)
-# }
 
-repair_draws_n_variables = function(n_variables) {
+# summarise_draws() -------------------------------------------------------
+
+for (n_variables in c(10, 100)) {
   touchstone::benchmark_run(
     expr_before_benchmark = {
       set.seed(1234)
-      x_sorted <- posterior::as_draws_matrix(posterior::rvar_rng(rnorm, 10))
+      x <- posterior::as_draws_matrix(posterior::rvar_rng(rnorm, n_variables))
     },
-    "repair_draws_{n_variables}_variables" := {
-      posterior::repair_draws(x_sorted)
+    "summarise_draws_{n_variables}_variables" := {
+      posterior::summarise_draws(x)
     },
     n = 30
   )
 }
 
-repair_draws_n_variables(10)
-repair_draws_n_variables(1000)
 
+# touchstone analysis -----------------------------------------------------
 
 # create artifacts used downstream in the GitHub Action
 touchstone::benchmark_analyze()
