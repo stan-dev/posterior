@@ -3,17 +3,17 @@
 
 # OPTIONAL: Add directories you want to be available in this file or during the
 # benchmarks.
-# touchstone::pin_assets("some/dir")
+touchstone::pin_assets("bench")
 
 # installs branches to benchmark
 touchstone::branch_install()
 
-# benchmark a function call from your package (two calls per branch)
-touchstone::benchmark_run(
-  # expr_before_benchmark = source("dir/data.R"), #<-- OPTIONAL setup before benchmark
-  random_test = rnorm(1000), #<- put the call you want to benchmark here
-  n = 2
-)
+# benchmarks for this package are stored in bench/bench-*.R
+# add calls to touchstone::run_benchmark() there to create benchmarks
+bench_files <- dir(touchstone::path_pinned_asset("bench"), "bench-.*\\.R", full.names = TRUE)
+for (file in bench_files) {
+  source(file)
+}
 
 # create artifacts used downstream in the GitHub Action
 touchstone::benchmark_analyze()
