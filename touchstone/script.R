@@ -17,7 +17,7 @@ for (n_variables in c(10, 100)) {
   touchstone::benchmark_run(
     expr_before_benchmark = {
       set.seed(1234)
-      x <- posterior::as_draws_matrix(posterior::rvar_rng(rnorm, n_variables))
+      x <- posterior::as_draws_matrix(posterior::rvar_rng(rnorm, !!n_variables))
     },
     "summarise_draws_{n_variables}_variables" := {
       posterior::summarise_draws(x)
