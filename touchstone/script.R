@@ -1,7 +1,10 @@
 # touchstone setup --------------------------------------------------------
 
 # see `help(run_script, package = 'touchstone')` on how to run this
-# interactively
+# interactively. In short:
+# 1. Run `touchstone::activate(base_branch = "master")` to begin a session.
+# 2. Execute touchstone::benchmark_run commands interactively below.
+# 3. Run `touchstone::deactivate()` to reset session settings.
 
 # OPTIONAL: Add directories you want to be available in this file or during the
 # benchmarks.
