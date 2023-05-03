@@ -13,7 +13,6 @@
 #'
 #' d <- as_draws_rvars(example_draws("multi_normal"))
 #' pareto_khat(d$Sigma)
-#' 
 #' @export
 pareto_khat <- function(x, ...) UseMethod("pareto_khat")
 
@@ -27,7 +26,10 @@ pareto_khat.default <- function(x,
 #' @rdname pareto_khat
 #' @export
 pareto_khat.rvar <- function(x, ...) {
-  summarise_rvar_by_element(x, pareto_khat.default, ...)
+  unlist(
+    summarise_rvar_by_element_with_chains(x, pareto_khat.default, ...),
+    recursive = FALSE
+  )
 }
 
 #' Pareto smoothing
@@ -37,8 +39,8 @@ pareto_khat.rvar <- function(x, ...) {
 #'
 #' @template args-pareto
 #' @template args-methods-dots
-#' @param return_smoothed (logical) Should the smoothed x be
-#'   returned? If `TRUE`, returns smoothed x. If `FALSE`, acts the
+#' @param return_smoothed (logical) Should the smoothed x be returned?
+#'   If `TRUE`, returns x with smoothed tail(s). If `FALSE`, acts the
 #'   same as `pareto_khat`. Default is `TRUE`.
 #' @return List containing vector of smoothed values and vector of
 #'   pareto smoothing diagnostics.
@@ -55,9 +57,8 @@ pareto_smooth <- function(x, ...) UseMethod("pareto_smooth")
 #' @rdname pareto_smooth
 #' @export
 pareto_smooth.rvar <- function(x, ...) {
-  summarise_rvar_by_element(x, pareto_smooth, ...)
+    unlist(summarise_rvar_by_element_with_chains(x, pareto_smooth.default, ...), recursive = FALSE)
 }
-
 
 #' @rdname pareto_smooth
 #' @export
@@ -70,9 +71,14 @@ pareto_smooth.default <- function(x,
                                   return_smoothed = TRUE,
                                   ...) {
 
+  # check for infinite or na values
+  if (should_return_NA(x)) {
+    return(NA_real_)
+  }
+
   tail <- match.arg(tail)
   S <- length(x)
-
+  
   # automatically calculate relative efficiency
   if (is.null(r_eff)) {
     r_eff <- ess_basic(x) / S
@@ -90,6 +96,12 @@ pareto_smooth.default <- function(x,
               "the length of the draws if both tails are fit, ",
               "changing to ", S / 2, ".")
       ndraws_tail <- S / 2
+    }
+
+    if (ndraws_tail < 5) {
+      warning("Number of tail draws cannot be less than 5. ",
+              "Changing to ", 5, ".")
+      ndraws_tail <- 5
     }
 
     # left tail
@@ -121,7 +133,7 @@ pareto_smooth.default <- function(x,
     x <- smoothed$x
   }
 
-  diags <- list(k = k)
+  diags <- list(khat = k)
 
   if (extra_diags) {
     ext_diags <- .pareto_smooth_extra_diags(k, S)
@@ -130,7 +142,7 @@ pareto_smooth.default <- function(x,
 
   if (verbose) {
     if (!extra_diags) {
-      diags <- .pareto_smooth_extra_diags(out$k, length(x))
+      diags <- .pareto_smooth_extra_diags(diags$khat, length(x))
     }
     pareto_k_diagmsg(
       diags = diags
@@ -175,6 +187,8 @@ pareto_smooth.default <- function(x,
         "because all tail values are the same.",
         call. = FALSE
       )
+      smoothed <- NULL
+      k <- NA
     } else {
       # save time not sorting since x already sorted
       fit <- gpdfit(draws_tail - cutoff, sort_x = FALSE)
@@ -191,13 +205,15 @@ pareto_smooth.default <- function(x,
       "because ndraws_tail is less than 5.",
       call. = FALSE
     )
+    smoothed <- NULL
+    k <- NA
   }
 
   # truncate at max of raw draws
-  smoothed[smoothed > max_tail] <- max_tail
-
-  x[ord$ix[tail_ids]] <- smoothed
-  
+  if (!is.null(smoothed)) {
+    smoothed[smoothed > max_tail] <- max_tail
+    x[ord$ix[tail_ids]] <- smoothed
+  }
   
   if (tail == "left") {
     x <- -x
@@ -287,24 +303,24 @@ ps_tail_length <- function(S, r_eff, ...) {
 #' @param ... unused
 #' @return diagnostic message
 pareto_k_diagmsg <- function(diags, ...) {
-  k <- diags$k
+  khat <- diags$khat
   min_ss <- diags$min_ss
   khat_threshold <- diags$khat_threshold
   convergence_rate <- diags$convergence_rate
   msg <- NULL
-  if (k > 1) {
+  if (khat > 1) {
     msg <- paste0(msg,'All estimates are unreliable. If the distribution of ratios is bounded,\n',
                   'further draws may improve the estimates, but it is not possible to predict\n',
                   'whether any feasible sample size is sufficient.')
   } else {
-    if (k > khat_threshold) {
+    if (khat > khat_threshold) {
       msg <- paste0(msg, 'S is too small, and sample size larger than ', round(min_ss, 0), ' is neeeded for reliable results.\n')
     } else {
       msg <- paste0(msg, 'To halve the RMSE, approximately ', round(2^(2/convergence_rate),1), ' times bigger S is needed.\n')
     }
-  }
-  if (k > 0.7 && k < 1) {
-    msg <- paste0(msg, 'Bias dominates RMSE, and the variance based MCSE is underestimated.\n')
+    if (khat > 0.7) {
+      msg <- paste0(msg, 'Bias dominates RMSE, and the variance based MCSE is underestimated.\n')
+    }
   }
   message(msg)
 }
