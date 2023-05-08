@@ -36,11 +36,11 @@ test_that("as_rvar preserves dimension names", {
 })
 
 
-# as_rvar_numeric ---------------------------------------------------------
+# as_rvar_numeric/integer/logical ------------------------------------------------
 
 test_that("as_rvar_numeric works", {
   x_array = array(
-    1:24, dim = c(2,4,3),
+    as.numeric(1:24), dim = c(2,4,3),
     dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
   )
   x <- rvar(x_array)
@@ -53,6 +53,46 @@ test_that("as_rvar_numeric works", {
 
   expect_equal(as_rvar_numeric(x_fct), x)
   expect_equal(as_rvar_numeric(x_ord), x)
+  expect_type(draws_of(as_rvar_numeric(x_ord)), "double")
+  expect_type(draws_of(as_rvar_numeric(x_fct)), "double")
+})
+
+test_that("as_rvar_integer works", {
+  x_array = array(
+    1L:24L, dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x <- rvar(x_array)
+  x_array_letters = array(
+    letters[1:24], dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x_fct <- rvar_factor(x_array)
+  x_ord <- rvar_ordered(x_array)
+
+  expect_equal(as_rvar_integer(x_fct), x)
+  expect_equal(as_rvar_integer(x_ord), x)
+  expect_type(draws_of(as_rvar_integer(x_ord)), "integer")
+  expect_type(draws_of(as_rvar_integer(x_fct)), "integer")
+})
+
+test_that("as_rvar_logical works", {
+  x_array = array(
+    rep(c(TRUE, FALSE), 12), dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x <- rvar(x_array)
+  x_array_letters = array(
+    rep(c("TRUE", "FALSE"), 12), dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x_fct <- rvar_factor(x_array)
+  x_ord <- rvar_ordered(x_array)
+
+  expect_equal(as_rvar_logical(x_fct), x)
+  expect_equal(as_rvar_logical(x_ord), x)
+  expect_type(draws_of(as_rvar_logical(x_ord)), "logical")
+  expect_type(draws_of(as_rvar_logical(x_fct)), "logical")
 })
 
 

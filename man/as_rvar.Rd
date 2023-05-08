@@ -3,11 +3,17 @@
 \name{as_rvar}
 \alias{as_rvar}
 \alias{as_rvar_numeric}
+\alias{as_rvar_integer}
+\alias{as_rvar_logical}
 \title{Coerce to a random variable}
 \usage{
 as_rvar(x, dim = NULL, dimnames = NULL, nchains = NULL)
 
 as_rvar_numeric(x, dim = NULL, dimnames = NULL, nchains = NULL)
+
+as_rvar_integer(x, dim = NULL, dimnames = NULL, nchains = NULL)
+
+as_rvar_logical(x, dim = NULL, dimnames = NULL, nchains = NULL)
 }
 \arguments{
 \item{x}{(multiple options) An object that can be converted to an \code{\link{rvar}},
@@ -44,9 +50,10 @@ treats the first dimension of \code{x} as the draws dimension. As a result, \cod
 is useful for creating constants.
 
 While \code{as_rvar()} attempts to pick the most suitable subtype of \code{\link{rvar}} based on the
-type of \code{x} (possibly returning a an \code{\link{rvar_factor}} or \code{\link{rvar_ordered}}),
-\code{as_rvar_numeric()} always coerces the draws of the output \code{\link{rvar}} to be \code{\link{numeric}},
-and always returns a base \code{\link{rvar}}, never a subtype.
+type of \code{x} (possibly returning an \code{\link{rvar_factor}} or \code{\link{rvar_ordered}}),
+\code{as_rvar_numeric()}, \code{as_rvar_integer()}, and \code{as_rvar_logical()} always coerce
+the draws of the output \code{\link{rvar}} to be \code{\link{numeric}}, \code{\link{integer}}, or \code{\link{logical}}
+(respectively), and always return a base \code{\link{rvar}}, never a subtype.
 }
 \examples{
 
