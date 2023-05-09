@@ -26,13 +26,26 @@ pareto_khat.default <- function(x,
 
 #' @rdname pareto_khat
 #' @export
-pareto_khat.rvar <- function(x, ...) {
-  draws_diags <- summarise_rvar_by_element_with_chains(x, pareto_smooth.default, ...)
+pareto_khat.rvar <- function(x, extra_diags = FALSE, ...) {
+  draws_diags <- summarise_rvar_by_element_with_chains(x, pareto_smooth.default, extra_diags = extra_diags, ...)
   dim(draws_diags) <- dim(draws_diags) %||% length(draws_diags)
   margins <- seq_along(dim(draws_diags))
-  list(
-    khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat)
-  )
+
+  if (extra_diags) {
+
+    diags <- list(
+      khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat),
+      min_ss = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$min_ss),
+      khat_threshold = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat_threshold),
+      convergence_rage = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$convergence_rate)
+    )
+  } else {
+    diags <- list(
+      khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat)
+    )
+  }
+
+    diags
 }
 
 #' Pareto smoothing
@@ -202,10 +215,9 @@ pareto_smooth.default <- function(x,
   if (ndraws_tail >= 5) {
     ord <- sort.int(x, index.return = TRUE)
     if (abs(max_tail - min_tail) < .Machine$double.eps / 100) {
-      warning(
+      warning_no_call(
         "Can't fit generalized Pareto distribution ",
-        "because all tail values are the same.",
-        call. = FALSE
+        "because all tail values are the same."
       )
       smoothed <- NULL
       k <- NA
@@ -220,10 +232,9 @@ pareto_smooth.default <- function(x,
       }
     }
   } else {
-    warning(
+    warning_no_call(
       "Can't fit generalized Pareto distribution ",
-      "because ndraws_tail is less than 5.",
-      call. = FALSE
+      "because ndraws_tail is less than 5."
     )
     smoothed <- NULL
     k <- NA
