@@ -112,9 +112,15 @@ pareto_smooth.default <- function(x,
                                   extra_diags = FALSE,
                                   verbose = FALSE,
                                   ...) {  
+
+  checkmate::assert_number(ndraws_tail, null.ok = TRUE)
+  checkmate::assert_number(r_eff, null.ok = TRUE)
+  checkmate::assert_logical(extra_diags)
+  checkmate::assert_logical(verbose)
   
   # check for infinite or na values
   if (should_return_NA(x)) {
+    warning_no_call("Input contains infinite or NA values, Pareto smoothing not performed.")
     return(list(x = x, diagnostics = NA_real_))
   }
 
