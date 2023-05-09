@@ -202,7 +202,6 @@ pareto_smooth.default <- function(x,
   if (ndraws_tail >= 5) {
     ord <- sort.int(x, index.return = TRUE)
     if (abs(max_tail - min_tail) < .Machine$double.eps / 100) {
-      print(paste(max_tail, min_tail))
       warning(
         "Can't fit generalized Pareto distribution ",
         "because all tail values are the same.",

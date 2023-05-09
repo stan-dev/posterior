@@ -62,5 +62,4 @@ pareto_khat(mu)
 
 d <- as_draws_rvars(example_draws("multi_normal"))
 pareto_khat(d$Sigma)
-
 }

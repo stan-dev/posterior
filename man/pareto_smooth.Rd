@@ -8,7 +8,7 @@
 \usage{
 pareto_smooth(x, ...)
 
-\method{pareto_smooth}{rvar}(x, ...)
+\method{pareto_smooth}{rvar}(x, extra_diags = FALSE, ...)
 
 \method{pareto_smooth}{default}(
   x,
@@ -17,7 +17,6 @@ pareto_smooth(x, ...)
   ndraws_tail = NULL,
   extra_diags = FALSE,
   verbose = FALSE,
-  return_smoothed = TRUE,
   ...
 )
 }
@@ -30,6 +29,11 @@ pareto_smooth(x, ...)
 }}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{extra_diags}{(logical) Should extra Pareto smoothing
+diagnostics be included in output? If \code{TRUE}, \code{min_ss},
+\code{khat_threshold} and \code{convergence_rate} for the calculated k
+value will be returned. Default is \code{FALSE}.}
 
 \item{tail}{(string) The tail to smooth:
 \itemize{
@@ -49,22 +53,14 @@ from MCMC.}
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
 length(x) / 5 otherwise (see Appendix H in Vehtari et al. (2022)).}
 
-\item{extra_diags}{(logical) Should extra Pareto smoothing
-diagnostics be included in output? If \code{TRUE}, \code{min_ss},
-\code{khat_threshold} and \code{convergence_rate} for the calculated k
-value will be returned. Default is \code{FALSE}.}
-
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto smoothing diagnostics will be
 printed. Default is \code{FALSE}.}
-
-\item{return_smoothed}{(logical) Should the smoothed x be
-returned? If \code{TRUE}, returns smoothed x. If \code{FALSE}, acts the
-same as \code{pareto_khat}. Default is \code{TRUE}.}
 }
 \value{
-List containing vector of smoothed values and vector of
-pareto smoothing diagnostics.
+List containing vector \code{x} of smoothed values and list
+\code{diagnostics} of Pareto smoothing diagnostics (\code{khat}, and
+optionally \code{min_ss}, \code{khat_threshold}, and \code{convergence_rate}).
 }
 \description{
 Smooth the tail(s) of x by fitting a generalized Pareto
