@@ -216,7 +216,7 @@ pareto_smooth.default <- function(x,
       sigma <- fit$sigma
       if (is.finite(k)) {
         p <- (seq_len(ndraws_tail) - 0.5) / ndraws_tail
-        smoothed <- qgpd(p = p, mu = cutoff, k = k, sigma = sigma)
+        smoothed <- qgeneralized_pareto(p = p, mu = cutoff, k = k, sigma = sigma)
       }
     }
   } else {
