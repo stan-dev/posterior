@@ -8,7 +8,15 @@
 \usage{
 pareto_khat(x, ...)
 
-\method{pareto_khat}{default}(x, ...)
+\method{pareto_khat}{default}(
+  x,
+  tail = c("both", "right", "left"),
+  r_eff = NULL,
+  ndraws_tail = NULL,
+  extra_diags = FALSE,
+  verbose = FALSE,
+  ...
+)
 
 \method{pareto_khat}{rvar}(x, extra_diags = FALSE, ...)
 }
@@ -22,11 +30,6 @@ pareto_khat(x, ...)
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{extra_diags}{(logical) Should extra Pareto smoothing
-diagnostics be included in output? If \code{TRUE}, \code{min_ss},
-\code{khat_threshold} and \code{convergence_rate} for the calculated k
-value will be returned. Default is \code{FALSE}.}
-
 \item{tail}{(string) The tail to smooth:
 \itemize{
 \item \code{"right"}: smooth only the right (upper) tail
@@ -36,21 +39,26 @@ value will be returned. Default is \code{FALSE}.}
 
 The default is \code{"both"}.}
 
+\item{r_eff}{(numeric) relative effective sample size estimate. If
+\code{r_eff} is omitted, it will be calculated assuming the draws are
+from MCMC.}
+
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
 \code{ndraws_tail} is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
 length(x) / 5 otherwise (see Appendix H in Vehtari et al. (2022)).}
 
-\item{r_eff}{(numeric) relative effective sample size estimate. If
-\code{r_eff} is omitted, it will be calculated assuming the draws are
-from MCMC.}
+\item{extra_diags}{(logical) Should extra Pareto smoothing
+diagnostics be included in output? If \code{TRUE}, \code{min_ss},
+\code{khat_threshold} and \code{convergence_rate} for the calculated k
+value will be returned. Default is \code{FALSE}.}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto smoothing diagnostics will be
 printed. Default is \code{FALSE}.}
 }
 \value{
-#' List of Pareto smoothing diagnostics:
+List of Pareto smoothing diagnostics:
 \itemize{
 \item \code{khat}: estimated Pareto k shape parameter, and optionally
 \item \code{min_ss}: minimum sample size for reliable Pareto smoothed estimate

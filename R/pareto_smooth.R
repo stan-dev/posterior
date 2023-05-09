@@ -5,12 +5,11 @@
 #'
 #' @template args-pareto
 #' @template args-methods-dots
-#' @return #' List of Pareto smoothing diagnostics:
+#' @return List of Pareto smoothing diagnostics:
 #'  * `khat`: estimated Pareto k shape parameter, and optionally
 #'  * `min_ss`: minimum sample size for reliable Pareto smoothed estimate
 #'  * `khat_threshold`: khat-threshold for reliable Pareto smoothed estimate 
 #'  * `convergence_rate`: Pareto smoothed estimate RMSE convergence rate.
-#'
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
@@ -24,9 +23,21 @@ pareto_khat <- function(x, ...) UseMethod("pareto_khat")
 #' @rdname pareto_khat
 #' @export
 pareto_khat.default <- function(x,
+                                tail = c("both", "right", "left"),
+                                r_eff = NULL,
+                                ndraws_tail = NULL,
+                                extra_diags = FALSE,
+                                verbose = FALSE,
                                 ...) {
-  out <- pareto_smooth.default(x, ...)
-  return(out$diagnostics)
+  smoothed <- pareto_smooth.default(
+    x,
+    tail = tail,
+    r_eff = r_eff,
+    ndraws_tail = ndraws_tail,
+    extra_diags = extra_diags,
+    verbose = verbose,
+    ...)
+  return(smoothed$diagnostics)
 }
 
 #' @rdname pareto_khat
