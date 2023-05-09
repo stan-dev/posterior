@@ -154,8 +154,9 @@ test_that("pareto_khat functions work with rvars with and without chains", {
   ps_nochains <- pareto_smooth(tau_nochains, ndraws_tail = 20)
   ps_rvar_nochains <- pareto_smooth(tau_rvar_nochains, ndraws_tail = 20)
   
-  expect_equal(as.numeric(ps_rvar_chains$x), as.numeric(ps_chains$x))
-  expect_equal(as.numeric(ps_rvar_nochains$x), as.numeric(ps_rvar_chains$x))
+  expect_equal(ps_rvar_chains$x, rvar(ps_chains$x, with_chains = TRUE))
+  
+  expect_equal(ps_rvar_nochains$x, rvar(ps_nochains$x))
   
 })
 

@@ -20,15 +20,18 @@ pareto_khat <- function(x, ...) UseMethod("pareto_khat")
 #' @export
 pareto_khat.default <- function(x,
                                 ...) {
-  pareto_smooth.default(x, return_smoothed = FALSE, ...)
+  out <- pareto_smooth.default(x, ...)
+  return(out$diagnostics)
 }
 
 #' @rdname pareto_khat
 #' @export
 pareto_khat.rvar <- function(x, ...) {
-  unlist(
-    summarise_rvar_by_element_with_chains(x, pareto_khat.default, ...),
-    recursive = FALSE
+  draws_diags <- summarise_rvar_by_element_with_chains(x, pareto_smooth.default, ...)
+  dim(draws_diags) <- dim(draws_diags) %||% length(draws_diags)
+  margins <- seq_along(dim(draws_diags))
+  list(
+    khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat)
   )
 }
 
@@ -39,11 +42,9 @@ pareto_khat.rvar <- function(x, ...) {
 #'
 #' @template args-pareto
 #' @template args-methods-dots
-#' @param return_smoothed (logical) Should the smoothed x be returned?
-#'   If `TRUE`, returns x with smoothed tail(s). If `FALSE`, acts the
-#'   same as `pareto_khat`. Default is `TRUE`.
-#' @return List containing vector of smoothed values and vector of
-#'   pareto smoothing diagnostics.
+#' @return List containing vector `x` of smoothed values and list
+#'   `diagnostics` of Pareto smoothing diagnostics (`khat`, and
+#'   optionally `min_ss`, `khat_threshold`, and `convergence_rate`).
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
@@ -56,8 +57,29 @@ pareto_smooth <- function(x, ...) UseMethod("pareto_smooth")
 
 #' @rdname pareto_smooth
 #' @export
-pareto_smooth.rvar <- function(x, ...) {
-    unlist(summarise_rvar_by_element_with_chains(x, pareto_smooth.default, ...), recursive = FALSE)
+pareto_smooth.rvar <- function(x, extra_diags = FALSE, ...) {
+  draws_diags <- summarise_rvar_by_element_with_chains(x, pareto_smooth.default, extra_diags = extra_diags, ...)
+  dim(draws_diags) <- dim(draws_diags) %||% length(draws_diags)
+  margins <- seq_along(dim(draws_diags))
+
+  if (extra_diags) {
+
+    diags <- list(
+      khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat),
+      min_ss = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$min_ss),
+      khat_threshold = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat_threshold),
+      convergence_rage = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$convergence_rate)
+    )
+  } else {
+    diags <- list(
+      khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat)
+    )
+  }
+
+  list(
+    x = rvar(apply(draws_diags, margins, function(x) x[[1]]$x), nchains = nchains(x)),
+    diagnostics = diags
+  )
 }
 
 #' @rdname pareto_smooth
@@ -68,17 +90,16 @@ pareto_smooth.default <- function(x,
                                   ndraws_tail = NULL,
                                   extra_diags = FALSE,
                                   verbose = FALSE,
-                                  return_smoothed = TRUE,
                                   ...) {
 
   # check for infinite or na values
   if (should_return_NA(x)) {
-    return(NA_real_)
+    return(list(x = x, diagnostics = NA_real_))
   }
 
   tail <- match.arg(tail)
   S <- length(x)
-  
+
   # automatically calculate relative efficiency
   if (is.null(r_eff)) {
     r_eff <- ess_basic(x) / S
@@ -88,9 +109,9 @@ pareto_smooth.default <- function(x,
   if (is.null(ndraws_tail)) {
     ndraws_tail <- ps_tail_length(S, r_eff)
   }
-  
+
   if (tail == "both") {
-    
+
     if (ndraws_tail > S / 2) {
       warning("Number of tail draws cannot be more than half ",
               "the length of the draws if both tails are fit, ",
@@ -123,7 +144,7 @@ pareto_smooth.default <- function(x,
     k <- max(left_k, right_k)
     x <- smoothed$x
   } else {
-    
+
     smoothed <- .pareto_smooth_tail(
       x,
       ndraws_tail = ndraws_tail,
@@ -148,14 +169,13 @@ pareto_smooth.default <- function(x,
       diags = diags
     )
   }
-  if (return_smoothed) {
-    out <- list(x = x, diagnostics = diags)
-  } else {
-    out <- diags
-  }
+
+  out <- list(x = x, diagnostics = diags)
+
   return(out)
 }
 
+# internal function to pareto smooth the tail of a vector
 .pareto_smooth_tail <- function(x,
                                 ndraws_tail,
                                 tail = c("right", "left"),
@@ -166,8 +186,8 @@ pareto_smooth.default <- function(x,
 
   S <- length(x)
   tail_ids <- seq(S - ndraws_tail + 1, S)
-  
-  
+
+
   if (tail == "left") {
     x <- -x
   }
@@ -175,13 +195,14 @@ pareto_smooth.default <- function(x,
   ord <- sort.int(x, index.return = TRUE)
   draws_tail <- ord$x[tail_ids]
   cutoff <- ord$x[min(tail_ids) - 1] # largest value smaller than tail values
-  
+
   max_tail <- max(draws_tail)
   min_tail <- min(draws_tail)
 
   if (ndraws_tail >= 5) {
     ord <- sort.int(x, index.return = TRUE)
     if (abs(max_tail - min_tail) < .Machine$double.eps / 100) {
+      print(paste(max_tail, min_tail))
       warning(
         "Can't fit generalized Pareto distribution ",
         "because all tail values are the same.",
@@ -214,16 +235,18 @@ pareto_smooth.default <- function(x,
     smoothed[smoothed > max_tail] <- max_tail
     x[ord$ix[tail_ids]] <- smoothed
   }
-  
+
   if (tail == "left") {
     x <- -x
   }
-  
+
   out <- list(x = x, k = k)
 
   return(out)
 }
 
+# internal function to calculate the extra diagnostics or a given
+# pareto k and sample size S
 .pareto_smooth_extra_diags <- function(k, S, ...) {
 
   min_ss <- ps_min_ss(k)
@@ -233,9 +256,9 @@ pareto_smooth.default <- function(x,
   convergence_rate <- ps_convergence_rate(k, S)
 
   other_diags <- list(
-    "min_ss" = min_ss,
-    "khat_threshold" = khat_threshold,
-    "convergence_rate" = convergence_rate
+    min_ss = min_ss,
+    khat_threshold = khat_threshold,
+    convergence_rate = convergence_rate
   )
 }
 
@@ -323,4 +346,5 @@ pareto_k_diagmsg <- function(diags, ...) {
     }
   }
   message(msg)
+  invisible(diags)
 }
