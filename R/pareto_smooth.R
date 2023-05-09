@@ -5,7 +5,12 @@
 #'
 #' @template args-pareto
 #' @template args-methods-dots
-#' @return numeric vector of Pareto smoothing diagnostics
+#' @return #' List of Pareto smoothing diagnostics:
+#'  * `khat`: estimated Pareto k shape parameter, and optionally
+#'  * `min_ss`: minimum sample size for reliable Pareto smoothed estimate
+#'  * `khat_threshold`: khat-threshold for reliable Pareto smoothed estimate 
+#'  * `convergence_rate`: Pareto smoothed estimate RMSE convergence rate.
+#'
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
@@ -56,8 +61,11 @@ pareto_khat.rvar <- function(x, extra_diags = FALSE, ...) {
 #' @template args-pareto
 #' @template args-methods-dots
 #' @return List containing vector `x` of smoothed values and list
-#'   `diagnostics` of Pareto smoothing diagnostics (`khat`, and
-#'   optionally `min_ss`, `khat_threshold`, and `convergence_rate`).
+#'   `diagnostics` of Pareto smoothing diagnostics:
+#'  * `khat`: estimated Pareto k shape parameter, and optionally
+#'  * `min_ss`: minimum sample size for reliable Pareto smoothed estimate
+#'  * `khat_threshold`: khat-threshold for reliable Pareto smoothed estimate 
+#'  * `convergence_rate`: Pareto smoothed estimate RMSE convergence rate.
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
@@ -103,8 +111,8 @@ pareto_smooth.default <- function(x,
                                   ndraws_tail = NULL,
                                   extra_diags = FALSE,
                                   verbose = FALSE,
-                                  ...) {
-
+                                  ...) {  
+  
   # check for infinite or na values
   if (should_return_NA(x)) {
     return(list(x = x, diagnostics = NA_real_))
@@ -188,7 +196,9 @@ pareto_smooth.default <- function(x,
   return(out)
 }
 
-# internal function to pareto smooth the tail of a vector
+#' Pareto smooth tail
+#' internal function to pareto smooth the tail of a vector
+#' @noRd
 .pareto_smooth_tail <- function(x,
                                 ndraws_tail,
                                 tail = c("right", "left"),
@@ -255,8 +265,11 @@ pareto_smooth.default <- function(x,
   return(out)
 }
 
-# internal function to calculate the extra diagnostics or a given
-# pareto k and sample size S
+#' Extra pareto-k diagnostics
+#'
+#' internal function to calculate the extra diagnostics or a given
+#' pareto k and sample size S
+#' @noRd
 .pareto_smooth_extra_diags <- function(k, S, ...) {
 
   min_ss <- ps_min_ss(k)
@@ -276,11 +289,12 @@ pareto_smooth.default <- function(x,
 #'
 #' Given Pareto-k computes the minimum sample size for reliable Pareto
 #' smoothed estimate (to have small probability of large error)
+#' Equqtion (11) in PSIS paper
 #' @param k pareto k value
 #' @param ... unused
 #' @return minimum sample size
+#' @noRd
 ps_min_ss <- function(k, ...) {
-  # Eq (11) in PSIS paper
   10^(1 / (1 - max(0, k)))
 }
 
@@ -292,6 +306,7 @@ ps_min_ss <- function(k, ...) {
 #' @param S sample size
 #' @param ... unused
 #' @return threshold
+#' @noRd
 ps_khat_threshold <- function(S, ...) {
   1 - 1 / log10(S)
 }
@@ -304,6 +319,7 @@ ps_khat_threshold <- function(S, ...) {
 #' @param S sample size
 #' @param ... unused
 #' @return convergence rate
+#' @noRd
 ps_convergence_rate <- function(k, S, ...) {
   # allow array of k's
   rate <- numeric(length(k))
@@ -324,8 +340,10 @@ ps_convergence_rate <- function(k, S, ...) {
   rate
 }
 
+#' Calculate the tail length from S and r_eff
+#' Appendix H in PSIS paper
+#' @noRd
 ps_tail_length <- function(S, r_eff, ...) {
-  # Appendix H in PSIS paper
   ifelse(S > 225, ceiling(3 * sqrt(S / r_eff)), S / 5)
 }
 
@@ -335,6 +353,7 @@ ps_tail_length <- function(S, r_eff, ...) {
 #' @param diags (numeric) named vector of diagnostic values
 #' @param ... unused
 #' @return diagnostic message
+#' @noRd
 pareto_k_diagmsg <- function(diags, ...) {
   khat <- diags$khat
   min_ss <- diags$min_ss

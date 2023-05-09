@@ -1,4 +1,5 @@
-# quantile function for generalized pareto
+#' Quantile function for generalized pareto
+#' @noRd
 qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, log.p = FALSE) {
   stopifnot(length(mu) == 1 && length(sigma) == 1 && length(k) == 1)
   if (is.na(sigma) || sigma <= 0) {
@@ -46,6 +47,7 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
 #' Zhang, J., and Stephens, M. A. (2009). A new and efficient estimation method
 #' for the generalized Pareto distribution. *Technometrics* **51**, 316-325.
 #'
+#' @noRd
 gpdfit <- function(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE) {
   # see section 4 of Zhang and Stephens (2009)
   if (sort_x) {

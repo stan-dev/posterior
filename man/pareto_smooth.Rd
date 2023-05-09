@@ -59,8 +59,13 @@ printed. Default is \code{FALSE}.}
 }
 \value{
 List containing vector \code{x} of smoothed values and list
-\code{diagnostics} of Pareto smoothing diagnostics (\code{khat}, and
-optionally \code{min_ss}, \code{khat_threshold}, and \code{convergence_rate}).
+\code{diagnostics} of Pareto smoothing diagnostics:
+\itemize{
+\item \code{khat}: estimated Pareto k shape parameter, and optionally
+\item \code{min_ss}: minimum sample size for reliable Pareto smoothed estimate
+\item \code{khat_threshold}: khat-threshold for reliable Pareto smoothed estimate
+\item \code{convergence_rate}: Pareto smoothed estimate RMSE convergence rate.
+}
 }
 \description{
 Smooth the tail(s) of x by fitting a generalized Pareto

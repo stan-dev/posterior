@@ -10,7 +10,7 @@ pareto_khat(x, ...)
 
 \method{pareto_khat}{default}(x, ...)
 
-\method{pareto_khat}{rvar}(x, ...)
+\method{pareto_khat}{rvar}(x, extra_diags = FALSE, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -21,6 +21,11 @@ pareto_khat(x, ...)
 }}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{extra_diags}{(logical) Should extra Pareto smoothing
+diagnostics be included in output? If \code{TRUE}, \code{min_ss},
+\code{khat_threshold} and \code{convergence_rate} for the calculated k
+value will be returned. Default is \code{FALSE}.}
 
 \item{tail}{(string) The tail to smooth:
 \itemize{
@@ -43,14 +48,15 @@ from MCMC.}
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto smoothing diagnostics will be
 printed. Default is \code{FALSE}.}
-
-\item{extra_diags}{(logical) Should extra Pareto smoothing
-diagnostics be included in output? If \code{TRUE}, \code{min_ss},
-\code{khat_threshold} and \code{convergence_rate} for the calculated k
-value will be returned. Default is \code{FALSE}.}
 }
 \value{
-numeric vector of Pareto smoothing diagnostics
+#' List of Pareto smoothing diagnostics:
+\itemize{
+\item \code{khat}: estimated Pareto k shape parameter, and optionally
+\item \code{min_ss}: minimum sample size for reliable Pareto smoothed estimate
+\item \code{khat_threshold}: khat-threshold for reliable Pareto smoothed estimate
+\item \code{convergence_rate}: Pareto smoothed estimate RMSE convergence rate.
+}
 }
 \description{
 Estimate Pareto k value from Pareto smoothing the tail(s) of x. For
