@@ -53,7 +53,7 @@ pareto_khat.rvar <- function(x, extra_diags = FALSE, ...) {
       khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat),
       min_ss = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$min_ss),
       khat_threshold = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat_threshold),
-      convergence_rage = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$convergence_rate)
+      convergence_rate = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$convergence_rate)
     )
   } else {
     diags <- list(
@@ -100,7 +100,7 @@ pareto_smooth.rvar <- function(x, extra_diags = FALSE, ...) {
       khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat),
       min_ss = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$min_ss),
       khat_threshold = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat_threshold),
-      convergence_rage = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$convergence_rate)
+      convergence_rate = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$convergence_rate)
     )
   } else {
     diags <- list(
