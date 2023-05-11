@@ -17,9 +17,10 @@
 #' is useful for creating constants.
 #'
 #' While `as_rvar()` attempts to pick the most suitable subtype of [`rvar`] based on the
-#' type of `x` (possibly returning a an [`rvar_factor`] or [`rvar_ordered`]),
-#' `as_rvar_numeric()` always coerces the draws of the output [`rvar`] to be [`numeric`],
-#' and always returns a base [`rvar`], never a subtype.
+#' type of `x` (possibly returning an [`rvar_factor`] or [`rvar_ordered`]),
+#' `as_rvar_numeric()`, `as_rvar_integer()`, and `as_rvar_logical()` always coerce
+#' the draws of the output [`rvar`] to be [`numeric`], [`integer`], or [`logical`]
+#' (respectively), and always return a base [`rvar`], never a subtype.
 #'
 #' @seealso [rvar()] to construct [`rvar`]s directly.  See [rdo()], [rfun()], and
 #' [rvar_rng()] for higher-level interfaces for creating `rvar`s.
@@ -83,6 +84,22 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 as_rvar_numeric <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
   out <- as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
   draws_of(out) <- while_preserving_dims(as.numeric, draws_of(out))
+  out
+}
+
+#' @rdname as_rvar
+#' @export
+as_rvar_integer <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
+  out <- as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
+  draws_of(out) <- while_preserving_dims(as.integer, draws_of(out))
+  out
+}
+
+#' @rdname as_rvar
+#' @export
+as_rvar_logical <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
+  out <- as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
+  draws_of(out) <- while_preserving_dims(as.logical, draws_of(out))
   out
 }
 
