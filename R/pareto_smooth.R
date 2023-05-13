@@ -312,8 +312,14 @@ pareto_smooth.default <- function(x,
 #' @return minimum sample size
 #' @noRd
 ps_min_ss <- function(k, ...) {
-  10^(1 / (1 - max(0, k)))
+  if (k < 1) {
+   out <- 10^(1 / (1 - max(0, k)))
+  } else {
+   out <- Inf
+  }
+   out
 }
+
 
 #' Pareto-smoothing k-hat threshold
 #'
