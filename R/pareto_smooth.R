@@ -5,6 +5,7 @@
 #'
 #' @template args-pareto
 #' @template args-methods-dots
+#' @template ref-vehtari-paretosmooth-2022
 #' @return List of Pareto smoothing diagnostics:
 #'  * `khat`: estimated Pareto k shape parameter, and optionally
 #'  * `min_ss`: minimum sample size for reliable Pareto smoothed estimate
@@ -71,6 +72,7 @@ pareto_khat.rvar <- function(x, extra_diags = FALSE, ...) {
 #'
 #' @template args-pareto
 #' @template args-methods-dots
+#' @template ref-vehtari-paretosmooth-2022
 #' @return List containing vector `x` of smoothed values and list
 #'   `diagnostics` of Pareto smoothing diagnostics:
 #'  * `khat`: estimated Pareto k shape parameter, and optionally

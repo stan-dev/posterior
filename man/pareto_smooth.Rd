@@ -78,3 +78,8 @@ pareto_smooth(mu)
 d <- as_draws_rvars(example_draws("multi_normal"))
 pareto_smooth(d$Sigma)
 }
+\references{
+Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
+Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
+arxiv:arXiv:1507.02646
+}
