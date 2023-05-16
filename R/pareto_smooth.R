@@ -317,7 +317,9 @@ ps_min_ss <- function(k, ...) {
   } else {
    out <- Inf
   }
+   out
 }
+
 
 #' Pareto-smoothing k-hat threshold
 #'
