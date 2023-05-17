@@ -8,13 +8,14 @@
 \usage{
 pareto_smooth(x, ...)
 
-\method{pareto_smooth}{rvar}(x, extra_diags = FALSE, ...)
+\method{pareto_smooth}{rvar}(x, return_k = TRUE, extra_diags = FALSE, ...)
 
 \method{pareto_smooth}{default}(
   x,
   tail = c("both", "right", "left"),
   r_eff = NULL,
   ndraws_tail = NULL,
+  return_k = TRUE,
   extra_diags = FALSE,
   verbose = FALSE,
   ...
@@ -30,16 +31,20 @@ pareto_smooth(x, ...)
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{extra_diags}{(logical) Should extra Pareto smoothing
-diagnostics be included in output? If \code{TRUE}, \code{min_ss},
-\code{khat_threshold} and \code{convergence_rate} for the calculated k
-value will be returned. Default is \code{FALSE}.}
+\item{return_k}{(logical) Should the Pareto khat be included in
+output? If \code{TRUE}, output will be a list containing of smoothed
+draws and diagnostics. Default is \code{TRUE}.}
 
-\item{tail}{(string) The tail to smooth:
+\item{extra_diags}{(logical) Should extra Pareto khat diagnostics
+be included in output? If \code{TRUE}, \code{min_ss}, \code{khat_threshold} and
+\code{convergence_rate} for the calculated k value will be
+returned. Default is \code{FALSE}.}
+
+\item{tail}{(string) The tail to diagnose/smooth:
 \itemize{
-\item \code{"right"}: smooth only the right (upper) tail
-\item \code{"left"}: smooth only the left (lower) tail
-\item \code{"both"}: smooth both tails and return the maximum k value
+\item \code{"right"}: diagnose/smooth only the right (upper) tail
+\item \code{"left"}: diagnose/smooth only the left (lower) tail
+\item \code{"both"}: diagnose/smooth both tails and return the maximum k value
 }
 
 The default is \code{"both"}.}
@@ -54,22 +59,28 @@ ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
 length(x) / 5 otherwise (see Appendix H in Vehtari et al. (2022)).}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
-\code{TRUE}, messages related to Pareto smoothing diagnostics will be
+\code{TRUE}, messages related to Pareto diagnostics will be
 printed. Default is \code{FALSE}.}
 }
 \value{
-List containing vector \code{x} of smoothed values and list
-\code{diagnostics} of Pareto smoothing diagnostics:
+Either a vector \code{x} of smoothed values and or a list
+containing the vector \code{x} and \code{diagnostics} of Pareto smoothing
+diagnostics:
 \itemize{
-\item \code{khat}: estimated Pareto k shape parameter, and optionally
-\item \code{min_ss}: minimum sample size for reliable Pareto smoothed estimate
-\item \code{khat_threshold}: khat-threshold for reliable Pareto smoothed estimate
-\item \code{convergence_rate}: Pareto smoothed estimate RMSE convergence rate.
+\item \code{khat}: estimated Pareto k shape parameter, and
+optionally
+\item \code{min_ss}: minimum sample size for reliable Pareto
+smoothed estimate
+\item \code{khat_threshold}: khat-threshold for reliable
+Pareto smoothed estimat
+\item \code{convergence_rate}: Pareto smoothed
+estimate RMSE convergence rate.
 }
 }
 \description{
-Smooth the tail(s) of x by fitting a generalized Pareto
-distribution. For further details see Vehtari et al. (2022).
+Smooth the tail draws of x by replacing tail draws by order
+statistics of a generalized Pareto distribution fit to the
+tail(s). For further details see Vehtari et al. (2022).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")

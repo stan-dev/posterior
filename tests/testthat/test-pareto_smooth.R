@@ -80,9 +80,10 @@ test_that("pareto_khat diagnostics messages are as expected", {
 })
 
 test_that("pareto_khat extra diags are returned", {
+
   tau <- extract_variable_matrix(example_draws(), "tau")
 
-  pk <- pareto_khat(tau, extra_diag = TRUE)
+  pk <- pareto_diags(tau)
   expect_true(all(names(pk) == c("khat", "min_ss", "khat_threshold", "convergence_rate")))
 })
 
@@ -90,9 +91,9 @@ test_that("pareto_khat extra diags are returned", {
 test_that("pareto_khat diagnostics handles verbose argument", {
   tau <- extract_variable_matrix(example_draws(), "tau")
 
-  expect_message(pareto_khat(tau, extra_diag = TRUE, verbose = TRUE))
-  expect_message(pareto_khat(tau, extra_diag = FALSE, verbose = TRUE))
-  expect_no_message(pareto_khat(tau, extra_diag = TRUE, verbose = FALSE))
+  expect_message(pareto_khat(tau, extra_diags = TRUE, verbose = TRUE))
+  expect_message(pareto_khat(tau, extra_diags = FALSE, verbose = TRUE))
+  expect_no_message(pareto_khat(tau, extra_diags = TRUE, verbose = FALSE))
 
 })
 
@@ -108,13 +109,16 @@ test_that("pareto_khat diagnostics handle special cases correctly", {
   set.seed(1234)
 
   x <- c(rnorm(50), NA)
-  expect_true(is.na(pareto_khat(x)))
+  expect_warning(pareto_khat(x))
+  expect_true(is.na(suppressWarnings(pareto_khat(x))))
 
   x <- c(rnorm(50), Inf)
-  expect_true(is.na(pareto_khat(x)))
+  expect_warning(pareto_khat(x))
+  expect_true(is.na(suppressWarnings(pareto_khat(x))))
 
   x <- rep(1, 50)
-  expect_true(is.na(pareto_khat(x)))
+  expect_warning(pareto_khat(x))
+  expect_true(is.na(suppressWarnings(pareto_khat(x))))
 
 })
 
