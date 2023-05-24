@@ -55,8 +55,10 @@ printed. Default is \code{FALSE}.}
 \code{khat} estimated Generalized Pareto Distribution shape parameter k
 }
 \description{
-Estimate Pareto k value by fitting a Generalized Pareto Distribution to one or two tails of x. For
-further details see Vehtari et al. (2022).
+Estimate Pareto k value by fitting a Generalized Pareto
+Distribution to one or two tails of x. This can be used to etimate
+the number of fractional moments. For further details see Vehtari
+et al. (2022).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")

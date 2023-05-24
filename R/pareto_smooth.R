@@ -1,7 +1,9 @@
 #' Pareto khat diagnostic
 #'
-#' Estimate Pareto k value by fitting a Generalized Pareto Distribution to one or two tails of x. For
-#' further details see Vehtari et al. (2022).
+#' Estimate Pareto k value by fitting a Generalized Pareto
+#' Distribution to one or two tails of x. This can be used to etimate
+#' the number of fractional moments. For further details see Vehtari
+#' et al. (2022).
 #'
 #' @template args-pareto
 #' @template args-methods-dots
@@ -61,8 +63,7 @@ pareto_khat.rvar <- function(x, ...) {
 #'
 #' Compute diagnostics for Pareto smoothing the tail draws of x by
 #' replacing tail draws by order statistics of a generalized Pareto
-#' distribution fit to the tail(s). For further details see Vehtari et
-#' al. (2022).
+#' distribution fit to the tail(s).
 #'
 #' @template args-pareto
 #' @template args-methods-dots
@@ -72,6 +73,32 @@ pareto_khat.rvar <- function(x, ...) {
 #'  * `min_ss`: minimum sample size for reliable Pareto smoothed estimate,
 #'  * `khat_threshold`: khat-threshold for reliable Pareto smoothed estimate,
 #'  * `convergence_rate`: Pareto smoothed estimate RMSE convergence rate.
+#'
+#' @details When the fitted Generalized Pareto Distribution is used to
+#'   smooth the tail values and these smoothed values are used to
+#'   compute expectations, the following diagnostics can give further
+#'   information about the reliability of these estimates.
+#'
+#'  * `min_ss`: Minimum sample size for reliable Pareto smoothed
+#' estimate. If the actual sample size is greater than `min_ss`, then
+#' Pareto smoothed estimates can be considered reliable. If the actual
+#' sample size is lower than `min_ss`, increasing the sample size
+#' might result in more reliable estimates. For further details, see
+#' Section 3.2.3, Equation 11 in Vehtari et al. (2022).
+#'
+#'  * `khat_threshold`: Threshold below which k-hat values result in
+#' reliable Pareto smoothed estimates. The threshold is lower for
+#' smaller effective sample sizes. If k-hat is larger than the
+#' threshold, increasing the total sample size may improve reliability
+#' of estimates. For further details, see Section 3.2.4, Equation 13
+#' in Vehtari et al. (2022).
+#'
+#'  * `convergence_rate`: Relative convergence rate compared to the
+#'  central limit theorem. Applicable only if the actual sample size
+#'  is sufficiently large (greater than `min_ss`). The convergence
+#'  rate tells the rate at which the variance of an estimate reduces
+#'  when the sample size is increased, compared to the central limit
+#'  theorem convergence rate. See Appendix B in Vehtari et al. (2022).
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
@@ -90,7 +117,7 @@ pareto_diags.default <- function(x,
                                   r_eff = NULL,
                                   ndraws_tail = NULL,
                                   verbose = FALSE,
-                                  ...) {  
+                                  ...) {
 
   smoothed <- pareto_smooth.default(
     x,
@@ -102,9 +129,9 @@ pareto_diags.default <- function(x,
     verbose = verbose,
     smooth_draws = FALSE,
     ...)
-  
+
   return(smoothed$diagnostics)
-  
+
 }
 
 
@@ -119,7 +146,7 @@ pareto_diags.rvar <- function(x, ...) {
     extra_diags = TRUE,
     ...
   )
-  
+
   dim(draws_diags) <- dim(draws_diags) %||% length(draws_diags)
   margins <- seq_along(dim(draws_diags))
 
@@ -147,21 +174,20 @@ pareto_diags.rvar <- function(x, ...) {
 #'   draws and diagnostics. Default is `TRUE`.
 #' @param extra_diags (logical) Should extra Pareto khat diagnostics
 #'   be included in output? If `TRUE`, `min_ss`, `khat_threshold` and
-#'   `convergence_rate` for the calculated k value will be
+#'   `convergence_rate` for the estimated k value will be
 #'   returned. Default is `FALSE`.
 #' @template args-methods-dots
 #' @template ref-vehtari-paretosmooth-2022
-#' @return Either a vector `x` of smoothed values and or a list
-#'   containing the vector `x` and `diagnostics` of Pareto smoothing
+#' @return Either a vector `x` of smoothed values or a named list
+#'   containing the vector `x` and a named list `diagnostics` containing Pareto smoothing
 #'   diagnostics:
 #' * `khat`: estimated Pareto k shape parameter, and
 #'   optionally
 #' * `min_ss`: minimum sample size for reliable Pareto
 #'   smoothed estimate
 #' * `khat_threshold`: khat-threshold for reliable
-#'   Pareto smoothed estimat
-#' * `convergence_rate`: Pareto smoothed
-#'   estimate RMSE convergence rate.
+#'   Pareto smoothed estimates
+#' * `convergence_rate`: Relative convergence rate for Pareto smoothed estimates
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
@@ -179,14 +205,14 @@ pareto_smooth.rvar <- function(x, return_k = TRUE, extra_diags = FALSE, ...) {
   if (extra_diags) {
     return_k <- TRUE
   }
-  
+
   draws_diags <- summarise_rvar_by_element_with_chains(x, pareto_smooth.default, return_k = return_k, extra_diags = extra_diags, ...)
   dim(draws_diags) <- dim(draws_diags) %||% length(draws_diags)
   margins <- seq_along(dim(draws_diags))
 
   if (return_k) {
     if (extra_diags) {
-      
+
       diags <- list(
         khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat),
         min_ss = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$min_ss),
@@ -217,14 +243,14 @@ pareto_smooth.default <- function(x,
                                   return_k = TRUE,
                                   extra_diags = FALSE,
                                   verbose = FALSE,
-                                  ...) {  
+                                  ...) {
 
   checkmate::assert_number(ndraws_tail, null.ok = TRUE)
   checkmate::assert_number(r_eff, null.ok = TRUE)
   checkmate::assert_logical(extra_diags)
   checkmate::assert_logical(return_k)
   checkmate::assert_logical(verbose)
-  
+
   # check for infinite or na values
   if (should_return_NA(x)) {
     warning_no_call("Input contains infinite or NA values, Pareto smoothing not performed.")

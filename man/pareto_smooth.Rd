@@ -37,7 +37,7 @@ draws and diagnostics. Default is \code{TRUE}.}
 
 \item{extra_diags}{(logical) Should extra Pareto khat diagnostics
 be included in output? If \code{TRUE}, \code{min_ss}, \code{khat_threshold} and
-\code{convergence_rate} for the calculated k value will be
+\code{convergence_rate} for the estimated k value will be
 returned. Default is \code{FALSE}.}
 
 \item{tail}{(string) The tail to diagnose/smooth:
@@ -63,8 +63,8 @@ length(x) / 5 otherwise (see Appendix H in Vehtari et al. (2022)).}
 printed. Default is \code{FALSE}.}
 }
 \value{
-Either a vector \code{x} of smoothed values and or a list
-containing the vector \code{x} and \code{diagnostics} of Pareto smoothing
+Either a vector \code{x} of smoothed values or a named list
+containing the vector \code{x} and a named list \code{diagnostics} containing Pareto smoothing
 diagnostics:
 \itemize{
 \item \code{khat}: estimated Pareto k shape parameter, and
@@ -72,9 +72,8 @@ optionally
 \item \code{min_ss}: minimum sample size for reliable Pareto
 smoothed estimate
 \item \code{khat_threshold}: khat-threshold for reliable
-Pareto smoothed estimat
-\item \code{convergence_rate}: Pareto smoothed
-estimate RMSE convergence rate.
+Pareto smoothed estimates
+\item \code{convergence_rate}: Relative convergence rate for Pareto smoothed estimates
 }
 }
 \description{
