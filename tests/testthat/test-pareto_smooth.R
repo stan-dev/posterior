@@ -32,7 +32,7 @@ test_that("pareto_khat handles ndraws_tail argument", {
 
   expect_warning(pareto_khat(tau, tail = "both", ndraws_tail = 4),
                  "Number of tail draws cannot be less than 5. Changing to 5.")
-  
+
 })
 
 
@@ -42,7 +42,7 @@ test_that("pareto_khat handles r_eff argument", {
   pk1 <- pareto_khat(tau, r_eff = 1)
   pk0.6 <- pareto_khat(tau, r_eff = 0.6)
   expect_true(pk1$khat < pk0.6$khat)
-  
+
 })
 
 
@@ -59,7 +59,7 @@ test_that("pareto_khat diagnostics messages are as expected", {
                    paste0('To halve the RMSE, approximately 4.1 times bigger S is needed.'))
 
   diags$khat <- 0.6
-  
+
     expect_message(pareto_k_diagmsg(diags),
                    paste0('S is too small, and sample size larger than 10 is neeeded for reliable results.\n'))
 
@@ -71,7 +71,7 @@ test_that("pareto_khat diagnostics messages are as expected", {
 
 
     diags$khat <- 1.1
-    
+
     expect_message(pareto_k_diagmsg(diags),
                    paste0('All estimates are unreliable. If the distribution of ratios is bounded,\n',
                   'further draws may improve the estimates, but it is not possible to predict\n',
@@ -79,7 +79,7 @@ test_that("pareto_khat diagnostics messages are as expected", {
 
 })
 
-test_that("pareto_khat extra diags are returned", {
+test_that("pareto_diags returns expected diagnostics", {
 
   tau <- extract_variable_matrix(example_draws(), "tau")
 
@@ -127,7 +127,7 @@ test_that("pareto_khat functions work with matrix with chains", {
 
   tau_chains <- extract_variable_matrix(example_draws(), "tau")
   tau_nochains <- extract_variable(example_draws(), "tau")
-  
+
   expect_equal(pareto_khat(tau_chains, ndraws_tail = 20),
                pareto_khat(tau_nochains, ndraws_tail = 20))
 
@@ -142,7 +142,7 @@ test_that("pareto_khat functions work with rvars with and without chains", {
 
   tau_chains <- extract_variable_matrix(example_draws(), "tau")
   tau_nochains <- extract_variable(example_draws(), "tau")
-  
+
   tau_rvar_chains <- rvar(tau_chains, with_chains = TRUE)
   tau_rvar_nochains <- rvar(tau_nochains)
 
@@ -152,16 +152,34 @@ test_that("pareto_khat functions work with rvars with and without chains", {
   expect_equal(pareto_khat(tau_rvar_chains, ndraws_tail = 20),
                pareto_khat(tau_rvar_nochains, ndraws_tail = 20))
 
+
+  expect_equal(pareto_diags(tau_chains, ndraws_tail = 20),
+               pareto_diags(tau_rvar_chains, ndraws_tail = 20))
+
+  expect_equal(pareto_diags(tau_rvar_chains, ndraws_tail = 20),
+               pareto_diags(tau_rvar_nochains, ndraws_tail = 20))
+
   ps_chains <- pareto_smooth(tau_chains, ndraws_tail = 20)
   ps_rvar_chains <- pareto_smooth(tau_rvar_chains, ndraws_tail = 20)
 
   ps_nochains <- pareto_smooth(tau_nochains, ndraws_tail = 20)
   ps_rvar_nochains <- pareto_smooth(tau_rvar_nochains, ndraws_tail = 20)
-  
+
   expect_equal(ps_rvar_chains$x, rvar(ps_chains$x, with_chains = TRUE))
-  
+
   expect_equal(ps_rvar_nochains$x, rvar(ps_nochains$x))
-  
+
+
+  ps_chains <- pareto_smooth(tau_chains, ndraws_tail = 20, extra_diags = TRUE)
+  ps_rvar_chains <- pareto_smooth(tau_rvar_chains, ndraws_tail = 20, extra_diags = TRUE)
+
+  ps_nochains <- pareto_smooth(tau_nochains, ndraws_tail = 20, extra_diags = TRUE)
+  ps_rvar_nochains <- pareto_smooth(tau_rvar_nochains, ndraws_tail = 20, extra_diags = TRUE)
+
+  expect_equal(ps_rvar_chains$x, rvar(ps_chains$x, with_chains = TRUE))
+
+  expect_equal(ps_rvar_nochains$x, rvar(ps_nochains$x))
+
 })
 
 test_that("pareto_smooth returns x with smoothed tail", {
@@ -172,5 +190,5 @@ test_that("pareto_smooth returns x with smoothed tail", {
   expect_equal(sort(tau)[1:390], sort(tau_smoothed)[1:390])
 
   expect_false(isTRUE(all.equal(sort(tau), sort(tau_smoothed))))
-  
+
 })
