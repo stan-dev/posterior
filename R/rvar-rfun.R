@@ -54,7 +54,8 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
   ndraws <- ndraws %||% getOption("posterior.rvar_ndraws", 4000)
   .f <- rlang::as_function(.f)
 
-  arg_names <- as.list(formals(.f))
+  f_formals <- formals(args(.f))
+  arg_names <- as.list(f_formals)
   arg_names[["..."]] <- NULL
   arg_names <- names(arg_names)
   rvar_args <- as.character(rvar_args %||% arg_names)
@@ -93,7 +94,7 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
     })
     new_rvar(vctrs::list_unchop(list_of_draws), .nchains = .nchains)
   }
-  formals(FUNV) <- formals(.f)
+  formals(FUNV) <- f_formals
   FUNV
 }
 

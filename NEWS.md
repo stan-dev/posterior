@@ -1,3 +1,10 @@
+# posterior (development version)
+
+### Bug Fixes
+
+* Unsure `rfun()` works with primitive functions (#290).
+
+
 # posterior 1.4.1
 
 ### Bug Fixes

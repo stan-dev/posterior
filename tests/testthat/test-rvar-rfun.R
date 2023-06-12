@@ -39,6 +39,14 @@ test_that("rfun works on functions without rvar arguments", {
   expect_equal(rfun(f, rvar_args = NULL, ndraws = 10)(NULL), rvar(1:10))
 })
 
+test_that("rfun works on primitive functions", {
+  x = rvar(1:10)
+
+  rfun_sin = rfun(sin)
+  expect_equal(names(formals(rfun_sin)), "x")
+  expect_equal(rfun_sin(x), sin(x))
+})
+
 test_that("rdo allows setting the dimensions of the result", {
   expect_equal(rdo(1:10, dim = c(2,5), ndraws = 1), rvar(array(1:10, dim = c(1,2,5))))
 })
