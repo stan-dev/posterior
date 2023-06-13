@@ -1,6 +1,6 @@
 Package: posterior
 Title: Tools for Working with Posterior Distributions
-Version: 1.4.1
+Version: 1.4.1.9000
 Date: 2023-03-09
 Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
