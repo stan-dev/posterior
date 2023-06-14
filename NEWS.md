@@ -9,6 +9,8 @@
   * `x[[i]]` or `x[[i]] <- y` where `i` is a scalar numeric rvar slices (or
     updates) `x` by selecting the `i`th element within each corresponding draw.
     Thus, if `y <- x[[i]]`, then `y` is an `rvar` of length 1.
+* Added `rvar_ifelse()`, which is a variant of `ifelse()` that accepts (and
+  returns) `rvar`s (#282).
 
 ### Bug Fixes
 

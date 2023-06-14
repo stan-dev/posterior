@@ -381,12 +381,44 @@ match.rvar <- function(x, ...) {
 }
 
 
-# ifelse ------------------------------------------------------------------
+# rvar_ifelse -------------------------------------------------------------
 
+#' Random variable ifelse
+#'
+#' A version of `ifelse()` that returns an [`rvar`].
+#'
+#' @param test (logical [`rvar`], or castable to one) logical test determining
+#' whether the value in `yes` or `no` is assigned in the corresponding position
+#' of the result.
+#' @param yes ([`rvar`], or castable to one) corresponding values assigned for
+#' entries in `test` that are `TRUE`.
+#' @param no ([`rvar`], or castable to one) corresponding values assigned for
+#' entries in `test` that are `FALSE`.
+#'
+#' @returns
+#' An [`rvar`] with the common type of `yes` and `no` (as determined by
+#' `vctrs::vec_cast_common()`) and a shape determined by broadcasting `test`,
+#' `yes`, and `no` to a common shape (see the section on broadcasting rules in
+#' `vignette("rvar")`). For every element of `draws_of(test)`, the corresponding
+#' element of `draws_of(yes)` or `draws_of(no)` is placed into the result,
+#' depending on whether the element of `test` is `TRUE` or `FALSE`.
+#'
+#' @examples
+#' x <- rvar(1:4)
+#' y <- rvar(5:8)
+#'
+#' i <- rvar(c(TRUE,FALSE,TRUE,FALSE))
+#' z <- rvar_ifelse(i, x, y)
+#' z
+#' draws_of(z)
 #' @importFrom vctrs vec_cast_common
+#' @export
 rvar_ifelse = function(test, yes, no) {
+  test <- as_rvar(test)
+  yes <- as_rvar(yes)
+  no <- as_rvar(no)
   if (!is.logical(draws_of(test))) {
-    stop_no_call("`rvar_ifelse(test, yes, no)` requires `test` to be a logical rvar")
+    stop_no_call("`rvar_ifelse(test, yes, no)` requires `test` to be a logical rvar, or castable to one.")
   }
   c(yes, no) %<-% vec_cast_common(yes, no)
   c(test, yes, no) %<-% conform_array_dims(conform_rvar_ndraws(list(test, yes, no)))
