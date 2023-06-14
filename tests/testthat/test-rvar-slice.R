@@ -65,6 +65,19 @@ test_that("indexing with [[ works on a matrix", {
   expect_equal(x_null, rvar(5))
 })
 
+test_that("indexing with x[[<rvar>]] for scalar numeric index works", {
+  .dimnames <- list(1:4, A = paste0("a", 1:3), B = paste0("b", 1:2))
+  x_array <- array(1:24, dim = c(4,3,2), dimnames = .dimnames)
+  x <- rvar(x_array)
+
+  expect_equal(x[[rvar(1)]], x[[1]])
+  expect_equal(x[[rvar(1:4)]], rvar(c(1, 6, 11, 16)))
+
+  expect_error(x[[rvar(TRUE)]], "scalar numeric")
+  expect_error(x[[rvar(1:2)]], "different number of draws")
+  expect_error(x[[rvar(NA)]], "Missing indices")
+})
+
 
 # [[ assignment -----------------------------------------------------------
 
@@ -103,6 +116,20 @@ test_that("assignment with [[ works", {
 
   expect_error({x2 <- x; x2[[-1]] <- 1}, "out of bounds")
   expect_error({x2 <- rvar(1:10); x2[[2]] <- c(4,5,6)})
+})
+
+test_that("assignment with x[[<rvar>]] for scalar numeric index works", {
+  .dimnames <- list(1:4, A = paste0("a", 1:3), B = paste0("b", 1:2))
+  x_array <- array(1:24, dim = c(4,3,2), dimnames = .dimnames)
+  x <- rvar(x_array)
+
+  ref_array <- x_array
+  ref_array[1,1,1] <- 4
+  ref_array[2,2,1] <- 3
+  ref_array[3,3,1] <- 2
+  ref_array[4,1,2] <- 1
+  expect_equal({x2 <- x; x2[[rvar(1:4)]] <- rvar(4:1); x2}, rvar(ref_array))
+  expect_equal({x2 <- x; x2[[rvar(1:4)]] <- x2[[rvar(1:4)]]; x2}, x)
 })
 
 

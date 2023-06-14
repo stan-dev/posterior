@@ -14,11 +14,7 @@
     if (is_rvar(index[[1]])) {
       # x[[i]] where i is a scalar numeric rvar
       i_rvar <- index[[1]]
-      if (!is.numeric(draws_of(i_rvar)) || length(i_rvar) != 1) {
-        stop_no_call("`x[[i]]` for rvars `x` and `i` is only supported when `i` is a scalar numeric rvar.")
-      }
-      c(x, i_rvar) %<-% conform_rvar_ndraws_nchains(list(x, i_rvar))
-      i <- matrix_to_index(cbind(seq_len(ndraws(x)), draws_of(i_rvar)), c(ndraws(x), length(x)))
+      c(i, x) %<-% scalar_numeric_rvar_to_index(i_rvar, x)
       .draws <- draws_of(x)[i]
     } else {
       # x[[i]] where i is a scalar numeric or character
@@ -48,7 +44,7 @@
   if (length(index) == 1) {
     .dim = dim(x)
 
-    if (length(.dim) == 1 && i > length(x)) {
+    if (length(.dim) == 1 && isTRUE(i > length(x))) {
       # unidimensional indexing allows array extension; extend the array
       # then do the assignment
       x <- x[seq_len(max(i, na.rm = TRUE))]
@@ -61,7 +57,14 @@
         # would prevent single-element by-name selection for 1d rvars)
         dim(x) <- prod(.dim)
       }
-      draws_of(x)[, i] <- draws_of(value)
+      if (is_rvar(i)) {
+        # x[[i]] <- value where i is a scalar numeric rvar
+        c(i, x, value) %<-% scalar_numeric_rvar_to_index(i, x, value)
+        draws_of(x)[i] <- draws_of(value)
+      } else {
+        # x[[i]] <- value where i is a scalar numeric or character
+        draws_of(x)[, i] <- draws_of(value)
+      }
       dim(x) <- .dim
       dimnames(draws_of(x)) <- .dimnames
     }
@@ -243,3 +246,18 @@ matrix_to_index <- function(m, dim) {
   cumdim <- cumprod(c(1, dim[-length(dim)]))
   as.vector((m - 1) %*% cumdim + 1)
 }
+
+# Given i_rvar, a scalar numeric rvar acting as an index on x, return a list
+# whose first element is i, an index on draws_of(x) that corresponds to i_rvar.
+# remaining elements are x and any other rvars in `...`, all of which will
+# have chains and draws conformed to each other.
+scalar_numeric_rvar_to_index <- function(i_rvar, x, ...) {
+  if (!is.numeric(draws_of(i_rvar)) || length(i_rvar) != 1) {
+    stop_no_call("`x[[i]]` for rvars `x` and `i` is only supported when `i` is a scalar numeric rvar.")
+  }
+  out <- conform_rvar_ndraws_nchains(list(i_rvar, x, ...))
+  c(i_rvar, x) %<-% out[1:2]
+  out[[1]] <- matrix_to_index(cbind(seq_len(ndraws(x)), draws_of(i_rvar)), c(ndraws(x), length(x)))
+  out
+}
+

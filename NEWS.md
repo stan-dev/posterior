@@ -2,9 +2,13 @@
 
 ### Enhancements
 
-* Added support for indexing draws in `rvar`s via `[.rvar` and `[<-.rvar`. A 
-  single, scalar logical `rvar` can now be used to slice an `rvar` by its
-  draws; e.g. using `x[i]` or `x[i] <- y` where `i` is an `rvar` (#282).
+* Added support for indexing draws in `rvar`s using `rvar`s (#282):
+  * `x[i]` or `x[i] <- y` where `i` is a scalar logical `rvar` slices (or
+    updates) `x` by its draws. Thus, if `y <- x[i]`, then `y` is the same
+    shape as `x` but with `sum(i)` draws.
+  * `x[[i]]` or `x[[i]] <- y` where `i` is a scalar numeric rvar slices (or
+    updates) `x` by selecting the `i`th element within each corresponding draw.
+    Thus, if `y <- x[[i]]`, then `y` is an `rvar` of length 1.
 
 ### Bug Fixes
 
