@@ -374,3 +374,20 @@ test_that("proxy restore works", {
     rvar_ordered(array(letters[c(rep(NA, 10), rep(NA, 10), 1:10)], dim = c(10, 3)), nchains = 2)
   )
 })
+
+
+# vctrs comparison proxies ---------------------------------------------------
+
+test_that("vctrs grouping works", {
+  x <- c(rvar(1:10), rvar(1:10), 1, rvar(1:10), 1)
+
+  expect_equal(vctrs::vec_identify_runs(x), structure(c(1, 1, 2, 3, 4), n = 4))
+  expect_equal(vctrs::vec_group_id(x), structure(c(1, 1, 2, 1, 2), n = 2))
+})
+
+test_that("vctrs comparison and ordering is not allowed on rvars", {
+  x <- rvar(1)
+
+  expect_error(vctrs::vec_order(x), "rvar does not support")
+  expect_error(vctrs::vec_compare(x, x), "rvar does not support")
+})
