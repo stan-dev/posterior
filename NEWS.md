@@ -11,6 +11,7 @@
     Thus, if `y <- x[[i]]`, then `y` is an `rvar` of length 1.
 * Added `rvar_ifelse()`, which is a variant of `ifelse()` that accepts (and
   returns) `rvar`s (#282).
+* Array broadcasting for `rvar`s has been made faster.
 
 ### Bug Fixes
 

@@ -227,6 +227,12 @@ test_that("broadcast_array works", {
   expect_error(broadcast_array(array(1:9, dim = c(3,3)), c(9)))
 })
 
+test_that("broadcast_array works on a factor", {
+  x <- factor(letters)
+  ref <- factor(c(letters, letters))
+  dim(ref) <- c(26, 2)
+  expect_equal(broadcast_array(x, c(26, 2)), ref)
+})
 
 # conforming chains / draws -----------------------------------------------
 

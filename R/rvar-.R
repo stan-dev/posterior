@@ -660,6 +660,7 @@ conform_array_dims <- function(arrays) {
   lapply(arrays, broadcast_array, .dim)
 }
 
+#' @importFrom rlang inject missing_arg
 broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
   if (!broadcast_scalars && length(x) == 1) {
     # quick exit: not broadcasting scalars; return them as vectors
@@ -667,10 +668,8 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     return(x)
   }
 
-  current_dim <- dim(x)
+  current_dim <- dim(x) %||% length(x)
   current_dimnames <- dimnames(x)
-  current_levels <- levels(x)
-  current_class <- oldClass(x)
 
   if (length(current_dim) < length(dim)) {
     # add dimensions of size 1 as necessary so we can broadcast those
@@ -704,24 +703,24 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     )
   }
 
-  # move the dims we aren't broadcasting to the front so they are recycled properly
-  perm <- c(seq_along(dim)[-dim_to_broadcast], dim_to_broadcast)
+  # construct the indices used in a slice that will broadcast the array
+  # e.g. if we want to broadcast x with dim c(2,1,2,4) to dim c(2,3,2,4), we
+  # need to do the slice x[,c(1,1,1),,], which broadcasts the second dimension
+  # to length 3
+  # first, construct the list of missing arguments
+  indices <- rep(list(missing_arg()), length(dim))
+  # second, fill in the appropriate number of 1s in the dims we want to broadcast
+  indices[dim_to_broadcast] <- lapply(dim[dim_to_broadcast], rep, x = 1L)
 
-  # broadcast the other dims
-  x <- array(aperm(x, perm), dim[perm])
-
-  # move dims back to their original order
-  x <- aperm(x, order(perm))
+  # do the slice to broadcast the array
+  x <- inject(x[!!!indices, drop = FALSE])
 
   if (!is.null(current_dimnames)) {
-    # restore any dimnames that we did not have to broadcast
-    dim_to_restore <- current_dim == dim
-    dimnames(x)[dim_to_restore] <- current_dimnames[dim_to_restore]
+    # the slice should correctly preserve dimnames that are not broadcast, but
+    # it will also duplicate dimnames that were broadcast --- which is probably
+    # undesirable as those dimnames are no longer unique. So, drop them.
+    dimnames(x)[dim_to_broadcast] <- list(NULL)
   }
-
-  # restore class and levels
-  levels(x) <- current_levels
-  oldClass(x) <- current_class
 
   x
 }
