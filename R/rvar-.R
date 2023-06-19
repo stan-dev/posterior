@@ -688,7 +688,7 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     )
   }
 
-  dim_to_broadcast = which(current_dim != dim)
+  dim_to_broadcast <- which(current_dim != dim)
 
   if (length(dim_to_broadcast) == 0) {
     # quick exit: already has desired dim or just needed extra dims on the end
@@ -703,6 +703,15 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     )
   }
 
+  if (!is.null(current_dimnames)) {
+    # the slice (below) should correctly preserve dimnames that are not broadcast,
+    # but it will also duplicate dimnames that were broadcast --- which is probably
+    # undesirable as those dimnames are no longer unique. So, drop those before
+    # we do the broadcast (this can be much faster than dropping afterwards if
+    # the broadcast dimensions are large)
+    dimnames(x)[dim_to_broadcast] <- list(NULL)
+  }
+
   # construct the indices used in a slice that will broadcast the array
   # e.g. if we want to broadcast x with dim c(2,1,2,4) to dim c(2,3,2,4), we
   # need to do the slice x[,c(1,1,1),,], which broadcasts the second dimension
@@ -713,16 +722,7 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
   indices[dim_to_broadcast] <- lapply(dim[dim_to_broadcast], rep, x = 1L)
 
   # do the slice to broadcast the array
-  x <- inject(x[!!!indices, drop = FALSE])
-
-  if (!is.null(current_dimnames)) {
-    # the slice should correctly preserve dimnames that are not broadcast, but
-    # it will also duplicate dimnames that were broadcast --- which is probably
-    # undesirable as those dimnames are no longer unique. So, drop them.
-    dimnames(x)[dim_to_broadcast] <- list(NULL)
-  }
-
-  x
+  inject(x[!!!indices, drop = FALSE])
 }
 
 # broadcast the draws dimension of an rvar to the requested size

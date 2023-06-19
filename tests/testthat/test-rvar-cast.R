@@ -300,7 +300,7 @@ test_that("as.data.frame and as_tibble work on rvars", {
   df2 <- as.data.frame(mean(x2))
   for (i in 1:3) {
     col <- x2[,i,drop = TRUE]
-    dimnames(col) <- list(NULL)
+    dimnames(draws_of(col)) <- list(NULL)
     df2[[i]] <- col
   }
   expect_equal(as.data.frame(x2), df2)
@@ -313,7 +313,7 @@ test_that("as.data.frame and as_tibble work on rvars", {
   df3 <- as.data.frame(mean(x3))
   for (c_i in 1:4) for (b_i in 1:2) {
     col <- x3[,b_i,c_i,drop = TRUE]
-    dimnames(col) <- list(NULL)
+    dimnames(draws_of(col)) <- list(NULL)
     df3[[b_i + (c_i - 1) * 2]] <- col
   }
   expect_equal(as.data.frame(x3), df3)
