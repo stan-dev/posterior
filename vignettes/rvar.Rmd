@@ -475,6 +475,93 @@ columns as `X` and contain only one row, so it can be broadcast along rows of `X
 X + row_y
 ```
 
+## Slicing and conditionals
+
+The `[[` and `[` operators implement all of the base array slicing operations, 
+including numeric, character, and logical indices, as well as slicing arrays
+using a matrix of indices with `[`. The main difference between `rvar` slicing
+and base array slicing is that `rvar`s default to `drop = FALSE`; i.e. they
+retain all dimensions of the original `rvar` array. For a complete list of 
+`rvar` slicing types, see `help("rvar-slice")`.
+
+In addition to the base slicing operations, `rvar` also implements three
+slicing/conditioning methods that allow you to use other `rvar`s to define
+a slice. 
+
+To demonstrate these operations, consider an `rvar` vector of two components:
+
+```{r}
+component = rvar_rng(rnorm, 2, mean = c(1, 5))
+component
+```
+
+Perhaps we want to create a mixture of these two components, `mixture`, with a
+mixing proportion of 0.75. We could create an index, `i`, that is a random
+variable indicating which component (1 or 2) determines the value of `mixture`
+on each draw:
+
+```{r}
+i = rvar_rng(rbinom, 1, size = 1, p = 0.75) + 1L
+i
+```
+
+We can use several different approaches to create the mixture distribution
+
+### Subsetting `rvar`s by draw: `x[<logical rvar>]`
+
+A slice `x[i]` where `i` is a scalar logical `rvar` returns a new rvar with the same
+shape as `x`, but containing only those draws where `i` is `TRUE`. Thus,
+we can use `i == 2` to select draws from the second component and overwrite
+them in the first component, creating the mixture distribution:
+
+```{r}
+mixture = component[[1]]
+mixture[i == 2] = component[[2]][i == 2]
+mixture
+```
+
+The resulting mixture looks like this:
+
+```{r mixture, eval = requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("ggdist", quietly = TRUE)}
+library(ggplot2)
+
+ggplot() + ggdist::stat_slab(aes(xdist = mixture))
+```
+
+See `vignette("slabinterval", package = "ggdist")` for more examples of 
+visualizing distribution-type objects, including `rvar`s.
+
+### Conditionals using `rvar_ifelse()`
+
+You could create the same mixture using `rvar_ifelse(test, yes, no)`, which 
+broadcasts `test`, `yes`, and `no` to the same shape, then returns a new
+`rvar` containing draws from `yes` where `test == TRUE` and draws from `no`
+where `test == FALSE`.
+
+Thus, we can create the mixture as follows:
+
+```{r}
+x = rvar_ifelse(i == 1, component[[1]], component[[2]])
+x
+```
+
+### Selecting different elements in each draw: `x[[<numeric rvar>]]`
+
+The slice `x[[i]]`, where `i` is a scalar numeric rvar, generalizes indexing when 
+`i` is a scalar numeric. Within each draw of `x`, it selects the element of `x`
+corresponding to the value of `i` within that same draw.
+
+Thus, since `i` in our example is a scalar numeric `rvar` whose values are 
+either `1` or `2` within each draw, you can use it as an index directly on 
+`component` to create the mixture:
+
+```{r}
+x = component[[i]]
+x
+```
+
+This approach is also nice because it generalizes easily to more than two components.
+
 ## Applying functions over `rvar`s
 
 The `rvar` data type supplies an implementation of `as.list()`, which should give 
@@ -562,7 +649,8 @@ this function should generally not be used unless needed.
 `rvar`s can be used as columns in `data.frame()` or `tibble()` objects:
 
 ```{r data_frame_with_y}
-data.frame(x = c("a","b","c"), y)
+df <- data.frame(group = c("a","b","c","d"), mu)
+df
 ```
 
 This makes them convenient for adding predictions to a data frame alongside
@@ -570,3 +658,15 @@ the data used to generate the predictions. `rvar`s can then be visualized with g
 by passing them to the `xdist` and `ydist` aesthetics of the `stat_...` family of
 geometries in the [ggdist](https://mjskay.github.io/ggdist/) package, 
 such as `stat_halfeye()`, `stat_lineribbon()`, and `stat_dotsinterval()`.
+For example:
+
+```{r data_frame_plot, eval = requireNamespace("ggplot2", quietly = TRUE) && requireNamespace("ggdist", quietly = TRUE)}
+library(ggplot2)
+library(ggdist)
+
+ggplot(df) +
+  stat_halfeye(aes(y = group, xdist = mu))
+```
+
+See `vignette("slabinterval", package = "ggdist")` or 
+`vignette("tidy-posterior", package = "tidybayes")` for more examples.

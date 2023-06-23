@@ -82,7 +82,7 @@ rvar_apply <- function(.x, .margin, .f, ...) {
     # restore the shape of the marginal dimensions
     .dimnames <- dimnames(out)
     dim(out) <- c(marginal_dim, dim(out)[-1])
-    dimnames(out) <- c(list(NULL), .dimnames[-1])
+    dimnames(out) <- c(rep(list(NULL), length(marginal_dim)), .dimnames[-1])
     # if the last dimension is 1, drop it
     n_dim <- length(dim(out))
     if (dim(out)[[n_dim]] == 1) {

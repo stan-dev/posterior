@@ -300,7 +300,7 @@ test_that("as.data.frame and as_tibble work on rvars", {
   df2 <- as.data.frame(mean(x2))
   for (i in 1:3) {
     col <- x2[,i,drop = TRUE]
-    dimnames(col) <- list(NULL)
+    dimnames(draws_of(col)) <- list(NULL)
     df2[[i]] <- col
   }
   expect_equal(as.data.frame(x2), df2)
@@ -313,7 +313,7 @@ test_that("as.data.frame and as_tibble work on rvars", {
   df3 <- as.data.frame(mean(x3))
   for (c_i in 1:4) for (b_i in 1:2) {
     col <- x3[,b_i,c_i,drop = TRUE]
-    dimnames(col) <- list(NULL)
+    dimnames(draws_of(col)) <- list(NULL)
     df3[[b_i + (c_i - 1) * 2]] <- col
   }
   expect_equal(as.data.frame(x3), df3)
@@ -373,4 +373,21 @@ test_that("proxy restore works", {
     ), rvar_ordered()),
     rvar_ordered(array(letters[c(rep(NA, 10), rep(NA, 10), 1:10)], dim = c(10, 3)), nchains = 2)
   )
+})
+
+
+# vctrs comparison proxies ---------------------------------------------------
+
+test_that("vctrs grouping works", {
+  x <- c(rvar(1:10), rvar(1:10), 1, rvar(1:10), 1)
+
+  expect_equal(vctrs::vec_identify_runs(x), structure(c(1, 1, 2, 3, 4), n = 4))
+  expect_equal(vctrs::vec_group_id(x), structure(c(1, 1, 2, 1, 2), n = 2))
+})
+
+test_that("vctrs comparison and ordering is not allowed on rvars", {
+  x <- rvar(1)
+
+  expect_error(vctrs::vec_order(x), "rvar does not support")
+  expect_error(vctrs::vec_compare(x, x), "rvar does not support")
 })

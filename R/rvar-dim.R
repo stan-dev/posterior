@@ -30,7 +30,11 @@ dimnames.rvar <- function(x) {
 
 #' @export
 `dimnames<-.rvar` <- function(x, value) {
-  dimnames(draws_of(x)) <- c(list(rownames(draws_of(x))), value)
+  .draws <- draws_of(x)
+
+  dimnames(.draws) <- c(list(dimnames(.draws)[[1]]), value)
+
+  draws_of(x) <- .draws
   x
 }
 

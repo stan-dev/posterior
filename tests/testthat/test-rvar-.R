@@ -134,6 +134,20 @@ test_that("%in% works on rvars", {
   expect_equal(x %in% c(1, 3), res)
 })
 
+# rvar_ifelse -------------------------------------------------------------
+
+test_that("rvar_ifelse works", {
+  x <- rvar(array(1:24, dim = c(4, 3, 2)))
+  y <- rvar(array(30:42, dim = c(4, 3)))
+  i <- rvar(array(rep(c(TRUE, FALSE), 12), dim = c(4, 3, 2)))
+
+  ref <- rvar(abind(draws_of(y), draws_of(y), along = 3))
+  draws_of(ref)[draws_of(i)] <- draws_of(x)[draws_of(i)]
+  expect_equal(rvar_ifelse(i, x, y), ref)
+
+  expect_error(rvar_ifelse(x, x, y), "logical rvar")
+})
+
 # tibbles / dplyr --------------------------------------------------------------
 
 test_that("rvars work in tibbles", {
@@ -213,6 +227,12 @@ test_that("broadcast_array works", {
   expect_error(broadcast_array(array(1:9, dim = c(3,3)), c(9)))
 })
 
+test_that("broadcast_array works on a factor", {
+  x <- factor(letters)
+  ref <- factor(c(letters, letters))
+  dim(ref) <- c(26, 2)
+  expect_equal(broadcast_array(x, c(26, 2)), ref)
+})
 
 # conforming chains / draws -----------------------------------------------
 
