@@ -9,7 +9,10 @@
 #' @param rvar_args (character vector) The names of the arguments of `.f` that
 #'   should be allowed to accept [`rvar`]s as arguments. If `NULL` (the
 #'   default), all arguments to `.f` are turned into arguments that accept
-#'   [`rvar`]s.
+#'   [`rvar`]s, including arguments passed via `...` (if `rvar_dots` is `TRUE`).
+#' @param rvar_dots (logical) Should dots (`...`) arguments also be converted?
+#'   Only applies if `rvar_args` is `NULL` (i.e., all arguments are allowed to
+#'   be [`rvar`]s).
 #' @param ndraws (positive integer). The number of draws used to construct new
 #'   random variables if no [`rvar`]s are supplied as arguments to the
 #'   returned function. If `NULL`, `getOption("posterior.rvar_ndraws")` is used
@@ -49,39 +52,48 @@
 #'
 #' @family rfun
 #' @export
-rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
+rfun <- function (.f, rvar_args = NULL, rvar_dots = TRUE, ndraws = NULL) {
   # based loosely on base::Vectorize
+  rvar_dots <- as_one_logical(rvar_dots)
   ndraws <- ndraws %||% getOption("posterior.rvar_ndraws", 4000)
   .f <- rlang::as_function(.f)
 
-  arg_names <- as.list(formals(.f))
-  arg_names[["..."]] <- NULL
-  arg_names <- names(arg_names)
-  rvar_args <- as.character(rvar_args %||% arg_names)
+  # when rvar_args are not supplied and the user wants us to convert all `...`
+  # args as well, we convert everything. Otherwise, we will only convert what
+  # is specified in `rvar_args`
+  convert_all_args <- is.null(rvar_args) && rvar_dots
 
-  if (!all(rvar_args %in% arg_names)) {
+  f_formals <- formals(args(.f))
+  f_arg_names <- as.list(f_formals)
+  f_arg_names[["..."]] <- NULL
+  f_arg_names <- names(f_arg_names)
+  rvar_args <- as.character(rvar_args %||% f_arg_names)
+
+  if (!all(rvar_args %in% f_arg_names)) {
     stop_no_call("All arguments specified by `rvar_args` must be names of formal arguments of `.f`")
   }
 
-  FUNV <- function() {
+  rvar_f <- function() {
     args <- lapply(as.list(match.call())[-1L], eval, parent.frame())
     arg_names <-
       if (is.null(names(args))) character(length(args))
       else names(args)
 
     # convert arguments that are rvars into draws the function can be applied over
-    is_rvar_arg <- (arg_names %in% rvar_args) & as.logical(lapply(args, is_rvar))
-    rvar_args <- as_draws_rvars(args[is_rvar_arg])
-    .nchains <- max(1, nchains(rvar_args))
+    is_rvar_arg <-
+      (convert_all_args | arg_names %in% rvar_args) &
+      vapply(args, is_rvar, logical(1))
+    rvar_args_draws <- as_draws_rvars(args[is_rvar_arg])
+    .nchains <- max(1, nchains(rvar_args_draws))
 
-    if (length(rvar_args) == 0) {
+    if (length(rvar_args_draws) == 0) {
       # no rvar arguments, so just create a random variable by applying this function
       # ndraws times
       list_of_draws <- replicate(ndraws, do.call(.f, args), simplify = FALSE)
     } else {
-      list_of_draws <- lapply(seq_len(ndraws(rvar_args)), function(i) {
-        variables <- get_variables_from_one_draw(rvar_args, i)
-        do.call(.f, c(variables, args[!is_rvar_arg]))
+      list_of_draws <- lapply(seq_len(ndraws(rvar_args_draws)), function(i) {
+        args[is_rvar_arg] <- get_variables_from_one_draw(rvar_args_draws, i)
+        do.call(.f, args)
       })
     }
     # Need to add a first dimension before unchopping (this will be the draws dimension)
@@ -93,8 +105,8 @@ rfun <- function (.f, rvar_args = NULL, ndraws = NULL) {
     })
     new_rvar(vctrs::list_unchop(list_of_draws), .nchains = .nchains)
   }
-  formals(FUNV) <- formals(.f)
-  FUNV
+  formals(rvar_f) <- f_formals
+  rvar_f
 }
 
 #' Execute expressions of random variables

@@ -475,6 +475,15 @@ test_that("1-length rvars can be cast to other formats", {
   expect_equal(as_draws_matrix(x), draws_matrix(`x[1,1]` = 1:10))
 })
 
+test_that("as_draws_XXX(<rvar>) works on rvars with non-consecutive draw ids", {
+  x <- rvar(1:4)
+  rownames(draws_of(x)) <- c(2,4,6,8)
+
+  expect_equal(as_draws_matrix(x), draws_matrix(x = 1:4))
+  expect_equal(as_draws_array(x), draws_array(x = 1:4))
+  expect_equal(as_draws_df(x)$x, 1:4)
+  expect_equal(as_draws_list(x)[[1]]$x, 1:4)
+})
 
 # discrete variables ------------------------------------------------------
 

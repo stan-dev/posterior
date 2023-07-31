@@ -295,6 +295,46 @@ vec_restore.rvar_ordered = function(x, to, ...) {
 }
 
 
+# vctrs comparison proxies ------------------------------------------------
+
+#' @importFrom vctrs vec_proxy_equal
+#' @export
+vec_proxy_equal.rvar = function(x, ...) {
+  # Using caching to help with algorithms that call vec_proxy_equal
+  # repeatedly. See https://github.com/r-lib/vctrs/issues/1411
+
+  out <- attr(x, "cache")$vec_proxy_equal
+  if (is.null(out)) {
+    # proxy is not in the cache, calculate it and store it in the cache
+    out <- make_rvar_proxy_equal(x)
+    attr(x, "cache")$vec_proxy_equal <- out
+  }
+
+  out
+}
+
+#' Make a cacheable proxy for vec_proxy_equal.rvar
+#' @noRd
+make_rvar_proxy_equal = function(x) {
+  lapply(as.list(x), function(x) list(
+    nchains = nchains(x),
+    draws = draws_of(x)
+  ))
+}
+
+#' @importFrom vctrs vec_proxy_compare
+#' @export
+vec_proxy_compare.rvar = function(x, ...) {
+  stop_no_call("rvar does not support vctrs::vec_compare()")
+}
+
+#' @importFrom vctrs vec_proxy_order
+#' @export
+vec_proxy_order.rvar = function(x, ...) {
+  stop_no_call("rvar does not support vctrs::vec_order()")
+}
+
+
 # vec_ptype performance generics -------------------------------------------
 
 #' @importFrom vctrs vec_ptype

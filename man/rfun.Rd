@@ -4,7 +4,7 @@
 \alias{rfun}
 \title{Create functions of random variables}
 \usage{
-rfun(.f, rvar_args = NULL, ndraws = NULL)
+rfun(.f, rvar_args = NULL, rvar_dots = TRUE, ndraws = NULL)
 }
 \arguments{
 \item{.f}{(multiple options) A function to turn into a function that accepts
@@ -17,7 +17,11 @@ and/or produces random variables:
 \item{rvar_args}{(character vector) The names of the arguments of \code{.f} that
 should be allowed to accept \code{\link{rvar}}s as arguments. If \code{NULL} (the
 default), all arguments to \code{.f} are turned into arguments that accept
-\code{\link{rvar}}s.}
+\code{\link{rvar}}s, including arguments passed via \code{...} (if \code{rvar_dots} is \code{TRUE}).}
+
+\item{rvar_dots}{(logical) Should dots (\code{...}) arguments also be converted?
+Only applies if \code{rvar_args} is \code{NULL} (i.e., all arguments are allowed to
+be \code{\link{rvar}}s).}
 
 \item{ndraws}{(positive integer). The number of draws used to construct new
 random variables if no \code{\link{rvar}}s are supplied as arguments to the

@@ -381,6 +381,59 @@ match.rvar <- function(x, ...) {
 }
 
 
+# rvar_ifelse -------------------------------------------------------------
+
+#' Random variable ifelse
+#'
+#' A version of `ifelse()` that returns an [`rvar`].
+#'
+#' @param test (logical [`rvar`], or castable to one) logical test determining
+#' whether the value in `yes` or `no` is assigned in the corresponding position
+#' of the result.
+#' @param yes ([`rvar`], or castable to one) corresponding values assigned for
+#' entries in `test` that are `TRUE`.
+#' @param no ([`rvar`], or castable to one) corresponding values assigned for
+#' entries in `test` that are `FALSE`.
+#'
+#' @returns
+#' An [`rvar`] with the common type of `yes` and `no` (as determined by
+#' `vctrs::vec_cast_common()`) and a shape determined by broadcasting `test`,
+#' `yes`, and `no` to a common shape (see the section on broadcasting rules in
+#' `vignette("rvar")`). For every element of `draws_of(test)`, the corresponding
+#' element of `draws_of(yes)` or `draws_of(no)` is placed into the result,
+#' depending on whether the element of `test` is `TRUE` or `FALSE`.
+#'
+#' @examples
+#' x <- rvar(1:4)
+#' y <- rvar(5:8)
+#'
+#' i <- rvar(c(TRUE,FALSE,TRUE,FALSE))
+#' z <- rvar_ifelse(i, x, y)
+#' z
+#' draws_of(z)
+#' @importFrom vctrs vec_cast_common
+#' @export
+rvar_ifelse = function(test, yes, no) {
+  test <- as_rvar(test)
+  yes <- as_rvar(yes)
+  no <- as_rvar(no)
+  if (!is.logical(draws_of(test))) {
+    stop_no_call("`rvar_ifelse(test, yes, no)` requires `test` to be a logical rvar, or castable to one.")
+  }
+  c(yes, no) %<-% vec_cast_common(yes, no)
+  c(test, yes, no) %<-% conform_array_dims(conform_rvar_ndraws(list(test, yes, no)))
+
+  test_draws <- draws_of(test)
+  false_draws <- test_draws %in% FALSE
+  draws_of(yes)[false_draws] <- draws_of(no)[false_draws]
+
+  na_draws <- is.na(test_draws)
+  draws_of(yes)[na_draws] <- NA_real_
+
+  yes
+}
+
+
 # ggplot2::scale_type -----------------------------------------------------
 
 # This generic is not exported here as {ggplot2} is only in Suggests, so
@@ -434,7 +487,7 @@ check_rvar_yank_index = function(x, i, ...) {
     stop_no_call("Missing indices not allowed with `[[` in an rvar.")
   } else if (any(vapply(index, is.logical, logical(1)))) {
     stop_no_call("Logical indices not allowed with `[[` in an rvar.")
-  } else if (any(vapply(index, function(x) x < 0, logical(1)))) {
+  } else if (any(vapply(index, function(x) is.numeric(x) && x < 0, logical(1)))) {
     stop_no_call("subscript out of bounds")
   }
 
@@ -509,12 +562,10 @@ conform_rvar_nchains <- function(rvars) {
   rvars
 }
 
-# given two rvars, conform their number of draws and chains
+# given two rvars, conform their number of draws
 # so they can be used together (or throw an error if they can't be)
 # @param keep_constants keep constants as 1-draw rvars
-conform_rvar_ndraws_nchains <- function(rvars, keep_constants = FALSE) {
-  rvars <- conform_rvar_nchains(rvars)
-
+conform_rvar_ndraws <- function(rvars, keep_constants = FALSE) {
   # broadcast to a common number of chains. If keep_constants = TRUE,
   # constants will not be broadcast.
   .ndraws = Reduce(ndraws2_common, lapply(rvars, ndraws))
@@ -522,6 +573,15 @@ conform_rvar_ndraws_nchains <- function(rvars, keep_constants = FALSE) {
     rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws, keep_constants)
   }
 
+  rvars
+}
+
+# given multiple rvars, conform their number of draws and chains
+# so they can be used together (or throw an error if they can't be)
+# @param keep_constants keep constants as 1-draw rvars
+conform_rvar_ndraws_nchains <- function(rvars, keep_constants = FALSE) {
+  rvars <- conform_rvar_nchains(rvars)
+  rvars <- conform_rvar_ndraws(rvars)
   rvars
 }
 
@@ -594,6 +654,13 @@ dim_common <- function(dims) {
   Reduce(dim2_common, dims)
 }
 
+# given a list of arrays, broadcast their dimensions to be equal
+conform_array_dims <- function(arrays) {
+  .dim <- dim_common(lapply(arrays, dim))
+  lapply(arrays, broadcast_array, .dim)
+}
+
+#' @importFrom rlang inject missing_arg
 broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
   if (!broadcast_scalars && length(x) == 1) {
     # quick exit: not broadcasting scalars; return them as vectors
@@ -601,10 +668,8 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     return(x)
   }
 
-  current_dim <- dim(x)
+  current_dim <- dim(x) %||% length(x)
   current_dimnames <- dimnames(x)
-  current_levels <- levels(x)
-  current_class <- oldClass(x)
 
   if (length(current_dim) < length(dim)) {
     # add dimensions of size 1 as necessary so we can broadcast those
@@ -623,7 +688,7 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     )
   }
 
-  dim_to_broadcast = which(current_dim != dim)
+  dim_to_broadcast <- which(current_dim != dim)
 
   if (length(dim_to_broadcast) == 0) {
     # quick exit: already has desired dim or just needed extra dims on the end
@@ -638,26 +703,26 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
     )
   }
 
-  # move the dims we aren't broadcasting to the front so they are recycled properly
-  perm <- c(seq_along(dim)[-dim_to_broadcast], dim_to_broadcast)
-
-  # broadcast the other dims
-  x <- array(aperm(x, perm), dim[perm])
-
-  # move dims back to their original order
-  x <- aperm(x, order(perm))
-
   if (!is.null(current_dimnames)) {
-    # restore any dimnames that we did not have to broadcast
-    dim_to_restore <- current_dim == dim
-    dimnames(x)[dim_to_restore] <- current_dimnames[dim_to_restore]
+    # the slice (below) should correctly preserve dimnames that are not broadcast,
+    # but it will also duplicate dimnames that were broadcast --- which is probably
+    # undesirable as those dimnames are no longer unique. So, drop those before
+    # we do the broadcast (this can be much faster than dropping afterwards if
+    # the broadcast dimensions are large)
+    dimnames(x)[dim_to_broadcast] <- list(NULL)
   }
 
-  # restore class and levels
-  levels(x) <- current_levels
-  oldClass(x) <- current_class
+  # construct the indices used in a slice that will broadcast the array
+  # e.g. if we want to broadcast x with dim c(2,1,2,4) to dim c(2,3,2,4), we
+  # need to do the slice x[,c(1,1,1),,], which broadcasts the second dimension
+  # to length 3
+  # first, construct the list of missing arguments
+  indices <- rep(list(missing_arg()), length(dim))
+  # second, fill in the appropriate number of 1s in the dims we want to broadcast
+  indices[dim_to_broadcast] <- lapply(dim[dim_to_broadcast], rep, x = 1L)
 
-  x
+  # do the slice to broadcast the array
+  inject(x[!!!indices, drop = FALSE])
 }
 
 # broadcast the draws dimension of an rvar to the requested size

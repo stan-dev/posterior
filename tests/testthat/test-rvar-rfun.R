@@ -39,6 +39,33 @@ test_that("rfun works on functions without rvar arguments", {
   expect_equal(rfun(f, rvar_args = NULL, ndraws = 10)(NULL), rvar(1:10))
 })
 
+test_that("rfun works on primitive functions", {
+  x = rvar(1:10)
+
+  rfun_sin = rfun(sin)
+  expect_equal(names(formals(rfun_sin)), "x")
+  expect_equal(rfun_sin(x), sin(x))
+})
+
+test_that("rfun works on dots arguments", {
+  g <- function(x, y, z = 2) {
+    c(x, y, z)
+  }
+  f <- function(x, ...) {
+    g(x, ...)
+  }
+
+  expect_equal(rfun(f)(z = rvar(1:3), x = rvar(3:5), 3), c(rvar(3:5), 3, rvar(1:3)))
+})
+
+test_that("rfun works on formula functions", {
+  expect_equal(rfun(~ . ^ 2)(rvar(1:3)), rvar((1:3)^2))
+  expect_equal(rfun(~ .x ^ 2)(rvar(1:3)), rvar((1:3)^2))
+  expect_equal(rfun(~ ..1 ^ 2)(rvar(1:3)), rvar((1:3)^2))
+  expect_equal(rfun(~ .x ^ .y)(rvar(1:3), 2), rvar((1:3)^2))
+  expect_equal(rfun(~ ..1 ^ ..2)(rvar(1:3), 2), rvar((1:3)^2))
+})
+
 test_that("rdo allows setting the dimensions of the result", {
   expect_equal(rdo(1:10, dim = c(2,5), ndraws = 1), rvar(array(1:10, dim = c(1,2,5))))
 })

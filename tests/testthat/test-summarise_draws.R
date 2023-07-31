@@ -120,11 +120,11 @@ test_that(paste(
   expect_identical(sum_x, parsum_x)
 })
 
-test_that("summarise_draws supports tibble::num correctly", {
+test_that("summarise_draws supports tibble::set_num_opts correctly", {
   x <- example_draws()
   expect_output(
     print(summarise_draws(x, .num_args = list(sigfig = 2, notation="dec"))),
-    "<dec:2>"
+    "mu\\s+4.2\\s+"
   )
 })
 

@@ -69,8 +69,8 @@ as_draws_df.draws_matrix <- function(x, ...) {
   chain_ids <- chain_ids(x)
   attr(x, "nchains") <- NULL
   x <- tibble::as_tibble(unclass(x))
-  x[[".chain"]] <- rep(chain_ids, each = max(iteration_ids))
-  x[[".iteration"]] <- rep(iteration_ids, max(chain_ids))
+  x[[".chain"]] <- rep(chain_ids, each = length(iteration_ids))
+  x[[".iteration"]] <- rep(iteration_ids, length(chain_ids))
   x[[".draw"]] <- seq_len(nrow(x))
   class(x) <- class_draws_df()
   x
@@ -97,8 +97,8 @@ as_draws_df.draws_list <- function(x, ...) {
   vars <- names(x[[1L]])
   x <- do.call(vctrs::vec_rbind, lapply(x, vctrs::new_data_frame))
   x <- tibble::as_tibble(x)
-  x[[".chain"]] <- rep(chain_ids, each = max(iteration_ids))
-  x[[".iteration"]] <- rep(iteration_ids, max(chain_ids))
+  x[[".chain"]] <- rep(chain_ids, each = length(iteration_ids))
+  x[[".iteration"]] <- rep(iteration_ids, length(chain_ids))
   x[[".draw"]] <- seq_len(nrow(x))
   class(x) <- class_draws_df()
   x
@@ -117,8 +117,8 @@ as_draws_df.draws_rvars <- function(x, ...) {
   }))
   iteration_ids <- iteration_ids(x)
   chain_ids <- chain_ids(x)
-  out[[".chain"]] <- rep(chain_ids, each = max(iteration_ids))
-  out[[".iteration"]] <- rep(iteration_ids, max(chain_ids))
+  out[[".chain"]] <- rep(chain_ids, each = length(iteration_ids))
+  out[[".iteration"]] <- rep(iteration_ids, length(chain_ids))
   out[[".draw"]] <- draw_ids(x)
   class(out) <- class_draws_df()
   out
