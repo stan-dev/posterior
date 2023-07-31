@@ -286,7 +286,7 @@ print.draws_summary <- function(x, ..., num_args = NULL) {
   num_args <- num_args %||% attr(x, "num_args")
   for (i in seq_cols(x)) {
     if (is.numeric(x[[i]])) {
-      x[[i]] <- do.call(tibble::num, c(list(x[[i]]), num_args))
+      x[[i]] <- do.call(tibble::set_num_opts, c(list(x[[i]]), num_args))
     }
   }
   NextMethod()
