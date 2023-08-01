@@ -5,19 +5,19 @@
 \alias{set_variables.draws}
 \title{Set variable names in \code{draws} objects}
 \usage{
-set_variables(.x, ...)
+set_variables(x, variables, ...)
 
-\method{set_variables}{draws}(.x, variables, ...)
+\method{set_variables}{draws}(x, variables, ...)
 }
 \arguments{
-\item{.x}{(draws) A \code{\link{draws}} object.}
-
-\item{...}{Arguments passed to individual methods (if applicable).}
+\item{x}{(draws) A \code{\link{draws}} object.}
 
 \item{variables}{(character) new variable names.}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-Returns a \code{\link{draws}} object of the same format as \code{.x}, with
+Returns a \code{\link{draws}} object of the same format as \code{x}, with
 variables named as specified.
 }
 \description{
@@ -28,7 +28,8 @@ when using pipe operators.
 x <- as_draws(matrix(rnorm(100), ncol = 2))
 variables(x)
 
-x |> set_variables(c("theta[1]", "theta[2]")) |> variables()
+set_variables(x, c("theta[1]", "theta[2]"))
+variables(x)
 
 # this is equivalent to
 variables(x) <- c("theta[1]", "theta[2]")

@@ -146,11 +146,11 @@ remove_reserved_variable_names <- function(variables, reserved) {
 #' Set variable names for all variables in a [`draws`] object. Useful
 #' when using pipe operators.
 #'
-#' @param .x (draws) A [`draws`] object.
+#' @param x (draws) A [`draws`] object.
 #' @param variables (character) new variable names.
 #' @template args-methods-dots
 #'
-#' @return Returns a [`draws`] object of the same format as `.x`, with
+#' @return Returns a [`draws`] object of the same format as `x`, with
 #'   variables named as specified.
 #'
 #' @seealso [`variables`]
@@ -158,22 +158,23 @@ remove_reserved_variable_names <- function(variables, reserved) {
 #' x <- as_draws(matrix(rnorm(100), ncol = 2))
 #' variables(x)
 #'
-#' x |> set_variables(c("theta[1]", "theta[2]")) |> variables()
+#' set_variables(x, c("theta[1]", "theta[2]"))
+#' variables(x)
 #'
 #' # this is equivalent to
 #' variables(x) <- c("theta[1]", "theta[2]")
 #' variables(x)
 #'
 #' @export
-set_variables <- function(.x, ...) {
+set_variables <- function(x, variables, ...) {
   UseMethod("set_variables")
 }
 
 #' @rdname set_variables
 #' @export
-set_variables.draws <- function(.x, variables, ...) {
-  variables(.x) <- variables
-  return(.x)
+set_variables.draws <- function(x, variables, ...) {
+  variables(x) <- variables
+  return(x)
 }
 
 
