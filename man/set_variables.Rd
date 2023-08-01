@@ -2,12 +2,9 @@
 % Please edit documentation in R/draws-index.R
 \name{set_variables}
 \alias{set_variables}
-\alias{set_variables.draws}
 \title{Set variable names in \code{draws} objects}
 \usage{
 set_variables(x, variables, ...)
-
-\method{set_variables}{draws}(x, variables, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{\link{draws}} object.}
