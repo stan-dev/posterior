@@ -167,12 +167,6 @@ remove_reserved_variable_names <- function(variables, reserved) {
 #'
 #' @export
 set_variables <- function(x, variables, ...) {
-  UseMethod("set_variables")
-}
-
-#' @rdname set_variables
-#' @export
-set_variables.draws <- function(x, variables, ...) {
   variables(x) <- variables
   return(x)
 }
