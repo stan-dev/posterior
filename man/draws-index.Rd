@@ -59,7 +59,7 @@ respectively.
 
 \code{variables(x) <- value} allows you to modify the vector of variable names,
 similar to how \code{names(x) <- value} works for vectors and lists. For renaming
-specific variables, \code{\link[=rename_variables]{rename_variables()}} may offer a more convenient approach.
+specific variables, \code{\link[=set_variables]{set_variables()}} works equivalently, but is more intuitive when using the pipe operator. \code{\link[=rename_variables]{rename_variables()}} may offer a more convenient approach.
 }
 \examples{
 x <- example_draws()
