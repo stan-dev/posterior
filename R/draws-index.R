@@ -17,7 +17,7 @@
 #'
 #' `variables(x) <- value` allows you to modify the vector of variable names,
 #' similar to how `names(x) <- value` works for vectors and lists. For renaming
-#' specific variables, [rename_variables()] may offer a more convenient approach.
+#' specific variables, [set_variables()] works equivalently, but is more intuitive when using the pipe operator. [rename_variables()] may offer a more convenient approach.
 #'
 #' @return
 #'
@@ -140,6 +140,37 @@ remove_reserved_variable_names <- function(variables, reserved) {
   names(x) <- value
   x
 }
+
+#' Set variable names in `draws` objects
+#'
+#' Set variable names for all variables in a [`draws`] object. Useful
+#' when using pipe operators.
+#'
+#' @param x (draws) A [`draws`] object.
+#' @param variables (character) new variable names.
+#' @template args-methods-dots
+#'
+#' @return Returns a [`draws`] object of the same format as `x`, with
+#'   variables named as specified.
+#'
+#' @seealso [`variables`]
+#' @examples
+#' x <- as_draws(matrix(rnorm(100), ncol = 2))
+#' variables(x)
+#'
+#' x <- set_variables(x, c("theta[1]", "theta[2]"))
+#' variables(x)
+#'
+#' # this is equivalent to
+#' variables(x) <- c("theta[1]", "theta[2]")
+#' variables(x)
+#'
+#' @export
+set_variables <- function(x, variables, ...) {
+  variables(x) <- variables
+  return(x)
+}
+
 
 #' @rdname draws-index
 #' @export
