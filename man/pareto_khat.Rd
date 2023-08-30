@@ -33,7 +33,7 @@ pareto_khat(x, ...)
 \itemize{
 \item \code{"right"}: diagnose/smooth only the right (upper) tail
 \item \code{"left"}: diagnose/smooth only the left (lower) tail
-\item \code{"both"}: diagnose/smooth both tails and return the maximum k value
+\item \code{"both"}: diagnose/smooth both tails and return the maximum k-hat value
 }
 
 The default is \code{"both"}.}
@@ -56,9 +56,9 @@ printed. Default is \code{FALSE}.}
 }
 \description{
 Estimate Pareto k value by fitting a Generalized Pareto
-Distribution to one or two tails of x. This can be used to etimate
-the number of fractional moments. For further details see Vehtari
-et al. (2022).
+Distribution to one or two tails of x. This can be used to estimate
+the number of fractional moments that is useful for convergence
+diagnostics. For further details see Vehtari et al. (2022).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")

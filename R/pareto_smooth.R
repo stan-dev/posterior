@@ -1,9 +1,9 @@
 #' Pareto khat diagnostic
 #'
 #' Estimate Pareto k value by fitting a Generalized Pareto
-#' Distribution to one or two tails of x. This can be used to etimate
-#' the number of fractional moments. For further details see Vehtari
-#' et al. (2022).
+#' Distribution to one or two tails of x. This can be used to estimate
+#' the number of fractional moments that is useful for convergence
+#' diagnostics. For further details see Vehtari et al. (2022).
 #'
 #' @template args-pareto
 #' @template args-methods-dots
@@ -262,7 +262,7 @@ pareto_smooth.default <- function(x,
 
   # automatically calculate relative efficiency
   if (is.null(r_eff)) {
-    r_eff <- ess_basic(x) / S
+    r_eff <- ess_tail(x) / S
   }
 
   # automatically calculate tail length
@@ -274,7 +274,7 @@ pareto_smooth.default <- function(x,
 
     if (ndraws_tail > S / 2) {
       warning("Number of tail draws cannot be more than half ",
-              "the length of the draws if both tails are fit, ",
+              "the total number of draws if both tails are fit, ",
               "changing to ", S / 2, ".")
       ndraws_tail <- S / 2
     }
@@ -416,7 +416,7 @@ pareto_smooth.default <- function(x,
 
 #' Extra pareto-k diagnostics
 #'
-#' internal function to calculate the extra diagnostics or a given
+#' internal function to calculate the extra diagnostics for a given
 #' pareto k and sample size S
 #' @noRd
 .pareto_smooth_extra_diags <- function(k, S, ...) {
@@ -521,7 +521,7 @@ pareto_k_diagmsg <- function(diags, ...) {
                   'whether any feasible sample size is sufficient.')
   } else {
     if (khat > khat_threshold) {
-      msg <- paste0(msg, 'S is too small, and sample size larger than ', round(min_ss, 0), ' is neeeded for reliable results.\n')
+      msg <- paste0(msg, 'S is too small, and sample size larger than ', round(min_ss, 0), ' is needed for reliable results.\n')
     } else {
       msg <- paste0(msg, 'To halve the RMSE, approximately ', round(2^(2/convergence_rate),1), ' times bigger S is needed.\n')
     }

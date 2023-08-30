@@ -44,7 +44,7 @@ returned. Default is \code{FALSE}.}
 \itemize{
 \item \code{"right"}: diagnose/smooth only the right (upper) tail
 \item \code{"left"}: diagnose/smooth only the left (lower) tail
-\item \code{"both"}: diagnose/smooth both tails and return the maximum k value
+\item \code{"both"}: diagnose/smooth both tails and return the maximum k-hat value
 }
 
 The default is \code{"both"}.}

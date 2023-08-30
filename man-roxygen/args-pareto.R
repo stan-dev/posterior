@@ -5,7 +5,7 @@
 #' @param tail (string) The tail to diagnose/smooth:
 #'   * `"right"`: diagnose/smooth only the right (upper) tail
 #'   * `"left"`: diagnose/smooth only the left (lower) tail
-#'   * `"both"`: diagnose/smooth both tails and return the maximum k value
+#'   * `"both"`: diagnose/smooth both tails and return the maximum k-hat value
 #'
 #' The default is `"both"`.
 #' @param ndraws_tail (numeric) number of draws for the tail. If

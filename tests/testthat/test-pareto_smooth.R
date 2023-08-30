@@ -27,8 +27,8 @@ test_that("pareto_khat handles ndraws_tail argument", {
 
   expect_warning(pareto_khat(tau, tail = "both", ndraws_tail = 201),
                  "Number of tail draws cannot be more than half ",
-              "the length of the draws if both tails are fit, ",
-              "changing to 200.")
+                 "the total number of draws if both tails are fit, ",
+                 "changing to 200.")
 
   expect_warning(pareto_khat(tau, tail = "both", ndraws_tail = 4),
                  "Number of tail draws cannot be less than 5. Changing to 5.")
@@ -61,7 +61,7 @@ test_that("pareto_khat diagnostics messages are as expected", {
   diags$khat <- 0.6
 
     expect_message(pareto_k_diagmsg(diags),
-                   paste0('S is too small, and sample size larger than 10 is neeeded for reliable results.\n'))
+                   paste0('S is too small, and sample size larger than 10 is needed for reliable results.\n'))
 
     diags$khat <- 0.71
     diags$khat_threshold <- 0.8
