@@ -25,7 +25,7 @@ when using pipe operators.
 x <- as_draws(matrix(rnorm(100), ncol = 2))
 variables(x)
 
-set_variables(x, c("theta[1]", "theta[2]"))
+x <- set_variables(x, c("theta[1]", "theta[2]"))
 variables(x)
 
 # this is equivalent to
