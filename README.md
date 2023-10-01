@@ -368,6 +368,54 @@ Instead of `as_draws_matrix()` we also could have just used
 input object. In this case this would result in a `draws_matrix` object
 either way.
 
+The above matrix example contained only one chain. Multi-chain draws could be stored in base R 3-D array object,
+which can also be converted to a draws object:
+
+```r
+x <- array(data=rnorm(200),dim=c(10,2,5))
+x <- as_draws_matrix(x)
+variables(x) <-  paste0("V", 1:5)
+print(x)
+#> # A draws_matrix: 10 iterations, 2 chains, and 5 variables
+#>     variable
+#> draw     V1     V2     V3     V4     V5
+#>   1  -1.257  0.256 -1.670 -0.032 -0.033
+#>   2  -1.981 -0.669  0.496  0.027 -0.497
+#>   3  -0.588 -0.772 -0.591 -0.789  0.958
+#>   4  -0.717  0.564  0.586  0.475 -0.160
+#>   5   1.864  0.027  1.090  0.014 -0.345
+#>   6   0.091  0.159 -0.724  0.976 -0.807
+#>   7   1.063 -0.379  0.739  0.560  0.548
+#>   8   0.405  0.803  0.301 -0.663  1.477
+#>   9   0.512 -0.529  0.537 -1.462 -0.045
+#>   10 -0.014  2.669 -0.029 -0.013 -0.598
+#> # ... with 10 more draws
+```
+
+#### Converting from mcmc and mcmc.list objects to draws formats
+
+**coda** and **rjags** R packages use `mcmc` and `mcmc.list` objects which can also be converted to draws objects:
+
+```r
+data(line, package = "coda")
+line <- as_draws_df(line)
+print(line)
+#> # A draws_df: 200 iterations, 2 chains, and 3 variables
+#>    alpha  beta sigma
+#> 1    7.2 -1.57 11.23
+#> 2    3.0  1.50  4.89
+#> 3    3.7  0.63  1.40
+#> 4    3.3  1.18  0.66
+#> 5    3.7  0.49  1.36
+#> 6    3.6  0.21  1.04
+#> 7    2.7  0.88  1.29
+#> 8    3.0  1.09  0.46
+#> 9    3.5  1.07  0.63
+#> 10   2.1  1.48  0.91
+#> # ... with 390 more draws
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
+```
+
 ### Contributing to posterior
 
 We welcome contributions! The **posterior** package is under active
