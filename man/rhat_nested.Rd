@@ -49,7 +49,7 @@ mu <- extract_variable_matrix(example_draws(), "mu")
 rhat_nested(mu, superchain_ids = c(1,1,2,2))
 
 d <- as_draws_rvars(example_draws("multi_normal"))
-rhat(d$Sigma, superchain_ids = c(1,1,2,2))
+rhat_nested(d$Sigma, superchain_ids = c(1,1,2,2))
 
 }
 \references{
