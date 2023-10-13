@@ -3,11 +3,14 @@
 \name{rhat_nested}
 \alias{rhat_nested}
 \alias{rhat_nested.default}
+\alias{rhat_nested.rvar}
 \title{Nested Rhat convergence diagnostic}
 \usage{
 rhat_nested(x, superchain_ids, ...)
 
 \method{rhat_nested}{default}(x, superchain_ids, ...)
+
+\method{rhat_nested}{rvar}(x, superchain_ids, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
