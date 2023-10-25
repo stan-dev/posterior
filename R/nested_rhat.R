@@ -97,10 +97,7 @@ rhat_nested.rvar <- function(x, superchain_ids, ...) {
   }
 
   # between-superchain variance (nB in equation 17 in Margossian et al. 2023)
-  var_between_superchain <- matrixStats::colVars(
-    as.matrix(superchain_mean),
-    center = overall_mean
-  )
+  var_between_superchain <- var(superchain_mean)
 
   # within-superchain variance (nW in equation 18 in Margossian et al. 2023)
   var_within_superchain <- mean(var_within_chain + var_between_chain)
