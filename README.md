@@ -58,7 +58,7 @@ package*](https://mc-stan.org/posterior/articles/posterior.html).
 
 ``` r
 library("posterior")
-#> This is posterior version 1.4.0
+#> This is posterior version 1.4.1.9001
 #> 
 #> Attaching package: 'posterior'
 #> The following objects are masked from 'package:stats':
@@ -158,7 +158,7 @@ this purpose via `summarise_draws()`:
 summarise_draws(eight_schools_df)
 #> # A tibble: 10 × 10
 #>    variable  mean median    sd   mad      q5   q95  rhat ess_bulk ess_tail
-#>    <chr>    <num>  <num> <num> <num>   <num> <num> <num>    <num>    <num>
+#>    <chr>    <dbl>  <dbl> <dbl> <dbl>   <dbl> <dbl> <dbl>    <dbl>    <dbl>
 #>  1 mu        4.18   4.16  3.40  3.57  -0.854  9.39  1.02     558.     322.
 #>  2 tau       4.16   3.07  3.58  2.89   0.309 11.0   1.01     246.     202.
 #>  3 theta[1]  6.75   5.97  6.30  4.87  -1.23  18.9   1.01     400.     254.
@@ -183,7 +183,7 @@ would use:
 summarise_draws(eight_schools_df, "mean", "mcse_mean")
 #> # A tibble: 10 × 3
 #>    variable  mean mcse_mean
-#>    <chr>    <num>     <num>
+#>    <chr>    <dbl>     <dbl>
 #>  1 mu        4.18     0.150
 #>  2 tau       4.16     0.213
 #>  3 theta[1]  6.75     0.319
@@ -296,12 +296,12 @@ x4 <- bind_draws(x1, x3, along = "variable")
 print(x4)
 #> # A draws_matrix: 5 iterations, 1 chains, and 3 variables
 #>     variable
-#> draw alpha beta  theta
-#>    1 -0.73    1 0.1472
-#>    2  1.10    1 0.0028
-#>    3 -1.05    1 2.4725
-#>    4 -0.42    1 0.1425
-#>    5 -1.04    1 0.6180
+#> draw  alpha beta theta
+#>    1  0.804    1 1.296
+#>    2  0.078    1 0.983
+#>    3  1.687    1 0.099
+#>    4 -1.906    1 0.094
+#>    5 -0.072    1 2.189
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -311,17 +311,17 @@ x5 <- bind_draws(x1, x2, along = "draw")
 print(x5)
 #> # A draws_matrix: 10 iterations, 1 chains, and 2 variables
 #>     variable
-#> draw alpha beta
-#>   1  -0.73    1
-#>   2   1.10    1
-#>   3  -1.05    1
-#>   4  -0.42    1
-#>   5  -1.04    1
-#>   6   0.58    2
-#>   7   0.55    2
-#>   8   0.49    2
-#>   9   0.31    2
-#>   10 -0.13    2
+#> draw  alpha beta
+#>   1   0.804    1
+#>   2   0.078    1
+#>   3   1.687    1
+#>   4  -1.906    1
+#>   5  -0.072    1
+#>   6   0.654    2
+#>   7   0.675    2
+#>   8   0.104    2
+#>   9  -0.403    2
+#>   10  2.274    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -340,33 +340,83 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 iterations, 1 chains, and 5 variables
 #>     variable
-#> draw    V1      V2     V3    V4     V5
-#>   1  -0.70 -0.1115  0.379 -0.83  0.284
-#>   2   0.61  0.0351  1.244  1.16 -0.055
-#>   3   0.25 -0.7284 -1.146  0.70 -1.180
-#>   4  -0.13  1.1477  0.141 -0.45  0.930
-#>   5  -0.91  0.0087 -1.047 -0.52 -1.838
-#>   6  -2.10  1.8572 -0.278 -0.17 -1.127
-#>   7  -0.72  0.3286 -0.244 -2.05 -0.873
-#>   8  -0.66  0.4930  1.385 -1.91  1.759
-#>   9   0.60  1.4737  1.054 -0.48 -0.479
-#>   10  0.20  1.3198  0.058 -0.56 -1.750
+#> draw    V1    V2    V3    V4     V5
+#>   1  -0.51  0.49  0.49 -0.39 -2.828
+#>   2   1.02 -0.41 -1.19 -0.54  0.711
+#>   3  -2.83  1.28 -1.04  0.30  1.032
+#>   4  -1.61  0.39  1.08  1.22 -1.564
+#>   5   0.47 -0.50  0.40  0.13  0.202
+#>   6  -1.51  0.37  0.79 -1.55 -0.346
+#>   7   1.83 -2.90 -0.28  0.49  1.206
+#>   8  -1.09  0.86 -1.52 -0.32  0.098
+#>   9   0.21 -1.79  0.25  0.16 -1.371
+#>   10  1.44 -0.92 -0.52  0.22  0.889
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 × 5
-#>   variable   mean    sd  median   mad
-#>   <chr>     <num> <num>   <num> <num>
-#> 1 V1       -0.355 0.834 -0.396  0.820
-#> 2 V2        0.582 0.829  0.411  0.933
-#> 3 V3        0.155 0.885  0.0994 0.987
-#> 4 V4       -0.512 0.990 -0.499  0.492
-#> 5 V5       -0.433 1.17  -0.676  1.17
+#>   variable    mean    sd  median   mad
+#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
+#> 1 V1       -0.257  1.51  -0.147  1.88 
+#> 2 V2       -0.311  1.28  -0.0179 1.03 
+#> 3 V3       -0.154  0.893 -0.0154 0.972
+#> 4 V4       -0.0296 0.733  0.144  0.598
+#> 5 V5       -0.197  1.33   0.150  1.20
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
 `as_draws()`, which attempts to find the closest available format to the
 input object. In this case this would result in a `draws_matrix` object
 either way.
+
+The above matrix example contained only one chain. Multi-chain draws
+could be stored in base R 3-D array object, which can also be converted
+to a draws object:
+
+``` r
+x <- array(data=rnorm(200), dim=c(10, 2, 5))
+x <- as_draws_matrix(x)
+variables(x) <-  paste0("V", 1:5)
+print(x)
+#> # A draws_matrix: 10 iterations, 2 chains, and 5 variables
+#>     variable
+#> draw    V1    V2     V3      V4    V5
+#>   1  -1.24  1.39  0.946  0.2391 -0.68
+#>   2   0.46 -0.14  0.852 -0.0092  0.67
+#>   3   0.20 -1.35 -0.388 -1.2112 -0.29
+#>   4  -0.77 -0.61 -0.649 -1.4109 -1.10
+#>   5  -0.45 -0.12 -1.095 -1.3789  1.28
+#>   6  -1.01  1.40 -0.072  0.6276 -0.57
+#>   7   0.28  0.58 -0.248  0.1293  0.39
+#>   8  -0.22 -0.83  2.084  0.0950  0.76
+#>   9  -0.39  1.99  0.914  0.9035 -0.65
+#>   10 -1.87  0.66 -0.505 -1.4585  0.42
+#> # ... with 10 more draws
+```
+
+#### Converting from mcmc objects to draws formats
+
+The **coda** and **rjags** packages use `mcmc` and `mcmc.list` objects
+which can also be converted to draws objects:
+
+``` r
+data(line, package = "coda")
+line <- as_draws_df(line)
+print(line)
+#> # A draws_df: 200 iterations, 2 chains, and 3 variables
+#>    alpha  beta sigma
+#> 1    7.2 -1.57 11.23
+#> 2    3.0  1.50  4.89
+#> 3    3.7  0.63  1.40
+#> 4    3.3  1.18  0.66
+#> 5    3.7  0.49  1.36
+#> 6    3.6  0.21  1.04
+#> 7    2.7  0.88  1.29
+#> 8    3.0  1.09  0.46
+#> 9    3.5  1.07  0.63
+#> 10   2.1  1.48  0.91
+#> # ... with 390 more draws
+#> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}
+```
 
 ### Contributing to posterior
 
