@@ -222,6 +222,27 @@ Instead of `as_draws_matrix()` we also could have just used `as_draws()`, which
 attempts to find the closest available format to the input object. In this case
 this would result in a `draws_matrix` object either way.
 
+The above matrix example contained only one chain. Multi-chain draws could be 
+stored in base R 3-D array object, which can also be converted to a draws object:
+
+```{r}
+x <- array(data=rnorm(200), dim=c(10, 2, 5))
+x <- as_draws_matrix(x)
+variables(x) <-  paste0("V", 1:5)
+print(x)
+```
+
+#### Converting from mcmc objects to draws formats
+
+The **coda** and **rjags** packages use `mcmc` and `mcmc.list` objects which 
+can also be converted to draws objects:
+
+```{r}
+data(line, package = "coda")
+line <- as_draws_df(line)
+print(line)
+```
+
 ### Contributing to posterior
 
 We welcome contributions! The **posterior** package is under active development.
