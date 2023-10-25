@@ -73,9 +73,6 @@ rhat_nested.rvar <- function(x, superchain_ids, ...) {
     superchains, function(k) mean(x[, which(superchain_ids == k)])
   )
 
-  # overall mean (as defined in equation 16 in Margossian et al. 2023)
-  overall_mean <- mean(superchain_mean)
-
   # between-chain variance estimate (B_k in equation 18 in Margossian et al. 2023)
   if (nchains_per_superchain == 1) {
     var_between_chain <- 0
