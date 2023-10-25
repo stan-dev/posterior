@@ -34,11 +34,33 @@ rhat_nested.rvar <- function(x, superchain_ids, ...) {
 }
 
 .rhat_nested <- function(x, superchain_ids, ...) {
+  if (should_return_NA(x)) {
+    return(NA_real_)
+  }
 
   x <- as.matrix(x)
   niterations <- NROW(x)
-  nchains_per_superchain <- max(table(superchain_ids))
+  nchains <- NCOL(x)
+
+
+  # check that all chains are assigned a superchain
+  if (length(superchain_ids) != nchains) {
+    warning_no_call("Length of superchain_ids not equal to number of chains, returning NA.")
+    return(NA_real_)
+  }
+
+
+  # check that superchains are equal length
+  superchain_id_table <- table(superchain_ids)
+  nchains_per_superchain <- max(superchain_id_table)
+
+  if (nchains_per_superchain != min(superchain_id_table)) {
+    warning_no_call("Number of chains per superchain is not the same for each superchain, returning NA.")
+    return(NA_real_)
+  }
+
   superchains <- unique(superchain_ids)
+
 
   # mean and variance of chains calculated as in rhat
   chain_mean <- matrixStats::colMeans2(x)
