@@ -38,6 +38,13 @@ as in \code{print.draws_array()}, \code{print.draws_df()}, \code{print.draws_lis
 \item \code{posterior.max_variables}: Maximum number of variables to print.
 }
 
+The following options are used for formatting the output of
+\code{\link{summarize_draws}}:
+\itemize{
+\item \code{posterior.num_args}: Arguments passed to \link[tibble:num]{num()}
+for pretty printing of summaries.
+}
+
 The following options are used to format and print \code{\link{rvar}} objects,
 as in \code{print.rvar()} and \code{print.draws_rvars()}:
 \itemize{
