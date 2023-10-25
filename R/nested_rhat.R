@@ -13,13 +13,13 @@
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
-#' rhat_nested(mu, superchain_ids = c(1,1,2,2))
+#' rhat_nested(mu, superchain_ids = c(1, 1, 2, 2))
 #'
 #' d <- as_draws_rvars(example_draws("multi_normal"))
-#' rhat_nested(d$Sigma, superchain_ids = c(1,1,2,2))
+#' rhat_nested(d$Sigma, superchain_ids = c(1, 1, 2, 2))
 #'
 #' @export
-rhat_nested <- function(x, superchain_ids, ...) UseMethod("rhat_nested")
+rhat_nested <- function(x, ...) UseMethod("rhat_nested")
 
 #' @rdname rhat_nested
 #' @export
@@ -30,7 +30,9 @@ rhat_nested.default <- function(x, superchain_ids, ...) {
 #' @rdname rhat_nested
 #' @export
 rhat_nested.rvar <- function(x, superchain_ids, ...) {
-  summarise_rvar_by_element_with_chains(x, rhat_nested, superchain_ids = superchain_ids, ...)
+  summarise_rvar_by_element_with_chains(
+    x, rhat_nested, superchain_ids = superchain_ids, ...
+  )
 }
 
 .rhat_nested <- function(x, superchain_ids, ...) {
@@ -42,25 +44,24 @@ rhat_nested.rvar <- function(x, superchain_ids, ...) {
   niterations <- NROW(x)
   nchains <- NCOL(x)
 
-
   # check that all chains are assigned a superchain
   if (length(superchain_ids) != nchains) {
-    warning_no_call("Length of superchain_ids not equal to number of chains, returning NA.")
+    warning_no_call("Length of superchain_ids not equal to number of chains, ",
+                    "returning NA.")
     return(NA_real_)
   }
-
 
   # check that superchains are equal length
   superchain_id_table <- table(superchain_ids)
   nchains_per_superchain <- max(superchain_id_table)
 
   if (nchains_per_superchain != min(superchain_id_table)) {
-    warning_no_call("Number of chains per superchain is not the same for each superchain, returning NA.")
+    warning_no_call("Number of chains per superchain is not the same for ",
+                    "each superchain, returning NA.")
     return(NA_real_)
   }
 
   superchains <- unique(superchain_ids)
-
 
   # mean and variance of chains calculated as in rhat
   chain_mean <- matrixStats::colMeans2(x)
@@ -69,8 +70,7 @@ rhat_nested.rvar <- function(x, superchain_ids, ...) {
   # mean of superchains calculated by only including specified chains
   # (equation 15 in Margossian et al. 2023)
   superchain_mean <- sapply(
-    superchains,
-    function(k) mean(x[, which(superchain_ids == k)])
+    superchains, function(k) mean(x[, which(superchain_ids == k)])
   )
 
   # overall mean (as defined in equation 16 in Margossian et al. 2023)

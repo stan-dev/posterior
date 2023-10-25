@@ -6,7 +6,7 @@
 \alias{rhat_nested.rvar}
 \title{Nested Rhat convergence diagnostic}
 \usage{
-rhat_nested(x, superchain_ids, ...)
+rhat_nested(x, ...)
 
 \method{rhat_nested}{default}(x, superchain_ids, ...)
 
@@ -20,10 +20,10 @@ rhat_nested(x, superchain_ids, ...)
 \item An \code{\link{rvar}}.
 }}
 
+\item{...}{Arguments passed to individual methods (if applicable).}
+
 \item{superchain_ids}{(numeric) Vector of length nchains specifying
 which superchain each chain belongs to}
-
-\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 If the input is an array, returns a single numeric value. If any of the draws
@@ -46,10 +46,10 @@ proposed in Margossian et al. (2023).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
-rhat_nested(mu, superchain_ids = c(1,1,2,2))
+rhat_nested(mu, superchain_ids = c(1, 1, 2, 2))
 
 d <- as_draws_rvars(example_draws("multi_normal"))
-rhat_nested(d$Sigma, superchain_ids = c(1,1,2,2))
+rhat_nested(d$Sigma, superchain_ids = c(1, 1, 2, 2))
 
 }
 \references{
