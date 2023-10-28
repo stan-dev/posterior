@@ -23,7 +23,10 @@ rhat_nested(x, ...)
 \item{...}{Arguments passed to individual methods (if applicable).}
 
 \item{superchain_ids}{(numeric) Vector of length nchains specifying
-which superchain each chain belongs to}
+which superchain each chain belongs to. There should be equal
+numbers of chains in each superchain. All chains within the same
+superchain are assumed to have been initialized at the same
+point.}
 }
 \value{
 If the input is an array, returns a single numeric value. If any of the draws
@@ -41,8 +44,20 @@ If the input is an \code{\link{rvar}}, returns an array of the same dimensions a
 passing the draws array for that element of the \code{\link{rvar}} to this function.
 }
 \description{
-Compute the Nested Rhat convergence diagnostic for a single variable
-proposed in Margossian et al. (2023).
+Compute the nested Rhat convergence diagnostic for a single
+variable as proposed in Margossian et al. (2023).
+}
+\details{
+Nested Rhat is a convergence diagnostic useful when
+running many short chains. It calculated on superchains, which
+are groups of chains that have been initialized at the same
+point.
+
+Note that there is a slight difference in the calculation of Rhat
+and nested Rhat, as nested Rhat is lower bounded by 1. This means
+that nested Rhat with one chain per superchain will not be
+exactly equal to basic Rhat (see Footnote 1 in Margossian et
+al. (2023)).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -56,7 +71,7 @@ rhat_nested(d$Sigma, superchain_ids = c(1, 1, 2, 2))
 Charles C. Margossian, Matthew D. Hoffman, Pavel Sountsov, Lionel
 Riou-Durand, Aki Vehtari and Andrew Gelman (2023). Nested R-hat:
 Assessing the convergence of Markov chain Monte Carlo when running
-many short chains.  arxiv:arXiv:2110.13017
+many short chains.  arxiv:arXiv:2110.13017 (version 4)
 }
 \seealso{
 Other diagnostics: 

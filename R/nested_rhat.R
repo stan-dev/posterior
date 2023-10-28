@@ -1,13 +1,28 @@
 #' Nested Rhat convergence diagnostic
 #'
-#' Compute the Nested Rhat convergence diagnostic for a single variable
-#' proposed in Margossian et al. (2023).
+#' Compute the nested Rhat convergence diagnostic for a single
+#' variable as proposed in Margossian et al. (2023).
 #'
 #' @family diagnostics
 #' @template args-conv
 #' @param superchain_ids (numeric) Vector of length nchains specifying
-#'   which superchain each chain belongs to
+#'   which superchain each chain belongs to. There should be equal
+#'   numbers of chains in each superchain. All chains within the same
+#'   superchain are assumed to have been initialized at the same
+#'   point.
 #' @template args-methods-dots
+#'
+#' @details Nested Rhat is a convergence diagnostic useful when
+#'   running many short chains. It calculated on superchains, which
+#'   are groups of chains that have been initialized at the same
+#'   point.
+#'
+#' Note that there is a slight difference in the calculation of Rhat
+#'   and nested Rhat, as nested Rhat is lower bounded by 1. This means
+#'   that nested Rhat with one chain per superchain will not be
+#'   exactly equal to basic Rhat (see Footnote 1 in Margossian et
+#'   al. (2023)).
+#'
 #' @template return-conv
 #' @template ref-margossian-nestedrhat-2023
 #'
