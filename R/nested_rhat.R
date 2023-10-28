@@ -13,7 +13,7 @@
 #' @template args-methods-dots
 #'
 #' @details Nested Rhat is a convergence diagnostic useful when
-#'   running many short chains. It calculated on superchains, which
+#'   running many short chains. It is calculated on superchains, which
 #'   are groups of chains that have been initialized at the same
 #'   point.
 #'
