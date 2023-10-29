@@ -79,6 +79,7 @@ Other diagnostics:
 \code{\link{mcse_mean}()},
 \code{\link{mcse_sd}()},
 \code{\link{rhat_basic}()},
+\code{\link{rhat_nested}()},
 \code{\link{rhat}()},
 \code{\link{rstar}()}
 }

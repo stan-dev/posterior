@@ -23,6 +23,7 @@
 #' | [mcse_sd()] | Monte Carlo standard error for standard deviations |
 #' | [rhat_basic()] | Basic version of Rhat |
 #' | [rhat()] | Improved, rank-based version of Rhat |
+#' | [rhat_nested()] | Rhat for use with many short chains |
 #' | [rstar()] | R* diagnostic |
 #'
 #' @return
