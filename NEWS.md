@@ -18,6 +18,7 @@
 * Ensure `rfun()` works with primitive functions (#290) and dots arguments (#291).
 * Provide implementations of `vctrs::vec_proxy_equal()`, `vctrs::vec_proxy_compare()`,
   and `vctrs::vec_proxy_order()`.
+* Future-proof `cbind(<rvar>)` and `rbind(<rvar>)` for R 4.4 (#304).
 
 
 # posterior 1.4.1
