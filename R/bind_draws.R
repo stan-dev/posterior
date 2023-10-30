@@ -202,6 +202,7 @@ bind_draws.draws_rvars <- function(x, ..., along = "variable") {
   } else if (along == "iteration") {
     stop_no_call("Cannot bind 'draws_rvars' objects along 'iteration'.")
   } else if (along %in% c("chain", "draw")) {
+    # TODO here: make sure both "draw" and "chain" result in new draw_ids (add tests)
     check_same_fun_output(dots, variables)
     if (along == "chain") {
       check_same_fun_output(dots, iteration_ids)
