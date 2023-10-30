@@ -237,6 +237,7 @@ chol.rvar <- function(x, ...) {
 
   # drop dimension names (chol.tensor screws them around)
   names(dim(result)) <- NULL
+  dimnames(result) <- NULL
 
   new_rvar(result, .nchains = nchains(x))
 }
