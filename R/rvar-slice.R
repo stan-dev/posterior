@@ -278,14 +278,14 @@ NULL
     index[seq(length(index) + 1, length(dim(.draws)) - 1)] = list(missing_arg())
   }
 
-  x <- inject(
-    new_rvar(.draws[!!!draws_index, !!!index, drop = FALSE], .nchains = nchains(x))
-  )
+  .draws <- inject(.draws[!!!draws_index, !!!index, drop = FALSE])
 
   if (!is_missing(draws_index[[1]])) {
     # if we subsetted draws, replace draw ids with sequential ids
-    rownames(draws_of(x)) <- seq_len(ndraws(x))
+    rownames(.draws) <- seq_len(NROW(.draws))
   }
+
+  x <- new_rvar(.draws, .nchains = nchains(x))
 
   if (drop) {
     x <- drop(x)
