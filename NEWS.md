@@ -20,6 +20,8 @@
   and `vctrs::vec_proxy_order()`.
 * Minor future-proofing of `cbind(<rvar>)`, `rbind(<rvar>)`, and `chol(<rvar>)`
   for R 4.4 (#304).
+* Ensure that `bind_draws(<draws_rvars>)` regenerates draw ids when binding along
+  chains or draws; this also fixes a bug in `split_chains(<draws_rvars>)` (#300).
 
 
 # posterior 1.4.1
