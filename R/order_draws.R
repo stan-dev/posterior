@@ -78,6 +78,7 @@ order_draws.rvar <- function(x, ...) {
     # if ordering is needed, must also merge chains (as out-of-order draws
     # imply chain information is no longer meaningful)
     if (nchains(x) > 1) {
+      warn_merge_chains("index")
       x <- merge_chains(x)
     }
     draws_of(x) <- vec_slice(draws_of(x), draw_order)

@@ -215,7 +215,11 @@ bind_draws.draws_rvars <- function(x, ..., along = "variable") {
     out <- lapply(seq_along(dots[[1]]), function(var_i) {
       vars <- lapply(dots, `[[`, var_i)
       var_draws <- lapply(vars, draws_of)
-      out <- rvar(abind(var_draws, along = 1), nchains = nchains)
+      new_draws <- abind(var_draws, along = 1)
+      # must regenerate draw ids in case binding along draws or chains generates
+      # duplicate or out of sequence draw ids
+      rownames(new_draws) <- seq_rows(new_draws)
+      out <- rvar(new_draws, nchains = nchains)
       out
     })
     names(out) <- names(dots[[1]])
