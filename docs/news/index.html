@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -103,7 +103,36 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.4.0" id="posterior-140">posterior 1.4.0<a class="anchor" aria-label="anchor" href="#posterior-140"></a></h2>
+<h2 class="page-header" data-toc-text="1.5.0" id="posterior-150">posterior 1.5.0<small>2023-10-31</small><a class="anchor" aria-label="anchor" href="#posterior-150"></a></h2>
+<div class="section level4">
+<h4 id="enhancements-1-5-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-5-0"></a></h4>
+<ul><li>Added support for nested-Rhat via <code>rhat_nested</code> (<a href="https://github.com/stan-dev/posterior/issues/256" class="external-link">#256</a>)</li>
+<li>Added support for indexing draws in <code>rvar</code>s using <code>rvar</code>s (<a href="https://github.com/stan-dev/posterior/issues/282" class="external-link">#282</a>):
+<ul><li>
+<code>x[i]</code> or <code>x[i] &lt;- y</code> where <code>i</code> is a scalar logical <code>rvar</code> slices (or updates) <code>x</code> by its draws. Thus, if <code>y &lt;- x[i]</code>, then <code>y</code> is the same shape as <code>x</code> but with <code>sum(i)</code> draws.</li>
+<li>
+<code>x[[i]]</code> or <code>x[[i]] &lt;- y</code> where <code>i</code> is a scalar numeric rvar slices (or updates) <code>x</code> by selecting the <code>i</code>th element within each corresponding draw. Thus, if <code>y &lt;- x[[i]]</code>, then <code>y</code> is an <code>rvar</code> of length 1.</li>
+</ul></li>
+<li>Added <code><a href="../reference/rvar_ifelse.html">rvar_ifelse()</a></code>, which is a variant of <code><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse()</a></code> that accepts (and returns) <code>rvar</code>s (<a href="https://github.com/stan-dev/posterior/issues/282" class="external-link">#282</a>).</li>
+<li>Array broadcasting for <code>rvar</code>s has been made faster.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-1-5-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-5-0"></a></h4>
+<ul><li>Ensure <code><a href="../reference/rfun.html">rfun()</a></code> works with primitive functions (<a href="https://github.com/stan-dev/posterior/issues/290" class="external-link">#290</a>) and dots arguments (<a href="https://github.com/stan-dev/posterior/issues/291" class="external-link">#291</a>).</li>
+<li>Provide implementations of <code><a href="https://vctrs.r-lib.org/reference/vec_proxy_equal.html" class="external-link">vctrs::vec_proxy_equal()</a></code>, <code><a href="https://vctrs.r-lib.org/reference/vec_proxy_compare.html" class="external-link">vctrs::vec_proxy_compare()</a></code>, and <code><a href="https://vctrs.r-lib.org/reference/vec_proxy_compare.html" class="external-link">vctrs::vec_proxy_order()</a></code>.</li>
+<li>Minor future-proofing of <code>cbind(&lt;rvar&gt;)</code>, <code>rbind(&lt;rvar&gt;)</code>, and <code>chol(&lt;rvar&gt;)</code> for R 4.4 (<a href="https://github.com/stan-dev/posterior/issues/304" class="external-link">#304</a>).</li>
+<li>Ensure that <code>bind_draws(&lt;draws_rvars&gt;)</code> regenerates draw ids when binding along chains or draws; this also fixes a bug in <code>split_chains(&lt;draws_rvars&gt;)</code> (<a href="https://github.com/stan-dev/posterior/issues/300" class="external-link">#300</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.4.1" id="posterior-141">posterior 1.4.1<small>2023-03-14</small><a class="anchor" aria-label="anchor" href="#posterior-141"></a></h2>
+<div class="section level4">
+<h4 id="bug-fixes-1-4-1">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-1"></a></h4>
+<ul><li>Delay applying <code><a href="https://tibble.tidyverse.org/reference/num.html" class="external-link">tibble::num()</a></code> formatting to output from <code><a href="../reference/draws_summary.html">summarise_draws()</a></code> until <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> is called so that summary output can be easily converted to a vanilla data frame (<a href="https://github.com/stan-dev/posterior/issues/275" class="external-link">#275</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.4.0" id="posterior-140">posterior 1.4.0<small>2023-02-22</small><a class="anchor" aria-label="anchor" href="#posterior-140"></a></h2>
 <div class="section level4">
 <h4 id="enhancements-1-4-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-4-0"></a></h4>
 <ul><li>Added new <code><a href="../reference/rvar_factor.html">rvar_factor()</a></code> and <code><a href="../reference/rvar_factor.html">rvar_ordered()</a></code> subtypes of <code><a href="../reference/rvar.html">rvar()</a></code> that work analogously to <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor()</a></code> and <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">ordered()</a></code> (<a href="https://github.com/stan-dev/posterior/issues/149" class="external-link">#149</a>). See the new section on <code>rvar_factor</code>s in <code><a href="../articles/rvar.html">vignette("rvar")</a></code>.</li>

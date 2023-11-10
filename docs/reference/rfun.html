@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -108,7 +108,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rfun</span><span class="op">(</span><span class="va">.f</span>, rvar_args <span class="op">=</span> <span class="cn">NULL</span>, ndraws <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">rfun</span><span class="op">(</span><span class="va">.f</span>, rvar_args <span class="op">=</span> <span class="cn">NULL</span>, rvar_dots <span class="op">=</span> <span class="cn">TRUE</span>, ndraws <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -124,7 +124,13 @@ and/or produces random variables:</p><ul><li><p>A function</p></li>
 <dd><p>(character vector) The names of the arguments of <code>.f</code> that
 should be allowed to accept <code><a href="rvar.html">rvar</a></code>s as arguments. If <code>NULL</code> (the
 default), all arguments to <code>.f</code> are turned into arguments that accept
-<code><a href="rvar.html">rvar</a></code>s.</p></dd>
+<code><a href="rvar.html">rvar</a></code>s, including arguments passed via <code>...</code> (if <code>rvar_dots</code> is <code>TRUE</code>).</p></dd>
+
+
+<dt>rvar_dots</dt>
+<dd><p>(logical) Should dots (<code>...</code>) arguments also be converted?
+Only applies if <code>rvar_args</code> is <code>NULL</code> (i.e., all arguments are allowed to
+be <code><a href="rvar.html">rvar</a></code>s).</p></dd>
 
 
 <dt>ndraws</dt>

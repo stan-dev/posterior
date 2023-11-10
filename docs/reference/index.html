@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -158,6 +158,10 @@
         </td>
         <td><p>Print <code>draws_rvars</code> objects</p></td>
       </tr><tr><td>
+          <p><code><a href="print.draws_summary.html">print(<i>&lt;draws_summary&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Print summaries of <code>draws</code> objects</p></td>
+      </tr><tr><td>
           <p><code><a href="print.rvar.html">print(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="print.rvar.html">format(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="print.rvar.html">str(<i>&lt;rvar&gt;</i>)</a></code> </p>
         </td>
         <td><p>Print or format a random variable</p></td>
@@ -197,6 +201,10 @@
           <p><code><a href="mutate_variables.html">mutate_variables()</a></code> </p>
         </td>
         <td><p>Mutate variables in <code>draws</code> objects</p></td>
+      </tr><tr><td>
+          <p><code><a href="set_variables.html">set_variables()</a></code> </p>
+        </td>
+        <td><p>Set variable names in <code>draws</code> objects</p></td>
       </tr><tr><td>
           <p><code><a href="order_draws.html">order_draws()</a></code> </p>
         </td>
@@ -278,6 +286,10 @@
         </td>
         <td><p>Basic version of the Rhat convergence diagnostic</p></td>
       </tr><tr><td>
+          <p><code><a href="rhat_nested.html">rhat_nested()</a></code> </p>
+        </td>
+        <td><p>Nested Rhat convergence diagnostic</p></td>
+      </tr><tr><td>
           <p><code><a href="mcse_mean.html">mcse_mean()</a></code> </p>
         </td>
         <td><p>Monte Carlo standard error for the mean</p></td>
@@ -309,6 +321,18 @@
           <p><code><a href="modal_category.html">modal_category()</a></code> </p>
         </td>
         <td><p>Modal category</p></td>
+      </tr><tr><td>
+          <p><code><a href="pareto_diags.html">pareto_diags()</a></code> </p>
+        </td>
+        <td><p>Pareto smoothing diagnostics</p></td>
+      </tr><tr><td>
+          <p><code><a href="pareto_khat.html">pareto_khat()</a></code> </p>
+        </td>
+        <td><p>Pareto khat diagnostic</p></td>
+      </tr><tr><td>
+          <p><code><a href="pareto_smooth.html">pareto_smooth()</a></code> </p>
+        </td>
+        <td><p>Pareto smoothing</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="functionality-specific-to-the-rvar-datatype">Functionality specific to the rvar datatype <a href="#functionality-specific-to-the-rvar-datatype" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>The <code>draws_rvar</code> format (a structured list of <code>rvar</code> objects) has the same methods (e.g. <code><a href="../reference/bind_draws.html">bind_draws()</a></code>) as the other draws formats. For individual <code>rvar</code> objects themselves, however, posterior provides additional functionality.</p>
@@ -325,6 +349,10 @@
           <p><code><a href="rvar-matmult.html">`%**%`</a></code> </p>
         </td>
         <td><p>Matrix multiplication of random variables</p></td>
+      </tr><tr><td>
+          <p><code><a href="rvar-slice.html">`[[`(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-slice.html">`[[&lt;-`(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-slice.html">`[`(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-slice.html">`[&lt;-`(<i>&lt;rvar&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Random variable slicing</p></td>
       </tr><tr><td>
           <p><code><a href="rvar-summaries-over-draws.html">E()</a></code> <code><a href="rvar-summaries-over-draws.html">mean(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">Pr()</a></code> <code><a href="rvar-summaries-over-draws.html">median(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">min(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">max(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">sum(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">prod(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">all(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">any(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">Summary(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">variance(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">var()</a></code> <code><a href="rvar-summaries-over-draws.html">sd()</a></code> <code><a href="rvar-summaries-over-draws.html">mad()</a></code> <code><a href="rvar-summaries-over-draws.html">range(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">is.finite(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">is.infinite(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">is.nan(<i>&lt;rvar&gt;</i>)</a></code> <code><a href="rvar-summaries-over-draws.html">is.na(<i>&lt;rvar&gt;</i>)</a></code> </p>
         </td>
@@ -346,6 +374,10 @@
         </td>
         <td><p>Factor random variables of arbitrary dimension</p></td>
       </tr><tr><td>
+          <p><code><a href="rvar_ifelse.html">rvar_ifelse()</a></code> </p>
+        </td>
+        <td><p>Random variable ifelse</p></td>
+      </tr><tr><td>
           <p><code><a href="rvar_is_finite.html">rvar_is_finite()</a></code> <code><a href="rvar_is_finite.html">rvar_is_infinite()</a></code> <code><a href="rvar_is_finite.html">rvar_is_nan()</a></code> <code><a href="rvar_is_finite.html">rvar_is_na()</a></code> </p>
         </td>
         <td><p>Special value predicates for random variables</p></td>
@@ -362,7 +394,7 @@
         </td>
         <td><p>Is <code>x</code> a factor random variable?</p></td>
       </tr><tr><td>
-          <p><code><a href="as_rvar.html">as_rvar()</a></code> <code><a href="as_rvar.html">as_rvar_numeric()</a></code> </p>
+          <p><code><a href="as_rvar.html">as_rvar()</a></code> <code><a href="as_rvar.html">as_rvar_numeric()</a></code> <code><a href="as_rvar.html">as_rvar_integer()</a></code> <code><a href="as_rvar.html">as_rvar_logical()</a></code> </p>
         </td>
         <td><p>Coerce to a random variable</p></td>
       </tr><tr><td>

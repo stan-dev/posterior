@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
       </span>
     </div>
 
@@ -110,7 +110,11 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">as_rvar</span><span class="op">(</span><span class="va">x</span>, dim <span class="op">=</span> <span class="cn">NULL</span>, dimnames <span class="op">=</span> <span class="cn">NULL</span>, nchains <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">as_rvar_numeric</span><span class="op">(</span><span class="va">x</span>, dim <span class="op">=</span> <span class="cn">NULL</span>, dimnames <span class="op">=</span> <span class="cn">NULL</span>, nchains <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">as_rvar_numeric</span><span class="op">(</span><span class="va">x</span>, dim <span class="op">=</span> <span class="cn">NULL</span>, dimnames <span class="op">=</span> <span class="cn">NULL</span>, nchains <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">as_rvar_integer</span><span class="op">(</span><span class="va">x</span>, dim <span class="op">=</span> <span class="cn">NULL</span>, dimnames <span class="op">=</span> <span class="cn">NULL</span>, nchains <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">as_rvar_logical</span><span class="op">(</span><span class="va">x</span>, dim <span class="op">=</span> <span class="cn">NULL</span>, dimnames <span class="op">=</span> <span class="cn">NULL</span>, nchains <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -156,9 +160,10 @@ the same dimensions as <code>x</code>. This is in contrast to the <code><a href=
 treats the first dimension of <code>x</code> as the draws dimension. As a result, <code>as_rvar()</code>
 is useful for creating constants.</p>
 <p>While <code>as_rvar()</code> attempts to pick the most suitable subtype of <code><a href="rvar.html">rvar</a></code> based on the
-type of <code>x</code> (possibly returning a an <code><a href="rvar_factor.html">rvar_factor</a></code> or <code><a href="rvar_factor.html">rvar_ordered</a></code>),
-<code>as_rvar_numeric()</code> always coerces the draws of the output <code><a href="rvar.html">rvar</a></code> to be <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></code>,
-and always returns a base <code><a href="rvar.html">rvar</a></code>, never a subtype.</p>
+type of <code>x</code> (possibly returning an <code><a href="rvar_factor.html">rvar_factor</a></code> or <code><a href="rvar_factor.html">rvar_ordered</a></code>),
+<code>as_rvar_numeric()</code>, <code>as_rvar_integer()</code>, and <code>as_rvar_logical()</code> always coerce
+the draws of the output <code><a href="rvar.html">rvar</a></code> to be <code><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></code>, <code><a href="https://rdrr.io/r/base/integer.html" class="external-link">integer</a></code>, or <code><a href="https://rdrr.io/r/base/logical.html" class="external-link">logical</a></code>
+(respectively), and always return a base <code><a href="rvar.html">rvar</a></code>, never a subtype.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
