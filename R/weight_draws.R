@@ -11,7 +11,7 @@
 #'   Weights will be internally stored on the log scale (in a variable called
 #'   `.log_weight`) and will not be normalized, but normalized (non-log) weights
 #'   can be returned via the [weights.draws()] method later.
-#' @param log (logicla) Are the weights passed already on the log scale? The
+#' @param log (logical) Are the weights passed already on the log scale? The
 #'   default is `FALSE`, that is, expecting `weights` to be on the standard
 #'   (non-log) scale.
 #' @template args-methods-dots
