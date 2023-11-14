@@ -25,6 +25,7 @@ A list of available diagnostics and links to their individual help pages.
    \code{\link[=pareto_diags]{pareto_diags()}} \tab Additional diagnostics related to Pareto khat \cr
    \code{\link[=rhat_basic]{rhat_basic()}} \tab Basic version of Rhat \cr
    \code{\link[=rhat]{rhat()}} \tab Improved, rank-based version of Rhat \cr
+   \code{\link[=rhat_nested]{rhat_nested()}} \tab Rhat for use with many short chains \cr
    \code{\link[=rstar]{rstar()}} \tab R* diagnostic \cr
 }
 }

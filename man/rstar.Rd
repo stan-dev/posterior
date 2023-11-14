@@ -116,6 +116,7 @@ Other diagnostics:
 \code{\link{mcse_quantile}()},
 \code{\link{mcse_sd}()},
 \code{\link{rhat_basic}()},
+\code{\link{rhat_nested}()},
 \code{\link{rhat}()}
 }
 \concept{diagnostics}

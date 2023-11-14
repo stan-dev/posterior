@@ -165,7 +165,7 @@ test_that("indexing with [ works on a vector", {
   expect_equal(x[NA_integer_], rvar_from_array(x_array[NA_integer_,, drop = FALSE]))
   expect_equal(x[rep(NA_integer_,7)], rvar_from_array(x_array[rep(NA_integer_,7),, drop = FALSE]))
 
-  expect_equal(x[NULL], new_rvar(array(numeric(), dim = c(5, 0))))
+  expect_equal(x[NULL], rvar_from_array(x_array[NULL, , drop = FALSE]))
 
   expect_error(x[1,1])
 

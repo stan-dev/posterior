@@ -25,6 +25,7 @@
 #' | [pareto_diags()] | Additional diagnostics related to Pareto khat |
 #' | [rhat_basic()] | Basic version of Rhat |
 #' | [rhat()] | Improved, rank-based version of Rhat |
+#' | [rhat_nested()] | Rhat for use with many short chains |
 #' | [rstar()] | R* diagnostic |
 #'
 #' @return

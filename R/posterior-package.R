@@ -36,6 +36,12 @@
 #' * `posterior.max_chains`: Maximum number of chains to print.
 #' * `posterior.max_variables`: Maximum number of variables to print.
 #'
+#' The following options are used for formatting the output of
+#' [`summarize_draws`]:
+#'
+#' * `posterior.num_args`: Arguments passed to [num()][tibble::num]
+#' for pretty printing of summaries.
+#'
 #' The following options are used to format and print [`rvar`] objects,
 #' as in `print.rvar()` and `print.draws_rvars()`:
 #'

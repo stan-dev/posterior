@@ -163,6 +163,15 @@
     <loc>https://mc-stan.org/posterior/reference/order_draws.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/pareto_diags.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/pareto_khat.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/pareto_smooth.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/posterior-package.html</loc>
   </url>
   <url>
@@ -179,6 +188,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/print.draws_rvars.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/print.draws_summary.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/print.rvar.html</loc>
@@ -220,6 +232,9 @@
     <loc>https://mc-stan.org/posterior/reference/rhat_basic.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/rhat_nested.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/rstar.html</loc>
   </url>
   <url>
@@ -230,6 +245,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar-matmult.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar-slice.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar-summaries-by-draw.html</loc>
@@ -253,10 +271,16 @@
     <loc>https://mc-stan.org/posterior/reference/rvar_factor.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/rvar_ifelse.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/rvar_is_finite.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/rvar_rng.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/set_variables.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/split_chains.html</loc>

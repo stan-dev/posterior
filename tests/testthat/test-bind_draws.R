@@ -23,6 +23,7 @@ test_that("bind_draws works for draws_matrix objects", {
     nchains(draws1) + nchains(draws2)
   )
   expect_equal(variables(draws_new), variables(draws1))
+  expect_equal(draw_ids(draws_new), seq_len(ndraws(draws_new)))
 
   draws_new <- bind_draws(draws1, draws3, along = "draw")
   expect_equal(
@@ -51,6 +52,7 @@ test_that("bind_draws works for draws_array objects", {
   draws_new <- bind_draws(draws1, draws2, along = "chain")
   expect_equal(nchains(draws_new), nchains(draws1) + nchains(draws2))
   expect_equal(variables(draws_new), variables(draws1))
+  expect_equal(draw_ids(draws_new), seq_len(ndraws(draws_new)))
 
   draws_new <- bind_draws(draws1, draws3, along = "iteration")
   expect_equal(
@@ -82,6 +84,7 @@ test_that("bind_draws works for draws_df objects", {
   draws_new <- bind_draws(draws1, draws2, along = "chain")
   expect_equal(nchains(draws_new), nchains(draws1) + nchains(draws2))
   expect_equal(variables(draws_new), variables(draws1))
+  expect_equal(draw_ids(draws_new), seq_len(ndraws(draws_new)))
 
   draws_new <- bind_draws(draws1, draws3, along = "iteration")
   expect_equal(
@@ -150,6 +153,7 @@ test_that("bind_draws works for draws_list objects", {
   draws_new <- bind_draws(draws1, draws2, along = "chain")
   expect_equal(nchains(draws_new), nchains(draws1) + nchains(draws2))
   expect_equal(variables(draws_new), variables(draws1))
+  expect_equal(draw_ids(draws_new), seq_len(ndraws(draws_new)))
 
   draws_new <- bind_draws(draws1, draws3, along = "iteration")
   expect_equal(
@@ -181,6 +185,7 @@ test_that("bind_draws works for draws_rvars objects", {
   draws_new <- bind_draws(draws1, draws2, along = "chain")
   expect_equal(nchains(draws_new), nchains(draws1) + nchains(draws2))
   expect_equal(variables(draws_new), variables(draws1))
+  expect_equal(draw_ids(draws_new), seq_len(ndraws(draws_new)))
 
   expect_error(bind_draws(draws1, draws3, along = "iteration"),
     "Cannot bind 'draws_rvars' objects along 'iteration'")

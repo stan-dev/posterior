@@ -26,16 +26,18 @@ c.rvar <- function(...) {
 }
 
 #' @export
-rbind.rvar <- function(...) {
-  # not sure why deparse.level is not passed here correctly...
-  deparse.level <- rlang::caller_env()$deparse.level %||% 1
+rbind.rvar <- function(..., deparse.level = 1) {
+  # deparse.level is not correctly passed here by the default rbind
+  # implementation in R < 4.4, so we grab it from the calling environment
+  deparse.level <- rlang::caller_env()$deparse.level %||% deparse.level
   bind_rvars(list(...), as.list(substitute(list(...))[-1]), deparse.level)
 }
 
 #' @export
-cbind.rvar <- function(...) {
-  # not sure why deparse.level is not passed here correctly...
-  deparse.level <- rlang::caller_env()$deparse.level %||% 1
+cbind.rvar <- function(..., deparse.level = 1) {
+  # deparse.level is not correctly passed here by the default cbind
+  # implementation in R < 4.4, so we grab it from the calling environment
+  deparse.level <- rlang::caller_env()$deparse.level %||% deparse.level
   bind_rvars(list(...), as.list(substitute(list(...))[-1]), deparse.level, axis = 2)
 }
 
