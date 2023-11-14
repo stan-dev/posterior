@@ -11,15 +11,15 @@
 \usage{
 weight_draws(x, weights, ...)
 
-\method{weight_draws}{draws_matrix}(x, weights, log = FALSE, ...)
+\method{weight_draws}{draws_matrix}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
 
-\method{weight_draws}{draws_array}(x, weights, log = FALSE, ...)
+\method{weight_draws}{draws_array}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
 
-\method{weight_draws}{draws_df}(x, weights, log = FALSE, ...)
+\method{weight_draws}{draws_df}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
 
-\method{weight_draws}{draws_list}(x, weights, log = FALSE, ...)
+\method{weight_draws}{draws_list}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
 
-\method{weight_draws}{draws_rvars}(x, weights, log = FALSE, ...)
+\method{weight_draws}{draws_rvars}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
@@ -32,9 +32,12 @@ can be returned via the \code{\link[=weights.draws]{weights.draws()}} method lat
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{log}{(logicla) Are the weights passed already on the log scale? The
+\item{log}{(logical) Are the weights passed already on the log scale? The
 default is \code{FALSE}, that is, expecting \code{weights} to be on the standard
 (non-log) scale.}
+
+\item{pareto_smooth}{(logical) Should the weights be Pareto-smoothed?
+The default is \code{FALSE}.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.

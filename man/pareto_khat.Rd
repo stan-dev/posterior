@@ -73,5 +73,22 @@ Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
 arxiv:arXiv:1507.02646
 }
 \seealso{
-\code{\link{pareto_diags}} for calculating additional related diagnostics.
+\code{\link{pareto_diags}} for additional related diagnostics, and
+\code{\link{pareto_smooth}} for Pareto smoothed draws.
+
+Other diagnostics: 
+\code{\link{ess_basic}()},
+\code{\link{ess_bulk}()},
+\code{\link{ess_quantile}()},
+\code{\link{ess_sd}()},
+\code{\link{ess_tail}()},
+\code{\link{mcse_mean}()},
+\code{\link{mcse_quantile}()},
+\code{\link{mcse_sd}()},
+\code{\link{pareto_diags}()},
+\code{\link{rhat_basic}()},
+\code{\link{rhat_nested}()},
+\code{\link{rhat}()},
+\code{\link{rstar}()}
 }
+\concept{diagnostics}

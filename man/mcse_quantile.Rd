@@ -78,6 +78,8 @@ Other diagnostics:
 \code{\link{ess_tail}()},
 \code{\link{mcse_mean}()},
 \code{\link{mcse_sd}()},
+\code{\link{pareto_diags}()},
+\code{\link{pareto_khat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
 \code{\link{rhat}()},

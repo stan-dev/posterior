@@ -5,12 +5,14 @@
 #' the number of fractional moments that is useful for convergence
 #' diagnostics. For further details see Vehtari et al. (2022).
 #'
+#' @family diagnostics
 #' @template args-pareto
 #' @template args-methods-dots
 #' @template ref-vehtari-paretosmooth-2022
 #' @return `khat` estimated Generalized Pareto Distribution shape parameter k
 #'
-#' @seealso [`pareto_diags`] for additional related diagnostics.
+#' @seealso [`pareto_diags`] for additional related diagnostics, and
+#'   [`pareto_smooth`] for Pareto smoothed draws.
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' pareto_khat(mu)
@@ -67,6 +69,7 @@ pareto_khat.rvar <- function(x, ...) {
 #' replacing tail draws by order statistics of a generalized Pareto
 #' distribution fit to the tail(s).
 #'
+#' @family diagnostics
 #' @template args-pareto
 #' @template args-methods-dots
 #' @template ref-vehtari-paretosmooth-2022
@@ -102,6 +105,8 @@ pareto_khat.rvar <- function(x, ...) {
 #'  when the sample size is increased, compared to the central limit
 #'  theorem convergence rate. See Appendix B in Vehtari et al. (2022).
 #'
+#' @seealso [`pareto_khat`] for only calculating khat, and
+#'   [`pareto_smooth`] for Pareto smoothed draws.
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' pareto_diags(mu)
@@ -191,6 +196,8 @@ pareto_diags.rvar <- function(x, ...) {
 #'   Pareto smoothed estimates
 #' * `convergence_rate`: Relative convergence rate for Pareto smoothed estimates
 #'
+#' @seealso [`pareto_khat`] for only calculating khat, and
+#'   [`pareto_diags`] for additional diagnostics.
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' pareto_smooth(mu)
@@ -351,14 +358,19 @@ pareto_smooth.default <- function(x,
                                 ndraws_tail,
                                 smooth_draws = TRUE,
                                 tail = c("right", "left"),
+                                log = FALSE,
                                 ...
                                 ) {
 
+  if (log) {
+    # shift log values for safe exponentiation
+    x <- x - max(x)
+  }
+  
   tail <- match.arg(tail)
 
   S <- length(x)
   tail_ids <- seq(S - ndraws_tail + 1, S)
-
 
   if (tail == "left") {
     x <- -x
@@ -366,11 +378,12 @@ pareto_smooth.default <- function(x,
 
   ord <- sort.int(x, index.return = TRUE)
   draws_tail <- ord$x[tail_ids]
-  cutoff <- ord$x[min(tail_ids) - 1] # largest value smaller than tail values
 
+  cutoff <- ord$x[min(tail_ids) - 1] # largest value smaller than tail values
+  
   max_tail <- max(draws_tail)
   min_tail <- min(draws_tail)
-
+  
   if (ndraws_tail >= 5) {
     ord <- sort.int(x, index.return = TRUE)
     if (abs(max_tail - min_tail) < .Machine$double.eps / 100) {
@@ -382,12 +395,19 @@ pareto_smooth.default <- function(x,
       k <- NA
     } else {
       # save time not sorting since x already sorted
-      fit <- gpdfit(draws_tail - cutoff, sort_x = FALSE)
+      if (log) {
+        draws_tail <- exp(draws_tail)
+        cutoff <- exp(cutoff)
+      }
+      fit <- gpdfit(draws_tail - cutoff, sort_x = FALSE, ...)
       k <- fit$k
       sigma <- fit$sigma
       if (is.finite(k) && smooth_draws) {
         p <- (seq_len(ndraws_tail) - 0.5) / ndraws_tail
         smoothed <- qgeneralized_pareto(p = p, mu = cutoff, k = k, sigma = sigma)
+        if (log) {
+          smoothed <- log(smoothed)
+        }
       } else {
         smoothed <- NULL
       }
