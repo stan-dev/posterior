@@ -72,3 +72,6 @@ Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
 Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
 arxiv:arXiv:1507.02646
 }
+\seealso{
+\code{\link{pareto_diags}} for calculating additional related diagnostics.
+}

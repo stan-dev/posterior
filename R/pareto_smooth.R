@@ -9,6 +9,8 @@
 #' @template args-methods-dots
 #' @template ref-vehtari-paretosmooth-2022
 #' @return `khat` estimated Generalized Pareto Distribution shape parameter k
+#'
+#' @seealso [`pareto_diags`] for additional related diagnostics.
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' pareto_khat(mu)
