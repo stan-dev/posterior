@@ -29,6 +29,7 @@ pareto_khat.default <- function(x,
                                 r_eff = NULL,
                                 ndraws_tail = NULL,
                                 verbose = FALSE,
+                                log_weights = FALSE,
                                 ...) {
   smoothed <- pareto_smooth.default(
     x,
@@ -38,6 +39,7 @@ pareto_khat.default <- function(x,
     verbose = verbose,
     return_k = TRUE,
     smooth_draws = FALSE,
+    log_weights = log_weights,
     ...)
   return(smoothed$diagnostics)
 }
@@ -120,11 +122,12 @@ pareto_diags <- function(x, ...) UseMethod("pareto_diags")
 #' @rdname pareto_diags
 #' @export
 pareto_diags.default <- function(x,
-                                  tail = c("both", "right", "left"),
-                                  r_eff = NULL,
-                                  ndraws_tail = NULL,
-                                  verbose = FALSE,
-                                  ...) {
+                                 tail = c("both", "right", "left"),
+                                 r_eff = NULL,
+                                 ndraws_tail = NULL,
+                                 verbose = FALSE,
+                                 log_weights = FALSE,
+                                 ...) {
 
   smoothed <- pareto_smooth.default(
     x,
@@ -135,6 +138,7 @@ pareto_diags.default <- function(x,
     extra_diags = TRUE,
     verbose = verbose,
     smooth_draws = FALSE,
+    log_weights = FALSE,
     ...)
 
   return(smoothed$diagnostics)
@@ -234,8 +238,8 @@ pareto_smooth.rvar <- function(x, return_k = TRUE, extra_diags = FALSE, ...) {
       )
     }
     out <- list(
-    x = rvar(apply(draws_diags, margins, function(x) x[[1]]$x), nchains = nchains(x)),
-    diagnostics = diags
+      x = rvar(apply(draws_diags, margins, function(x) x[[1]]$x), nchains = nchains(x)),
+      diagnostics = diags
     )
   } else {
     out <- rvar(apply(draws_diags, margins, function(x) x[[1]]), nchains = nchains(x))
@@ -252,6 +256,7 @@ pareto_smooth.default <- function(x,
                                   return_k = TRUE,
                                   extra_diags = FALSE,
                                   verbose = FALSE,
+                                  log_weights = FALSE,
                                   ...) {
 
   checkmate::assert_number(ndraws_tail, null.ok = TRUE)
@@ -259,6 +264,7 @@ pareto_smooth.default <- function(x,
   checkmate::assert_logical(extra_diags)
   checkmate::assert_logical(return_k)
   checkmate::assert_logical(verbose)
+  checkmate::assert_logical(log_weights)
 
   # check for infinite or na values
   if (should_return_NA(x)) {
@@ -266,6 +272,10 @@ pareto_smooth.default <- function(x,
     return(list(x = x, diagnostics = NA_real_))
   }
 
+  if (log_weights) {
+    tail = "right"
+  }
+  
   tail <- match.arg(tail)
   S <- length(x)
 
@@ -299,6 +309,7 @@ pareto_smooth.default <- function(x,
       x,
       ndraws_tail = ndraws_tail,
       tail = "left",
+      log_weights = log_weights,
       ...
     )
     left_k <- smoothed$k
@@ -308,6 +319,7 @@ pareto_smooth.default <- function(x,
       x = smoothed$x,
       ndraws_tail = ndraws_tail,
       tail = "right",
+      log_weights = log_weights,
       ...
     )
     right_k <- smoothed$k
@@ -358,11 +370,11 @@ pareto_smooth.default <- function(x,
                                 ndraws_tail,
                                 smooth_draws = TRUE,
                                 tail = c("right", "left"),
-                                log = FALSE,
+                                log_weights = FALSE,
                                 ...
                                 ) {
 
-  if (log) {
+  if (log_weights) {
     # shift log values for safe exponentiation
     x <- x - max(x)
   }
@@ -395,7 +407,7 @@ pareto_smooth.default <- function(x,
       k <- NA
     } else {
       # save time not sorting since x already sorted
-      if (log) {
+      if (log_weights) {
         draws_tail <- exp(draws_tail)
         cutoff <- exp(cutoff)
       }
@@ -405,7 +417,7 @@ pareto_smooth.default <- function(x,
       if (is.finite(k) && smooth_draws) {
         p <- (seq_len(ndraws_tail) - 0.5) / ndraws_tail
         smoothed <- qgeneralized_pareto(p = p, mu = cutoff, k = k, sigma = sigma)
-        if (log) {
+        if (log_weights) {
           smoothed <- log(smoothed)
         }
       } else {
@@ -467,11 +479,11 @@ pareto_smooth.default <- function(x,
 #' @noRd
 ps_min_ss <- function(k, ...) {
   if (k < 1) {
-   out <- 10^(1 / (1 - max(0, k)))
+    out <- 10^(1 / (1 - max(0, k)))
   } else {
-   out <- Inf
+    out <- Inf
   }
-   out
+  out
 }
 
 

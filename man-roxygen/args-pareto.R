@@ -11,10 +11,14 @@
 #' @param ndraws_tail (numeric) number of draws for the tail. If
 #'   `ndraws_tail` is not specified, it will be calculated as
 #'   ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
-#'   length(x) / 5 otherwise (see Appendix H in Vehtari et al. (2022)).
+#'   length(x) / 5 otherwise (see Appendix H in Vehtari et
+#'   al. (2022)).
 #' @param r_eff (numeric) relative effective sample size estimate. If
 #'   `r_eff` is omitted, it will be calculated assuming the draws are
 #'   from MCMC.
 #' @param verbose (logical) Should diagnostic messages be printed? If
 #'   `TRUE`, messages related to Pareto diagnostics will be
 #'   printed. Default is `FALSE`.
+#' @param log_weights (logical) Are the draws log weights? Default is
+#'   `FALSE`. If `TRUE` computation will take into account that the
+#'   draws are log weights, and only right tail will be smoothed.

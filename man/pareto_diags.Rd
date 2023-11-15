@@ -14,6 +14,7 @@ pareto_diags(x, ...)
   r_eff = NULL,
   ndraws_tail = NULL,
   verbose = FALSE,
+  log_weights = FALSE,
   ...
 )
 
@@ -45,11 +46,16 @@ from MCMC.}
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
 \code{ndraws_tail} is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
-length(x) / 5 otherwise (see Appendix H in Vehtari et al. (2022)).}
+length(x) / 5 otherwise (see Appendix H in Vehtari et
+al. (2022)).}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto diagnostics will be
 printed. Default is \code{FALSE}.}
+
+\item{log_weights}{(logical) Are the draws log weights? Default is
+\code{FALSE}. If \code{TRUE} computation will take into account that the
+draws are log weights, and only right tail will be smoothed.}
 }
 \value{
 List of Pareto smoothing diagnostics:
