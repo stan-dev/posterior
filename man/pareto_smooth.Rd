@@ -51,7 +51,7 @@ returned. Default is \code{FALSE}.}
 The default is \code{"both"}.}
 
 \item{r_eff}{(numeric) relative effective sample size estimate. If
-\code{r_eff} is omitted, it will be calculated assuming the draws are
+\code{r_eff} is NULL, it will be calculated assuming the draws are
 from MCMC. Default is 1.}
 
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
