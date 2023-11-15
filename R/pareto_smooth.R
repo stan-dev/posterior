@@ -268,8 +268,13 @@ pareto_smooth.default <- function(x,
 
   # check for infinite or na values
   if (should_return_NA(x)) {
-    warning_no_call("Input contains infinite or NA values, Pareto smoothing not performed.")
-    return(list(x = x, diagnostics = NA_real_))
+    warning_no_call("Input contains infinite or NA values, or is constant. Fitting of generalized Pareto distribution not performed.")
+    if (!return_k) {
+      out <- x
+    } else {
+      out <- list(x = x, diagnostics = NA_real_)
+    }
+    return(out)
   }
 
   if (log_weights) {
