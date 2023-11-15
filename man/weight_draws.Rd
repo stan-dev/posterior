@@ -73,6 +73,9 @@ x <- weight_draws(x, weights = log_wts, log = TRUE)
 head(weights(x))
 head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
 
+# add weights on log scale and Pareto smooth them
+x <- weight_draws(x, weights = log_wts, log = TRUE, pareto_smooth = TRUE)
+
 }
 \seealso{
 \code{\link[=weights.draws]{weights.draws()}}, \code{\link[=resample_draws]{resample_draws()}}
