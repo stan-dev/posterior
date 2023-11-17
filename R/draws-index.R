@@ -27,6 +27,8 @@
 #'
 #' For `niterations()`, `nchains()`, and `ndraws()`, a scalar integer.
 #'
+#' @seealso [`variables`], [`rename_variables`]
+#'
 #' @examples
 #' x <- example_draws()
 #'
