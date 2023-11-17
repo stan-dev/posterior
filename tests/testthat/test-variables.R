@@ -109,3 +109,17 @@ test_that("cannot set duplicate variable names", {
   expect_error(set_variables(x, c("a", "a")), "Duplicate variable names are not allowed")
 })
 
+test_that("repair_variable_names does the right conversion", {
+  expect_equal(
+    repair_variable_names(c("foo.12", "foo.12.13", "foo.12.13.14.15")),
+    c("foo[12]", "foo[12,13]", "foo[12,13,14,15]")
+  )
+})
+
+test_that("repair_variable_names errors if all names don't contain '.'", {
+  expect_error(
+    repair_variable_names(c("foo[12]", "foo.12.13")),
+    "All names in 'old_variables' must contain at least one '.' in the name."
+  )
+})
+
