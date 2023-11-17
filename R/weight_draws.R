@@ -57,8 +57,8 @@ weight_draws <- function(x, weights, ...) {
 #' @export
 weight_draws.draws_matrix <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
 
-  checkmate::assert_logical(pareto_smooth)
 
+  pareto_smooth <- as_one_logical(pareto_smooth)
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   if (pareto_smooth) {
@@ -79,8 +79,7 @@ weight_draws.draws_matrix <- function(x, weights, log = FALSE, pareto_smooth = F
 #' @export
 weight_draws.draws_array <- function(x, weights, log = FALSE, pareto_smooth = FALSE,...) {
 
-  checkmate::assert_logical(pareto_smooth)
-
+  pareto_smooth <- as_one_logical(pareto_smooth)
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   if (pareto_smooth) {
@@ -101,8 +100,7 @@ weight_draws.draws_array <- function(x, weights, log = FALSE, pareto_smooth = FA
 #' @export
 weight_draws.draws_df <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
 
-  checkmate::assert_logical(pareto_smooth)
-
+  pareto_smooth <- as_one_logical(pareto_smooth)
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   if (pareto_smooth) {
@@ -116,8 +114,7 @@ weight_draws.draws_df <- function(x, weights, log = FALSE, pareto_smooth = FALSE
 #' @export
 weight_draws.draws_list <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
 
-  checkmate::assert_logical(pareto_smooth)
-
+  pareto_smooth <- as_one_logical(pareto_smooth)
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   if (pareto_smooth) {
@@ -135,8 +132,7 @@ weight_draws.draws_list <- function(x, weights, log = FALSE, pareto_smooth = FAL
 #' @export
 weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
 
-  checkmate::assert_logical(pareto_smooth)
-
+  pareto_smooth <- as_one_logical(pareto_smooth)
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   if (pareto_smooth) {
