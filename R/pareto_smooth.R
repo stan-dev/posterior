@@ -29,7 +29,7 @@ pareto_khat.default <- function(x,
                                 r_eff = NULL,
                                 ndraws_tail = NULL,
                                 verbose = FALSE,
-                                log_weights = FALSE,
+                                are_log_weights = FALSE,
                                 ...) {
   smoothed <- pareto_smooth.default(
     x,
@@ -39,7 +39,7 @@ pareto_khat.default <- function(x,
     verbose = verbose,
     return_k = TRUE,
     smooth_draws = FALSE,
-    log_weights = log_weights,
+    are_log_weights = are_log_weights,
     ...)
   return(smoothed$diagnostics)
 }
@@ -126,7 +126,7 @@ pareto_diags.default <- function(x,
                                  r_eff = NULL,
                                  ndraws_tail = NULL,
                                  verbose = FALSE,
-                                 log_weights = FALSE,
+                                 are_log_weights = FALSE,
                                  ...) {
 
   smoothed <- pareto_smooth.default(
@@ -138,7 +138,7 @@ pareto_diags.default <- function(x,
     extra_diags = TRUE,
     verbose = verbose,
     smooth_draws = FALSE,
-    log_weights = FALSE,
+    are_log_weights = FALSE,
     ...)
 
   return(smoothed$diagnostics)
@@ -256,15 +256,15 @@ pareto_smooth.default <- function(x,
                                   return_k = TRUE,
                                   extra_diags = FALSE,
                                   verbose = FALSE,
-                                  log_weights = FALSE,
+                                  are_log_weights = FALSE,
                                   ...) {
 
-  checkmate::assert_number(ndraws_tail, null.ok = TRUE)
-  checkmate::assert_number(r_eff, null.ok = TRUE)
-  checkmate::assert_logical(extra_diags)
-  checkmate::assert_logical(return_k)
-  checkmate::assert_logical(verbose)
-  checkmate::assert_logical(log_weights)
+  checkmate::expect_numeric(ndraws_tail, null.ok = TRUE)
+  checkmate::expect_numeric(r_eff, null.ok = TRUE)
+  extra_diags <- as_one_logical(extra_diags)
+  return_k <- as_one_logical(return_k)
+  verbose <- as_one_logical(verbose)
+  are_log_weights <- as_one_logical(are_log_weights)
 
   # check for infinite or na values
   if (should_return_NA(x)) {
@@ -277,8 +277,8 @@ pareto_smooth.default <- function(x,
     return(out)
   }
 
-  if (log_weights) {
-    tail = "right"
+  if (are_log_weights) {
+    tail <- "right"
   }
   
   tail <- match.arg(tail)
@@ -314,7 +314,7 @@ pareto_smooth.default <- function(x,
       x,
       ndraws_tail = ndraws_tail,
       tail = "left",
-      log_weights = log_weights,
+      are_log_weights = are_log_weights,
       ...
     )
     left_k <- smoothed$k
@@ -324,13 +324,14 @@ pareto_smooth.default <- function(x,
       x = smoothed$x,
       ndraws_tail = ndraws_tail,
       tail = "right",
-      log_weights = log_weights,
+      are_log_weights = are_log_weights,
       ...
     )
     right_k <- smoothed$k
 
     k <- max(left_k, right_k)
     x <- smoothed$x
+    
   } else {
 
     smoothed <- .pareto_smooth_tail(
@@ -352,10 +353,11 @@ pareto_smooth.default <- function(x,
 
   if (verbose) {
     if (!extra_diags) {
-      diags_list <- .pareto_smooth_extra_diags(diags_list$khat, length(x))
+      diags_list <- c(diags_list, .pareto_smooth_extra_diags(diags_list$khat, length(x)))
     }
     pareto_k_diagmsg(
-      diags = diags_list
+      diags = diags_list,
+      are_weights = are_log_weights
     )
   }
 
@@ -375,11 +377,11 @@ pareto_smooth.default <- function(x,
                                 ndraws_tail,
                                 smooth_draws = TRUE,
                                 tail = c("right", "left"),
-                                log_weights = FALSE,
+                                are_log_weights = FALSE,
                                 ...
                                 ) {
 
-  if (log_weights) {
+  if (are_log_weights) {
     # shift log values for safe exponentiation
     x <- x - max(x)
   }
@@ -412,7 +414,7 @@ pareto_smooth.default <- function(x,
       k <- NA
     } else {
       # save time not sorting since x already sorted
-      if (log_weights) {
+      if (are_log_weights) {
         draws_tail <- exp(draws_tail)
         cutoff <- exp(cutoff)
       }
@@ -422,7 +424,7 @@ pareto_smooth.default <- function(x,
       if (is.finite(k) && smooth_draws) {
         p <- (seq_len(ndraws_tail) - 0.5) / ndraws_tail
         smoothed <- qgeneralized_pareto(p = p, mu = cutoff, k = k, sigma = sigma)
-        if (log_weights) {
+        if (are_log_weights) {
           smoothed <- log(smoothed)
         }
       } else {
@@ -545,27 +547,38 @@ ps_tail_length <- function(S, r_eff, ...) {
 #'
 #' Given S and scalar and k, form a diagnostic message string
 #' @param diags (numeric) named vector of diagnostic values
+#' @param are_weights (logical) are the diagnostics for weights
 #' @param ... unused
 #' @return diagnostic message
 #' @noRd
-pareto_k_diagmsg <- function(diags, ...) {
+pareto_k_diagmsg <- function(diags, are_weights = FALSE, ...) {
   khat <- diags$khat
   min_ss <- diags$min_ss
   khat_threshold <- diags$khat_threshold
   convergence_rate <- diags$convergence_rate
   msg <- NULL
-  if (khat > 1) {
-    msg <- paste0(msg,'All estimates are unreliable. If the distribution of ratios is bounded,\n',
-                  'further draws may improve the estimates, but it is not possible to predict\n',
-                  'whether any feasible sample size is sufficient.')
-  } else {
-    if (khat > khat_threshold) {
-      msg <- paste0(msg, 'S is too small, and sample size larger than ', round(min_ss, 0), ' is needed for reliable results.\n')
+
+  if (!are_weights) {
+  
+    if (khat > 1) {
+      msg <- paste0(msg,'All estimates are unreliable. If the distribution of draws is bounded,\n',
+                    'further draws may improve the estimates, but it is not possible to predict\n',
+                    'whether any feasible sample size is sufficient.')
     } else {
-      msg <- paste0(msg, 'To halve the RMSE, approximately ', round(2^(2/convergence_rate),1), ' times bigger S is needed.\n')
+      if (khat > khat_threshold) {
+        msg <- paste0(msg, 'S is too small, and sample size larger than ', round(min_ss, 0), ' is needed for reliable results.\n')
+      } else {
+        msg <- paste0(msg, 'To halve the RMSE, approximately ', round(2^(2/convergence_rate),1), ' times bigger S is needed.\n')
+      }
+      if (khat > 0.7) {
+        msg <- paste0(msg, 'Bias dominates RMSE, and the variance based MCSE is underestimated.\n')
+      }
     }
-    if (khat > 0.7) {
-      msg <- paste0(msg, 'Bias dominates RMSE, and the variance based MCSE is underestimated.\n')
+
+  } else {
+
+    if (khat > khat_threshold || khat > 0.7) {
+        msg <- paste0(msg, 'Pareto khat for weights is high (', round(khat, 1) ,'). This indicates a single or few weights dominate.\n', 'Inference based on weighted draws will be unreliable.\n')
     }
   }
   message(msg)

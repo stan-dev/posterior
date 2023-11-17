@@ -14,7 +14,7 @@ pareto_diags(x, ...)
   r_eff = NULL,
   ndraws_tail = NULL,
   verbose = FALSE,
-  log_weights = FALSE,
+  are_log_weights = FALSE,
   ...
 )
 
@@ -53,7 +53,7 @@ al. (2022)).}
 \code{TRUE}, messages related to Pareto diagnostics will be
 printed. Default is \code{FALSE}.}
 
-\item{log_weights}{(logical) Are the draws log weights? Default is
+\item{are_log_weights}{(logical) Are the draws log weights? Default is
 \code{FALSE}. If \code{TRUE} computation will take into account that the
 draws are log weights, and only right tail will be smoothed.}
 }

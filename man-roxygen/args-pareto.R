@@ -19,6 +19,6 @@
 #' @param verbose (logical) Should diagnostic messages be printed? If
 #'   `TRUE`, messages related to Pareto diagnostics will be
 #'   printed. Default is `FALSE`.
-#' @param log_weights (logical) Are the draws log weights? Default is
+#' @param are_log_weights (logical) Are the draws log weights? Default is
 #'   `FALSE`. If `TRUE` computation will take into account that the
 #'   draws are log weights, and only right tail will be smoothed.

@@ -62,7 +62,12 @@ weight_draws.draws_matrix <- function(x, weights, log = FALSE, pareto_smooth = F
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   if (pareto_smooth) {
-    log_weights <- pareto_smooth(log_weights, tail = "right", return_k = FALSE, log = TRUE)
+    log_weights <- pareto_smooth(
+      log_weights,
+      tail = "right",
+      are_log_weights = TRUE,
+      extra_diags = TRUE
+    )
   }
   if (".log_weight" %in% variables(x, reserved = TRUE)) {
     # overwrite existing weights
@@ -77,13 +82,18 @@ weight_draws.draws_matrix <- function(x, weights, log = FALSE, pareto_smooth = F
 
 #' @rdname weight_draws
 #' @export
-weight_draws.draws_array <- function(x, weights, log = FALSE, pareto_smooth = FALSE,...) {
+weight_draws.draws_array <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
 
   pareto_smooth <- as_one_logical(pareto_smooth)
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   if (pareto_smooth) {
-    log_weights <- pareto_smooth(log_weights, tail = "right", return_k = FALSE, log = TRUE)
+    log_weights <- pareto_smooth(
+      log_weights,
+      tail = "right",
+      are_log_weights = TRUE,
+      verbose = TRUE
+    )$x
   }
   if (".log_weight" %in% variables(x, reserved = TRUE)) {
     # overwrite existing weights
@@ -104,7 +114,12 @@ weight_draws.draws_df <- function(x, weights, log = FALSE, pareto_smooth = FALSE
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   if (pareto_smooth) {
-    log_weights <- pareto_smooth(log_weights, tail = "right", return_k = FALSE, log = TRUE)
+    log_weights <- pareto_smooth(
+      log_weights,
+      tail = "right",
+      are_log_weights = TRUE,
+      verbose = TRUE
+    )
   }
   x$.log_weight <- log_weights
   x
@@ -118,7 +133,13 @@ weight_draws.draws_list <- function(x, weights, log = FALSE, pareto_smooth = FAL
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   if (pareto_smooth) {
-    log_weights <- pareto_smooth(log_weights, tail = "right", return_k = FALSE, log = TRUE)
+    log_weights <- pareto_smooth(
+      log_weights,
+      tail = "right",
+      return_k = TRUE,
+      are_log_weights = TRUE,
+      extra_diags = TRUE
+    )
   }
   niterations <- niterations(x)
   for (i in seq_len(nchains(x))) {
@@ -136,7 +157,13 @@ weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FA
   log <- as_one_logical(log)
   log_weights <- validate_weights(weights, x, log = log)
   if (pareto_smooth) {
-    log_weights <- pareto_smooth(log_weights, tail = "right", return_k = FALSE, log = TRUE)
+    log_weights <- pareto_smooth(
+      log_weights,
+      tail = "right",
+      return_k = TRUE,
+      are_log_weights = TRUE,
+      extra_diags = TRUE
+    )
   }
   x$.log_weight <- rvar(log_weights)
   x
