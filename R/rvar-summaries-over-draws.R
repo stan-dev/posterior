@@ -176,6 +176,12 @@ variance.rvar <- function(x, ...) {
     x, "variance", matrixStats::colVars, useNames = FALSE, .ordered_okay = FALSE, ...
   )
 }
+#' @rdname rvar-summaries-over-draws
+#' @export
+variance.complex <- function(x, ...) {
+  variance(Re(c(x), ...)) + variance(Im(c(x), ...))
+}
+
 
 #' @rdname rvar-summaries-over-draws
 #' @export
@@ -183,6 +189,9 @@ var <- function(x, ...) UseMethod("var")
 #' @rdname rvar-summaries-over-draws
 #' @export
 var.default <- function(x, ...) stats::var(x, ...)
+#' @rdname rvar-summaries-over-draws
+#' @export
+var.complex <- variance.complex
 #' @rdname rvar-summaries-over-draws
 #' @export
 var.rvar <- variance.rvar
@@ -193,6 +202,11 @@ sd <- function(x, ...) UseMethod("sd")
 #' @rdname rvar-summaries-over-draws
 #' @export
 sd.default <- function(x, ...) stats::sd(x, ...)
+#' @rdname rvar-summaries-over-draws
+#' @export
+sd.complex <- function(x, ...) {
+  sqrt(variance(c(x), ...))
+}
 #' @rdname rvar-summaries-over-draws
 #' @export
 sd.rvar <- function(x, ...) {

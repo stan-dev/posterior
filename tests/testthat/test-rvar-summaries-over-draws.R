@@ -89,6 +89,13 @@ test_that("spread functions work", {
   expect_equal(mad(y), apply(y_array, 2, mad))
 })
 
+test_that("spread functions work on complex numbers", {
+  x_array = 1:11 + c(10:1,22) * 1i
+
+  expect_equal(var(x_array), 44)
+  expect_equal(variance(x_array), 44)
+  expect_equal(sd(x_array), sqrt(44))
+})
 
 # range -------------------------------------------------------------------
 
