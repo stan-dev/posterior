@@ -19,7 +19,7 @@
 #' While `as_rvar()` attempts to pick the most suitable subtype of [`rvar`] based on the
 #' type of `x` (possibly returning an [`rvar_factor`] or [`rvar_ordered`]),
 #' `as_rvar_numeric()`, `as_rvar_integer()`, and `as_rvar_logical()` always coerce
-#' the draws of the output [`rvar`] to be [`numeric`], [`integer`], or [`logical`]
+#' the draws of the output [`rvar`] to be [`numeric`] (or [`complex`]), [`integer`], or [`logical`]
 #' (respectively), and always return a base [`rvar`], never a subtype.
 #'
 #' @seealso [rvar()] to construct [`rvar`]s directly.  See [rdo()], [rfun()], and
@@ -83,7 +83,7 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 #' @export
 as_rvar_numeric <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
   out <- as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
-  draws_of(out) <- while_preserving_dims(as.numeric, draws_of(out))
+  draws_of(out) <- while_preserving_dims(as_numeric_or_complex, draws_of(out))
   out
 }
 

@@ -545,3 +545,29 @@ test_that("lossy conversion to formats that don't support discrete variables wor
     )
   }
 })
+
+
+# complex variables -------------------------------------------------------
+
+test_that("all formats support complex numbers", {
+  y_array = array(1:24 + 24:1 * 1i, dim = c(2,2,3,2), dimnames = list(NULL))
+  z_array = array(1:12 + 12:1 * 1i, dim = c(2,2,3), dimnames = list(NULL))
+  draws_rvars <- draws_rvars(
+    y = rvar(y_array, with_chains = TRUE),
+    z = rvar(z_array, with_chains = TRUE)
+  )
+
+  expect_equal(draws_of(draws_rvars$y, with_chains = TRUE), y_array)
+  expect_equal(draws_of(draws_rvars$z, with_chains = TRUE), z_array)
+
+  expect_equal(as_draws_rvars(as_draws_matrix(draws_rvars)), draws_rvars)
+  expect_equal(as_draws_rvars(as_draws_array(draws_rvars)), draws_rvars)
+  expect_equal(as_draws_rvars(as_draws_df(draws_rvars)), draws_rvars)
+  expect_equal(as_draws_rvars(as_draws_list(draws_rvars)), draws_rvars)
+
+  expect_equal(unname(draws_matrix(z = c(z_array))[,"z",drop = TRUE]), c(z_array))
+  expect_equal(unname(draws_array(z = c(z_array))[,,"z",drop = TRUE]), c(z_array))
+  expect_equal(draws_df(z = c(z_array))$z, c(z_array))
+  expect_equal(draws_list(z = c(z_array))[[1]]$z, c(z_array))
+  expect_equal(draws_rvars(z = c(z_array))$z, rvar(c(z_array)))
+})
