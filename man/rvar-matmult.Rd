@@ -8,10 +8,10 @@
 \usage{
 x \%**\% y
 
-\method{matrixOps}{rvar}(e1, e2)
+\method{matrixOps}{rvar}(x, y)
 }
 \arguments{
-\item{x, e1}{(multiple options) The object to be postmultiplied by \code{y}:
+\item{x}{(multiple options) The object to be postmultiplied by \code{y}:
 \itemize{
 \item An \code{\link{rvar}}
 \item A \code{\link{numeric}} vector or matrix
@@ -20,7 +20,7 @@ x \%**\% y
 
 If a vector is used, it is treated as a \emph{row} vector.}
 
-\item{y, e2}{(multiple options) The object to be premultiplied by \code{x}:
+\item{y}{(multiple options) The object to be premultiplied by \code{x}:
 \itemize{
 \item An \code{\link{rvar}}
 \item A \code{\link{numeric}} vector or matrix

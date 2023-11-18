@@ -114,14 +114,14 @@ Math.rvar_factor <- function(x, ...) {
 #'
 #' @name rvar-matmult
 #' @aliases %**%
-#' @param x,e1 (multiple options) The object to be postmultiplied by `y`:
+#' @param x (multiple options) The object to be postmultiplied by `y`:
 #'   * An [`rvar`]
 #'   * A [`numeric`] vector or matrix
 #'   * A [`logical`] vector or matrix
 #'
 #'   If a vector is used, it is treated as a *row* vector.
 #'
-#' @param y,e2 (multiple options) The object to be premultiplied by `x`:
+#' @param y (multiple options) The object to be premultiplied by `x`:
 #'   * An [`rvar`]
 #'   * A [`numeric`] vector or matrix
 #'   * A [`logical`] vector or matrix
@@ -209,17 +209,18 @@ Math.rvar_factor <- function(x, ...) {
   new_rvar(result, .nchains = nchains(x))
 }
 
+# This generic is not exported here as matrixOps is only in R >= 4.3, so we must
+# conditionally export it in .onLoad() for compatibility with older versions
 #' @rdname rvar-matmult
 #' @method matrixOps rvar
-#' @export
-matrixOps.rvar <- function(e1, e2) {
+matrixOps.rvar <- function(x, y) {
   # as of R 4.3 this group generic is only used for %*%, but that may change
   # in the future (crossprod and tcrossprod are planned), so we include this
   # check for safety purposes
   if (.Generic != "%*%") {
     stop_no_call("Cannot apply `", .Generic, "` operator to rvar objects.")
   }
-  e1 %**% e2
+  x %**% y
 }
 
 
