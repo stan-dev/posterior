@@ -182,24 +182,28 @@ test_that("cumulative functions work", {
     cumsum(draws_of(x)[2,,])
   ))
   expect_equal(cumsum(x), cumsum_ref)
+  expect_equal(cumsum(x[[1]]), x[[1]])
 
   cumprod_ref = new_rvar(rbind(
     cumprod(draws_of(x)[1,,]),
     cumprod(draws_of(x)[2,,])
   ))
   expect_equal(cumprod(x), cumprod_ref)
+  expect_equal(cumprod(x[[1]]), x[[1]])
 
   cummax_ref = new_rvar(rbind(
     cummax(draws_of(x)[1,,]),
     cummax(draws_of(x)[2,,])
   ))
   expect_equal(cummax(x), cummax_ref)
+  expect_equal(cummax(x[[1]]), x[[1]])
 
   cummin_ref = new_rvar(rbind(
     cummin(draws_of(x)[1,,]),
     cummin(draws_of(x)[2,,])
   ))
   expect_equal(cummin(x), cummin_ref)
+  expect_equal(cummin(x[[1]]), x[[1]])
 })
 
 test_that("complex number operators work", {
