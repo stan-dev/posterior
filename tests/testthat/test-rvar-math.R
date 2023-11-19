@@ -202,6 +202,17 @@ test_that("cumulative functions work", {
   expect_equal(cummin(x), cummin_ref)
 })
 
+test_that("complex number operators work", {
+  x_array <- array(1:11 + 11:1 * 1i, dim = c(2,2,3))
+  x <- rvar(x_array)
+
+  expect_equal(Arg(x), new_rvar(Arg(x_array)))
+  expect_equal(Conj(x), new_rvar(Conj(x_array)))
+  expect_equal(Mod(x), new_rvar(Mod(x_array)))
+  expect_equal(Im(x), new_rvar(Im(x_array)))
+  expect_equal(Re(x), new_rvar(Re(x_array)))
+})
+
 # matrix stuff ------------------------------------------------------------
 
 test_that("matrix multiplication works", {

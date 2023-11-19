@@ -106,6 +106,12 @@ Math.rvar_factor <- function(x, ...) {
   stop_no_call("Cannot apply `", .Generic, "` function to rvar_factor objects.")
 }
 
+#' @export
+Complex.rvar <- function(z) {
+  f <- get(.Generic)
+  rvar_apply_vec_fun(f, z)
+}
+
 # matrix stuff ---------------------------------------------------
 
 #' Matrix multiplication of random variables
