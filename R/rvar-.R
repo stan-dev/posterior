@@ -948,12 +948,16 @@ summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_em
 #' by first collapsing dimensions into columns of the draws matrix
 #' (so that .f can be a rowXXX() function)
 #' @param x an rvar
-#' @param name function name to use for error messages
+#' @param .name function name to use for error messages
 #' @param .f a function that takes a matrix and summarises its rows, like rowMeans
 #' @param ... arguments passed to `.f`
 #' @param .ordered_okay can this function be applied to rvar_ordereds?
 #' @noRd
 summarise_rvar_within_draws_via_matrix <- function(x, .name, .f, ..., .ordered_okay = FALSE) {
+  if (is_rvar_complex(x)) {
+    return(summarise_rvar_within_draws(x, match.fun(.name), ...))
+  }
+
   .length <- length(x)
   if (!.length) {
     x <- rvar()
@@ -966,7 +970,7 @@ summarise_rvar_within_draws_via_matrix <- function(x, .name, .f, ..., .ordered_o
     .draws <- .f(draws_of(as_rvar_numeric(x)), ...)
     .draws <- while_preserving_dims(function(.draws) ordered(.levels[round(.draws)], .levels), .draws)
   } else if (is_rvar_factor(x)) {
-    stop_no_call("Cannot apply `", .name, "` function to rvar_factor objects.")
+    stop_no_call("Cannot apply `rvar_", .name, "` function to rvar_factor objects.")
   } else {
     .draws <- .f(draws_of(x), ...)
   }
@@ -997,18 +1001,29 @@ summarise_rvar_by_element <- function(x, .f, ...) {
 #' by first collapsing dimensions into columns of the draws matrix, applying the
 #' function, then restoring dimensions (so that .f can be a colXXX() function)
 #' @param x an rvar
-#' @param name function name to use for error messages
+#' @param .name function name to use for error messages, and also function to
+#' be used as a backup for complex numbers
 #' @param .f a function that takes a matrix and summarises its columns, like colMeans
 #' @param .extra_dim extra dims added by `.f` to the output, e.g. in the case of
 #' matrixStats::colRanges this is `2`
 #' @param .extra_dimnames extra dimension names for dims added by `.f` to the output
 #' @param .ordered_okay can this function be applied to rvar_ordereds?
 #' @param .factor_okay can this function be applied to rvar_factors?
+#' @param .complex_okay can this function be applied to complex rvars? If not,
+#' the function match.fun(.name) will be used instead, element-by-element.
 #' @param ... arguments passed to `.f`
 #' @noRd
 summarise_rvar_by_element_via_matrix <- function(
-  x, .name, .f, .extra_dim = NULL, .extra_dimnames = NULL, .ordered_okay = TRUE, .factor_okay = FALSE, ...
+  x, .name, .f,
+  .extra_dim = NULL, .extra_dimnames = NULL,
+  .ordered_okay = TRUE, .factor_okay = FALSE,
+  .complex_okay = FALSE,
+  ...
 ) {
+  if (is_rvar_complex(x) && !.complex_okay) {
+    return(summarise_rvar_by_element(x, match.fun(.name), ...))
+  }
+
   .dim <- dim(x)
   .dimnames <- dimnames(x)
   .length <- length(x)

@@ -93,11 +93,12 @@ cdf.rvar_ordered <- function(x, q, ...) {
 quantile.rvar <- function(x, probs, ...) {
   summarise_rvar_by_element_via_matrix(x,
     "quantile",
-    function(draws) {
-      t(matrixStats::colQuantiles(draws, probs = probs, useNames = TRUE, ...))
-    },
+    function(..., names) t(matrixStats::colQuantiles(..., useNames = FALSE)),
     .extra_dim = length(probs),
-    .extra_dimnames = list(NULL)
+    .extra_dimnames = list(NULL),
+    probs = probs,
+    names = FALSE,
+    ...
   )
 }
 
