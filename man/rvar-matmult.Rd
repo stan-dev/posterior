@@ -3,9 +3,12 @@
 \name{rvar-matmult}
 \alias{rvar-matmult}
 \alias{\%**\%}
+\alias{matrixOps.rvar}
 \title{Matrix multiplication of random variables}
 \usage{
 x \%**\% y
+
+\method{matrixOps}{rvar}(x, y)
 }
 \arguments{
 \item{x}{(multiple options) The object to be postmultiplied by \code{y}:
@@ -39,8 +42,9 @@ by \code{\link{rvar}}s and are broadcasted across all draws of the \code{\link{r
 is used to efficiently multiply matrices across draws, so if either \code{x} or \code{y} is an \code{\link{rvar}},
 \code{x \%**\% y} will be much faster than \code{rdo(x \%*\% y)}.
 
-Because \code{\link{rvar}} is an S3 class and S3 classes cannot properly override \code{\%*\%}, \code{\link{rvar}}s use
-\verb{\%**\%} for matrix multiplication.
+In R >= 4.3, you can also use \code{\%*\%} in place of \verb{\%**\%} for matrix multiplication
+of \code{\link{rvar}}s. In R < 4.3, S3 classes cannot properly override \code{\%*\%}, so
+you must use \verb{\%**\%} for matrix multiplication of \code{\link{rvar}}s.
 }
 \examples{
 

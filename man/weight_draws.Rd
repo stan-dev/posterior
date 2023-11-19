@@ -32,7 +32,7 @@ can be returned via the \code{\link[=weights.draws]{weights.draws()}} method lat
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{log}{(logicla) Are the weights passed already on the log scale? The
+\item{log}{(logical) Are the weights passed already on the log scale? The
 default is \code{FALSE}, that is, expecting \code{weights} to be on the standard
 (non-log) scale.}
 }

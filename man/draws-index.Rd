@@ -78,3 +78,6 @@ draw_ids(x)
 ndraws(x)
 
 }
+\seealso{
+\code{\link{variables}}, \code{\link{rename_variables}}
+}

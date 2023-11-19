@@ -207,8 +207,12 @@ mu + 1
 ```
 
 Matrix multiplication is also implemented (using a tensor product under the hood).
-Because the normal matrix multiplication operator in R (`%*%`) cannot be properly
-implemented for S3 datatypes, `rvar` uses `%**%` instead. A trivial example:
+In R < 4.3, the normal matrix multiplication operator (`%*%`) cannot be properly
+implemented for S3 datatypes, so `rvar` uses `%**%` instead. In R ≥ 4.3, which 
+does support matrix multiplication for S3 datatypes, you can use `%*%` to 
+matrix-multiply `rvar`s.
+
+A trivial example:
 
 ```{r matrix_mult}
 Sigma %**% diag(1:3)
@@ -223,7 +227,7 @@ includes:
 | Logical operators           | `&`, `|`, `!` |
 | Comparison operators        | `==`, `!=`, `<`, `<=`, `>=`, `>` |
 | Value matching              | `match()`, `%in%` |
-| Matrix multiplication       | `%**%` |
+| Matrix multiplication       | `%**%`, `%*%` (R ≥ 4.3 only) |
 | Basic functions             | `abs()`, `sign()`<br>`sqrt()`<br>`floor()`, `ceiling()`, `trunc()`, `round()`, `signif()` |
 | Logarithms and exponentials | `exp()`, `expm1()`<br>`log()`, `log10()`, `log2()`, `log1p()` |
 | Trigonometric functions     | `cos()`, `sin()`, `tan()`<br>`cospi()`, `sinpi()`, `tanpi()`<br>`acos()`, `asin()`, `atan()`|
