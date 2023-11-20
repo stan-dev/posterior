@@ -36,7 +36,7 @@ test_that("as_rvar preserves dimension names", {
 })
 
 
-# as_rvar_numeric/integer/logical ------------------------------------------------
+# as_rvar_numeric/complex/integer/logical -----------------------------------------
 
 test_that("as_rvar_numeric works", {
   x_array = array(
@@ -55,6 +55,17 @@ test_that("as_rvar_numeric works", {
   expect_equal(as_rvar_numeric(x_ord), x)
   expect_type(draws_of(as_rvar_numeric(x_ord)), "double")
   expect_type(draws_of(as_rvar_numeric(x_fct)), "double")
+})
+
+test_that("as_rvar_complex works", {
+  x_array = array(
+    1:24, dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x <- rvar(x_array)
+
+  expect_equal(as_rvar_complex(x), new_rvar(x_array + 0i))
+  expect_type(draws_of(as_rvar_complex(x)), "complex")
 })
 
 test_that("as_rvar_integer works", {

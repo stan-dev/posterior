@@ -59,8 +59,10 @@ rvar_mean <- function(..., na.rm = FALSE) {
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_median <- function(..., na.rm = FALSE) {
+  x <- c(...)
+  check_rvar_not_complex(x, "rvar_median")
   summarise_rvar_within_draws_via_matrix(
-    c(...), "median", matrixStats::rowMedians, na.rm = na.rm, .ordered_okay = TRUE
+    x, "median", matrixStats::rowMedians, na.rm = na.rm, .ordered_okay = TRUE
   )
 }
 
@@ -83,16 +85,20 @@ rvar_prod <- function(..., na.rm = FALSE) {
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_min <- function(..., na.rm = FALSE) {
+  x <- c(...)
+  check_rvar_not_complex(x, "rvar_min")
   summarise_rvar_within_draws_via_matrix(
-    c(...), "min", matrixStats::rowMins, na.rm = na.rm, .ordered_okay = TRUE
+    x, "min", matrixStats::rowMins, na.rm = na.rm, .ordered_okay = TRUE
   )
 }
 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_max <- function(..., na.rm = FALSE) {
+  x <- c(...)
+  check_rvar_not_complex(x, "rvar_max")
   summarise_rvar_within_draws_via_matrix(
-    c(...), "max", matrixStats::rowMaxs, na.rm = na.rm, .ordered_okay = TRUE
+    x, "max", matrixStats::rowMaxs, na.rm = na.rm, .ordered_okay = TRUE
   )
 }
 
@@ -122,6 +128,7 @@ rvar_mad <- function(..., constant = 1.4826, na.rm = FALSE) {
   if (is_rvar_ordered(x)) {
     x <- as_rvar_numeric(x)
   }
+  check_rvar_not_complex(x, "rvar_mad")
   summarise_rvar_within_draws_via_matrix(
     x, "mad", matrixStats::rowMads, constant = constant, na.rm = na.rm
   )
@@ -133,8 +140,10 @@ rvar_mad <- function(..., constant = 1.4826, na.rm = FALSE) {
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_range <- function(..., na.rm = FALSE) {
+  x <- c(...)
+  check_rvar_not_complex(x, "rvar_range")
   summarise_rvar_within_draws_via_matrix(
-    c(...), "range", matrixStats::rowRanges, na.rm = na.rm, .ordered_okay = TRUE
+    x, "range", matrixStats::rowRanges, na.rm = na.rm, .ordered_okay = TRUE
   )
 }
 
@@ -147,6 +156,7 @@ rvar_quantile <- function(..., probs, names = FALSE, na.rm = FALSE) {
   names <- as_one_logical(names)
   na.rm <- as_one_logical(na.rm)
   x <- c(...)
+  check_rvar_not_complex(x, "rvar_quantile")
 
   # use type 1 for ordered rvar because it is the inverse of the ECDF of
   # a discrete distribution (hence appropriate for ordinal samples), otherwise
@@ -172,16 +182,20 @@ rvar_quantile <- function(..., probs, names = FALSE, na.rm = FALSE) {
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_all <- function(..., na.rm = FALSE) {
+  x <- c(...)
+  check_rvar_not_complex(x, "rvar_all")
   summarise_rvar_within_draws_via_matrix(
-    c(...), "all", matrixStats::rowAlls, na.rm = na.rm
+    x, "all", matrixStats::rowAlls, na.rm = na.rm
   )
 }
 
 #' @rdname rvar-summaries-within-draws
 #' @export
 rvar_any <- function(..., na.rm = FALSE) {
+  x <- c(...)
+  check_rvar_not_complex(x, "rvar_any")
   summarise_rvar_within_draws_via_matrix(
-    c(...), "any", matrixStats::rowAnys, na.rm = na.rm
+    x, "any", matrixStats::rowAnys, na.rm = na.rm
   )
 }
 

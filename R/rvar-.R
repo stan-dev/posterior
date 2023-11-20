@@ -474,6 +474,14 @@ setOldClass(get_rvar_class(ordered(NULL)))
 
 # helpers: validation -----------------------------------------------------------------
 
+# check the given rvar is not complex
+check_rvar_not_complex <- function(x, f = NULL) {
+  if (is_rvar_complex(x)) {
+    f <- if (is.null(f)) "" else paste0("`", f, "` ")
+    stop_no_call("Cannot apply ", f, "function to complex rvars.")
+  }
+}
+
 # Check the passed yank index (for x[[...]]) is valid
 check_rvar_yank_index = function(x, i, ...) {
   index <- dots_list(i, ..., .preserve_empty = TRUE, .ignore_empty = "none")

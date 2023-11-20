@@ -30,6 +30,8 @@ test_that("math operators works", {
   expect_equal(2 ^ x, new_rvar(2 ^ (x_array)))
   expect_equal(x ^ y, new_rvar(x_array ^ y_array))
 
+  expect_equal((x * 1i) ^ 2, new_rvar(-(x_array ^ 2) + 0i))
+
   # ensure broadcasting of constants retains shape
   z2 <- new_rvar(array(1, dim = c(1,1)))
   z4 <- new_rvar(array(2, dim = c(1,1,1,1)))
@@ -94,6 +96,8 @@ test_that("comparison operators work", {
   expect_equal(x != 5, new_rvar(x_array != 5))
   expect_equal(5 != x, new_rvar(5 != x_array))
   expect_equal(x != y, new_rvar(x_array != y_array))
+
+  expect_error(new_rvar(1i) > new_rvar(1i))
 })
 
 test_that("comparison operators work on rvar_factors", {
@@ -183,6 +187,7 @@ test_that("cumulative functions work", {
   ))
   expect_equal(cumsum(x), cumsum_ref)
   expect_equal(cumsum(x[[1]]), x[[1]])
+  expect_equal(cumsum(x + x * 1i), cumsum_ref + cumsum_ref * 1i)
 
   cumprod_ref = new_rvar(rbind(
     cumprod(draws_of(x)[1,,]),
@@ -191,12 +196,19 @@ test_that("cumulative functions work", {
   expect_equal(cumprod(x), cumprod_ref)
   expect_equal(cumprod(x[[1]]), x[[1]])
 
+  complex_cumprod_ref <- new_rvar(rbind(
+    cumprod(draws_of(x)[1,,] + draws_of(x)[1,,] * 1i),
+    cumprod(draws_of(x)[2,,] + draws_of(x)[2,,] * 1i)
+  ))
+  expect_equal(cumprod(x + x * 1i), complex_cumprod_ref)
+
   cummax_ref = new_rvar(rbind(
     cummax(draws_of(x)[1,,]),
     cummax(draws_of(x)[2,,])
   ))
   expect_equal(cummax(x), cummax_ref)
   expect_equal(cummax(x[[1]]), x[[1]])
+  expect_error(cummax(x * 1i))
 
   cummin_ref = new_rvar(rbind(
     cummin(draws_of(x)[1,,]),
@@ -204,6 +216,7 @@ test_that("cumulative functions work", {
   ))
   expect_equal(cummin(x), cummin_ref)
   expect_equal(cummin(x[[1]]), x[[1]])
+  expect_error(cummin(x * 1i))
 })
 
 test_that("complex number operators work", {
@@ -232,6 +245,7 @@ test_that("matrix multiplication works", {
     x_array[4,,] %*% y_array[4,,]
   ))
   expect_equal(x %**% y, xy_ref)
+  expect_equal((x * 1i) %**% (y * 1i), -xy_ref + 0i)
 
 
   x_array = array(1:6, dim = c(2,3))
@@ -244,6 +258,7 @@ test_that("matrix multiplication works", {
     x_array[2,] %*% y_array[2,]
   ))
   expect_equal(x %**% y, xy_ref)
+  expect_equal((x * 1i) %**% (y * 1i), -xy_ref + 0i)
 
   # automatic promotion to row/col vector of numeric vectors
   x_meany_ref = new_rvar(abind::abind(along = 0,
@@ -251,12 +266,14 @@ test_that("matrix multiplication works", {
     x_array[2,] %*% colMeans(y_array)
   ))
   expect_equal(x %**% colMeans(y_array), x_meany_ref)
+  expect_equal((x * 1i) %**% (colMeans(y_array) * 1i), -x_meany_ref + 0i)
 
   meanx_y_ref = new_rvar(abind::abind(along = 0,
     colMeans(x_array) %*% y_array[1,],
     colMeans(x_array) %*% y_array[2,]
   ))
   expect_equal(colMeans(x_array) %**% y, meanx_y_ref)
+  expect_equal((colMeans(x_array) * 1i) %**% (y * 1i), -meanx_y_ref + 0i)
 
   # dimension name preservation
   m1 <- as_rvar(diag(1:3))

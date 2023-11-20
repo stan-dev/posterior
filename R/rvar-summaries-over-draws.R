@@ -88,7 +88,7 @@ Pr.logical <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 Pr.rvar <- function(x, ...) {
-  if (!is.logical(draws_of(x))) {
+  if (!is_rvar_logical(x)) {
     stop_no_call("Can only use `Pr()` on logical random variables.")
   }
   mean(x, ...)
@@ -100,6 +100,7 @@ Pr.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 median.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "median")
   summarise_rvar_by_element_via_matrix(
     x, "median", function(...) matrixStats::colMedians(..., useNames = FALSE), ...
   )
@@ -108,6 +109,7 @@ median.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 min.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "min")
   summarise_rvar_by_element_via_matrix(
     x, "min", function(...) matrixStats::colMins(..., useNames = FALSE), ...
   )
@@ -116,6 +118,7 @@ min.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 max.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "max")
   summarise_rvar_by_element_via_matrix(
     x, "max", function(...) matrixStats::colMaxs(..., useNames = FALSE), ...
   )
@@ -140,6 +143,7 @@ prod.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 all.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "all")
   summarise_rvar_by_element_via_matrix(
     x, "all", function(...) matrixStats::colAlls(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
@@ -148,6 +152,7 @@ all.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 any.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "any")
   summarise_rvar_by_element_via_matrix(
     x, "any", function(...) matrixStats::colAnys(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
@@ -224,6 +229,7 @@ mad.default <- function(x, ...) stats::mad(x, ...)
 #' @rdname rvar-summaries-over-draws
 #' @export
 mad.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "mad")
   summarise_rvar_by_element_via_matrix(
     x, "mad", function(...) matrixStats::colMads(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
@@ -240,6 +246,7 @@ mad.rvar_ordered <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 range.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "range")
   summarise_rvar_by_element_via_matrix(
     x, "range", function(...) t(matrixStats::colRanges(..., useNames = FALSE)),
     .extra_dim = 2, .extra_dimnames = list(NULL), ...
