@@ -230,7 +230,7 @@ test_that("is_rvar_XXX works", {
   x_int <- rvar(integer())
   x_cmp <- rvar(complex())
   x_fct <- rvar(factor())
-  x_ord <- rvar(ordered())
+  x_ord <- rvar(ordered(NULL))
 
   expect_true(is_rvar(x))
   expect_false(is_rvar_logical(x))
