@@ -111,11 +111,6 @@ as_one_character <- function(x, allow_na = FALSE) {
   x
 }
 
-# coerce 'x' to a numeric or complex vector
-as_numeric_or_complex <- function(x) {
-  if (is.numeric(x) || is.complex(x)) x else as.numeric(x)
-}
-
 # check if all inputs are NULL
 all_null <- function(...) {
   all(ulapply(list(...), is.null))

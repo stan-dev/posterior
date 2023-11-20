@@ -145,7 +145,7 @@ validate_draws_per_variable <- function(...) {
     # '.nchains' is an additional argument in chain supporting formats
     stop_no_call("'.nchains' is not supported for this format.")
   }
-  out <- lapply(out, as_numeric_or_complex)
+  out <- lapply(out, function(x) if (is.numeric(x) || is.complex(x)) x else as.numeric(x))
   ndraws_per_variable <- lengths(out)
   ndraws <- max(ndraws_per_variable)
   if (!all(ndraws_per_variable %in% c(1, ndraws))) {
