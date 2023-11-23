@@ -561,24 +561,24 @@ pareto_k_diagmsg <- function(diags, are_weights = FALSE, ...) {
   if (!are_weights) {
   
     if (khat > 1) {
-      msg <- paste0(msg,'All estimates are unreliable. If the distribution of draws is bounded,\n',
-                    'further draws may improve the estimates, but it is not possible to predict\n',
-                    'whether any feasible sample size is sufficient.')
+      msg <- paste0(msg, "All estimates are unreliable. If the distribution of draws is bounded,\n",
+                    "further draws may improve the estimates, but it is not possible to predict\n",
+                    "whether any feasible sample size is sufficient.")
     } else {
       if (khat > khat_threshold) {
-        msg <- paste0(msg, 'S is too small, and sample size larger than ', round(min_ss, 0), ' is needed for reliable results.\n')
+        msg <- paste0(msg, "S is too small, and sample size larger than ", round(min_ss, 0), " is needed for reliable results.\n")
       } else {
-        msg <- paste0(msg, 'To halve the RMSE, approximately ', round(2^(2/convergence_rate),1), ' times bigger S is needed.\n')
+        msg <- paste0(msg, "To halve the RMSE, approximately ", round(2^(2 / convergence_rate), 1), " times bigger S is needed.\n")
       }
       if (khat > 0.7) {
-        msg <- paste0(msg, 'Bias dominates RMSE, and the variance based MCSE is underestimated.\n')
+        msg <- paste0(msg, "Bias dominates RMSE, and the variance based MCSE is underestimated.\n")
       }
     }
 
   } else {
 
     if (khat > khat_threshold || khat > 0.7) {
-        msg <- paste0(msg, 'Pareto khat for weights is high (', round(khat, 1) ,'). This indicates a single or few weights dominate.\n', 'Inference based on weighted draws will be unreliable.\n')
+        msg <- paste0(msg, "Pareto khat for weights is high (", round(khat, 1) ,"). This indicates a single or few weights dominate.\n", "Inference based on weighted draws will be unreliable.\n")
     }
   }
   message(msg)
