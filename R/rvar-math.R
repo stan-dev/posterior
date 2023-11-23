@@ -135,8 +135,9 @@ Math.rvar_factor <- function(x, ...) {
 #' is used to efficiently multiply matrices across draws, so if either `x` or `y` is an [`rvar`],
 #' `x %**% y` will be much faster than `rdo(x %*% y)`.
 #'
-#' Because [`rvar`] is an S3 class and S3 classes cannot properly override `%*%`, [`rvar`]s use
-#' `%**%` for matrix multiplication.
+#' In R >= 4.3, you can also use `%*%` in place of `%**%` for matrix multiplication
+#' of [`rvar`]s. In R < 4.3, S3 classes cannot properly override `%*%`, so
+#' you must use `%**%` for matrix multiplication of [`rvar`]s.
 #'
 #' @return An [`rvar`] representing the matrix product of `x` and `y`.
 #'
@@ -207,6 +208,21 @@ Math.rvar_factor <- function(x, ...) {
 
   new_rvar(result, .nchains = nchains(x))
 }
+
+# This generic is not exported here as matrixOps is only in R >= 4.3, so we must
+# conditionally export it in .onLoad() for compatibility with older versions
+#' @rdname rvar-matmult
+#' @method matrixOps rvar
+matrixOps.rvar <- function(x, y) {
+  # as of R 4.3 this group generic is only used for %*%, but that may change
+  # in the future (crossprod and tcrossprod are planned), so we include this
+  # check for safety purposes
+  if (.Generic != "%*%") {
+    stop_no_call("Cannot apply `", .Generic, "` operator to rvar objects.")
+  }
+  x %**% y
+}
+
 
 #' Cholesky decomposition of random matrix
 #'

@@ -1,6 +1,6 @@
 Package: posterior
 Title: Tools for Working with Posterior Distributions
-Version: 1.5.0
+Version: 1.5.0.9000
 Date: 2023-10-31
 Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
@@ -40,10 +40,10 @@ Imports:
   matrixStats
 Suggests: 
   testthat (>= 2.1.0),
-  caret (>= 6.0.84),
+  caret (>= 6.0-84),
   gbm (>= 2.1.8),
   randomForest (>= 4.6.14),
-  e1071 (>= 1.7.3),
+  e1071 (>= 1.7-3),
   dplyr,
   tidyr,
   knitr,

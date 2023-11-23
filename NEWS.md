@@ -1,3 +1,11 @@
+# posterior (development version)
+
+### Enhancements
+
+* Matrix multiplication of `rvar`s can now be done with the base matrix 
+  multiplication operator (`%*%`) instead of `%**%` in R >= 4.3.
+
+
 # posterior 1.5.0
 
 ### Enhancements

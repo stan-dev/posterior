@@ -262,6 +262,15 @@ test_that("matrix multiplication works", {
 
 })
 
+test_that("%*% works in R >= 4.3", {
+  skip_if_not(getRversion() >= "4.3")
+
+  x <- rvar(array(1:24, dim = c(4,2,3)))
+  y <- rvar(array(c(2:13,12:1), dim = c(4,3,2)))
+
+  expect_equal(x %*% y, x %**% y)
+})
+
 test_that("diag works", {
   Sigma <- as_draws_rvars(example_draws("multi_normal"))$Sigma
 
