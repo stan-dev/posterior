@@ -21,6 +21,8 @@
 #' | [mcse_mean()] | Monte Carlo standard error for the mean |
 #' | [mcse_quantile()] | Monte Carlo standard error for quantiles |
 #' | [mcse_sd()] | Monte Carlo standard error for standard deviations |
+#' | [pareto_khat()] | Pareto khat diagnostic for tail(s) |
+#' | [pareto_diags()] | Additional diagnostics related to Pareto khat |
 #' | [rhat_basic()] | Basic version of Rhat |
 #' | [rhat()] | Improved, rank-based version of Rhat |
 #' | [rhat_nested()] | Rhat for use with many short chains |

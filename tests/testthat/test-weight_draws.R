@@ -63,7 +63,6 @@ test_that("weight_draws works on draws_rvars", {
   expect_equal(weights2, weights)
 })
 
-
 # conversion preserves weights --------------------------------------------
 
 test_that("conversion between formats preserves weights", {
@@ -87,4 +86,14 @@ test_that("conversion between formats preserves weights", {
     expect_equal(as_draws_list(draws[[!!type]]), draws$list)
     expect_equal(as_draws_rvars(draws[[!!type]]), draws$rvars)
   }
+})
+
+# pareto smoothing ----------------
+
+test_that("pareto smoothing smooths weights in weight_draws", {
+  x <- example_draws()
+  lw <- sort(log(abs(rt(ndraws(x), 1))))
+  weighted <- weight_draws(x, lw, pareto_smooth = FALSE, log = TRUE)
+  smoothed <- weight_draws(x, lw, pareto_smooth = TRUE, log = TRUE)
+  expect_false(all(weights(weighted) == weights(smoothed)))
 })

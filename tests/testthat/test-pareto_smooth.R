@@ -73,7 +73,7 @@ test_that("pareto_khat diagnostics messages are as expected", {
     diags$khat <- 1.1
 
     expect_message(pareto_k_diagmsg(diags),
-                   paste0('All estimates are unreliable. If the distribution of ratios is bounded,\n',
+                   paste0('All estimates are unreliable. If the distribution of draws is bounded,\n',
                   'further draws may improve the estimates, but it is not possible to predict\n',
                   'whether any feasible sample size is sufficient.'))
 
@@ -190,5 +190,18 @@ test_that("pareto_smooth returns x with smoothed tail", {
   expect_equal(sort(tau)[1:390], sort(tau_smoothed)[1:390])
 
   expect_false(isTRUE(all.equal(sort(tau), sort(tau_smoothed))))
+
+})
+
+test_that("pareto_smooth works for log_weights", {
+  w <- c(1:25, 1e3, 1e3, 1e3)
+  lw <- log(w)
+
+  ps <- pareto_smooth(lw, are_log_weights = TRUE, verbose = FALSE, ndraws_tail = 10)
+
+  # only right tail is smoothed
+  expect_equal(ps$x[1:15], lw[1:15])
+
+  expect_true(ps$diagnostics$khat > 0.7)
 
 })

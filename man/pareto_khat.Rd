@@ -14,6 +14,7 @@ pareto_khat(x, ...)
   r_eff = NULL,
   ndraws_tail = NULL,
   verbose = FALSE,
+  are_log_weights = FALSE,
   ...
 )
 
@@ -39,17 +40,22 @@ pareto_khat(x, ...)
 The default is \code{"both"}.}
 
 \item{r_eff}{(numeric) relative effective sample size estimate. If
-\code{r_eff} is omitted, it will be calculated assuming the draws are
-from MCMC.}
+\code{r_eff} is NULL, it will be calculated assuming the draws are
+from MCMC. Default is 1.}
 
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
 \code{ndraws_tail} is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
-length(x) / 5 otherwise (see Appendix H in Vehtari et al. (2022)).}
+length(x) / 5 otherwise (see Appendix H in Vehtari et
+al. (2022)).}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto diagnostics will be
 printed. Default is \code{FALSE}.}
+
+\item{are_log_weights}{(logical) Are the draws log weights? Default is
+\code{FALSE}. If \code{TRUE} computation will take into account that the
+draws are log weights, and only right tail will be smoothed.}
 }
 \value{
 \code{khat} estimated Generalized Pareto Distribution shape parameter k
@@ -70,5 +76,25 @@ pareto_khat(d$Sigma)
 \references{
 Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
 Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
-arxiv:arXiv:1507.02646
+arxiv:arXiv:1507.02646 (version 8)
 }
+\seealso{
+\code{\link{pareto_diags}} for additional related diagnostics, and
+\code{\link{pareto_smooth}} for Pareto smoothed draws.
+
+Other diagnostics: 
+\code{\link{ess_basic}()},
+\code{\link{ess_bulk}()},
+\code{\link{ess_quantile}()},
+\code{\link{ess_sd}()},
+\code{\link{ess_tail}()},
+\code{\link{mcse_mean}()},
+\code{\link{mcse_quantile}()},
+\code{\link{mcse_sd}()},
+\code{\link{pareto_diags}()},
+\code{\link{rhat_basic}()},
+\code{\link{rhat_nested}()},
+\code{\link{rhat}()},
+\code{\link{rstar}()}
+}
+\concept{diagnostics}

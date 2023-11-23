@@ -2,9 +2,10 @@
 
 ### Enhancements
 
+* Add `pareto_smooth` option to `weight_draws`, to Pareto smooth
+  weights before adding to a draws object.
 * Matrix multiplication of `rvar`s can now be done with the base matrix 
   multiplication operator (`%*%`) instead of `%**%` in R >= 4.3.
-
 
 # posterior 1.5.0
 

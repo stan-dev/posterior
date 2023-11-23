@@ -13,11 +13,12 @@ pareto_smooth(x, ...)
 \method{pareto_smooth}{default}(
   x,
   tail = c("both", "right", "left"),
-  r_eff = NULL,
+  r_eff = 1,
   ndraws_tail = NULL,
   return_k = TRUE,
   extra_diags = FALSE,
   verbose = FALSE,
+  are_log_weights = FALSE,
   ...
 )
 }
@@ -50,17 +51,22 @@ returned. Default is \code{FALSE}.}
 The default is \code{"both"}.}
 
 \item{r_eff}{(numeric) relative effective sample size estimate. If
-\code{r_eff} is omitted, it will be calculated assuming the draws are
-from MCMC.}
+\code{r_eff} is NULL, it will be calculated assuming the draws are
+from MCMC. Default is 1.}
 
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
 \code{ndraws_tail} is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
-length(x) / 5 otherwise (see Appendix H in Vehtari et al. (2022)).}
+length(x) / 5 otherwise (see Appendix H in Vehtari et
+al. (2022)).}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto diagnostics will be
 printed. Default is \code{FALSE}.}
+
+\item{are_log_weights}{(logical) Are the draws log weights? Default is
+\code{FALSE}. If \code{TRUE} computation will take into account that the
+draws are log weights, and only right tail will be smoothed.}
 }
 \value{
 Either a vector \code{x} of smoothed values or a named list
@@ -91,5 +97,9 @@ pareto_smooth(d$Sigma)
 \references{
 Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
 Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
-arxiv:arXiv:1507.02646
+arxiv:arXiv:1507.02646 (version 8)
+}
+\seealso{
+\code{\link{pareto_khat}} for only calculating khat, and
+\code{\link{pareto_diags}} for additional diagnostics.
 }
