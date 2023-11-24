@@ -24,7 +24,6 @@
 \alias{var.rvar}
 \alias{sd}
 \alias{sd.default}
-\alias{sd.complex}
 \alias{sd.rvar}
 \alias{mad}
 \alias{mad.default}
@@ -80,8 +79,6 @@ var(x, ...)
 sd(x, ...)
 
 \method{sd}{default}(x, ...)
-
-\method{sd}{complex}(x, ...)
 
 \method{sd}{rvar}(x, ...)
 

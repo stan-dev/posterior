@@ -206,11 +206,14 @@ var.rvar <- variance.rvar
 sd <- function(x, ...) UseMethod("sd")
 #' @rdname rvar-summaries-over-draws
 #' @export
-sd.default <- function(x, ...) stats::sd(x, ...)
-#' @rdname rvar-summaries-over-draws
-#' @export
-sd.complex <- function(x, ...) {
-  sqrt(variance(c(x), ...))
+sd.default <- function(x, ...) {
+  # because complex matrices do not dispatch on the complex class, check for
+  # complex numbers here
+  if (is.complex(x)) {
+    sqrt(variance(c(x), ...))
+  } else {
+    stats::sd(x, ...)
+  }
 }
 #' @rdname rvar-summaries-over-draws
 #' @export
