@@ -4,6 +4,15 @@
 \alias{pareto_diags}
 \alias{pareto_diags.default}
 \alias{pareto_diags.rvar}
+\alias{pareto_khat_threshold}
+\alias{pareto_khat_threshold.default}
+\alias{pareto_khat_threshold.rvar}
+\alias{pareto_min_ss}
+\alias{pareto_min_ss.default}
+\alias{pareto_min_ss.rvar}
+\alias{pareto_convergence_rate}
+\alias{pareto_convergence_rate.default}
+\alias{pareto_convergence_rate.rvar}
 \title{Pareto smoothing diagnostics}
 \usage{
 pareto_diags(x, ...)
@@ -19,6 +28,24 @@ pareto_diags(x, ...)
 )
 
 \method{pareto_diags}{rvar}(x, ...)
+
+pareto_khat_threshold(x, ...)
+
+\method{pareto_khat_threshold}{default}(x, ...)
+
+\method{pareto_khat_threshold}{rvar}(x, ...)
+
+pareto_min_ss(x, ...)
+
+\method{pareto_min_ss}{default}(x, ...)
+
+\method{pareto_min_ss}{rvar}(x, ...)
+
+pareto_convergence_rate(x, ...)
+
+\method{pareto_convergence_rate}{default}(x, ...)
+
+\method{pareto_convergence_rate}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
