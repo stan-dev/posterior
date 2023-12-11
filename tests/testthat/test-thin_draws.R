@@ -14,12 +14,20 @@ test_that("thin_draws works on rvars", {
 
 test_that("automatic thinning works as expected", {
   x <- as_draws_array(example_draws())
-  mu_1 <- subset_draws(x, variable = "mu", chain = 1)
+  mu <- subset_draws(x, "mu")
+  mu_1 <- subset_draws(mu, chain = 1)
+  mu_2 <- subset_draws(mu, chain = 2)
+  mu_3 <- subset_draws(mu, chain = 3)
+  mu_4 <- subset_draws(mu, chain = 4)
 
-  ess_tail_mu_1 <- ess_tail(mu_1)
-  ess_bulk_mu_1 <- ess_bulk(mu_1)
+  ess_mu_1 <- SW(min(ess_tail(mu_1), ess_bulk(mu_1)))
+  ess_mu_2 <- SW(min(ess_tail(mu_2), ess_bulk(mu_2)))
+  ess_mu_3 <- SW(min(ess_tail(mu_2), ess_bulk(mu_3)))
+  ess_mu_4 <- SW(min(ess_tail(mu_3), ess_bulk(mu_4)))
 
-  thin_by <- round(ndraws(mu_1) / min(ess_tail_mu_1, ess_bulk_mu_1))
-  expect_equal(thin_draws(mu_1), thin_draws(mu_1, thin = thin_by))
+  thin_by <- round(niterations(mu) / mean(
+    c(ess_mu_1, ess_mu_2, ess_mu_3, ess_mu_4))
+    )
+  expect_equal(thin_draws(mu), thin_draws(mu, thin = thin_by))
 
 })
