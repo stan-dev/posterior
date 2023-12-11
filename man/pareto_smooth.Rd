@@ -8,16 +8,16 @@
 \usage{
 pareto_smooth(x, ...)
 
-\method{pareto_smooth}{rvar}(x, return_k = TRUE, extra_diags = FALSE, ...)
+\method{pareto_smooth}{rvar}(x, return_k = FALSE, extra_diags = FALSE, ...)
 
 \method{pareto_smooth}{default}(
   x,
   tail = c("both", "right", "left"),
   r_eff = 1,
   ndraws_tail = NULL,
-  return_k = TRUE,
+  return_k = FALSE,
   extra_diags = FALSE,
-  verbose = FALSE,
+  verbose = TRUE,
   are_log_weights = FALSE,
   ...
 )
