@@ -7,17 +7,19 @@
 \alias{thin_draws.rvar}
 \title{Thin \code{draws} objects}
 \usage{
-thin_draws(x, thin, ...)
+thin_draws(x, thin = NULL, ...)
 
-\method{thin_draws}{draws}(x, thin, ...)
+\method{thin_draws}{draws}(x, thin = NULL, ...)
 
-\method{thin_draws}{rvar}(x, thin, ...)
+\method{thin_draws}{rvar}(x, thin = NULL, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
 
-\item{thin}{(positive integer) The period for selecting draws.}
+\item{thin}{(positive integer) The period for selecting draws. If
+omitted, this will be automatically calculated based on bulk-ESS
+and tail-ESS as suggested by Säilynoja et al. (2022).}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
@@ -34,4 +36,10 @@ niterations(x)
 x <- thin_draws(x, thin = 5)
 niterations(x)
 
+}
+\references{
+Teemu Säilynoja, Paul-Christian Bürkner, and Aki Vehtari (2022).
+Graphical test for discrete uniformity and its applications in
+goodness-of-fit evaluation and multiple sample comparison.
+\emph{Statistics and Computing}. 32, 32. doi:10.1007/s11222-022-10090-6
 }
