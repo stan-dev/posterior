@@ -27,11 +27,11 @@ thin_draws <- function(x, thin = NULL, ...) {
 #' @export
 thin_draws.draws <- function(x, thin = NULL, ...) {
   if (is.null(thin)) {
-    thin <- round(ess_based_thinning_all_vars(x))
-    message("Automatically thinned by ", round(thin), " based on ESS.")
+    thin <- ess_based_thinning_all_vars(x)
+    message("Automatically thinned by ", round(thin, 1), " based on ESS.")
   }
 
-  thin <- as_one_integer(thin)
+  thin <- as_one_numeric(thin)
   if (thin == 1L) {
     # no thinning requested
     return(x)
@@ -43,7 +43,7 @@ thin_draws.draws <- function(x, thin = NULL, ...) {
   if (thin > niterations) {
     stop_no_call("'thin' must be smaller than the total number of iterations.")
   }
-  iteration_ids <- seq(1, niterations, by = thin)
+  iteration_ids <- round(seq(1, niterations, by = thin))
   subset_draws(x, iteration = iteration_ids)
 }
 
