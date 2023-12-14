@@ -259,8 +259,8 @@ pareto_smooth.default <- function(x,
                                   are_log_weights = FALSE,
                                   ...) {
 
-  checkmate::expect_numeric(ndraws_tail, null.ok = TRUE)
-  checkmate::expect_numeric(r_eff, null.ok = TRUE)
+  checkmate::assert_numeric(ndraws_tail, null.ok = TRUE)
+  checkmate::assert_numeric(r_eff, null.ok = TRUE)
   extra_diags <- as_one_logical(extra_diags)
   return_k <- as_one_logical(return_k)
   verbose <- as_one_logical(verbose)
