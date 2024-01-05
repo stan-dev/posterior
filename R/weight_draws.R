@@ -56,14 +56,7 @@ weight_draws <- function(x, weights, ...) {
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_matrix <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
-
-
-  pareto_smooth <- as_one_logical(pareto_smooth)
-  log <- as_one_logical(log)
-  log_weights <- validate_weights(weights, x, log = log)
-  if (pareto_smooth) {
-    log_weights <- pareto_smooth_log_weights(log_weights)
-  }
+  log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
   if (".log_weight" %in% variables(x, reserved = TRUE)) {
     # overwrite existing weights
     x[, ".log_weight"] <- log_weights
@@ -78,13 +71,7 @@ weight_draws.draws_matrix <- function(x, weights, log = FALSE, pareto_smooth = F
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_array <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
-
-  pareto_smooth <- as_one_logical(pareto_smooth)
-  log <- as_one_logical(log)
-  log_weights <- validate_weights(weights, x, log = log)
-  if (pareto_smooth) {
-    log_weights <- pareto_smooth_log_weights(log_weights)
-  }
+  log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
   if (".log_weight" %in% variables(x, reserved = TRUE)) {
     # overwrite existing weights
     x[, , ".log_weight"] <- log_weights
@@ -99,27 +86,14 @@ weight_draws.draws_array <- function(x, weights, log = FALSE, pareto_smooth = FA
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_df <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
-
-  pareto_smooth <- as_one_logical(pareto_smooth)
-  log <- as_one_logical(log)
-  log_weights <- validate_weights(weights, x, log = log)
-  if (pareto_smooth) {
-    log_weights <- pareto_smooth_log_weights(log_weights)
-  }
-  x$.log_weight <- log_weights
+  x$.log_weight <- validate_weights(weights, ndraws(x), log, pareto_smooth)
   x
 }
 
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_list <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
-
-  pareto_smooth <- as_one_logical(pareto_smooth)
-  log <- as_one_logical(log)
-  log_weights <- validate_weights(weights, x, log = log)
-  if (pareto_smooth) {
-    log_weights <- pareto_smooth_log_weights(log_weights)
-  }
+  log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
   niterations <- niterations(x)
   for (i in seq_len(nchains(x))) {
     sel <- (1 + (i - 1) * niterations):(i * niterations)
@@ -131,13 +105,7 @@ weight_draws.draws_list <- function(x, weights, log = FALSE, pareto_smooth = FAL
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
-
-  pareto_smooth <- as_one_logical(pareto_smooth)
-  log <- as_one_logical(log)
-  log_weights <- validate_weights(weights, x, log = log)
-  if (pareto_smooth) {
-    log_weights <- pareto_smooth_log_weights(log_weights)
-  }
+  log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
   x$.log_weight <- rvar(log_weights)
   x
 }
@@ -178,10 +146,12 @@ weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
 }
 
 # validate weights and return log weights
-validate_weights <- function(weights, draws, log = FALSE) {
+validate_weights <- function(weights, ndraws, log = FALSE, pareto_smooth = FALSE) {
   checkmate::assert_numeric(weights)
   checkmate::assert_flag(log)
-  if (length(weights) != ndraws(draws)) {
+  checkmate::assert_flag(pareto_smooth)
+
+  if (length(weights) != ndraws) {
     stop_no_call("Number of weights must match the number of draws.")
   }
   if (!log) {
@@ -190,6 +160,10 @@ validate_weights <- function(weights, draws, log = FALSE) {
     }
     weights <- log(weights)
   }
+  if (pareto_smooth) {
+    weights <- pareto_smooth_log_weights(weights)
+  }
+
   weights
 }
 
