@@ -89,9 +89,10 @@ broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
 
   draws_axis <- axis + 1 # because first dim is draws
 
-  # conform nchains
+  # conform nchains and weights
   # (don't need to do draws here since that's part of the broadcast below)
   c(x, y) %<-% conform_rvar_nchains(list(x, y))
+  log_weights <- weights2_common(log_weights(x), log_weights(y))
 
   # broadcast each array to the desired dimensions
   # (except along the axis we are binding along)
@@ -112,7 +113,8 @@ broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
   # bind along desired axis
   result <- new_rvar(
     abind(draws_x, draws_y, along = draws_axis, use.dnns = TRUE),
-    .nchains = nchains(x)
+    .nchains = nchains(x),
+    .log_weights = log_weights
   )
 }
 

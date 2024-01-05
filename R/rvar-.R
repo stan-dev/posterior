@@ -93,7 +93,7 @@
 rvar <- function(
   x = double(), dim = NULL, dimnames = NULL,
   nchains = NULL, with_chains = FALSE,
-  weights = NULL, log = FALSE
+  log_weights = NULL
 ) {
   if (is_rvar(x)) {
     nchains <- nchains %||% nchains(x)
@@ -109,7 +109,7 @@ rvar <- function(
     nchains <- nchains %||% 1L
   }
 
-  out <- new_rvar(x, .nchains = nchains, weights = weights, log = log)
+  out <- new_rvar(x, .nchains = nchains, .log_weights = log_weights)
 
   if (!is.null(dim)) {
     dim(out) <- dim
@@ -122,7 +122,7 @@ rvar <- function(
 }
 
 #' @importFrom vctrs new_vctr
-new_rvar <- function(x = double(), .nchains = 1L, weights = NULL, log = FALSE) {
+new_rvar <- function(x = double(), .nchains = 1L, .log_weights = NULL) {
   if (is.null(x)) {
     x <- double()
   }
@@ -132,17 +132,15 @@ new_rvar <- function(x = double(), .nchains = 1L, weights = NULL, log = FALSE) {
   .ndraws <- dim(x)[[1]]
   .nchains <- as_one_integer(.nchains)
   check_nchains_compat_with_ndraws(.nchains, .ndraws)
-  if (is.null(weights)) {
-    log_weight <- NULL
-  } else {
-    log_weight <- validate_weights(weights, .ndraws, log = log, pareto_smooth = FALSE)
+  if (!is.null(.log_weights)) {
+    .log_weights <- validate_weights(.log_weights, .ndraws, log = TRUE, pareto_smooth = FALSE)
   }
 
   structure(
     list(),
     draws = x,
     nchains = .nchains,
-    log_weight = log_weight,
+    log_weights = .log_weights,
     class = get_rvar_class(x),
     cache = new.env(parent = emptyenv())
   )
@@ -557,7 +555,7 @@ weights2_common <- function(weights_x, weights_y) {
     weights_x
   } else {
     stop_no_call(
-      "Random variables have different weights and cannot be used together:\n",
+      "Random variables have different log weights and cannot be used together:\n",
       "<", vctrs::vec_ptype_abbr(weights_x), "> ", paste(head(weights_x, 5), collapse = ", "), " ...\n",
       "<", vctrs::vec_ptype_abbr(weights_y), "> ", paste(head(weights_y, 5), collapse = ", "), " ..."
     )
@@ -596,9 +594,9 @@ conform_rvar_ndraws <- function(rvars, keep_constants = FALSE) {
   # broadcast to a common number of draws and the same set of weights.
   # If keep_constants = TRUE, constants will not be broadcast or re-weighted.
   .ndraws = Reduce(ndraws2_common, lapply(rvars, ndraws))
-  log_weight = Reduce(weights2_common, lapply(rvars, attr, "log_weight"))
+  .log_weights = Reduce(weights2_common, lapply(rvars, log_weights))
   for (i in seq_along(rvars)) {
-    rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws, keep_constants, log_weight = log_weight)
+    rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws, keep_constants, .log_weights = .log_weights)
   }
 
   rvars
@@ -754,7 +752,7 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
 }
 
 # broadcast the draws dimension of an rvar to the requested size
-broadcast_draws <- function(x, .ndraws, keep_constants = FALSE, log_weight = NULL) {
+broadcast_draws <- function(x, .ndraws, keep_constants = FALSE, .log_weights = NULL) {
   ndraws_x = ndraws(x)
   if (
     (ndraws_x == 1 && keep_constants) ||
@@ -766,7 +764,7 @@ broadcast_draws <- function(x, .ndraws, keep_constants = FALSE, log_weight = NUL
     new_dim <- dim(draws)
     new_dim[1] <- .ndraws
 
-    new_rvar(broadcast_array(draws, new_dim), .nchains = nchains(x), weights = log_weight, log = TRUE)
+    new_rvar(broadcast_array(draws, new_dim), .nchains = nchains(x), .log_weights = .log_weights)
   }
 }
 
@@ -968,7 +966,8 @@ summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_em
   } else {
     draws <- apply(draws, 1, .f, ...)
     if (.transpose) draws <- t(draws)
-    new_rvar(draws, .nchains = nchains(x))
+    draws_of(x) <- draws
+    x
   }
 }
 
@@ -999,7 +998,8 @@ summarise_rvar_within_draws_via_matrix <- function(x, .name, .f, ..., .ordered_o
     .draws <- .f(draws_of(x), ...)
   }
 
-  new_rvar(.draws, .nchains = nchains(x))
+  draws_of(x) <- .draws
+  x
 }
 
 # apply vectorized function to an rvar's draws

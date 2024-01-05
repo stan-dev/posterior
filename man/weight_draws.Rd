@@ -7,6 +7,7 @@
 \alias{weight_draws.draws_df}
 \alias{weight_draws.draws_list}
 \alias{weight_draws.draws_rvars}
+\alias{weight_draws.rvar}
 \title{Weight \code{draws} objects}
 \usage{
 weight_draws(x, weights, ...)
@@ -20,6 +21,8 @@ weight_draws(x, weights, ...)
 \method{weight_draws}{draws_list}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
 
 \method{weight_draws}{draws_rvars}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
+
+\method{weight_draws}{rvar}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
@@ -72,6 +75,9 @@ x <- weight_draws(x, weights = log_wts, log = TRUE)
 # extract weights
 head(weights(x))
 head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
+
+# log_weights(x) is equivalent to weights(x, log = TRUE, normalize = FALSE)
+all.equal(log_weights(x), weights(x, log = TRUE, normalize = FALSE))
 
 # add weights on log scale and Pareto smooth them
 x <- weight_draws(x, weights = log_wts, log = TRUE, pareto_smooth = TRUE)

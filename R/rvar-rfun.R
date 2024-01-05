@@ -85,6 +85,7 @@ rfun <- function (.f, rvar_args = NULL, rvar_dots = TRUE, ndraws = NULL) {
       vapply(args, is_rvar, logical(1))
     rvar_args_draws <- as_draws_rvars(args[is_rvar_arg])
     .nchains <- max(1, nchains(rvar_args_draws))
+    .log_weights <- log_weights(rvar_args_draws)
 
     if (length(rvar_args_draws) == 0) {
       # no rvar arguments, so just create a random variable by applying this function
@@ -103,7 +104,7 @@ rfun <- function (.f, rvar_args = NULL, rvar_dots = TRUE, ndraws = NULL) {
       dim(x) <- c(1, dim(x))
       x
     })
-    new_rvar(vctrs::list_unchop(list_of_draws), .nchains = .nchains)
+    new_rvar(vctrs::list_unchop(list_of_draws), .nchains = .nchains, .log_weights = .log_weights)
   }
   formals(rvar_f) <- f_formals
   rvar_f
@@ -236,11 +237,13 @@ rvar_rng <- function(.f, n, ..., ndraws = NULL) {
   if (length(rvar_args) < 1) {
     nchains <- 1
     ndraws <- ndraws %||% getOption("posterior.rvar_ndraws", 4000)
+    log_weights <- NULL
   } else {
     # we have some arguments that are rvars. We require them to be single-dimensional
     # (vectors) so that R's vector recycling will work correctly.
     nchains <- nchains(rvar_args[[1]])
     ndraws <- ndraws(rvar_args[[1]])
+    log_weights <- log_weights(rvar_args[[1]])
 
     rvar_args_ndims <- lengths(lapply(rvar_args, dim))
     if (!all(rvar_args_ndims == 1)) {
@@ -266,5 +269,5 @@ rvar_rng <- function(.f, n, ..., ndraws = NULL) {
   args <- c(n = nd, args)
   result <- do.call(.f, args)
   dim(result) <- c(ndraws, n)
-  new_rvar(result, .nchains = nchains)
+  new_rvar(result, .nchains = nchains, .log_weights = log_weights)
 }

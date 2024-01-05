@@ -45,6 +45,9 @@
 #' head(weights(x))
 #' head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
 #'
+#' # log_weights(x) is equivalent to weights(x, log = TRUE, normalize = FALSE)
+#' all.equal(log_weights(x), weights(x, log = TRUE, normalize = FALSE))
+#'
 #' # add weights on log scale and Pareto smooth them
 #' x <- weight_draws(x, weights = log_wts, log = TRUE, pareto_smooth = TRUE)
 #'
@@ -110,10 +113,19 @@ weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FA
   x
 }
 
+#' @rdname weight_draws
+#' @export
+weight_draws.rvar <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
+  attr(x, "log_weights") <- validate_weights(weights, ndraws(x), log, pareto_smooth)
+  x
+}
+
 #' Extract Weights from Draws Objects
 #'
 #' Extract weights from [`draws`] objects, with one weight per draw.
 #' See [`weight_draws`] for details how to add weights to [`draws`] objects.
+#' `log_weights(x)` is a low-level shortcut for `weights(x, log = TRUE, normalize = FALSE)`,
+#' returning the internal log weights without transforming them.
 #'
 #' @param object (draws) A [`draws`] object.
 #' @param log (logical) Should the weights be returned on the log scale?
@@ -132,10 +144,10 @@ weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FA
 weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
   log <- as_one_logical(log)
   normalize <- as_one_logical(normalize)
-  if (!".log_weight" %in% variables(object, reserved = TRUE)) {
-    return(NULL)
-  }
-  out <- extract_variable(object, ".log_weight")
+
+  out <- log_weights(object)
+  if (is.null(out)) return(NULL)
+
   if (normalize) {
     out <- out - log_sum_exp(out)
   }
@@ -143,6 +155,30 @@ weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
     out <- exp(out)
   }
   out
+}
+
+#' @export
+weights.rvar <- weights.draws
+
+#' @rdname weights.draws
+#' @export
+log_weights <- function(object, ...) {
+  UseMethod("log_weights")
+}
+
+#' @rdname weights.draws
+#' @export
+log_weights.draws <- function(object, ...) {
+  if (!".log_weight" %in% variables(object, reserved = TRUE)) {
+    return(NULL)
+  }
+  extract_variable(object, ".log_weight")
+}
+
+#' @rdname weights.draws
+#' @export
+log_weights.rvar <- function(object, ...) {
+  attr(object, "log_weights")
 }
 
 # validate weights and return log weights

@@ -10,8 +10,7 @@ rvar(
   dimnames = NULL,
   nchains = NULL,
   with_chains = FALSE,
-  weights = NULL,
-  log = FALSE
+  log_weights = NULL
 )
 }
 \arguments{
