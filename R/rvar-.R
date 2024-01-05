@@ -90,7 +90,11 @@
 #' x
 #'
 #' @export
-rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE) {
+rvar <- function(
+  x = double(), dim = NULL, dimnames = NULL,
+  nchains = NULL, with_chains = FALSE,
+  weights = NULL, log = FALSE
+) {
   if (is_rvar(x)) {
     nchains <- nchains %||% nchains(x)
     with_chains = FALSE
@@ -105,7 +109,7 @@ rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = NULL, with
     nchains <- nchains %||% 1L
   }
 
-  out <- new_rvar(x, .nchains = nchains)
+  out <- new_rvar(x, .nchains = nchains, weights = weights, log = log)
 
   if (!is.null(dim)) {
     dim(out) <- dim
@@ -118,7 +122,7 @@ rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = NULL, with
 }
 
 #' @importFrom vctrs new_vctr
-new_rvar <- function(x = double(), .nchains = 1L) {
+new_rvar <- function(x = double(), .nchains = 1L, weights = NULL, log = FALSE) {
   if (is.null(x)) {
     x <- double()
   }
@@ -128,11 +132,17 @@ new_rvar <- function(x = double(), .nchains = 1L) {
   .ndraws <- dim(x)[[1]]
   .nchains <- as_one_integer(.nchains)
   check_nchains_compat_with_ndraws(.nchains, .ndraws)
+  if (is.null(weights)) {
+    log_weight <- NULL
+  } else {
+    log_weight <- validate_weights(weights, .ndraws, log = log, pareto_smooth = FALSE)
+  }
 
   structure(
     list(),
     draws = x,
     nchains = .nchains,
+    log_weight = log_weight,
     class = get_rvar_class(x),
     cache = new.env(parent = emptyenv())
   )
@@ -252,14 +262,14 @@ rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
     dim = dim(draws)
     dim[[2]] = dim[[2]] * times
     dim(rep_draws) = dim
-    out <- new_rvar(rep_draws, .nchains = nchains(x))
+    draws_of(x) <- rep_draws
   } else {
     # use `length.out`
     rep_draws = rep_len(draws, length.out * ndraws(x))
     dim(rep_draws) = c(ndraws(x), length(rep_draws) / ndraws(x))
-    out <- new_rvar(rep_draws, .nchains = nchains(x))
+    draws_of(x) <- rep_draws
   }
-  out
+  x
 }
 
 #' @rawNamespace S3method(rep.int,rvar,rep_int_rvar)
@@ -537,6 +547,23 @@ nchains2_common <- function(nchains_x, nchains_y) {
   }
 }
 
+# find common weights for two rvars
+weights2_common <- function(weights_x, weights_y) {
+  if (is.null(weights_x)) {
+    weights_y
+  } else if (is.null(weights_y)) {
+    weights_x
+  } else if (identical(weights_x, weights_y)) {
+    weights_x
+  } else {
+    stop_no_call(
+      "Random variables have different weights and cannot be used together:\n",
+      "<", vctrs::vec_ptype_abbr(weights_x), "> ", paste(head(weights_x, 5), collapse = ", "), " ...\n",
+      "<", vctrs::vec_ptype_abbr(weights_y), "> ", paste(head(weights_y, 5), collapse = ", "), " ..."
+    )
+  }
+}
+
 # check that the given number of chains is compatible with the given number of draws
 check_nchains_compat_with_ndraws <- function(nchains, ndraws) {
   # except with constants, nchains must divide the number of draws
@@ -548,7 +575,7 @@ check_nchains_compat_with_ndraws <- function(nchains, ndraws) {
   }
 }
 
-# given two rvars, conform their number of chains
+# given a list of rvars, conform their number of chains
 # so they can be used together (or throw an error if they can't be)
 conform_rvar_nchains <- function(rvars) {
   # find the number of chains to use, treating constants as having any number of chains
@@ -562,15 +589,16 @@ conform_rvar_nchains <- function(rvars) {
   rvars
 }
 
-# given two rvars, conform their number of draws
+# given a list of rvars, conform their number of draws
 # so they can be used together (or throw an error if they can't be)
 # @param keep_constants keep constants as 1-draw rvars
 conform_rvar_ndraws <- function(rvars, keep_constants = FALSE) {
-  # broadcast to a common number of chains. If keep_constants = TRUE,
-  # constants will not be broadcast.
+  # broadcast to a common number of draws and the same set of weights.
+  # If keep_constants = TRUE, constants will not be broadcast or re-weighted.
   .ndraws = Reduce(ndraws2_common, lapply(rvars, ndraws))
+  log_weight = Reduce(weights2_common, lapply(rvars, attr, "log_weight"))
   for (i in seq_along(rvars)) {
-    rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws, keep_constants)
+    rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws, keep_constants, log_weight = log_weight)
   }
 
   rvars
@@ -726,7 +754,7 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
 }
 
 # broadcast the draws dimension of an rvar to the requested size
-broadcast_draws <- function(x, .ndraws, keep_constants = FALSE) {
+broadcast_draws <- function(x, .ndraws, keep_constants = FALSE, log_weight = NULL) {
   ndraws_x = ndraws(x)
   if (
     (ndraws_x == 1 && keep_constants) ||
@@ -738,7 +766,7 @@ broadcast_draws <- function(x, .ndraws, keep_constants = FALSE) {
     new_dim <- dim(draws)
     new_dim[1] <- .ndraws
 
-    new_rvar(broadcast_array(draws, new_dim), .nchains = nchains(x))
+    new_rvar(broadcast_array(draws, new_dim), .nchains = nchains(x), weights = log_weight, log = TRUE)
   }
 }
 
