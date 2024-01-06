@@ -108,6 +108,61 @@ test_that("print(<rvar_ordered>) works", {
   )
 })
 
+test_that("printing weighted rvars works", {
+  w <- c(1, 0, 1.25, 2, 1.75)
+  levs <- c("h","e","f","g")
+  xw <- weight_draws(rvar(c(1, 2, 0, 3, 0)), w)
+  xw_factor <- weight_draws(rvar_factor(c("e","f","h","g","h"), levels = levs), w)
+  xw_ordered <- weight_draws(rvar_ordered(c("e","f","h","g","h"), levels = levs), w)
+
+  out <- capture.output(print(xw, color = FALSE))
+  expect_match(
+    out,
+    regexp = "weighted rvar<5>\\[1\\] mean . sd:",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "1.2 . 1.3",
+    all = FALSE
+  )
+
+  out <- capture.output(print(xw, summary = "median_mad", color = FALSE))
+  expect_match(
+    out,
+    regexp = "weighted rvar<5>\\[1\\] median . mad:",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "0.64 . 0.94",
+    all = FALSE
+  )
+
+  out <- capture.output(print(xw_factor, color = FALSE))
+  expect_match(
+    out,
+    regexp = "weighted rvar_factor<5>\\[1\\] mode <entropy>:",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "h <0.73>",
+    all = FALSE
+  )
+
+  out <- capture.output(print(xw_ordered, color = FALSE))
+  expect_match(
+    out,
+    regexp = "weighted rvar_ordered<5>\\[1\\] mode <dissent>:",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = "h <0.82>",
+    all = FALSE
+  )
+})
 
 # str ---------------------------------------------------------------------
 

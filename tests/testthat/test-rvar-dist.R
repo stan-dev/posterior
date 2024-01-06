@@ -41,12 +41,16 @@ test_that("distributional functions work on an rvar_factor", {
   x_values <- c(2,2,2,4,4,4,4,3,5,3)
   x_letters <- letters[x_values]
   x <- rvar_factor(x_letters, levels = letters[1:5])
+  x2 <- c(rvar_factor(letters), rvar_factor(letters))
 
   expect_equal(density(x, letters[1:6]), c(0, .3, .2, .4, .1, NA))
+  expect_equal(density(x2, letters[1:3]), array(rep(1/26, 6), dim = c(3,2)))
 
   expect_equal(cdf(x, letters[1:5]), c(NA, NA, NA, NA, NA))
+  expect_equal(cdf(x2, letters[1:3]), array(rep(NA, 6), dim = c(3,2)))
 
   expect_equal(quantile(x, 1:4/4), c(NA, NA, NA, NA))
+  expect_equal(quantile(x2, 1:3/3), array(rep(NA, 6), dim = c(3,2)))
 })
 
 test_that("distributional functions work on an rvar_ordered", {

@@ -758,10 +758,10 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
 # broadcast the draws dimension of an rvar to the requested size
 broadcast_draws <- function(x, .ndraws, keep_constants = FALSE, .log_weights = NULL) {
   ndraws_x = ndraws(x)
-  if (
-    (ndraws_x == 1 && keep_constants) ||
-    (ndraws_x == .ndraws)
-  ) {
+  if (ndraws_x == 1 && keep_constants) {
+    x
+  } else if (ndraws_x == .ndraws) {
+    log_weights_rvar(x) <- .log_weights
     x
   } else {
     draws <- draws_of(x)

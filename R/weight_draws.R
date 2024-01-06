@@ -194,8 +194,11 @@ log_weights.rvar <- function(object, ...) {
 # attribute on an rvar, ALWAYS use this function so that the proxy
 # cache is invalidated
 `log_weights_rvar<-` <- function(x, value) {
-  attr(x, "log_weights") <- value
-  invalidate_rvar_cache(x)
+  if (!identical(attr(x, "log_weights"), value)) {
+    attr(x, "log_weights") <- value
+    x <- invalidate_rvar_cache(x)
+  }
+  x
 }
 
 
