@@ -94,7 +94,7 @@ test_that("subset_draws works correctly for draws_rvars objects", {
 
   x <- weight_draws(x, rep(1, ndraws(x)))
   x_sub <- subset_draws(x, variable = "mu")
-  expect_equal(variables(x_sub, reserved = TRUE), c("mu", ".log_weight"))
+  expect_equal(variables(x_sub, reserved = TRUE), c("mu"))
 })
 
 test_that("subset_draws works correctly for rvar objects", {

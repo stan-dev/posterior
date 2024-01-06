@@ -4,6 +4,7 @@
 \alias{weights.draws}
 \alias{log_weights}
 \alias{log_weights.draws}
+\alias{log_weights.draws_rvars}
 \alias{log_weights.rvar}
 \title{Extract Weights from Draws Objects}
 \usage{
@@ -12,6 +13,8 @@
 log_weights(object, ...)
 
 \method{log_weights}{draws}(object, ...)
+
+\method{log_weights}{draws_rvars}(object, ...)
 
 \method{log_weights}{rvar}(object, ...)
 }

@@ -11,6 +11,7 @@ rvar_factor(
   dimnames = NULL,
   nchains = NULL,
   with_chains = FALSE,
+  log_weights = NULL,
   ...
 )
 
@@ -20,6 +21,7 @@ rvar_ordered(
   dimnames = NULL,
   nchains = NULL,
   with_chains = FALSE,
+  log_weights = NULL,
   ...
 )
 }

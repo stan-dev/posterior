@@ -71,7 +71,8 @@ test_that("conversion between formats preserves weights", {
     array = weight_draws(draws_array(x = 1:10), 1:10),
     df = weight_draws(draws_df(x = 1:10), 1:10),
     list = weight_draws(draws_list(x = 1:10), 1:10),
-    rvars = weight_draws(draws_rvars(x = 1:10), 1:10)
+    rvars = weight_draws(draws_rvars(x = 1:10), 1:10),
+    rvar = weight_draws(rvar(x = 1:10), 1:10)
   )
 
   # chain/iteration/draw columns are placed at the end by conversion functions,

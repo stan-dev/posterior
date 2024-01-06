@@ -158,7 +158,11 @@ str.rvar <- function(
       }
     }
     str_attr(attributes(draws_of(object)), "draws_of(*)", c("names", "dim", "dimnames", "class", "levels"))
-    str_attr(attributes(object), "*", c("draws", "names", "dim", "dimnames", "class", "nchains", "cache"))
+    str_attr(attributes(object), "*", c("draws", "names", "dim", "dimnames", "class", "nchains", "cache", "log_weights"))
+    if ("log_weights" %in% names(attributes(object))) {
+      cat0(indent.str, paste0('- log_weights(*)='))
+      str_next(attr(object, "log_weights"), ...)
+    }
   }
 
   invisible(NULL)
@@ -218,7 +222,12 @@ rvar_type_full <- function(x, dim1 = TRUE) {
     paste0(",", nchains(x))
   }
 
-  paste0(rvar_class(x), "<", niterations(x), chain_str, ">", dim_str)
+  paste0(
+    if (!is.null(log_weights(x))) "weighted ",
+    rvar_class(x),
+    "<", niterations(x), chain_str, ">",
+    dim_str
+  )
 }
 
 rvar_class <- function(x) {

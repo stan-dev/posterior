@@ -108,8 +108,10 @@ weight_draws.draws_list <- function(x, weights, log = FALSE, pareto_smooth = FAL
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
-  log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
-  x$.log_weight <- rvar(log_weights)
+  .log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
+  for (i in seq_along(x)) {
+    attr(x[[i]], "log_weights") <- .log_weights
+  }
   x
 }
 
@@ -173,6 +175,13 @@ log_weights.draws <- function(object, ...) {
     return(NULL)
   }
   extract_variable(object, ".log_weight")
+}
+
+#' @rdname weights.draws
+#' @export
+log_weights.draws_rvars <- function(object, ...) {
+  if (length(object) < 1) return(NULL)
+  attr(object[[1]], "log_weights")
 }
 
 #' @rdname weights.draws

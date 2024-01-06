@@ -4,6 +4,8 @@
 
 * Add `pareto_smooth` option to `weight_draws`, to Pareto smooth
   weights before adding to a draws object.
+* Add support for applying weights to individual `rvar` objects.
+* Add `log_weights()` function for easy access to raw internal weights.
 * Matrix multiplication of `rvar`s can now be done with the base matrix 
   multiplication operator (`%*%`) instead of `%**%` in R >= 4.3.
 
