@@ -2,6 +2,7 @@
 % Please edit documentation in R/weight_draws.R
 \name{weights.draws}
 \alias{weights.draws}
+\alias{weights.rvar}
 \alias{log_weights}
 \alias{log_weights.draws}
 \alias{log_weights.draws_rvars}
@@ -9,6 +10,8 @@
 \title{Extract Weights from Draws Objects}
 \usage{
 \method{weights}{draws}(object, log = FALSE, normalize = TRUE, ...)
+
+\method{weights}{rvar}(object, log = FALSE, normalize = TRUE, ...)
 
 log_weights(object, ...)
 
@@ -19,7 +22,7 @@ log_weights(object, ...)
 \method{log_weights}{rvar}(object, ...)
 }
 \arguments{
-\item{object}{(draws) A \code{\link{draws}} object.}
+\item{object}{(draws) A \code{\link{draws}} object or an \code{\link{rvar}}.}
 
 \item{log}{(logical) Should the weights be returned on the log scale?
 Defaults to \code{FALSE}.}

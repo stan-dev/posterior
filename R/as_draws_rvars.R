@@ -294,7 +294,7 @@ empty_draws_rvars <- function(variables = character(0), nchains = 0) {
 promote_rvar_weights_to_variable <- function(x) {
   .log_weights <- log_weights(x)
   if (!is.null(.log_weights)) {
-    x$.log_weight <- rvar(log_weights(x))
+    x$.log_weight <- rvar(log_weights(x), nchains = nchains(x))
   }
   x
 }

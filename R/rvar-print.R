@@ -161,7 +161,7 @@ str.rvar <- function(
     str_attr(attributes(object), "*", c("draws", "names", "dim", "dimnames", "class", "nchains", "cache", "log_weights"))
     if ("log_weights" %in% names(attributes(object))) {
       cat0(indent.str, paste0('- log_weights(*)='))
-      str_next(attr(object, "log_weights"), ...)
+      str_next(log_weights(object), ...)
     }
   }
 

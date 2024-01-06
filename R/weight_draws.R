@@ -110,7 +110,7 @@ weight_draws.draws_list <- function(x, weights, log = FALSE, pareto_smooth = FAL
 weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
   .log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
   for (i in seq_along(x)) {
-    attr(x[[i]], "log_weights") <- .log_weights
+    log_weights_rvar(x[[i]]) <- .log_weights
   }
   x
 }
@@ -118,7 +118,7 @@ weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FA
 #' @rdname weight_draws
 #' @export
 weight_draws.rvar <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
-  attr(x, "log_weights") <- validate_weights(weights, ndraws(x), log, pareto_smooth)
+  log_weights_rvar(x) <- validate_weights(weights, ndraws(x), log, pareto_smooth)
   x
 }
 
@@ -129,7 +129,7 @@ weight_draws.rvar <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ..
 #' `log_weights(x)` is a low-level shortcut for `weights(x, log = TRUE, normalize = FALSE)`,
 #' returning the internal log weights without transforming them.
 #'
-#' @param object (draws) A [`draws`] object.
+#' @param object (draws) A [`draws`] object or an [`rvar`].
 #' @param log (logical) Should the weights be returned on the log scale?
 #'   Defaults to `FALSE`.
 #' @param normalize (logical) Should the weights be normalized to sum to 1 on
@@ -159,6 +159,7 @@ weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
   out
 }
 
+#' @rdname weights.draws
 #' @export
 weights.rvar <- weights.draws
 
@@ -181,7 +182,7 @@ log_weights.draws <- function(object, ...) {
 #' @export
 log_weights.draws_rvars <- function(object, ...) {
   if (length(object) < 1) return(NULL)
-  attr(object[[1]], "log_weights")
+  log_weights(object[[1]])
 }
 
 #' @rdname weights.draws
@@ -189,6 +190,14 @@ log_weights.draws_rvars <- function(object, ...) {
 log_weights.rvar <- function(object, ...) {
   attr(object, "log_weights")
 }
+# for internal use only currently: if you are setting the log_weights
+# attribute on an rvar, ALWAYS use this function so that the proxy
+# cache is invalidated
+`log_weights_rvar<-` <- function(x, value) {
+  attr(x, "log_weights") <- value
+  invalidate_rvar_cache(x)
+}
+
 
 # validate weights and return log weights
 validate_weights <- function(weights, ndraws, log = FALSE, pareto_smooth = FALSE) {

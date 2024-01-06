@@ -284,6 +284,7 @@ NULL
   if (!is_missing(draws_index[[1]])) {
     # if we subsetted draws, replace draw ids with sequential ids
     rownames(.draws) <- seq_len(NROW(.draws))
+    log_weights_rvar(x) <- inject(log_weights(x)[!!!draws_index])
   }
 
   draws_of(x) <- .draws
