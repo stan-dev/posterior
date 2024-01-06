@@ -89,6 +89,7 @@ test_that("rstar accepts different hyperparameters", {
 test_that("rstar accepts different training proportion", {
   skip_if_not_installed("caret")
   x <- example_draws()
+  set.seed(12345)
   val1 <- rstar(x, method = "knn")
   val2 <- rstar(x, method = "knn", training_proportion = 0.1)
   expect_true(val1 > val2)
