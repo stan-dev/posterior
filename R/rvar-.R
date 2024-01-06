@@ -136,9 +136,7 @@ new_rvar <- function(x = double(), .nchains = 1L, .log_weights = NULL) {
   .ndraws <- dim(x)[[1]]
   .nchains <- as_one_integer(.nchains)
   check_nchains_compat_with_ndraws(.nchains, .ndraws)
-  if (!is.null(.log_weights)) {
-    .log_weights <- validate_weights(.log_weights, .ndraws, log = TRUE, pareto_smooth = FALSE)
-  }
+  .log_weights <- validate_weights(.log_weights, .ndraws, log = TRUE, pareto_smooth = FALSE)
 
   structure(
     list(),

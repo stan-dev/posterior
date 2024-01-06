@@ -33,7 +33,8 @@ the standard scale? Defaults to \code{TRUE}.}
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-A vector of weights, with one weight per draw.
+A vector of weights, with one weight per draw, or \code{NULL} if this
+object does not contain weights.
 }
 \description{
 Extract weights from \code{\link{draws}} objects, with one weight per draw.

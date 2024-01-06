@@ -7,10 +7,11 @@
 #' `draws` objects.
 #'
 #' @template args-methods-x
-#' @param weights (numeric vector) A vector of weights of length `ndraws(x)`.
-#'   Weights will be internally stored on the log scale (in a variable called
-#'   `.log_weight`) and will not be normalized, but normalized (non-log) weights
-#'   can be returned via the [weights.draws()] method later.
+#' @param weights (numeric vector) A vector of weights of length `ndraws(x)`,
+#'   or `NULL` to remove weights. Weights will be internally stored on the log
+#'   scale and will not be normalized. Normalized (non-log) weights can be
+#'   returned via the [weights.draws()] method, and the unnormalized
+#'   log weights can be accessed via [log_weights()].
 #' @param log (logical) Are the weights passed already on the log scale? The
 #'   default is `FALSE`, that is, expecting `weights` to be on the standard
 #'   (non-log) scale.
@@ -60,6 +61,8 @@ weight_draws <- function(x, weights, ...) {
 #' @export
 weight_draws.draws_matrix <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
   log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
+  if (is.null(weights)) return(remove_variables(x, ".log_weight"))
+
   if (".log_weight" %in% variables(x, reserved = TRUE)) {
     # overwrite existing weights
     x[, ".log_weight"] <- log_weights
@@ -75,6 +78,8 @@ weight_draws.draws_matrix <- function(x, weights, log = FALSE, pareto_smooth = F
 #' @export
 weight_draws.draws_array <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
   log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
+  if (is.null(weights)) return(remove_variables(x, ".log_weight"))
+
   if (".log_weight" %in% variables(x, reserved = TRUE)) {
     # overwrite existing weights
     x[, , ".log_weight"] <- log_weights
@@ -97,6 +102,8 @@ weight_draws.draws_df <- function(x, weights, log = FALSE, pareto_smooth = FALSE
 #' @export
 weight_draws.draws_list <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
   log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
+  if (is.null(log_weights)) return(remove_variables(x, ".log_weight"))
+
   niterations <- niterations(x)
   for (i in seq_len(nchains(x))) {
     sel <- (1 + (i - 1) * niterations):(i * niterations)
@@ -136,7 +143,8 @@ weight_draws.rvar <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ..
 #'   the standard scale? Defaults to `TRUE`.
 #' @template args-methods-dots
 #'
-#' @return A vector of weights, with one weight per draw.
+#' @return A vector of weights, with one weight per draw, or `NULL` if this
+#'   object does not contain weights.
 #'
 #' @seealso [`weight_draws`], [`resample_draws`]
 #'
@@ -204,6 +212,7 @@ log_weights.rvar <- function(object, ...) {
 
 # validate weights and return log weights
 validate_weights <- function(weights, ndraws, log = FALSE, pareto_smooth = FALSE) {
+  if (is.null(weights)) return(NULL)
   checkmate::assert_numeric(weights)
   checkmate::assert_flag(log)
   checkmate::assert_flag(pareto_smooth)

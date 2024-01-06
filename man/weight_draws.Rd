@@ -28,10 +28,11 @@ weight_draws(x, weights, ...)
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
 
-\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)}.
-Weights will be internally stored on the log scale (in a variable called
-\code{.log_weight}) and will not be normalized, but normalized (non-log) weights
-can be returned via the \code{\link[=weights.draws]{weights.draws()}} method later.}
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to remove weights. Weights will be internally stored on the log
+scale and will not be normalized. Normalized (non-log) weights can be
+returned via the \code{\link[=weights.draws]{weights.draws()}} method, and the unnormalized
+log weights can be accessed via \code{\link[=log_weights]{log_weights()}}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
