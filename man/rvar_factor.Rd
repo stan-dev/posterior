@@ -64,6 +64,11 @@ is ignored and the second dimension of \code{x} is used to index chains.
 Internally, the array will be converted to a format without the chain index.
 Ignored when \code{x} is already an \code{\link{rvar}}.}
 
+\item{log_weights}{(numeric vector) A vector of log weights of length \code{ndraws(x)}.
+Weights will be internally stored on the log scale and will not be normalized,
+but normalized (non-log) weights can be returned via the \code{\link[=weights.rvar]{weights.rvar()}}
+method later.}
+
 \item{...}{
   Arguments passed on to \code{\link[base:factor]{base::factor}}
   \describe{

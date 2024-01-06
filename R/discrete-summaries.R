@@ -2,11 +2,9 @@
 #'
 #' Normalized entropy, for measuring dispersion in draws from categorical distributions.
 #'
-#' @param x (multiple options) A vector to be interpreted as draws from
-#' a categorical distribution, such as:
-#'  - A [factor]
-#'  - A [numeric] (should be [integer] or integer-like)
-#'  - An [rvar], [rvar_factor], or [rvar_ordered]
+#' @template args-summaries-x-categorical
+#' @template args-summaries-weights
+#' @template args-methods-dots
 #'
 #' @details
 #' Calculates the normalized Shannon entropy of the draws in `x`. This value is
@@ -51,14 +49,14 @@
 #' xy
 #' entropy(xy)
 #' @export
-entropy <- function(x) {
+entropy <- function(x, ...) {
   UseMethod("entropy")
 }
 #' @rdname entropy
 #' @export
-entropy.default <- function(x) {
+entropy.default <- function(x, weights = NULL, ...) {
   if (anyNA(x)) return(NA_real_)
-  p <- prop.table(simple_table(x)$count)
+  p <- prop.table(weighted_simple_table(x, weights)$count)
   n <- length(p)
 
   if (n == 1) {
@@ -71,8 +69,8 @@ entropy.default <- function(x) {
 }
 #' @rdname entropy
 #' @export
-entropy.rvar <- function(x) {
-  summarise_rvar_by_element(x, entropy)
+entropy.rvar <- function(x, ...) {
+  summarise_rvar_by_element(x, entropy, weights = weights(x))
 }
 
 
@@ -85,6 +83,8 @@ entropy.rvar <- function(x) {
 #'  - A [factor]
 #'  - A [numeric] (should be [integer] or integer-like)
 #'  - An [rvar], [rvar_factor], or [rvar_ordered]
+#' @template args-summaries-weights
+#' @template args-methods-dots
 #'
 #' @details
 #' Calculates Tastle and Wierman's (2007) *dissention* measure:
@@ -125,12 +125,12 @@ entropy.rvar <- function(x) {
 #' xy
 #' dissent(xy)
 #' @export
-dissent <- function(x) {
+dissent <- function(x, ...) {
   UseMethod("dissent")
 }
 #' @rdname dissent
 #' @export
-dissent.default <- function(x) {
+dissent.default <- function(x, weights = NULL, ...) {
   if (anyNA(x)) return(NA_real_)
   if (length(x) == 0) return(0)
 
@@ -141,21 +141,22 @@ dissent.default <- function(x) {
     d <- diff(range(x))
   }
 
-  tab <- simple_table(x)
+  tab <- weighted_simple_table(x, weights)
   p <- prop.table(tab$count)
 
   if (length(p) == 1) {
     out <- 0
   } else {
     x_i <- tab$x
-    out <- -sum(p * log2(1 - abs(x_i - mean(x)) / d))
+    mean_x <- if (is.null(weights)) mean(x) else weighted.mean(x, weights)
+    out <- -sum(p * log2(1 - abs(x_i - mean_x) / d))
   }
   out
 }
 #' @rdname dissent
 #' @export
-dissent.rvar <- function(x) {
-  summarise_rvar_by_element(x, dissent)
+dissent.rvar <- function(x, ...) {
+  summarise_rvar_by_element(x, dissent, weights = weights(x))
 }
 
 
@@ -163,11 +164,9 @@ dissent.rvar <- function(x) {
 #'
 #' Modal category of a vector.
 #'
-#' @param x (multiple options) A vector to be interpreted as draws from
-#' a categorical distribution, such as:
-#'  - A [factor]
-#'  - A [numeric] (should be [integer] or integer-like)
-#'  - An [rvar], [rvar_factor], or [rvar_ordered]
+#' @template args-summaries-x-categorical
+#' @template args-summaries-weights
+#' @template args-methods-dots
 #'
 #' @details
 #' Finds the modal category (i.e., most frequent value) in `x`. In the case of
@@ -192,20 +191,20 @@ dissent.rvar <- function(x) {
 #' xy
 #' modal_category(xy)
 #' @export
-modal_category <- function(x) {
+modal_category <- function(x, ...) {
   UseMethod("modal_category")
 }
 #' @rdname modal_category
 #' @export
-modal_category.default <- function(x) {
+modal_category.default <- function(x, weights = NULL, ...) {
   if (anyNA(x)) return(NA)
-  tab <- simple_table(x)
+  tab <- weighted_simple_table(x, weights)
   tab$x[which.max(tab$count)]
 }
 #' @rdname modal_category
 #' @export
-modal_category.rvar <- function(x) {
-  summarise_rvar_by_element(x, modal_category)
+modal_category.rvar <- function(x, ...) {
+  summarise_rvar_by_element(x, modal_category, weights = weights(x))
 }
 
 
@@ -229,5 +228,27 @@ simple_table <- function(x) {
   list(
     x = values,
     count = tabulate(x_int, nbins = length(values))
+  )
+}
+
+#' A weighted version of simple_table
+#' @param x a vector (numeric, factor, character, etc)
+#' @param weights weights
+#' @returns a list with two components of the same length
+#'  - `x`: unique values from the input `x`
+#'  - `count`: sum of weights for each unique value of `x`
+#' @noRd
+weighted_simple_table <- function(x, weights) {
+  if (is.null(weights)) return(simple_table(x))
+  stopifnot(identical(length(x), length(weights)))
+
+  if (is.factor(x)) {
+    values <- levels(x)
+  } else {
+    values <- unique(x)
+  }
+  list(
+    x = values,
+    count = vapply(split(weights, factor(x, values)), sum, numeric(1), USE.NAMES = FALSE)
   )
 }

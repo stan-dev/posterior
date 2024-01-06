@@ -26,6 +26,10 @@
 #' is ignored and the second dimension of `x` is used to index chains.
 #' Internally, the array will be converted to a format without the chain index.
 #' Ignored when `x` is already an [`rvar`].
+#' @param log_weights (numeric vector) A vector of log weights of length `ndraws(x)`.
+#'   Weights will be internally stored on the log scale and will not be normalized,
+#'   but normalized (non-log) weights can be returned via the [weights.rvar()]
+#'   method later.
 #'
 #' @details
 #'
@@ -556,8 +560,8 @@ weights2_common <- function(weights_x, weights_y) {
   } else {
     stop_no_call(
       "Random variables have different log weights and cannot be used together:\n",
-      "<", vctrs::vec_ptype_abbr(weights_x), "> ", paste(head(weights_x, 5), collapse = ", "), " ...\n",
-      "<", vctrs::vec_ptype_abbr(weights_y), "> ", paste(head(weights_y, 5), collapse = ", "), " ..."
+      "<", vctrs::vec_ptype_abbr(weights_x), "> ", paste(utils::head(weights_x, 5), collapse = ", "), " ...\n",
+      "<", vctrs::vec_ptype_abbr(weights_y), "> ", paste(utils::head(weights_y, 5), collapse = ", "), " ..."
     )
   }
 }

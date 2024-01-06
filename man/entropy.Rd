@@ -6,11 +6,11 @@
 \alias{entropy.rvar}
 \title{Normalized entropy}
 \usage{
-entropy(x)
+entropy(x, ...)
 
-\method{entropy}{default}(x)
+\method{entropy}{default}(x, weights = NULL, ...)
 
-\method{entropy}{rvar}(x)
+\method{entropy}{rvar}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) A vector to be interpreted as draws from
@@ -20,6 +20,11 @@ a categorical distribution, such as:
 \item A \link{numeric} (should be \link{integer} or integer-like)
 \item An \link{rvar}, \link{rvar_factor}, or \link{rvar_ordered}
 }}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{weights}{(numeric vector) A vector of weights of the same length as \code{x},
+or \code{NULL} for unweighted estimation.}
 }
 \value{
 If \code{x} is a \link{factor} or \link{numeric}, returns a length-1 numeric vector with a value
