@@ -58,6 +58,62 @@
 #' on the underlying array using the [draws_of()] function. To re-use existing
 #' random number generator functions to efficiently create `rvar`s, use [rvar_rng()].
 #'
+#' @section `rvar` Internals:
+#'
+#' The `rvar` datatype is not intended to be modified directly; rather, you should
+#' only use exported functions from \pkg{posterior}, such as [rvar()], [draws_of()],
+#' [log_weights()], and [weight_draws()] to create and manipulate `rvar`s.
+#' For completeness, and to aid internal development, this section documents the
+#' internal structure of the `rvar` datatype. While the public-facing API is
+#' intended to be stable, **this internal structure is subject to change without
+#' notice**.
+#'
+#' An `rvar` `x` consists of:
+#'
+#' - A zero-length `list()` with class `c("rvar", "vctrs_vctr")`. If `draws_of(x)`
+#'   is a [`factor`], the class will be `c("rvar_factor", "rvar", "vctrs_vctr")`,
+#'   and if `draws_of(x)` is an [`ordered`], the class will be
+#'   `c("rvar_ordered", "rvar_factor", "rvar", "vctrs_vctr")`. These classes are
+#'   set automatically if the underlying draws are modified.
+#'
+#'   The list has these attributes:
+#'
+#'   - `draws`: An [`array`] containing the draws, where the first dimension
+#'     indexes draws. **Always** get this attribute using [draws_of()] and set it
+#'     using `draws_of(x) <- value`. To simplify programming, `dim(draws_of(x))`
+#'     is guaranteed to always be greater than or equal to 2. Zero-length `rvar`s
+#'     have `dim(draws_of(x)) = c(1,0)`. The draws may be a [`numeric`],
+#'     [`integer`], [`logical`], [`factor`], or [`ordered`] array.
+#'
+#'     The dimensions after the first are reported as the dimensions of `x`; i.e.
+#'     `dim(x) == dim(draws_of(x))[-1]` and `dimnames(x) = dimnames(draws_of(x))[-1]`.
+#'     Because `rvar`s *always* have dimensions (unlike base R datatypes, where
+#'     there is a distinction between a length-*n* vector with no dimensions and
+#'     a length-*n* array with only 1 dimension), `names(x) = dimnames(x)[[1]]`;
+#'     i.e., `names()` refers to the names along the first dimension only.
+#'
+#'   - `nchains`: A scalar [`numeric`] giving the number of chains in this `rvar`.
+#'     **Always** get this attribute using [nchains()]. It cannot be set using the
+#'     public (exported) API, but can be modified through other functions (e.g.
+#'     [merge_chains()] or creating a new [rvar()]). In internal code, **always**
+#'     set it using `nchains_rvar(x) <- value`.
+#'
+#'   - `log_weights`: A vector [`numeric`] with length `ndraws(x)` giving the
+#'     log weight on each draw of this `rvar`, or `NULL` if the `rvar` is not
+#'     weighted. **Always** get this attribute using [weights()] or [log_weights()],
+#'     and set this attributes using [weight_draws()]. In internal code, it may
+#'     also be modified directly using `log_weights_rvar(x) <- value`.
+#'
+#'   - `cache`: An [`environment`] that may contain cached output of the \pkg{vctrs}
+#'     proxy functions on `x` to improve performance of code that makes multiple
+#'     calls to these functions. The cache is updated automatically and invalidated
+#'     when necessary so long as the `rvar` is only modified using the functions
+#'     described in this section (or other functions in the publicly-exported
+#'     `rvar` API). The environment may contain these variables:
+#'
+#'     - `vec_proxy`: cached output of [vctrs::vec_proxy()].
+#'     - `vec_proxy_equal`: cached output of [vctrs::vec_proxy_equal()].
+#'
 #' @seealso [as_rvar()] to convert objects to `rvar`s. See [rdo()], [rfun()], and
 #' [rvar_rng()] for higher-level interfaces for creating `rvar`s.
 #'
