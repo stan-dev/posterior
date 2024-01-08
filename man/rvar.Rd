@@ -112,13 +112,13 @@ The list has these attributes:
 \itemize{
 \item \code{draws}: An \code{\link{array}} containing the draws, where the first dimension
 indexes draws. \strong{Always} get this attribute using \code{\link[=draws_of]{draws_of()}} and set it
-using \code{draws_of(x) <- value}. To simplify programming, \code{dim(draws_of(x))}
+using \code{draws_of(x) <- value}. To simplify programming, \code{length(dim(draws_of(x)))}
 is guaranteed to always be greater than or equal to 2. Zero-length \code{rvar}s
 have \code{dim(draws_of(x)) = c(1,0)}. The draws may be a \code{\link{numeric}},
 \code{\link{integer}}, \code{\link{logical}}, \code{\link{factor}}, or \code{\link{ordered}} array.
 
 The dimensions after the first are reported as the dimensions of \code{x}; i.e.
-\code{dim(x) == dim(draws_of(x))[-1]} and \code{dimnames(x) = dimnames(draws_of(x))[-1]}.
+\code{dim(x) = dim(draws_of(x))[-1]} and \code{dimnames(x) = dimnames(draws_of(x))[-1]}.
 Because \code{rvar}s \emph{always} have dimensions (unlike base R datatypes, where
 there is a distinction between a length-\emph{n} vector with no dimensions and
 a length-\emph{n} array with only 1 dimension), \code{names(x) = dimnames(x)[[1]]};
@@ -126,7 +126,7 @@ i.e., \code{names()} refers to the names along the first dimension only.
 \item \code{nchains}: A scalar \code{\link{numeric}} giving the number of chains in this \code{rvar}.
 \strong{Always} get this attribute using \code{\link[=nchains]{nchains()}}. It cannot be set using the
 public (exported) API, but can be modified through other functions (e.g.
-\code{\link[=merge_chains]{merge_chains()}} or creating a new \code{\link[=rvar]{rvar()}}). In internal code, \strong{always}
+\code{\link[=merge_chains]{merge_chains()}} or by creating a new \code{\link[=rvar]{rvar()}}). In internal code, \strong{always}
 set it using \code{nchains_rvar(x) <- value}.
 \item \code{log_weights}: A vector \code{\link{numeric}} with length \code{ndraws(x)} giving the
 log weight on each draw of this \code{rvar}, or \code{NULL} if the \code{rvar} is not
@@ -135,7 +135,7 @@ and set this attributes using \code{\link[=weight_draws]{weight_draws()}}. In in
 also be modified directly using \code{log_weights_rvar(x) <- value}.
 \item \code{cache}: An \code{\link{environment}} that may contain cached output of the \pkg{vctrs}
 proxy functions on \code{x} to improve performance of code that makes multiple
-calls to these functions. The cache is updated automatically and invalidated
+calls to those functions. The cache is updated automatically and invalidated
 when necessary so long as the \code{rvar} is only modified using the functions
 described in this section (or other functions in the publicly-exported
 \code{rvar} API). The environment may contain these variables:

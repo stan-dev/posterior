@@ -80,13 +80,13 @@
 #'
 #'   - `draws`: An [`array`] containing the draws, where the first dimension
 #'     indexes draws. **Always** get this attribute using [draws_of()] and set it
-#'     using `draws_of(x) <- value`. To simplify programming, `dim(draws_of(x))`
+#'     using `draws_of(x) <- value`. To simplify programming, `length(dim(draws_of(x)))`
 #'     is guaranteed to always be greater than or equal to 2. Zero-length `rvar`s
 #'     have `dim(draws_of(x)) = c(1,0)`. The draws may be a [`numeric`],
 #'     [`integer`], [`logical`], [`factor`], or [`ordered`] array.
 #'
 #'     The dimensions after the first are reported as the dimensions of `x`; i.e.
-#'     `dim(x) == dim(draws_of(x))[-1]` and `dimnames(x) = dimnames(draws_of(x))[-1]`.
+#'     `dim(x) = dim(draws_of(x))[-1]` and `dimnames(x) = dimnames(draws_of(x))[-1]`.
 #'     Because `rvar`s *always* have dimensions (unlike base R datatypes, where
 #'     there is a distinction between a length-*n* vector with no dimensions and
 #'     a length-*n* array with only 1 dimension), `names(x) = dimnames(x)[[1]]`;
@@ -95,7 +95,7 @@
 #'   - `nchains`: A scalar [`numeric`] giving the number of chains in this `rvar`.
 #'     **Always** get this attribute using [nchains()]. It cannot be set using the
 #'     public (exported) API, but can be modified through other functions (e.g.
-#'     [merge_chains()] or creating a new [rvar()]). In internal code, **always**
+#'     [merge_chains()] or by creating a new [rvar()]). In internal code, **always**
 #'     set it using `nchains_rvar(x) <- value`.
 #'
 #'   - `log_weights`: A vector [`numeric`] with length `ndraws(x)` giving the
@@ -106,7 +106,7 @@
 #'
 #'   - `cache`: An [`environment`] that may contain cached output of the \pkg{vctrs}
 #'     proxy functions on `x` to improve performance of code that makes multiple
-#'     calls to these functions. The cache is updated automatically and invalidated
+#'     calls to those functions. The cache is updated automatically and invalidated
 #'     when necessary so long as the `rvar` is only modified using the functions
 #'     described in this section (or other functions in the publicly-exported
 #'     `rvar` API). The environment may contain these variables:
