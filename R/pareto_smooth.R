@@ -138,7 +138,7 @@ pareto_diags.default <- function(x,
     extra_diags = TRUE,
     verbose = verbose,
     smooth_draws = FALSE,
-    are_log_weights = FALSE,
+    are_log_weights = are_log_weights,
     ...)
 
   return(smoothed$diagnostics)
@@ -337,6 +337,7 @@ pareto_smooth.default <- function(x,
       x,
       ndraws_tail = ndraws_tail,
       tail = tail,
+      are_log_weights = are_log_weights,
       ...
     )
     k <- smoothed$k
