@@ -33,8 +33,9 @@ pareto_smooth(x, ...)
 \item{...}{Arguments passed to individual methods (if applicable).}
 
 \item{return_k}{(logical) Should the Pareto khat be included in
-output? If \code{TRUE}, output will be a list containing of smoothed
-draws and diagnostics. Default is \code{TRUE}.}
+output? If \code{TRUE}, output will be a list containing smoothed
+draws and diagnostics, otherwise it will be a numeric of the
+smoothed draws. Default is \code{FALSE}.}
 
 \item{extra_diags}{(logical) Should extra Pareto khat diagnostics
 be included in output? If \code{TRUE}, \code{min_ss}, \code{khat_threshold} and
@@ -70,17 +71,13 @@ draws are log weights, and only right tail will be smoothed.}
 }
 \value{
 Either a vector \code{x} of smoothed values or a named list
-containing the vector \code{x} and a named list \code{diagnostics} containing Pareto smoothing
-diagnostics:
-\itemize{
-\item \code{khat}: estimated Pareto k shape parameter, and
-optionally
-\item \code{min_ss}: minimum sample size for reliable Pareto
-smoothed estimate
-\item \code{khat_threshold}: khat-threshold for reliable
+containing the vector \code{x} and a named list \code{diagnostics}
+containing Pareto smoothing diagnostics: * \code{khat}: estimated
+Pareto k shape parameter, and optionally * \code{min_ss}: minimum
+sample size for reliable Pareto smoothed estimate *
+\code{khat_threshold}: khat-threshold for reliable Pareto smoothed
+estimates * \code{convergence_rate}: Relative convergence rate for
 Pareto smoothed estimates
-\item \code{convergence_rate}: Relative convergence rate for Pareto smoothed estimates
-}
 }
 \description{
 Smooth the tail draws of x by replacing tail draws by order
