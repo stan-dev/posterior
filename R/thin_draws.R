@@ -4,9 +4,10 @@
 #'
 #' @aliases thin
 #' @template args-methods-x
-#' @param thin (positive integer) The period for selecting draws. If
-#'   omitted, this will be automatically calculated based on bulk-ESS
-#'   and tail-ESS as suggested by Säilynoja et al. (2022).
+#' @param thin (positive numeric) The period for selecting draws. Must
+#'   be greater than or equal to 1. If omitted, this will be
+#'   automatically calculated based on bulk-ESS and tail-ESS as
+#'   suggested by Säilynoja et al. (2022).
 #' @template args-methods-dots
 #' @template ref-sailynoja-ecdf-2022
 #' @template return-draws
@@ -36,8 +37,8 @@ thin_draws.draws <- function(x, thin = NULL, ...) {
     # no thinning requested
     return(x)
   }
-  if (thin <= 0L) {
-    stop_no_call("'thin' must be a positive integer.")
+  if (thin <= 1L) {
+    stop_no_call("'thin' must be greater than or equal to 1")
   }
   niterations <- niterations(x)
   if (thin > niterations) {
