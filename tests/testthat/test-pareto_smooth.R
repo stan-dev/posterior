@@ -198,7 +198,7 @@ test_that("pareto_smooth works for log_weights", {
   ps <- pareto_smooth(lw, are_log_weights = TRUE, verbose = FALSE, ndraws_tail = 10, return_k = TRUE)
 
   # only right tail is smoothed
-  expect_equal(ps$x[1:15], lw[1:15])
+  expect_equal(ps$x[1:15] + max(lw), lw[1:15])
 
   expect_true(ps$diagnostics$khat > 0.7)
 
