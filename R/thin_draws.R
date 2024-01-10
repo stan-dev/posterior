@@ -5,7 +5,7 @@
 #' @aliases thin
 #' @template args-methods-x
 #' @param thin (positive numeric) The period for selecting draws. Must
-#'   be greater than or equal to 1. If omitted, this will be
+#'   be greater than or equal to 1. If `NULL`, it will be
 #'   automatically calculated based on bulk-ESS and tail-ESS as
 #'   suggested by Säilynoja et al. (2022).
 #' @template args-methods-dots
