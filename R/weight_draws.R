@@ -179,8 +179,8 @@ weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
 
 # validate weights and return log weights
 validate_weights <- function(weights, draws, log = FALSE) {
-  checkmate::expect_numeric(weights)
-  checkmate::expect_flag(log)
+  checkmate::assert_numeric(weights)
+  checkmate::assert_flag(log)
   if (length(weights) != ndraws(draws)) {
     stop_no_call("Number of weights must match the number of draws.")
   }

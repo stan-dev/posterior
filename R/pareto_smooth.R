@@ -138,7 +138,7 @@ pareto_diags.default <- function(x,
     extra_diags = TRUE,
     verbose = verbose,
     smooth_draws = FALSE,
-    are_log_weights = FALSE,
+    are_log_weights = are_log_weights,
     ...)
 
   return(smoothed$diagnostics)
@@ -181,8 +181,9 @@ pareto_diags.rvar <- function(x, ...) {
 #'
 #' @template args-pareto
 #' @param return_k (logical) Should the Pareto khat be included in
-#'   output? If `TRUE`, output will be a list containing of smoothed
-#'   draws and diagnostics. Default is `TRUE`.
+#'   output? If `TRUE`, output will be a list containing smoothed
+#'   draws and diagnostics, otherwise it will be a numeric of the
+#'   smoothed draws. Default is `FALSE`.
 #' @param extra_diags (logical) Should extra Pareto khat diagnostics
 #'   be included in output? If `TRUE`, `min_ss`, `khat_threshold` and
 #'   `convergence_rate` for the estimated k value will be
@@ -190,15 +191,13 @@ pareto_diags.rvar <- function(x, ...) {
 #' @template args-methods-dots
 #' @template ref-vehtari-paretosmooth-2022
 #' @return Either a vector `x` of smoothed values or a named list
-#'   containing the vector `x` and a named list `diagnostics` containing Pareto smoothing
-#'   diagnostics:
-#' * `khat`: estimated Pareto k shape parameter, and
-#'   optionally
-#' * `min_ss`: minimum sample size for reliable Pareto
-#'   smoothed estimate
-#' * `khat_threshold`: khat-threshold for reliable
+#'   containing the vector `x` and a named list `diagnostics`
+#'   containing Pareto smoothing diagnostics: * `khat`: estimated
+#'   Pareto k shape parameter, and optionally * `min_ss`: minimum
+#'   sample size for reliable Pareto smoothed estimate *
+#'   `khat_threshold`: khat-threshold for reliable Pareto smoothed
+#'   estimates * `convergence_rate`: Relative convergence rate for
 #'   Pareto smoothed estimates
-#' * `convergence_rate`: Relative convergence rate for Pareto smoothed estimates
 #'
 #' @seealso [`pareto_khat`] for only calculating khat, and
 #'   [`pareto_diags`] for additional diagnostics.
@@ -213,7 +212,7 @@ pareto_smooth <- function(x, ...) UseMethod("pareto_smooth")
 
 #' @rdname pareto_smooth
 #' @export
-pareto_smooth.rvar <- function(x, return_k = TRUE, extra_diags = FALSE, ...) {
+pareto_smooth.rvar <- function(x, return_k = FALSE, extra_diags = FALSE, ...) {
 
   if (extra_diags) {
     return_k <- TRUE
@@ -253,14 +252,14 @@ pareto_smooth.default <- function(x,
                                   tail = c("both", "right", "left"),
                                   r_eff = 1,
                                   ndraws_tail = NULL,
-                                  return_k = TRUE,
+                                  return_k = FALSE,
                                   extra_diags = FALSE,
-                                  verbose = FALSE,
+                                  verbose = TRUE,
                                   are_log_weights = FALSE,
                                   ...) {
 
-  checkmate::expect_numeric(ndraws_tail, null.ok = TRUE)
-  checkmate::expect_numeric(r_eff, null.ok = TRUE)
+  checkmate::assert_numeric(ndraws_tail, null.ok = TRUE)
+  checkmate::assert_numeric(r_eff, null.ok = TRUE)
   extra_diags <- as_one_logical(extra_diags)
   return_k <- as_one_logical(return_k)
   verbose <- as_one_logical(verbose)
@@ -338,6 +337,7 @@ pareto_smooth.default <- function(x,
       x,
       ndraws_tail = ndraws_tail,
       tail = tail,
+      are_log_weights = are_log_weights,
       ...
     )
     k <- smoothed$k
@@ -369,6 +369,65 @@ pareto_smooth.default <- function(x,
 
   return(out)
 }
+
+#' @rdname pareto_diags
+#' @export
+pareto_khat_threshold <- function(x, ...) {
+  UseMethod("pareto_khat_threshold")
+}
+
+#' @rdname pareto_diags
+#' @export
+pareto_khat_threshold.default <- function(x, ...) {
+  c(khat_threshold = ps_khat_threshold(length(x)))
+}
+
+#' @rdname pareto_diags
+#' @export
+pareto_khat_threshold.rvar <- function(x, ...) {
+  c(khat_threshold = ps_khat_threshold(ndraws(x)))
+}
+
+#' @rdname pareto_diags
+#' @export
+pareto_min_ss <- function(x, ...) {
+  UseMethod("pareto_min_ss")
+}
+
+#' @rdname pareto_diags
+#' @export
+pareto_min_ss.default <- function(x, ...) {
+  k <- pareto_khat(x)$k
+  c(min_ss = ps_min_ss(k))
+}
+
+#' @rdname pareto_diags
+#' @export
+pareto_min_ss.rvar <- function(x, ...) {
+  k <- pareto_khat(x)$k
+  c(min_ss = ps_min_ss(k))
+}
+
+#' @rdname pareto_diags
+#' @export
+pareto_convergence_rate <- function(x, ...) {
+  UseMethod("pareto_convergence_rate")
+}
+
+#' @rdname pareto_diags
+#' @export
+pareto_convergence_rate.default <- function(x, ...) {
+  k <- pareto_khat(x)$khat
+  c(convergence_rate = ps_convergence_rate(k, length(x)))
+}
+
+#' @rdname pareto_diags
+#' @export
+pareto_convergence_rate.rvar <- function(x, ...) {
+  k <- pareto_khat(x)
+  c(convergence_rate = ps_convergence_rate(k, ndraws(x)))
+}
+
 
 #' Pareto smooth tail
 #' internal function to pareto smooth the tail of a vector
@@ -493,7 +552,6 @@ ps_min_ss <- function(k, ...) {
   out
 }
 
-
 #' Pareto-smoothing k-hat threshold
 #'
 #' Given sample size S computes khat threshold for reliable Pareto
@@ -561,26 +619,20 @@ pareto_k_diagmsg <- function(diags, are_weights = FALSE, ...) {
   if (!are_weights) {
   
     if (khat > 1) {
-      msg <- paste0(msg, "All estimates are unreliable. If the distribution of draws is bounded,\n",
-                    "further draws may improve the estimates, but it is not possible to predict\n",
-                    "whether any feasible sample size is sufficient.")
+      msg <- paste0(msg, " Mean does not exist, making empirical mean estimate of the draws not applicable.")
     } else {
       if (khat > khat_threshold) {
-        msg <- paste0(msg, "S is too small, and sample size larger than ", round(min_ss, 0), " is needed for reliable results.\n")
-      } else {
-        msg <- paste0(msg, "To halve the RMSE, approximately ", round(2^(2 / convergence_rate), 1), " times bigger S is needed.\n")
+        msg <- paste0(msg, " Sample size is too small, for given Pareto k-hat. Sample size larger than ", round(min_ss, 0), " is needed for reliable results.\n")
       }
       if (khat > 0.7) {
-        msg <- paste0(msg, "Bias dominates RMSE, and the variance based MCSE is underestimated.\n")
+        msg <- paste0(msg, " Bias dominates when k-hat > 0.7, making empirical mean estimate of the Pareto-smoothed draws unreliable.\n")
       }
     }
-
   } else {
-
     if (khat > khat_threshold || khat > 0.7) {
-        msg <- paste0(msg, "Pareto khat for weights is high (", round(khat, 1) ,"). This indicates a single or few weights dominate.\n", "Inference based on weighted draws will be unreliable.\n")
+        msg <- paste0(msg, " Pareto khat for weights is high (", round(khat, 1) ,"). This indicates a single or few weights dominate.\n", "Inference based on weighted draws will be unreliable.\n")
     }
   }
-  message(msg)
+  message("Pareto k-hat = ", round(khat, 2), ".", msg)
   invisible(diags)
 }
