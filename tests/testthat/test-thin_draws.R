@@ -22,12 +22,12 @@ test_that("automatic thinning works as expected", {
 
   ess_mu_1 <- SW(min(ess_tail(mu_1), ess_bulk(mu_1)))
   ess_mu_2 <- SW(min(ess_tail(mu_2), ess_bulk(mu_2)))
-  ess_mu_3 <- SW(min(ess_tail(mu_2), ess_bulk(mu_3)))
-  ess_mu_4 <- SW(min(ess_tail(mu_3), ess_bulk(mu_4)))
+  ess_mu_3 <- SW(min(ess_tail(mu_3), ess_bulk(mu_3)))
+  ess_mu_4 <- SW(min(ess_tail(mu_4), ess_bulk(mu_4)))
 
-  thin_by <- round(niterations(mu) / mean(
+  thin_by <- niterations(mu) / mean(
     c(ess_mu_1, ess_mu_2, ess_mu_3, ess_mu_4))
-    )
+  
   expect_equal(thin_draws(mu), thin_draws(mu, thin = thin_by))
 
 })
