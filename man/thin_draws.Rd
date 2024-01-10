@@ -17,9 +17,10 @@ thin_draws(x, thin = NULL, ...)
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
 
-\item{thin}{(positive integer) The period for selecting draws. If
-omitted, this will be automatically calculated based on bulk-ESS
-and tail-ESS as suggested by Säilynoja et al. (2022).}
+\item{thin}{(positive numeric) The period for selecting draws. Must
+be greater than or equal to 1. If \code{NULL}, it will be
+automatically calculated based on bulk-ESS and tail-ESS as
+suggested by Säilynoja et al. (2022).}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
