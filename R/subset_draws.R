@@ -63,12 +63,20 @@ subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
   draw <- check_draw_ids(draw, x, unique = unique)
 
   if (exclude) {
-    variable <- setdiff(variables(x), variable)
-    iteration <- setdiff(iteration_ids(x), iteration)
-    chain <- setdiff(chain_ids(x), chain)
-    draw <- setdiff(draw_ids(x), draw)
+    if (!is.null(variable)) {
+      variable <- setdiff(variables(x, reserved = TRUE), variable)
+    }
+    if (!is.null(iteration)) {
+      iteration <- setdiff(iteration_ids(x), iteration)
+    }
+    if (!is.null(chain)) {
+      chain <- setdiff(chain_ids(x), chain)
+    }
+    if (!is.null(draw)) {
+      draw <- setdiff(draw_ids(x), draw)
+    }
   }
-  
+
   x <- prepare_subsetting(x, iteration, chain, draw)
   x <- .subset_draws(x, iteration, chain, draw, variable, reserved = TRUE)
   if (!is.null(chain) || !is.null(iteration)) {
@@ -85,7 +93,7 @@ subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
   if (all_null(variable, iteration, chain, draw)) {
     return(x)
   }
-  
+
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
@@ -94,7 +102,7 @@ subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
 
   if (exclude) {
     if (!is.null(variable)) {
-      variable <- setdiff(variables(x), variable)
+      variable <- setdiff(variables(x, reserved = TRUE), variable)
     }
     if (!is.null(iteration)) {
       iteration <- setdiff(iteration_ids(x), iteration)
@@ -106,7 +114,7 @@ subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
       draw <- setdiff(draw_ids(x), draw)
     }
   }
-  
+
   x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(draw)) {
     iteration <- draw
@@ -126,7 +134,7 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
   if (all_null(variable, iteration, chain, draw)) {
     return(x)
   }
-  
+
   x <- repair_draws(x)
   unique <- as_one_logical(unique)
   variable <- check_existing_variables(variable, x, regex = regex)
@@ -136,7 +144,7 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
 
   if (exclude) {
     if (!is.null(variable)) {
-      variable <- setdiff(variables(x), variable)
+      variable <- setdiff(variables(x, reserved = TRUE), variable)
     }
     if (!is.null(iteration)) {
       iteration <- setdiff(iteration_ids(x), iteration)
@@ -148,7 +156,7 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
       draw <- setdiff(draw_ids(x), draw)
     }
   }
-  
+
   x <- prepare_subsetting(x, iteration, chain, draw)
   x <- .subset_draws(
     x, iteration, chain, draw, variable,
@@ -174,7 +182,7 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
 
   if (exclude) {
     if (!is.null(variable)) {
-      variable <- setdiff(variables(x), variable)
+      variable <- setdiff(variables(x, reserved = TRUE), variable)
     }
     if (!is.null(iteration)) {
       iteration <- setdiff(iteration_ids(x), iteration)
@@ -186,7 +194,7 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
       draw <- setdiff(draw_ids(x), draw)
     }
   }
-  
+
   x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(draw)) {
     iteration <- draw
@@ -206,7 +214,7 @@ subset_draws.draws_rvars <- function(x, variable = NULL, iteration = NULL,
   if (all_null(variable, iteration, chain, draw)) {
     return(x)
   }
-  
+
   x <- repair_draws(x)
   variable <- check_existing_variables(variable, x, regex = regex)
   iteration <- check_iteration_ids(iteration, x, unique = unique)
@@ -215,7 +223,7 @@ subset_draws.draws_rvars <- function(x, variable = NULL, iteration = NULL,
 
   if (exclude) {
     if (!is.null(variable)) {
-      variable <- setdiff(variables(x), variable)
+      variable <- setdiff(variables(x, reserved = TRUE), variable)
     }
     if (!is.null(iteration)) {
       iteration <- setdiff(iteration_ids(x), iteration)
@@ -227,7 +235,7 @@ subset_draws.draws_rvars <- function(x, variable = NULL, iteration = NULL,
       draw <- setdiff(draw_ids(x), draw)
     }
   }
-  
+
   x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(draw)) {
     iteration <- draw
