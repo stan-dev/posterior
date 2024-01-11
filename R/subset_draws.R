@@ -18,10 +18,10 @@
 #'   iterations, or draws be allowed? If `TRUE` (the default) only
 #'   unique chains, iterations, and draws are selected regardless of
 #'   how often they appear in the respective selecting arguments.
-#' @param exclude (logical) Should the matched selection be excluded?
-#'   If `FALSE` (the default) the matched subset of draws will be
-#'   returned.  If `TRUE` the draws excluding the matched subset will
-#'   be returned.
+#' @param exclude (logical) Should the selected subset be excluded?
+#'   If `FALSE` (the default) the selection of draws will be returned.
+#'   If `TRUE` all draws excluding the selected subset will be
+#'   returned.
 #'
 #' @template args-methods-dots
 #' @template return-draws
