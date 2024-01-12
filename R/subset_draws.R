@@ -19,8 +19,9 @@
 #'   unique chains, iterations, and draws are selected regardless of
 #'   how often they appear in the respective selecting arguments.
 #' @param exclude (logical) Should the selected subset be excluded?
-#'   If `FALSE` (the default) the selection will be returned.  If
-#'   `TRUE` all but the selected subset will be returned.
+#'   If `FALSE` (the default) only the selected subset will be
+#'   returned.  If `TRUE` everything but the selected subset will be
+#'   returned.
 #'
 #' @template args-methods-dots
 #' @template return-draws

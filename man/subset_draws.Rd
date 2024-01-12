@@ -105,9 +105,8 @@ unique chains, iterations, and draws are selected regardless of
 how often they appear in the respective selecting arguments.}
 
 \item{exclude}{(logical) Should the selected subset be excluded?
-If \code{FALSE} (the default) the selection of draws will be returned.
-If \code{TRUE} all draws excluding the selected subset will be
-returned.}
+If \code{FALSE} (the default) the selection will be returned.  If
+\code{TRUE} all but the selected subset will be returned.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.
