@@ -57,25 +57,10 @@ subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
     return(x)
   }
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex)
-  iteration <- check_iteration_ids(iteration, x, unique = unique)
-  chain <- check_chain_ids(chain, x, unique = unique)
-  draw <- check_draw_ids(draw, x, unique = unique)
-
-  if (exclude) {
-    if (!is.null(variable)) {
-      variable <- setdiff(variables(x, reserved = TRUE), variable)
-    }
-    if (!is.null(iteration)) {
-      iteration <- setdiff(iteration_ids(x), iteration)
-    }
-    if (!is.null(chain)) {
-      chain <- setdiff(chain_ids(x), chain)
-    }
-    if (!is.null(draw)) {
-      draw <- setdiff(draw_ids(x), draw)
-    }
-  }
+  variable <- check_existing_variables(variable, x, regex = regex, exclude = exclude)
+  iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
+  chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
+  draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
 
   x <- prepare_subsetting(x, iteration, chain, draw)
   x <- .subset_draws(x, iteration, chain, draw, variable, reserved = TRUE)
@@ -95,25 +80,10 @@ subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
   }
 
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex)
-  iteration <- check_iteration_ids(iteration, x, unique = unique)
-  chain <- check_chain_ids(chain, x, unique = unique)
-  draw <- check_draw_ids(draw, x, unique = unique)
-
-  if (exclude) {
-    if (!is.null(variable)) {
-      variable <- setdiff(variables(x, reserved = TRUE), variable)
-    }
-    if (!is.null(iteration)) {
-      iteration <- setdiff(iteration_ids(x), iteration)
-    }
-    if (!is.null(chain)) {
-      chain <- setdiff(chain_ids(x), chain)
-    }
-    if (!is.null(draw)) {
-      draw <- setdiff(draw_ids(x), draw)
-    }
-  }
+  variable <- check_existing_variables(variable, x, regex = regex, exclude = exclude)
+  iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
+  chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
+  draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
 
   x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(draw)) {
@@ -137,25 +107,10 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
 
   x <- repair_draws(x)
   unique <- as_one_logical(unique)
-  variable <- check_existing_variables(variable, x, regex = regex)
-  iteration <- check_iteration_ids(iteration, x, unique = unique)
-  chain <- check_chain_ids(chain, x, unique = unique)
-  draw <- check_draw_ids(draw, x, unique = unique)
-
-  if (exclude) {
-    if (!is.null(variable)) {
-      variable <- setdiff(variables(x, reserved = TRUE), variable)
-    }
-    if (!is.null(iteration)) {
-      iteration <- setdiff(iteration_ids(x), iteration)
-    }
-    if (!is.null(chain)) {
-      chain <- setdiff(chain_ids(x), chain)
-    }
-    if (!is.null(draw)) {
-      draw <- setdiff(draw_ids(x), draw)
-    }
-  }
+  variable <- check_existing_variables(variable, x, regex = regex, exclude= exclude)
+  iteration <- check_iteration_ids(iteration, x, unique = unique, exclude= exclude)
+  chain <- check_chain_ids(chain, x, unique = unique, exclude= exclude)
+  draw <- check_draw_ids(draw, x, unique = unique, exclude= exclude)
 
   x <- prepare_subsetting(x, iteration, chain, draw)
   x <- .subset_draws(
@@ -175,25 +130,10 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
   }
 
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex)
-  iteration <- check_iteration_ids(iteration, x, unique = unique)
-  chain <- check_chain_ids(chain, x, unique = unique)
-  draw <- check_draw_ids(draw, x, unique = unique)
-
-  if (exclude) {
-    if (!is.null(variable)) {
-      variable <- setdiff(variables(x, reserved = TRUE), variable)
-    }
-    if (!is.null(iteration)) {
-      iteration <- setdiff(iteration_ids(x), iteration)
-    }
-    if (!is.null(chain)) {
-      chain <- setdiff(chain_ids(x), chain)
-    }
-    if (!is.null(draw)) {
-      draw <- setdiff(draw_ids(x), draw)
-    }
-  }
+  variable <- check_existing_variables(variable, x, regex = regex, exclude = exclude)
+  iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
+  chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
+  draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
 
   x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(draw)) {
@@ -216,25 +156,10 @@ subset_draws.draws_rvars <- function(x, variable = NULL, iteration = NULL,
   }
 
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex)
-  iteration <- check_iteration_ids(iteration, x, unique = unique)
-  chain <- check_chain_ids(chain, x, unique = unique)
-  draw <- check_draw_ids(draw, x, unique = unique)
-
-  if (exclude) {
-    if (!is.null(variable)) {
-      variable <- setdiff(variables(x, reserved = TRUE), variable)
-    }
-    if (!is.null(iteration)) {
-      iteration <- setdiff(iteration_ids(x), iteration)
-    }
-    if (!is.null(chain)) {
-      chain <- setdiff(chain_ids(x), chain)
-    }
-    if (!is.null(draw)) {
-      draw <- setdiff(draw_ids(x), draw)
-    }
-  }
+  variable <- check_existing_variables(variable, x, regex = regex, exclude = exclude)
+  iteration <- check_iteration_ids(iteration, x, unique = unique, exclude= exclude)
+  chain <- check_chain_ids(chain, x, unique = unique, exclude= exclude)
+  draw <- check_draw_ids(draw, x, unique = unique, exclude= exclude)
 
   x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(draw)) {
