@@ -18,6 +18,13 @@ test_that("subset_draws works correctly for draws_matrix objects", {
   expect_equal(setdiff(variables(x, reserved = TRUE), "mu"), variables(x_sub, reserved = TRUE))
   expect_equal(nchains(x_sub), 1)
 
+  x_sub <- subset_draws(x, draw = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3, ndraws(x_sub))
+
+  x_sub <- subset_draws(x, iteration = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3 * nchains(x), ndraws(x_sub))
+
+
 })
 
 test_that("subset_draws works correctly for draws_array objects", {
@@ -45,6 +52,12 @@ test_that("subset_draws works correctly for draws_array objects", {
   x_sub <- subset_draws(x, variable = "mu", chain = c(1, 2, 3), exclude = TRUE)
   expect_equal(setdiff(variables(x, reserved = TRUE), "mu"), variables(x_sub, reserved = TRUE))
   expect_equal(nchains(x_sub), 1)
+
+  x_sub <- subset_draws(x, draw = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3, ndraws(x_sub))
+
+  x_sub <- subset_draws(x, iteration = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3 * nchains(x), ndraws(x_sub))
 })
 
 test_that("subset_draws works correctly for draws_df objects", {
@@ -65,6 +78,12 @@ test_that("subset_draws works correctly for draws_df objects", {
   x_sub <- subset_draws(x, variable = "mu", chain = c(1, 2, 3), exclude = TRUE)
   expect_equal(setdiff(variables(x, reserved = TRUE), "mu"), variables(x_sub, reserved = TRUE))
   expect_equal(nchains(x_sub), 1)
+
+  x_sub <- subset_draws(x, draw = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3, ndraws(x_sub))
+
+  x_sub <- subset_draws(x, iteration = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3 * nchains(x), ndraws(x_sub))
 })
 
 test_that("subset_draws works correctly for draws_list objects", {
@@ -91,6 +110,12 @@ test_that("subset_draws works correctly for draws_list objects", {
   x_sub <- subset_draws(x, variable = "mu", chain = c(1, 2, 3), exclude = TRUE)
   expect_equal(setdiff(variables(x, reserved = TRUE), "mu"), variables(x_sub, reserved = TRUE))
   expect_equal(nchains(x_sub), 1)
+
+  x_sub <- subset_draws(x, draw = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3, ndraws(x_sub))
+
+  x_sub <- subset_draws(x, iteration = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3 * nchains(x), ndraws(x_sub))
 })
 
 test_that("subset_draws works correctly for draws_rvars objects", {
@@ -117,6 +142,12 @@ test_that("subset_draws works correctly for draws_rvars objects", {
   x_sub <- subset_draws(x, variable = "mu", chain = c(1, 2, 3), exclude = TRUE)
   expect_equal(setdiff(variables(x, reserved = TRUE), "mu"), variables(x_sub, reserved = TRUE))
   expect_equal(nchains(x_sub), 1)
+
+  x_sub <- subset_draws(x, draw = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3, ndraws(x_sub))
+
+  x_sub <- subset_draws(x, iteration = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3 * nchains(x), ndraws(x_sub))
 })
 
 test_that("subset_draws works correctly for rvar objects", {
@@ -137,6 +168,12 @@ test_that("subset_draws works correctly for rvar objects", {
   x_sub <- subset_draws(x, iteration = c(1, 2), chain = c(1, 2, 3), exclude = TRUE)
   expect_equal(niterations(x_sub), niterations(x) - 2)
   expect_equal(nchains(x_sub), 1)
+
+  x_sub <- subset_draws(x, draw = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3, ndraws(x_sub))
+
+  x_sub <- subset_draws(x, iteration = c(1, 2, 3), exclude = TRUE)
+  expect_equal(ndraws(x) - 3 * nchains(x), ndraws(x_sub))
 
 })
 

@@ -659,7 +659,7 @@ check_draw_ids <- function(draw_ids, x, unique = TRUE, exclude = FALSE) {
   }
 
   if (exclude) {
-    draw_ids <- setdif(draw_ids(x), draw_ids)
+    draw_ids <- setdiff(draw_ids(x), draw_ids)
   }
   
   invisible(draw_ids)
