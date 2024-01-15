@@ -21,6 +21,7 @@ subset_draws(x, ...)
   draw = NULL,
   regex = FALSE,
   unique = TRUE,
+  exclude = FALSE,
   ...
 )
 
@@ -32,6 +33,7 @@ subset_draws(x, ...)
   draw = NULL,
   regex = FALSE,
   unique = TRUE,
+  exclude = FALSE,
   ...
 )
 
@@ -43,6 +45,7 @@ subset_draws(x, ...)
   draw = NULL,
   regex = FALSE,
   unique = TRUE,
+  exclude = FALSE,
   ...
 )
 
@@ -54,6 +57,7 @@ subset_draws(x, ...)
   draw = NULL,
   regex = FALSE,
   unique = TRUE,
+  exclude = FALSE,
   ...
 )
 
@@ -65,6 +69,7 @@ subset_draws(x, ...)
   draw = NULL,
   regex = FALSE,
   unique = TRUE,
+  exclude = FALSE,
   ...
 )
 
@@ -78,24 +83,30 @@ is defined.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{variable}{(character vector) The variables to select. All elements of
-non-scalar variables can be selected at once.}
+\item{variable}{(character vector) The variables to select. All
+elements of non-scalar variables can be selected at once.}
 
 \item{iteration}{(integer vector) The iteration indices to select.}
 
 \item{chain}{(integer vector) The chain indices to select.}
 
-\item{draw}{(integer vector) The draw indices to be select. Subsetting draw
-indices will lead to an automatic merging of chains via \code{\link{merge_chains}}.}
+\item{draw}{(integer vector) The draw indices to be
+select. Subsetting draw indices will lead to an automatic merging
+of chains via \code{\link{merge_chains}}.}
 
 \item{regex}{(logical) Should \code{variable} should be treated as a
-(vector of) regular expressions? Any variable in \code{x} matching at least one
-of the regular expressions will be selected. Defaults to \code{FALSE}.}
+(vector of) regular expressions? Any variable in \code{x} matching at
+least one of the regular expressions will be selected. Defaults
+to \code{FALSE}.}
 
-\item{unique}{(logical) Should duplicated selection of chains, iterations, or
-draws be allowed? If \code{TRUE} (the default) only unique chains, iterations,
-and draws are selected regardless of how often they appear in the
-respective selecting arguments.}
+\item{unique}{(logical) Should duplicated selection of chains,
+iterations, or draws be allowed? If \code{TRUE} (the default) only
+unique chains, iterations, and draws are selected regardless of
+how often they appear in the respective selecting arguments.}
+
+\item{exclude}{(logical) Should the selected subset be excluded?
+If \code{FALSE} (the default) the selection will be returned.  If
+\code{TRUE} all but the selected subset will be returned.}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.
