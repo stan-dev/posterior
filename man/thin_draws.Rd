@@ -18,9 +18,14 @@ thin_draws(x, thin = NULL, ...)
 is defined.}
 
 \item{thin}{(positive numeric) The period for selecting draws. Must
-be greater than or equal to 1. If \code{NULL}, it will be
-automatically calculated based on bulk-ESS and tail-ESS as
-suggested by Säilynoja et al. (2022).}
+be between 1 and the number of iterations. If the value is not an
+integer, the draws will be selected such that the number of draws
+returned is equal to round(ndraws(x) / thin)). Intervals between
+selected draws will be either ceiling(thin) or floor(thin), such
+that the average interval will be close to the thin value. If
+\code{NULL}, it will be automatically calculated based on bulk and
+tail effective sample size as suggested by Säilynoja et
+al. (2022).}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
@@ -28,7 +33,8 @@ suggested by Säilynoja et al. (2022).}
 A \code{draws} object of the same class as \code{x}.
 }
 \description{
-Thin \code{\link{draws}} objects to reduce their size and autocorrelation in the chains.
+Thin \code{\link{draws}} objects to reduce their size and autocorrelation in
+the chains.
 }
 \examples{
 x <- example_draws()
