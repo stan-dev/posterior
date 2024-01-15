@@ -8,7 +8,7 @@
 #' @param thin (positive numeric) The period for selecting draws. Must
 #'   be between 1 and the number of iterations. If the value is not an
 #'   integer, the draws will be selected such that the number of draws
-#'   returned is equal to round(ndraws(x) / thin)). Intervals between
+#'   returned is equal to round(ndraws(x) / thin). Intervals between
 #'   selected draws will be either ceiling(thin) or floor(thin), such
 #'   that the average interval will be close to the thin value. If
 #'   `NULL`, it will be automatically calculated based on bulk and
