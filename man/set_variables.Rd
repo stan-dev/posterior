@@ -2,24 +2,33 @@
 % Please edit documentation in R/draws-index.R
 \name{set_variables}
 \alias{set_variables}
+\alias{repair_variable_names}
 \title{Set variable names in \code{draws} objects}
 \usage{
 set_variables(x, variables, ...)
+
+repair_variable_names(old_variables)
 }
 \arguments{
 \item{x}{(draws) A \code{\link{draws}} object.}
 
-\item{variables}{(character) new variable names.}
+\item{variables}{(character) New variable names.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{old_variables}{(character) Variable names to repair. Should be variable
+names with periods to convert to square brackets (e.g., \code{"theta.1"} ->
+\code{"theta[1]"}, \code{"theta.1.1"} -> \code{"theta[1,1]"}).}
 }
 \value{
 Returns a \code{\link{draws}} object of the same format as \code{x}, with
 variables named as specified.
 }
 \description{
-Set variable names for all variables in a \code{\link{draws}} object. Useful
-when using pipe operators.
+Set variable names for all variables in a \code{\link{draws}} object. Useful when using
+pipe operators. The additional helper function \code{repair_variable_names()} can
+convert variable names using periods (e.g. \code{"theta.1"}) to the more common
+square brackets (\code{"theta[1]"}) that are better supported by the package.
 }
 \examples{
 x <- as_draws(matrix(rnorm(100), ncol = 2))
@@ -30,6 +39,13 @@ variables(x)
 
 # this is equivalent to
 variables(x) <- c("theta[1]", "theta[2]")
+variables(x)
+
+# using repair_variable_names
+x <- matrix(rnorm(100), ncol = 2)
+colnames(x) <- c("theta.1", "theta.2")
+repair_variable_names(colnames(x))
+x <- set_variables(as_draws(x), repair_variable_names(colnames(x)))
 variables(x)
 
 }

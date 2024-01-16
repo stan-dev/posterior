@@ -145,11 +145,13 @@ remove_reserved_variable_names <- function(variables, reserved) {
 
 #' Set variable names in `draws` objects
 #'
-#' Set variable names for all variables in a [`draws`] object. Useful
-#' when using pipe operators.
+#' Set variable names for all variables in a [`draws`] object. Useful when using
+#' pipe operators. The additional helper function `repair_variable_names()` can
+#' convert variable names using periods (e.g. `"theta.1"`) to the more common
+#' square brackets (`"theta[1]"`) that are better supported by the package.
 #'
 #' @param x (draws) A [`draws`] object.
-#' @param variables (character) new variable names.
+#' @param variables (character) New variable names.
 #' @template args-methods-dots
 #'
 #' @return Returns a [`draws`] object of the same format as `x`, with
@@ -173,6 +175,31 @@ set_variables <- function(x, variables, ...) {
   return(x)
 }
 
+#' @rdname set_variables
+#' @param old_variables (character) Variable names to repair. Should be variable
+#'   names with periods to convert to square brackets (e.g., `"theta.1"` ->
+#'   `"theta[1]"`, `"theta.1.1"` -> `"theta[1,1]"`).
+#' @examples
+#' # using repair_variable_names
+#' x <- matrix(rnorm(100), ncol = 2)
+#' colnames(x) <- c("theta.1", "theta.2")
+#' repair_variable_names(colnames(x))
+#' x <- set_variables(as_draws(x), repair_variable_names(colnames(x)))
+#' variables(x)
+#'
+#' @export
+repair_variable_names <- function(old_variables) {
+  if (!all(grepl("\\.", old_variables))) {
+    stop_no_call(
+      "All names in 'old_variables' must contain at least one '.' in the name."
+    )
+  }
+  repaired_variables <- sub("\\.", "[", old_variables)
+  repaired_variables <- gsub("\\.", ",", repaired_variables)
+  repaired_variables[grep("\\[", repaired_variables)] <-
+    paste0(repaired_variables[grep("\\[", repaired_variables)], "]")
+  repaired_variables
+}
 
 #' @rdname draws-index
 #' @export
