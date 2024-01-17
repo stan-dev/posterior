@@ -79,6 +79,12 @@ test_that("resample_draws works on rvars", {
   expect_true(mean_rs > 6660 && mean_rs < 6670)
   expect_true(is_rvar(x_rs))
 
+  x_rs <- resample_draws(weight_draws(x, w), method = "stratified")
+  mean_rs <- mean(x_rs)
+  expect_true(mean_rs > 6660 && mean_rs < 6670)
+  expect_true(is_rvar(x_rs))
+  expect_null(log_weights(x_rs))
+
   # without weights
   x_rs <- resample_draws(x, method = "stratified")
   mean_rs <- mean(x_rs)

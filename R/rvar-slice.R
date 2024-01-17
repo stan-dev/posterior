@@ -141,17 +141,18 @@ NULL
       .draws <- draws_of(x)[, i, drop = FALSE]
     }
     dimnames(.draws) <- NULL
-    out <- new_rvar(.draws, .nchains = nchains(x))
+    draws_of(x) <- .draws
   } else if (length(index) == length(dim(x))) {
     # multiple element selection => must have exactly the right number of dims
     .draws <- inject(draws_of(x)[, !!!index, drop = FALSE])
     # must do drop manually in case the draws dimension has only 1 draw
     dim(.draws) <- c(ndraws(x), 1)
-    out <- new_rvar(.draws, .nchains = nchains(x))
+    draws_of(x) <- .draws
   } else {
     stop_no_call("subscript out of bounds")
   }
-  out
+
+  x
 }
 
 #' @rdname rvar-slice
@@ -283,9 +284,10 @@ NULL
   if (!is_missing(draws_index[[1]])) {
     # if we subsetted draws, replace draw ids with sequential ids
     rownames(.draws) <- seq_len(NROW(.draws))
+    log_weights_rvar(x) <- inject(log_weights(x)[!!!draws_index])
   }
 
-  x <- new_rvar(.draws, .nchains = nchains(x))
+  draws_of(x) <- .draws
 
   if (drop) {
     x <- drop(x)

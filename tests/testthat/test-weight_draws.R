@@ -63,6 +63,26 @@ test_that("weight_draws works on draws_rvars", {
   expect_equal(weights2, weights)
 })
 
+test_that("weights are propagated to variables in draws_rvars", {
+  d <- draws_rvars(x = rvar(1:10, log_weights = 2:11), y = 3:12)
+  expect_equal(log_weights(d$x), 2:11)
+  expect_equal(log_weights(d$y), 2:11)
+
+  d <- draws_rvars(x = 1:10, y = 3:12, .log_weight = 2:11)
+  expect_equal(log_weights(d$x), 2:11)
+  expect_equal(log_weights(d$y), 2:11)
+
+  expect_error(
+    draws_rvars(x = rvar(1:10, log_weights = 1:10), y = rvar(3:12, log_weights = 2:11)),
+    "different log weights"
+  )
+
+  expect_error(
+    draws_rvars(x = rvar(1:10, log_weights = 1:10), .log_weight = 2:11),
+    "different log weights"
+  )
+})
+
 # conversion preserves weights --------------------------------------------
 
 test_that("conversion between formats preserves weights", {
@@ -71,7 +91,8 @@ test_that("conversion between formats preserves weights", {
     array = weight_draws(draws_array(x = 1:10), 1:10),
     df = weight_draws(draws_df(x = 1:10), 1:10),
     list = weight_draws(draws_list(x = 1:10), 1:10),
-    rvars = weight_draws(draws_rvars(x = 1:10), 1:10)
+    rvars = weight_draws(draws_rvars(x = 1:10), 1:10),
+    rvar = weight_draws(rvar(x = 1:10), 1:10)
   )
 
   # chain/iteration/draw columns are placed at the end by conversion functions,

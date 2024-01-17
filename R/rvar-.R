@@ -26,6 +26,10 @@
 #' is ignored and the second dimension of `x` is used to index chains.
 #' Internally, the array will be converted to a format without the chain index.
 #' Ignored when `x` is already an [`rvar`].
+#' @param log_weights (numeric vector) A vector of log weights of length `ndraws(x)`.
+#'   Weights will be internally stored on the log scale and will not be normalized,
+#'   but normalized (non-log) weights can be returned via the [weights.rvar()]
+#'   method later.
 #'
 #' @details
 #'
@@ -53,6 +57,62 @@
 #' As [rfun()] and [rdo()] incur some performance cost, you can also operate directly
 #' on the underlying array using the [draws_of()] function. To re-use existing
 #' random number generator functions to efficiently create `rvar`s, use [rvar_rng()].
+#'
+#' @section `rvar` Internals:
+#'
+#' The `rvar` datatype is not intended to be modified directly; rather, you should
+#' only use exported functions from \pkg{posterior}, such as [rvar()], [draws_of()],
+#' [log_weights()], and [weight_draws()] to create and manipulate `rvar`s.
+#' For completeness, and to aid internal development, this section documents the
+#' internal structure of the `rvar` datatype. While the public-facing API is
+#' intended to be stable, **this internal structure is subject to change without
+#' notice**.
+#'
+#' An `rvar` `x` consists of:
+#'
+#' - A zero-length `list()` with class `c("rvar", "vctrs_vctr")`. If `draws_of(x)`
+#'   is a [`factor`], the class will be `c("rvar_factor", "rvar", "vctrs_vctr")`,
+#'   and if `draws_of(x)` is an [`ordered`], the class will be
+#'   `c("rvar_ordered", "rvar_factor", "rvar", "vctrs_vctr")`. These classes are
+#'   set automatically if the underlying draws are modified.
+#'
+#'   The list has these attributes:
+#'
+#'   - `draws`: An [`array`] containing the draws, where the first dimension
+#'     indexes draws. **Always** get this attribute using [draws_of()] and set it
+#'     using `draws_of(x) <- value`. To simplify programming, `length(dim(draws_of(x)))`
+#'     is guaranteed to always be greater than or equal to 2. Zero-length `rvar`s
+#'     have `dim(draws_of(x)) = c(1,0)`. The draws may be a [`numeric`],
+#'     [`integer`], [`logical`], [`factor`], or [`ordered`] array.
+#'
+#'     The dimensions after the first are reported as the dimensions of `x`; i.e.
+#'     `dim(x) = dim(draws_of(x))[-1]` and `dimnames(x) = dimnames(draws_of(x))[-1]`.
+#'     Because `rvar`s *always* have dimensions (unlike base R datatypes, where
+#'     there is a distinction between a length-*n* vector with no dimensions and
+#'     a length-*n* array with only 1 dimension), `names(x) = dimnames(x)[[1]]`;
+#'     i.e., `names()` refers to the names along the first dimension only.
+#'
+#'   - `nchains`: A scalar [`numeric`] giving the number of chains in this `rvar`.
+#'     **Always** get this attribute using [nchains()]. It cannot be set using the
+#'     public (exported) API, but can be modified through other functions (e.g.
+#'     [merge_chains()] or by creating a new [rvar()]). In internal code, **always**
+#'     set it using `nchains_rvar(x) <- value`.
+#'
+#'   - `log_weights`: A vector [`numeric`] with length `ndraws(x)` giving the
+#'     log weight on each draw of this `rvar`, or `NULL` if the `rvar` is not
+#'     weighted. **Always** get this attribute using [weights()] or [log_weights()],
+#'     and set this attributes using [weight_draws()]. In internal code, it may
+#'     also be modified directly using `log_weights_rvar(x) <- value`.
+#'
+#'   - `cache`: An [`environment`] that may contain cached output of the \pkg{vctrs}
+#'     proxy functions on `x` to improve performance of code that makes multiple
+#'     calls to those functions. The cache is updated automatically and invalidated
+#'     when necessary so long as the `rvar` is only modified using the functions
+#'     described in this section (or other functions in the publicly-exported
+#'     `rvar` API). The environment may contain these variables:
+#'
+#'     - `vec_proxy`: cached output of [vctrs::vec_proxy()].
+#'     - `vec_proxy_equal`: cached output of [vctrs::vec_proxy_equal()].
 #'
 #' @seealso [as_rvar()] to convert objects to `rvar`s. See [rdo()], [rfun()], and
 #' [rvar_rng()] for higher-level interfaces for creating `rvar`s.
@@ -90,7 +150,11 @@
 #' x
 #'
 #' @export
-rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE) {
+rvar <- function(
+  x = double(), dim = NULL, dimnames = NULL,
+  nchains = NULL, with_chains = FALSE,
+  log_weights = NULL
+) {
   if (is_rvar(x)) {
     nchains <- nchains %||% nchains(x)
     with_chains = FALSE
@@ -105,7 +169,7 @@ rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = NULL, with
     nchains <- nchains %||% 1L
   }
 
-  out <- new_rvar(x, .nchains = nchains)
+  out <- new_rvar(x, .nchains = nchains, .log_weights = log_weights)
 
   if (!is.null(dim)) {
     dim(out) <- dim
@@ -118,7 +182,7 @@ rvar <- function(x = double(), dim = NULL, dimnames = NULL, nchains = NULL, with
 }
 
 #' @importFrom vctrs new_vctr
-new_rvar <- function(x = double(), .nchains = 1L) {
+new_rvar <- function(x = double(), .nchains = 1L, .log_weights = NULL) {
   if (is.null(x)) {
     x <- double()
   }
@@ -128,11 +192,13 @@ new_rvar <- function(x = double(), .nchains = 1L) {
   .ndraws <- dim(x)[[1]]
   .nchains <- as_one_integer(.nchains)
   check_nchains_compat_with_ndraws(.nchains, .ndraws)
+  .log_weights <- validate_weights(.log_weights, .ndraws, log = TRUE, pareto_smooth = FALSE)
 
   structure(
     list(),
     draws = x,
     nchains = .nchains,
+    log_weights = .log_weights,
     class = get_rvar_class(x),
     cache = new.env(parent = emptyenv())
   )
@@ -252,14 +318,14 @@ rep.rvar <- function(x, times = 1, length.out = NA, each = 1, ...) {
     dim = dim(draws)
     dim[[2]] = dim[[2]] * times
     dim(rep_draws) = dim
-    out <- new_rvar(rep_draws, .nchains = nchains(x))
+    draws_of(x) <- rep_draws
   } else {
     # use `length.out`
     rep_draws = rep_len(draws, length.out * ndraws(x))
     dim(rep_draws) = c(ndraws(x), length(rep_draws) / ndraws(x))
-    out <- new_rvar(rep_draws, .nchains = nchains(x))
+    draws_of(x) <- rep_draws
   }
-  out
+  x
 }
 
 #' @rawNamespace S3method(rep.int,rvar,rep_int_rvar)
@@ -537,6 +603,23 @@ nchains2_common <- function(nchains_x, nchains_y) {
   }
 }
 
+# find common weights for two rvars
+weights2_common <- function(weights_x, weights_y) {
+  if (is.null(weights_x)) {
+    weights_y
+  } else if (is.null(weights_y)) {
+    weights_x
+  } else if (identical(weights_x, weights_y)) {
+    weights_x
+  } else {
+    stop_no_call(
+      "Random variables have different log weights and cannot be used together:\n",
+      "<", vctrs::vec_ptype_abbr(weights_x), "> ", paste(utils::head(weights_x, 5), collapse = ", "), " ...\n",
+      "<", vctrs::vec_ptype_abbr(weights_y), "> ", paste(utils::head(weights_y, 5), collapse = ", "), " ..."
+    )
+  }
+}
+
 # check that the given number of chains is compatible with the given number of draws
 check_nchains_compat_with_ndraws <- function(nchains, ndraws) {
   # except with constants, nchains must divide the number of draws
@@ -548,7 +631,7 @@ check_nchains_compat_with_ndraws <- function(nchains, ndraws) {
   }
 }
 
-# given two rvars, conform their number of chains
+# given a list of rvars, conform their number of chains
 # so they can be used together (or throw an error if they can't be)
 conform_rvar_nchains <- function(rvars) {
   # find the number of chains to use, treating constants as having any number of chains
@@ -562,15 +645,16 @@ conform_rvar_nchains <- function(rvars) {
   rvars
 }
 
-# given two rvars, conform their number of draws
+# given a list of rvars, conform their number of draws
 # so they can be used together (or throw an error if they can't be)
 # @param keep_constants keep constants as 1-draw rvars
 conform_rvar_ndraws <- function(rvars, keep_constants = FALSE) {
-  # broadcast to a common number of chains. If keep_constants = TRUE,
-  # constants will not be broadcast.
+  # broadcast to a common number of draws and the same set of weights.
+  # If keep_constants = TRUE, constants will not be broadcast or re-weighted.
   .ndraws = Reduce(ndraws2_common, lapply(rvars, ndraws))
+  .log_weights = Reduce(weights2_common, lapply(rvars, log_weights))
   for (i in seq_along(rvars)) {
-    rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws, keep_constants)
+    rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws, keep_constants, .log_weights = .log_weights)
   }
 
   rvars
@@ -726,19 +810,19 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
 }
 
 # broadcast the draws dimension of an rvar to the requested size
-broadcast_draws <- function(x, .ndraws, keep_constants = FALSE) {
+broadcast_draws <- function(x, .ndraws, keep_constants = FALSE, .log_weights = NULL) {
   ndraws_x = ndraws(x)
-  if (
-    (ndraws_x == 1 && keep_constants) ||
-    (ndraws_x == .ndraws)
-  ) {
+  if (ndraws_x == 1 && keep_constants) {
+    x
+  } else if (ndraws_x == .ndraws) {
+    log_weights_rvar(x) <- .log_weights
     x
   } else {
     draws <- draws_of(x)
     new_dim <- dim(draws)
     new_dim[1] <- .ndraws
 
-    new_rvar(broadcast_array(draws, new_dim), .nchains = nchains(x))
+    new_rvar(broadcast_array(draws, new_dim), .nchains = nchains(x), .log_weights = .log_weights)
   }
 }
 
@@ -940,7 +1024,8 @@ summarise_rvar_within_draws <- function(x, .f, ..., .transpose = FALSE, .when_em
   } else {
     draws <- apply(draws, 1, .f, ...)
     if (.transpose) draws <- t(draws)
-    new_rvar(draws, .nchains = nchains(x))
+    draws_of(x) <- draws
+    x
   }
 }
 
@@ -971,7 +1056,8 @@ summarise_rvar_within_draws_via_matrix <- function(x, .name, .f, ..., .ordered_o
     .draws <- .f(draws_of(x), ...)
   }
 
-  new_rvar(.draws, .nchains = nchains(x))
+  draws_of(x) <- .draws
+  x
 }
 
 # apply vectorized function to an rvar's draws

@@ -53,7 +53,6 @@ test_that("print.draws_list runs without errors", {
 
 test_that("print.draws_rvars runs without errors", {
   skip_on_cran()
-  skip_on_os("windows")
   x <- as_draws_rvars(example_draws())
   out <- capture.output(print(x))
   expect_match(
@@ -65,7 +64,7 @@ test_that("print.draws_rvars runs without errors", {
   x <- weight_draws(x, rep(1, ndraws(x)))
   expect_output(
     print(x),
-    "hidden reserved variables ..\\.log_weight.."
+    "weighted rvar"
   )
 })
 
@@ -112,7 +111,6 @@ test_that("print.draws_list handles reserved variables correctly", {
 
 test_that("print.draws_rvars handles reserved variables correctly", {
   skip_on_cran()
-  skip_on_os("windows")
   x <- as_draws_rvars(example_draws())
   variables(x)[1] <- ".log_weight" # reserved name
   expect_output(print(x, max_variables = 1), "tau")

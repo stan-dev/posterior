@@ -210,6 +210,7 @@ vec_proxy.rvar = function(x, ...) {
 #' @noRd
 make_rvar_proxy = function(x) {
   nchains <- nchains(x)
+  log_weights <- log_weights(x)
   draws <- draws_of(x)
   is <- seq_len(NROW(x))
   names(is) <- rownames(x)
@@ -217,6 +218,7 @@ make_rvar_proxy = function(x) {
     list(
       index = i,
       nchains = nchains,
+      log_weights = log_weights,
       draws = draws
     )
   })
@@ -251,7 +253,7 @@ vec_restore.rvar <- function(x, ...) {
   groups <- split(x, draws_groups)
   rvars <- lapply(groups, function(x) {
     i <- vapply(x, `[[`, "index", FUN.VALUE = numeric(1))
-    rvar <- new_rvar(x[[1]]$draws, .nchains = x[[1]]$nchains)
+    rvar <- new_rvar(x[[1]]$draws, .nchains = x[[1]]$nchains, .log_weights = x[[1]]$log_weights)
     if (length(dim(rvar)) > 1) {
       rvar[i, ]
     } else {
@@ -318,6 +320,7 @@ vec_proxy_equal.rvar = function(x, ...) {
 make_rvar_proxy_equal = function(x) {
   lapply(as.list(x), function(x) list(
     nchains = nchains(x),
+    log_weights = log_weights(x),
     draws = draws_of(x)
   ))
 }
