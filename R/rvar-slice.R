@@ -159,7 +159,7 @@ NULL
 #' @export
 `[[<-.rvar` <- function(x, i, ..., value) {
   value <- vec_cast(value, x)
-  c(x, value) %<-% conform_rvar_ndraws_nchains(list(x, value))
+  c(x, value) %<-% conform_rvar_nchains_ndraws_weights(list(x, value))
   value <- check_rvar_dims_first(value, new_rvar(0))
   index <- check_rvar_yank_index(x, i, ...)
 
@@ -220,7 +220,7 @@ NULL
     # this kind of indexing must ignore chains
     nchains_rvar(x) <- 1L
     nchains_rvar(i) <- 1L
-    c(x, i) %<-% conform_rvar_ndraws(list(x, i))
+    c(x, i) %<-% conform_rvar_ndraws_weights(list(x, i))
     index <- list()
     draws_index <- list(draws_of(i))
   } else {
@@ -316,7 +316,7 @@ NULL
 
     # for the purposes of this kind of assignment, we check draws only, not chains,
     # as chain information is irrelevant when subsetting by draw
-    c(x, i) %<-% conform_rvar_ndraws(list(x, i))
+    c(x, i) %<-% conform_rvar_ndraws_weights(list(x, i))
     draws_index <- draws_of(i)
 
     # necessary number of draws in `value` is determined by whether or not
@@ -325,7 +325,7 @@ NULL
     draws_of(value) <- broadcast_array(draws_of(value), c(value_ndraws, dim(x)), broadcast_scalars = FALSE)
     i <- missing_arg()
   } else {
-    c(x, value) %<-% conform_rvar_ndraws_nchains(list(x, value))
+    c(x, value) %<-% conform_rvar_nchains_ndraws_weights(list(x, value))
     draws_index <- missing_arg()
   }
 
@@ -380,7 +380,7 @@ scalar_numeric_rvar_to_index <- function(i_rvar, x, ...) {
   if (!is.numeric(draws_of(i_rvar)) || length(i_rvar) != 1) {
     stop_no_call("`x[[i]]` for rvars `x` and `i` is only supported when `i` is a scalar numeric rvar.")
   }
-  out <- conform_rvar_ndraws_nchains(list(i_rvar, x, ...))
+  out <- conform_rvar_nchains_ndraws_weights(list(i_rvar, x, ...))
   c(i_rvar, x) %<-% out[1:2]
   out[[1]] <- matrix_to_index(cbind(seq_len(ndraws(x)), draws_of(i_rvar)), c(ndraws(x), length(x)))
   out

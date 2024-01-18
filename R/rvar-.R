@@ -487,7 +487,7 @@ rvar_ifelse = function(test, yes, no) {
     stop_no_call("`rvar_ifelse(test, yes, no)` requires `test` to be a logical rvar, or castable to one.")
   }
   c(yes, no) %<-% vec_cast_common(yes, no)
-  c(test, yes, no) %<-% conform_array_dims(conform_rvar_ndraws(list(test, yes, no)))
+  c(test, yes, no) %<-% conform_array_dims(conform_rvar_ndraws_weights(list(test, yes, no)))
 
   test_draws <- draws_of(test)
   false_draws <- test_draws %in% FALSE
@@ -631,8 +631,12 @@ check_nchains_compat_with_ndraws <- function(nchains, ndraws) {
   }
 }
 
-# given a list of rvars, conform their number of chains
-# so they can be used together (or throw an error if they can't be)
+#' given a list of rvars, conform their number of chains
+#' so they can be used together (or throw an error if they can't be). Constants
+#' are treated as having any number of draws
+#' @param rvars a list of rvars
+#' @returns modified list of rvars all having the same number of chains
+#' @noRd
 conform_rvar_nchains <- function(rvars) {
   # find the number of chains to use, treating constants as having any number of chains
   nchains_or_null <- lapply(rvars, function(x) if (ndraws(x) == 1) NULL else nchains(x))
@@ -645,27 +649,46 @@ conform_rvar_nchains <- function(rvars) {
   rvars
 }
 
-# given a list of rvars, conform their number of draws
-# so they can be used together (or throw an error if they can't be)
-# @param keep_constants keep constants as 1-draw rvars
-conform_rvar_ndraws <- function(rvars, keep_constants = FALSE) {
-  # broadcast to a common number of draws and the same set of weights.
-  # If keep_constants = TRUE, constants will not be broadcast or re-weighted.
-  .ndraws = Reduce(ndraws2_common, lapply(rvars, ndraws))
+#' given a list of rvars, conform their their weights
+#' so they can be used together (or throw an error if they can't be)
+#' @param rvars a list of rvars
+#' @returns modified list of rvars all having the same weights.
+#' @noRd
+conform_rvar_weights <- function(rvars) {
   .log_weights = Reduce(weights2_common, lapply(rvars, log_weights))
+
   for (i in seq_along(rvars)) {
-    rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws, keep_constants, .log_weights = .log_weights)
+    log_weights_rvar(rvars[[i]]) <- .log_weights
   }
 
   rvars
 }
 
-# given multiple rvars, conform their number of draws and chains
-# so they can be used together (or throw an error if they can't be)
-# @param keep_constants keep constants as 1-draw rvars
-conform_rvar_ndraws_nchains <- function(rvars, keep_constants = FALSE) {
+#' given a list of rvars, conform their number of draws and their weights
+#' so they can be used together (or throw an error if they can't be)
+#' @param rvars a list of rvars
+#' @returns modified list of rvars all having the same number of draws and the
+#' same weights.
+#' @noRd
+conform_rvar_ndraws_weights <- function(rvars) {
+  .ndraws = Reduce(ndraws2_common, lapply(rvars, ndraws))
+
+  for (i in seq_along(rvars)) {
+    rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws)
+  }
+
+  conform_rvar_weights(rvars)
+}
+
+#' given a list of rvars, conform their number of draws, number of chains, and
+#' their weights so they can be used together (or throw an error if they can't be)
+#' @param rvars a list of rvars
+#' @returns modified list of rvars all having the same number of chains, same
+#' number of draws, and the same weights.
+#' @noRd
+conform_rvar_nchains_ndraws_weights <- function(rvars) {
   rvars <- conform_rvar_nchains(rvars)
-  rvars <- conform_rvar_ndraws(rvars)
+  rvars <- conform_rvar_ndraws_weights(rvars)
   rvars
 }
 
@@ -810,20 +833,17 @@ broadcast_array  <- function(x, dim, broadcast_scalars = TRUE) {
 }
 
 # broadcast the draws dimension of an rvar to the requested size
-broadcast_draws <- function(x, .ndraws, keep_constants = FALSE, .log_weights = NULL) {
+broadcast_draws <- function(x, .ndraws) {
   ndraws_x = ndraws(x)
-  if (ndraws_x == 1 && keep_constants) {
-    x
-  } else if (ndraws_x == .ndraws) {
-    log_weights_rvar(x) <- .log_weights
-    x
-  } else {
+
+  if (ndraws_x != .ndraws) {
     draws <- draws_of(x)
     new_dim <- dim(draws)
     new_dim[1] <- .ndraws
-
-    new_rvar(broadcast_array(draws, new_dim), .nchains = nchains(x), .log_weights = .log_weights)
+    draws_of(x) <- broadcast_array(draws, new_dim)
   }
+
+  x
 }
 
 # flatten dimensions and names of an array
