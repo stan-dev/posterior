@@ -160,7 +160,7 @@ NULL
 `[[<-.rvar` <- function(x, i, ..., value) {
   value <- vec_cast(value, x)
   c(x, value) %<-% conform_rvar_nchains_ndraws_weights(list(x, value))
-  value <- check_rvar_dims_first(value, new_rvar(0))
+  value <- check_rvar_is_scalar(value)
   index <- check_rvar_yank_index(x, i, ...)
 
   if (length(index) == 1) {

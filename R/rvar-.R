@@ -716,24 +716,16 @@ conform_rvar_nchains_ndraws_weights <- function(rvars, promote_unweighted = TRUE
   rvars
 }
 
-# Check that the first rvar can be conformed to the dimensions of the second,
-# ignoring 1s
-check_rvar_dims_first <- function(x, y) {
-  x_dim <- dim(x)
-  x_dim_dropped <- as.integer(x_dim[x_dim != 1])
-  y_dim <- dim(y)
-  y_dim_dropped <- as.integer(y_dim[y_dim != 1])
-
-  if (length(x_dim_dropped) == 0) {
-    # x can be treated as scalar, do so
-    dim(x) <- rep(1, length(dim(y)))
-  } else if (identical(x_dim_dropped, y_dim_dropped)) {
-    dim(x) <- dim(y)
-  } else {
-    stop_no_call("Cannot assign an rvar with dimension ", paste0(x_dim, collapse = ","),
-      " to an rvar with dimension ", paste0(y_dim, collapse = ","))
+#' Check that an rvar is a scalar (length 1)
+#' @param x rvar to check
+#' @returns x with `dim(x) == 1`, or throws an error if `x` is not scalar.
+#' @noRd
+check_rvar_is_scalar <- function(x) {
+  if (length(x) != 1) {
+    stop_no_call("Cannot insert an rvar with length != 1 into another rvar using `[[`")
   }
 
+  dim(x) <- 1
   x
 }
 
