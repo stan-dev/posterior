@@ -92,7 +92,7 @@ broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
   # conform nchains and weights
   # (don't need to do draws here since that's part of the broadcast below)
   c(x, y) %<-% conform_rvar_nchains(list(x, y))
-  c(x, y) %<-% conform_rvar_weights(list(x, y))
+  c(x, y) %<-% conform_rvar_weights(list(x, y), promote_unweighted = FALSE)
 
   # broadcast each array to the desired dimensions
   # (except along the axis we are binding along)

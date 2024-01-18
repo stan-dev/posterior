@@ -604,10 +604,14 @@ nchains2_common <- function(nchains_x, nchains_y) {
 }
 
 # find common weights for two rvars
-weights2_common <- function(weights_x, weights_y) {
-  if (is.null(weights_x)) {
+#' @param promote_unweighted should unweighted rvars be promoted to have the
+#' weights of weighted rvars they are combined with? typically `FALSE` for
+#' binding operations and `TRUE` for math operations.
+#' @noRd
+weights2_common <- function(weights_x, weights_y, promote_unweighted = TRUE) {
+  if (promote_unweighted && is.null(weights_x)) {
     weights_y
-  } else if (is.null(weights_y)) {
+  } else if (promote_unweighted && is.null(weights_y)) {
     weights_x
   } else if (identical(weights_x, weights_y)) {
     weights_x
@@ -652,10 +656,20 @@ conform_rvar_nchains <- function(rvars) {
 #' given a list of rvars, conform their their weights
 #' so they can be used together (or throw an error if they can't be)
 #' @param rvars a list of rvars
+#' @param promote_unweighted should unweighted rvars be promoted to have the
+#' weights of weighted rvars they are combined with? typically `FALSE` for
+#' binding operations and `TRUE` for math operations.
 #' @returns modified list of rvars all having the same weights.
 #' @noRd
-conform_rvar_weights <- function(rvars) {
-  .log_weights = Reduce(weights2_common, lapply(rvars, log_weights))
+conform_rvar_weights <- function(rvars, promote_unweighted = TRUE) {
+  # only check rvars that are not constants --- constant rvars can
+  # always take on the weights of others
+  not_constant <- vapply(rvars, ndraws, numeric(1)) > 1
+  weights_list <- lapply(rvars[not_constant], log_weights)
+  .log_weights <- Reduce(
+    function(...) weights2_common(..., promote_unweighted = promote_unweighted),
+    weights_list
+  )
 
   for (i in seq_along(rvars)) {
     log_weights_rvar(rvars[[i]]) <- .log_weights
@@ -667,28 +681,38 @@ conform_rvar_weights <- function(rvars) {
 #' given a list of rvars, conform their number of draws and their weights
 #' so they can be used together (or throw an error if they can't be)
 #' @param rvars a list of rvars
+#' @param promote_unweighted should unweighted rvars be promoted to have the
+#' weights of weighted rvars they are combined with? typically `FALSE` for
+#' binding operations and `TRUE` for math operations.
 #' @returns modified list of rvars all having the same number of draws and the
 #' same weights.
 #' @noRd
-conform_rvar_ndraws_weights <- function(rvars) {
-  .ndraws = Reduce(ndraws2_common, lapply(rvars, ndraws))
+conform_rvar_ndraws_weights <- function(rvars, promote_unweighted = TRUE) {
+  # must conform weights before ndraws so that constants are handled properly
+  rvars <- conform_rvar_weights(rvars, promote_unweighted = promote_unweighted)
+
+  .ndraws <- Reduce(ndraws2_common, lapply(rvars, ndraws))
 
   for (i in seq_along(rvars)) {
     rvars[[i]] <- broadcast_draws(rvars[[i]], .ndraws)
   }
 
-  conform_rvar_weights(rvars)
+  rvars
 }
 
 #' given a list of rvars, conform their number of draws, number of chains, and
 #' their weights so they can be used together (or throw an error if they can't be)
 #' @param rvars a list of rvars
+#' @param promote_unweighted should unweighted rvars be promoted to have the
+#' weights of weighted rvars they are combined with? typically `FALSE` for
+#' binding operations and `TRUE` for math operations.
 #' @returns modified list of rvars all having the same number of chains, same
 #' number of draws, and the same weights.
 #' @noRd
-conform_rvar_nchains_ndraws_weights <- function(rvars) {
+conform_rvar_nchains_ndraws_weights <- function(rvars, promote_unweighted = TRUE) {
+  # must conform nchains before ndraws so that constants are handled properly
   rvars <- conform_rvar_nchains(rvars)
-  rvars <- conform_rvar_ndraws_weights(rvars)
+  rvars <- conform_rvar_ndraws_weights(rvars, promote_unweighted = promote_unweighted)
   rvars
 }
 
