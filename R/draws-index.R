@@ -481,15 +481,18 @@ ndraws.rvar <- function(x) {
 # @param regex should 'variables' be treated as regular expressions?
 # @param scalar_only should only scalar variables be matched?
 check_existing_variables <- function(variables, x, regex = FALSE,
-                                     scalar_only = FALSE) {
+                                     scalar_only = FALSE, exclude = FALSE) {
   check_draws_object(x)
   if (is.null(variables)) {
     return(NULL)
   }
+
   regex <- as_one_logical(regex)
   scalar_only <- as_one_logical(scalar_only)
+  exclude <- as_one_logical(exclude)
   variables <- unique(as.character(variables))
   all_variables <- variables(x, reserved = TRUE)
+  
   if (regex) {
     tmp <- named_list(variables)
     for (i in seq_along(variables)) {
@@ -532,6 +535,12 @@ check_existing_variables <- function(variables, x, regex = FALSE,
     stop_no_call("The following variables are missing in the draws object: ",
           comma(missing_variables))
   }
+
+  # handle excluding variables for subset_draws
+  if (exclude) {
+    variables <- setdiff(all_variables, variables)
+  }
+  
   invisible(variables)
 }
 
@@ -567,12 +576,13 @@ check_reserved_variables <- function(variables) {
 
 # check validity of iteration indices
 # @param unique should the returned IDs be unique?
-check_iteration_ids <- function(iteration_ids, x, unique = TRUE) {
+check_iteration_ids <- function(iteration_ids, x, unique = TRUE, exclude = FALSE) {
   check_draws_object(x)
   if (is.null(iteration_ids)) {
     return(NULL)
   }
   unique <- as_one_logical(unique)
+  exclude <- as_one_logical(exclude)
   iteration_ids <- as.integer(iteration_ids)
   if (unique) {
     iteration_ids <- unique(iteration_ids)
@@ -587,17 +597,24 @@ check_iteration_ids <- function(iteration_ids, x, unique = TRUE) {
     stop_no_call("Tried to subset iterations up to '", max_iteration, "' ",
           "but the object only has '", niterations, "' iterations.")
   }
+
+  # handle exclude iterations in subset_draws
+  if (exclude) {
+    iteration_ids <- setdiff(iteration_ids(x), iteration_ids)
+  }
+  
   invisible(iteration_ids)
 }
 
 # check validity of chain indices
 # @param unique should the returned IDs be unique?
-check_chain_ids <- function(chain_ids, x, unique = TRUE) {
+check_chain_ids <- function(chain_ids, x, unique = TRUE, exclude = FALSE) {
   check_draws_object(x)
   if (is.null(chain_ids)) {
     return(NULL)
   }
   unique <- as_one_logical(unique)
+  exclude <- as_one_logical(exclude)
   chain_ids <- as.integer(chain_ids)
   if (unique) {
     chain_ids <- unique(chain_ids)
@@ -612,17 +629,23 @@ check_chain_ids <- function(chain_ids, x, unique = TRUE) {
     stop_no_call("Tried to subset chains up to '", max_chain, "' ",
           "but the object only has '", nchains, "' chains.")
   }
+
+  if (exclude) {
+    chain_ids <- setdiff(chain_ids(x), chain_ids)
+  }
+  
   invisible(chain_ids)
 }
 
 # check validity of draw indices
 # @param unique should the returned IDs be unique?
-check_draw_ids <- function(draw_ids, x, unique = TRUE) {
+check_draw_ids <- function(draw_ids, x, unique = TRUE, exclude = FALSE) {
   check_draws_object(x)
   if (is.null(draw_ids)) {
     return(NULL)
   }
   unique <- as_one_logical(unique)
+  exclude <- as_one_logical(exclude)
   draw_ids <- as.integer(draw_ids)
   if (unique) {
     draw_ids <- unique(draw_ids)
@@ -637,5 +660,10 @@ check_draw_ids <- function(draw_ids, x, unique = TRUE) {
     stop_no_call("Tried to subset draws up to '", max_draw, "' ",
           "but the object only has '", ndraws, "' draws.")
   }
+
+  if (exclude) {
+    draw_ids <- setdiff(draw_ids(x), draw_ids)
+  }
+  
   invisible(draw_ids)
 }

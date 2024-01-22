@@ -245,7 +245,9 @@ vec_restore.rvar <- function(x, ...) {
 
   # find runs where the same underlying draws are in the proxy
   different_draws_from_previous <- vapply(seq_along(x)[-1], FUN.VALUE = logical(1), function(i) {
-    !identical(x[[i]]$draws, x[[i - 1]]$draws) || !identical(x[[i]]$nchains, x[[i - 1]]$nchains)
+    !identical(x[[i]]$draws, x[[i - 1]]$draws) ||
+    !identical(x[[i]]$nchains, x[[i - 1]]$nchains) ||
+    !identical(x[[i]]$log_weights, x[[i - 1]]$log_weights)
   })
   draws_groups <- cumsum(c(TRUE, different_draws_from_previous))
 

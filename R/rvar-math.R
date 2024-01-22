@@ -15,7 +15,7 @@ Ops.rvar <- function(e1, e2) {
 
 .Ops.rvar <- function(f, e1, e2, preserve_dims = FALSE) {
   c(e1, e2) %<-% conform_rvar_nchains(list(e1, e2))
-  .log_weights <- weights2_common(log_weights(e1), log_weights(e2))
+  c(e1, e2) %<-% conform_rvar_weights(list(e1, e2))
   draws_x <- draws_of(e1)
   draws_y <- draws_of(e2)
 
@@ -48,7 +48,7 @@ Ops.rvar <- function(e1, e2) {
     draws <- while_preserving_dims(function(...) draws, dim_source)
   }
 
-  new_rvar(draws, .nchains = nchains(e1), .log_weights = .log_weights)
+  new_rvar(draws, .nchains = nchains(e1), .log_weights = log_weights(e1))
 }
 
 #' @export
@@ -189,7 +189,7 @@ Math.rvar_factor <- function(x, ...) {
   }
 
   # conform the draws dimension in both variables
-  c(x, y) %<-% conform_rvar_ndraws_nchains(list(x, y))
+  c(x, y) %<-% conform_rvar_nchains_ndraws_weights(list(x, y))
 
   # drop the names of the dimensions (mul.tensor gets uppity if dimension names
   # are duplicated, but we don't care about that)

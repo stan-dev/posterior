@@ -223,7 +223,7 @@ as_draws_rvars.mcmc.list <- function(x, ...) {
 
   check_new_variables(names(x))
 
-  x <- conform_rvar_ndraws_nchains(x)
+  x <- conform_rvar_nchains_ndraws_weights(x)
 
   class(x) <- class_draws_rvars()
 
@@ -236,6 +236,10 @@ as_draws_rvars.mcmc.list <- function(x, ...) {
       x$.log_weight <- NULL
       x <- weight_draws(x, .log_weight, log = TRUE)
     } else {
+      # if we reach this point either existing_weights and .log_weight
+      # are identical (so we don't have to do anything) or they aren't
+      # and weights2_common will throw the appropriate error --- thus
+      # we don't need to do anything with its output
       weights2_common(existing_weights, .log_weight)
     }
   }
