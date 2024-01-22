@@ -618,8 +618,8 @@ weights2_common <- function(weights_x, weights_y, promote_unweighted = TRUE) {
   } else {
     stop_no_call(
       "Random variables have different log weights and cannot be used together:\n",
-      "<", vctrs::vec_ptype_abbr(weights_x), "> ", paste(utils::head(weights_x, 5), collapse = ", "), " ...\n",
-      "<", vctrs::vec_ptype_abbr(weights_y), "> ", paste(utils::head(weights_y, 5), collapse = ", "), " ..."
+      "<", vctrs::vec_ptype_abbr(weights_x), "> ", toString(weights_x, width = 60), "\n",
+      "<", vctrs::vec_ptype_abbr(weights_y), "> ", toString(weights_y, width = 60)
     )
   }
 }
