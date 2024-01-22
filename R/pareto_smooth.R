@@ -404,6 +404,7 @@ pareto_smooth.default <- function(x,
       x,
       ndraws_tail = ndraws_tail,
       tail = tail,
+      are_log_weights = are_log_weights,
       ...
     )
     k <- smoothed$k

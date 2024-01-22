@@ -33,7 +33,7 @@ test_that("distributional functions work on an rvar array", {
   q21 <- quantile(4:6, p)
   q12 <- quantile(7:9, p)
   q22 <- quantile(10:12, p)
-  x_quantiles <- array(c(q11, q21, q12, q22), dim = c(9, 2, 2), dimnames = list(NULL))
+  x_quantiles <- array(c(q11, q21, q12, q22), dim = c(9, 2, 2))
   expect_equal(quantile(x, p), x_quantiles)
 })
 
@@ -43,14 +43,14 @@ test_that("distributional functions work on an rvar_factor", {
   x <- rvar_factor(x_letters, levels = letters[1:5])
   x2 <- c(rvar_factor(letters), rvar_factor(letters))
 
-  expect_equal(density(x, letters[1:6]), c(0, .3, .2, .4, .1, NA))
+  expect_equal(density(x, letters[1:6]), c(0, .3, .2, .4, .1, NA_real_))
   expect_equal(density(x2, letters[1:3]), array(rep(1/26, 6), dim = c(3,2)))
 
-  expect_equal(cdf(x, letters[1:5]), c(NA, NA, NA, NA, NA))
-  expect_equal(cdf(x2, letters[1:3]), array(rep(NA, 6), dim = c(3,2)))
+  expect_equal(cdf(x, letters[1:5]), c(NA_real_, NA_real_, NA_real_, NA_real_, NA_real_))
+  expect_equal(cdf(x2, letters[1:3]), array(rep(NA_real_, 6), dim = c(3,2)))
 
-  expect_equal(quantile(x, 1:4/4), c(NA, NA, NA, NA))
-  expect_equal(quantile(x2, 1:3/3), array(rep(NA, 6), dim = c(3,2)))
+  expect_equal(quantile(x, 1:4/4), c(NA_real_, NA_real_, NA_real_, NA_real_))
+  expect_equal(quantile(x2, 1:3/3), array(rep(NA_real_, 6), dim = c(3,2)))
 })
 
 test_that("distributional functions work on an rvar_ordered", {
@@ -64,3 +64,43 @@ test_that("distributional functions work on an rvar_ordered", {
 
   expect_equal(quantile(x, c(.3, .5, .9, 1)), letters[2:5])
 })
+
+# weighted rvar -----------------------------------------------------------
+
+test_that("weighted rvar works", {
+  x1_draws = qnorm(ppoints(10))
+  x2_draws = qnorm(ppoints(10), 5)
+  w1 = rep(1, 10)
+  w2 = rep(2, 10)
+  w3 = rep(0, 10)
+  x = rvar(c(x1_draws, x2_draws, rep(10, 10)), log_weights = log(c(w1, w2, w3)))
+
+  expect_equal(
+    density(x, 0:9, bw = 2.25),
+    density(draws_of(x), weights = weights(x), bw = 2.25, from = 0, to = 9, n = 10)$y,
+    tolerance = 1e-4
+  )
+  expect_equal(cdf(x, 0:9), ecdf(x1_draws)(0:9)/3 + ecdf(x2_draws)(0:9)*2/3)
+  expect_equal(quantile(x, cdf(x, c(x1_draws, x2_draws)), type = 1), c(x1_draws, x2_draws))
+  expect_equal(quantile(x, cdf(x, c(x1_draws, x2_draws)), type = 4), c(x1_draws, x2_draws))
+})
+
+test_that("weighted rvar_factor works", {
+  x = rvar_factor(c("b", "g", "f", "g"), levels = letters, log_weights = log(c(1/2, 1/6, 1/6, 1/6)))
+
+  expect_equal(density(x, letters), c(0, 1/2, 0, 0, 0, 1/6, 1/3, rep(0, 19)))
+  expect_equal(cdf(x, letters), rep(NA_real_, 26))
+  expect_equal(quantile(x, c(0.2, 0.8)), rep(NA_real_, 2))
+})
+
+test_that("weighted rvar_ordered works", {
+  x = rvar_ordered(c("b", "g", "f", "g"), levels = letters, log_weights = log(c(1/2, 1/6, 1/6, 1/6)))
+
+  expect_equal(density(x, letters), c(0, 1/2, 0, 0, 0, 1/6, 1/3, rep(0, 19)))
+  expect_equal(cdf(x, letters), cumsum(c(0, 1/2, 0, 0, 0, 1/6, 1/3, rep(0, 19))))
+  expect_equal(quantile(x, c(0.2, 0.6, 0.8)), c("b", "f", "g"))
+
+  xl = weight_draws(rvar_ordered(letters), 1:26)
+  expect_equal(quantile(xl, cdf(xl, letters) - .Machine$double.eps), letters)
+})
+

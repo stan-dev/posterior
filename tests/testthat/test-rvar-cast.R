@@ -202,6 +202,18 @@ test_that("casting to/from rvar/distribution objects works", {
   expect_error(vctrs::vec_cast(x_mv, null_dist))
 })
 
+test_that("vec_c works with rvar and distributions", {
+  x_dist <- distributional::dist_sample(list(a = 1:2, b = 3:4))
+  y_dist <- distributional::dist_sample(list(c = 5:6, d = 7:8))
+  xy_dist <- distributional::dist_sample(list(a = 1:2, b = 3:4, c = 5:6, d = 7:8))
+  x_rvar <- rvar(matrix(c(1:4), ncol = 2, dimnames = list(NULL, c("a","b"))))
+  y_rvar <- rvar(matrix(c(5:8), ncol = 2, dimnames = list(NULL, c("c","d"))))
+  xy_rvar <- rvar(matrix(c(1:8), ncol = 4, dimnames = list(NULL, c("a","b","c","d"))))
+
+  expect_equal(vctrs::vec_c(x_dist, y_rvar), xy_dist)
+  expect_equal(vctrs::vec_c(x_rvar, y_dist), xy_rvar)
+})
+
 
 # type predicates ---------------------------------------------------------
 

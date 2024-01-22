@@ -80,6 +80,14 @@ test_that("print(<rvar_factor>) works", {
     regexp = "12 levels: a b c d e f g h i j k l",
     all = FALSE
   )
+
+  x_long <- rvar_factor(combn(letters, 2, paste, collapse = ""))
+  out <- capture.output(print(x_long, color = FALSE, width = 50))
+  expect_match(
+    out,
+    regexp = "325 levels: ab ac ad ae af ag ah ai aj \\.\\.\\. yz",
+    all = FALSE
+  )
 })
 
 test_that("print(<rvar_ordered>) works", {
@@ -255,8 +263,39 @@ test_that("str(<rvar_ordered>) works", {
   )
 })
 
+test_that("str(<weighted rvar>) works", {
+  x <- rvar(1:100, log_weights = 2:101)
+
+  expect_output(str(weight_draws(rvar(), 1)),
+    " weighted rvar<1>\\[0\\] "
+  )
+  out <- capture.output(str(x))
+  expect_match(
+    out,
+    regexp = " weighted rvar<100>\\[1\\]  99 . 0.96",
+    all = FALSE
+  )
+  expect_match(
+    out,
+    regexp = " - log_weights\\(\\*\\)= int \\[1:100\\] 2 3 4 5",
+    all = FALSE
+  )
+})
+
 
 # other -------------------------------------------------------------------
+
+test_that("tibble printing works", {
+  skip_on_cran()
+
+  x <- rvar(1:10)
+  out <- capture.output(print(tibble::tibble(x)))
+  expect_match(
+    out,
+    regexp = " 5.5 . 3",
+    all = FALSE
+  )
+})
 
 test_that("glimpse on rvar works", {
   skip_on_cran()

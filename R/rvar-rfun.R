@@ -232,7 +232,7 @@ rvar_rng <- function(.f, n, ..., ndraws = NULL) {
   args <- list(...)
 
   is_rvar_arg <- vapply(args, is_rvar, logical(1))
-  rvar_args <- conform_rvar_ndraws_nchains(args[is_rvar_arg])
+  rvar_args <- conform_rvar_nchains_ndraws_weights(args[is_rvar_arg])
 
   if (length(rvar_args) < 1) {
     nchains <- 1
