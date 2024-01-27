@@ -742,55 +742,6 @@ broadcast_draws <- function(x, .ndraws, keep_constants = FALSE) {
   }
 }
 
-# flatten dimensions and names of an array
-flatten_array = function(x, x_name = NULL) {
-  # determine new dimension names in the form x,y,z
-  # start with numeric names
-  dimname_lists <- lapply(dim(x), seq_len)
-  .dimnames <- dimnames(x)
-  if (!is.null(.dimnames)) {
-    # where character names are provided, use those instead of the numeric names
-    dimname_lists = lapply(seq_along(dimname_lists), function(i) .dimnames[[i]] %||% dimname_lists[[i]])
-  }
-  # expand out the dimname lists into the appropriate combinations and assemble into new names
-  dimname_grid <- expand.grid(dimname_lists, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
-  new_names <- do.call(paste, c(list(sep = ","), dimname_grid))
-
-  .length <- length(x)
-  old_dim <- dim(x)
-  dim(x) <- .length
-
-  # update variable names
-  if (is.null(x_name)) {
-    # no base name for x provided, just use index names
-    names(x) <- new_names
-  } else if (.length == 1 && (isTRUE(old_dim == 1) || length(old_dim) == 0)) {
-    # scalar, use the provided base name
-    names(x) <- x_name
-  } else if (.length >= 1) {
-    # rename the variables with their indices in brackets
-    names(x) <- paste0(x_name, "[", new_names %||% seq_along(x), "]")
-  }
-
-  x
-}
-
-#' Fast conversion of rvar draws to a flattened data frame. Equivalent to
-#' as.data.frame(draws_of(flatten_array(x, name))) except it works with
-#' factor rvars (as.data.frame does not work on array-like factors)
-#' @noRd
-flatten_rvar_draws_to_df <- function(x, x_name = NULL) {
-  if (length(x) == 0) {
-    out <- data.frame(row.names = draw_ids(x))
-  } else {
-    draws <- draws_of(flatten_array(x, x_name))
-    cols <- lapply(seq_len(ncol(draws)), function(i) unname(draws[, i]))
-    names(cols) <- colnames(draws)
-    out <- vctrs::new_data_frame(cols)
-  }
-  out
-}
-
 #' copy the dimension names (and name of the dimension) from dimension src_i
 #' in array src to dimension dst_i in array dst
 #' @noRd

@@ -5,6 +5,8 @@
 #' @name draws-index
 #' @template args-methods-x
 #' @template args-methods-dots
+#' @template args-methods-reserved
+#' @template args-methods-with_indices
 #' @param value (character vector) For `variables(x) <- value`, the new variable
 #'   names to use.
 #'
@@ -58,35 +60,50 @@ variables.NULL <- function(x, ...) {
   NULL
 }
 
+#' @rdname draws-index
 #' @export
-variables.draws_matrix <- function(x, reserved = FALSE, ...) {
-  remove_reserved_variable_names(colnames(x), reserved)
+variables.draws_matrix <- function(x, reserved = FALSE, with_indices = TRUE, ...) {
+  out <- remove_reserved_variable_names(colnames(x), reserved)
+  variable_names(out, with_indices)
 }
 
+#' @rdname draws-index
 #' @export
-variables.draws_array <- function(x, reserved = FALSE, ...) {
-  remove_reserved_variable_names(dimnames(x)[[3L]], reserved)
+variables.draws_array <- function(x, reserved = FALSE, with_indices = TRUE, ...) {
+  out <- remove_reserved_variable_names(dimnames(x)[[3L]], reserved)
+  variable_names(out, with_indices)
 }
 
+#' @rdname draws-index
 #' @export
-variables.draws_df <- function(x, reserved = FALSE, ...) {
+variables.draws_df <- function(x, reserved = FALSE, with_indices = TRUE, ...) {
   # reserved_df_variables are special data.frame columns
   # which should never be included as variables
   out <- names(x)[!names(x) %in% reserved_df_variables()]
-  remove_reserved_variable_names(out, reserved)
+  out <- remove_reserved_variable_names(out, reserved)
+  variable_names(out, with_indices)
 }
 
+#' @rdname draws-index
 #' @export
-variables.draws_list <- function(x, reserved = FALSE, ...) {
+variables.draws_list <- function(x, reserved = FALSE, with_indices = TRUE, ...) {
   if (!length(x)) {
     return(character(0))
   }
-  remove_reserved_variable_names(names(x[[1]]), reserved)
+  out <- remove_reserved_variable_names(names(x[[1]]), reserved)
+  variable_names(out, with_indices)
 }
 
+#' @rdname draws-index
 #' @export
-variables.draws_rvars <- function(x, reserved = FALSE, ...) {
-  remove_reserved_variable_names(names(x), reserved)
+variables.draws_rvars <- function(x, reserved = FALSE, with_indices = FALSE, ...) {
+  with_indices <- as_one_logical(with_indices)
+  if (with_indices) {
+    out <- unlist(.mapply(flatten_indices, list(x, names(x)), NULL), recursive = FALSE, use.names = FALSE)
+  } else {
+    out <- names(x)
+  }
+  remove_reserved_variable_names(out, reserved)
 }
 
 # remove reserved variable names
@@ -102,44 +119,71 @@ remove_reserved_variable_names <- function(variables, reserved) {
 
 #' @rdname draws-index
 #' @export
-`variables<-` <- function(x, value) {
+`variables<-` <- function(x, value, ...) {
   UseMethod("variables<-")
 }
 
+#' @rdname draws-index
 #' @export
-`variables<-.draws_matrix` <- function(x, value) {
+`variables<-.draws_matrix` <- function(x, value, with_indices = TRUE, ...) {
   check_new_variables(value)
-  colnames(x) <- value
+  variable_names(colnames(x), with_indices) <- value
   x
 }
 
+#' @rdname draws-index
 #' @export
-`variables<-.draws_array` <- function(x, value) {
+`variables<-.draws_array` <- function(x, value, with_indices = TRUE, ...) {
   check_new_variables(value)
-  dimnames(x)[[3L]] <- value
+  variable_names(dimnames(x)[[3L]], with_indices) <- value
   x
 }
 
+#' @rdname draws-index
 #' @export
-`variables<-.draws_df` <- function(x, value) {
+`variables<-.draws_df` <- function(x, value, with_indices = TRUE, ...) {
   check_new_variables(value)
-  names(x)[!names(x) %in% reserved_df_variables()] <- value
+  names_i <- !names(x) %in% reserved_df_variables()
+  variable_names(names(x)[names_i], with_indices) <- value
   x
 }
 
+#' @rdname draws-index
 #' @export
-`variables<-.draws_list` <- function(x, value) {
+`variables<-.draws_list` <- function(x, value, with_indices = TRUE, ...) {
   check_new_variables(value)
   for (i in seq_along(x)) {
-    names(x[[i]]) <- value
+    variable_names(names(x[[i]]), with_indices) <- value
   }
   x
 }
 
+#' @rdname draws-index
 #' @export
-`variables<-.draws_rvars` <- function(x, value) {
+`variables<-.draws_rvars` <- function(x, value, with_indices = FALSE, ...) {
+  with_indices <- as_one_logical(with_indices)
   check_new_variables(value)
-  names(x) <- value
+  if (with_indices) {
+    # need to make sure that the provided names only change the base names of
+    # the variables and that the indexes otherwise match
+    vars <- split_indices(value)
+    base_names <- unique(vars$base_name)
+    base_name_i <- match(vars$base_name, base_names)
+
+    x_index_strings <- ulapply(x, flatten_indices, recursive = FALSE, use.names = FALSE)
+    x_base_name_i <- rep(seq_along(x), lengths(x))
+    if (!identical(x_base_name_i, base_name_i) || !identical(x_index_strings, vars$index_string)) {
+      stop_no_call(
+        "variables(<draws_rvars>) <- value is only allowed when the indices in `value` match ",
+        "the indices in the original names. To modify the names of the indices, either modify ",
+        "the dims of the underlying rvars or convert to another draws format first."
+      )
+    }
+
+    names(x) <- base_names
+  } else {
+    names(x) <- value
+  }
   x
 }
 
@@ -150,7 +194,7 @@ remove_reserved_variable_names <- function(variables, reserved) {
 #'
 #' @param x (draws) A [`draws`] object.
 #' @param variables (character) new variable names.
-#' @template args-methods-dots
+#' @inheritDotParams variables
 #'
 #' @return Returns a [`draws`] object of the same format as `x`, with
 #'   variables named as specified.
@@ -169,8 +213,8 @@ remove_reserved_variable_names <- function(variables, reserved) {
 #'
 #' @export
 set_variables <- function(x, variables, ...) {
-  variables(x) <- variables
-  return(x)
+  variables(x, ...) <- variables
+  x
 }
 
 
@@ -489,7 +533,7 @@ check_existing_variables <- function(variables, x, regex = FALSE,
   exclude <- as_one_logical(exclude)
   variables <- unique(as.character(variables))
   all_variables <- variables(x, reserved = TRUE)
-  
+
   if (regex) {
     tmp <- named_list(variables)
     for (i in seq_along(variables)) {
@@ -537,7 +581,7 @@ check_existing_variables <- function(variables, x, regex = FALSE,
   if (exclude) {
     variables <- setdiff(all_variables, variables)
   }
-  
+
   invisible(variables)
 }
 
@@ -599,7 +643,7 @@ check_iteration_ids <- function(iteration_ids, x, unique = TRUE, exclude = FALSE
   if (exclude) {
     iteration_ids <- setdiff(iteration_ids(x), iteration_ids)
   }
-  
+
   invisible(iteration_ids)
 }
 
@@ -630,7 +674,7 @@ check_chain_ids <- function(chain_ids, x, unique = TRUE, exclude = FALSE) {
   if (exclude) {
     chain_ids <- setdiff(chain_ids(x), chain_ids)
   }
-  
+
   invisible(chain_ids)
 }
 
@@ -661,6 +705,6 @@ check_draw_ids <- function(draw_ids, x, unique = TRUE, exclude = FALSE) {
   if (exclude) {
     draw_ids <- setdiff(draw_ids(x), draw_ids)
   }
-  
+
   invisible(draw_ids)
 }
