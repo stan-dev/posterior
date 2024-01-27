@@ -753,8 +753,8 @@ flatten_array = function(x, x_name = NULL) {
     dimname_lists = lapply(seq_along(dimname_lists), function(i) .dimnames[[i]] %||% dimname_lists[[i]])
   }
   # expand out the dimname lists into the appropriate combinations and assemble into new names
-  dimname_grid <- expand.grid(dimname_lists)
-  new_names <- apply(dimname_grid, 1, paste0, collapse = ",")
+  dimname_grid <- expand.grid(dimname_lists, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+  new_names <- do.call(paste, c(list(sep = ","), dimname_grid))
 
   .length <- length(x)
   old_dim <- dim(x)
