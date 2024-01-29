@@ -111,7 +111,7 @@ test_that("cannot set duplicate variable names", {
 
 test_that("with_indices works", {
   x <- example_draws()
-  types <- list(
+  draws <- list(
     array = as_draws_array(x),
     df = as_draws_df(x),
     list = as_draws_list(x),
@@ -124,30 +124,30 @@ test_that("with_indices works", {
     "theta[5]", "theta[6]", "theta[7]", "theta[8]"
   )
   a_b_c = c("a", "b", "c[1]", "c[2]", "c[3]", "c[4]", "c[5]", "c[6]", "c[7]", "c[8]")
-  for (type in names(types)) {
-    expect_equal(variables(types[[!!type]], with_indices = TRUE), mu_tau_theta)
-    expect_equal(variables(types[[!!type]], with_indices = FALSE), c("mu", "tau", "theta"))
-    expect_equal(nvariables(types[[!!type]], with_indices = TRUE), 10)
-    expect_equal(nvariables(types[[!!type]], with_indices = FALSE), 3)
+  for (type in names(draws)) {
+    expect_equal(variables(draws[[!!type]], with_indices = TRUE), mu_tau_theta)
+    expect_equal(variables(draws[[!!type]], with_indices = FALSE), c("mu", "tau", "theta"))
+    expect_equal(nvariables(draws[[!!type]], with_indices = TRUE), 10)
+    expect_equal(nvariables(draws[[!!type]], with_indices = FALSE), 3)
 
     expect_equal(
-      variables(set_variables(types[[!!type]], a_b_c, with_indices = TRUE), with_indices = FALSE),
+      variables(set_variables(draws[[!!type]], a_b_c, with_indices = TRUE), with_indices = FALSE),
       c("a", "b", "c")
     )
     expect_equal(
-      variables(set_variables(types[[!!type]], c("a","b","c"), with_indices = FALSE), with_indices = TRUE),
+      variables(set_variables(draws[[!!type]], c("a","b","c"), with_indices = FALSE), with_indices = TRUE),
       a_b_c
     )
 
     expect_error(
-      set_variables(types[[!!type]], c("a","c","c"), with_indices = FALSE),
+      set_variables(draws[[!!type]], c("a","c","c"), with_indices = FALSE),
       "[Dd]uplicate"
     )
   }
 
   expect_error(
     set_variables(
-      types$rvars,
+      draws$rvars,
       c("a", "b", "XX[1]", "c[2]", "c[3]", "c[4]", "c[5]", "c[6]", "c[7]", "c[8]"),
       with_indices = TRUE
     )
