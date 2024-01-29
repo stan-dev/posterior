@@ -111,7 +111,7 @@ split_variable_names <- function(x) {
 #' e.g. list(character(), c("1", "2"), NA)
 #' @noRd
 split_indices <- function(x) {
-  strsplit(substr(x, 2, nchar(x)), ",", fixed = TRUE)
+  strsplit(substr(x, 2, nchar(x) - 1), ",", fixed = TRUE)
 }
 
 
