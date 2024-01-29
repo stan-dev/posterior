@@ -191,6 +191,10 @@ test_that("variables can be subsetted via non-scalar selection", {
   x <- as_draws_df(example_draws())
   x_sub <- subset_draws(x, variable = "theta")
   expect_equal(variables(x_sub), c(paste0("theta[", 1:8, "]")))
+
+  # can do scalar and non-scalar in the same selection
+  x_sub <- subset_draws(x, variable = c("mu", "theta"))
+  expect_equal(variables(x_sub), c("mu", paste0("theta[", 1:8, "]")))
 })
 
 test_that("subset_draws speed is tolerable with many variables", {

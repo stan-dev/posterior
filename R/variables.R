@@ -177,13 +177,13 @@ remove_reserved_variable_names <- function(variables, reserved) {
   if (with_indices) {
     # need to make sure that the provided names only change the base names of
     # the variables and that the indexes otherwise match
-    vars <- split_indices(value)
+    vars <- split_variable_names(value)
     base_names <- unique(vars$base_name)
     base_name_i <- match(vars$base_name, base_names)
 
-    x_index_strings <- ulapply(x, flatten_indices, recursive = FALSE, use.names = FALSE)
+    x_indices <- ulapply(x, flatten_indices, recursive = FALSE, use.names = FALSE)
     x_base_name_i <- rep(seq_along(x), lengths(x))
-    if (!identical(x_base_name_i, base_name_i) || !identical(x_index_strings, vars$index_string)) {
+    if (!identical(x_base_name_i, base_name_i) || !identical(x_indices, vars$indices)) {
       stop_no_call(
         "variables(<draws_rvars>) <- value is only allowed when the indices in `value` match ",
         "the indices in the original names. To modify the names of the indices, either modify ",
@@ -261,7 +261,7 @@ check_existing_variables <- function(variables, x, regex = FALSE,
     all_variables_base <- all_variables
     # exclude already matched scalar variables
     all_variables_base[!is.na(scalar_input_ixs)] <- NA_character_
-    all_variables_base <- gsub("\\[.*\\]$", "", all_variables_base, perl = TRUE)
+    all_variables_base <- split_variable_names(all_variables_base)$base_name
     vector_input_ixs <- match(all_variables_base, variables)
     # compose the vector of indices of matched input variables
     input_ixs <- c(scalar_input_ixs[!is.na(scalar_input_ixs)],

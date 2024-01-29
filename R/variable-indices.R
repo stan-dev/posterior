@@ -1,7 +1,7 @@
 # helpers for manipulating array indices embedded in variable names
 
 
-# flattening --------------------------------------------------------------
+# flattening dimensions into variable names with indices -----------------------
 
 #' Flatten the indices of an array-like object.
 #' @param x an array or array-like object (e.g. an rvar)
@@ -73,46 +73,56 @@ flatten_rvar_draws_to_df <- function(x, base_name = "") {
 }
 
 
-# manipulating flattened names -------------------------------------------------
+# splitting flattened variable names into base names and indices ---------------
 
-#' Given a vector of names possibly containing indices, split them into
+#' Given a vector of variable names possibly containing indices, split them into
 #' a structure representing the base name and the indices
 #' @param x a character vector of names, possibly containing indices;
-#' e.g. `c("x", "y[1,2]")`
-#' @returns a data frame with columns of `length(x)`:
+#' e.g. `c("x", "y[1,2]", NA)`
+#' @returns a data frame with `length(x)` rows and these columns:
 #'  - `base_name`: character vector of base names;
-#'     e.g. `c("x", "y")`
-#'  - `index_string`: character vector of the index strings if present;
-#'     e.g. `c("", "[1,2]")`
-#'  - `indices`: list column of character vectors of indices;
-#'     e.g. `list(character(), c("1","2"))`
+#'     e.g. `c("x", "y", NA)`
+#'  - `indices`: character vector of the index strings if present;
+#'     e.g. `c("", "[1,2]", NA)`
+#' If an input element of `x` is `NA`, the corresponding entries in the returned
+#' data frame will also be `NA`.
 #' @noRd
-split_indices <- function(x) {
+split_variable_names <- function(x) {
   # split x[y,z] names into base name and indices
-  #
-  #                    -----> base name -> vars_indices[[i]][[2]]
-  #                    |||||  lazy-matched (.*? not .*) so that indices match as much as they can
-  #                    |||||
-  #                    ||||| ------------> index string -> vars_indices[[i]][[3]]
-  #                    ||||| ||||||||||
-  matches <- regexec("^(.*?)(\\[(.*)\\])?$", x)
-  #                             ||||
-  #                             ---------> indices -> vars_indices[[i]][[4]]
-  vars_indices <- regmatches(x, matches)
+  # we do this with a regex matching just the indices at the end instead of a
+  # single regex matching the entire string with multiple capture groups
+  # --- something like regexec("^(.*?)(\\[(.*)\\])?$", x) --- because
+  # regexec() + regmatches() is slow on a very large number of variables
+  # (because it uses lists), but regexpr() + substr() is vectorized
+  indices_matches <- regexpr("(\\[.*\\])?$", x)
 
   vctrs::new_data_frame(list(
-    base_name = vapply(vars_indices, `[[`, i = 2, character(1)),
-    index_string = vapply(vars_indices, `[[`, i = 3, character(1)),
-    indices = strsplit(vapply(vars_indices, `[[`, i = 4, character(1)), ",")
+    base_name = substr(x, 1L, indices_matches - 1L),
+    indices = substr(x, indices_matches, .Machine$integer.max)
   ))
 }
+
+#' Given a vector of index strings (such as returned by
+#' `split_variable_names(x)$indices`), split each index string into a character
+#' vector of indices.
+#' @param x a character vector of index strings;
+#' e.g. `c("", "[1,2]", NA)`
+#' @returns a list of character vectors of indices;
+#' e.g. list(character(), c("1", "2"), NA)
+#' @noRd
+split_indices <- function(x) {
+  strsplit(substr(x, 2, nchar(x)), ",", fixed = TRUE)
+}
+
+
+# manipulating flattened variable names -----------------------------------
 
 #' Given a vector of names possibly containing indices, return the base names
 #' @param x a character vector of names, possibly containing indices (e.g. `"x[1,2]"`)
 #' @returns a character vector of all unique base names in `x`
 #' @noRd
 base_names <- function(x) {
-  unique(split_indices(x)$base_name)
+  unique(split_variable_names(x)$base_name)
 }
 
 #' Given a vector of names possibly containing indices, modify the base names
@@ -122,7 +132,7 @@ base_names <- function(x) {
 #'   strings replaced with `value`.
 #' @noRd
 `base_names<-` <- function(x, value) {
-  vars <- split_indices(x)
+  vars <- split_variable_names(x)
   base_names <- unique(vars$base_name)
   if (length(value) != length(base_names)) {
     stop_no_call(
@@ -132,9 +142,8 @@ base_names <- function(x) {
       " - Replacements:        ", toString(value, width = 40)
     )
   }
-  i <- match(vars$base_name, base_names)
-  vars$base_name <- value[i]
-  paste0(vars$base_name, vars$index_string)
+  base_name_i <- match(vars$base_name, base_names)
+  paste0(value[base_name_i], vars$indices)
 }
 
 #' Given a vector of variable names, either return the variable names or the

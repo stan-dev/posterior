@@ -4,6 +4,8 @@
 \alias{extract_variable_matrix}
 \alias{extract_variable_matrix.default}
 \alias{extract_variable_matrix.draws}
+\alias{extract_variable_matrix.draws_df}
+\alias{extract_variable_matrix.draws_list}
 \alias{extract_variable_matrix.draws_rvars}
 \title{Extract matrix of a single variable}
 \usage{
@@ -12,6 +14,10 @@ extract_variable_matrix(x, variable, ...)
 \method{extract_variable_matrix}{default}(x, variable, ...)
 
 \method{extract_variable_matrix}{draws}(x, variable, ...)
+
+\method{extract_variable_matrix}{draws_df}(x, variable, ...)
+
+\method{extract_variable_matrix}{draws_list}(x, variable, ...)
 
 \method{extract_variable_matrix}{draws_rvars}(x, variable, ...)
 }

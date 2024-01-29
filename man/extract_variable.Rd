@@ -4,6 +4,8 @@
 \alias{extract_variable}
 \alias{extract_variable.default}
 \alias{extract_variable.draws}
+\alias{extract_variable.draws_df}
+\alias{extract_variable.draws_list}
 \alias{extract_variable.draws_rvars}
 \title{Extract draws of a single variable}
 \usage{
@@ -12,6 +14,10 @@ extract_variable(x, variable, ...)
 \method{extract_variable}{default}(x, variable, ...)
 
 \method{extract_variable}{draws}(x, variable, ...)
+
+\method{extract_variable}{draws_df}(x, variable, ...)
+
+\method{extract_variable}{draws_list}(x, variable, ...)
 
 \method{extract_variable}{draws_rvars}(x, variable, ...)
 }
@@ -24,7 +30,7 @@ is defined.}
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-A numeric vector of length equal to the number of draws.
+A vector of length equal to the number of draws.
 }
 \description{
 Extract a vector of draws of a single variable.
