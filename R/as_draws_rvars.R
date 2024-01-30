@@ -162,10 +162,7 @@ as_draws_rvars.draws_df <- function(x, ...) {
   data_frame_to_matrix <- function(df) {
     if (any(vapply(df, is.factor, logical(1)))) {
       # as.matrix() does not convert factor columns correctly, must do this ourselves
-      while_preserving_dims(
-        function(df) do.call(function(...) vctrs::vec_c(..., .name_spec = rlang::zap()), df),
-        df
-      )
+      copy_dims(df, vctrs::vec_c(!!!df, .name_spec = rlang::zap()))
     } else {
       as.matrix(df)
     }

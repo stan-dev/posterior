@@ -44,7 +44,7 @@ Ops.rvar <- function(e1, e2) {
     } else {
       dim_source <- draws_x
     }
-    draws <- while_preserving_dims(function(...) draws, dim_source)
+    draws <- copy_dims(dim_source, draws)
   }
 
   new_rvar(draws, .nchains = nchains(e1))

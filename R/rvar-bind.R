@@ -106,8 +106,8 @@ broadcast_and_bind_rvars.rvar <- function(x, y, axis = 1) {
   draws_y <- broadcast_array(draws_y, new_dim)
 
   # factors may not bind properly with abind, so convert them to characters first
-  if (is.factor(draws_x)) draws_x <- while_preserving_dims(as.character, draws_x)
-  if (is.factor(draws_y)) draws_y <- while_preserving_dims(as.character, draws_y)
+  if (is.factor(draws_x)) draws_x <- copy_dims(draws_x, as.character(draws_x))
+  if (is.factor(draws_y)) draws_y <- copy_dims(draws_y, as.character(draws_y))
 
   # bind along desired axis
   result <- new_rvar(

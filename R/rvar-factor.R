@@ -67,7 +67,7 @@ rvar_factor <- function(
   # to ensure we pick up levels already attached to x (if there are any), we
   # need to convert x to a factor here if it has levels
   if (!is.factor(x) && !is.null(attr(x, "levels"))) {
-    x <- while_preserving_dims(factor, x, labels = attr(x, "levels"))
+    x <- copy_dims(x, factor(x, labels = attr(x, "levels")))
   }
 
   out <- rvar(
@@ -229,15 +229,15 @@ combine_rvar_factor_levels <- function(x, list_of_levels, ordered = FALSE) {
     # We only keep the "ordered" class when the levels were all the same (this
     # mimics base-R, which demotes to unordered factor when combining ordered
     # factors with different levels)
-    .draws <- while_preserving_dims(factor, .draws, .levels, ordered = ordered)
+    .draws <- copy_dims(.draws, factor(.draws, .levels, ordered = ordered))
   } else {
     # levels are not the same in all variables, so preserve any old levels by
     # merging them together, but do not apply the "ordered" class
     .levels <- unique(do.call(c, list_of_levels))
-    .draws <- while_preserving_dims(factor, .draws, .levels)
+    .draws <- copy_dims(.draws, factor(.draws, .levels))
   }
   if (!is.factor(.draws)) {
-    .draws <- while_preserving_dims(factor, .draws)
+    .draws <- copy_dims(.draws, factor(.draws))
   }
   draws_of(x) <- .draws
 

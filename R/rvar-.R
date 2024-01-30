@@ -370,7 +370,8 @@ match.default <- function(x, ...) base::match(x, ...)
 #' @rdname match
 #' @export
 match.rvar <- function(x, ...) {
-  draws_of(x) <- while_preserving_dims(base::match, draws_of(x), ...)
+  .draws <- draws_of(x)
+  draws_of(x) <- copy_dims(.draws, base::match(.draws, ...))
   x
 }
 
@@ -823,27 +824,28 @@ cleanup_rvar_draws <- function(x) {
 
   # if x is a character array, make it a factor
   if (is.character(x)) {
-    x <- while_preserving_dims(factor, x)
+    x <- copy_dims(x, factor(x))
   }
 
   x
 }
 
-#' Execute x <- f(x, ...) but preserve dimensions and dimension names of x.
-#' Useful for functions that do not change the length of x but which drop
-#' dimensions.
+#' Copy dims and dimnames of `src` to `dst`.
+#' Useful for functions that do not change the length of a variable but which
+#' drop dimensions.
+#' @param src a variable, possibly with dims and dimnames
+#' @param dst a variable of same length as `src`.
 #' @noRd
-while_preserving_dims <- function(f, x, ...) {
-  .dim <- dim(x)
-  .dimnames <- dimnames(x)
-  x <- f(x, ...)
-  dim(x) <- .dim
-  dimnames(x) <- .dimnames
-  x
+copy_dims <- function(src, dst) {
+  dim(dst) <- dim(src)
+  dimnames(dst) <- dimnames(src)
+  dst
 }
 
-#' Copy class and levels of src to dst.
-#' Useful for functions that do not change the shape of x but which drop levels.
+#' Copy class and levels of src to dst. Class is copied to ensure that the
+#' status of the variable as a factor or ordered is maintained.
+#' Useful for functions that do not change the shape of a variable but which
+#' drop levels.
 #' @param src a variable, possibly with levels
 #' @param dst a variable of same shape as `src`.
 #' @noRd
@@ -914,7 +916,7 @@ summarise_rvar_within_draws_via_matrix <- function(x, .name, .f, ..., .ordered_o
   if (.ordered_okay && is_rvar_ordered(x)) {
     .levels <- levels(x)
     .draws <- .f(draws_of(as_rvar_numeric(x)), ...)
-    .draws <- while_preserving_dims(function(.draws) ordered(.levels[round(.draws)], .levels), .draws)
+    .draws <- copy_dims(.draws, ordered(.levels[round(.draws)], .levels))
   } else if (is_rvar_factor(x)) {
     stop_no_call("Cannot apply `", .name, "` function to rvar_factor objects.")
   } else {
