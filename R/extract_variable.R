@@ -3,10 +3,10 @@
 #' Extract a vector of draws of a single variable.
 #'
 #' @template args-methods-x
-#' @param variable (string) The name of the variable to extract.
+#' @template args-extract-variable
 #' @template args-methods-dots
 #' @return A vector of length equal to the number of draws.
-#'
+#' @family variable extraction methods
 #' @examples
 #' x <- example_draws()
 #' mu <- extract_variable(x, variable = "mu")

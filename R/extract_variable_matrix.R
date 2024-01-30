@@ -4,10 +4,10 @@
 #' This is primarily used for convergence diagnostic functions such as [rhat()].
 #'
 #' @template args-methods-x
-#' @param variable (string) The name of the variable to extract.
+#' @template args-extract-variable
 #' @template args-methods-dots
 #' @return A `matrix` with dimension iterations x chains.
-#'
+#' @family variable extraction methods
 #' @examples
 #' x <- example_draws()
 #' mu <- extract_variable_matrix(x, variable = "mu")

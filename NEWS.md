@@ -10,6 +10,8 @@
   support a `with_indices` argument, which determines whether variable names
   are retrieved/set with (`"x[1]"`, `"x[2]"` ...) or without (`"x"`) indices
   (#208).
+* Add `extract_variable_array()` function to extract variables with indices
+  into arrays of iterations x chains x any remaining dimensions (#340).
 * For types that support `factor` variables (`draws_df`, `draws_list`, and 
   `draws_rvars`), `extract_variable()` and `extract_variable_matrix()` can 
   now return `factor`s.
