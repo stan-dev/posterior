@@ -336,7 +336,7 @@ t.rvar = function(x) {
     dimnames(.draws) = c(.dimnames[1], list(NULL), .dimnames[2])
     result <- new_rvar(.draws, .nchains = nchains(x))
   } else if (ndim == 3) {
-    .draws <- while_preserving_levels(aperm, .draws, c(1, 3, 2))
+    .draws <- copy_levels(.draws, aperm(.draws, c(1, 3, 2)))
     result <- new_rvar(.draws, .nchains = nchains(x))
   } else {
     stop_no_call("argument is not a random vector or matrix")
@@ -346,6 +346,7 @@ t.rvar = function(x) {
 
 #' @export
 aperm.rvar = function(a, perm, ...) {
-  draws_of(a) <- while_preserving_levels(aperm, draws_of(a), c(1, perm + 1), ...)
+  .draws <- draws_of(a)
+  draws_of(a) <- copy_levels(.draws, aperm(.draws, c(1, perm + 1), ...))
   a
 }

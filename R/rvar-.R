@@ -842,16 +842,15 @@ while_preserving_dims <- function(f, x, ...) {
   x
 }
 
-#' Execute x <- f(x, ...) but preserve class and levels of x.
-#' Useful for functions that do not change the length of x but which levels.
+#' Copy class and levels of src to dst.
+#' Useful for functions that do not change the shape of x but which drop levels.
+#' @param src a variable, possibly with levels
+#' @param dst a variable of same shape as `src`.
 #' @noRd
-while_preserving_levels <- function(f, x, ...) {
-  .class <- oldClass(x)
-  .levels <- levels(x)
-  x <- f(x, ...)
-  oldClass(x) <- .class
-  levels(x) <- .levels
-  x
+copy_levels <- function(src, dst) {
+  oldClass(dst) <- oldClass(src)
+  levels(dst) <- levels(src)
+  dst
 }
 
 #' a version of apply() that works on factor-like arrays

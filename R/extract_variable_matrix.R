@@ -44,8 +44,7 @@ extract_variable_matrix.draws_df <- function(x, variable, ...) {
   if (is.factor(x[[variable]])) {
     x_variable_factor <- x[[variable]]
     x[[variable]] <- unclass(x[[variable]])
-    out <- NextMethod()
-    out <- while_preserving_levels(function(...) out, x_variable_factor)
+    out <- copy_levels(x_variable_factor, NextMethod())
   } else {
     out <- NextMethod()
   }
@@ -61,8 +60,7 @@ extract_variable_matrix.draws_list <- function(x, variable, ...) {
     for (i in seq_along(x)) {
       x[[i]][[variable]] <- unclass(x[[i]][[variable]])
     }
-    out <- NextMethod()
-    out <- while_preserving_levels(function(...) out, x_variable_factor)
+    out <- copy_levels(x_variable_factor, NextMethod())
   } else {
     out <- NextMethod()
   }
@@ -74,12 +72,14 @@ extract_variable_matrix.draws_list <- function(x, variable, ...) {
 extract_variable_matrix.draws_rvars <- function(x, variable, ...) {
   variable <- as_one_character(variable)
   parts <- split_variable_names(variable)
+
   .draws <- draws_of(x[[parts$base_name]])
   if (is.factor(.draws)) {
     # if x is a factor rvar, convert it to numeric before extracting and
     # then we'll add levels back at the end
     x[[parts$base_name]] <- as_rvar_integer(x[[parts$base_name]])
   }
+
   if (isTRUE(nzchar(parts$indices))) {
     # variable with indices in the name ("x[1]", etc) can't be subset from
     # draws_rvars directly, so we'll convert to a draws_array first
@@ -93,5 +93,6 @@ extract_variable_matrix.draws_rvars <- function(x, variable, ...) {
   } else {
     out <- NextMethod()
   }
-  while_preserving_levels(function(...) out, .draws)
+
+  copy_levels(.draws, out)
 }
