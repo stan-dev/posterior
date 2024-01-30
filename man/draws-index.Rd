@@ -25,8 +25,6 @@ ndraws(x)
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
-
-\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 For \code{iteration_ids()}, \code{chain_ids()}, and \code{draw_ids()}, an integer vector.

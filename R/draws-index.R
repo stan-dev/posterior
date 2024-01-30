@@ -4,7 +4,6 @@
 #'
 #' @name draws-index
 #' @template args-methods-x
-#' @template args-methods-dots
 #'
 #' @details
 #' The methods `iteration_ids()`, `chain_ids()`, and `draw_ids()` return

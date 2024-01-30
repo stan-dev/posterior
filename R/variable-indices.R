@@ -161,7 +161,7 @@ variable_names <- function(x, with_indices = TRUE) {
 #' Given a vector of variable names, either replace the variable names or the
 #' base names of the variables, depending on the value of `with_indices`
 #' @noRd
-`variable_names<-` <- function(x, value, with_indices = TRUE) {
+`variable_names<-` <- function(x, with_indices = TRUE, value) {
   with_indices <- as_one_logical(with_indices)
   if (with_indices) {
     value

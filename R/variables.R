@@ -101,9 +101,8 @@ remove_reserved_variable_names <- function(variables, reserved) {
 #'
 #' @template args-methods-x
 #' @template args-methods-dots
-#' @template args-methods-reserved
 #' @template args-methods-with_indices
-#' @param value (character vector) new variable names.
+#' @param value,variables (character vector) new variable names.
 #'
 #' @details
 #' `variables(x) <- value` allows you to modify the vector of variable names,
@@ -130,13 +129,13 @@ remove_reserved_variable_names <- function(variables, reserved) {
 #' x <- set_variables(x, letters[1:nvariables(x)])
 #'
 #' @export
-`variables<-` <- function(x, value, ...) {
+`variables<-` <- function(x, ..., value) {
   UseMethod("variables<-")
 }
 
 #' @rdname variables-set
 #' @export
-`variables<-.draws_matrix` <- function(x, value, with_indices = TRUE, ...) {
+`variables<-.draws_matrix` <- function(x, with_indices = TRUE, ..., value) {
   check_new_variables(value)
   variable_names(colnames(x), with_indices) <- value
   x
@@ -144,7 +143,7 @@ remove_reserved_variable_names <- function(variables, reserved) {
 
 #' @rdname variables-set
 #' @export
-`variables<-.draws_array` <- function(x, value, with_indices = TRUE, ...) {
+`variables<-.draws_array` <- function(x, with_indices = TRUE, ..., value) {
   check_new_variables(value)
   variable_names(dimnames(x)[[3L]], with_indices) <- value
   x
@@ -152,7 +151,7 @@ remove_reserved_variable_names <- function(variables, reserved) {
 
 #' @rdname variables-set
 #' @export
-`variables<-.draws_df` <- function(x, value, with_indices = TRUE, ...) {
+`variables<-.draws_df` <- function(x, with_indices = TRUE, ..., value) {
   check_new_variables(value)
   names_i <- !names(x) %in% reserved_df_variables()
   variable_names(names(x)[names_i], with_indices) <- value
@@ -161,7 +160,7 @@ remove_reserved_variable_names <- function(variables, reserved) {
 
 #' @rdname variables-set
 #' @export
-`variables<-.draws_list` <- function(x, value, with_indices = TRUE, ...) {
+`variables<-.draws_list` <- function(x, with_indices = TRUE, ..., value) {
   check_new_variables(value)
   for (i in seq_along(x)) {
     variable_names(names(x[[i]]), with_indices) <- value
@@ -171,7 +170,7 @@ remove_reserved_variable_names <- function(variables, reserved) {
 
 #' @rdname variables-set
 #' @export
-`variables<-.draws_rvars` <- function(x, value, with_indices = FALSE, ...) {
+`variables<-.draws_rvars` <- function(x, with_indices = FALSE, ..., value) {
   with_indices <- as_one_logical(with_indices)
   check_new_variables(value)
   if (with_indices) {
@@ -200,8 +199,8 @@ remove_reserved_variable_names <- function(variables, reserved) {
 
 #' @rdname variables-set
 #' @export
-set_variables <- function(x, value, ...) {
-  variables(x, ...) <- value
+set_variables <- function(x, variables, ...) {
+  variables(x, ...) <- variables
   x
 }
 

@@ -41,7 +41,7 @@ extract_variable_array.default <- function(x, variable, ...) {
 extract_variable_array.draws <- function(x, variable, ...) {
   variable <- as_one_character(variable)
 
-  if (nzchar(split_variable_names(variable)$indices)) {
+  if (isTRUE(nzchar(split_variable_names(variable)$indices))) {
     # indices provided => scalar => equivalent to extract_variable_matrix
     out <- extract_variable_matrix(x, variable, ...)
     dim(out) <- c(dim(out), 1)

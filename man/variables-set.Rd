@@ -22,24 +22,20 @@ variables(x, ...) <- value
 
 \method{variables}{draws_rvars}(x, with_indices = FALSE, ...) <- value
 
-set_variables(x, value, ...)
+set_variables(x, variables, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
 
-\item{value}{(character vector) new variable names.}
-
 \item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{value, variables}{(character vector) new variable names.}
 
 \item{with_indices}{(logical) Should indices be included in variable
 names? For example, if the object includes variables named \code{"x[1]"} and
 \code{"x[2]"}, if \code{TRUE}, \code{c("x[1]", "x[2]")} is returned; if \code{FALSE}, only \code{"x"}
 is returned. Defaults to \code{TRUE} for all formats except \code{\link[=draws_rvars]{draws_rvars()}}.}
-
-\item{reserved}{(logical) Should reserved variables be included in the
-output? Defaults to \code{FALSE}. See \code{\link{reserved_variables}} for an overview of
-currently reserved variable names.}
 }
 \value{
 Returns a \code{\link{draws}} object of the same format as \code{x}, with

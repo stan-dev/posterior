@@ -32,10 +32,13 @@ variables with indices.
 }
 \examples{
 x <- example_draws(example = "multi_normal")
+
 mu <- extract_variable_array(x, variable = "mu")
 str(mu)
+
 mu1 <- extract_variable_array(x, variable = "mu[1]")
 str(mu1)
+
 Sigma <- extract_variable_array(x, variable = "Sigma")
 str(Sigma)
 
