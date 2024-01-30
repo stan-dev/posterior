@@ -16,6 +16,10 @@ test_that("extract_variable_array works the same for different formats", {
     expect_equal(extract_variable_array(draws[[!!type]], "theta[1]"), theta1)
     expect_equal(extract_variable_array(draws[[!!type]], "theta"), theta)
   }
+
+  # rvars are converted to draws on the way in, thus the variable name to
+  # use to extract the array is the generic "x"
+  expect_equal(extract_variable_array(draws$rvars$mu, "x"), mu)
 })
 
 test_that("extract_variable_array works for factor types", {

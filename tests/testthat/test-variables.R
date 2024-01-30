@@ -10,6 +10,7 @@ test_that('duplicate variable names are not allowed', {
 
 test_that("variables() work with NULL", {
   expect_equal(variables(NULL), NULL)
+  expect_equal(nvariables(NULL), 0)
 })
 
 test_that("variables() and variables<-() work on draws_matrix", {
@@ -142,6 +143,13 @@ test_that("with_indices works", {
     expect_error(
       set_variables(draws[[!!type]], c("a","c","c"), with_indices = FALSE),
       "[Dd]uplicate"
+    )
+  }
+
+  for (type in head(names(draws), -1)) {
+    expect_error(
+      set_variables(draws[[!!type]], c("a","b"), with_indices = FALSE),
+      "base name.*[Ll]engths must match"
     )
   }
 
