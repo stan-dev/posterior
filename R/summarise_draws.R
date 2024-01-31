@@ -117,41 +117,9 @@ summarise_draws.draws <- function(
   if (.cores <= 0) {
     stop_no_call("'.cores' must be a positive integer.")
   }
-  funs <- as.list(c(...))
   .args <- as.list(.args)
-  if (length(funs)) {
-    if (is.null(names(funs))) {
-      # ensure names are initialized properly
-      names(funs) <- rep("", length(funs))
-    }
-    calls <- substitute(list(...))[-1]
-    calls <- ulapply(calls, deparse_pretty)
-    for (i in seq_along(funs)) {
-      fname <- NULL
-      if (is.character(funs[[i]])) {
-        fname <- as_one_character(funs[[i]])
-      }
-      # label unnamed arguments via their calls
-      if (!nzchar(names(funs)[i])) {
-        if (!is.null(fname)) {
-          names(funs)[i] <- fname
-        } else {
-          names(funs)[i] <- calls[i]
-        }
-      }
-      # get functions passed as strings from the right environments
-      if (!is.null(fname)) {
-        if (exists(fname, envir = caller_env())) {
-          env <- caller_env()
-        } else if (fname %in% getNamespaceExports("posterior")) {
-          env <- asNamespace("posterior")
-        } else {
-          stop_no_call("Cannot find function '", fname, "'.")
-        }
-      }
-      funs[[i]] <- rlang::as_function(funs[[i]], env = env)
-    }
-  } else {
+  funs <- create_function_list(...)
+  if (length(funs) == 0) {
     # default functions
     funs <- list(
       mean = base::mean,
@@ -326,6 +294,42 @@ empty_draws_summary <- function(dimensions = "variable") {
   out
 }
 
+
+create_function_list <- function(..., .env = caller_env(2)) {
+  funs <- as.list(c(...))
+  if (is.null(names(funs))) {
+    # ensure names are initialized properly
+    names(funs) <- rep("", length(funs))
+  }
+  calls <- substitute(list(...))[-1]
+  calls <- ulapply(calls, deparse_pretty)
+  for (i in seq_along(funs)) {
+    fname <- NULL
+    if (is.character(funs[[i]])) {
+      fname <- as_one_character(funs[[i]])
+    }
+    # label unnamed arguments via their calls
+    if (!nzchar(names(funs)[i])) {
+      if (!is.null(fname)) {
+        names(funs)[i] <- fname
+      } else {
+        names(funs)[i] <- calls[i]
+      }
+    }
+    # get functions passed as strings from the right environments
+    if (!is.null(fname)) {
+      if (exists(fname, envir = .env)) {
+        env <- .env
+      } else if (fname %in% getNamespaceExports("posterior")) {
+        env <- asNamespace("posterior")
+      } else {
+        stop_no_call("Cannot find function '", fname, "'.")
+      }
+    }
+    funs[[i]] <- rlang::as_function(funs[[i]], env = env)
+  }
+  funs
+}
 
 create_summary_list <- function(x, v, funs, .args) {
   draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)

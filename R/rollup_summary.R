@@ -1,113 +1,217 @@
-#' "Roll up" `draws_summary` objects by collapsing over nonscalar parameters.
-#' 
-#' By default, all variables with names matched by `\\[.*\\]$` are rolled up, 
-#' but there is an option to pass a list of parameter names, which will roll up
-#' any variables matched by `^parameter_name\\[.*\\]$`
-#' 
-#' @name draws_summary_rollup
-#' @param x a `draws_summary` object or a `draws` object to be summarised
-#' @param rollup_vars a list of variable names (excluding brackets and indices) to roll up
-#' @param min_only a character vector of varable names for which only minimum values are 
-#'    desired in the rollup
-#' @param max_only a character vector of varable names for which only maximum values are 
-#'    desired in the rollup
-
-#' @return
-#' The `rollup_summary()` methods return a list of [tibble][tibble::tibble] data frames.
-#' The first element is a standard `draws_summary` for the variables that are not rolled up
-#' The second element is a rollup of the variables to be rolled up and contains max and min
-#' values of the summary functions attained by any element of the variable
-#' 
+#' "Roll up" `draws_summary` objects by collapsing over non-scalar parameters.
+#'
+#' "Rolls up" summaries of draws (e.g. as returned by [summarise_draws()]).
+#' By default, all variables containing indices (e.g. `"x[1]"`) are rolled up,
+#' but the `.variable` parameter can be used to roll up specific variables only.
+#'
+#' @param .x a `draws_summary` object, a [`draws`] object, a `data.frame`, or an
+#' object with a [summarise_draws()] method.
+#' @param .variable (character vector) base names (without indices) of variables
+#' to roll up. If `NULL` (the default), all variables with indices in their names
+#' will be rolled up.
+#' @param ... a named arguments where each name is a summary measure (i.e. column)
+#' in `.x` and the value is a character vector of function names or a named list
+#' of functions giving the rollup functions to apply to the corresponding summary
+#' measure.
+#' @param .default (list) named list where names are summary measures in `.x`
+#' and values are the default rollup functions to apply to those summary
+#' measures unless overridden by `...`.
+#' @param .unspecified (character vector or list) default rollup functions to
+#' apply to any summary measure (column) in `.x` that does not have its own
+#' specific rollup functions given in `...` or `.default`.
 #' @details
-#' By default, only the maximum value of `rhat` and the minimum values of [ess_bulk()] and 
-#' [ess_tail()] are returned.  # INSERT HOW WE HANDLE NA SUMMARIES
-#' 
+#' If called without specifying additional rollup functions in `...`,
+#' `rollup_summary()` will apply the functions provided in `.default` and
+#' `.unspecified` to the columns in `.x` (or, if `.x` is not a `data.frame`,
+#' to the result of `summarise_draws(.x)`).
+#'
+#' In addition to the defaults for all columns in `.unspecified`, several
+#' summary measures have specific default rollup functions associated with them
+#' that will be applied unless this is overridden by entries in `...`. For
+#' example, `ess_bulk` has the default rollup function `"min"` instead of
+#' `c("min", "max")`. `default_rollups()` gives the complete list of default
+#' rollup functions.
+#'
+#' Calls to `rollup_summary()` can be chained, in which case subsequent
+#' rollups will be applied only to variables that have not already been
+#' rolled up. This makes it possible to provide different rollup functions
+#' for different variables by combining chaining with the use of the
+#' `.variable` parameter.
+#' @returns
+#' A named list of [`draws_summary`] objects; i.e. subclasses of [`tibble`],
+#' with the following elements:
+#'  - `"unrolled"`: a [`draws_summary`] of the variables that were not rolled up.
+#'  - `"rolled"`: a [`draws_summary`] of the rolled-up variables. The second
+#'    column of this data frame, `"dims"`, gives the lengths of the dimensions
+#'    of each rolled up variable as a comma-separated string. The remaining
+#'    columns give each roll up of each summary measure; e.g. if `x` contained
+#'    a summary measure `"mean"` and it was rolled up using the `"min"` and
+#'    `"max"` functions (the default), the output will have a `"mean_min"` and
+#'    `"mean_max"` column.
 #' @examples
-#' ds <- summarise_draws(example_draws())
-#' ds2 <- summarise_draws(2 * example_draws())
-#' ds2$variable <- c("pi", "upsilon", 
-#'                   "omega[1,1]", "omega[2,1]", "omega[3,1]", "omega[4,1]",
-#'                   "omega[1,2]", "omega[2,2]", "omega[3,2]", "omega[4,2]")
-#' draws_summary <- rbind(ds, ds2)
-#' rollup_summary(draws_summary)
-#' rollup_summary(draws_summary, rollup_vars = "theta")
-#' rollup_summary(example_draws())
-NULL
-
-#' @rdname draws_summary_rollup
+#' x <- example_draws()
+#'
+#' # default summaries show a row for every element in array-like variables
+#' summarise_draws(x)
+#'
+#' # you can roll up summaries of array-like variables by rolling up draws
+#' # objects directly
+#' rollup_summary(x)
+#'
+#' # or summarise draws objects first to pick the desired summary measures
+#' ds <- summarise_draws(x, "mean", "sd")
+#' rollup_summary(ds)
+#'
+#' # rollups work on variables of any dimension
+#' x <- example_draws(example = "multi_normal")
+#' rollup_summary(x)
+#'
+#' # you can roll up only some variables
+#' rollup_summary(x, .variable = "Sigma")
+#'
+#' # you can also specify the rollup functions to apply to each function
+#' rollup_summary(x, "Sigma", mean = "mean", median = "min")
+#'
+#' # to apply a particular function or functions to all summaries, pass them
+#' # to .unspecified and set .default to NULL:
+#' rollup_summary(x, .unspecified = "median", .default = NULL)
+#'
+#' @examplesIf getRversion() > "4.1"
+#' # rollups can be chained to provide different rollup functions to
+#' # different variables
+#' x |>
+#'   summarise_draws("mean", "sd") |>
+#'   rollup_summary("mu", sd = "min") |>
+#'   rollup_summary("Sigma", sd = "max")
 #' @export
-rollup_summary <- function(x, rollup_vars = NULL,
-                           min_only = c("ess_bulk", "ess_tail"),
-                           max_only = "rhat") {
+rollup_summary <- function(.x, ...) {
   UseMethod("rollup_summary")
 }
 
-#' @rdname draws_summary_rollup
+#' @rdname rollup_summary
 #' @export
-rollup_summary.default <- function(x, rollup_vars = NULL,
-                                   min_only = c("ess_bulk", "ess_tail"),
-                                   max_only = "rhat") {
-  rollup_summary(summarise_draws(x), rollup_vars = rollup_vars,
-                 min_only = min_only,
-                 max_only = max_only)
+rollup_summary.default <- function(.x, ...) {
+  rollup_summary(summarise_draws(.x), ...)
 }
 
-#' @rdname draws_summary_rollup
+#' @rdname rollup_summary
 #' @export
-rollup_summary.draws_summary <- function (x, rollup_vars = NULL,
-                            min_only = c("ess_bulk", "ess_tail"),
-                            max_only = "rhat") {
-  # get variable names
-  vars <- draws_summary$variable
-  # Determine which variable names need to be rolled up
-  if (is.null(rollup_vars)) {
-    vars_nonscalar <- grepl("\\[", vars)
+rollup_summary.data.frame <- function (
+  .x,
+  .variable = NULL,
+  ...,
+  .default = default_rollups(),
+  .unspecified = c("min", "max")
+) {
+  funs <- list(...)
+
+  # apply the measure-specific default rollup functions to any columns not
+  # overridden by the user
+  missing_default_funs <- setdiff(names(.default), names(funs))
+  funs[missing_default_funs] <- .default[missing_default_funs]
+
+  # apply the generic default rollup functions to any remaining unspecified columns
+  funs[setdiff(names(.x), names(funs))] <- list(.unspecified)
+
+  # turn the function specifications into named lists of functions
+  funs <- lapply(funs, function(fun_list) inject(create_function_list(!!!fun_list)))
+
+  # determine the variables to roll up
+  vars <- split_variable_names(.x$variable)
+  if (is.null(.variable)) {
+    rollup_rows <- nzchar(vars$indices)
   } else {
-    vars_nonscalar <- as.logical(colSums(do.call(rbind, 
-                                                 lapply(paste0("^", rollup_vars, "\\["),
-                                                        function(x){grepl(x, vars)}))))
+    rollup_rows <- vars$base_name %in% .variable
   }
-  # Separate out draws_summary into the scalar variables to leave alone and the nonscalar
-  # variables for rollup
-  ds_scalar <- draws_summary[!vars_nonscalar, ]
-  ds_nonscalar <- draws_summary[vars_nonscalar, ]
-  # Roll up the nonscalar variables
-  varnames_nonscalar <- gsub("\\[(.*)", "", ds_nonscalar$variable)
-  summary_names <- names(draws_summary)[-1]
-  names_minmax <- summary_names[!(summary_names %in% c(min_only, max_only))]
-  split_nonscalar <- split(ds_nonscalar, varnames_nonscalar)[unique(varnames_nonscalar)] 
-                          # [unique(varnames_nonscalar)] preserves the order of the names
-  min_max <- do.call(rbind, lapply(split_nonscalar, rollup_helper_minmax, 
-                                   names = names_minmax))
-  min_only <- do.call(rbind, lapply(split_nonscalar, rollup_helper_min, names = min_only))
-  max_only <- do.call(rbind, lapply(split_nonscalar, rollup_helper_max, names = max_only))
-  variable_column <- data.frame("variable" = unique(varnames_nonscalar))
-  variable_indices <- parse_variable_indices(ds_nonscalar$variable)
-  dimension_column <- data.frame("dimension" = paste0("(", 
-                                                      sapply(variable_indices, function(x){paste(x$dimensions, collapse = ",")}),
-                                                      ")"))
-  nonscalar_out <- tibble::as_tibble(cbind(variable_column, dimension_column, min_max, max_only, min_only))
-  out <- list(unrolled_vars = ds_scalar, rolled_vars = nonscalar_out)
-  out
+  variable_col <- which(names(.x) == "variable")
+  vars <- vars[rollup_rows, ]
+
+  # split the input df by variable base name and roll up the summaries
+  var_groups <- vctrs::vec_split(cbind(vars, .x[rollup_rows, -variable_col]), vars$base_name)
+  rolled_up_vars <- lapply(var_groups$val, function(x) {
+    indices <- split_indices_to_df(x$indices)
+    rolled_up_cols <- do.call(cbind, lapply(seq_along(x)[c(-1,-2)], function(col_i) {
+      col <- x[[col_i]]
+      col_name <- names(x)[[col_i]]
+      rolled_up_col <- lapply(funs[[col_name]], function(f) f(col))
+      names(rolled_up_col) <- paste0(col_name, "_", names(rolled_up_col))
+      vctrs::new_data_frame(rolled_up_col, n = 1L)
+    }))
+    cbind(
+      variable = x$base_name[[1]],
+      dims = paste0(lengths(lapply(indices, unique)), collapse = ","),
+      rolled_up_cols
+    )
+  })
+
+  new_rollup_summary(
+    unrolled = .x[!rollup_rows, ],
+    rolled = do.call(rbind, rolled_up_vars)
+  )
 }
 
-rollup_helper_minmax <- function(x, names){
-  x <- x[, names]
-  mm <- c(apply(x, 2, function(x) {c(min(x), max(x))}))
-  names(mm) <- paste0(rep(names(x), each = 2), c("_min", "_max"))
-  mm
+#' @rdname rollup_summary
+#' @export
+rollup_summary.rollup_summary <- function (.x, ...) {
+  out <- rollup_summary(.x$unrolled, ...)
+  new_rollup_summary(
+    unrolled = out$unrolled,
+    rolled = vctrs::vec_rbind(.x$rolled, out$rolled)
+  )
 }
 
-rollup_helper_min <- function(x, names){
-  x <- x[, names]
-  min_only <- apply(x, 2, min)
-  names(min_only) <- paste0(names(x), "_min")
-  min_only
+new_rollup_summary <- function(unrolled, rolled) {
+  assert_data_frame(unrolled)
+  if (!inherits(unrolled, "draws_summary")) class(unrolled) <- class_draws_summary()
+  assert_data_frame(rolled)
+  if (!inherits(rolled, "draws_summary")) class(rolled) <- class_draws_summary()
+
+  structure(
+    list(unrolled = unrolled, rolled = rolled),
+    class = class_rollup_summary()
+  )
 }
 
-rollup_helper_max <- function(x, names){
-  x <- x[, names]
-  max_only <- apply(x, 2, max)
-  names(max_only) <- paste0(names(x), "_max")
-  max_only
+class_rollup_summary <- function() {
+  c("rollup_summary", "list")
+}
+
+#' @export
+print.rollup_summary <- function(x, ..., color = TRUE) {
+  color <- as_one_logical(color)
+  if (color) {
+    subtle <- pillar::style_subtle
+  } else {
+    subtle <- identity
+  }
+
+  cat("<rollup_summary>:\n\n")
+  if (NROW(x$unrolled) > 0) {
+    cat("$unrolled", subtle("(variables that have not been rolled up):"), "\n")
+    print(x$unrolled, ...)
+    cat("\n")
+  }
+  if (NROW(x$rolled) > 0) {
+    cat("$rolled", subtle("(variables that have been rolled up):"), "\n")
+    print(x$rolled, ...)
+    cat("\n")
+  }
+  invisible(x)
+}
+
+#' @rdname rollup_summary
+#' @export
+default_rollups <- function() {
+  list(
+    ess_basic = "min",
+    ess_bulk = "min",
+    ess_mean = "min",
+    ess_median = "min",
+    ess_quantile = "min",
+    ess_sd = "min",
+    ess_tail = "min",
+    rhat = "max",
+    rhat_basic = "max",
+    rhat_nested = "max"
+  )
 }
