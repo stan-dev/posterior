@@ -6,82 +6,92 @@
 \alias{rollup_summary.data.frame}
 \alias{rollup_summary.rollup_summary}
 \alias{default_rollups}
-\title{"Roll up" \code{draws_summary} objects by collapsing over non-scalar parameters.}
+\title{Roll up \code{draws_summary} objects by collapsing summaries of non-scalar parameters.}
 \usage{
 rollup_summary(.x, ...)
 
 \method{rollup_summary}{default}(.x, ...)
 
-\method{rollup_summary}{data.frame}(
-  .x,
-  .variable = NULL,
-  ...,
-  .default = default_rollups(),
-  .unspecified = c("min", "max")
-)
+\method{rollup_summary}{data.frame}(.x, ..., variable = NULL, .funs = default_rollups())
 
 \method{rollup_summary}{rollup_summary}(.x, ...)
 
 default_rollups()
 }
 \arguments{
-\item{.x}{a \code{draws_summary} object, a \code{\link{draws}} object, a \code{data.frame}, or an
-object with a \code{\link[=summarise_draws]{summarise_draws()}} method.}
+\item{.x}{(multiple options) The object containing summaries to roll up. One of:
+\itemize{
+\item a \code{\link{draws_summary}} object such as produced by \code{\link[=summarise_draws]{summarise_draws()}}.
+\item a \code{data.frame} with a \code{"variable"} column giving the names of variables,
+where all other columns are numeric summaries of those variables.
+\item an object with a \code{\link[=summarise_draws]{summarise_draws()}} method, such as a \code{\link{draws}} object,
+in which case \code{\link[=summarise_draws]{summarise_draws()}} will be called on \code{.x} and the result
+will be rolled up.
+\item a \code{\link{rollup_summary}} object such as produced by \code{rollup_summary()}, in
+which case variables that have not been rolled up yet may be rolled up.
+}}
 
-\item{...}{a named arguments where each name is a summary measure (i.e. column)
-in \code{.x} and the value is a character vector of function names or a named list
-of functions giving the rollup functions to apply to the corresponding summary
-measure.}
+\item{...}{(multiple options) arguments where the name of each argument is a
+summary measure (i.e. column) in \code{.x} and the value is the rollup functions
+to apply to that summary measure, specified as one of:
+\itemize{
+\item bare name of a function
+\item a character vector of function names (optionally named).
+\item a named list of strings or functions.
+}
 
-\item{.variable}{(character vector) base names (without indices) of variables
+Unnamed arguments in \code{...} specify default rollup functions to apply to all
+summary measures that do not have specific rollup functions given in \code{...} or
+\code{.funs}.}
+
+\item{variable}{(character vector) base names (without indices) of variables
 to roll up. If \code{NULL} (the default), all variables with indices in their names
-will be rolled up.}
+(e.g. \code{"x[1,2]"}) will be rolled up.}
 
-\item{.default}{(list) named list where names are summary measures in \code{.x}
+\item{.funs}{(list) named list where names are summary measures in \code{.x}
 and values are the default rollup functions to apply to those summary
-measures unless overridden by \code{...}.}
-
-\item{.unspecified}{(character vector or list) default rollup functions to
-apply to any summary measure (column) in \code{.x} that does not have its own
-specific rollup functions given in \code{...} or \code{.default}.}
+measures, unless overridden by \code{...}. As in \code{...}, unnamed elements of this
+list give default rollup functions to apply to summary measures that do not
+have specific rollup functions given in \code{...} or \code{.funs}.}
 }
 \value{
-A named list of \code{\link{draws_summary}} objects; i.e. subclasses of \code{\link{tibble}},
-with the following elements:
+A \code{rollup_summary} object, which is a named list of \code{\link{draws_summary}} objects:
 \itemize{
 \item \code{"unrolled"}: a \code{\link{draws_summary}} of the variables that were not rolled up.
 \item \code{"rolled"}: a \code{\link{draws_summary}} of the rolled-up variables. The second
-column of this data frame, \code{"dims"}, gives the lengths of the dimensions
-of each rolled up variable as a comma-separated string. The remaining
-columns give each roll up of each summary measure; e.g. if \code{x} contained
-a summary measure \code{"mean"} and it was rolled up using the \code{"min"} and
-\code{"max"} functions (the default), the output will have a \code{"mean_min"} and
-\code{"mean_max"} column.
+column of this data frame, \code{"dim"}, gives the lengths of the dimensions
+of each rolled up variable as a comma-separated character vector. The
+remaining columns give the rollups of each summary measure; e.g. if \code{x}
+contained a summary measure \code{"mean"} and it was rolled up using the \code{"min"}
+and \code{"max"} functions (the default), the output will have a \code{"mean_min"}
+and \code{"mean_max"} column.
 }
 }
 \description{
-"Rolls up" summaries of draws (e.g. as returned by \code{\link[=summarise_draws]{summarise_draws()}}).
-By default, all variables containing indices (e.g. \code{"x[1]"}) are rolled up,
-but the \code{.variable} parameter can be used to roll up specific variables only.
+Roll up summaries of draws (e.g. as returned by \code{\link[=summarise_draws]{summarise_draws()}}); that
+is, summarise the summaries. By default, summaries of all variables containing
+indices (e.g. \code{"x[1]"}) are rolled up, but the \code{variable} parameter can be
+used to roll up specific variables only.
 }
 \details{
 If called without specifying additional rollup functions in \code{...},
-\code{rollup_summary()} will apply the functions provided in \code{.default} and
-\code{.unspecified} to the columns in \code{.x} (or, if \code{.x} is not a \code{data.frame},
-to the result of \code{summarise_draws(.x)}).
+\code{rollup_summary()} will apply the default rollup functions as determined by
+\code{.funs} to the columns in \code{.x} (or, if \code{.x} is not a \code{data.frame}, to the
+result of \code{summarise_draws(.x)}).
 
-In addition to the defaults for all columns in \code{.unspecified}, several
-summary measures have specific default rollup functions associated with them
-that will be applied unless this is overridden by entries in \code{...}. For
-example, \code{ess_bulk} has the default rollup function \code{"min"} instead of
-\code{c("min", "max")}. \code{default_rollups()} gives the complete list of default
-rollup functions.
+The default value of \code{.funs} provides several default rollup functions
+that will be applied to specific summary measures, unless this is overridden
+by entries in \code{...}. For example, \code{ess_bulk} has the default
+rollup function \code{"min"} instead of \code{c("min", "max")}, as the minimum
+effective sample size is likely of more interest than the maximum.
+\code{default_rollups()} gives the complete list of default rollup functions.
 
 Calls to \code{rollup_summary()} can be chained, in which case subsequent
 rollups will be applied only to variables that have not already been
-rolled up. This makes it possible to provide different rollup functions
-for different variables by combining chaining with the use of the
-\code{.variable} parameter.
+rolled up (i.e. the \code{"unrolled"} element; see the description of
+\code{rollup_summary} objects below). This makes it possible to provide different
+rollup functions for different variables by calling \code{rollup_summary()}
+multiple times with different values of the \code{variable} parameter.
 }
 \examples{
 x <- example_draws()
@@ -90,11 +100,13 @@ x <- example_draws()
 summarise_draws(x)
 
 # you can roll up summaries of array-like variables by rolling up draws
-# objects directly
+# objects directly; this will apply the default options of summarise_draws()
 rollup_summary(x)
 
 # or summarise draws objects first to pick the desired summary measures
-ds <- summarise_draws(x, "mean", "sd")
+# (note that ess_bulk is only rolled up using min by default; see the
+# .default parameter)
+ds <- summarise_draws(x, "mean", "sd", "ess_bulk")
 rollup_summary(ds)
 
 # rollups work on variables of any dimension
@@ -102,21 +114,20 @@ x <- example_draws(example = "multi_normal")
 rollup_summary(x)
 
 # you can roll up only some variables
-rollup_summary(x, .variable = "Sigma")
+rollup_summary(x, variable = "Sigma")
 
-# you can also specify the rollup functions to apply to each function
-rollup_summary(x, "Sigma", mean = "mean", median = "min")
+# you can specify the rollup functions to apply to all summaries ...
+rollup_summary(x, "mean", "min")
 
-# to apply a particular function or functions to all summaries, pass them
-# to .unspecified and set .default to NULL:
-rollup_summary(x, .unspecified = "median", .default = NULL)
+# ... or specify the rollup functions to apply to specific summaries
+rollup_summary(x, mean = "sd", median = "min")
 
 \dontshow{if (getRversion() > "4.1") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # rollups can be chained to provide different rollup functions to
 # different variables
 x |>
   summarise_draws("mean", "sd") |>
-  rollup_summary("mu", sd = "min") |>
-  rollup_summary("Sigma", sd = "max")
+  rollup_summary(variable = "mu", sd = "min") |>
+  rollup_summary(variable = "Sigma", sd = "max")
 \dontshow{\}) # examplesIf}
 }
