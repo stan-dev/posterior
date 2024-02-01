@@ -3,10 +3,10 @@
 #' Extract a vector of draws of a single variable.
 #'
 #' @template args-methods-x
-#' @param variable (string) The name of the variable to extract.
+#' @template args-extract-variable
 #' @template args-methods-dots
-#' @return A numeric vector of length equal to the number of draws.
-#'
+#' @return A vector of length equal to the number of draws.
+#' @family variable extraction methods
 #' @examples
 #' x <- example_draws()
 #' mu <- extract_variable(x, variable = "mu")
@@ -35,15 +35,30 @@ extract_variable.draws <- function(x, variable, ...) {
 
 #' @rdname extract_variable
 #' @export
+extract_variable.draws_df <- function(x, variable, ...) {
+  variable <- as_one_character(variable)
+  out <- .subset_draws(x, variable = variable, reserved = FALSE)
+  out[[variable]]
+}
+
+#' @rdname extract_variable
+#' @export
+extract_variable.draws_list <- function(x, variable, ...) {
+  variable <- as_one_character(variable)
+  out <- .subset_draws(x, variable = variable, reserved = FALSE)
+  out <- as_draws_df(out)
+  out[[variable]]
+}
+
+#' @rdname extract_variable
+#' @export
 extract_variable.draws_rvars <- function(x, variable, ...) {
   variable <- as_one_character(variable)
-  variable_regex <- regexec("^(.*)\\[.*\\]$", variable)
-  if (!isTRUE(variable_regex[[1]] == -1)) {
-    # regex match => variable with indices in the name ("x[1]", etc), which
-    # can't be subset from draws_rvars directly, so we'll convert to a
-    # draws_array first. root_variable is "x" when variable is "x[...]"
-    root_variable <- regmatches(variable, variable_regex)[[1]][[2]]
-    out <- extract_variable(as_draws_array(x[root_variable]), variable, ...)
+  parts <- split_variable_names(variable)
+  if (isTRUE(nzchar(parts$indices))) {
+    # variable with indices in the name ("x[1]", etc), which can't be subset
+    # from draws_rvars directly, so we'll convert to a draws_df first.
+    out <- extract_variable(as_draws_df(x[parts$base_name]), variable = variable, ...)
   } else if (length(x[[variable]]) > 1) {
     stop_no_call(
       'Cannot extract non-scalar value using extract_variable():\n',
@@ -51,7 +66,8 @@ extract_variable.draws_rvars <- function(x, variable, ...) {
       '  Try including brackets ("[]") and indices in the variable name to extract a scalar value.'
     )
   } else {
-    out <- NextMethod()
+    # scalar
+    out <- unname(drop(draws_of(x[[variable]])))
   }
   out
 }

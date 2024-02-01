@@ -67,7 +67,7 @@ rvar_factor <- function(
   # to ensure we pick up levels already attached to x (if there are any), we
   # need to convert x to a factor here if it has levels
   if (!is.factor(x) && !is.null(attr(x, "levels"))) {
-    x <- while_preserving_dims(factor, x, labels = attr(x, "levels"))
+    x <- copy_dims(x, factor(x, labels = attr(x, "levels")))
   }
 
   out <- rvar(
@@ -219,25 +219,24 @@ anyDuplicated.rvar_factor <- function(x, incomparables = FALSE, MARGIN = 1, ...)
 #' @noRd
 combine_rvar_factor_levels <- function(x, list_of_levels, ordered = FALSE) {
   .draws <- draws_of(x)
+  new_levels <- levels(.draws) %||% unique(as.character(.draws))
 
   unique_levels <- unique(list_of_levels)
   # zero-length levels lists don't count (since can only come from factors with only missing values)
   unique_levels <- unique_levels[lengths(unique_levels) > 0]
-  if (length(unique_levels) <= 1) {
+  if (length(unique_levels) <= 1 && all(new_levels %in% unique_levels[1][[1]])) {
     # levels are the same in all variables, so preserve level order when binding
     .levels <- unique_levels[1][[1]]
     # We only keep the "ordered" class when the levels were all the same (this
     # mimics base-R, which demotes to unordered factor when combining ordered
     # factors with different levels)
-    .draws <- while_preserving_dims(factor, .draws, .levels, ordered = ordered)
+    .draws <- copy_dims(.draws, factor(.draws, .levels, ordered = ordered))
   } else {
     # levels are not the same in all variables, so preserve any old levels by
     # merging them together, but do not apply the "ordered" class
-    .levels <- unique(do.call(c, list_of_levels))
-    .draws <- while_preserving_dims(factor, .draws, .levels)
-  }
-  if (!is.factor(.draws)) {
-    .draws <- while_preserving_dims(factor, .draws)
+    all_levels <- unlist(list_of_levels, recursive = FALSE, use.names = FALSE)
+    .levels <- unique(c(all_levels, new_levels))
+    .draws <- copy_dims(.draws, factor(.draws, .levels))
   }
   draws_of(x) <- .draws
 

@@ -1,6 +1,5 @@
 #' Tools for working with posterior (and prior) distributions
 #'
-#' @docType package
 #' @name posterior-package
 #' @aliases posterior
 #'
@@ -66,4 +65,4 @@
 #' match between two objects involved in a binary operation. Whether this
 #' causes a warning can be controlled by this option.
 #'
-NULL
+"_PACKAGE"

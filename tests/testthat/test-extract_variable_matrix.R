@@ -30,6 +30,17 @@ test_that("extract_variable_matrix works for draws_rvars on an indexed variable"
   expect_error(extract_variable_matrix(draws_rvars, "theta"), "Cannot extract non-scalar value")
 })
 
+test_that("extract_variable_matrix works for factor types", {
+  draws_rvars <- draws_rvars(y = rvar(1:26, nchains = 2), x = rvar_factor(letters, nchains = 2))
+  x_array <- matrix(1:26, ncol = 2, dimnames = list(iteration = 1:13, chain = 1:2))
+  levels(x_array) <- letters
+  class(x_array) <- "factor"
+
+  expect_equal(extract_variable_matrix(draws_rvars, "x"), x_array)
+  expect_equal(extract_variable_matrix(as_draws_df(draws_rvars), "x"), x_array)
+  expect_equal(extract_variable_matrix(as_draws_list(draws_rvars), "x"), x_array)
+})
+
 test_that("extract_variable_matrix default method works", {
   # it should convert matrix to draws object
   x <- matrix(1:20, nrow = 10, ncol = 2)
