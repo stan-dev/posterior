@@ -23,8 +23,7 @@
 #'  - a named list of any of the above.
 #'
 #' Unnamed arguments in `...` specify default rollup functions to apply to all
-#' summary measures that do not have specific rollup functions given in `...` or
-#' `.funs`.
+#' summary measures that do not have specific rollup functions given in `...`.
 #' @param variable (character vector) base names (without indices) of variables
 #' to roll up. If `NULL` (the default), all variables with indices in their names
 #' (e.g. `"x[1,2]"`) will be rolled up.
@@ -32,7 +31,7 @@
 #' and values are the default rollup functions to apply to those summary
 #' measures, unless overridden by `...`. As in `...`, unnamed elements of this
 #' list give default rollup functions to apply to summary measures that do not
-#' have specific rollup functions given in `...` or `.funs`.
+#' have specific rollup functions given in `.funs`.
 #' @details
 #' If called without specifying additional rollup functions in `...`,
 #' `rollup_summary()` will apply the default rollup functions as determined by
@@ -145,12 +144,12 @@ rollup_summary.data.frame <- function (
     is_unnamed <- rlang::names2(default_rollup_funs) == ""
     unspecified_rollup_funs <- do.call(c, default_rollup_funs[is_unnamed])
     default_rollup_funs <- default_rollup_funs[!is_unnamed]
-  }
 
-  # apply the measure-specific default rollup functions to any columns not
-  # overridden by the user
-  missing_default_funs <- setdiff(names(default_rollup_funs), names(rollup_funs))
-  rollup_funs[missing_default_funs] <- default_rollup_funs[missing_default_funs]
+    # apply the measure-specific default rollup functions to any columns not
+    # overridden by the user
+    missing_default_funs <- setdiff(names(default_rollup_funs), names(rollup_funs))
+    rollup_funs[missing_default_funs] <- default_rollup_funs[missing_default_funs]
+  }
 
   # apply the generic default rollup functions to any remaining unspecified columns
   rollup_funs[setdiff(names(.x), names(rollup_funs))] <- list(unspecified_rollup_funs)

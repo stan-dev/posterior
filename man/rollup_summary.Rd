@@ -45,8 +45,7 @@ to apply to that summary measure, specified as one of:
 }
 
 Unnamed arguments in \code{...} specify default rollup functions to apply to all
-summary measures that do not have specific rollup functions given in \code{...} or
-\code{.funs}.}
+summary measures that do not have specific rollup functions given in \code{...}.}
 
 \item{variable}{(character vector) base names (without indices) of variables
 to roll up. If \code{NULL} (the default), all variables with indices in their names
@@ -56,7 +55,7 @@ to roll up. If \code{NULL} (the default), all variables with indices in their na
 and values are the default rollup functions to apply to those summary
 measures, unless overridden by \code{...}. As in \code{...}, unnamed elements of this
 list give default rollup functions to apply to summary measures that do not
-have specific rollup functions given in \code{...} or \code{.funs}.}
+have specific rollup functions given in \code{.funs}.}
 }
 \value{
 A \code{rollup_summary} object, which is a named list of \code{\link{draws_summary}} objects:

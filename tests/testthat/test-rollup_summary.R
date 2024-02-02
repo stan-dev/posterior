@@ -86,6 +86,16 @@ test_that("NULL rollup functions work", {
   )
 })
 
+test_that("unnamed rollups in `...` override measure-specific rollups in .funs", {
+  x <- example_draws()
+  ds <- summarise_draws(x, "mean", "rhat", "ess_bulk")
+  rollup <- rollup_summary(ds, "median")
+  expect_equal(
+    names(rollup$rolled),
+    c("variable", "dim", "mean_median", "rhat_median", "ess_bulk_median")
+  )
+})
+
 test_that("printing works", {
   x <- rollup_summary(example_draws())
 
