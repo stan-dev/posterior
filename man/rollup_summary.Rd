@@ -127,16 +127,11 @@ rollup_summary(x, "mean", "min")
 # ... or use names to specify rollup functions for specific summaries
 rollup_summary(x, mean = "sd", median = "min")
 
-\dontshow{if (getRversion() < "4.1") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # you can pass parameters to rollup functions using anonymous functions
 x2 <- draws_rvars(x = c(rvar_rng(rnorm, 5), NA))
 rollup_summary(x2, list(min = function(x) min(x, na.rm = TRUE)))
-\dontshow{\}) # examplesIf}
-\dontshow{if (getRversion() >= "4.1") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-# you can pass parameters to rollup functions using anonymous functions
-x2 <- draws_rvars(x = c(rvar_rng(rnorm, 5), NA))
-rollup_summary(x2, list(min = \(x) min(x, na.rm = TRUE)))
 
+\dontshow{if (getRversion() >= "4.1") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # rollups can be chained to provide different rollup functions to
 # different variables
 x |>

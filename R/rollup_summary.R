@@ -92,16 +92,11 @@
 #' # ... or use names to specify rollup functions for specific summaries
 #' rollup_summary(x, mean = "sd", median = "min")
 #'
-#' @examplesIf getRversion() < "4.1"
 #' # you can pass parameters to rollup functions using anonymous functions
 #' x2 <- draws_rvars(x = c(rvar_rng(rnorm, 5), NA))
 #' rollup_summary(x2, list(min = function(x) min(x, na.rm = TRUE)))
 #'
 #' @examplesIf getRversion() >= "4.1"
-#' # you can pass parameters to rollup functions using anonymous functions
-#' x2 <- draws_rvars(x = c(rvar_rng(rnorm, 5), NA))
-#' rollup_summary(x2, list(min = \(x) min(x, na.rm = TRUE)))
-#'
 #' # rollups can be chained to provide different rollup functions to
 #' # different variables
 #' x |>
@@ -133,6 +128,10 @@ rollup_summary.data.frame <- function (
   variable = NULL,
   .funs = default_rollups()
 ) {
+  assert_multi_class(.x$variable, c("character", "factor"))
+  assert_character(variable, null.ok = TRUE)
+  assert_list(.funs, null.ok = TRUE)
+
   rollup_funs <- lapply(rlang::enquos0(...), create_function_list)
   default_rollup_funs <- lapply(.funs, create_function_list)
 
@@ -181,7 +180,8 @@ rollup_summary.data.frame <- function (
     cbind(
       variable = x$base_name[[1]],
       dim = paste0(lengths(lapply(indices, unique)), collapse = ","),
-      rolled_up_cols
+      rolled_up_cols,
+      stringsAsFactors = FALSE
     )
   })
 

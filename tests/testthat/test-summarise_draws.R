@@ -193,3 +193,20 @@ test_that("draws summaries can be converted to data frames", {
 
   expect_equal(as.data.frame(summarise_draws(draws_matrix, mean, quantile2)), ref)
 })
+
+test_that("string summary functions in the posterior namespace can be found", {
+  expect_equal(
+    # execute in an environment where only summarise_draws() and example_draws()
+    # are available, but not ess_bulk(), so that summarise_draws() is explicitly
+    # forced to look in the posterior namespace for ess_bulk()
+    evalq(
+      summarise_draws(example_draws(), "ess_bulk"),
+      envir = list(
+        summarise_draws = summarise_draws,
+        example_draws = example_draws
+      ),
+      enclos = emptyenv()
+    ),
+    summarise_draws(example_draws(), ess_bulk)
+  )
+})

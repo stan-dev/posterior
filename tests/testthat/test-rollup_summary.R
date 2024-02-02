@@ -62,3 +62,39 @@ test_that("chaining rollups works", {
   expect_equal(rollup$rolled$sd_min, c(min(sum_x[startsWith(sum_x$variable, "mu"),]$sd), NA_real_))
   expect_equal(rollup$rolled$sd_max, c(NA_real_, max(sum_x[startsWith(sum_x$variable, "Sigma"),]$sd)))
 })
+
+test_that("rollup on draws-like object works", {
+  x <- as_draws_array(example_draws())
+  expect_equal(rollup_summary(unclass(x)), rollup_summary(x))
+})
+
+test_that("rollup on data frames works", {
+  x <- example_draws()
+  sum_x <- summarise_draws(x)
+  df_sum_x <- as.data.frame(sum_x)
+  df_sum_x$variable <- factor(df_sum_x$variable)
+
+  expect_equal(rollup_summary(df_sum_x)$rolled, rollup_summary(sum_x)$rolled)
+})
+
+test_that("NULL rollup functions work", {
+  x <- example_draws()
+
+  expect_equal(
+    as.data.frame(rollup_summary(x, .funs = NULL)$rolled),
+    data.frame(variable = "theta", dim = "8", stringsAsFactors = FALSE)
+  )
+})
+
+test_that("printing works", {
+  x <- rollup_summary(example_draws())
+
+  for (color in c(TRUE, FALSE)) {
+    out <- capture.output(print(x, color = color))
+    expect_match(out, "<rollup_summary>", fixed = TRUE, all = FALSE)
+    expect_match(out, "$unrolled", fixed = TRUE, all = FALSE)
+    expect_match(out, "variable +mean +median", all = FALSE)
+    expect_match(out, "$rolled", fixed = TRUE, all = FALSE)
+    expect_match(out, "variable +dim +mean_min +mean_max", all = FALSE)
+  }
+})

@@ -47,7 +47,7 @@ rhat(mu)
 }
 \seealso{
 Other variable extraction methods: 
-\code{\link{extract_variable_array}()},
-\code{\link{extract_variable}()}
+\code{\link{extract_variable}()},
+\code{\link{extract_variable_array}()}
 }
 \concept{variable extraction methods}
