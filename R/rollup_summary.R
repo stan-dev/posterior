@@ -96,13 +96,12 @@
 #' x2 <- draws_rvars(x = c(rvar_rng(rnorm, 5), NA))
 #' rollup_summary(x2, list(min = function(x) min(x, na.rm = TRUE)))
 #'
-#' @examplesIf getRversion() >= "4.1"
 #' # rollups can be chained to provide different rollup functions to
 #' # different variables
-#' x |>
-#'   summarise_draws("mean", "sd") |>
-#'   rollup_summary(variable = "mu", sd = "min") |>
-#'   rollup_summary(variable = "Sigma", sd = "max")
+#' ds <- summarise_draws(x, "mean", "sd")
+#' rs <- rollup_summary(ds, variable = "mu", sd = "min")
+#' rs <- rollup_summary(rs, variable = "Sigma", sd = "max")
+#' rs
 #' @export
 rollup_summary <- function(.x, ...) {
   UseMethod("rollup_summary")
