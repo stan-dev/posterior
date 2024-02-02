@@ -30,5 +30,5 @@ test_that("remove_variables works correctly for draws_rvars objects", {
   x <- as_draws_rvars(example_draws())
   expect_equal(posterior:::remove_variables(x, NULL), x)
   x <- posterior:::remove_variables(x, c("mu", "tau"))
-  expect_equal(variables(x), "theta")
+  expect_equal(variables(x, with_indices = FALSE), "theta")
 })

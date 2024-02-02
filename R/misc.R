@@ -203,11 +203,8 @@ SW <- function(expr) {
 
 # escape all special characters in character strings
 escape_all <- function(x) {
-  specials <- c(".", "*", "+", "?", "^", "$", "(", ")", "[", "]", "|")
-  for (s in specials) {
-    x <- gsub(s, paste0("\\", s), x, fixed = TRUE)
-  }
-  x
+  specials <- "(\\.|\\*|\\+|\\?|\\^|\\$|\\(|\\)|\\[|\\]|\\|)"
+  gsub(specials, "\\\\\\1", x)
 }
 
 # numerically stable version of log(sum(exp(x)))

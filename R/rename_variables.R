@@ -13,7 +13,7 @@
 #' Returns a [`draws`] object of the same format as `.x`, with variables renamed
 #' according to the expressions provided in `...`.
 #'
-#' @seealso [`variables`], [`set_variables`], [`mutate_variables`]
+#' @seealso [`variables`], [`variables<-`], [`mutate_variables`]
 #'
 #' @examples
 #' x <- as_draws_df(example_draws())

@@ -41,5 +41,5 @@ variables(x)
 
 }
 \seealso{
-\code{\link{variables}}, \code{\link{set_variables}}, \code{\link{mutate_variables}}
+\code{\link{variables}}, \code{\link{variables<-}}, \code{\link{mutate_variables}}
 }

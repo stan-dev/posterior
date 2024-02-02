@@ -73,3 +73,33 @@ causes a warning can be controlled by this option.
 }
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://mc-stan.org/posterior/}
+  \item \url{https://discourse.mc-stan.org/}
+  \item Report bugs at \url{https://github.com/stan-dev/posterior/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Paul-Christian Bürkner \email{paul.buerkner@gmail.com}
+
+Authors:
+\itemize{
+  \item Jonah Gabry \email{jsg2201@columbia.edu}
+  \item Matthew Kay \email{mjskay@northwestern.edu}
+  \item Aki Vehtari \email{Aki.Vehtari@aalto.fi}
+}
+
+Other contributors:
+\itemize{
+  \item Måns Magnusson [contributor]
+  \item Rok Češnovar [contributor]
+  \item Ben Lambert [contributor]
+  \item Ozan Adıgüzel [contributor]
+  \item Jacob Socolar [contributor]
+  \item Noa Kallioinen [contributor]
+}
+
+}

@@ -409,7 +409,8 @@ test_that("0-length rvars can be cast to draws formats", {
   expect_equal(ndraws(draws_rvars), 10)
   expect_equal(niterations(draws_rvars), 5)
   expect_equal(nchains(draws_rvars), 2)
-  expect_equal(nvariables(draws_rvars), 1)
+  expect_equal(nvariables(draws_rvars, with_indices = FALSE), 1)
+  expect_equal(nvariables(draws_rvars, with_indices = TRUE), 0)
 
   draws_matrix <- as_draws_matrix(rvar0)
   expect_equal(ndraws(draws_matrix), 10)
