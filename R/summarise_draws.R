@@ -164,23 +164,6 @@ summarise_draws.draws <- function(
     if (checkmate::test_os("windows")) {
       cl <- parallel::makePSOCKcluster(.cores)
       on.exit(parallel::stopCluster(cl))
-      # exporting all these functions seems to be required to
-      # pass GitHub actions checks on Windows
-      parallel::clusterExport(
-        cl,
-        varlist = package_function_names("posterior"),
-        envir = as.environment(asNamespace("posterior"))
-      )
-      parallel::clusterExport(
-        cl,
-        varlist = package_function_names("checkmate"),
-        envir = as.environment(asNamespace("checkmate"))
-      )
-      parallel::clusterExport(
-        cl,
-        varlist = package_function_names("rlang"),
-        envir = as.environment(asNamespace("rlang"))
-      )
       summary_list <- parallel::parLapply(
         cl,
         X = chunk_list,
