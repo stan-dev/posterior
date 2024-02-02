@@ -136,6 +136,7 @@ move_to_start <- function(x, start) {
 # prettily deparse an expression
 # @return a single character string
 deparse_pretty <- function(x, max_chars = NULL, max_wsp = 1L) {
+  if (rlang::is_quosure(x)) x <- rlang::get_expr(x)
   out <- collapse(deparse(x))
   out <- rm_wsp(out, max_wsp)
   assert_int(max_chars, null.ok = TRUE)

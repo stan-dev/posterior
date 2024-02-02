@@ -15,6 +15,12 @@ test_that("summarise_draws works correctly", {
   sum_x <- summarise_draws(x, ~quantile(.x, probs = c(0.4, 0.6)))
   expect_true(all(c("40%", "60%") %in% names(sum_x)))
 
+  sum_x <- summarise_draws(x, c("mcse_mean", "mean"), median)
+  expect_true(all(c("mcse_mean", "mean", "median") %in% names(sum_x)))
+
+  sum_x <- summarise_draws(x, f = c("mcse_mean", "mean"))
+  expect_true(all(c("f1", "f2") %in% names(sum_x)))
+
   x[1, 1] <- NA
   sum_x <- summarise_draws(x)
   expect_true(is.na(sum_x[1, "q5"]))

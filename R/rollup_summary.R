@@ -14,19 +14,20 @@
 #'    will be rolled up.
 #'  - a [`rollup_summary`] object such as produced by `rollup_summary()`, in
 #'    which case variables that have not been rolled up yet may be rolled up.
-#' @param variable (character vector) base names (without indices) of variables
-#' to roll up. If `NULL` (the default), all variables with indices in their names
-#' (e.g. `"x[1,2]"`) will be rolled up.
 #' @param ... (multiple options) arguments where the name of each argument is a
 #' summary measure (i.e. column) in `.x` and the value is the rollup functions
 #' to apply to that summary measure, specified as one of:
 #'  - bare name of a function
 #'  - a character vector of function names (optionally named).
-#'  - a named list of strings or functions.
+#'  - a function formula, as accepted by [rlang::as_function()].
+#'  - a named list of any of the above.
 #'
 #' Unnamed arguments in `...` specify default rollup functions to apply to all
 #' summary measures that do not have specific rollup functions given in `...` or
 #' `.funs`.
+#' @param variable (character vector) base names (without indices) of variables
+#' to roll up. If `NULL` (the default), all variables with indices in their names
+#' (e.g. `"x[1,2]"`) will be rolled up.
 #' @param .funs (list) named list where names are summary measures in `.x`
 #' and values are the default rollup functions to apply to those summary
 #' measures, unless overridden by `...`. As in `...`, unnamed elements of this
@@ -73,7 +74,7 @@
 #'
 #' # or summarise draws objects first to pick the desired summary measures
 #' # (note that ess_bulk is only rolled up using min by default; see the
-#' # .default parameter)
+#' # .funs parameter)
 #' ds <- summarise_draws(x, "mean", "sd", "ess_bulk")
 #' rollup_summary(ds)
 #'
@@ -84,13 +85,23 @@
 #' # you can roll up only some variables
 #' rollup_summary(x, variable = "Sigma")
 #'
-#' # you can specify the rollup functions to apply to all summaries ...
+#' # you can specify the rollup functions to apply to all summaries by passing
+#' # unnamed parameters ...
 #' rollup_summary(x, "mean", "min")
 #'
-#' # ... or specify the rollup functions to apply to specific summaries
+#' # ... or use names to specify rollup functions for specific summaries
 #' rollup_summary(x, mean = "sd", median = "min")
 #'
-#' @examplesIf getRversion() > "4.1"
+#' @examplesIf getRversion() < "4.1"
+#' # you can pass parameters to rollup functions using anonymous functions
+#' x2 <- draws_rvars(x = c(rvar_rng(rnorm, 5), NA))
+#' rollup_summary(x2, list(min = function(x) min(x, na.rm = TRUE)))
+#'
+#' @examplesIf getRversion() >= "4.1"
+#' # you can pass parameters to rollup functions using anonymous functions
+#' x2 <- draws_rvars(x = c(rvar_rng(rnorm, 5), NA))
+#' rollup_summary(x2, list(min = \(x) min(x, na.rm = TRUE)))
+#'
 #' # rollups can be chained to provide different rollup functions to
 #' # different variables
 #' x |>
@@ -110,21 +121,27 @@ rollup_summary.default <- function(.x, ...) {
 
 #' @rdname rollup_summary
 #' @export
+rollup_summary.draws <- function(.x, ...) {
+  rollup_summary(summarise_draws(.x), ...)
+}
+
+#' @rdname rollup_summary
+#' @export
 rollup_summary.data.frame <- function (
   .x,
   ...,
   variable = NULL,
   .funs = default_rollups()
 ) {
-  rollup_funs <- lapply(list(...), function(fun_list) inject(create_function_list(!!!fun_list)))
-  default_rollup_funs <- lapply(.funs, function(fun_list) inject(create_function_list(!!!fun_list)))
+  rollup_funs <- lapply(rlang::enquos0(...), create_function_list)
+  default_rollup_funs <- lapply(.funs, create_function_list)
 
   is_unnamed <- rlang::names2(rollup_funs) == ""
   if (any(is_unnamed)) {
     # user provided unnamed functions in dots, use these for summary measures
     # that otherwise don't have a rollup function specified
     unspecified_rollup_funs <- do.call(c, rollup_funs[is_unnamed])
-    rollup_fund <- rollup_funs[!is_unnamed]
+    rollup_funs <- rollup_funs[!is_unnamed]
   } else {
     # use the default unspecified rollup funs
     is_unnamed <- rlang::names2(default_rollup_funs) == ""
@@ -151,14 +168,14 @@ rollup_summary.data.frame <- function (
   vars <- vars[rollup_rows, ]
 
   # split the input df by variable base name and roll up the summaries
-  var_groups <- vctrs::vec_split(cbind(vars, .x[rollup_rows, -variable_col]), vars$base_name)
+  var_groups <- vctrs::vec_split(cbind(vars, .x[rollup_rows, -variable_col, drop = FALSE]), vars$base_name)
   rolled_up_vars <- lapply(var_groups$val, function(x) {
     indices <- split_indices_to_df(x$indices)
     rolled_up_cols <- do.call(cbind, lapply(seq_along(x)[c(-1,-2)], function(col_i) {
       col <- x[[col_i]]
       col_name <- names(x)[[col_i]]
       rolled_up_col <- lapply(rollup_funs[[col_name]], function(f) f(col))
-      names(rolled_up_col) <- paste0(col_name, "_", names(rolled_up_col))
+      names(rolled_up_col) <- sprintf("%s_%s", col_name, names(rolled_up_col))
       vctrs::new_data_frame(rolled_up_col, n = 1L)
     }))
     cbind(
@@ -169,7 +186,7 @@ rollup_summary.data.frame <- function (
   })
 
   new_rollup_summary(
-    unrolled = .x[!rollup_rows, ],
+    unrolled = .x[!rollup_rows, , drop = FALSE],
     rolled = do.call(rbind, rolled_up_vars)
   )
 }

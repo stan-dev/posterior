@@ -3,6 +3,7 @@
 \name{rollup_summary}
 \alias{rollup_summary}
 \alias{rollup_summary.default}
+\alias{rollup_summary.draws}
 \alias{rollup_summary.data.frame}
 \alias{rollup_summary.rollup_summary}
 \alias{default_rollups}
@@ -11,6 +12,8 @@
 rollup_summary(.x, ...)
 
 \method{rollup_summary}{default}(.x, ...)
+
+\method{rollup_summary}{draws}(.x, ...)
 
 \method{rollup_summary}{data.frame}(.x, ..., variable = NULL, .funs = default_rollups())
 
@@ -37,7 +40,8 @@ to apply to that summary measure, specified as one of:
 \itemize{
 \item bare name of a function
 \item a character vector of function names (optionally named).
-\item a named list of strings or functions.
+\item a function formula, as accepted by \code{\link[rlang:as_function]{rlang::as_function()}}.
+\item a named list of any of the above.
 }
 
 Unnamed arguments in \code{...} specify default rollup functions to apply to all
@@ -105,7 +109,7 @@ rollup_summary(x)
 
 # or summarise draws objects first to pick the desired summary measures
 # (note that ess_bulk is only rolled up using min by default; see the
-# .default parameter)
+# .funs parameter)
 ds <- summarise_draws(x, "mean", "sd", "ess_bulk")
 rollup_summary(ds)
 
@@ -116,13 +120,23 @@ rollup_summary(x)
 # you can roll up only some variables
 rollup_summary(x, variable = "Sigma")
 
-# you can specify the rollup functions to apply to all summaries ...
+# you can specify the rollup functions to apply to all summaries by passing
+# unnamed parameters ...
 rollup_summary(x, "mean", "min")
 
-# ... or specify the rollup functions to apply to specific summaries
+# ... or use names to specify rollup functions for specific summaries
 rollup_summary(x, mean = "sd", median = "min")
 
-\dontshow{if (getRversion() > "4.1") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (getRversion() < "4.1") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# you can pass parameters to rollup functions using anonymous functions
+x2 <- draws_rvars(x = c(rvar_rng(rnorm, 5), NA))
+rollup_summary(x2, list(min = function(x) min(x, na.rm = TRUE)))
+\dontshow{\}) # examplesIf}
+\dontshow{if (getRversion() >= "4.1") (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+# you can pass parameters to rollup functions using anonymous functions
+x2 <- draws_rvars(x = c(rvar_rng(rnorm, 5), NA))
+rollup_summary(x2, list(min = \(x) min(x, na.rm = TRUE)))
+
 # rollups can be chained to provide different rollup functions to
 # different variables
 x |>
