@@ -145,3 +145,7 @@ test_that("autocovariance returns correct results", {
   ac2 <- acf(x, type = "covariance", lag.max = length(x), plot = FALSE)$acf[, 1, 1]
   expect_equal(ac1, ac2)
 })
+
+test_that("NA quantile2 works", {
+  expect_equal(quantile2(NA_real_, c(0.25, 0.75)), c(q25 = NA_real_, q75 = NA_real_))
+})

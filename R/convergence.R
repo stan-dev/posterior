@@ -541,12 +541,9 @@ quantile2.default <- function(
 ) {
   names <- as_one_logical(names)
   na.rm <- as_one_logical(na.rm)
-  if (!na.rm && anyNA(x)) {
-    # quantile itself doesn't handle this case (#110)
-    out <- rep(NA_real_, length(probs))
-  } else {
-    out <- quantile(x, probs = probs, na.rm = na.rm, ...)
-  }
+
+  out <- weighted_quantile(x, probs = probs, na.rm = na.rm, ...)
+
   if (names) {
     names(out) <- paste0("q", probs * 100)
   } else {
@@ -560,7 +557,12 @@ quantile2.default <- function(
 quantile2.rvar <- function(
   x, probs = c(0.05, 0.95), na.rm = FALSE, names = TRUE, ...
 ) {
-  summarise_rvar_by_element_with_chains(x, quantile2, probs, na.rm, names, ...)
+  weights <- weights(x)
+  summarise_rvar_by_element(x, function(draws) {
+    quantile2(
+      draws, probs = probs, weights = weights, na.rm = na.rm, names = names, ...
+    )
+  })
 }
 
 # internal ----------------------------------------------------------------

@@ -30,28 +30,31 @@ weighted_quantile = function(x,
   probs = seq(0, 1, 0.25),
   weights = NULL,
   na.rm = FALSE,
-  type = 7
+  type = 7,
+  ...
 ) {
   weighted_quantile_fun(
     x,
     weights = weights,
     na.rm = na.rm,
-    type = type
+    type = type,
+    ...
   )(probs)
 }
 
 #' @rdname weighted_quantile
 #' @export
-weighted_quantile_fun = function(x, weights = NULL, na.rm = FALSE, type = 7) {
+weighted_quantile_fun = function(x, weights = NULL, na.rm = FALSE, type = 7, ...) {
   na.rm <- as_one_logical(na.rm)
-  if (!isTRUE(type %in% 1:9)) {
-    stop0("Quantile type `", deparse0(type), "` is invalid. It must be in 1:9.")
-  }
+  assert_number(type, lower = 1, upper = 9)
 
   if (na.rm) {
     keep = !is.na(x) & !is.na(weights)
     x = x[keep]
     weights = weights[keep]
+  } else if (anyNA(x)) {
+    # quantile itself doesn't handle this case (#110)
+    return(function(p) rep(NA_real_, length(p)))
   }
 
   # determine weights

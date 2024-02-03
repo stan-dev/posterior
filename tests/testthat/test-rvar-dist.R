@@ -9,6 +9,10 @@ test_that("distributional functions work on a scalar rvar", {
   expect_equal(cdf(x, x_values), x_cdf)
 
   expect_equal(quantile(x, 1:4/4), quantile(x_values, 1:4/4, names = FALSE))
+
+  expect_equal(quantile(rvar(1:4), 0:4/4 + .Machine$double.eps, type = 1), c(1:4, 4))
+  expect_equal(quantile(rvar(1:4), 0:4/4, type = 2), c(1, 1.5, 2.5, 3.5, 4))
+  expect_equal(quantile(rvar(1:4), 0:4/4 + .Machine$double.eps, type = 3), c(1, 1:4))
 })
 
 test_that("distributional functions work on an rvar array", {
@@ -83,6 +87,18 @@ test_that("weighted rvar works", {
   expect_equal(cdf(x, 0:9), ecdf(x1_draws)(0:9)/3 + ecdf(x2_draws)(0:9)*2/3)
   expect_equal(quantile(x, cdf(x, c(x1_draws, x2_draws)), type = 1), c(x1_draws, x2_draws))
   expect_equal(quantile(x, cdf(x, c(x1_draws, x2_draws)), type = 4), c(x1_draws, x2_draws))
+  expect_equal(unname(quantile2(x, cdf(x, c(x1_draws, x2_draws)), type = 1)), c(x1_draws, x2_draws))
+  expect_equal(unname(quantile2(x, cdf(x, c(x1_draws, x2_draws)), type = 4)), c(x1_draws, x2_draws))
+
+  x_na <- rvar(c(draws_of(x), NA_real_), log_weights = c(log_weights(x), 1))
+  expect_equal(quantile(x_na, c(0.25, 0.5, 0.75), type = 4), c(NA_real_, NA_real_, NA_real_))
+  expect_equal(
+    quantile(x_na, c(0.25, 0.5, 0.75), type = 7, na.rm = TRUE),
+    quantile(x, c(0.25, 0.5, 0.75), type = 7)
+  )
+
+  expect_equal(quantile(rvar(1), 0.5), 1)
+  expect_equal(quantile(rvar(), 0.5), numeric())
 })
 
 test_that("weighted rvar_factor works", {

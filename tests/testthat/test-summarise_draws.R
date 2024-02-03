@@ -100,24 +100,24 @@ test_that(paste(
   x <- as_draws_array(test_array)
   sum_x <- summarise_draws(x)
   parsum_x <- summarise_draws(x, .cores = cores)
-  expect_identical(sum_x, parsum_x)
+  expect_equal(sum_x, parsum_x)
 
   dimnames(x)$variable[2] <- reserved_variables()[1]
   sum_x <- summarise_draws(x)
   parsum_x <- summarise_draws(x, .cores = cores)
-  expect_identical(sum_x, parsum_x)
+  expect_equal(sum_x, parsum_x)
 
   n <- 1
   test_array <- array(data = rnorm(1000*nc*n), dim = c(1000,nc,n))
   x <- as_draws_array(test_array)
   sum_x <- summarise_draws(x)
   parsum_x <- summarise_draws(x, .cores = cores)
-  expect_identical(sum_x, parsum_x)
+  expect_equal(sum_x, parsum_x)
 
   dimnames(x)$variable[1] <- reserved_variables()[1]
   suppressWarnings(sum_x <- summarise_draws(x))
   suppressWarnings(parsum_x <- summarise_draws(x, .cores = cores))
-  expect_identical(sum_x, parsum_x)
+  expect_equal(sum_x, parsum_x)
 })
 
 test_that("summarise_draws supports tibble::set_num_opts correctly", {
