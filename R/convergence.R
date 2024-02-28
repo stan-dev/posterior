@@ -182,7 +182,7 @@ ess_bulk <- function(x, ...) UseMethod("ess_bulk")
 
 #' @rdname ess_bulk
 #' @export
-ess_bulk.default <- function(x, ...) {
+ess_bulk.default <- function(x, weights = NULL, ...) {
   .ess(z_scale(.split_chains(x)))
 }
 
@@ -319,14 +319,19 @@ ess_mean <- function(x, ...) UseMethod("ess_mean")
 
 #' @rdname ess_quantile
 #' @export
-ess_mean.default <- function(x, ...) {
-  .ess(.split_chains(x))
+ess_mean.default <- function(x, weights = NULL, ...) {
+
+  if (is.null(weights)) {  
+    .ess(.split_chains(x))
+  } else {
+    .ess(.split_chains(x)) * (1 / sum(weights^2)) / (NROW(x) * NCOL(x))
+  }
 }
 
 #' @rdname ess_mean
 #' @export
 ess_mean.rvar <- function(x, ...) {
-  summarise_rvar_by_element_with_chains(x, ess_mean, ...)
+  summarise_rvar_by_element_with_chains(x, ess_mean, weights = weights(x), ...)
 }
 
 #' Effective sample size for the standard deviation
@@ -449,14 +454,18 @@ mcse_mean <- function(x, ...) UseMethod("mcse_mean")
 
 #' @rdname mcse_mean
 #' @export
-mcse_mean.default <- function(x, ...) {
-  sd(x) / sqrt(ess_mean(x))
+mcse_mean.default <- function(x, weights = NULL, ...) {
+  if (is.null(weights)) {
+    sd(x) / sqrt(ess_mean(x))
+  } else {
+    .mcse_mean_weighted(x, weights, ...)
+  }
 }
 
 #' @rdname mcse_mean
 #' @export
 mcse_mean.rvar <- function(x, ...) {
-  summarise_rvar_by_element_with_chains(x, mcse_mean, ...)
+  summarise_rvar_by_element_with_chains(x, mcse_mean, weights = weights(x), ...)
 }
 
 #' Monte Carlo standard error for the standard deviation
@@ -782,6 +791,12 @@ fold_draws <- function(x) {
   ess
 }
 
+.mcse_mean_weighted <- function(x, weights, r_eff = 1, ...) {
+  # Vehtari et al. 2022 equation 6
+ weighted_mean <- matrixStats::weightedMean(x, w = weights)
+ weights^2 %*% (x - c(weighted_mean))^2 / r_eff
+}
+
 # should NA be returned by a convergence diagnostic?
 should_return_NA <- function(x, tol = .Machine$double.eps) {
   if (anyNA(x) || checkmate::anyInfinite(x)) {
@@ -801,3 +816,4 @@ should_return_NA <- function(x, tol = .Machine$double.eps) {
   # }
   is_constant(x, tol = tol)
 }
+  
