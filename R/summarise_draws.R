@@ -329,9 +329,9 @@ empty_draws_summary <- function(dimensions = "variable") {
 
 create_summary_list <- function(x, v, funs, .args) {
   draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
-  args <- c(list(draws), .args)
   v_summary <- named_list(names(funs))
   for (m in names(funs)) {
+    args <- c(list(draws), .args[[m]])
     v_summary[[m]] <- do.call(funs[[m]], args)
   }
   v_summary
