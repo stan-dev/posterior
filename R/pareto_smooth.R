@@ -3,7 +3,7 @@
 #' Estimate Pareto k value by fitting a Generalized Pareto
 #' Distribution to one or two tails of x. This can be used to estimate
 #' the number of fractional moments that is useful for convergence
-#' diagnostics. For further details see Vehtari et al. (2022).
+#' diagnostics. For further details see Vehtari et al. (2024).
 #'
 #' @family diagnostics
 #' @template args-pareto
@@ -91,21 +91,21 @@ pareto_khat.rvar <- function(x, ...) {
 #' Pareto smoothed estimates can be considered reliable. If the actual
 #' sample size is lower than `min_ss`, increasing the sample size
 #' might result in more reliable estimates. For further details, see
-#' Section 3.2.3, Equation 11 in Vehtari et al. (2022).
+#' Section 3.2.3, Equation 11 in Vehtari et al. (2024).
 #'
 #'  * `khat_threshold`: Threshold below which k-hat values result in
 #' reliable Pareto smoothed estimates. The threshold is lower for
 #' smaller effective sample sizes. If k-hat is larger than the
 #' threshold, increasing the total sample size may improve reliability
 #' of estimates. For further details, see Section 3.2.4, Equation 13
-#' in Vehtari et al. (2022).
+#' in Vehtari et al. (2024).
 #'
 #'  * `convergence_rate`: Relative convergence rate compared to the
 #'  central limit theorem. Applicable only if the actual sample size
 #'  is sufficiently large (greater than `min_ss`). The convergence
 #'  rate tells the rate at which the variance of an estimate reduces
 #'  when the sample size is increased, compared to the central limit
-#'  theorem convergence rate. See Appendix B in Vehtari et al. (2022).
+#'  theorem convergence rate. See Appendix B in Vehtari et al. (2024).
 #'
 #' @seealso [`pareto_khat`] for only calculating khat, and
 #'   [`pareto_smooth`] for Pareto smoothed draws.
@@ -177,7 +177,7 @@ pareto_diags.rvar <- function(x, ...) {
 #'
 #' Smooth the tail draws of x by replacing tail draws by order
 #' statistics of a generalized Pareto distribution fit to the
-#' tail(s). For further details see Vehtari et al. (2022).
+#' tail(s). For further details see Vehtari et al. (2024).
 #'
 #' @template args-pareto
 #' @param return_k (logical) Should the Pareto khat be included in
