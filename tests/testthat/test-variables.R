@@ -10,6 +10,7 @@ test_that('duplicate variable names are not allowed', {
 
 test_that("variables() work with NULL", {
   expect_equal(variables(NULL), NULL)
+  expect_equal(nvariables(NULL), 0)
 })
 
 test_that("variables() and variables<-() work on draws_matrix", {
@@ -109,3 +110,54 @@ test_that("cannot set duplicate variable names", {
   expect_error(set_variables(x, c("a", "a")), "Duplicate variable names are not allowed")
 })
 
+test_that("with_indices works", {
+  x <- example_draws()
+  draws <- list(
+    array = as_draws_array(x),
+    df = as_draws_df(x),
+    list = as_draws_list(x),
+    matrix = as_draws_matrix(x),
+    rvars = as_draws_rvars(x)
+  )
+
+  mu_tau_theta = c(
+    "mu", "tau", "theta[1]", "theta[2]", "theta[3]", "theta[4]",
+    "theta[5]", "theta[6]", "theta[7]", "theta[8]"
+  )
+  a_b_c = c("a", "b", "c[1]", "c[2]", "c[3]", "c[4]", "c[5]", "c[6]", "c[7]", "c[8]")
+  for (type in names(draws)) {
+    expect_equal(variables(draws[[!!type]], with_indices = TRUE), mu_tau_theta)
+    expect_equal(variables(draws[[!!type]], with_indices = FALSE), c("mu", "tau", "theta"))
+    expect_equal(nvariables(draws[[!!type]], with_indices = TRUE), 10)
+    expect_equal(nvariables(draws[[!!type]], with_indices = FALSE), 3)
+
+    expect_equal(
+      variables(set_variables(draws[[!!type]], a_b_c, with_indices = TRUE), with_indices = FALSE),
+      c("a", "b", "c")
+    )
+    expect_equal(
+      variables(set_variables(draws[[!!type]], c("a","b","c"), with_indices = FALSE), with_indices = TRUE),
+      a_b_c
+    )
+
+    expect_error(
+      set_variables(draws[[!!type]], c("a","c","c"), with_indices = FALSE),
+      "[Dd]uplicate"
+    )
+  }
+
+  for (type in head(names(draws), -1)) {
+    expect_error(
+      set_variables(draws[[!!type]], c("a","b"), with_indices = FALSE),
+      "base name.*[Ll]engths must match"
+    )
+  }
+
+  expect_error(
+    set_variables(
+      draws$rvars,
+      c("a", "b", "XX[1]", "c[2]", "c[3]", "c[4]", "c[5]", "c[6]", "c[7]", "c[8]"),
+      with_indices = TRUE
+    )
+  )
+})

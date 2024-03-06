@@ -114,5 +114,5 @@ quantile.rvar_factor <- function(x, probs, ...) {
 quantile.rvar_ordered <- function(x, probs, ...) {
   # `type` must be in 1:3 because x is discrete
   out <- quantile(as_rvar_numeric(x), probs, type = 1, ...)
-  while_preserving_dims(function(out) levels(x)[out], out)
+  copy_dims(out, levels(x)[out])
 }

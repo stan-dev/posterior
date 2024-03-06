@@ -12,7 +12,7 @@
 #'   `ndraws_tail` is not specified, it will be calculated as
 #'   ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
 #'   length(x) / 5 otherwise (see Appendix H in Vehtari et
-#'   al. (2022)).
+#'   al. (2024)).
 #' @param r_eff (numeric) relative effective sample size estimate. If
 #'   `r_eff` is NULL, it will be calculated assuming the draws are
 #'   from MCMC. Default is 1.

@@ -38,7 +38,7 @@ for (dest_type in draws_types) {
         as_draws_dest(x)
       }
     },
-    n = 10
+    n = 50
   )
 }
 
@@ -54,7 +54,7 @@ for (n_variables in c(10, 100)) {
     "summarise_draws_{n_variables}_variables" := {
       posterior::summarise_draws(x)
     },
-    n = 10
+    n = 50
   )
 }
 

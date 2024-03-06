@@ -375,6 +375,29 @@ test_that("proxy restore works", {
   )
 })
 
+test_that("proxy restore works when combining factors with non-factors", {
+  ref_1a = as_rvar_factor(c("1", "a"), levels = c("1", "a"))
+  ref_a1 = as_rvar_factor(c("a", "1"), levels = c("a", "1"))
+
+  expect_equal(
+    vec_restore(c(vec_proxy(rvar(1)), vec_proxy(rvar_factor("a"))), to = rvar()),
+    ref_1a
+  )
+  expect_equal(
+    # even if the second element is ordered, because new levels are added by the
+    # first element, we expect order to be dropped and the result to be unordered
+    vec_restore(c(vec_proxy(rvar(1)), vec_proxy(rvar_ordered("a"))), to = rvar()),
+    ref_1a
+  )
+  expect_equal(
+    vec_restore(c(vec_proxy(rvar_factor("a")), vec_proxy(rvar(1))), to = rvar()),
+    ref_a1
+  )
+  expect_equal(
+    vec_restore(c(vec_proxy(rvar_ordered("a")), vec_proxy(rvar(1))), to = rvar()),
+    ref_a1
+  )
+})
 
 # vctrs comparison proxies ---------------------------------------------------
 

@@ -4,6 +4,8 @@
 \alias{extract_variable_matrix}
 \alias{extract_variable_matrix.default}
 \alias{extract_variable_matrix.draws}
+\alias{extract_variable_matrix.draws_df}
+\alias{extract_variable_matrix.draws_list}
 \alias{extract_variable_matrix.draws_rvars}
 \title{Extract matrix of a single variable}
 \usage{
@@ -13,13 +15,19 @@ extract_variable_matrix(x, variable, ...)
 
 \method{extract_variable_matrix}{draws}(x, variable, ...)
 
+\method{extract_variable_matrix}{draws_df}(x, variable, ...)
+
+\method{extract_variable_matrix}{draws_list}(x, variable, ...)
+
 \method{extract_variable_matrix}{draws_rvars}(x, variable, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
 
-\item{variable}{(string) The name of the variable to extract.}
+\item{variable}{(string) The name of the variable to extract. Must include
+indices for array variables (e.g. \code{"x[1]"}, \code{"y[1,2]"}). To extract all
+dimensions from variables with indices, use \code{\link[=extract_variable_array]{extract_variable_array()}}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
@@ -37,3 +45,9 @@ dim(mu)
 rhat(mu)
 
 }
+\seealso{
+Other variable extraction methods: 
+\code{\link{extract_variable_array}()},
+\code{\link{extract_variable}()}
+}
+\concept{variable extraction methods}

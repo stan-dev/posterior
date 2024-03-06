@@ -26,7 +26,7 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
 #' 0. By default the fit uses a prior for \eqn{k} (this is in addition to the prior described by Zhang and Stephens, 2009), which will stabilize
 #' estimates for very small sample sizes (and low effective sample sizes in the
 #' case of MCMC samples). The weakly informative prior is a Gaussian prior
-#' centered at 0.5 (see details in Vehtari et al., 2022).
+#' centered at 0.5 (see details in Vehtari et al., 2024).
 #'
 #' @param x A numeric vector. The sample from which to estimate the parameters.
 #' @param wip Logical indicating whether to adjust \eqn{k} based on a weakly
@@ -67,7 +67,7 @@ gpdfit <- function(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE) {
   sigma_hat <- -k_hat / theta_hat
 
   # adjust k_hat based on weakly informative prior, Gaussian centered on 0.5.
-  # this stabilizes estimates for very small Monte Carlo sample sizes and low neff (see Vehtari et al., 2022 for details)
+  # this stabilizes estimates for very small Monte Carlo sample sizes and low neff (see Vehtari et al., 2024 for details)
   if (wip) {
     k_hat <- (k_hat * N + 0.5 * 10) / (N + 10)
   }

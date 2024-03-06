@@ -83,7 +83,8 @@ as_rvar <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 #' @export
 as_rvar_numeric <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
   out <- as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
-  draws_of(out) <- while_preserving_dims(as.numeric, draws_of(out))
+  .draws <- draws_of(out)
+  draws_of(out) <- copy_dims(.draws, as.numeric(.draws))
   out
 }
 
@@ -91,7 +92,8 @@ as_rvar_numeric <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 #' @export
 as_rvar_integer <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
   out <- as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
-  draws_of(out) <- while_preserving_dims(as.integer, draws_of(out))
+  .draws <- draws_of(out)
+  draws_of(out) <- copy_dims(.draws, as.integer(.draws))
   out
 }
 
@@ -99,7 +101,8 @@ as_rvar_integer <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 #' @export
 as_rvar_logical <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
   out <- as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
-  draws_of(out) <- while_preserving_dims(as.logical, draws_of(out))
+  .draws <- draws_of(out)
+  draws_of(out) <- copy_dims(.draws, as.logical(.draws))
   out
 }
 
@@ -378,11 +381,11 @@ vec_cast.rvar.double <- function(x, to, ...) new_constant_rvar(x)
 
 # double -> rvar_factor
 #' @export
-vec_cast.rvar_factor.double <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.factor, x))
+vec_cast.rvar_factor.double <- function(x, to, ...) new_constant_rvar(copy_dims(x, as.factor(x)))
 
 # double -> rvar_ordered
 #' @export
-vec_cast.rvar_ordered.double <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.ordered, x))
+vec_cast.rvar_ordered.double <- function(x, to, ...) new_constant_rvar(copy_dims(x, as.ordered(x)))
 
 # integer -> rvar
 #' @export
@@ -394,11 +397,11 @@ vec_cast.rvar.integer <- function(x, to, ...) new_constant_rvar(x)
 
 # integer -> rvar_factor
 #' @export
-vec_cast.rvar_factor.integer <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.factor, x))
+vec_cast.rvar_factor.integer <- function(x, to, ...) new_constant_rvar(copy_dims(x, as.factor(x)))
 
 # integer -> rvar_ordered
 #' @export
-vec_cast.rvar_ordered.integer <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.ordered, x))
+vec_cast.rvar_ordered.integer <- function(x, to, ...) new_constant_rvar(copy_dims(x, as.ordered(x)))
 
 # logical -> rvar
 #' @export
@@ -410,11 +413,11 @@ vec_cast.rvar.logical <- function(x, to, ...) new_constant_rvar(x)
 
 # logical -> rvar_factor
 #' @export
-vec_cast.rvar_factor.logical <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.factor, x))
+vec_cast.rvar_factor.logical <- function(x, to, ...) new_constant_rvar(copy_dims(x, as.factor(x)))
 
 # logical -> rvar_ordered
 #' @export
-vec_cast.rvar_ordered.logical <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.ordered, x))
+vec_cast.rvar_ordered.logical <- function(x, to, ...) new_constant_rvar(copy_dims(x, as.ordered(x)))
 
 
 # character casts ---------------------------------------------------------
@@ -429,7 +432,7 @@ vec_cast.character.rvar_ordered <- function(x, to, ...) format(x)
 
 # character -> rvar
 #' @export
-vec_cast.rvar.character <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.factor, x))
+vec_cast.rvar.character <- function(x, to, ...) new_constant_rvar(copy_dims(x, as.factor(x)))
 
 # character -> rvar_factor
 #' @export
@@ -437,7 +440,7 @@ vec_ptype2.character.rvar_factor <- function(x, y, ...) new_rvar(factor())
 #' @export
 vec_ptype2.rvar_factor.character <- function(x, y, ...) new_rvar(factor())
 #' @export
-vec_cast.rvar_factor.character <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.factor, x))
+vec_cast.rvar_factor.character <- function(x, to, ...) new_constant_rvar(copy_dims(x, as.factor(x)))
 
 # character -> rvar_ordered
 #' @export
@@ -450,7 +453,7 @@ vec_cast.rvar_ordered.character <- function(x, to, ...) {
   new_levels <- sort(setdiff(x, levels(to)))
   levels <- c(old_levels, new_levels)
   ordered <- length(new_levels) == 0
-  new_constant_rvar(while_preserving_dims(factor, x, levels = levels, ordered = ordered))
+  new_constant_rvar(copy_dims(x, factor(x, levels = levels, ordered = ordered)))
 }
 
 
@@ -521,7 +524,8 @@ vec_cast.rvar.rvar_factor <- function(x, to, ...) x
     return(x)
   }
 
-  draws_of(x) <- while_preserving_dims(factor, draws_of(x), ordered = ordered, ...)
+  .draws <- draws_of(x)
+  draws_of(x) <- copy_dims(.draws, factor(.draws, ordered = ordered, ...))
   x
 }
 
