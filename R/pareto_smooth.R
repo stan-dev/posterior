@@ -320,7 +320,7 @@ pareto_smooth.default <- function(x,
 
     # right tail
     smoothed <-.pareto_smooth_tail(
-      x = x,
+      x = smoothed$x,
       ndraws_tail = ndraws_tail,
       tail = "right",
       are_log_weights = are_log_weights,
