@@ -6,6 +6,22 @@ test_that("pareto_khat returns expected reasonable values", {
 
 })
 
+
+test_that("pareto_khat handles constant tail correctly", {
+
+  # left tail is constant, so khat should be NA, but for "both" it
+  # should be the same as the right tail
+  x <- c(rep(-100, 10), sort(rnorm(100)))
+
+  expect_true(is.na(pareto_khat(x, tail = "left", ndraws_tail = 10)))
+  expect_equal(
+    pareto_khat(x, tail = "right", ndraws_tail = 10),
+    pareto_khat(x, tail = "both", ndraws_tail = 10)
+  )
+
+})
+
+
 test_that("pareto_khat handles tail argument", {
 
   # as tau is bounded (0, Inf) the left pareto k should be lower than

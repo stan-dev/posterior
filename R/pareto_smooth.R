@@ -279,7 +279,7 @@ pareto_smooth.default <- function(x,
   if (are_log_weights) {
     tail <- "right"
   }
-  
+
   tail <- match.arg(tail)
   S <- length(x)
 
@@ -320,7 +320,7 @@ pareto_smooth.default <- function(x,
 
     # right tail
     smoothed <-.pareto_smooth_tail(
-      x = smoothed$x,
+      x = x,
       ndraws_tail = ndraws_tail,
       tail = "right",
       are_log_weights = are_log_weights,
@@ -328,9 +328,9 @@ pareto_smooth.default <- function(x,
     )
     right_k <- smoothed$k
 
-    k <- max(left_k, right_k)
+    k <- max(left_k, right_k, na.rm = TRUE)
     x <- smoothed$x
-    
+
   } else {
 
     smoothed <- .pareto_smooth_tail(
@@ -444,7 +444,7 @@ pareto_convergence_rate.rvar <- function(x, ...) {
     # shift log values for safe exponentiation
     x <- x - max(x)
   }
-  
+
   tail <- match.arg(tail)
 
   S <- length(x)
@@ -457,11 +457,21 @@ pareto_convergence_rate.rvar <- function(x, ...) {
   ord <- sort.int(x, index.return = TRUE)
   draws_tail <- ord$x[tail_ids]
 
+  if (is_constant(draws_tail)) {
+
+    if (tail == "left") {
+      x <- -x
+    }
+
+    out <- list(x = x, k = NA)
+    return(out)
+  }
+
   cutoff <- ord$x[min(tail_ids) - 1] # largest value smaller than tail values
-  
+
   max_tail <- max(draws_tail)
   min_tail <- min(draws_tail)
-  
+
   if (ndraws_tail >= 5) {
     ord <- sort.int(x, index.return = TRUE)
     if (abs(max_tail - min_tail) < .Machine$double.eps / 100) {
@@ -617,7 +627,7 @@ pareto_k_diagmsg <- function(diags, are_weights = FALSE, ...) {
   msg <- NULL
 
   if (!are_weights) {
-  
+
     if (khat > 1) {
       msg <- paste0(msg, " Mean does not exist, making empirical mean estimate of the draws not applicable.")
     } else {
