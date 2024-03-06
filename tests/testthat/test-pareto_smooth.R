@@ -196,14 +196,27 @@ test_that("pareto_khat functions work with rvars with and without chains", {
 
 })
 
-test_that("pareto_smooth returns x with smoothed tail", {
-  tau <- extract_variable_matrix(example_draws(), "tau")
+test_that("pareto_smooth returns x with smoothed tail(s)", {
+  mu <- extract_variable_matrix(example_draws(), "mu")
 
-  tau_smoothed <- pareto_smooth(tau, ndraws_tail = 10, tail = "right", return_k = TRUE)$x
+  mu_smoothed_right <- pareto_smooth(mu, ndraws_tail = 10, tail = "right", return_k = TRUE)$x
 
-  expect_equal(sort(tau)[1:390], sort(tau_smoothed)[1:390])
+  mu_smoothed_left <- pareto_smooth(mu, ndraws_tail = 10, tail = "left", return_k = TRUE)$x
 
-  expect_false(isTRUE(all.equal(sort(tau), sort(tau_smoothed))))
+  mu_smoothed_both <- pareto_smooth(mu, ndraws_tail = 10, tail = "both", return_k = TRUE)$x
+
+  expect_equal(sort(mu)[1:390], sort(mu_smoothed_right)[1:390])
+  expect_equal(sort(mu_smoothed_both)[11:400], sort(mu_smoothed_right)[11:400])
+
+  expect_equal(sort(mu)[11:400], sort(mu_smoothed_left)[11:400])
+  expect_equal(sort(mu_smoothed_both)[1:390], sort(mu_smoothed_left)[1:390])
+
+  expect_false(isTRUE(all.equal(sort(mu), sort(mu_smoothed_left))))
+  expect_false(isTRUE(all.equal(sort(mu), sort(mu_smoothed_right))))
+  expect_false(isTRUE(all.equal(sort(mu), sort(mu_smoothed_both))))
+
+  expect_false(isTRUE(all.equal(sort(mu_smoothed_both), sort(mu_smoothed_left))))
+  expect_false(isTRUE(all.equal(sort(mu_smoothed_both), sort(mu_smoothed_right))))
 
 })
 
