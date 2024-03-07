@@ -66,7 +66,6 @@ pareto_khat.rvar <- function(x, verbose = FALSE, ...) {
   } else {
 
     # take the max of khat for x * weights and khat for weights
-
     weights_diags <- pareto_khat(
       weights(x, log = TRUE),
       are_log_weights = TRUE,
@@ -81,10 +80,6 @@ pareto_khat.rvar <- function(x, verbose = FALSE, ...) {
       pareto_khat,
       ...
     )
-
-    print(weights_diags)
-
-    print(product_diags)
 
     dim(product_diags) <- dim(product_diags) %||% length(product_diags)
     margins <- seq_along(dim(product_diags))
