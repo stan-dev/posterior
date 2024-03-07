@@ -566,6 +566,35 @@ x
 
 This approach is also nice because it generalizes easily to more than two components.
 
+## Weights
+
+Weighted `rvar`s can be created by passing log weights to the `log_weights` 
+parameter of `rvar()`, by using the `weight_draws()` function (as with `draws`
+objects), or by converting a weighted `draws` object to a `draws_rvars` object.
+Functions of `rvar`s, such as `mean()`, `sd()`, etc, support weights as
+appropriate.
+
+For example, we can create an `rvar` that is a mixture of draws from
+Normal(0,1) and Normal(5,1) distributions:
+
+```{r rvar_weighted}
+x <- rvar(c(rnorm(10000, mean = c(0,5))))
+x
+```
+
+By default the mean is about 2.5, as the components with mean 0 and mean 5
+are weighted equally. However, if we weight the component with mean 5 twice
+as much, then the summary display will show the appropriate weighted mean:
+
+```{r weighted_mean}
+x <- weight_draws(x, rep(c(1,2), 5000))
+x
+```
+
+The latest version of [ggdist](https://mjskay.github.io/ggdist/) also supports
+weighted `rvar`s, and will calculate histograms, densities, point summaries, and
+intervals of `rvar`s correctly, accounting for weights.
+
 ## Applying functions over `rvar`s
 
 The `rvar` data type supplies an implementation of `as.list()`, which should give 

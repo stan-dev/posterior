@@ -2,28 +2,19 @@
 % Please edit documentation in R/draws-index.R
 \name{draws-index}
 \alias{draws-index}
-\alias{variables}
-\alias{variables<-}
 \alias{iteration_ids}
 \alias{chain_ids}
 \alias{draw_ids}
-\alias{nvariables}
 \alias{niterations}
 \alias{nchains}
 \alias{ndraws}
 \title{Index \code{draws} objects}
 \usage{
-variables(x, ...)
-
-variables(x) <- value
-
 iteration_ids(x)
 
 chain_ids(x)
 
 draw_ids(x)
-
-nvariables(x, ...)
 
 niterations(x)
 
@@ -34,39 +25,24 @@ ndraws(x)
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
-
-\item{...}{Arguments passed to individual methods (if applicable).}
-
-\item{value}{(character vector) For \code{variables(x) <- value}, the new variable
-names to use.}
 }
 \value{
-For \code{variables()}, a character vector.
-
 For \code{iteration_ids()}, \code{chain_ids()}, and \code{draw_ids()}, an integer vector.
 
 For \code{niterations()}, \code{nchains()}, and \code{ndraws()}, a scalar integer.
 }
 \description{
-Index variables, iterations, chains, and draws.
+Index iterations, chains, and draws of \code{\link{draws}} objects.
 }
 \details{
-The methods \code{variables()}, \code{iteration_ids()}, \code{chain_ids()}, and \code{draw_ids()} return
-vectors of all variables, iterations, chains, and draws, respectively. In
-contrast, the methods \code{nvariables()}, \code{niterations()}, \code{nchains()}, and
+The methods \code{iteration_ids()}, \code{chain_ids()}, and \code{draw_ids()} return
+vectors of all iterations, chains, and draws, respectively. In
+contrast, the methods \code{niterations()}, \code{nchains()}, and
 \code{ndraws()} return the number of variables, iterations, chains, and draws,
 respectively.
-
-\code{variables(x) <- value} allows you to modify the vector of variable names,
-similar to how \code{names(x) <- value} works for vectors and lists. For renaming
-specific variables, \code{\link[=set_variables]{set_variables()}} works equivalently, but is more intuitive when using the pipe operator. \code{\link[=rename_variables]{rename_variables()}} may offer a more convenient approach.
 }
 \examples{
 x <- example_draws()
-
-variables(x)
-nvariables(x)
-variables(x) <- letters[1:nvariables(x)]
 
 iteration_ids(x)
 niterations(x)

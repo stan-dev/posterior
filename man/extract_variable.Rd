@@ -4,6 +4,8 @@
 \alias{extract_variable}
 \alias{extract_variable.default}
 \alias{extract_variable.draws}
+\alias{extract_variable.draws_df}
+\alias{extract_variable.draws_list}
 \alias{extract_variable.draws_rvars}
 \title{Extract draws of a single variable}
 \usage{
@@ -13,18 +15,24 @@ extract_variable(x, variable, ...)
 
 \method{extract_variable}{draws}(x, variable, ...)
 
+\method{extract_variable}{draws_df}(x, variable, ...)
+
+\method{extract_variable}{draws_list}(x, variable, ...)
+
 \method{extract_variable}{draws_rvars}(x, variable, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
 
-\item{variable}{(string) The name of the variable to extract.}
+\item{variable}{(string) The name of the variable to extract. Must include
+indices for array variables (e.g. \code{"x[1]"}, \code{"y[1,2]"}). To extract all
+dimensions from variables with indices, use \code{\link[=extract_variable_array]{extract_variable_array()}}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-A numeric vector of length equal to the number of draws.
+A vector of length equal to the number of draws.
 }
 \description{
 Extract a vector of draws of a single variable.
@@ -35,3 +43,9 @@ mu <- extract_variable(x, variable = "mu")
 str(mu)
 
 }
+\seealso{
+Other variable extraction methods: 
+\code{\link{extract_variable_array}()},
+\code{\link{extract_variable_matrix}()}
+}
+\concept{variable extraction methods}

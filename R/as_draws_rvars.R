@@ -54,36 +54,28 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 }
 
 #' Helper for as_draws_rvars.draws_matrix and as_draws_rvars.draws_df()
-#' @param x_at A function taking a logical vector along variables(x) and returning a matrix of draws
+#' @param x_at A function taking a numeric vector of indices along variables(x) and returning a matrix of draws
 #' @noRd
 .as_draws_rvars.draws_matrix <- function(x, ..., x_at = function(var_i) unclass(x[, var_i, drop = FALSE])) {
   .variables <- variables(x, reserved = TRUE)
+  .nchains <- nchains(x)
   if (ndraws(x) == 0) {
     return(empty_draws_rvars(.variables))
   }
 
   # split x[y,z] names into base name and indices
-  #
-  #                    ----- base name -> vars_indices[[i]][[2]]
-  #                    ||||| lazy-matched (.*? not .*) so that indices match as much as they can
-  #                    |||||
-  #                    |||||      ---- optional indices -> vars_indices[[i]][[3]]
-  #                    |||||      ||||
-  matches <- regexec("^(.*?)(?:\\[(.*)\\])?$", .variables)
-  vars_indices <- regmatches(.variables, matches)
-  vars <- vapply(vars_indices, `[[`, i = 2, character(1))
+  vars <- split_variable_names(.variables)
+  vars$i <- seq_along(.variables)
 
   # pull out each var into its own rvar
-  var_names <- unique(vars)
-  rvars_list <- lapply(var_names, function(var) {
-    var_i <- vars == var
-    var_matrix <- x_at(var_i)
+  vars_by_base_name <- vctrs::vec_split(vars, vars$base_name)
+  rvars_list <- lapply(vars_by_base_name$val, function(var) {
+    var_matrix <- x_at(var$i)
     attr(var_matrix, "nchains") <- NULL
-    var_indices <- vars_indices[var_i]
 
-    if (ncol(var_matrix) == 1 && nchar(var_indices[[1]][[3]]) == 0) {
+    if (ncol(var_matrix) == 1 && nchar(var$indices[[1]]) == 0) {
       # single variable, no indices
-      out <- rvar(var_matrix)
+      out <- rvar(var_matrix, nchains = .nchains)
       dimnames(out) <- NULL
     } else {
       # variable with indices => we need to reshape the array
@@ -92,8 +84,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
       # first, pull out the list of indices into a data frame
       # where each column is an index variable
-      indices <- vapply(var_indices, `[[`, i = 3, character(1))
-      indices <- as.data.frame(do.call(rbind, strsplit(indices, ",")),
+      indices <- as.data.frame(do.call(rbind, split_indices(var$indices)),
                                stringsAsFactors = FALSE)
       unique_indices <- vector("list", length(indices))
       .dimnames <- vector("list", length(indices))
@@ -131,35 +122,31 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
       # (2) if some combination of indices is missing (say x[2,1] isn't
       # in the input) that cell in the array gets an NA
 
-      # Use expand.grid to get all cells in output array. We reverse indices
-      # here because it helps us do the sort after the merge, where
-      # we need to sort in reverse order of the indices (because
-      # the value of the last index should move slowest)
-      all_indices <- expand.grid(rev(unique_indices))
+      # Use expand.grid to get all cells in output array in the appropriate
+      # order (value of the last index should move slowest), and save that order
+      # in $order so we can restore it after the merge
+      all_indices <- expand.grid(unique_indices, KEEP.OUT.ATTRS = FALSE, stringsAsFactors = FALSE)
+      all_indices$order <- seq_len(nrow(all_indices))
       # merge with all.x = TRUE (left join) to fill in missing cells with NA
       indices <- merge(all_indices, cbind(indices, index = seq_len(nrow(indices))),
                        all.x = TRUE, sort = FALSE)
       # need to do the sort manually after merge because when sort = TRUE, merge
       # sorts factors as if they were strings, and we need factors to be sorted as factors
-      indices <- indices[do.call(order, as.list(indices[, -ncol(indices), drop = FALSE])),]
+      # (and merge does not guarantee it keeps the original order in `x`)
+      indices <- indices[order(indices$order), ]
 
       # re-sort the array and fill in missing cells with NA
       var_matrix <- var_matrix[, indices$index, drop = FALSE]
 
       # convert to rvar and adjust dimensions
-      out <- rvar(var_matrix)
+      out <- rvar(var_matrix, nchains = .nchains)
       dim(out) <- unname(lengths(unique_indices))
       dimnames(out) <- .dimnames
     }
     out
   })
-  names(rvars_list) <- var_names
-  out <- .as_draws_rvars(rvars_list, ...)
-  .nchains <- nchains(x)
-  for (i in seq_along(out)) {
-    nchains_rvar(out[[i]]) <- .nchains
-  }
-  out
+  names(rvars_list) <- vars_by_base_name$key
+  .as_draws_rvars(rvars_list, ...)
 }
 
 #' @rdname draws_rvars
@@ -175,10 +162,7 @@ as_draws_rvars.draws_df <- function(x, ...) {
   data_frame_to_matrix <- function(df) {
     if (any(vapply(df, is.factor, logical(1)))) {
       # as.matrix() does not convert factor columns correctly, must do this ourselves
-      while_preserving_dims(
-        function(df) do.call(function(...) vctrs::vec_c(..., .name_spec = rlang::zap()), df),
-        df
-      )
+      copy_dims(df, vctrs::vec_c(!!!df, .name_spec = rlang::zap()))
     } else {
       as.matrix(df)
     }
