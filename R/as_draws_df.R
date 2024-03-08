@@ -61,6 +61,14 @@ as_draws_df.draws_df <- function(x, ...) {
 
 #' @rdname draws_df
 #' @export
+as_draws_df.draws_dt <- function(x, ...) {
+  x <- as.data.frame(x)
+  class(x) <- class_draws_dt()
+  x
+}
+
+#' @rdname draws_df
+#' @export
 as_draws_df.draws_matrix <- function(x, ...) {
   if (ndraws(x) == 0L) {
     return(empty_draws_df(variables(x)))
@@ -231,12 +239,12 @@ dplyr_reconstruct.draws_df <- function(data, template) {
   data
 }
 
-# drop "draws_df" and "draws" classes if metadata columns were removed
-# from the data frame
+# drop "draws_dt", "draws_df", and "draws" classes if metadata columns were
+# removed from the data frame
 drop_draws_class_if_metadata_removed <- function(x, warn = TRUE) {
   if (!all(reserved_df_variables() %in% names(x))) {
     if (warn) warning_no_call("Dropping 'draws_df' class as required metadata was removed.")
-    class(x) <- setdiff(class(x), c("draws_df", "draws"))
+    class(x) <- setdiff(class(x), c("draws_dt", "draws_df", "draws"))
   }
   x
 }

@@ -46,6 +46,7 @@ Suggests:
   e1071 (>= 1.7-3),
   dplyr,
   tidyr,
+  data.table,
   knitr,
   ggplot2,
   ggdist,

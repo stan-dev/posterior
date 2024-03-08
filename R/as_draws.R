@@ -70,6 +70,8 @@ closest_draws_format <- function(x) {
     out <- "matrix"
   } else if (is_draws_array_like(x)) {
     out <- "array"
+  } else if (is_draws_dt_like(x)) {
+    out <- "dt"
   } else if (is_draws_df_like(x)) {
     out <- "df"
   } else if (is_draws_rvars_like(x)) {
