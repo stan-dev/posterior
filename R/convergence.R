@@ -850,7 +850,9 @@ fold_draws <- function(x) {
   
   weighted_mean <- matrixStats::weightedMean(x, w = weights)
 
-  weights^2 %*% (x - c(weighted_mean))^2 / r_eff
+  out <- weights^2 %*% (x - c(weighted_mean))^2 / r_eff
+
+  out
 }
 
 .ess_weighted <- function(x, weights, r_eff = 1, ...) {
