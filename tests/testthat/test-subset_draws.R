@@ -24,7 +24,10 @@ test_that("subset_draws works correctly for draws_matrix objects", {
   x_sub <- subset_draws(x, iteration = c(1, 2, 3), exclude = TRUE)
   expect_equal(ndraws(x) - 3 * nchains(x), ndraws(x_sub))
 
-
+  expect_error(
+    subset_draws(x, variable = "theta", scalar = TRUE),
+    "The following variables are missing in the draws object"
+  )
 })
 
 test_that("subset_draws works correctly for draws_array objects", {

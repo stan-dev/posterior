@@ -22,6 +22,9 @@
 #'   If `FALSE` (the default) only the selected subset will be
 #'   returned.  If `TRUE` everything but the selected subset will be
 #'   returned.
+#' @param scalar (logical) Should only scalar variables be selected?
+#'   If `FALSE` (the default), all variables with matching names and
+#'   *arbitrary* indices will be selected (see examples).
 #'
 #' @template args-methods-dots
 #' @template return-draws
@@ -43,6 +46,9 @@
 #' # extract all elements of 'theta'
 #' subset_draws(x, variable = "theta")
 #'
+#' # trying to extract only a scalar 'theta' will fail
+#' # subset_draws(x, variable = "theta", scalar = TRUE)
+#'
 #' @export
 subset_draws <- function(x, ...) {
   UseMethod("subset_draws")
@@ -52,12 +58,16 @@ subset_draws <- function(x, ...) {
 #' @export
 subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
                                       chain = NULL, draw = NULL, regex = FALSE,
-                                      unique = TRUE, exclude = FALSE, ...) {
+                                      unique = TRUE, exclude = FALSE,
+                                      scalar = FALSE, ...) {
   if (all_null(variable, iteration, chain, draw)) {
     return(x)
   }
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex, exclude = exclude)
+  variable <- check_existing_variables(
+    variable, x, regex = regex, exclude = exclude,
+    scalar = scalar
+  )
   iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
   chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
   draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
@@ -74,13 +84,17 @@ subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
 #' @export
 subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
                                      chain = NULL, draw = NULL, regex = FALSE,
-                                     unique = TRUE, exclude = FALSE, ...) {
+                                     unique = TRUE, exclude = FALSE,
+                                     scalar = FALSE, ...) {
   if (all_null(variable, iteration, chain, draw)) {
     return(x)
   }
 
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex, exclude = exclude)
+  variable <- check_existing_variables(
+    variable, x, regex = regex, exclude = exclude,
+    scalar = scalar
+  )
   iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
   chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
   draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
@@ -100,17 +114,21 @@ subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
 #' @export
 subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
                                   chain = NULL, draw = NULL, regex = FALSE,
-                                  unique = TRUE, exclude = FALSE, ...) {
+                                  unique = TRUE, exclude = FALSE,
+                                  scalar = FALSE, ...) {
   if (all_null(variable, iteration, chain, draw)) {
     return(x)
   }
 
   x <- repair_draws(x)
   unique <- as_one_logical(unique)
-  variable <- check_existing_variables(variable, x, regex = regex, exclude= exclude)
-  iteration <- check_iteration_ids(iteration, x, unique = unique, exclude= exclude)
-  chain <- check_chain_ids(chain, x, unique = unique, exclude= exclude)
-  draw <- check_draw_ids(draw, x, unique = unique, exclude= exclude)
+  variable <- check_existing_variables(
+    variable, x, regex = regex, exclude = exclude,
+    scalar = scalar
+  )
+  iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
+  chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
+  draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
 
   x <- prepare_subsetting(x, iteration, chain, draw)
   x <- .subset_draws(
@@ -124,13 +142,17 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
 #' @export
 subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
                                     chain = NULL, draw = NULL, regex = FALSE,
-                                    unique = TRUE, exclude = FALSE, ...) {
+                                    unique = TRUE, exclude = FALSE,
+                                    scalar = FALSE, ...) {
   if (all_null(variable, iteration, chain, draw)) {
     return(x)
   }
 
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex, exclude = exclude)
+  variable <- check_existing_variables(
+    variable, x, regex = regex, exclude = exclude,
+    scalar = scalar
+  )
   iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
   chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
   draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
@@ -150,16 +172,20 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
 #' @export
 subset_draws.draws_rvars <- function(x, variable = NULL, iteration = NULL,
                                      chain = NULL, draw = NULL, regex = FALSE,
-                                     unique = TRUE, exclude = FALSE, ...) {
+                                     unique = TRUE, exclude = FALSE,
+                                     scalar = FALSE, ...) {
   if (all_null(variable, iteration, chain, draw)) {
     return(x)
   }
 
   x <- repair_draws(x)
-  variable <- check_existing_variables(variable, x, regex = regex, exclude = exclude)
-  iteration <- check_iteration_ids(iteration, x, unique = unique, exclude= exclude)
-  chain <- check_chain_ids(chain, x, unique = unique, exclude= exclude)
-  draw <- check_draw_ids(draw, x, unique = unique, exclude= exclude)
+  variable <- check_existing_variables(
+    variable, x, regex = regex, exclude = exclude,
+    scalar = scalar
+  )
+  iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
+  chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
+  draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
 
   x <- prepare_subsetting(x, iteration, chain, draw)
   if (!is.null(draw)) {

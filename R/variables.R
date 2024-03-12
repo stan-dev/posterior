@@ -224,19 +224,19 @@ nvariables.draws <- function(x, ...) {
 
 # check validity of existing variable names: e.g., that
 # all `variables` exist in `x` and that no `variables`are reserved words
-# Additionally, this returns the cannonical name, so e.g. "theta" will get
+# Additionally, this returns the canonical name, so e.g. "theta" will get
 # converted to c("theta[1]", "theta[2]", ...) if those variables exist.
 # @param regex should 'variables' be treated as regular expressions?
-# @param scalar_only should only scalar variables be matched?
+# @param scalar should only scalar variables be matched?
 check_existing_variables <- function(variables, x, regex = FALSE,
-                                     scalar_only = FALSE, exclude = FALSE) {
+                                     scalar = FALSE, exclude = FALSE) {
   check_draws_object(x)
   if (is.null(variables)) {
     return(NULL)
   }
 
   regex <- as_one_logical(regex)
-  scalar_only <- as_one_logical(scalar_only)
+  scalar <- as_one_logical(scalar)
   exclude <- as_one_logical(exclude)
   variables <- unique(as.character(variables))
   all_variables <- variables(x, reserved = TRUE)
@@ -249,7 +249,7 @@ check_existing_variables <- function(variables, x, regex = FALSE,
     # regular expressions are not required to match anything
     missing_variables <- NULL
     variables <- as.character(all_variables[unique(unlist(tmp))])
-  } else if (!scalar_only) {
+  } else if (!scalar) {
     # need to find variables that are matched by either a scalar or vector
     # variable in x and what the matching variable is, while keeping original
     # order of input `variables`
