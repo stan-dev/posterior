@@ -47,7 +47,7 @@ from MCMC. Default is 1.}
 \code{ndraws_tail} is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
 length(x) / 5 otherwise (see Appendix H in Vehtari et
-al. (2022)).}
+al. (2024)).}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto diagnostics will be
@@ -64,7 +64,7 @@ draws are log weights, and only right tail will be smoothed.}
 Estimate Pareto k value by fitting a Generalized Pareto
 Distribution to one or two tails of x. This can be used to estimate
 the number of fractional moments that is useful for convergence
-diagnostics. For further details see Vehtari et al. (2022).
+diagnostics. For further details see Vehtari et al. (2024).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -75,7 +75,8 @@ pareto_khat(d$Sigma)
 }
 \references{
 Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
-Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
+Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
+\emph{Journal of Machine Learning Research}, accepted for publication.
 arxiv:arXiv:1507.02646 (version 8)
 }
 \seealso{
@@ -92,9 +93,9 @@ Other diagnostics:
 \code{\link{mcse_quantile}()},
 \code{\link{mcse_sd}()},
 \code{\link{pareto_diags}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}

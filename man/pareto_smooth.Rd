@@ -59,7 +59,7 @@ from MCMC. Default is 1.}
 \code{ndraws_tail} is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
 length(x) / 5 otherwise (see Appendix H in Vehtari et
-al. (2022)).}
+al. (2024)).}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto diagnostics will be
@@ -82,7 +82,7 @@ Pareto smoothed estimates
 \description{
 Smooth the tail draws of x by replacing tail draws by order
 statistics of a generalized Pareto distribution fit to the
-tail(s). For further details see Vehtari et al. (2022).
+tail(s). For further details see Vehtari et al. (2024).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -93,7 +93,8 @@ pareto_smooth(d$Sigma)
 }
 \references{
 Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
-Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
+Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
+\emph{Journal of Machine Learning Research}, accepted for publication.
 arxiv:arXiv:1507.02646 (version 8)
 }
 \seealso{

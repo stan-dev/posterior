@@ -74,7 +74,7 @@ from MCMC. Default is 1.}
 \code{ndraws_tail} is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
 length(x) / 5 otherwise (see Appendix H in Vehtari et
-al. (2022)).}
+al. (2024)).}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto diagnostics will be
@@ -109,19 +109,19 @@ estimate. If the actual sample size is greater than \code{min_ss}, then
 Pareto smoothed estimates can be considered reliable. If the actual
 sample size is lower than \code{min_ss}, increasing the sample size
 might result in more reliable estimates. For further details, see
-Section 3.2.3, Equation 11 in Vehtari et al. (2022).
+Section 3.2.3, Equation 11 in Vehtari et al. (2024).
 \item \code{khat_threshold}: Threshold below which k-hat values result in
 reliable Pareto smoothed estimates. The threshold is lower for
 smaller effective sample sizes. If k-hat is larger than the
 threshold, increasing the total sample size may improve reliability
 of estimates. For further details, see Section 3.2.4, Equation 13
-in Vehtari et al. (2022).
+in Vehtari et al. (2024).
 \item \code{convergence_rate}: Relative convergence rate compared to the
 central limit theorem. Applicable only if the actual sample size
 is sufficiently large (greater than \code{min_ss}). The convergence
 rate tells the rate at which the variance of an estimate reduces
 when the sample size is increased, compared to the central limit
-theorem convergence rate. See Appendix B in Vehtari et al. (2022).
+theorem convergence rate. See Appendix B in Vehtari et al. (2024).
 }
 }
 \examples{
@@ -133,7 +133,8 @@ pareto_diags(d$Sigma)
 }
 \references{
 Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
-Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
+Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
+\emph{Journal of Machine Learning Research}, accepted for publication.
 arxiv:arXiv:1507.02646 (version 8)
 }
 \seealso{
@@ -150,9 +151,9 @@ Other diagnostics:
 \code{\link{mcse_quantile}()},
 \code{\link{mcse_sd}()},
 \code{\link{pareto_khat}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}
