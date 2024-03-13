@@ -132,6 +132,7 @@ test_that("convergence functions work with rvars", {
   expect_equal(mcse_sd(tau_rvar), mcse_sd(tau))
   expect_equal(rhat_basic(tau_rvar), rhat_basic(tau))
   expect_equal(rhat(tau_rvar), rhat(tau))
+  expect_equal(relative_eff(tau_rvar), relative_eff(tau))
 })
 
 test_that("autocovariance returns correct results", {
@@ -144,4 +145,13 @@ test_that("autocovariance returns correct results", {
   ac1 <- autocovariance(x)
   ac2 <- acf(x, type = "covariance", lag.max = length(x), plot = FALSE)$acf[, 1, 1]
   expect_equal(ac1, ac2)
+})
+
+test_that("relative_eff returns expected value", {
+
+  tau <- extract_variable_matrix(example_draws(), "tau")
+  ess <- ess_basic(tau)
+  ndraws <- nrow(tau) * ncol(tau)
+  expect_equal(relative_eff(tau), ess / ndraws)
+
 })

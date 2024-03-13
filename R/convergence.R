@@ -563,6 +563,50 @@ quantile2.rvar <- function(
   summarise_rvar_by_element_with_chains(x, quantile2, probs, na.rm, names, ...)
 }
 
+
+#' Relative efficiency
+#'
+#' Compute the relative efficiency of MCMC draws. This is equal to the
+#' MCMC effective sample size divided by the total sample size.
+#'
+#' @family diagnostics
+#' @template args-conv
+#' @template args-methods-dots
+#' @template return-conv
+#' @template ref-vehtari-rhat-2021
+#' @template ref-vehtari-ess-2021
+#'
+#' @examples
+#' mu <- extract_variable_matrix(example_draws(), "mu")
+#' relative_eff(mu)
+#'
+#' d <- as_draws_rvars(example_draws("multi_normal"))
+#' relative_eff(d$Sigma)
+#'
+#' @export
+relative_eff <- function(x, ...) {
+  UseMethod("relative_eff")
+}
+
+#' @export
+relative_eff.default <- function(x, ...) {
+  x <- as.matrix(x)
+  niterations <- nrow(x)
+  nchains <- ncol(x)
+  ndraws <- niterations * nchains
+
+  ess <- .ess(.split_chains(x))
+
+  ess / ndraws
+}
+
+#' @export
+relative_eff.rvar <- function(x, ...) {
+
+  summarise_rvar_by_element_with_chains(x, relative_eff, ...)
+}
+
+
 # internal ----------------------------------------------------------------
 
 #' Autocovariance estimates
