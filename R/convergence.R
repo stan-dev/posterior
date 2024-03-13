@@ -186,7 +186,8 @@ ess_bulk.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     .ess(z_scale(.split_chains(x)))
   } else {
-    .ess_weighted(x, weights, ...)
+    r_eff <- .ess(z_scale(.split_chains(x))) / (nrow(x) * ncol(x))
+    .ess_weighted(x, weights, r_eff = r_eff, ...)
   }
 }
 
@@ -345,10 +346,11 @@ ess_mean <- function(x, ...) UseMethod("ess_mean")
 #' @export
 ess_mean.default <- function(x, weights = NULL, ...) {
 
-  if (is.null(weights)) {  
+  if (is.null(weights)) {
     .ess(.split_chains(x))
   } else {
-    .ess_weighted(x, weights, ...)
+    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
+    .ess_weighted(x, weights, r_eff = r_eff, ...)
   }
 }
 
@@ -506,7 +508,8 @@ mcse_mean.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     sd(x) / sqrt(ess_mean(x))
   } else {
-    .mcse_weighted(x, weights, ...)
+    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
+    .mcse_weighted(x, weights, ...) / r_eff
   }
 }
 
@@ -843,23 +846,21 @@ fold_draws <- function(x) {
   ess
 }
 
-.mcse_weighted <- function(x, weights, r_eff = 1, ...) {
+.mcse_weighted <- function(x, weights, ...) {
   # Vehtari et al. 2022 equation 6
 
   x <- as.numeric(x)
-  
+
   weighted_mean <- matrixStats::weightedMean(x, w = weights)
 
-  out <- weights^2 %*% (x - c(weighted_mean))^2 / r_eff
-
-  out
+  (weights^2 %*% (x - c(weighted_mean))^2)
 }
 
-.ess_weighted <- function(x, weights, r_eff = 1, ...) {
+.ess_weighted <- function(x, weights, r_eff, ...) {
   # Vehtari et al. 2022 equation 7
   weighted_mean <- matrixStats::weightedMean(x, w = weights)
-  mcse <- .mcse_weighted(x, weights, r_eff, ...)
-  
+  mcse <- .mcse_weighted(x, weights, ...) / r_eff
+
   mean((x -  weighted_mean)^2) / mcse
 }
 
@@ -882,4 +883,4 @@ should_return_NA <- function(x, tol = .Machine$double.eps) {
   # }
   is_constant(x, tol = tol)
 }
-  
+
