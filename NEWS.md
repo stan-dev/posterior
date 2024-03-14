@@ -15,6 +15,8 @@
 * For types that support `factor` variables (`draws_df`, `draws_list`, and 
   `draws_rvars`), `extract_variable()` and `extract_variable_matrix()` can 
   now return `factor`s.
+* Add `rollup_summary()` function for rolling up summaries of variables with
+  indices (#43).
 
 # posterior 1.5.0
 

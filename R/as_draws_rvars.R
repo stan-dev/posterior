@@ -84,8 +84,7 @@ as_draws_rvars.draws_matrix <- function(x, ...) {
 
       # first, pull out the list of indices into a data frame
       # where each column is an index variable
-      indices <- as.data.frame(do.call(rbind, split_indices(var$indices)),
-                               stringsAsFactors = FALSE)
+      indices <- split_indices_to_df(var$indices)
       unique_indices <- vector("list", length(indices))
       .dimnames <- vector("list", length(indices))
       names(unique_indices) <- names(indices)

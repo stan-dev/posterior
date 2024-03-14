@@ -114,6 +114,23 @@ split_indices <- function(x) {
   strsplit(substr(x, 2, nchar(x) - 1), ",", fixed = TRUE)
 }
 
+#' Given a vector of index strings of all the same length (such as returned by
+#' `split_variable_names(x)$indices` for all variables with the same base name),
+#' split each index string into a character vector of indices and form them
+#' into a data frame.
+#' @param x a character vector of index strings that all have the same number
+#' of dimensions,
+#' e.g. `c("[1,1]", "[1,2]", "[1,3]")`
+#' @returns a data frame with `length(x)` rows and number of columns equal to
+#' the number of dimensions in the variables. Throws an error if the number
+#' of dimensions are not all equal.
+#' @noRd
+split_indices_to_df <- function(x) {
+  indices = split_indices(x)
+  stopifnot(all(lengths(indices) == lengths(indices[1])))
+  as.data.frame(do.call(rbind, indices), stringsAsFactors = FALSE)
+}
+
 
 # manipulating flattened variable names -----------------------------------
 

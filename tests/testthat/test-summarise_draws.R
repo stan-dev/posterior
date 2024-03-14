@@ -15,6 +15,12 @@ test_that("summarise_draws works correctly", {
   sum_x <- summarise_draws(x, ~quantile(.x, probs = c(0.4, 0.6)))
   expect_true(all(c("40%", "60%") %in% names(sum_x)))
 
+  sum_x <- summarise_draws(x, c("mcse_mean", "mean"), median)
+  expect_true(all(c("mcse_mean", "mean", "median") %in% names(sum_x)))
+
+  sum_x <- summarise_draws(x, f = c("mcse_mean", "mean"))
+  expect_true(all(c("f1", "f2") %in% names(sum_x)))
+
   x[1, 1] <- NA
   sum_x <- summarise_draws(x)
   expect_true(is.na(sum_x[1, "q5"]))
@@ -186,4 +192,21 @@ test_that("draws summaries can be converted to data frames", {
   attr(ref, "num_args") <- list()
 
   expect_equal(as.data.frame(summarise_draws(draws_matrix, mean, quantile2)), ref)
+})
+
+test_that("string summary functions in the posterior namespace can be found", {
+  expect_equal(
+    # execute in an environment where only summarise_draws() and example_draws()
+    # are available, but not ess_bulk(), so that summarise_draws() is explicitly
+    # forced to look in the posterior namespace for ess_bulk()
+    evalq(
+      summarise_draws(example_draws(), "ess_bulk"),
+      envir = list(
+        summarise_draws = summarise_draws,
+        example_draws = example_draws
+      ),
+      enclos = emptyenv()
+    ),
+    summarise_draws(example_draws(), ess_bulk)
+  )
 })
