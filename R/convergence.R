@@ -186,7 +186,7 @@ ess_bulk.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     .ess(z_scale(.split_chains(x)))
   } else {
-    r_eff <- .ess(z_scale(.split_chains(x))) / (nrow(x) * ncol(x))
+    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
     .ess_weighted(x, weights, r_eff = r_eff, ...)
   }
 }
@@ -274,7 +274,8 @@ ess_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, weights
   if (is.null(weights)) {
     out <- ulapply(probs, .ess_quantile, x = x)
   } else {
-    out <- ulapply(probs, .ess_quantile_weighted, x = x, weights = weights, ...)
+    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
+    out <- ulapply(probs, .ess_quantile_weighted, x = x, weights = weights, r_eff = r_eff, ...)
   }
   if (names) {
     names(out) <- paste0("ess_q", probs * 100)
@@ -309,7 +310,7 @@ ess_median <- function(x, ...) {
   .ess(.split_chains(I))
 }
 
-.ess_quantile_weighted <- function(x, prob, weights, r_eff = 1) {
+.ess_quantile_weighted <- function(x, prob, weights, r_eff) {
   if (should_return_NA(x)) {
     return(NA_real_)
   }
@@ -318,7 +319,7 @@ ess_median <- function(x, ...) {
     len <- length(x)
     prob <- (len - 0.5) / len
   }
-  I <- x <= weighted_quantile(x, prob, weights)
+  I <- x <= quantile(x, prob)
   .ess_weighted(I, weights = weights, r_eff = r_eff)
 }
 
@@ -389,7 +390,8 @@ ess_sd.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     .ess(.split_chains(abs(x-mean(x))))
   } else {
-    .ess_weighted(abs(x - mean(x)), weights = weights, ...)
+    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
+    .ess_weighted(abs(x - mean(x)), weights = weights, r_eff = r_eff, ...)
   }
 }
 
@@ -435,7 +437,8 @@ mcse_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, weight
   if (is.null(weights)) {
     out <- ulapply(probs, .mcse_quantile, x = x)
   } else {
-    out <- ulapply(probs, .mcse_quantile_weighted, x = x, weights = weights)
+    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
+    out <- ulapply(probs, .mcse_quantile_weighted, x = x, weights = weights) / r_eff
   }
   if (names) {
     names(out) <- paste0("mcse_q", probs * 100)
@@ -846,22 +849,21 @@ fold_draws <- function(x) {
   ess
 }
 
-.mcse_weighted <- function(x, weights, ...) {
+.mcse_weighted <- function(x, weights, r_eff, ...) {
   # Vehtari et al. 2022 equation 6
 
   x <- as.numeric(x)
-
   weighted_mean <- matrixStats::weightedMean(x, w = weights)
 
-  (weights^2 %*% (x - c(weighted_mean))^2)
+  sqrt(weights^2 %*% (x - c(weighted_mean))^2 / r_eff)
 }
 
 .ess_weighted <- function(x, weights, r_eff, ...) {
   # Vehtari et al. 2022 equation 7
-  weighted_mean <- matrixStats::weightedMean(x, w = weights)
-  mcse <- .mcse_weighted(x, weights, ...) / r_eff
+  mcse <- .mcse_weighted(x, weights, r_eff, ...)
 
-  mean((x -  weighted_mean)^2) / mcse
+  var <- mean((x - mean(x))^2)
+  var / mcse^2
 }
 
 # should NA be returned by a convergence diagnostic?
