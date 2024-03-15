@@ -20,19 +20,19 @@ unnest <- function(x) {
 
   out <- list()
 
+  names_x <- names(x)
   for (i in seq_along(x)) {
-    name_i <- names(x[i])
     if (length(x[[i]]) > 1) {
       if (rlang::is_named(x[[i]])) {
-        name_j <- names(x[[i]])
+        names_i <- names(x[[i]])
       } else {
-        name_j <- paste0(name_i, ".", c(1:length(x[[i]])))
+        names_i <- paste0(names_x[[i]], ".", c(1:length(x[[i]])))
       }
       for (j in seq_along(x[[i]])) {
-        out[[name_j[j]]] <- x[[i]][[j]]
+        out[[names_i[j]]] <- x[[i]][[j]]
       }
     } else {
-      out[[name_i]] <- x[[i]]
+      out[[names_x[[i]]]] <- x[[i]]
     }
   }
   out
