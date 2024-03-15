@@ -341,30 +341,21 @@ summarise_draws_helper <- function(x, funs, .args) {
   variables_x <- variables(x)
   # get length and output names, calculated on the first variable
   out_1 <- create_summary_list(x, variables_x[1], funs, .args)
-  the_names <- vector(mode = "list", length = length(funs))
-  for (i in seq_along(out_1)){
-    if (rlang::is_named(out_1[[i]])) {
-      the_names[[i]] <- names(out_1[[i]])
-    } else if (length(out_1[[i]]) > 1) {
-      the_names[[i]] <- paste0(names(out_1)[i], ".", c(1:length(out_1[[i]])))
-    } else {
-      the_names[[i]] <- names(out_1)[i]
-    }
-  }
-  the_names <- unlist(the_names)
+  out_1 <- unnest(out_1)
+  the_names <- names(out_1)
   # Check for naming issues prior do doing lengthy computation
   if ("variable" %in% the_names) {
     stop_no_call("Name 'variable' is reserved in 'summarise_draws'.")
   }
   # Pre-allocate matrix to store output
-  out <- matrix(NA, nrow = length(variables_x), ncol = length(the_names))
+  out <- data.frame(matrix(NA, nrow = length(variables_x), ncol = length(the_names)))
   colnames(out) <- the_names
-  out[1, ] <- unlist(out_1)
+  out[1, ] <- out_1
   # Do the computation for all remaining variables
   if (length(variables_x) > 1L) {
     for (v_ind in 2:length(variables_x)) {
       out_v <- create_summary_list(x, variables_x[v_ind], funs, .args)
-      out[v_ind, ] <- unlist(out_v)
+      out[v_ind, ] <- unnest(out_v)
     }
   }
   out <- tibble::as_tibble(out)
