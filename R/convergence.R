@@ -319,7 +319,7 @@ ess_median <- function(x, ...) {
     len <- length(x)
     prob <- (len - 0.5) / len
   }
-  I <- x <= quantile(x, prob)
+  I <- x <= weighted_quantile(x, prob, weights = weights)
   .ess_weighted(I, weights = weights, r_eff = r_eff)
 }
 
