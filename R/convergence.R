@@ -512,7 +512,7 @@ mcse_mean.default <- function(x, weights = NULL, ...) {
     sd(x) / sqrt(ess_mean(x))
   } else {
     r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
-    .mcse_weighted(x, weights, ...) / r_eff
+    .mcse_weighted(x, weights, r_eff, ...)
   }
 }
 
