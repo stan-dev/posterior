@@ -154,7 +154,7 @@ test_that("pareto smoothing smooths weights in weight_draws", {
   expect_false(all(weights(weighted) == weights(smoothed)))
 })
 
-# weights must match draws ------------------------------------------------
+# assertions on weights vector ------------------------------------------------
 
 test_that("weights must match draws", {
   x <- example_draws()
@@ -162,4 +162,10 @@ test_that("weights must match draws", {
   for (type in types) {
     expect_error(weight_draws((!!type)(x), 1), "weights must match .* draws")
   }
+})
+
+test_that("weights must be a vector, not array/matrix", {
+  x <- example_draws()
+  w <- seq_len(ndraws(x))
+  expect_error(weight_draws(x, matrix(w)), "Must be.*vector.*not.*matrix")
 })

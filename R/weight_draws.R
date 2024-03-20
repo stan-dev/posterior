@@ -213,9 +213,10 @@ log_weights.rvar <- function(object, ...) {
 # validate weights and return log weights
 validate_weights <- function(weights, ndraws, log = FALSE, pareto_smooth = FALSE) {
   if (is.null(weights)) return(NULL)
-  checkmate::assert_numeric(weights)
-  checkmate::assert_flag(log)
-  checkmate::assert_flag(pareto_smooth)
+  assert_numeric(weights)
+  assert_atomic_vector(weights)
+  assert_flag(log)
+  assert_flag(pareto_smooth)
 
   if (length(weights) != ndraws) {
     stop_no_call("Number of weights must match the number of draws.")
