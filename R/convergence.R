@@ -82,6 +82,8 @@ rhat_basic.rvar <- function(x, split = TRUE, ...) {
 #' recommend the improved ESS convergence diagnostics implemented in
 #' [ess_bulk()] and [ess_tail()]. See Vehtari (2021) for an in-depth
 #' comparison of different effective sample size estimators.
+#' If computed on a weighted `rvar`, weights will be
+#' taken into account.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -104,18 +106,25 @@ ess_basic <- function(x, ...) UseMethod("ess_basic")
 
 #' @rdname ess_basic
 #' @export
-ess_basic.default <- function(x, split = TRUE, ...) {
+ess_basic.default <- function(x, split = TRUE, weights = NULL, ...) {
   split <- as_one_logical(split)
   if (split) {
     x <- .split_chains(x)
+    .ess(x)
   }
-  .ess(x)
+
+  if (is.null(weights)) {
+    r_eff <- .ess(x) / (nrow(x) * ncol(x))
+    .ess_weighted(x, weights, r_eff = r_eff, ...)
+  }
 }
 
 #' @rdname ess_basic
 #' @export
-ess_basic.rvar <- function(x, split = TRUE, ...) {
-  summarise_rvar_by_element_with_chains(x, ess_basic, split, ...)
+ess_basic.rvar <- function(x, split = TRUE, weights = weights, ...) {
+
+    summarise_rvar_by_element_with_chains(x, ess_basic, split, weights = weights, ...)
+
 }
 
 #' Rhat convergence diagnostic
@@ -162,6 +171,8 @@ rhat.rvar <- function(x, ...) {
 #' rank normalized values using split chains. For the tail effective sample size
 #' see [ess_tail()]. See Vehtari (2021) for an in-depth
 #' comparison of different effective sample size estimators.
+#' If computed on a weighted `rvar`, weights will be
+#' taken into account.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -186,7 +197,7 @@ ess_bulk.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     .ess(z_scale(.split_chains(x)))
   } else {
-    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
+    r_eff <- .ess(z_scale(.split_chains(x))) / (nrow(x) * ncol(x))
     .ess_weighted(x, weights, r_eff = r_eff, ...)
   }
 }
@@ -206,6 +217,8 @@ ess_bulk.rvar <- function(x, ...) {
 #' sample sizes for 5% and 95% quantiles. For the bulk effective sample
 #' size see [ess_bulk()]. See Vehtari (2021) for an in-depth
 #' comparison of different effective sample size estimators.
+#' If computed on a weighted `rvar`, weights will be
+#' taken into account.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -241,8 +254,9 @@ ess_tail.rvar <- function(x, ...) {
 
 #' Effective sample sizes for quantiles
 #'
-#' Compute effective sample size estimates for quantile estimates of a single
-#' variable.
+#' Compute effective sample size estimates for quantile estimates of a
+#' single variable. If computed on a weighted `rvar`, weights will be
+#' taken into account.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -274,8 +288,8 @@ ess_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, weights
   if (is.null(weights)) {
     out <- ulapply(probs, .ess_quantile, x = x)
   } else {
-    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
-    out <- ulapply(probs, .ess_quantile_weighted, x = x, weights = weights, r_eff = r_eff, ...)
+    r_eff <- ulapply(probs, .ess_quantile, x = x) / (nrow(x) * ncol(x))
+    out <- mapply(.ess_quantile_weighted, prob = probs, r_eff = r_eff, MoreArgs = list(x = x, weights = weights))
   }
   if (names) {
     names(out) <- paste0("ess_q", probs * 100)
@@ -367,6 +381,8 @@ ess_mean.rvar <- function(x, ...) {
 #' Compute an effective sample size estimate for the standard deviation (SD)
 #' estimate of a single variable. This is defined as the effective sample size
 #' estimate for the absolute deviation from mean.
+#' If computed on a weighted `rvar`, weights will be
+#' taken into account.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -390,7 +406,7 @@ ess_sd.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     .ess(.split_chains(abs(x-mean(x))))
   } else {
-    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
+    r_eff <- .ess(.split_chains(abs(x-mean(x)))) / (nrow(x) * ncol(x))
     .ess_weighted(abs(x - mean(x)), weights = weights, r_eff = r_eff, ...)
   }
 }
@@ -405,7 +421,8 @@ ess_sd.rvar <- function(x, ...) {
 #' Monte Carlo standard error for quantiles
 #'
 #' Compute Monte Carlo standard errors for quantile estimates of a
-#' single variable.
+#' single variable. If computed on a weighted `rvar`, weights will be
+#' taken into account.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -487,7 +504,8 @@ mcse_median <- function(x, ...) {
 #' Monte Carlo standard error for the mean
 #'
 #' Compute the Monte Carlo standard error for the mean (expectation) of a
-#' single variable.
+#' single variable. If computed on a weighted `rvar`, weights will be
+#' taken into account.
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -564,6 +582,10 @@ mcse_sd.default <- function(x, ...) {
   # differentials of the moments can be neglected "
   varsd <- varvar / Evar / 4
   sqrt(varsd)
+
+
+  #TODO: add weighted version
+  
 }
 
 #' @rdname mcse_sd
