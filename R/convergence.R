@@ -110,10 +110,11 @@ ess_basic.default <- function(x, split = TRUE, weights = NULL, ...) {
   split <- as_one_logical(split)
   if (split) {
     x <- .split_chains(x)
-    .ess(x)
   }
 
   if (is.null(weights)) {
+    .ess(x)
+  } else {
     r_eff <- .ess(x) / (nrow(x) * ncol(x))
     .ess_weighted(x, weights, r_eff = r_eff, ...)
   }
@@ -121,9 +122,10 @@ ess_basic.default <- function(x, split = TRUE, weights = NULL, ...) {
 
 #' @rdname ess_basic
 #' @export
-ess_basic.rvar <- function(x, split = TRUE, weights = weights, ...) {
+ess_basic.rvar <- function(x, split = TRUE, ...) {
 
-    summarise_rvar_by_element_with_chains(x, ess_basic, split, weights = weights, ...)
+  weights <- weights(x)
+  summarise_rvar_by_element_with_chains(x, ess_basic, split, weights = weights, ...)
 
 }
 
@@ -288,8 +290,10 @@ ess_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, weights
   if (is.null(weights)) {
     out <- ulapply(probs, .ess_quantile, x = x)
   } else {
+
     r_eff <- ulapply(probs, .ess_quantile, x = x) / (nrow(x) * ncol(x))
     out <- mapply(.ess_quantile_weighted, prob = probs, r_eff = r_eff, MoreArgs = list(x = x, weights = weights))
+
   }
   if (names) {
     names(out) <- paste0("ess_q", probs * 100)
