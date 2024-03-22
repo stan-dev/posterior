@@ -570,26 +570,33 @@ mcse_sd <- function(x, ...) UseMethod("mcse_sd")
 
 #' @rdname mcse_sd
 #' @export
-mcse_sd.default <- function(x, ...) {
-  # var/sd are not a simple expectation of g(X), e.g. variance
-  # has (X-E[X])^2. The following ESS is based on a relevant quantity
-  # in the computation and is empirically a good choice.
-  sims_c <- x - mean(x)
-  ess <- ess_mean((sims_c)^2)
-  # Variance of variance estimate by Kenney and Keeping (1951, p. 141),
-  # which doesn't assume normality of sims.
-  Evar <- mean(sims_c^2)
-  varvar <- (mean(sims_c^4) - Evar^2) / ess
-  # The first order Taylor series approximation of variance of sd.
-  # Kenney and Keeping (1951, p. 141) write "...since fluctuations of
-  # any moment are of order N^{-1/2}, squares and higher powers of
-  # differentials of the moments can be neglected "
-  varsd <- varvar / Evar / 4
-  sqrt(varsd)
+mcse_sd.default <- function(x, weights = NULL, ...) {
 
-
-  #TODO: add weighted version
+  if (is.null(weights)) {
   
+    # var/sd are not a simple expectation of g(X), e.g. variance
+    # has (X-E[X])^2. The following ESS is based on a relevant quantity
+    # in the computation and is empirically a good choice.
+    sims_c <- x - mean(x)
+    ess <- ess_mean((sims_c)^2)
+    # Variance of variance estimate by Kenney and Keeping (1951, p. 141),
+    # which doesn't assume normality of sims.
+    Evar <- mean(sims_c^2)
+    varvar <- (mean(sims_c^4) - Evar^2) / ess
+    # The first order Taylor series approximation of variance of sd.
+    # Kenney and Keeping (1951, p. 141) write "...since fluctuations of
+    # any moment are of order N^{-1/2}, squares and higher powers of
+    # differentials of the moments can be neglected "
+    varsd <- varvar / Evar / 4
+    sqrt(varsd)
+
+  } else {
+
+    sims_c <- x - mean(x)
+    ess <- ess_mean((sims_c)^2)
+    r_eff <- ess / (nrow(x) * ncol(x))
+    .mcse_weighted(sims_c, weights, r_eff, ...)
+  }
 }
 
 #' @rdname mcse_sd
