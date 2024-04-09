@@ -203,3 +203,29 @@ test_that("pareto_smooth works for log_weights", {
   expect_true(ps$diagnostics$khat > 0.7)
 
 })
+
+
+
+test_that("pareto khat works for weighted rvars", {
+
+  x <- cbind(
+    rnorm(100),
+    rnorm(100),
+    rnorm(100),
+    rnorm(100)
+  )
+
+  xr <- rvar(x, with_chains = TRUE)
+
+  # target is normal(0, 1.2), should have high pareto-khat
+  w2 <- as.numeric(dnorm(x, sd = 5) / dnorm(x))
+  w2 <- w2 / sum(w2)
+  xw2 <- weight_draws(xr, weights = w2)
+
+  k <- pareto_khat(xw2)$khat
+  kw <- pareto_khat(w2, are_log_weights = TRUE)$khat
+  kp <- pareto_khat(draws_of(xw2) * w2)$khat
+
+  expect_true(k > 0.7)
+  expect_equal(k, max(kw, kp))
+})
