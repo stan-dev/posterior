@@ -196,8 +196,8 @@ test_that("weighted convergence measures work", {
   # here ess for mean and q95 should be lower, but for q5 it should be higher
   w3 <- as.numeric(dnorm(x, mean = 1, sd = 1) / dnorm(x))
   w3 <- w3 / sum(w3)
-
   xw3 <- weight_draws(xr, weights = w3)
+
   expect_true(ess_mean(xw3) < ess_mean(xr))
   expect_true(mcse_mean(xw3) > mcse_mean(xr))
 
