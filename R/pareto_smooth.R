@@ -505,8 +505,6 @@ pareto_convergence_rate.rvar <- function(x, ...) {
                                 ...
                                 ) {
 
-  x <- as.numeric(x)
-
   if (are_log_weights) {
     # shift log values for safe exponentiation
     x <- x - max(x)
