@@ -199,6 +199,13 @@ ess_bulk.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     .ess(z_scale(.split_chains(x)))
   } else {
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
     r_eff <- .ess(z_scale(.split_chains(x))) / (nrow(x) * ncol(x))
     .ess_weighted(x, weights, r_eff = r_eff, ...)
   }
@@ -291,6 +298,12 @@ ess_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, weights
     out <- ulapply(probs, .ess_quantile, x = x)
   } else {
 
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
     r_eff <- ulapply(probs, .ess_quantile, x = x) / (nrow(x) * ncol(x))
     out <- mapply(.ess_quantile_weighted, prob = probs, r_eff = r_eff, MoreArgs = list(x = x, weights = weights))
 
@@ -324,7 +337,7 @@ ess_median <- function(x, ...) {
     len <- length(x)
     prob <- (len - 0.5) / len
   }
-  I <- x <= quantile(x, prob)
+  I <- (x <= quantile(x, prob))
   .ess(.split_chains(I))
 }
 
@@ -337,7 +350,7 @@ ess_median <- function(x, ...) {
     len <- length(x)
     prob <- (len - 0.5) / len
   }
-  I <- x <= weighted_quantile(x, prob, weights = weights)
+  I <- (x <= weighted_quantile(x, prob, weights = weights))
   .ess_weighted(I, weights = weights, r_eff = r_eff)
 }
 
@@ -368,6 +381,13 @@ ess_mean.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     .ess(.split_chains(x))
   } else {
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
     r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
     .ess_weighted(x, weights, r_eff = r_eff, ...)
   }
@@ -408,9 +428,16 @@ ess_sd <- function(x, ...) UseMethod("ess_sd")
 #' @export
 ess_sd.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
-    .ess(.split_chains(abs(x-mean(x))))
+    .ess(.split_chains(abs(x - mean(x))))
   } else {
-    r_eff <- .ess(.split_chains(abs(x-mean(x)))) / (nrow(x) * ncol(x))
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
+    r_eff <- .ess(.split_chains(abs(x - mean(x)))) / (nrow(x) * ncol(x))
     .ess_weighted(abs(x - mean(x)), weights = weights, r_eff = r_eff, ...)
   }
 }
@@ -421,6 +448,8 @@ ess_sd.rvar <- function(x, ...) {
   weights <- weights(x)
   summarise_rvar_by_element_with_chains(x, ess_sd, weights = weights, ...)
 }
+
+# TODO: ess_weights
 
 #' Monte Carlo standard error for quantiles
 #'
@@ -458,8 +487,14 @@ mcse_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, weight
   if (is.null(weights)) {
     out <- ulapply(probs, .mcse_quantile, x = x)
   } else {
-    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
-    out <- ulapply(probs, .mcse_quantile_weighted, x = x, weights = weights) / r_eff
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
+    out <- ulapply(probs, .mcse_quantile_weighted, x = x, weights = weights)
   }
   if (names) {
     names(out) <- paste0("mcse_q", probs * 100)
@@ -482,6 +517,7 @@ mcse_median <- function(x, ...) {
 }
 
 # MCSE of a single quantile
+# TODO: refer to paper
 .mcse_quantile <- function(x, prob) {
   ess <- ess_quantile(x, prob)
   p <- c(0.1586553, 0.8413447)
@@ -490,6 +526,7 @@ mcse_median <- function(x, ...) {
   S <- length(ssims)
   th1 <- ssims[max(floor(a[1] * S), 1)]
   th2 <- ssims[min(ceiling(a[2] * S), S)]
+
   as.vector((th2 - th1) / 2)
 }
 
@@ -497,10 +534,15 @@ mcse_median <- function(x, ...) {
   ess <- ess_quantile(x, prob, weights = weights)
   p <- c(0.1586553, 0.8413447)
   a <- qbeta(p, ess * prob + 1, ess * (1 - prob) + 1)
-  ssims <- sort(x)
-  S <- length(ssims)
-  th1 <- ssims[max(floor(a[1] * S), 1)]
-  th2 <- ssims[min(ceiling(a[2] * S), S)]
+  x_idx <- order(x)
+  x_sorted <- x[x_idx]
+  weights_sorted <- weights[x_idx]
+  S <- length(x)
+
+  cweights <- cumsum(weights_sorted)
+  th1 <- x_sorted[max(max(which(cweights < a[1])), 1)]
+  th2 <- x_sorted[min(min(which(cweights > a[2])), S)]
+
   as.vector((th2 - th1) / 2)
 }
 
@@ -533,6 +575,13 @@ mcse_mean.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     sd(x) / sqrt(ess_mean(x))
   } else {
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
     r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
     .mcse_weighted(x, weights, r_eff, ...)
   }
@@ -573,7 +622,7 @@ mcse_sd <- function(x, ...) UseMethod("mcse_sd")
 mcse_sd.default <- function(x, weights = NULL, ...) {
 
   if (is.null(weights)) {
-  
+
     # var/sd are not a simple expectation of g(X), e.g. variance
     # has (X-E[X])^2. The following ESS is based on a relevant quantity
     # in the computation and is empirically a good choice.
@@ -582,7 +631,8 @@ mcse_sd.default <- function(x, weights = NULL, ...) {
     # Variance of variance estimate by Kenney and Keeping (1951, p. 141),
     # which doesn't assume normality of sims.
     Evar <- mean(sims_c^2)
-    varvar <- (mean(sims_c^4) - Evar^2) / ess
+    varvar <- (mean(sims_c^4) - Evar^2) / ess # (Equation 6.20)
+
     # The first order Taylor series approximation of variance of sd.
     # Kenney and Keeping (1951, p. 141) write "...since fluctuations of
     # any moment are of order N^{-1/2}, squares and higher powers of
@@ -592,10 +642,29 @@ mcse_sd.default <- function(x, weights = NULL, ...) {
 
   } else {
 
-    sims_c <- x - mean(x)
-    ess <- ess_mean((sims_c)^2)
-    r_eff <- ess / (nrow(x) * ncol(x))
-    .mcse_weighted(sims_c, weights, r_eff, ...)
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
+    # for weights try varvar weighted / varvar unweighted to see relative efficiency of weights
+
+    first_moment_weighted <- weighted.mean(x, w = weights)
+
+    x_centered <- x - first_moment_weighted
+    second_moment_weighted <- weighted.mean(x_centered^2, w = weights)
+    fourth_moment_weighted <- weighted.mean(x_centered^4, w = weights)
+
+    r_eff <- .ess(x_centered^2) / (nrow(x) * ncol(x))
+    weighted_ess <- .ess_weighted(x_centered^2, weights = weights, r_eff = r_eff)
+
+    # Kenney and Keeping (1951, eq 6.20)
+    varvar_weighted <- (fourth_moment_weighted - second_moment_weighted^2) / weighted_ess
+
+    # First-order Taylor series approximation
+    varsd <- varvar_weighted / second_moment_weighted / 4
+    sqrt(varsd)
   }
 }
 
@@ -918,4 +987,3 @@ should_return_NA <- function(x, tol = .Machine$double.eps) {
   # }
   is_constant(x, tol = tol)
 }
-

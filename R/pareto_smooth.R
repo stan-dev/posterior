@@ -51,8 +51,8 @@ pareto_khat.rvar <- function(x, verbose = FALSE, ...) {
     draws_diags <- summarise_rvar_by_element_with_chains(
       x,
       pareto_smooth.default,
-      return_k = TRUE,
       smooth_draws = FALSE,
+      return_k = TRUE,
       verbose = verbose,
       ...
     )
@@ -74,10 +74,13 @@ pareto_khat.rvar <- function(x, verbose = FALSE, ...) {
 
     w <- weights(x)
 
-    x <- weight_draws(x, NULL)
+    xu <- weight_draws(x, NULL)
+    xu <- xu * rvar(w)
+
     product_diags <- summarise_rvar_by_element_with_chains(
-      x * rvar(w, nchains = nchains(x)),
-      pareto_khat,
+      xu,
+      pareto_khat.default,
+      verbose = verbose,
       ...
     )
 
@@ -312,7 +315,7 @@ pareto_smooth.rvar <- function(x, return_k = FALSE, extra_diags = FALSE, ...) {
 #' @export
 pareto_smooth.default <- function(x,
                                   tail = c("both", "right", "left"),
-                                  r_eff = 1,
+                                  r_eff = NULL,
                                   ndraws_tail = NULL,
                                   return_k = FALSE,
                                   extra_diags = FALSE,
