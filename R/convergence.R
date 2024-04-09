@@ -199,6 +199,13 @@ ess_bulk.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     .ess(z_scale(.split_chains(x)))
   } else {
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
     r_eff <- .ess(z_scale(.split_chains(x))) / (nrow(x) * ncol(x))
     .ess_weighted(x, weights, r_eff = r_eff, ...)
   }
@@ -291,6 +298,12 @@ ess_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, weights
     out <- ulapply(probs, .ess_quantile, x = x)
   } else {
 
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
     r_eff <- ulapply(probs, .ess_quantile, x = x) / (nrow(x) * ncol(x))
     out <- mapply(.ess_quantile_weighted, prob = probs, r_eff = r_eff, MoreArgs = list(x = x, weights = weights))
 
@@ -368,6 +381,13 @@ ess_mean.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     .ess(.split_chains(x))
   } else {
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
     r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
     .ess_weighted(x, weights, r_eff = r_eff, ...)
   }
@@ -410,6 +430,13 @@ ess_sd.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     .ess(.split_chains(abs(x - mean(x))))
   } else {
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
     r_eff <- .ess(.split_chains(abs(x - mean(x)))) / (nrow(x) * ncol(x))
     .ess_weighted(abs(x - mean(x)), weights = weights, r_eff = r_eff, ...)
   }
@@ -460,8 +487,14 @@ mcse_quantile.default <- function(x, probs = c(0.05, 0.95), names = TRUE, weight
   if (is.null(weights)) {
     out <- ulapply(probs, .mcse_quantile, x = x)
   } else {
-    r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
-    out <- ulapply(probs, .mcse_quantile_weighted, x = x, weights = weights) / r_eff
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
+    out <- ulapply(probs, .mcse_quantile_weighted, x = x, weights = weights)
   }
   if (names) {
     names(out) <- paste0("mcse_q", probs * 100)
@@ -493,6 +526,7 @@ mcse_median <- function(x, ...) {
   S <- length(ssims)
   th1 <- ssims[max(floor(a[1] * S), 1)]
   th2 <- ssims[min(ceiling(a[2] * S), S)]
+
   as.vector((th2 - th1) / 2)
 }
 
@@ -500,10 +534,15 @@ mcse_median <- function(x, ...) {
   ess <- ess_quantile(x, prob, weights = weights)
   p <- c(0.1586553, 0.8413447)
   a <- qbeta(p, ess * prob + 1, ess * (1 - prob) + 1)
-  ssims <- sort(x)
-  S <- length(ssims)
-  th1 <- ssims[max(floor(a[1] * S), 1)] # adjust to account for weights
-  th2 <- ssims[min(ceiling(a[2] * S), S)] #adjust to account for weights
+  x_idx <- order(x)
+  x_sorted <- x[x_idx]
+  weights_sorted <- weights[x_idx]
+  S <- length(x)
+
+  cweights <- cumsum(weights_sorted)
+  th1 <- x_sorted[max(max(which(cweights < a[1])), 1)]
+  th2 <- x_sorted[min(min(which(cweights > a[2])), S)]
+
   as.vector((th2 - th1) / 2)
 }
 
@@ -536,6 +575,13 @@ mcse_mean.default <- function(x, weights = NULL, ...) {
   if (is.null(weights)) {
     sd(x) / sqrt(ess_mean(x))
   } else {
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
+
     r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
     .mcse_weighted(x, weights, r_eff, ...)
   }
@@ -595,6 +641,12 @@ mcse_sd.default <- function(x, weights = NULL, ...) {
     sqrt(varsd)
 
   } else {
+
+    # normalise weights
+    weights <- weights / sum(weights)
+
+    # ensure x has rows and columns
+    x <- as.matrix(x)
 
     # for weights try varvar weighted / varvar unweighted to see relative efficiency of weights
 
