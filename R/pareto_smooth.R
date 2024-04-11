@@ -547,12 +547,15 @@ pareto_convergence_rate.rvar <- function(x, ...) {
 #' Pareto-smoothing minimum sample-size
 #'
 #' Given Pareto-k computes the minimum sample size for reliable Pareto
-#' smoothed estimate (to have small probability of large error)
-#' Equation (11) in PSIS paper
+#' smoothed estimate (to have small probability of large error). See
+#' section 3.2.3 in Vehtari et al. (2024). This function is exported
+#' to be usable by other packages. For user-facing diagnostic functions, see
+#' [`pareto_min_ss`] and [`pareto_diags`].
+#' @family helper-functions
 #' @param k pareto k value
 #' @param ... unused
 #' @return minimum sample size
-#' @noRd
+#' @export
 ps_min_ss <- function(k, ...) {
   if (k < 1) {
     out <- 10^(1 / (1 - max(0, k)))
@@ -562,28 +565,36 @@ ps_min_ss <- function(k, ...) {
   out
 }
 
-#' Pareto-smoothing k-hat threshold
+#' Pareto k-hat threshold
 #'
 #' Given sample size S computes khat threshold for reliable Pareto
 #' smoothed estimate (to have small probability of large error). See
-#' section 3.2.4, equation (13).
+#' section 3.2.4, equation (13) of Vehtari et al. (2024). This
+#' function is exported to be usable by other packages. For
+#' user-facing diagnostic functions, see [`pareto_khat_threshold`] and
+#' [`pareto_diags`].
+#' @family helper-functions
 #' @param S sample size
 #' @param ... unused
 #' @return threshold
-#' @noRd
+#' @export
 ps_khat_threshold <- function(S, ...) {
   1 - 1 / log10(S)
 }
 
-#' Pareto-smoothing convergence rate
+#' Pareto convergence rate
 #'
-#' Given S and scalar or array of k's, compute the relative
-#' convergence rate of PSIS estimate RMSE
+#' Given sample size S and scalar or array of k's, compute the
+#' relative convergence rate of PSIS estimate RMSE. See Appendix B of
+#' Vehtari et al. (2024). This function is exported to be usable by
+#' other packages. For user-facing diagnostic functions, see
+#' [`pareto_convergence_rate`] and [`pareto_diags`].
+#' @family helper-functions
 #' @param k pareto-k values
 #' @param S sample size
 #' @param ... unused
 #' @return convergence rate
-#' @noRd
+#' @export
 ps_convergence_rate <- function(k, S, ...) {
   # allow array of k's
   rate <- numeric(length(k))
@@ -593,7 +604,7 @@ ps_convergence_rate <- function(k, S, ...) {
   rate[k > 1] <- 0
   # limit value at k=1/2
   rate[k == 0.5] <- 1 - 1 / log(S)
-  # smooth approximation for the rest (see Appendix of PSIS paper)
+  # smooth approximation for the rest (see Appendix B of PSIS paper)
   ki <- (k > 0 & k < 1 & k != 0.5)
   kk <- k[ki]
   rate[ki] <- pmax(
@@ -604,21 +615,28 @@ ps_convergence_rate <- function(k, S, ...) {
   rate
 }
 
-#' Calculate the tail length from S and r_eff
-#' Appendix H in PSIS paper
-#' @noRd
+#' Pareto tail length
+#' 
+#' Calculate the tail length from sampe size S and relative efficiency
+#' r_eff. See Appendix H in Vehtari et al. (2024). This function is
+#' used internally and is exported to be available for other packages.
+#' @family helper-functions
+#' @param S sample size
+#' @param r_eff relative efficiency
+#' @param ... unused
+#' @return tail length
+#' @export
 ps_tail_length <- function(S, r_eff, ...) {
   ifelse(S > 225, ceiling(3 * sqrt(S / r_eff)), S / 5)
 }
 
 #' Pareto-k diagnostic message
 #'
-#' Given S and scalar and k, form a diagnostic message string
+#' Given S and scalar and k, form a diagnostic message string.
 #' @param diags (numeric) named vector of diagnostic values
 #' @param are_weights (logical) are the diagnostics for weights
 #' @param ... unused
 #' @return diagnostic message
-#' @noRd
 pareto_k_diagmsg <- function(diags, are_weights = FALSE, ...) {
   khat <- diags$khat
   min_ss <- diags$min_ss
