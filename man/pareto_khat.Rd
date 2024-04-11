@@ -76,8 +76,8 @@ pareto_khat(d$Sigma)
 \references{
 Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
 Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
-\emph{Journal of Machine Learning Research}, accepted for publication.
-arxiv:arXiv:1507.02646 (version 8)
+\emph{Journal of Machine Learning Research}. 25(72), 1-58.
+https://jmlr.org/papers/v25/19-556.html
 }
 \seealso{
 \code{\link{pareto_diags}} for additional related diagnostics, and
