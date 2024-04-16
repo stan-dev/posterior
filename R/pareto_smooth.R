@@ -281,25 +281,25 @@ pareto_smooth.default <- function(x,
   }
 
   tail <- match.arg(tail)
-  S <- length(x)
+  ndraws <- length(x)
 
   # automatically calculate relative efficiency
   if (is.null(r_eff)) {
-    r_eff <- ess_tail(x) / S
+    r_eff <- ess_tail(x) / ndraws
   }
 
   # automatically calculate tail length
   if (is.null(ndraws_tail)) {
-    ndraws_tail <- ps_tail_length(S, r_eff)
+    ndraws_tail <- ps_tail_length(ndraws, r_eff)
   }
 
   if (tail == "both") {
 
-    if (ndraws_tail > S / 2) {
+    if (ndraws_tail > ndraws / 2) {
       warning("Number of tail draws cannot be more than half ",
               "the total number of draws if both tails are fit, ",
-              "changing to ", S / 2, ".")
-      ndraws_tail <- S / 2
+              "changing to ", ndraws / 2, ".")
+      ndraws_tail <- ndraws / 2
     }
 
     if (ndraws_tail < 5) {
@@ -347,7 +347,7 @@ pareto_smooth.default <- function(x,
   diags_list <- list(khat = k)
 
   if (extra_diags) {
-    ext_diags <- .pareto_smooth_extra_diags(k, S)
+    ext_diags <- .pareto_smooth_extra_diags(k, ndraws)
     diags_list <- c(diags_list, ext_diags)
   }
 
@@ -447,8 +447,8 @@ pareto_convergence_rate.rvar <- function(x, ...) {
 
   tail <- match.arg(tail)
 
-  S <- length(x)
-  tail_ids <- seq(S - ndraws_tail + 1, S)
+  ndraws <- length(x)
+  tail_ids <- seq(ndraws - ndraws_tail + 1, ndraws)
 
   if (tail == "left") {
     x <- -x
@@ -527,15 +527,15 @@ pareto_convergence_rate.rvar <- function(x, ...) {
 #' Extra pareto-k diagnostics
 #'
 #' internal function to calculate the extra diagnostics for a given
-#' pareto k and sample size S
+#' pareto k and number of draws ndraws
 #' @noRd
-.pareto_smooth_extra_diags <- function(k, S, ...) {
+.pareto_smooth_extra_diags <- function(k, ndraws, ...) {
 
   min_ss <- ps_min_ss(k)
 
-  khat_threshold <- ps_khat_threshold(S)
+  khat_threshold <- ps_khat_threshold(ndraws)
 
-  convergence_rate <- ps_convergence_rate(k, S)
+  convergence_rate <- ps_convergence_rate(k, ndraws)
 
   other_diags <- list(
     min_ss = min_ss,
@@ -567,35 +567,35 @@ ps_min_ss <- function(k, ...) {
 
 #' Pareto k-hat threshold
 #'
-#' Given sample size S computes khat threshold for reliable Pareto
+#' Given number of draws, computes khat threshold for reliable Pareto
 #' smoothed estimate (to have small probability of large error). See
 #' section 3.2.4, equation (13) of Vehtari et al. (2024). This
 #' function is exported to be usable by other packages. For
 #' user-facing diagnostic functions, see [`pareto_khat_threshold`] and
 #' [`pareto_diags`].
 #' @family helper-functions
-#' @param S sample size
+#' @param ndraws number of draws
 #' @param ... unused
 #' @return threshold
 #' @export
-ps_khat_threshold <- function(S, ...) {
-  1 - 1 / log10(S)
+ps_khat_threshold <- function(ndraws, ...) {
+  1 - 1 / log10(ndraws)
 }
 
 #' Pareto convergence rate
 #'
-#' Given sample size S and scalar or array of k's, compute the
+#' Given number of draws and scalar or array of k's, compute the
 #' relative convergence rate of PSIS estimate RMSE. See Appendix B of
 #' Vehtari et al. (2024). This function is exported to be usable by
 #' other packages. For user-facing diagnostic functions, see
 #' [`pareto_convergence_rate`] and [`pareto_diags`].
 #' @family helper-functions
 #' @param k pareto-k values
-#' @param S sample size
+#' @param ndraws number of draws
 #' @param ... unused
 #' @return convergence rate
 #' @export
-ps_convergence_rate <- function(k, S, ...) {
+ps_convergence_rate <- function(k, ndraws, ...) {
   # allow array of k's
   rate <- numeric(length(k))
   # k<0 bounded distribution
@@ -603,36 +603,36 @@ ps_convergence_rate <- function(k, S, ...) {
   # k>0 non-finite mean
   rate[k > 1] <- 0
   # limit value at k=1/2
-  rate[k == 0.5] <- 1 - 1 / log(S)
+  rate[k == 0.5] <- 1 - 1 / log(ndraws)
   # smooth approximation for the rest (see Appendix B of PSIS paper)
   ki <- (k > 0 & k < 1 & k != 0.5)
   kk <- k[ki]
   rate[ki] <- pmax(
     0,
-    (2 * (kk - 1) * S^(2 * kk + 1) + (1 - 2 * kk) * S^(2 * kk) + S^2) /
-      ((S - 1) * (S - S^(2 * kk)))
+    (2 * (kk - 1) * ndraws^(2 * kk + 1) + (1 - 2 * kk) * ndraws^(2 * kk) + ndraws^2) /
+      ((ndraws - 1) * (ndraws - ndraws^(2 * kk)))
   )
   rate
 }
 
 #' Pareto tail length
 #' 
-#' Calculate the tail length from sampe size S and relative efficiency
+#' Calculate the tail length from number of draws and relative efficiency
 #' r_eff. See Appendix H in Vehtari et al. (2024). This function is
 #' used internally and is exported to be available for other packages.
 #' @family helper-functions
-#' @param S sample size
+#' @param ndraws number of draws
 #' @param r_eff relative efficiency
 #' @param ... unused
 #' @return tail length
 #' @export
-ps_tail_length <- function(S, r_eff, ...) {
-  ifelse(S > 225, ceiling(3 * sqrt(S / r_eff)), S / 5)
+ps_tail_length <- function(ndraws, r_eff, ...) {
+  ifelse(ndraws > 225, ceiling(3 * sqrt(ndraws / r_eff)), ndraws / 5)
 }
 
 #' Pareto-k diagnostic message
 #'
-#' Given S and scalar and k, form a diagnostic message string.
+#' Given number of draws and k, form a diagnostic message string.
 #' @param diags (numeric) named vector of diagnostic values
 #' @param are_weights (logical) are the diagnostics for weights
 #' @param ... unused
