@@ -449,7 +449,7 @@ ess_sd.rvar <- function(x, ...) {
   summarise_rvar_by_element_with_chains(x, ess_sd, weights = weights, ...)
 }
 
-# TODO: ess_weights
+# TODO: ess_weights function
 
 #' Monte Carlo standard error for quantiles
 #'
@@ -632,7 +632,6 @@ mcse_sd.default <- function(x, weights = NULL, ...) {
     # which doesn't assume normality of sims.
     Evar <- mean(sims_c^2)
     varvar <- (mean(sims_c^4) - Evar^2) / ess # (Equation 6.20)
-
     # The first order Taylor series approximation of variance of sd.
     # Kenney and Keeping (1951, p. 141) write "...since fluctuations of
     # any moment are of order N^{-1/2}, squares and higher powers of
@@ -656,7 +655,7 @@ mcse_sd.default <- function(x, weights = NULL, ...) {
     second_moment_weighted <- weighted.mean(x_centered^2, w = weights)
     fourth_moment_weighted <- weighted.mean(x_centered^4, w = weights)
 
-    r_eff <- .ess(x_centered^2) / (nrow(x) * ncol(x))
+    r_eff <- .ess(.split_chains(x_centered^2)) / (nrow(x) * ncol(x))
     weighted_ess <- .ess_weighted(x_centered^2, weights = weights, r_eff = r_eff)
 
     # Kenney and Keeping (1951, eq 6.20)
