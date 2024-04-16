@@ -53,6 +53,7 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
 #' Zhang, J., and Stephens, M. A. (2009). A new and efficient estimation method
 #' for the generalized Pareto distribution. *Technometrics* **51**, 316-325.
 #'
+#' @noRd
 gpdfit <- function(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE) {
   # see section 4 of Zhang and Stephens (2009)
   if (sort_x) {

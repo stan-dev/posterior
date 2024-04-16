@@ -637,6 +637,7 @@ ps_tail_length <- function(ndraws, r_eff, ...) {
 #' @param are_weights (logical) are the diagnostics for weights
 #' @param ... unused
 #' @return diagnostic message
+#' @noRd
 pareto_k_diagmsg <- function(diags, are_weights = FALSE, ...) {
   khat <- diags$khat
   min_ss <- diags$min_ss
