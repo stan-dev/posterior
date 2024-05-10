@@ -8,8 +8,10 @@
   the matched selection.
 * Add `pareto_smooth` option to `weight_draws`, to Pareto smooth
   weights before adding to a draws object.
-* `thin_draws` now automatically thins draws based on ESS, and
-  non-integer thinning is possible.
+* Add individual Pareto diagnostic functions (`pareto_khat`,
+  `pareto_khat_threshold`, `pareto_min_ss`, `pareto_convergence_rate`)
+* `thin_draws` now automatically thins draws based on ESS by default,
+  and non-integer thinning is possible.
 * Matrix multiplication of `rvar`s can now be done with the base matrix 
   multiplication operator (`%*%`) instead of `%**%` in R >= 4.3.
 * `variables()`, `variables<-()`, `set_variables()`, and `nvariables()` now
