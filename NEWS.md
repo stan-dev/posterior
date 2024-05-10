@@ -2,10 +2,11 @@
 
 ### Enhancements
 
-* Add `are_log_weights` option to `pareto_smooth`, which can improve
-  Pareto smoothing computation if the input are log weights.
 * Add `exclude` option to `subset_draws`, which can be used to exclude
   the matched selection.
+* Add `are_log_weights` option to `pareto_smooth`, which is necessary
+  for correct Pareto smoothing computation if the input vector
+  consists of log weights.
 * Add `pareto_smooth` option to `weight_draws`, to Pareto smooth
   weights before adding to a draws object.
 * Add individual Pareto diagnostic functions (`pareto_khat`,
