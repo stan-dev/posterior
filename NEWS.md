@@ -8,6 +8,8 @@
   the matched selection.
 * Add `pareto_smooth` option to `weight_draws`, to Pareto smooth
   weights before adding to a draws object.
+* `thin_draws` now automatically thins draws based on ESS, and
+  non-integer thinning is possible.
 * Matrix multiplication of `rvar`s can now be done with the base matrix 
   multiplication operator (`%*%`) instead of `%**%` in R >= 4.3.
 * `variables()`, `variables<-()`, `set_variables()`, and `nvariables()` now
