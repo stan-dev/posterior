@@ -2,6 +2,10 @@
 
 ### Enhancements
 
+* Add `are_log_weights` option to `pareto_smooth`, which can improve
+  Pareto smoothing computation if the input are log weights.
+* Add `exclude` option to `subset_draws`, which can be used to exclude
+  the matched selection.
 * Add `pareto_smooth` option to `weight_draws`, to Pareto smooth
   weights before adding to a draws object.
 * Matrix multiplication of `rvar`s can now be done with the base matrix 
