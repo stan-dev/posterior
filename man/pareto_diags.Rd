@@ -68,7 +68,7 @@ The default is \code{"both"}.}
 
 \item{r_eff}{(numeric) relative effective sample size estimate. If
 \code{r_eff} is NULL, it will be calculated assuming the draws are
-from MCMC. Default is 1.}
+from MCMC. Default is NULL.}
 
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
 \code{ndraws_tail} is not specified, it will be calculated as
@@ -134,8 +134,8 @@ pareto_diags(d$Sigma)
 \references{
 Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
 Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
-\emph{Journal of Machine Learning Research}, accepted for publication.
-arxiv:arXiv:1507.02646 (version 8)
+\emph{Journal of Machine Learning Research}, 25(72):1-58.
+\href{https://jmlr.org/papers/v25/19-556.html}{PDF}
 }
 \seealso{
 \code{\link{pareto_khat}} for only calculating khat, and
