@@ -250,7 +250,7 @@ pareto_smooth.rvar <- function(x, return_k = FALSE, extra_diags = FALSE, ...) {
 #' @export
 pareto_smooth.default <- function(x,
                                   tail = c("both", "right", "left"),
-                                  r_eff = 1,
+                                  r_eff = NULL,
                                   ndraws_tail = NULL,
                                   return_k = FALSE,
                                   extra_diags = FALSE,
