@@ -72,12 +72,20 @@ draws are log weights, and only right tail will be smoothed.}
 \value{
 Either a vector \code{x} of smoothed values or a named list
 containing the vector \code{x} and a named list \code{diagnostics}
-containing Pareto smoothing diagnostics: * \code{khat}: estimated
-Pareto k shape parameter, and optionally * \code{min_ss}: minimum
-sample size for reliable Pareto smoothed estimate *
-\code{khat_threshold}: khat-threshold for reliable Pareto smoothed
-estimates * \code{convergence_rate}: Relative convergence rate for
+containing numeric values:
+\itemize{
+\item \code{khat}: estimated Pareto k shape parameter, and optionally
+\item \code{min_ss}: minimum sample size for reliable Pareto smoothed
+estimate
+\item \code{khat_threshold}: sample size specific khat threshold for
+reliable Pareto smoothed estimates
+\item \code{convergence_rate}: Relative convergence rate for
 Pareto smoothed estimates
+}
+
+If any of the draws is non-finite, that is, \code{NA}, \code{NaN}, \code{Inf}, or
+\code{-Inf}, Pareto smoothing will not be performed, and the original
+draws will be returned and and diagnostics will be \code{NA} (numeric).
 }
 \description{
 Smooth the tail draws of x by replacing tail draws by order

@@ -9,7 +9,7 @@
 #' @template args-pareto
 #' @template args-methods-dots
 #' @template ref-vehtari-paretosmooth-2022
-#' @return `khat` estimated Generalized Pareto Distribution shape parameter k
+#' @template return-conv
 #'
 #' @seealso [`pareto_diags`] for additional related diagnostics, and
 #'   [`pareto_smooth`] for Pareto smoothed draws.
@@ -39,9 +39,9 @@ pareto_khat.default <- function(x,
     verbose = verbose,
     return_k = TRUE,
     smooth_draws = FALSE,
-    are_log_weights = are_log_weights,
-    ...)
-  return(smoothed$diagnostics)
+    are_log_weights = are_log_weights
+  )
+  return(smoothed$diagnostics$khat)
 }
 
 #' @rdname pareto_khat
@@ -49,19 +49,17 @@ pareto_khat.default <- function(x,
 pareto_khat.rvar <- function(x, ...) {
   draws_diags <- summarise_rvar_by_element_with_chains(
     x,
-    pareto_smooth.default,
-    return_k = TRUE,
-    smooth_draws = FALSE,
+    pareto_khat.default,
     ...
   )
   dim(draws_diags) <- dim(draws_diags) %||% length(draws_diags)
   margins <- seq_along(dim(draws_diags))
 
   diags <- list(
-    khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat)
+    khat = apply(draws_diags, margins, function(x) x[[1]])
   )
 
-  diags
+  diags$khat
 }
 
 
@@ -107,8 +105,10 @@ pareto_khat.rvar <- function(x, ...) {
 #'  when the sample size is increased, compared to the central limit
 #'  theorem convergence rate. See Appendix B in Vehtari et al. (2024).
 #'
-#' @seealso [`pareto_khat`] for only calculating khat, and
-#'   [`pareto_smooth`] for Pareto smoothed draws.
+#' @seealso [`pareto_khat`], [`pareto_min_ss`],
+#'   [`pareto_khat_threshold`], and [`pareto_convergence_rate`] for
+#'   individual diagnostics; and [`pareto_smooth`] for Pareto smoothing
+#'   draws.
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
 #' pareto_diags(mu)
@@ -151,10 +151,7 @@ pareto_diags.default <- function(x,
 pareto_diags.rvar <- function(x, ...) {
   draws_diags <- summarise_rvar_by_element_with_chains(
     x,
-    pareto_smooth.default,
-    return_k = TRUE,
-    smooth_draws = FALSE,
-    extra_diags = TRUE,
+    pareto_diags.default,
     ...
   )
 
@@ -162,10 +159,10 @@ pareto_diags.rvar <- function(x, ...) {
   margins <- seq_along(dim(draws_diags))
 
   diags <- list(
-    khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat),
-    min_ss = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$min_ss),
-    khat_threshold = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat_threshold),
-    convergence_rate = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$convergence_rate)
+    khat = apply(draws_diags, margins, function(x) x[[1]]$khat),
+    min_ss = apply(draws_diags, margins, function(x) x[[1]]$min_ss),
+    khat_threshold = apply(draws_diags, margins, function(x) x[[1]]$khat_threshold),
+    convergence_rate = apply(draws_diags, margins, function(x) x[[1]]$convergence_rate)
   )
 
   diags
@@ -192,12 +189,19 @@ pareto_diags.rvar <- function(x, ...) {
 #' @template ref-vehtari-paretosmooth-2022
 #' @return Either a vector `x` of smoothed values or a named list
 #'   containing the vector `x` and a named list `diagnostics`
-#'   containing Pareto smoothing diagnostics: * `khat`: estimated
-#'   Pareto k shape parameter, and optionally * `min_ss`: minimum
-#'   sample size for reliable Pareto smoothed estimate *
-#'   `khat_threshold`: khat-threshold for reliable Pareto smoothed
-#'   estimates * `convergence_rate`: Relative convergence rate for
+#'   containing numeric values:
+#'
+#' * `khat`: estimated Pareto k shape parameter, and optionally
+#' * `min_ss`: minimum sample size for reliable Pareto smoothed
+#'   estimate
+#' * `khat_threshold`: sample size specific khat threshold for
+#'   reliable Pareto smoothed estimates
+#' * `convergence_rate`: Relative convergence rate for
 #'   Pareto smoothed estimates
+#'
+#' If any of the draws is non-finite, that is, `NA`, `NaN`, `Inf`, or
+#' `-Inf`, Pareto smoothing will not be performed, and the original
+#' draws will be returned and and diagnostics will be `NA` (numeric).
 #'
 #' @seealso [`pareto_khat`] for only calculating khat, and
 #'   [`pareto_diags`] for additional diagnostics.
@@ -265,13 +269,27 @@ pareto_smooth.default <- function(x,
   verbose <- as_one_logical(verbose)
   are_log_weights <- as_one_logical(are_log_weights)
 
+  if (extra_diags) {
+    return_k <- TRUE
+  }
+
   # check for infinite or na values
   if (should_return_NA(x)) {
     warning_no_call("Input contains infinite or NA values, or is constant. Fitting of generalized Pareto distribution not performed.")
     if (!return_k) {
       out <- x
+    } else if (!extra_diags) {
+      out <- list(x = x, diagnostics = list(khat = NA_real_))
     } else {
-      out <- list(x = x, diagnostics = NA_real_)
+      out <- list(
+        x = x,
+        diagnostics = list(
+          khat = NA_real_,
+          min_ss = NA_real_,
+          khat_threshold = NA_real_,
+          convergence_rate = NA_real_
+        )
+      )
     }
     return(out)
   }
@@ -379,13 +397,13 @@ pareto_khat_threshold <- function(x, ...) {
 #' @rdname pareto_diags
 #' @export
 pareto_khat_threshold.default <- function(x, ...) {
-  c(khat_threshold = ps_khat_threshold(length(x)))
+  ps_khat_threshold(length(x))
 }
 
 #' @rdname pareto_diags
 #' @export
 pareto_khat_threshold.rvar <- function(x, ...) {
-  c(khat_threshold = ps_khat_threshold(ndraws(x)))
+  ps_khat_threshold(ndraws(x))
 }
 
 #' @rdname pareto_diags
@@ -397,15 +415,15 @@ pareto_min_ss <- function(x, ...) {
 #' @rdname pareto_diags
 #' @export
 pareto_min_ss.default <- function(x, ...) {
-  k <- pareto_khat(x)$k
-  c(min_ss = ps_min_ss(k))
+  k <- pareto_khat(x)
+  ps_min_ss(k)
 }
 
 #' @rdname pareto_diags
 #' @export
 pareto_min_ss.rvar <- function(x, ...) {
-  k <- pareto_khat(x)$k
-  c(min_ss = ps_min_ss(k))
+  k <- pareto_khat(x)
+  ps_min_ss(k)
 }
 
 #' @rdname pareto_diags
@@ -417,15 +435,15 @@ pareto_convergence_rate <- function(x, ...) {
 #' @rdname pareto_diags
 #' @export
 pareto_convergence_rate.default <- function(x, ...) {
-  k <- pareto_khat(x)$khat
-  c(convergence_rate = ps_convergence_rate(k, length(x)))
+  k <- pareto_khat(x)
+  ps_convergence_rate(k, length(x))
 }
 
 #' @rdname pareto_diags
 #' @export
 pareto_convergence_rate.rvar <- function(x, ...) {
   k <- pareto_khat(x)
-  c(convergence_rate = ps_convergence_rate(k, ndraws(x)))
+  ps_convergence_rate(k, ndraws(x))
 }
 
 
@@ -616,7 +634,7 @@ ps_convergence_rate <- function(k, ndraws, ...) {
 }
 
 #' Pareto tail length
-#' 
+#'
 #' Calculate the tail length from number of draws and relative efficiency
 #' r_eff. See Appendix H in Vehtari et al. (2024). This function is
 #' used internally and is exported to be available for other packages.
