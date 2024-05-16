@@ -39,8 +39,8 @@ pareto_khat.default <- function(x,
     verbose = verbose,
     return_k = TRUE,
     smooth_draws = FALSE,
-    are_log_weights = are_log_weights,
-    ...)
+    are_log_weights = are_log_weights
+  )
   return(smoothed$diagnostics$khat)
 }
 
