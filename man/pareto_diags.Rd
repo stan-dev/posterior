@@ -138,8 +138,10 @@ Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
 \href{https://jmlr.org/papers/v25/19-556.html}{PDF}
 }
 \seealso{
-\code{\link{pareto_khat}} for only calculating khat, and
-\code{\link{pareto_smooth}} for Pareto smoothed draws.
+\code{\link{pareto_khat}}, \code{\link{pareto_min_ss}},
+\code{\link{pareto_khat_threshold}}, and \code{\link{pareto_convergence_rate}} for
+individual diagnostics; and \code{\link{pareto_smooth}} for Pareto smoothing
+draws.
 
 Other diagnostics: 
 \code{\link{ess_basic}()},
