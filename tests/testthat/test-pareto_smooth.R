@@ -1,12 +1,3 @@
-test_that("pareto_khat returns expected reasonable values", {
-  tau <- extract_variable_matrix(example_draws(), "tau")
-
-  pk <- pareto_khat(tau)
-  expect_true(names(pk) == "khat")
-
-})
-
-
 test_that("pareto_khat handles constant tail correctly", {
 
   # left tail is constant, so khat should be NA, but for "both" it
@@ -30,8 +21,8 @@ test_that("pareto_khat handles tail argument", {
   pkl <- pareto_khat(tau, tail = "left")
   pkr <- pareto_khat(tau, tail = "right")
   pkb <- pareto_khat(tau)
-  expect_true(pkl$khat < pkr$khat)
-  expect_equal(pkr$khat, pkb$khat)
+  expect_true(pkl < pkr)
+  expect_equal(pkr, pkb)
 })
 
 test_that("pareto_khat handles ndraws_tail argument", {
@@ -39,7 +30,7 @@ test_that("pareto_khat handles ndraws_tail argument", {
   tau <- extract_variable_matrix(example_draws(), "tau")
   pk10 <- pareto_khat(tau, tail = "right", ndraws_tail = 10)
   pk25 <- pareto_khat(tau, tail = "right", ndraws_tail = 25)
-  expect_true(pk10$khat > pk25$khat)
+  expect_true(pk10 > pk25)
 
   expect_warning(pareto_khat(tau, tail = "both", ndraws_tail = 201),
                  "Number of tail draws cannot be more than half ",
@@ -57,7 +48,7 @@ test_that("pareto_khat handles r_eff argument", {
   tau <- extract_variable_matrix(example_draws(), "tau")
   pk1 <- pareto_khat(tau, r_eff = 1)
   pk0.6 <- pareto_khat(tau, r_eff = 0.6)
-  expect_true(pk1$khat < pk0.6$khat)
+  expect_true(pk1 < pk0.6)
 
 })
 
