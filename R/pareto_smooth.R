@@ -262,8 +262,12 @@ pareto_smooth.default <- function(x,
                                   are_log_weights = FALSE,
                                   ...) {
 
-  checkmate::assert_numeric(ndraws_tail, null.ok = TRUE)
-  checkmate::assert_numeric(r_eff, null.ok = TRUE)
+  if (!is.null(r_eff)) {
+    r_eff <- as_one_numeric(r_eff)
+  }
+  if (!is.null(ndraws_tail)) {
+    ndraws_tail <- as_one_integer(ndraws_tail)
+  }
   extra_diags <- as_one_logical(extra_diags)
   return_k <- as_one_logical(return_k)
   verbose <- as_one_logical(verbose)
@@ -275,23 +279,8 @@ pareto_smooth.default <- function(x,
 
   # check for infinite or na values
   if (should_return_NA(x)) {
-    warning_no_call("Input contains infinite or NA values, or is constant. Fitting of generalized Pareto distribution not performed.")
-    if (!return_k) {
-      out <- x
-    } else if (!extra_diags) {
-      out <- list(x = x, diagnostics = list(khat = NA_real_))
-    } else {
-      out <- list(
-        x = x,
-        diagnostics = list(
-          khat = NA_real_,
-          min_ss = NA_real_,
-          khat_threshold = NA_real_,
-          convergence_rate = NA_real_
-        )
-      )
-    }
-    return(out)
+    warning_no_call("Input contains infinite or NA values, is constant or has constant tail. Fitting of generalized Pareto distribution not performed.")
+    return(pareto_diags_na(x, return_k, extra_diags))
   }
 
   if (are_log_weights) {
@@ -309,6 +298,11 @@ pareto_smooth.default <- function(x,
   # automatically calculate tail length
   if (is.null(ndraws_tail)) {
     ndraws_tail <- ps_tail_length(ndraws, r_eff)
+  }
+
+  if (is.na(ndraws_tail)) {
+    warning_no_call("Input contains infinite or NA values, is constant, or has constant tail. Fitting of generalized Pareto distribution not performed.")
+    return(pareto_diags_na(x, return_k, extra_diags))
   }
 
   if (tail == "both") {
@@ -682,4 +676,24 @@ pareto_k_diagmsg <- function(diags, are_weights = FALSE, ...) {
   }
   message("Pareto k-hat = ", round(khat, 2), ".", msg)
   invisible(diags)
+}
+
+
+pareto_diags_na <- function(x, return_k, extra_diags) {
+    if (!return_k) {
+      out <- x
+    } else if (!extra_diags) {
+      out <- list(x = x, diagnostics = list(khat = NA_real_))
+    } else {
+      out <- list(
+        x = x,
+        diagnostics = list(
+          khat = NA_real_,
+          min_ss = NA_real_,
+          khat_threshold = NA_real_,
+          convergence_rate = NA_real_
+        )
+      )
+    }
+    return(out)
 }
