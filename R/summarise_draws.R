@@ -117,41 +117,9 @@ summarise_draws.draws <- function(
   if (.cores <= 0) {
     stop_no_call("'.cores' must be a positive integer.")
   }
-  funs <- as.list(c(...))
   .args <- as.list(.args)
-  if (length(funs)) {
-    if (is.null(names(funs))) {
-      # ensure names are initialized properly
-      names(funs) <- rep("", length(funs))
-    }
-    calls <- substitute(list(...))[-1]
-    calls <- ulapply(calls, deparse_pretty)
-    for (i in seq_along(funs)) {
-      fname <- NULL
-      if (is.character(funs[[i]])) {
-        fname <- as_one_character(funs[[i]])
-      }
-      # label unnamed arguments via their calls
-      if (!nzchar(names(funs)[i])) {
-        if (!is.null(fname)) {
-          names(funs)[i] <- fname
-        } else {
-          names(funs)[i] <- calls[i]
-        }
-      }
-      # get functions passed as strings from the right environments
-      if (!is.null(fname)) {
-        if (exists(fname, envir = caller_env())) {
-          env <- caller_env()
-        } else if (fname %in% getNamespaceExports("posterior")) {
-          env <- asNamespace("posterior")
-        } else {
-          stop_no_call("Cannot find function '", fname, "'.")
-        }
-      }
-      funs[[i]] <- rlang::as_function(funs[[i]], env = env)
-    }
-  } else {
+  funs <- create_function_list(rlang::enquos0(...))
+  if (length(funs) == 0) {
     # default functions
     funs <- list(
       mean = base::mean,
@@ -196,23 +164,6 @@ summarise_draws.draws <- function(
     if (checkmate::test_os("windows")) {
       cl <- parallel::makePSOCKcluster(.cores)
       on.exit(parallel::stopCluster(cl))
-      # exporting all these functions seems to be required to
-      # pass GitHub actions checks on Windows
-      parallel::clusterExport(
-        cl,
-        varlist = package_function_names("posterior"),
-        envir = as.environment(asNamespace("posterior"))
-      )
-      parallel::clusterExport(
-        cl,
-        varlist = package_function_names("checkmate"),
-        envir = as.environment(asNamespace("checkmate"))
-      )
-      parallel::clusterExport(
-        cl,
-        varlist = package_function_names("rlang"),
-        envir = as.environment(asNamespace("rlang"))
-      )
       summary_list <- parallel::parLapply(
         cl,
         X = chunk_list,
@@ -326,6 +277,61 @@ empty_draws_summary <- function(dimensions = "variable") {
   out
 }
 
+
+#' convert a specification for a list of functions (in various formats) into a
+#' named list of functions
+#' @param fun_exprs One of:
+#'  - a function.
+#'  - a character vector of names of functions that can be found either in `env`
+#'    or in the \pkg{posterior} namespace.
+#'  - an unevaluated expression or a quosure that represents a function
+#'  - an \pkg{rlang} function formula (a la [rlang::as_function()]).
+#'  - a list where each element is of the above.
+#' @param env the environment to evaluate expressions in and to go searching for
+#' functions specified as strings in.
+#' @returns a named list of functions in `fun_expres`
+#' @noRd
+create_function_list <- function(fun_exprs, env = caller_env(2)) {
+  # flatten fun_exprs into two lists: funs, a list of functions/strings/formulas,
+  # and fun_exprs, a list of bare expressions or quosures
+  if (!is.list(fun_exprs)) fun_exprs <- list(fun_exprs)
+  funs <- lapply(fun_exprs, eval_tidy, env = env)
+  fun_exprs <- rep(fun_exprs, lengths(funs))
+  funs <- as.list(do.call(c, funs))
+
+  if (is.null(names(funs))) {
+    # ensure names are initialized properly
+    names(funs) <- rep("", length(funs))
+  }
+
+  for (i in seq_along(funs)) {
+    fname <- NULL
+    if (is.character(funs[[i]])) {
+      fname <- as_one_character(funs[[i]])
+    }
+
+    # label unnamed arguments via their calls
+    if (!nzchar(names(funs)[i])) {
+      if (!is.null(fname)) {
+        names(funs)[i] <- fname
+      } else {
+        names(funs)[i] <- deparse_pretty(fun_exprs[[i]])
+      }
+    }
+
+    # get the environment to find functions passed as strings in
+    env_i <- env
+    if (!is.null(fname) && !exists(fname, envir = env_i, mode = "function")) {
+      # if the function isn't in the calling environment fall back to the package
+      env_i <- asNamespace("posterior")
+    }
+
+    funs[[i]] <- rlang::as_function(funs[[i]], env = env_i)
+  }
+
+  names(funs) <- make.unique(names(funs))
+  funs
+}
 
 create_summary_list <- function(x, v, funs, .args) {
   draws <- drop_dims_or_classes(x[, , v], dims = 3, reset_class = FALSE)
