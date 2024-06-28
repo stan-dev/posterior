@@ -464,6 +464,6 @@ assessing convergence of MCMC (with discussion). *Bayesian Analysis*.
 
 The **posterior** package is licensed under the following licenses:
 
-- Code: BSD 3-clause (<https://opensource.org/license/bsd-3-clause/>)
+- Code: BSD 3-clause (<https://opensource.org/license/bsd-3-clause>)
 - Documentation: CC-BY 4.0
   (<https://creativecommons.org/licenses/by/4.0/>)

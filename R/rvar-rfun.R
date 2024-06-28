@@ -115,7 +115,7 @@ rfun <- function (.f, rvar_args = NULL, rvar_dots = TRUE, ndraws = NULL) {
 #' producing a new [`rvar`].
 #'
 #' @param expr (expression) A bare expression that can (optionally) contain
-#'   [`rvar`]s. The expression supports [quasiquotation].
+#'   [`rvar`]s. The expression supports [quasiquotation][rlang::quasiquotation].
 #' @param ndraws (positive integer) The number of draws used to construct new
 #'   random variables if no [`rvar`]s are supplied in `expr`. If `NULL`,
 #'   `getOption("posterior.rvar_ndraws")` is used (default 4000). If `expr`

@@ -7,7 +7,8 @@
 #' @param expr (expression) A bare expression that can contain references to
 #' variables in `x` by name. This expression will be executed once per draw
 #' of `x`, where references to variables in `x` resolve to the value of that
-#' variable in that draw. The expression supports [quasiquotation].
+#' variable in that draw. The expression supports
+#' [quasiquotation][rlang::quasiquotation].
 #'
 #' @details
 #' If `x` is not in the [`draws_rvars`] format, it is first converted to that
