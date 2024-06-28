@@ -23,7 +23,7 @@ presents Pareto smoothed importance sampling, but also
 Pareto-$\hat{k}$ diagnostic that can be used when estimating any
 expectation based on finite sample. This vignette illustrates the use of
 these diagnostics.
-The individual diagnostic functions are `pareto_khat()`, `pareto_min_ss()`, `pareto_convergence_rate()` and `pareto_khat_threshold(). The function `pareto_diags()` will return all of these.
+The individual diagnostic functions are `pareto_khat()`, `pareto_min_ss()`, `pareto_convergence_rate()` and `pareto_khat_threshold()`. The function `pareto_diags()` will return all of these.
 
 Additionally, the `pareto_smooth()` function can be used to transform draws by smoothing the tail(s).
 ## Example
@@ -77,7 +77,7 @@ drt %>%
 
 All the usual convergence diagnostics $\widehat{R}$, Bulk-ESS, and
 Tail-ESS look good, which is fine as they have been designed to
-work also with infinite variance (Vehtari et al., 2022).
+work also with infinite variance (Vehtari et al., 2020).
 
 If these variables would present variables of interest for which
 we would like to estimate means, we would be also interested in
