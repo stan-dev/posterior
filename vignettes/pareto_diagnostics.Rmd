@@ -13,7 +13,7 @@ vignette: >
 
 ## Introduction 
 
-Paper
+The paper
 
 * Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao, and
   Jonah Gabry (2024). Pareto smoothed importance sampling.
@@ -23,7 +23,9 @@ presents Pareto smoothed importance sampling, but also
 Pareto-$\hat{k}$ diagnostic that can be used when estimating any
 expectation based on finite sample. This vignette illustrates the use of
 these diagnostics.
+The individual diagnostic functions are `pareto_khat()`, `pareto_min_ss()`, `pareto_convergence_rate()` and `pareto_khat_threshold(). The function `pareto_diags()` will return all of these.
 
+Additionally, the `pareto_smooth()` function can be used to transform draws by smoothing the tail(s).
 ## Example
 
 ```{r setup}
@@ -37,8 +39,8 @@ Generate `xn` a simulated MCMC sample with 4 chains each with 1000
 iterations using AR process with marginal normal(0,1)
 
 ```{r simulate-data-1}
-N=1000
-phi=0.3
+N <- 1000
+phi <- 0.3
 set.seed(6534)
 dr<-array(data=replicate(4,as.numeric(arima.sim(n = N,
                                                 list(ar = c(phi)),
@@ -162,7 +164,7 @@ which there is no hope.
 
 ## Convergence rate
 
-Given finite variance, central limit theorem states that to halve
+Given finite variance, the central limit theorem states that to halve
 MCSE we need four times bigger sample size. With Pareto smoothing,
 we can go further, but the convergence rate decreases when $\hat{k}$ increases.
 
@@ -173,7 +175,7 @@ drt |> summarise_draws(mean, mcse_mean, ess_basic,
 ```
 
 We see that with $t_2$, $t_{1.5}$, and $t_1$  we need $4^{1/0.86}\approx 5$,
-$4^{1/0.60}\approx 10$, and $4^{1/0}\approx \infty$ bigger sample sizes to
+$4^{1/0.60}\approx 10$, and $4^{1/0}\approx \infty$ times bigger sample sizes to
 halve MCSE for mean.
 
 ## Pareto-$\hat{k}$-threshold
