@@ -1,4 +1,4 @@
-# posterior (development version)
+# posterior 1.6.0
 
 ### Enhancements
 
