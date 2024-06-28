@@ -30,6 +30,7 @@ Additionally, the `pareto_smooth()` function can be used to transform draws by s
 
 ```{r setup}
 library(posterior)
+library(dplyr)
 options(pillar.neg = FALSE, pillar.subtle=FALSE, pillar.sigfig=2)
 ```
 
@@ -42,11 +43,11 @@ iterations using AR process with marginal normal(0,1)
 N <- 1000
 phi <- 0.3
 set.seed(6534)
-dr<-array(data=replicate(4,as.numeric(arima.sim(n = N,
+dr <- array(data=replicate(4,as.numeric(arima.sim(n = N,
                                                 list(ar = c(phi)),
                                                 sd = sqrt((1-phi^2))))),
-         dim=c(N,4,1)) |>
-  as_draws_df() |>
+         dim=c(N,4,1)) %>%
+  as_draws_df() %>%
   set_variables('xn')
 ```
 
@@ -57,7 +58,7 @@ $t_{1.5}$, and $t_1$ have infinite variance, and $t_1$ (aka Cauchy)
 has infinite mean. 
 
 ```{r simulate-data-2}
-drt <- dr |>
+drt <- dr %>%
   mutate_variables(xt3=qt(pnorm(xn), df=3),
                    xt2_5=qt(pnorm(xn), df=2.5),
                    xt2=qt(pnorm(xn), df=2),
@@ -70,12 +71,13 @@ drt <- dr |>
 We examine the draws with the default `summarise_draws()`.
 
 ```{r summarise_draws}
-drt |> summarise_draws()
+drt %>%
+  summarise_draws()
 ```
 
 All the usual convergence diagnostics $\widehat{R}$, Bulk-ESS, and
 Tail-ESS look good, which is fine as they have been designed to
-work also with infinite variance [@Vehtari+etal:2021:Rhat].
+work also with infinite variance (Vehtari et al., 2022).
 
 If these variables would present variables of interest for which
 we would like to estimate means, we would be also interested in
@@ -84,7 +86,7 @@ iterations to run and how many digits to
 report](https://users.aalto.fi/~ave/casestudies/Digits/digits.html)).
 
 ```{r summarise_draws-mcse}
-drt |>
+drt %>%
   summarise_draws(mean, sd, mcse_mean, ess_bulk, ess_basic)
 ```
 
@@ -101,7 +103,7 @@ variance and even infinite mean, we can use Pareto-$\hat{k}$
 diagnostic.
 
 ```{r summarise_draws-pareto_khat}
-drt |>
+drt %>%
   summarise_draws(mean, sd, mcse_mean, ess_basic, pareto_khat)
 ```
 
@@ -114,7 +116,10 @@ did go well, and we would be interested only in quantiles, infinite
 variance and mean are not a problem. But if we are interested in mean,
 then we need to care about the number of (fractional) moments. Here we
 see $\hat{k} \geq 1/2$ for $t_2$, $t_{1.5}$, and $t_{1}$, and
-we should not trust their `mcse_mean` values.
+we should not trust their `mcse_mean` values. Without trustworthy MCSE
+estimate we don't have good estimate of how accurate the mean estimate is.
+Furthermore, as $\hat{k} \geq 1$ for $t_{1}$, the mean is not finite and
+the mean estimate is not valid.
 
 ## Pareto smoothing
 
@@ -130,12 +135,12 @@ negligible.
 We do Pareto smoothing for all the variables.
 
 ```{r pareto_smooth}
-drts <- drt |> 
+drts <- drt %>% 
   mutate_variables(xt3_s=pareto_smooth(xt3),
                    xt2_5_s=pareto_smooth(xt2_5),
                    xt2_s=pareto_smooth(xt2),
                    xt1_5_s=pareto_smooth(xt1_5),
-                   xt1_s=pareto_smooth(xt1)) |>
+                   xt1_s=pareto_smooth(xt1)) %>%
   subset_draws(variable="_s", regex=TRUE)
 ```
 
@@ -144,7 +149,8 @@ When $\hat{k}>0.7$ both bias and variance grow so fast that Pareto smoothing
 rarely helps (see more details in the paper).
 
 ```{r summarise_draws-pareto_khat-2}
-drts |> summarise_draws(mean, mcse_mean, ess_basic, pareto_khat)
+drts %>%
+  summarise_draws(mean, mcse_mean, ess_basic, pareto_khat)
 ```
 
 
@@ -155,8 +161,9 @@ use additional diagnostic `min_ss` which tells the minimum sample size needed
 so that `mcse_mean` can be trusted.
 
 ```{r summarise_draws-min_ss}
-drt |> summarise_draws(mean, mcse_mean, ess_basic,
-                       pareto_khat, min_ss=pareto_min_ss)
+drt %>%
+  summarise_draws(mean, mcse_mean, ess_basic,
+                  pareto_khat, min_ss=pareto_min_ss)
 ```
 
 Here required `min_ss` is smaller than `ess_basic` for all except $t_1$, for
@@ -169,9 +176,10 @@ MCSE we need four times bigger sample size. With Pareto smoothing,
 we can go further, but the convergence rate decreases when $\hat{k}$ increases.
 
 ```{r summarise_draws-conv_rate}
-drt |> summarise_draws(mean, mcse_mean, ess_basic,
-                       pareto_khat, min_ss=pareto_min_ss,
-                       conv_rate=pareto_convergence_rate)
+drt %>%
+  summarise_draws(mean, mcse_mean, ess_basic,
+                  pareto_khat, min_ss=pareto_min_ss,
+                  conv_rate=pareto_convergence_rate)
 ```
 
 We see that with $t_2$, $t_{1.5}$, and $t_1$  we need $4^{1/0.86}\approx 5$,
@@ -183,7 +191,8 @@ halve MCSE for mean.
 The final Pareto diagnostic, $\hat{k}$-threshold, is useful for smaller sample sizes. Here we select only 100 iterations per chain to get total of 400 draws.
 
 ```{r summarise_draws-khat_threshold}
-drt |> subset_draws(iteration=1:100) |>
+drt %>%
+  subset_draws(iteration=1:100) %>%
   summarise_draws(mean, mcse_mean, ess_basic,
                   pareto_khat, min_ss=pareto_min_ss,
                   khat_thres=pareto_khat_threshold,
@@ -200,7 +209,9 @@ We can get all these diagnostics with `pareto_diags()`, and it's
 easy to use it also for derived quantities.
 
 ```{r summarise_draws-pareto_diags}
-drt |> mutate_variables(xt2_5_sq=xt2_5^2) |> subset_draws(variable="xt2_5_sq") |>
+drt %>%
+  mutate_variables(xt2_5_sq=xt2_5^2) %>%
+  subset_draws(variable="xt2_5_sq") %>%
   summarise_draws(mean, mcse_mean,
                   pareto_diags)
 ```
@@ -223,6 +234,11 @@ cases where theory guarantees finite variance.
 
 ## Reference
 
-Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao, and Jonah
-Gabry (2024). Pareto smoothed importance sampling.
+Vehtari, A., Simpson, D., Gelman, A., Yao, Y., & Gabry, J. (2024).
+Pareto smoothed importance sampling.
 *Journal of Machine Learning Research*, 25(72):1-58.
+
+Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
+Rank-normalization, folding, and localization: An improved Rhat for assessing
+convergence of MCMC. *Bayesian Analysis*, 16(2):667-718.
+	    
