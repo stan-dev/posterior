@@ -19,7 +19,7 @@ distribution fit to the tail(s)."><meta property="og:image" content="https://mc-
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -121,11 +121,36 @@ distribution fit to the tail(s).</p>
 <span>  r_eff <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ndraws_tail <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  are_log_weights <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for rvar</span></span>
-<span><span class="fu">pareto_diags</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">pareto_diags</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pareto_khat_threshold</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">pareto_khat_threshold</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for rvar</span></span>
+<span><span class="fu">pareto_khat_threshold</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pareto_min_ss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">pareto_min_ss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for rvar</span></span>
+<span><span class="fu">pareto_min_ss</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">pareto_convergence_rate</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for default</span></span>
+<span><span class="fu">pareto_convergence_rate</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for rvar</span></span>
+<span><span class="fu">pareto_convergence_rate</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -150,21 +175,28 @@ distribution fit to the tail(s).</p>
 
 <dt>r_eff</dt>
 <dd><p>(numeric) relative effective sample size estimate. If
-<code>r_eff</code> is omitted, it will be calculated assuming the draws are
-from MCMC.</p></dd>
+<code>r_eff</code> is NULL, it will be calculated assuming the draws are
+from MCMC. Default is NULL.</p></dd>
 
 
 <dt>ndraws_tail</dt>
 <dd><p>(numeric) number of draws for the tail. If
 <code>ndraws_tail</code> is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) &gt; 225 and
-length(x) / 5 otherwise (see Appendix H in Vehtari et al. (2022)).</p></dd>
+length(x) / 5 otherwise (see Appendix H in Vehtari et
+al. (2024)).</p></dd>
 
 
 <dt>verbose</dt>
 <dd><p>(logical) Should diagnostic messages be printed? If
 <code>TRUE</code>, messages related to Pareto diagnostics will be
 printed. Default is <code>FALSE</code>.</p></dd>
+
+
+<dt>are_log_weights</dt>
+<dd><p>(logical) Are the draws log weights? Default is
+<code>FALSE</code>. If <code>TRUE</code> computation will take into account that the
+draws are log weights, and only right tail will be smoothed.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -186,25 +218,47 @@ estimate. If the actual sample size is greater than <code>min_ss</code>, then
 Pareto smoothed estimates can be considered reliable. If the actual
 sample size is lower than <code>min_ss</code>, increasing the sample size
 might result in more reliable estimates. For further details, see
-Section 3.2.3, Equation 11 in Vehtari et al. (2022).</p></li>
+Section 3.2.3, Equation 11 in Vehtari et al. (2024).</p></li>
 <li><p><code>khat_threshold</code>: Threshold below which k-hat values result in
 reliable Pareto smoothed estimates. The threshold is lower for
 smaller effective sample sizes. If k-hat is larger than the
 threshold, increasing the total sample size may improve reliability
 of estimates. For further details, see Section 3.2.4, Equation 13
-in Vehtari et al. (2022).</p></li>
+in Vehtari et al. (2024).</p></li>
 <li><p><code>convergence_rate</code>: Relative convergence rate compared to the
 central limit theorem. Applicable only if the actual sample size
 is sufficiently large (greater than <code>min_ss</code>). The convergence
 rate tells the rate at which the variance of an estimate reduces
 when the sample size is increased, compared to the central limit
-theorem convergence rate. See Appendix B in Vehtari et al. (2022).</p></li>
+theorem convergence rate. See Appendix B in Vehtari et al. (2024).</p></li>
 </ul></div>
     <div id="references">
     <h2>References</h2>
     <p>Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
-Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
-arxiv:arXiv:1507.02646</p>
+Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
+<em>Journal of Machine Learning Research</em>, 25(72):1-58.
+<a href="https://jmlr.org/papers/v25/19-556.html" class="external-link">PDF</a></p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="pareto_khat.html">pareto_khat</a></code>, <code>pareto_min_ss</code>,
+<code>pareto_khat_threshold</code>, and <code>pareto_convergence_rate</code> for
+individual diagnostics; and <code><a href="pareto_smooth.html">pareto_smooth</a></code> for Pareto smoothing
+draws.</p>
+<p>Other diagnostics: 
+<code><a href="ess_basic.html">ess_basic</a>()</code>,
+<code><a href="ess_bulk.html">ess_bulk</a>()</code>,
+<code><a href="ess_quantile.html">ess_quantile</a>()</code>,
+<code><a href="ess_sd.html">ess_sd</a>()</code>,
+<code><a href="ess_tail.html">ess_tail</a>()</code>,
+<code><a href="mcse_mean.html">mcse_mean</a>()</code>,
+<code><a href="mcse_quantile.html">mcse_quantile</a>()</code>,
+<code><a href="mcse_sd.html">mcse_sd</a>()</code>,
+<code><a href="pareto_khat.html">pareto_khat</a>()</code>,
+<code><a href="rhat.html">rhat</a>()</code>,
+<code><a href="rhat_basic.html">rhat_basic</a>()</code>,
+<code><a href="rhat_nested.html">rhat_nested</a>()</code>,
+<code><a href="rstar.html">rstar</a>()</code></p></div>
     </div>
 
     <div id="ref-examples">

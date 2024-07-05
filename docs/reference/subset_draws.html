@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -119,6 +119,8 @@
 <span>  draw <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  regex <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  unique <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  scalar <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -131,6 +133,8 @@
 <span>  draw <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  regex <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  unique <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  scalar <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -143,6 +147,8 @@
 <span>  draw <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  regex <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  unique <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  scalar <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -155,6 +161,8 @@
 <span>  draw <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  regex <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  unique <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  scalar <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -167,6 +175,8 @@
 <span>  draw <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  regex <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  unique <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  exclude <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  scalar <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -189,8 +199,8 @@ is defined.</p></dd>
 
 
 <dt>variable</dt>
-<dd><p>(character vector) The variables to select. All elements of
-non-scalar variables can be selected at once.</p></dd>
+<dd><p>(character vector) The variables to select. All
+elements of non-scalar variables can be selected at once.</p></dd>
 
 
 <dt>iteration</dt>
@@ -202,21 +212,36 @@ non-scalar variables can be selected at once.</p></dd>
 
 
 <dt>draw</dt>
-<dd><p>(integer vector) The draw indices to be select. Subsetting draw
-indices will lead to an automatic merging of chains via <code><a href="merge_chains.html">merge_chains</a></code>.</p></dd>
+<dd><p>(integer vector) The draw indices to be
+select. Subsetting draw indices will lead to an automatic merging
+of chains via <code><a href="merge_chains.html">merge_chains</a></code>.</p></dd>
 
 
 <dt>regex</dt>
 <dd><p>(logical) Should <code>variable</code> should be treated as a
-(vector of) regular expressions? Any variable in <code>x</code> matching at least one
-of the regular expressions will be selected. Defaults to <code>FALSE</code>.</p></dd>
+(vector of) regular expressions? Any variable in <code>x</code> matching at
+least one of the regular expressions will be selected. Defaults
+to <code>FALSE</code>.</p></dd>
 
 
 <dt>unique</dt>
-<dd><p>(logical) Should duplicated selection of chains, iterations, or
-draws be allowed? If <code>TRUE</code> (the default) only unique chains, iterations,
-and draws are selected regardless of how often they appear in the
-respective selecting arguments.</p></dd>
+<dd><p>(logical) Should duplicated selection of chains,
+iterations, or draws be allowed? If <code>TRUE</code> (the default) only
+unique chains, iterations, and draws are selected regardless of
+how often they appear in the respective selecting arguments.</p></dd>
+
+
+<dt>exclude</dt>
+<dd><p>(logical) Should the selected subset be excluded?
+If <code>FALSE</code> (the default) only the selected subset will be
+returned.  If <code>TRUE</code> everything but the selected subset will be
+returned.</p></dd>
+
+
+<dt>scalar</dt>
+<dd><p>(logical) Should only scalar variables be selected?
+If <code>FALSE</code> (the default), all variables with matching names and
+<em>arbitrary</em> indices will be selected (see examples).</p></dd>
 
 </dl></div>
     <div id="value">
@@ -434,6 +459,9 @@ subsetting.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>         5 2.0  9.70 12.3 11.3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # ... with 95 more iterations, and 4 more variables</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># trying to extract only a scalar 'theta' will fail</span></span></span>
+<span class="r-in"><span><span class="co"># subset_draws(x, variable = "theta", scalar = TRUE)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

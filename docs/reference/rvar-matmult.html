@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -108,7 +108,10 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">x</span> <span class="op">%**%</span> <span class="va">y</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">x</span> <span class="op">%**%</span> <span class="va">y</span></span>
+<span></span>
+<span><span class="co"># S3 method for rvar</span></span>
+<span><span class="fu">matrixOps</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -140,8 +143,9 @@ converted to a row vector and <code>y</code> to a column vector. Numerics and lo
 by <code><a href="rvar.html">rvar</a></code>s and are broadcasted across all draws of the <code><a href="rvar.html">rvar</a></code> argument. Tensor multiplication
 is used to efficiently multiply matrices across draws, so if either <code>x</code> or <code>y</code> is an <code><a href="rvar.html">rvar</a></code>,
 <code>x %**% y</code> will be much faster than <code>rdo(x %*% y)</code>.</p>
-<p>Because <code><a href="rvar.html">rvar</a></code> is an S3 class and S3 classes cannot properly override <code>%*%</code>, <code><a href="rvar.html">rvar</a></code>s use
-<code>%**%</code> for matrix multiplication.</p>
+<p>In R &gt;= 4.3, you can also use <code>%*%</code> in place of <code>%**%</code> for matrix multiplication
+of <code><a href="rvar.html">rvar</a></code>s. In R &lt; 4.3, S3 classes cannot properly override <code>%*%</code>, so
+you must use <code>%**%</code> for matrix multiplication of <code><a href="rvar.html">rvar</a></code>s.</p>
     </div>
 
     <div id="ref-examples">

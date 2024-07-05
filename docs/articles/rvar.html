@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -134,7 +134,7 @@
                         <h4 data-toc-skip class="author">Matthew
 Kay</h4>
             
-            <h4 data-toc-skip class="date">2023-11-10</h4>
+            <h4 data-toc-skip class="date">2024-07-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/stan-dev/posterior/blob/HEAD/vignettes/rvar.Rmd" class="external-link"><code>vignettes/rvar.Rmd</code></a></small>
       <div class="hidden name"><code>rvar.Rmd</code></div>
@@ -156,7 +156,7 @@ basis of the <code><a href="../reference/draws_rvars.html">draws_rvars()</a></co
 (multidimensional arrays). It is also designed to interoperate with
 vectorized distributions in the <a href="https://pkg.mitchelloharawild.com/distributional/" class="external-link">distributional</a>
 package, to be able to be used inside <code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame()</a></code>s and
-<code>tibble()</code>s, and to be used with distribution visualizations
+<code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble()</a></code>s, and to be used with distribution visualizations
 in the <a href="https://mjskay.github.io/ggdist/" class="external-link">ggdist</a>
 package.</p>
 </div>
@@ -342,12 +342,12 @@ variables to be multidimensional. For example, the <code>post</code>
 object above contains two variables, <code>mu</code> and
 <code>Sigma</code>:</p>
 <div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/draws-index.html">variables</a></span><span class="op">(</span><span class="va">post</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variables.html">variables</a></span><span class="op">(</span><span class="va">post</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "mu"    "Sigma"</span></span></code></pre>
 <p>But converted to a <code><a href="../reference/draws_list.html">draws_list()</a></code>, it contains one
 variable for each combination of the dimensions of its variables:</p>
 <div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/draws-index.html">variables</a></span><span class="op">(</span><span class="fu"><a href="../reference/draws_list.html">as_draws_list</a></span><span class="op">(</span><span class="va">post</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/variables.html">variables</a></span><span class="op">(</span><span class="fu"><a href="../reference/draws_list.html">as_draws_list</a></span><span class="op">(</span><span class="va">post</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "mu[1]"      "mu[2]"      "mu[3]"      "Sigma[1,1]" "Sigma[2,1]"</span></span>
 <span><span class="co">##  [6] "Sigma[3,1]" "Sigma[1,2]" "Sigma[2,2]" "Sigma[3,2]" "Sigma[1,3]"</span></span>
 <span><span class="co">## [11] "Sigma[2,3]" "Sigma[3,3]"</span></span></code></pre>
@@ -370,9 +370,12 @@ example:</p>
 <pre><code><span><span class="co">## rvar&lt;100,4&gt;[3] <span style="color: #949494;">mean ± sd:</span></span></span>
 <span><span class="co">## [1] 1.1 ± 0.11  1.1 ± 0.20  1.2 ± 0.31</span></span></code></pre>
 <p>Matrix multiplication is also implemented (using a tensor product
-under the hood). Because the normal matrix multiplication operator in R
-(<code>%*%</code>) cannot be properly implemented for S3 datatypes,
-<code>rvar</code> uses <code>%**%</code> instead. A trivial example:</p>
+under the hood). In R &lt; 4.3, the normal matrix multiplication
+operator (<code>%*%</code>) cannot be properly implemented for S3
+datatypes, so <code>rvar</code> uses <code>%**%</code> instead. In R ≥
+4.3, which does support matrix multiplication for S3 datatypes, you can
+use <code>%*%</code> to matrix-multiply <code>rvar</code>s.</p>
+<p>A trivial example:</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Sigma</span> <span class="op"><a href="../reference/rvar-matmult.html">%**%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## rvar&lt;100,4&gt;[3,3] <span style="color: #949494;">mean ± sd:</span></span></span>
@@ -420,7 +423,8 @@ under the hood). Because the normal matrix multiplication operator in R
 </tr>
 <tr class="odd">
 <td align="left">Matrix multiplication</td>
-<td align="left"><code>%**%</code></td>
+<td align="left">
+<code>%**%</code>, <code>%*%</code> (R ≥ 4.3 only)</td>
 </tr>
 <tr class="even">
 <td align="left">Basic functions</td>
@@ -935,9 +939,10 @@ creating the mixture distribution:</p>
 <span><span class="co">## [1] 4 ± 2</span></span></code></pre>
 <p>The resulting mixture looks like this:</p>
 <div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggdist</span><span class="fu">::</span><span class="fu"><a href="http://mjskay.github.io/ggdist/reference/stat_slab.html" class="external-link">stat_slab</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xdist <span class="op">=</span> <span class="va">mixture</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: package 'ggplot2' was built under R version 4.2.3</span></span></code></pre>
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggdist</span><span class="fu">::</span><span class="fu"><a href="http://mjskay.github.io/ggdist/reference/stat_slab.html" class="external-link">stat_slab</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xdist <span class="op">=</span> <span class="va">mixture</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="rvar_files/figure-html/mixture-1.png" width="700"></p>
 <p>See <code><a href="http://mjskay.github.io/ggdist/articles/slabinterval.html" class="external-link">vignette("slabinterval", package = "ggdist")</a></code> for
 more examples of visualizing distribution-type objects, including
@@ -953,7 +958,7 @@ shape, then returns a new <code>rvar</code> containing draws from
 <code>yes</code> where <code>test == TRUE</code> and draws from
 <code>no</code> where <code>test == FALSE</code>.</p>
 <p>Thus, we can create the mixture as follows:</p>
-<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/rvar_ifelse.html">rvar_ifelse</a></span><span class="op">(</span><span class="va">i</span> <span class="op">==</span> <span class="fl">1</span>, <span class="va">component</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span>, <span class="va">component</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="va">x</span></span></code></pre></div>
 <pre><code><span><span class="co">## rvar&lt;4000&gt;[1] <span style="color: #949494;">mean ± sd:</span></span></span>
@@ -972,7 +977,7 @@ same draw.</p>
 <code>rvar</code> whose values are either <code>1</code> or
 <code>2</code> within each draw, you can use it as an index directly on
 <code>component</code> to create the mixture:</p>
-<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="va">component</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">x</span></span></code></pre></div>
 <pre><code><span><span class="co">## rvar&lt;4000&gt;[1] <span style="color: #949494;">mean ± sd:</span></span></span>
@@ -993,7 +998,7 @@ family of functions for applying functions over arrays:
 its first dimension, which may be necessary for compatibility with some
 functions (like <code>purrr:map()</code>).</p>
 <p>For example, given this multidimensional <code>rvar</code>…</p>
-<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">3456</span><span class="op">)</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rvar_rng.html">rvar_rng</a></span><span class="op">(</span><span class="va">rnorm</span>, <span class="fl">24</span>, mean <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">24</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span></span>
@@ -1024,7 +1029,7 @@ functions (like <code>purrr:map()</code>).</p>
 <span><span class="co">## [2,] 20 ± 1.00  22 ± 1.00  24 ± 1.00</span></span></code></pre>
 <p>… you can apply functions along the margins using
 <code><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply()</a></code> (here, a silly example):</p>
-<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/apply.html" class="external-link">apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span>, <span class="va">length</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##      [,1] [,2] [,3]</span></span>
 <span><span class="co">## [1,]    4    4    4</span></span>
@@ -1040,12 +1045,12 @@ results of the applied function.</p>
 <p>For example, you can use <code><a href="../reference/rvar_apply.html">rvar_apply()</a></code> with
 <code><a href="../reference/rvar-summaries-within-draws.html">rvar_mean()</a></code> to compute the distributions of means along one
 margin of an array:</p>
-<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rvar_apply.html">rvar_apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fl">1</span>, <span class="va">rvar_mean</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## rvar&lt;4000&gt;[2] <span style="color: #949494;">mean ± sd:</span></span></span>
 <span><span class="co">## [1] 12 ± 0.29  13 ± 0.29</span></span></code></pre>
 <p>Or along multiple dimensions:</p>
-<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/rvar_apply.html">rvar_apply</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span><span class="op">)</span>, <span class="va">rvar_mean</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## rvar&lt;4000&gt;[3,4] <span style="color: #949494;">mean ± sd:</span></span></span>
 <span><span class="co">##      [,1]         [,2]         [,3]         [,4]        </span></span>
@@ -1068,7 +1073,7 @@ regular R arrays.</p>
 base-R plots of individual draws (for <code>ggplot2</code>-based
 plotting of <code>rvar</code>s, see the next section and the <a href="https://mjskay.github.io/ggdist/" class="external-link">ggdist</a> package). For
 example, it can be used to construct a parallel coordinates plot:</p>
-<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">eight_schools</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/draws_rvars.html">as_draws_rvars</a></span><span class="op">(</span><span class="fu"><a href="../reference/example_draws.html">example_draws</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">1</span>, type <span class="op">=</span> <span class="st">"n"</span>,</span>
@@ -1097,8 +1102,8 @@ needed.</p>
 <h2 id="using-rvars-in-data-frames-and-in-ggplot2">Using <code>rvar</code>s in data frames and in ggplot2<a class="anchor" aria-label="anchor" href="#using-rvars-in-data-frames-and-in-ggplot2"></a>
 </h2>
 <p><code>rvar</code>s can be used as columns in
-<code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame()</a></code> or <code>tibble()</code> objects:</p>
-<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<code><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame()</a></code> or <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble()</a></code> objects:</p>
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>group <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"a"</span>,<span class="st">"b"</span>,<span class="st">"c"</span>,<span class="st">"d"</span><span class="op">)</span>, <span class="va">mu</span><span class="op">)</span></span>
 <span><span class="va">df</span></span></code></pre></div>
 <pre><code><span><span class="co">##   group       mu</span></span>
@@ -1113,11 +1118,12 @@ can then be visualized with ggplot2 by passing them to the
 <code>stat_...</code> family of geometries in the <a href="https://mjskay.github.io/ggdist/" class="external-link">ggdist</a> package, such as
 <code><a href="http://mjskay.github.io/ggdist/reference/stat_halfeye.html" class="external-link">stat_halfeye()</a></code>, <code><a href="http://mjskay.github.io/ggdist/reference/stat_lineribbon.html" class="external-link">stat_lineribbon()</a></code>, and
 <code><a href="http://mjskay.github.io/ggdist/reference/stat_dotsinterval.html" class="external-link">stat_dotsinterval()</a></code>. For example:</p>
-<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mjskay.github.io/ggdist/" class="external-link">ggdist</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">+</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://mjskay.github.io/ggdist/" class="external-link">ggdist</a></span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## Warning: package 'ggdist' was built under R version 4.2.3</span></span></code></pre>
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="http://mjskay.github.io/ggdist/reference/stat_halfeye.html" class="external-link">stat_halfeye</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">group</span>, xdist <span class="op">=</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="rvar_files/figure-html/data_frame_plot-1.png" width="700"></p>
 <p>See <code><a href="http://mjskay.github.io/ggdist/articles/slabinterval.html" class="external-link">vignette("slabinterval", package = "ggdist")</a></code> or
