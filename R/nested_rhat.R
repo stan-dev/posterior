@@ -1,7 +1,7 @@
 #' Nested Rhat convergence diagnostic
 #'
 #' Compute the nested Rhat convergence diagnostic for a single
-#' variable as proposed in Margossian et al. (2023).
+#' variable as proposed in Margossian et al. (2024).
 #'
 #' @family diagnostics
 #' @template args-conv
@@ -20,11 +20,11 @@
 #' Note that there is a slight difference in the calculation of Rhat
 #'   and nested Rhat, as nested Rhat is lower bounded by 1. This means
 #'   that nested Rhat with one chain per superchain will not be
-#'   exactly equal to basic Rhat (see Footnote 1 in Margossian et
-#'   al. (2023)).
+#'   exactly equal to basic Rhat (see Footnote 3 in Margossian et
+#'   al. (2024)).
 #'
 #' @template return-conv
-#' @template ref-margossian-nestedrhat-2023
+#' @template ref-margossian-nestedrhat-2024
 #'
 #' @examples
 #' mu <- extract_variable_matrix(example_draws(), "mu")
@@ -78,17 +78,17 @@ rhat_nested.rvar <- function(x, superchain_ids, ...) {
 
   superchains <- unique(superchain_ids)
 
-  # mean and variance of chains calculated as in rhat
+  # mean and variance of chains calculated as in Rhat
   chain_mean <- matrixStats::colMeans2(x)
   chain_var <- matrixStats::colVars(x, center = chain_mean)
 
   # mean of superchains calculated by only including specified chains
-  # (equation 15 in Margossian et al. 2023)
+  # (equation 4 in Margossian et al. 2024)
   superchain_mean <- sapply(
     superchains, function(k) mean(x[, which(superchain_ids == k)])
   )
 
-  # between-chain variance estimate (B_k in equation 18 in Margossian et al. 2023)
+  # between-chain variance estimate (Bhat_k in equation 7 in Margossian et al. 2024)
   if (nchains_per_superchain == 1) {
     var_between_chain <- 0
   } else {
@@ -98,7 +98,7 @@ rhat_nested.rvar <- function(x, superchain_ids, ...) {
     )
   }
 
-  # within-chain variance estimate (W_k in equation 18 in Margossian et al. 2023)
+  # within-chain variance estimate (What_k in equation 7 in Margossian et al. 2024)
   if (niterations == 1) {
     var_within_chain <- 0
   } else {
@@ -108,12 +108,12 @@ rhat_nested.rvar <- function(x, superchain_ids, ...) {
     )
   }
 
-  # between-superchain variance (nB in equation 17 in Margossian et al. 2023)
+  # between-superchain variance (Bhat_nu in equation 6 in Margossian et al. 2024)
   var_between_superchain <- var(superchain_mean)
 
-  # within-superchain variance (nW in equation 18 in Margossian et al. 2023)
+  # within-superchain variance (What_nu in equation 7 in Margossian et al. 2024)
   var_within_superchain <- mean(var_within_chain + var_between_chain)
 
-  # nested Rhat (nRhat in equation 19 in Margossian et al. 2023)
+  # nested Rhat (Rhat_nu in equation 8 in Margossian et al. 2024)
   sqrt(1 + var_between_superchain / var_within_superchain)
 }
