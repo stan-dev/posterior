@@ -608,6 +608,7 @@ autocovariance <- function(x) {
 autocorrelation <- function(x) {
   ac <- autocovariance(x)
   ac <- ac / ac[1]
+  ac
 }
 
 #' Rank normalization
