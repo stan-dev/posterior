@@ -16,11 +16,14 @@
 #' | [ess_basic()] | Basic version of effective sample size |
 #' | [ess_bulk()] | Bulk effective sample size |
 #' | [ess_tail()] | Tail effective sample size |
+#' | [ess_mean()] | Effective sample sizes for the mean |
+#' | [ess_median()] | Effective sample sizes for the median |
 #' | [ess_quantile()] | Effective sample sizes for quantiles |
-#' | [ess_sd()] | Effective sample sizes for standard deviations |
+#' | [ess_sd()] | Effective sample sizes for the standard deviation |
 #' | [mcse_mean()] | Monte Carlo standard error for the mean |
+#' | [mcse_median()] | Monte Carlo standard error for the median |
 #' | [mcse_quantile()] | Monte Carlo standard error for quantiles |
-#' | [mcse_sd()] | Monte Carlo standard error for standard deviations |
+#' | [mcse_sd()] | Monte Carlo standard error for the standard deviation |
 #' | [pareto_khat()] | Pareto khat diagnostic for tail(s) |
 #' | [pareto_diags()] | Additional diagnostics related to Pareto khat |
 #' | [rhat_basic()] | Basic version of Rhat |
