@@ -46,21 +46,55 @@ pareto_khat.default <- function(x,
 
 #' @rdname pareto_khat
 #' @export
-pareto_khat.rvar <- function(x, ...) {
-  draws_diags <- summarise_rvar_by_element_with_chains(
-    x,
-    pareto_smooth.default,
-    return_k = TRUE,
-    smooth_draws = FALSE,
-    ...
-  )
-  dim(draws_diags) <- dim(draws_diags) %||% length(draws_diags)
-  margins <- seq_along(dim(draws_diags))
+pareto_khat.rvar <- function(x, verbose = FALSE, ...) {
+  if (is.null(weights(x))) {
+    draws_diags <- summarise_rvar_by_element_with_chains(
+      x,
+      pareto_smooth.default,
+      smooth_draws = FALSE,
+      return_k = TRUE,
+      verbose = verbose,
+      ...
+    )
 
-  diags <- list(
-    khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat)
-  )
+    dim(draws_diags) <- dim(draws_diags) %||% length(draws_diags)
+    margins <- seq_along(dim(draws_diags))
 
+    diags <- list(
+      khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat)
+    )
+  } else {
+
+    # take the max of khat for x * weights and khat for weights
+    weights_diags <- pareto_khat(
+      weights(x, log = TRUE),
+      are_log_weights = TRUE,
+      ...
+    )
+
+    w <- weights(x)
+
+    xu <- weight_draws(x, NULL)
+    xu <- xu * rvar(w)
+
+    product_diags <- summarise_rvar_by_element_with_chains(
+      xu,
+      pareto_khat.default,
+      verbose = verbose,
+      ...
+    )
+
+    dim(product_diags) <- dim(product_diags) %||% length(product_diags)
+    margins <- seq_along(dim(product_diags))
+
+    diags <- list(
+      khat = apply(product_diags, margins,
+                   function(x) {
+                     max(x[[1]]$khat,
+                         weights_diags$khat)
+                   })
+    )
+  }
   diags
 }
 
@@ -149,6 +183,8 @@ pareto_diags.default <- function(x,
 #' @rdname pareto_diags
 #' @export
 pareto_diags.rvar <- function(x, ...) {
+
+  if (is.null(weights(x))) {
   draws_diags <- summarise_rvar_by_element_with_chains(
     x,
     pareto_smooth.default,
@@ -167,6 +203,35 @@ pareto_diags.rvar <- function(x, ...) {
     khat_threshold = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat_threshold),
     convergence_rate = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$convergence_rate)
   )
+  } else {
+
+    # take the max of khat for x * weights and khat for weights
+
+    weights_diags <- pareto_diags(
+      weights(x, log = TRUE),
+      are_log_weights = TRUE,
+      ...
+    )
+
+    w <- weights(x)
+
+    x <- weight_draws(x, NULL)
+    product_diags <- summarise_rvar_by_element_with_chains(
+      x * rvar(w, nchains = nchains(x)),
+      pareto_diags,
+      ...
+    )
+
+    dim(product_diags) <- dim(product_diags) %||% length(product_diags)
+    margins <- seq_along(dim(product_diags))
+
+    diags <- list(
+      khat = apply(product_diags, margins, function(x) max(x[[1]]$khat, weights_diags$khat)),
+      min_ss = apply(product_diags, margins, function(x) max(x[[1]]$min_ss, weights_diags$min_ss)),
+      khat_threshold = apply(product_diags, margins, function(x) max(x[[1]]$khat_threshold, weights_diags$khat_threshold)),
+      convergence_rate = apply(product_diags, margins, function(x) min(x[[1]]$convergence_rate, weights_diags$convergence_rate))
+    )
+  }
 
   diags
 }
@@ -250,7 +315,7 @@ pareto_smooth.rvar <- function(x, return_k = FALSE, extra_diags = FALSE, ...) {
 #' @export
 pareto_smooth.default <- function(x,
                                   tail = c("both", "right", "left"),
-                                  r_eff = 1,
+                                  r_eff = NULL,
                                   ndraws_tail = NULL,
                                   return_k = FALSE,
                                   extra_diags = FALSE,
@@ -279,7 +344,7 @@ pareto_smooth.default <- function(x,
   if (are_log_weights) {
     tail <- "right"
   }
-  
+
   tail <- match.arg(tail)
   S <- length(x)
 
@@ -330,7 +395,7 @@ pareto_smooth.default <- function(x,
 
     k <- max(left_k, right_k)
     x <- smoothed$x
-    
+
   } else {
 
     smoothed <- .pareto_smooth_tail(
@@ -444,7 +509,7 @@ pareto_convergence_rate.rvar <- function(x, ...) {
     # shift log values for safe exponentiation
     x <- x - max(x)
   }
-  
+
   tail <- match.arg(tail)
 
   S <- length(x)
@@ -458,10 +523,10 @@ pareto_convergence_rate.rvar <- function(x, ...) {
   draws_tail <- ord$x[tail_ids]
 
   cutoff <- ord$x[min(tail_ids) - 1] # largest value smaller than tail values
-  
+
   max_tail <- max(draws_tail)
   min_tail <- min(draws_tail)
-  
+
   if (ndraws_tail >= 5) {
     ord <- sort.int(x, index.return = TRUE)
     if (abs(max_tail - min_tail) < .Machine$double.eps / 100) {
@@ -617,7 +682,7 @@ pareto_k_diagmsg <- function(diags, are_weights = FALSE, ...) {
   msg <- NULL
 
   if (!are_weights) {
-  
+
     if (khat > 1) {
       msg <- paste0(msg, " Mean does not exist, making empirical mean estimate of the draws not applicable.")
     } else {
@@ -630,7 +695,7 @@ pareto_k_diagmsg <- function(diags, are_weights = FALSE, ...) {
     }
   } else {
     if (khat > khat_threshold || khat > 0.7) {
-        msg <- paste0(msg, " Pareto khat for weights is high (", round(khat, 1) ,"). This indicates a single or few weights dominate.\n", "Inference based on weighted draws will be unreliable.\n")
+      msg <- paste0(msg, " Pareto khat for weights is high (", round(khat, 1) ,"). This indicates a single or few weights dominate.\n", "Inference based on weighted draws will be unreliable.\n")
     }
   }
   message("Pareto k-hat = ", round(khat, 2), ".", msg)
