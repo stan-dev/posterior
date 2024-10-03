@@ -5,7 +5,6 @@
 \alias{ess_quantile.default}
 \alias{ess_quantile.rvar}
 \alias{ess_median}
-\alias{ess_mean.default}
 \title{Effective sample sizes for quantiles}
 \usage{
 ess_quantile(x, probs = c(0.05, 0.95), ...)
@@ -15,8 +14,6 @@ ess_quantile(x, probs = c(0.05, 0.95), ...)
 \method{ess_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
 ess_median(x, ...)
-
-\method{ess_mean}{default}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:

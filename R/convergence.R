@@ -317,7 +317,7 @@ ess_median <- function(x, ...) {
 #' @export
 ess_mean <- function(x, ...) UseMethod("ess_mean")
 
-#' @rdname ess_quantile
+#' @rdname ess_mean
 #' @export
 ess_mean.default <- function(x, ...) {
   .ess(.split_chains(x))
