@@ -22,6 +22,9 @@ for assessing convergence of MCMC (with discussion)",
                     person("Bob", "Carpenter"),
                     person("Paul-Christian", "Bürkner")),
          year = "2021",
+         volume = "16",
+         number = "2",
+         pages = "667-718",
          journal = "Bayesian Analysis",
          header = "To cite the MCMC convergence diagnostics:"
 )
