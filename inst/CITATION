@@ -21,7 +21,64 @@ for assessing convergence of MCMC (with discussion)",
                     person("Daniel", "Simpson"),
                     person("Bob", "Carpenter"),
                     person("Paul-Christian", "Bürkner")),
-         year = "2021",
          journal = "Bayesian Analysis",
-         header = "To cite the MCMC convergence diagnostics:"
+         year = "2021",
+         volume = "16",
+         number = "2",
+         pages = "667-718",
+         header = "To cite the MCMC convergence diagnostics (`rhat`, `ess_bulk`, `ess_tail`,
+ `ess_median`, `ess_quantile`, `mcse_median`, and `mcse_quantile`):"
+)
+
+bibentry(
+  title = "Nested Rhat: Assessing the convergence of Markov chain Monte Carlo when running many short chains",
+  bibtype = "Article",
+  author = c(
+    person("Charles C.", "Margossian"),
+    person("Matthew D.", "Hoffman"),
+    person("Pavel", "Sountsov"),
+    person("Lionel", "Riou-Durand"),
+    person("Aki", "Vehtari"),
+    person("Andrew", "Gelman")
+  ),
+  journal = "Bayesian Analysis",
+  year = 2024,
+  doi = "10.1214/24-BA1453",
+  header = "To cite MCMC convergence diagnostic `nested_rhat`:"
+)
+
+bibentry(
+  title = "Rstar: A robust MCMC convergence diagnostic with uncertainty using decision tree classifiers",
+  bibtype = "Article",
+  author = c(
+    person("Ben", "Lambert"),
+    person("Aki", "Vehtari")
+  ),
+  journal = "Bayesian Analysis",
+  year = 2022,
+  volume = 17,
+  number = 2,
+  pages = "353-379",
+  doi = "10.1214/20-BA1252",
+  header = "To cite MCMC convergence diagnostic `rstar`:"
+)
+
+bibentry(
+  title = "Pareto smoothed importance sampling",
+  bibtype = "Article",
+  author = c(
+    person("Aki", "Vehtari"),
+    person("Daniel", "Simpson"),
+    person("Andrew", "Gelman"),
+    person("Yuling", "Yao"),
+    person("Jonah", "Gabry")
+  ),
+  journal = "Journal of Machine Learning Research",
+  year = 2024,
+  volume = 25,
+  number = 72,
+  pages = "1-58",
+  header = "To cite Pareto-k diagnostics and Pareto smoothing (`pareto_khat`, `pareto_min_ss`,
+`pareto_convergence_rate`, `khat_threshold`, `pareto_diags`, and
+`pareto_smooth`):"
 )
