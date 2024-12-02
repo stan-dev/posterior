@@ -130,7 +130,11 @@ as_draws_array.mcmc.list <- function(x, ...) {
 
 # try to convert any R object into a 'draws_array' object
 .as_draws_array <- function(x) {
-  x <- as.array(x)
+  if (is_matrix_list_like(x)) {
+    x <- as_array_matrix_list(x)
+  } else {
+    x <- as.array(x)
+  }
   new_dimnames <- list(iteration = NULL, chain = NULL, variable = NULL)
   if (!is.null(dimnames(x)[[3]])) {
     new_dimnames[[3]] <- dimnames(x)[[3]]
@@ -177,7 +181,14 @@ is_draws_array <- function(x) {
 
 # is an object looking like a 'draws_array' object?
 is_draws_array_like <- function(x) {
-  is.array(x) && length(dim(x)) == 3L
+  is.array(x) && length(dim(x)) == 3L ||
+    is_matrix_list_like(x)
+}
+
+# is an object likely a list of matrices?
+# such an object can be easily converted to a draws_array
+is_matrix_list_like <- function(x) {
+  is.list(x) && length(dim(x[[1]])) == 2L
 }
 
 #' Extract parts of a `draws_array` object

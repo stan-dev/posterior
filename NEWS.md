@@ -1,3 +1,9 @@
+# posterior 1.6.0+
+
+### Enhancements
+
+* Convert lists of matrices to `draws_array` objects.
+
 # posterior 1.6.0
 
 ### Enhancements

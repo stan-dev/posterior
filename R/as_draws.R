@@ -76,10 +76,11 @@ closest_draws_format <- function(x) {
     out <- "rvars"
   } else if (is_draws_list_like(x)) {
     out <- "list"
-  }
-  else {
-    stop_no_call("Don't know how to transform an object of class ",
-          "'", class(x)[1L], "' to any supported draws format.")
+  } else {
+    stop_no_call(
+      "Don't know how to transform an object of class '",
+      class(x)[1L], "' to any supported draws format."
+    )
   }
   paste0("draws_", out)
 }
