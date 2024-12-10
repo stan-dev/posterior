@@ -40,6 +40,7 @@
 #' @name rvar-dist
 #' @export
 density.rvar <- function(x, at, ...) {
+  check_rvar_not_complex(x, "density")
   summarise_rvar_by_element(x, function(draws) {
     d <- density(draws, cut = 0, ...)
     f <- approxfun(d$x, d$y, yleft = 0, yright = 0)
@@ -66,6 +67,7 @@ distributional::cdf
 #' @rdname rvar-dist
 #' @export
 cdf.rvar <- function(x, q, ...) {
+  check_rvar_not_complex(x, "cdf")
   summarise_rvar_by_element(x, function(draws) {
     ecdf(draws)(q)
   })
@@ -91,13 +93,15 @@ cdf.rvar_ordered <- function(x, q, ...) {
 #' @rdname rvar-dist
 #' @export
 quantile.rvar <- function(x, probs, ...) {
+  check_rvar_not_complex(x, "quantile")
   summarise_rvar_by_element_via_matrix(x,
     "quantile",
-    function(draws) {
-      t(matrixStats::colQuantiles(draws, probs = probs, useNames = TRUE, ...))
-    },
+    function(..., names) t(matrixStats::colQuantiles(..., useNames = FALSE)),
     .extra_dim = length(probs),
-    .extra_dimnames = list(NULL)
+    .extra_dimnames = list(NULL),
+    probs = probs,
+    names = FALSE,
+    ...
   )
 }
 
