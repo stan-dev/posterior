@@ -131,11 +131,20 @@ test_that("lists of matrices can be transformed to draws_array objects", {
   x <- round(rnorm(200), 2)
   x <- matrix(x, nrow = 50)
   colnames(x) <- paste0("theta", 1:4)
-  x <- list(x, x, x)
 
-  y <- as_draws(x)
+  # one chain
+  z1 <- list(x)
+  y <- as_draws(z1)
   expect_is(y, "draws_array")
-  expect_equal(variables(y), colnames(x[[1]]))
+  expect_equal(variables(y), colnames(z1[[1]]))
+  expect_equal(niterations(y), 50)
+  expect_equal(nchains(y), 1)
+
+  # multiple chains
+  z3 <- list(x, x, x)
+  y <- as_draws(z3)
+  expect_is(y, "draws_array")
+  expect_equal(variables(y), colnames(z3[[1]]))
   expect_equal(niterations(y), 50)
   expect_equal(nchains(y), 3)
 })
