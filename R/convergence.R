@@ -357,7 +357,10 @@ ess_sd <- function(x, ...) UseMethod("ess_sd")
 #' @rdname ess_sd
 #' @export
 ess_sd.default <- function(x, ...) {
-  .ess(.split_chains(abs(x-mean(x))))
+  # var/sd are not a simple expectation of g(X), e.g. variance
+  # has (X-E[X])^2. The following ESS is based on a relevant quantity
+  # in the computation and is empirically a good choice.
+  .ess(.split_chains((x-mean(x))^2))
 }
 
 #' @rdname ess_sd
