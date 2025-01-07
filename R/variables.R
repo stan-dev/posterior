@@ -235,6 +235,9 @@ check_existing_variables <- function(variables, x, regex = FALSE,
     return(NULL)
   }
 
+  # do not allow NA values in variables
+  checkmate::assertCharacter(variables, any.missing = FALSE)
+
   regex <- as_one_logical(regex)
   scalar <- as_one_logical(scalar)
   exclude <- as_one_logical(exclude)
