@@ -645,8 +645,10 @@ z_scale <- function(x, c = 3/8) {
 #'
 #' Compute rank uniformization for a numeric array. First replace each value by
 #' its rank. Average rank for ties are used to conserve the number of unique
-#' values of discrete quantities. Second, uniformize ranks to the scale
-#' `[1/(2S), 1-1/(2S)]`, where `S` is the number of values.
+#' values of discrete quantities. Second, uniformize ranks using formula
+#' `(r - c) / (S - 2 * c + 1)`, where `r` is a rank, `S` is the number of
+#' values, and `c` is a fractional offset which defaults to c = 3/8 as
+#' recommend by Blom (1958).
 #'
 #' @template args-scale
 #' @template args-frac-offset
