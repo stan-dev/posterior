@@ -68,6 +68,10 @@ iteration_ids.draws_df <- function(x) {
 
 #' @export
 iteration_ids.draws_list <- function(x) {
+  if (!length(x) || !length(x[[1]])) {
+    # no chains or no variables within chains
+    return(integer(0))
+  }
   seq_along(x[[1]][[1]])
 }
 

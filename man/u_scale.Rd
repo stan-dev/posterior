@@ -19,7 +19,9 @@ and dimension as the input.
 \description{
 Compute rank uniformization for a numeric array. First replace each value by
 its rank. Average rank for ties are used to conserve the number of unique
-values of discrete quantities. Second, uniformize ranks to the scale
-\verb{[1/(2S), 1-1/(2S)]}, where \code{S} is the number of values.
+values of discrete quantities. Second, uniformize ranks using formula
+\code{(r - c) / (S - 2 * c + 1)}, where \code{r} is a rank, \code{S} is the number of
+values, and \code{c} is a fractional offset which defaults to c = 3/8 as
+recommend by Blom (1958).
 }
 \keyword{internal}
