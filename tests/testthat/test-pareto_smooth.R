@@ -33,9 +33,9 @@ test_that("pareto_khat handles ndraws_tail argument", {
   expect_true(pk10 > pk25)
 
   expect_warning(pareto_khat(tau, tail = "both", ndraws_tail = 201),
-                 "Number of tail draws cannot be more than half ",
+                 paste0("Number of tail draws cannot be more than half ",
                  "the total number of draws if both tails are fit, ",
-                 "changing to 200.")
+                 "changing to 200."))
 
   expect_warning(pareto_khat(tau, tail = "both", ndraws_tail = 4),
                  "Number of tail draws cannot be less than 5. Changing to 5.")
