@@ -58,7 +58,7 @@ package*](https://mc-stan.org/posterior/articles/posterior.html).
 
 ``` r
 library("posterior")
-#> This is posterior version 1.4.1.9001
+#> This is posterior version 1.6.0.9000
 #> 
 #> Attaching package: 'posterior'
 #> The following objects are masked from 'package:stats':
@@ -296,12 +296,12 @@ x4 <- bind_draws(x1, x3, along = "variable")
 print(x4)
 #> # A draws_matrix: 5 iterations, 1 chains, and 3 variables
 #>     variable
-#> draw  alpha beta theta
-#>    1  0.804    1 1.296
-#>    2  0.078    1 0.983
-#>    3  1.687    1 0.099
-#>    4 -1.906    1 0.094
-#>    5 -0.072    1 2.189
+#> draw alpha beta theta
+#>    1 -1.10    1 0.102
+#>    2 -0.64    1 1.386
+#>    3 -0.91    1 0.012
+#>    4  1.36    1 0.722
+#>    5  0.24    1 2.198
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -312,16 +312,16 @@ print(x5)
 #> # A draws_matrix: 10 iterations, 1 chains, and 2 variables
 #>     variable
 #> draw  alpha beta
-#>   1   0.804    1
-#>   2   0.078    1
-#>   3   1.687    1
-#>   4  -1.906    1
-#>   5  -0.072    1
-#>   6   0.654    2
-#>   7   0.675    2
-#>   8   0.104    2
-#>   9  -0.403    2
-#>   10  2.274    2
+#>   1  -1.102    1
+#>   2  -0.643    1
+#>   3  -0.912    1
+#>   4   1.356    1
+#>   5   0.245    1
+#>   6   0.429    2
+#>   7   0.929    2
+#>   8   0.042    2
+#>   9   0.118    2
+#>   10 -0.168    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -340,27 +340,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 iterations, 1 chains, and 5 variables
 #>     variable
-#> draw    V1    V2    V3    V4     V5
-#>   1  -0.51  0.49  0.49 -0.39 -2.828
-#>   2   1.02 -0.41 -1.19 -0.54  0.711
-#>   3  -2.83  1.28 -1.04  0.30  1.032
-#>   4  -1.61  0.39  1.08  1.22 -1.564
-#>   5   0.47 -0.50  0.40  0.13  0.202
-#>   6  -1.51  0.37  0.79 -1.55 -0.346
-#>   7   1.83 -2.90 -0.28  0.49  1.206
-#>   8  -1.09  0.86 -1.52 -0.32  0.098
-#>   9   0.21 -1.79  0.25  0.16 -1.371
-#>   10  1.44 -0.92 -0.52  0.22  0.889
+#> draw     V1    V2     V3     V4     V5
+#>   1   0.819 -1.46  0.092 -0.751 -0.549
+#>   2   1.675 -0.03  0.962  1.616 -0.624
+#>   3   0.084  0.58 -1.509  0.223 -0.180
+#>   4   1.798  0.63  0.230 -0.143 -0.764
+#>   5  -1.140 -0.34 -1.283 -0.298 -0.769
+#>   6   0.099  0.42  0.778 -0.318 -1.344
+#>   7   0.576  0.31 -0.950 -0.702  0.067
+#>   8   0.649 -3.09 -0.084  0.019  0.674
+#>   9  -0.683  0.64 -1.470 -0.609 -0.452
+#>   10  0.019 -0.70  1.326  0.222 -0.199
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 × 5
-#>   variable    mean    sd  median   mad
-#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
-#> 1 V1       -0.257  1.51  -0.147  1.88 
-#> 2 V2       -0.311  1.28  -0.0179 1.03 
-#> 3 V3       -0.154  0.893 -0.0154 0.972
-#> 4 V4       -0.0296 0.733  0.144  0.598
-#> 5 V5       -0.197  1.33   0.150  1.20
+#>   variable    mean    sd   median   mad
+#>   <chr>      <dbl> <dbl>    <dbl> <dbl>
+#> 1 V1        0.390  0.927  0.338   0.593
+#> 2 V2       -0.305  1.19   0.140   0.719
+#> 3 V3       -0.191  1.05   0.00404 1.42 
+#> 4 V4       -0.0741 0.691 -0.220   0.615
+#> 5 V5       -0.414  0.547 -0.500   0.423
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
@@ -379,17 +379,17 @@ variables(x) <-  paste0("V", 1:5)
 print(x)
 #> # A draws_matrix: 10 iterations, 2 chains, and 5 variables
 #>     variable
-#> draw    V1    V2     V3      V4    V5
-#>   1  -1.24  1.39  0.946  0.2391 -0.68
-#>   2   0.46 -0.14  0.852 -0.0092  0.67
-#>   3   0.20 -1.35 -0.388 -1.2112 -0.29
-#>   4  -0.77 -0.61 -0.649 -1.4109 -1.10
-#>   5  -0.45 -0.12 -1.095 -1.3789  1.28
-#>   6  -1.01  1.40 -0.072  0.6276 -0.57
-#>   7   0.28  0.58 -0.248  0.1293  0.39
-#>   8  -0.22 -0.83  2.084  0.0950  0.76
-#>   9  -0.39  1.99  0.914  0.9035 -0.65
-#>   10 -1.87  0.66 -0.505 -1.4585  0.42
+#> draw    V1    V2     V3    V4     V5
+#>   1   1.53 -0.18  0.022 -0.15  0.170
+#>   2   1.27 -0.48  0.111 -0.61 -0.452
+#>   3   1.23 -0.80  0.348  1.03  0.749
+#>   4   0.33 -0.67  1.214  1.57 -0.245
+#>   5  -1.07  0.76  0.482  0.73 -0.382
+#>   6   0.25  0.30  0.815 -3.47 -2.536
+#>   7  -0.74 -0.66  1.139  0.36 -0.017
+#>   8   0.25  0.78 -1.884 -1.25  1.450
+#>   9  -0.24  0.88  0.056 -0.86  0.913
+#>   10 -0.48  1.11  0.382  0.23  0.228
 #> # ... with 10 more draws
 ```
 
@@ -439,13 +439,36 @@ When using **posterior**, please cite it as follows:
   Tools for Working with Posterior Distributions.” R package version
   XXX, \<URL: <https://mc-stan.org/posterior/>\>.
 
-When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or
-`ess_tail`, please also cite
+When using the MCMC convergence diagnostics `rhat`, `ess_bulk`,
+`ess_tail`, `ess_median`, `ess_quantile`, `mcse_median`, or
+`mcse_quantile` please also cite
 
 - Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C.
   (2021). Rank-normalization, folding, and localization: An improved
   Rhat for assessing convergence of MCMC (with discussion). *Bayesian
   Analysis*. 16(2), 667–718. doi.org/10.1214/20-BA1221
+
+When using the MCMC convergence diagnostic `rhat_nested` please also
+cite
+
+- Margossian, C. C., Hoffman, M. D., Sountsov, P., Riou-Durand, L.,
+  Vehtari, A., and Gelman, A. (2024). Nested $\widehat{R}$: Assessing
+  the convergence of Markov chain Monte Carlo when running many short
+  chains. *Bayesian Analysis*, <doi:10.1214/24-BA1453>.
+
+When using the MCMC convergence diagnostic `rstar` please also cite
+
+- Lambert, B. and Vehtari, A. (2022). $R^*$: A robust MCMC convergence
+  diagnostic with uncertainty using decision tree classifiers. *Bayesian
+  Analysis*, 17(2):353-379. <doi:10.1214/20-BA1252>
+
+When using the Pareto-k diagnostics `pareto_khat`, `pareto_min_ss`,
+`pareto_convergence_rate`, `khat_threshold` or `pareto_diags`, or Pareto
+smoothing `pareto_smooth` please also cite
+
+- Vehtari, A., Simpson, D., Gelman, A., Yao, Y., and Gabry, J. (2024).
+  Pareto smoothed importance sampling. *Journal of Machine Learning
+  Research*, 25(72):1-58.
 
 The same information can be obtained by running `citation("posterior")`.
 
@@ -455,10 +478,23 @@ Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki Vehtari
 A., & Rubin D. B. (2013). *Bayesian Data Analysis, Third Edition*.
 Chapman and Hall/CRC.
 
+Lambert, B. and Vehtari, A. (2022). $R^*$: A robust MCMC convergence
+diagnostic with uncertainty using decision tree classifiers. *Bayesian
+Analysis*, 17(2):353-379. <doi:10.1214/20-BA1252>
+
+Margossian, C. C., Hoffman, M. D., Sountsov, P., Riou-Durand, L.,
+Vehtari, A., and Gelman, A. (2024). Nested $\widehat{R}$: Assessing the
+convergence of Markov chain Monte Carlo when running many short chains.
+*Bayesian Analysis*, <doi:10.1214/24-BA1453>.
+
 Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2021).
 Rank-normalization, folding, and localization: An improved Rhat for
 assessing convergence of MCMC (with discussion). *Bayesian Analysis*.
 16(2), 667–718. doi.org/10.1214/20-BA1221
+
+Vehtari, A., Simpson, D., Gelman, A., Yao, Y., and Gabry, J. (2024).
+Pareto smoothed importance sampling. *Journal of Machine Learning
+Research*, 25(72):1-58.
 
 ### Licensing
 
