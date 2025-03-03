@@ -341,7 +341,8 @@ summarise_draws_helper <- function(x, funs, .args) {
   variables_x <- variables(x)
   # get length and output names, calculated on the first variable
   out_1 <- create_summary_list(x, variables_x[1], funs, .args)
-  out_1 <- unnest(out_1)
+  #  out_1 <- unlist(out_1)
+  out_1 <- purrr::flatten(out_1)
   the_names <- names(out_1)
   # Check for naming issues prior do doing lengthy computation
   if ("variable" %in% the_names) {
@@ -355,7 +356,8 @@ summarise_draws_helper <- function(x, funs, .args) {
   if (length(variables_x) > 1L) {
     for (v_ind in 2:length(variables_x)) {
       out_v <- create_summary_list(x, variables_x[v_ind], funs, .args)
-      out[v_ind, ] <- unnest(out_v)
+     # out[v_ind, ] <- unlist(out_v)
+      out[v_ind, ] <- purrr::flatten(out_v)
     }
   }
   out <- tibble::as_tibble(out)
