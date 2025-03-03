@@ -16,11 +16,14 @@
 #' | [ess_basic()] | Basic version of effective sample size |
 #' | [ess_bulk()] | Bulk effective sample size |
 #' | [ess_tail()] | Tail effective sample size |
+#' | [ess_mean()] | Effective sample sizes for the mean |
+#' | [ess_median()] | Effective sample sizes for the median |
 #' | [ess_quantile()] | Effective sample sizes for quantiles |
-#' | [ess_sd()] | Effective sample sizes for standard deviations |
+#' | [ess_sd()] | Effective sample sizes for the standard deviation |
 #' | [mcse_mean()] | Monte Carlo standard error for the mean |
+#' | [mcse_median()] | Monte Carlo standard error for the median |
 #' | [mcse_quantile()] | Monte Carlo standard error for quantiles |
-#' | [mcse_sd()] | Monte Carlo standard error for standard deviations |
+#' | [mcse_sd()] | Monte Carlo standard error for the standard deviation |
 #' | [pareto_khat()] | Pareto khat diagnostic for tail(s) |
 #' | [pareto_diags()] | Additional diagnostics related to Pareto khat |
 #' | [rhat_basic()] | Basic version of Rhat |
@@ -317,7 +320,7 @@ ess_median <- function(x, ...) {
 #' @export
 ess_mean <- function(x, ...) UseMethod("ess_mean")
 
-#' @rdname ess_quantile
+#' @rdname ess_mean
 #' @export
 ess_mean.default <- function(x, ...) {
   .ess(.split_chains(x))
@@ -354,7 +357,10 @@ ess_sd <- function(x, ...) UseMethod("ess_sd")
 #' @rdname ess_sd
 #' @export
 ess_sd.default <- function(x, ...) {
-  .ess(.split_chains(abs(x-mean(x))))
+  # var/sd are not a simple expectation of g(X), e.g. variance
+  # has (X-E[X])^2. The following ESS is based on a relevant quantity
+  # in the computation and is empirically a good choice.
+  .ess(.split_chains((x-mean(x))^2))
 }
 
 #' @rdname ess_sd
@@ -608,6 +614,7 @@ autocovariance <- function(x) {
 autocorrelation <- function(x) {
   ac <- autocovariance(x)
   ac <- ac / ac[1]
+  ac
 }
 
 #' Rank normalization
@@ -638,8 +645,10 @@ z_scale <- function(x, c = 3/8) {
 #'
 #' Compute rank uniformization for a numeric array. First replace each value by
 #' its rank. Average rank for ties are used to conserve the number of unique
-#' values of discrete quantities. Second, uniformize ranks to the scale
-#' `[1/(2S), 1-1/(2S)]`, where `S` is the number of values.
+#' values of discrete quantities. Second, uniformize ranks using formula
+#' `(r - c) / (S - 2 * c + 1)`, where `r` is a rank, `S` is the number of
+#' values, and `c` is a fractional offset which defaults to c = 3/8 as
+#' recommend by Blom (1958).
 #'
 #' @template args-scale
 #' @template args-frac-offset

@@ -1,9 +1,29 @@
-# posterior (development version)
+# posterior 1.6.1
+
+### Bug Fixes
+
+* Fix a test issue that led to an R CMD check failure on R devel.
 
 ### Enhancements
 
-* Add `pareto_smooth` option to `weight_draws`, to Pareto smooth
+* Convert lists of matrices to `draws_array` objects.
+* Improve the documentation in various places.
+
+# posterior 1.6.0
+
+### Enhancements
+
+* Add `exclude` option to `subset_draws()`, which can be used to exclude
+  the matched selection.
+* Add `are_log_weights` option to `pareto_smooth()`, which is necessary
+  for correct Pareto smoothing computation if the input vector
+  consists of log weights.
+* Add `pareto_smooth` option to `weight_draws()`, to Pareto smooth
   weights before adding to a draws object.
+* Add individual Pareto diagnostic functions (`pareto_khat()`,
+  `pareto_khat_threshold()`, `pareto_min_ss()`, `pareto_convergence_rate()`)
+* `thin_draws()` now automatically thins draws based on ESS by default,
+  and non-integer thinning is possible.
 * Matrix multiplication of `rvar`s can now be done with the base matrix 
   multiplication operator (`%*%`) instead of `%**%` in R >= 4.3.
 * `variables()`, `variables<-()`, `set_variables()`, and `nvariables()` now

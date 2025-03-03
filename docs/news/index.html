@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -102,6 +102,23 @@
       <small>Source: <a href="https://github.com/stan-dev/posterior/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.6.0" id="posterior-160">posterior 1.6.0<small>2024-07-03</small><a class="anchor" aria-label="anchor" href="#posterior-160"></a></h2>
+<div class="section level4">
+<h4 id="enhancements-1-6-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-6-0"></a></h4>
+<ul><li>Add <code>exclude</code> option to <code><a href="../reference/subset_draws.html">subset_draws()</a></code>, which can be used to exclude the matched selection.</li>
+<li>Add <code>are_log_weights</code> option to <code><a href="../reference/pareto_smooth.html">pareto_smooth()</a></code>, which is necessary for correct Pareto smoothing computation if the input vector consists of log weights.</li>
+<li>Add <code>pareto_smooth</code> option to <code><a href="../reference/weight_draws.html">weight_draws()</a></code>, to Pareto smooth weights before adding to a draws object.</li>
+<li>Add individual Pareto diagnostic functions (<code><a href="../reference/pareto_khat.html">pareto_khat()</a></code>, <code><a href="../reference/pareto_diags.html">pareto_khat_threshold()</a></code>, <code><a href="../reference/pareto_diags.html">pareto_min_ss()</a></code>, <code><a href="../reference/pareto_diags.html">pareto_convergence_rate()</a></code>)</li>
+<li>
+<code><a href="../reference/thin_draws.html">thin_draws()</a></code> now automatically thins draws based on ESS by default, and non-integer thinning is possible.</li>
+<li>Matrix multiplication of <code>rvar</code>s can now be done with the base matrix multiplication operator (<code>%*%</code>) instead of <code>%**%</code> in R &gt;= 4.3.</li>
+<li>
+<code><a href="../reference/variables.html">variables()</a></code>, <code>variables&lt;-()</code>, <code><a href="../reference/variables-set.html">set_variables()</a></code>, and <code><a href="../reference/variables.html">nvariables()</a></code> now support a <code>with_indices</code> argument, which determines whether variable names are retrieved/set with (<code>"x[1]"</code>, <code>"x[2]"</code> …) or without (<code>"x"</code>) indices (<a href="https://github.com/stan-dev/posterior/issues/208" class="external-link">#208</a>).</li>
+<li>Add <code><a href="../reference/extract_variable_array.html">extract_variable_array()</a></code> function to extract variables with indices into arrays of iterations x chains x any remaining dimensions (<a href="https://github.com/stan-dev/posterior/issues/340" class="external-link">#340</a>).</li>
+<li>For types that support <code>factor</code> variables (<code>draws_df</code>, <code>draws_list</code>, and <code>draws_rvars</code>), <code><a href="../reference/extract_variable.html">extract_variable()</a></code> and <code><a href="../reference/extract_variable_matrix.html">extract_variable_matrix()</a></code> can now return <code>factor</code>s.</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.5.0" id="posterior-150">posterior 1.5.0<small>2023-10-31</small><a class="anchor" aria-label="anchor" href="#posterior-150"></a></h2>
 <div class="section level4">

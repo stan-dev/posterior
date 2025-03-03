@@ -40,7 +40,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -175,7 +175,7 @@ inference diagnostics.</li>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://mc-stan.org/posterior/">"posterior"</a></span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## This is posterior version 1.5.0</span></span></code></pre>
+<pre><code><span><span class="co">## This is posterior version 1.6.0</span></span></code></pre>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## Attaching package: 'posterior'</span></span></code></pre>
 <pre><code><span><span class="co">## The following objects are masked from 'package:stats':</span></span>
@@ -339,17 +339,17 @@ function will convert a regular matrix to a
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## # A draws_matrix: 10 iterations, 1 chains, and 5 variables</span></span>
 <span><span class="co">##     variable</span></span>
-<span><span class="co">## draw     V1    V2    V3    V4     V5</span></span>
-<span><span class="co">##   1   0.123 -0.27 -0.59  0.60 -1.789</span></span>
-<span><span class="co">##   2   0.353  0.24 -0.12  0.92  0.013</span></span>
-<span><span class="co">##   3  -0.316 -0.60 -0.21  0.81 -1.121</span></span>
-<span><span class="co">##   4   0.755 -1.38 -0.63 -0.17 -1.363</span></span>
-<span><span class="co">##   5   0.042  0.88  0.66  0.28 -0.469</span></span>
-<span><span class="co">##   6  -0.210  0.31  0.93 -0.80 -1.809</span></span>
-<span><span class="co">##   7   0.135  0.63  0.81 -0.55 -2.086</span></span>
-<span><span class="co">##   8  -0.615  0.18 -0.10 -0.34  0.790</span></span>
-<span><span class="co">##   9  -0.372  0.13 -2.56 -1.22  1.520</span></span>
-<span><span class="co">##   10 -0.354  0.33  0.60  0.79  0.153</span></span></code></pre>
+<span><span class="co">## draw    V1     V2    V3    V4     V5</span></span>
+<span><span class="co">##   1  -1.14 -1.386  0.54 -0.83  0.700</span></span>
+<span><span class="co">##   2  -1.52  2.124 -0.35  0.64  1.078</span></span>
+<span><span class="co">##   3  -2.01 -1.062  0.40  0.94 -0.071</span></span>
+<span><span class="co">##   4   0.31 -0.032  1.69  0.55 -0.071</span></span>
+<span><span class="co">##   5  -0.63 -1.580  0.83  0.69 -0.870</span></span>
+<span><span class="co">##   6   0.12  0.687  1.76 -0.25 -0.448</span></span>
+<span><span class="co">##   7  -0.25  0.278  0.79  0.68  2.251</span></span>
+<span><span class="co">##   8   0.98  0.932 -1.02  0.45  2.170</span></span>
+<span><span class="co">##   9  -0.30 -0.384 -0.12  1.34  0.434</span></span>
+<span><span class="co">##   10 -0.38 -0.872 -2.81 -0.36 -0.379</span></span></code></pre>
 <p>Because the matrix was converted to a <code>draws_matrix</code>, all
 of the methods for working with <code>draws</code> objects described in
 subsequent sections of this vignette will now be available.</p>
@@ -369,17 +369,17 @@ can be used to create draws matrix from multiple vectors.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## # A draws_matrix: 50 iterations, 1 chains, and 2 variables</span></span>
 <span><span class="co">##     variable</span></span>
-<span><span class="co">## draw   alpha  beta</span></span>
-<span><span class="co">##   1  -0.7025 -0.72</span></span>
-<span><span class="co">##   2   0.0350  0.44</span></span>
-<span><span class="co">##   3  -0.5237 -2.36</span></span>
-<span><span class="co">##   4   0.0415 -0.23</span></span>
-<span><span class="co">##   5  -0.0051  1.01</span></span>
-<span><span class="co">##   6  -0.2882 -1.28</span></span>
-<span><span class="co">##   7  -1.5631 -0.11</span></span>
-<span><span class="co">##   8  -0.4261  0.37</span></span>
-<span><span class="co">##   9  -1.5636  1.00</span></span>
-<span><span class="co">##   10 -0.2385 -1.28</span></span>
+<span><span class="co">## draw  alpha   beta</span></span>
+<span><span class="co">##   1  -0.044 -0.885</span></span>
+<span><span class="co">##   2  -1.048  1.247</span></span>
+<span><span class="co">##   3   0.983  0.725</span></span>
+<span><span class="co">##   4   1.390  1.201</span></span>
+<span><span class="co">##   5  -1.002 -0.693</span></span>
+<span><span class="co">##   6   0.247 -1.470</span></span>
+<span><span class="co">##   7   1.265 -0.074</span></span>
+<span><span class="co">##   8   0.113 -0.132</span></span>
+<span><span class="co">##   9  -0.094  0.310</span></span>
+<span><span class="co">##   10 -0.794 -0.014</span></span>
 <span><span class="co">## # ... with 40 more draws</span></span></code></pre>
 <p>Analogous functions exist for the other draws formats and are used
 similarly.</p>
@@ -491,7 +491,7 @@ rename the scalar <code>mu</code> to <code>mean</code> and the vector
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># mu is a scalar, theta is a vector</span></span>
 <span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rename_variables.html">rename_variables</a></span><span class="op">(</span><span class="va">eight_schools_df</span>, mean <span class="op">=</span> <span class="va">mu</span>, alpha <span class="op">=</span> <span class="va">theta</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/draws-index.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/variables.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "mean"     "tau"      "alpha[1]" "alpha[2]" "alpha[3]" "alpha[4]"</span></span>
 <span><span class="co">##  [7] "alpha[5]" "alpha[6]" "alpha[7]" "alpha[8]"</span></span></code></pre>
 <p>In the call to <code><a href="../reference/rename_variables.html">rename_variables()</a></code> above, <code>mu</code>
@@ -501,7 +501,7 @@ parameters, for example we can rename just the first element of
 <code>alpha</code>:</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/rename_variables.html">rename_variables</a></span><span class="op">(</span><span class="va">x</span>, a1 <span class="op">=</span> <span class="va">`alpha[1]`</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/draws-index.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/variables.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">##  [1] "mean"     "tau"      "a1"       "alpha[2]" "alpha[3]" "alpha[4]"</span></span>
 <span><span class="co">##  [7] "alpha[5]" "alpha[6]" "alpha[7]" "alpha[8]"</span></span></code></pre>
 </div>
@@ -524,12 +524,12 @@ and <code>x3</code>:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x4</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## # A draws_matrix: 5 iterations, 1 chains, and 3 variables</span></span>
 <span><span class="co">##     variable</span></span>
-<span><span class="co">## draw alpha  beta theta</span></span>
-<span><span class="co">##    1 -0.83 -2.78 0.073</span></span>
-<span><span class="co">##    2 -0.37  3.17 0.053</span></span>
-<span><span class="co">##    3  0.21 -0.48 0.110</span></span>
-<span><span class="co">##    4  0.31 -0.65 0.534</span></span>
-<span><span class="co">##    5 -0.24 -1.51 0.694</span></span></code></pre>
+<span><span class="co">## draw  alpha   beta theta</span></span>
+<span><span class="co">##    1  0.793 -0.073  0.22</span></span>
+<span><span class="co">##    2  0.483  0.267  0.19</span></span>
+<span><span class="co">##    3  0.331  0.238  6.60</span></span>
+<span><span class="co">##    4 -0.837  1.301  0.47</span></span>
+<span><span class="co">##    5  0.066  0.722  1.33</span></span></code></pre>
 <p>Because <code>x1</code> and <code>x2</code> have the same variables,
 we can bind them along the <code>'draw'</code> dimension to create a
 single <code>draws_matrix</code> with more draws:</p>
@@ -538,17 +538,17 @@ single <code>draws_matrix</code> with more draws:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x5</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## # A draws_matrix: 10 iterations, 1 chains, and 2 variables</span></span>
 <span><span class="co">##     variable</span></span>
-<span><span class="co">## draw alpha  beta</span></span>
-<span><span class="co">##   1  -0.83 -2.78</span></span>
-<span><span class="co">##   2  -0.37  3.17</span></span>
-<span><span class="co">##   3   0.21 -0.48</span></span>
-<span><span class="co">##   4   0.31 -0.65</span></span>
-<span><span class="co">##   5  -0.24 -1.51</span></span>
-<span><span class="co">##   6  -0.92  0.29</span></span>
-<span><span class="co">##   7   1.09  0.51</span></span>
-<span><span class="co">##   8  -0.15 -1.99</span></span>
-<span><span class="co">##   9  -2.01 -0.63</span></span>
-<span><span class="co">##   10  1.80  0.27</span></span></code></pre>
+<span><span class="co">## draw  alpha   beta</span></span>
+<span><span class="co">##   1   0.793 -0.073</span></span>
+<span><span class="co">##   2   0.483  0.267</span></span>
+<span><span class="co">##   3   0.331  0.238</span></span>
+<span><span class="co">##   4  -0.837  1.301</span></span>
+<span><span class="co">##   5   0.066  0.722</span></span>
+<span><span class="co">##   6   1.374  1.284</span></span>
+<span><span class="co">##   7  -0.061 -0.212</span></span>
+<span><span class="co">##   8  -0.386 -0.052</span></span>
+<span><span class="co">##   9  -1.356  0.061</span></span>
+<span><span class="co">##   10  0.627 -0.815</span></span></code></pre>
 <p>As with all posterior methods, <code><a href="../reference/bind_draws.html">bind_draws()</a></code> can be used
 with all draws formats and depending on the format different dimensions
 are available to bind on. For example, we can bind
@@ -661,16 +661,16 @@ argument.</p>
 <pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 10 × 2</span></span></span>
 <span><span class="co">##    variable weighted_mean</span></span>
 <span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>            <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> mu                4.00</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> tau               4.09</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> theta[1]          6.56</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> theta[2]          4.95</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> theta[3]          2.98</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> theta[4]          4.72</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> theta[5]          3.15</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> theta[6]          3.59</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> theta[7]          6.06</span></span>
-<span><span class="co">## <span style="color: #BCBCBC;">10</span> theta[8]          4.45</span></span></code></pre>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> mu                4.13</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> tau               4.07</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> theta[1]          6.93</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> theta[2]          5.54</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> theta[3]          3.35</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> theta[4]          5.03</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> theta[5]          3.23</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> theta[6]          3.52</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> theta[7]          6.59</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> theta[8]          4.58</span></span></code></pre>
 </div>
 <div class="section level3">
 <h3 id="specifying-functions-using-lambda-like-syntax">Specifying functions using lambda-like syntax<a class="anchor" aria-label="anchor" href="#specifying-functions-using-lambda-like-syntax"></a>
@@ -804,12 +804,13 @@ for working with <code>draws</code> objects, please open an issue at <a href="ht
 <div class="section level2">
 <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>
-<p>Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki
-Vehtari A., &amp; Rubin D. B. (2013). <em>Bayesian Data Analysis, Third
+<p>Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Vehtari,
+A., &amp; Rubin D. B. (2013). <em>Bayesian Data Analysis, Third
 Edition</em>. Chapman and Hall/CRC.</p>
 <p>Vehtari A., Gelman A., Simpson D., Carpenter B., &amp; Bürkner P. C.
 (2020). Rank-normalization, folding, and localization: An improved Rhat
-for assessing convergence of MCMC. <em>Bayesian Analysis</em>.</p>
+for assessing convergence of MCMC. <em>Bayesian Analysis</em>,
+16(2):667-718.</p>
 </div>
   </div>
 

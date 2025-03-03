@@ -13,7 +13,8 @@ is defined.}
 \item{expr}{(expression) A bare expression that can contain references to
 variables in \code{x} by name. This expression will be executed once per draw
 of \code{x}, where references to variables in \code{x} resolve to the value of that
-variable in that draw. The expression supports \link{quasiquotation}.}
+variable in that draw. The expression supports
+\link[rlang:topic-inject]{quasiquotation}.}
 }
 \value{
 As \code{for_each_draw()} is used primarily for its side effects (the expression

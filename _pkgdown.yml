@@ -65,6 +65,11 @@ articles:
       An overview of a new datatype introduced by posterior
     contents:
       - rvar
+  - title: "Pareto-khat diagnostics"
+    desc: >
+      An overview of diagnostics related to Pareto-smoothed importance sampling
+    contents:
+      - pareto_diagnostics
 
 reference:
   - title: "Overview"
@@ -93,6 +98,7 @@ reference:
       - order_draws
       - split_chains
       - subset_draws
+      - draws-index
       - rename_variables
       - repair_draws
       - resample_draws
@@ -108,14 +114,13 @@ reference:
       - starts_with("ess")
       - starts_with("rhat")
       - starts_with("mcse")
+      - starts_with("pareto")
+      - starts_with("ps")
       - quantile2
       - rstar
       - entropy
       - dissent
       - modal_category
-      - pareto_diags
-      - pareto_khat
-      - pareto_smooth
   - title: "Functionality specific to the rvar datatype"
     desc: >
       The `draws_rvar` format (a structured list of `rvar` objects) has the same

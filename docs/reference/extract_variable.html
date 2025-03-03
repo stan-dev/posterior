@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -116,6 +116,12 @@
 <span><span class="co"># S3 method for draws</span></span>
 <span><span class="fu">extract_variable</span><span class="op">(</span><span class="va">x</span>, <span class="va">variable</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># S3 method for draws_df</span></span>
+<span><span class="fu">extract_variable</span><span class="op">(</span><span class="va">x</span>, <span class="va">variable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># S3 method for draws_list</span></span>
+<span><span class="fu">extract_variable</span><span class="op">(</span><span class="va">x</span>, <span class="va">variable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># S3 method for draws_rvars</span></span>
 <span><span class="fu">extract_variable</span><span class="op">(</span><span class="va">x</span>, <span class="va">variable</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -128,7 +134,9 @@ is defined.</p></dd>
 
 
 <dt>variable</dt>
-<dd><p>(string) The name of the variable to extract.</p></dd>
+<dd><p>(string) The name of the variable to extract. Must include
+indices for array variables (e.g. <code>"x[1]"</code>, <code>"y[1,2]"</code>). To extract all
+dimensions from variables with indices, use <code><a href="extract_variable_array.html">extract_variable_array()</a></code>.</p></dd>
 
 
 <dt>...</dt>
@@ -139,7 +147,13 @@ is defined.</p></dd>
     <h2>Value</h2>
     
 
-<p>A numeric vector of length equal to the number of draws.</p>
+<p>A vector of length equal to the number of draws.</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p>Other variable extraction methods: 
+<code><a href="extract_variable_array.html">extract_variable_array</a>()</code>,
+<code><a href="extract_variable_matrix.html">extract_variable_matrix</a>()</code></p></div>
     </div>
 
     <div id="ref-examples">

@@ -2,10 +2,13 @@
 % Please edit documentation in R/convergence.R
 \name{ess_mean}
 \alias{ess_mean}
+\alias{ess_mean.default}
 \alias{ess_mean.rvar}
 \title{Effective sample size for the mean}
 \usage{
 ess_mean(x, ...)
+
+\method{ess_mean}{default}(x, ...)
 
 \method{ess_mean}{rvar}(x, ...)
 }

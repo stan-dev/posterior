@@ -45,7 +45,7 @@ passing the draws array for that element of the \code{\link{rvar}} to this funct
 }
 \description{
 Compute the nested Rhat convergence diagnostic for a single
-variable as proposed in Margossian et al. (2023).
+variable as proposed in Margossian et al. (2024).
 }
 \details{
 Nested Rhat is a convergence diagnostic useful when
@@ -56,8 +56,8 @@ point.
 Note that there is a slight difference in the calculation of Rhat
 and nested Rhat, as nested Rhat is lower bounded by 1. This means
 that nested Rhat with one chain per superchain will not be
-exactly equal to basic Rhat (see Footnote 1 in Margossian et
-al. (2023)).
+exactly equal to basic Rhat (see Footnote 3 in Margossian et
+al. (2024)).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -69,9 +69,9 @@ rhat_nested(d$Sigma, superchain_ids = c(1, 1, 2, 2))
 }
 \references{
 Charles C. Margossian, Matthew D. Hoffman, Pavel Sountsov, Lionel
-Riou-Durand, Aki Vehtari and Andrew Gelman (2023). Nested R-hat:
+Riou-Durand, Aki Vehtari and Andrew Gelman (2024). Nested R-hat:
 Assessing the convergence of Markov chain Monte Carlo when running
-many short chains.  arxiv:arXiv:2110.13017 (version 4)
+many short chains. \emph{Bayesian Analysis}. doi:10.1214/24-BA1453
 }
 \seealso{
 Other diagnostics: 

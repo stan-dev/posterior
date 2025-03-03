@@ -263,3 +263,4 @@ has_s3_method <- function(f, signature) {
   }
   FALSE
 }
+

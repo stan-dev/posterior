@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -137,29 +137,29 @@ according to the expressions provided in <code>...</code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="draws-index.html">variables</a></code>, <code><a href="mutate_variables.html">mutate_variables</a></code></p></div>
+    <div class="dont-index"><p><code><a href="variables.html">variables</a></code>, <code>variables&lt;-</code>, <code><a href="mutate_variables.html">mutate_variables</a></code></p></div>
     </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="draws_df.html">as_draws_df</a></span><span class="op">(</span><span class="fu"><a href="example_draws.html">example_draws</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="draws-index.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="variables.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "mu"       "tau"      "theta[1]" "theta[2]" "theta[3]" "theta[4]"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "theta[5]" "theta[6]" "theta[7]" "theta[8]"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">rename_variables</span><span class="op">(</span><span class="va">x</span>, mean <span class="op">=</span> <span class="va">mu</span>, sigma <span class="op">=</span> <span class="va">tau</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="draws-index.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="variables.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "mean"     "sigma"    "theta[1]" "theta[2]" "theta[3]" "theta[4]"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "theta[5]" "theta[6]" "theta[7]" "theta[8]"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">rename_variables</span><span class="op">(</span><span class="va">x</span>, b <span class="op">=</span> <span class="va">`theta[1]`</span><span class="op">)</span> <span class="co"># or b  = "theta[1]"</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="draws-index.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="variables.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "mean"     "sigma"    "b"        "theta[2]" "theta[3]" "theta[4]"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "theta[5]" "theta[6]" "theta[7]" "theta[8]"</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># rename all elements of 'theta' at once</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">rename_variables</span><span class="op">(</span><span class="va">x</span>, alpha <span class="op">=</span> <span class="va">theta</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="draws-index.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="variables.html">variables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "mean"     "sigma"    "b"        "alpha[2]" "alpha[3]" "alpha[4]"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "alpha[5]" "alpha[6]" "alpha[7]" "alpha[8]"</span>
 <span class="r-in"><span></span></span>

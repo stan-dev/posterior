@@ -396,11 +396,11 @@ with `draws` objects, please open an issue at
 
 ## References
 
-Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki Vehtari A.,
+Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Vehtari, A.,
 & Rubin D. B. (2013). *Bayesian Data Analysis, Third Edition*. Chapman and
 Hall/CRC.
 
 Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2020).
 Rank-normalization, folding, and localization: An improved Rhat for assessing
-convergence of MCMC. *Bayesian Analysis*.
+convergence of MCMC. *Bayesian Analysis*, 16(2):667-718.
 

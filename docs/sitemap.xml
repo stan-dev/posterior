@@ -4,6 +4,9 @@
     <loc>https://mc-stan.org/posterior/404.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/CONTRIBUTING.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/LICENSE-text.html</loc>
   </url>
   <url>
@@ -11,6 +14,9 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/articles/pareto_diagnostics.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/articles/posterior.html</loc>
@@ -121,6 +127,9 @@
     <loc>https://mc-stan.org/posterior/reference/extract_variable.html</loc>
   </url>
   <url>
+    <loc>https://mc-stan.org/posterior/reference/extract_variable_array.html</loc>
+  </url>
+  <url>
     <loc>https://mc-stan.org/posterior/reference/extract_variable_matrix.html</loc>
   </url>
   <url>
@@ -194,6 +203,18 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/print.rvar.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/ps_convergence_rate.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/ps_khat_threshold.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/ps_min_ss.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/ps_tail_length.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/quantile2.html</loc>
@@ -299,6 +320,12 @@
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/u_scale.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/variables-set.html</loc>
+  </url>
+  <url>
+    <loc>https://mc-stan.org/posterior/reference/variables.html</loc>
   </url>
   <url>
     <loc>https://mc-stan.org/posterior/reference/vctrs-compat.html</loc>
