@@ -1,9 +1,8 @@
-#' Calculate probability integral transfrom
+#' Probability integral transfrom
 #'
 #' The `pit()` function computes the empirical probability integral transform
 #' (PIT) of a vector of values with regard to provided draws. If weigths are
-#' provided for the draws are supplied, a weighted transformation is computed
-#' instead.
+#' provided for the draws, a weighted transformation is computed instead.
 #'
 #' @family diagnostics
 #' @param x (draws) A [`draws_df`] object or one coercible to a `draws_df`
@@ -34,33 +33,37 @@ pit <- function(x, ...) UseMethod("pit")
 
 #' @rdname pit
 #' @export
-pit.default <- function(x, y, lw = NULL) {
-  if (!is.null(lw) && !all(is.finite(lw))) {
-    stop("All weigths in `lw` need to be finite.")
+pit.default <- function(x, y, loo_weights = NULL, log = TRUE) {
+  if (!is.null(loo_weights)) {
+    loo_weights <- validate_loo_weights(loo_weights, x, log)
   }
   vapply(seq_len(ncol(x)), function(j) {
     sel_min <- x[, j] < y[j]
-    pit <- ifelse(
-      is.null(lw),
-      mean(sel_min),
-      .exp_log_sum_exp(lw[sel_min, j])
-    )
+    if (is.null(loo_weights)) {
+      pit <- mean(sel_min)
+    } else {
+        pit <- exp(log_sum_exp(loo_weights[sel_min, j]))
+    }
+
     sel_sup <- x[, j] == y[j]
     if (any(sel_sup)) {
       # randomized PIT for discrete y (see, e.g., Czado, C., Gneiting, T.,
       # Held, L.: Predictive model assessment for count data.
       # Biometrics 65(4), 1254–1261 (2009).)
-      pit_sup <- pit + ifelse(
-        is.null(lw),
-        mean(sel_sup),
-        .exp_log_sum_exp(lw[sel_sup, j])
-      )
+      if (is.null(loo_weights)) {
+        pit_sup <- pit + mean(sel_sup)
+      } else {
+          pit_sup <- pit + exp(log_sum_exp(loo_weights[sel_sup, j]))
+      }
+
       pit <- runif(1, pit, pit_sup)
     }
     if (any(pit > 1)) {
       warning(
         cat(
-          "Some PIT values larger than 1! Largest: ",
+          "Some PIT values larger than 1!",
+          "This is usually due to numerical inaccuracies.",
+          "Largest value:",
           max(pit),
           "\nRounding PIT > 1 to 1."
         )
@@ -72,7 +75,21 @@ pit.default <- function(x, y, lw = NULL) {
 
 # internal ----------------------------------------------------------------
 
-.exp_log_sum_exp <- function(x) {
-  m <- max(x)
-  exp(m + log(sum(exp(x - m))))
+# validate weights and return log weights
+validate_loo_weights <- function(loo_weights, draws, log = TRUE) {
+  checkmate::assert_numeric(loo_weights, any.missing = FALSE)
+  checkmate::assert_flag(log)
+  if (dim(loo_weights) != dim(draws)) {
+    stop_no_call("Dimension of `loo_weights` must match that of `x`.")
+  }
+  if (!all(is.finite(loo_weights))) {
+    stop_no_call("All weigths in `loo_weights` must be finite.")
+  }
+  if (!log) {
+    if (any(loo_weights < 0)) {
+      stop_no_call("`loo-weights` must be non-negative.")
+    }
+    loo_weights <- log(loo_weights)
+  }
+  loo_weights
 }
