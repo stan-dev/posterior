@@ -58,7 +58,7 @@ package*](https://mc-stan.org/posterior/articles/posterior.html).
 
 ``` r
 library("posterior")
-#> This is posterior version 1.6.0.9000
+#> This is posterior version 1.6.1
 #> 
 #> Attaching package: 'posterior'
 #> The following objects are masked from 'package:stats':
@@ -297,11 +297,11 @@ print(x4)
 #> # A draws_matrix: 5 iterations, 1 chains, and 3 variables
 #>     variable
 #> draw alpha beta theta
-#>    1 -1.10    1 0.102
-#>    2 -0.64    1 1.386
-#>    3 -0.91    1 0.012
-#>    4  1.36    1 0.722
-#>    5  0.24    1 2.198
+#>    1 -0.14    1 2.080
+#>    2  0.13    1 1.077
+#>    3  0.71    1 0.037
+#>    4 -0.99    1 1.447
+#>    5 -1.39    1 1.031
 ```
 
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
@@ -312,16 +312,16 @@ print(x5)
 #> # A draws_matrix: 10 iterations, 1 chains, and 2 variables
 #>     variable
 #> draw  alpha beta
-#>   1  -1.102    1
-#>   2  -0.643    1
-#>   3  -0.912    1
-#>   4   1.356    1
-#>   5   0.245    1
-#>   6   0.429    2
-#>   7   0.929    2
-#>   8   0.042    2
-#>   9   0.118    2
-#>   10 -0.168    2
+#>   1  -0.140    1
+#>   2   0.132    1
+#>   3   0.705    1
+#>   4  -0.990    1
+#>   5  -1.394    1
+#>   6  -2.889    2
+#>   7  -0.072    2
+#>   8  -0.051    2
+#>   9  -1.983    2
+#>   10 -0.204    2
 ```
 
 As with all **posterior** methods, `bind_draws` can be used with all
@@ -340,27 +340,27 @@ x <- as_draws_matrix(x)
 print(x)
 #> # A draws_matrix: 10 iterations, 1 chains, and 5 variables
 #>     variable
-#> draw     V1    V2     V3     V4     V5
-#>   1   0.819 -1.46  0.092 -0.751 -0.549
-#>   2   1.675 -0.03  0.962  1.616 -0.624
-#>   3   0.084  0.58 -1.509  0.223 -0.180
-#>   4   1.798  0.63  0.230 -0.143 -0.764
-#>   5  -1.140 -0.34 -1.283 -0.298 -0.769
-#>   6   0.099  0.42  0.778 -0.318 -1.344
-#>   7   0.576  0.31 -0.950 -0.702  0.067
-#>   8   0.649 -3.09 -0.084  0.019  0.674
-#>   9  -0.683  0.64 -1.470 -0.609 -0.452
-#>   10  0.019 -0.70  1.326  0.222 -0.199
+#> draw     V1     V2     V3      V4     V5
+#>   1   1.477 -1.804 -0.979  0.4196  0.046
+#>   2   0.081 -0.695 -1.275 -1.2993  0.407
+#>   3   1.384 -0.963  0.465  0.9283 -0.101
+#>   4  -0.852  1.574  1.118 -0.2389  0.067
+#>   5  -0.515  0.017 -1.651  0.0054 -1.756
+#>   6   0.308 -1.376  1.099 -0.6325 -0.437
+#>   7  -0.818  0.703 -0.027 -0.9165  0.706
+#>   8  -0.415 -0.232 -1.818 -1.6000 -0.551
+#>   9   2.599  0.958  0.522  0.5579  1.159
+#>   10 -1.070  1.259 -0.475  1.2223 -0.963
 
 summarise_draws(x, "mean", "sd", "median", "mad")
 #> # A tibble: 5 × 5
-#>   variable    mean    sd   median   mad
-#>   <chr>      <dbl> <dbl>    <dbl> <dbl>
-#> 1 V1        0.390  0.927  0.338   0.593
-#> 2 V2       -0.305  1.19   0.140   0.719
-#> 3 V3       -0.191  1.05   0.00404 1.42 
-#> 4 V4       -0.0741 0.691 -0.220   0.615
-#> 5 V5       -0.414  0.547 -0.500   0.423
+#>   variable    mean    sd  median   mad
+#>   <chr>      <dbl> <dbl>   <dbl> <dbl>
+#> 1 V1        0.218  1.22  -0.167  0.990
+#> 2 V2       -0.0558 1.16  -0.108  1.42 
+#> 3 V3       -0.302  1.10  -0.251  1.33 
+#> 4 V4       -0.155  0.951 -0.117  1.09 
+#> 5 V5       -0.142  0.839 -0.0273 0.710
 ```
 
 Instead of `as_draws_matrix()` we also could have just used
@@ -379,17 +379,17 @@ variables(x) <-  paste0("V", 1:5)
 print(x)
 #> # A draws_matrix: 10 iterations, 2 chains, and 5 variables
 #>     variable
-#> draw    V1    V2     V3    V4     V5
-#>   1   1.53 -0.18  0.022 -0.15  0.170
-#>   2   1.27 -0.48  0.111 -0.61 -0.452
-#>   3   1.23 -0.80  0.348  1.03  0.749
-#>   4   0.33 -0.67  1.214  1.57 -0.245
-#>   5  -1.07  0.76  0.482  0.73 -0.382
-#>   6   0.25  0.30  0.815 -3.47 -2.536
-#>   7  -0.74 -0.66  1.139  0.36 -0.017
-#>   8   0.25  0.78 -1.884 -1.25  1.450
-#>   9  -0.24  0.88  0.056 -0.86  0.913
-#>   10 -0.48  1.11  0.382  0.23  0.228
+#> draw     V1    V2    V3      V4    V5
+#>   1   0.288 -1.61 -0.36 -0.5534  0.58
+#>   2   0.267  0.05 -1.41 -2.2698  1.90
+#>   3   1.051  1.78  1.00 -1.1469  0.40
+#>   4   0.679  1.57  0.38 -0.3360  0.98
+#>   5  -1.952 -1.18 -0.29  0.0928 -1.09
+#>   6  -0.380 -1.48 -0.88  0.3971  1.19
+#>   7   0.398 -1.86 -0.77 -0.1377 -0.21
+#>   8   0.023  1.97 -1.66 -0.5317 -0.21
+#>   9   0.380  0.15 -1.91  0.2331  0.49
+#>   10 -0.653  0.53  0.24 -0.0038  0.26
 #> # ... with 10 more draws
 ```
 
@@ -422,8 +422,10 @@ print(line)
 
 We welcome contributions! The **posterior** package is under active
 development. If you find bugs or have ideas for new features (for us or
-yourself to implement) please open an issue on GitHub
-(<https://github.com/stan-dev/posterior/issues>).
+yourself to implement) please [open an
+issue](https://github.com/stan-dev/posterior/issues) on GitHub. See
+[CONTRIBUTING.md](https://github.com/stan-dev/posterior/blob/master/.github/CONTRIBUTING.md)
+for more details.
 
 ### Citing posterior
 
