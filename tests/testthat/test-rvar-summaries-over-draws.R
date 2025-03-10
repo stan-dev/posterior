@@ -3,6 +3,8 @@
 test_that("numeric summaries work", {
   x_array <- array(1:24, dim = c(4,2,3), dimnames = list(NULL, a = c("a1", "a2"), b = c("b1", "b2", "b3")))
   x <- new_rvar(x_array)
+  x_cmp_array <- x_array + x_array*1i
+  x_cmp <- new_rvar(x_cmp_array)
   x_letters <- array(letters[1:24], dim = c(4,2,3), dimnames = list(NULL, a = c("a1", "a2"), b = c("b1", "b2", "b3")))
   x_ord <- rvar_ordered(x_letters, levels = letters)
   x_fct <- rvar_factor(x_letters, levels = letters)
@@ -12,6 +14,12 @@ test_that("numeric summaries work", {
   expect_equal(prod(x), apply(x_array, c(2,3), prod))
   expect_equal(min(x), apply(x_array, c(2,3), min))
   expect_equal(max(x), apply(x_array, c(2,3), max))
+
+  expect_error(median(x_cmp))
+  expect_equal(sum(x_cmp), apply(x_cmp_array, c(2,3), sum))
+  expect_equal(prod(x_cmp), apply(x_cmp_array, c(2,3), prod))
+  expect_error(min(x_cmp))
+  expect_error(max(x_cmp))
 
   ordered_out <- function(x) structure(
     x, dim = c(2,3), dimnames = list(a = c("a1", "a2"), b = c("b1", "b2", "b3")),
@@ -46,6 +54,10 @@ test_that("means work", {
   expect_error(Pr(x_array))
   expect_equal(E(x_array), mean(x_array))
 
+  x_cmp_array <- x_array + x_array*1i
+  x_cmp <- new_rvar(x_cmp_array)
+  expect_equal(mean(x_cmp), apply(x_cmp_array, c(2,3), mean))
+
   # test vector rvars as well since these should be summarized down to vectors
   # (not one-dimensional arrays)
   y_array <- array(1:24, dim = c(4,6), dimnames = list(NULL, paste0("a", 1:6)))
@@ -62,6 +74,8 @@ test_that("means work", {
 test_that("spread functions work", {
   x_array <- array(1:24, dim = c(4,2,3), dimnames = list(NULL, a = c("a1", "a2"), b = c("b1", "b2", "b3")))
   x <- new_rvar(x_array)
+  x_cmp_array <- x_array + x_array*1i
+  x_cmp <- new_rvar(x_cmp_array)
   x_letters <- array(letters[1:24], dim = c(4,2,3), dimnames = list(NULL, a = c("a1", "a2"), b = c("b1", "b2", "b3")))
   x_ord <- rvar_ordered(x_letters, levels = letters)
   x_fct <- rvar_factor(x_letters, levels = letters)
@@ -70,6 +84,11 @@ test_that("spread functions work", {
   expect_equal(variance(x), apply(x_array, c(2,3), var))
   expect_equal(var(x), apply(x_array, c(2,3), var))
   expect_equal(mad(x), apply(x_array, c(2,3), mad))
+
+  expect_equal(sd(x_cmp), apply(x_cmp_array, c(2,3), sd))
+  expect_equal(variance(x_cmp), apply(x_cmp_array, c(2,3), var))
+  expect_equal(var(x_cmp), apply(x_cmp_array, c(2,3), var))
+  expect_error(mad(x_cmp), "Cannot apply.*complex rvars")
 
   expect_error(sd(x_ord))
   expect_error(variance(x_ord))
@@ -89,6 +108,13 @@ test_that("spread functions work", {
   expect_equal(mad(y), apply(y_array, 2, mad))
 })
 
+test_that("spread functions work on complex numbers", {
+  x_array = 1:11 + c(10:1,22) * 1i
+
+  expect_equal(var(x_array), 44)
+  expect_equal(variance(x_array), 44)
+  expect_equal(sd(x_array), sqrt(44))
+})
 
 # range -------------------------------------------------------------------
 
@@ -107,6 +133,7 @@ test_that("range works", {
     )
   )
   expect_error(range(x_fct))
+  expect_error(range(rvar(1i)), "Cannot apply.*complex rvars")
 
   y_array <- array(1:24, dim = c(4,6), dimnames = list(NULL, paste0("a", 1:6)))
   y <- new_rvar(y_array)
@@ -133,8 +160,10 @@ test_that("logical summaries work", {
   expect_equal(all(y > 10), apply(y_array > 10, 2, all))
   expect_equal(any(y > 10), apply(y_array > 10, 2, any))
 
-  expect_error(all(rvar("a")))
-  expect_error(any(rvar("a")))
+  expect_error(all(rvar("a")), "Cannot apply.*rvar_factor")
+  expect_error(any(rvar("a")), "Cannot apply.*rvar_factor")
+  expect_error(all(rvar(1i)), "Cannot apply.*complex rvars")
+  expect_error(any(rvar(1i)), "Cannot apply.*complex rvars")
 })
 
 
@@ -145,15 +174,21 @@ test_that("special value predicates work", {
     dim = c(4,2,3), dimnames = list(NULL, a = c("a1", "a2"), b = c("b1", "b2", "b3"))
   )
   x <- new_rvar(x_array)
+  x_cmp_array <- x_array + 1i
+  x_cmp <- new_rvar(x_cmp_array)
   x_letters <- array(c("a",NA,letters[3:12], NaN, letters[14:24]), dim = c(4,2,3), dimnames = list(NULL, a = c("a1", "a2"), b = c("b1", "b2", "b3")))
   x_ord <- rvar_ordered(x_letters, levels = letters)
   x_fct <- rvar_factor(x_letters, levels = letters)
 
   .dimnames = list(a = c("a1", "a2"), b = c("b1", "b2", "b3"))
   expect_equal(is.finite(x), array(c(rep(FALSE, 4), rep(TRUE, 2)), dim = c(2,3), dimnames = .dimnames))
+  expect_equal(is.finite(x_cmp), array(c(rep(FALSE, 4), rep(TRUE, 2)), dim = c(2,3), dimnames = .dimnames))
   expect_equal(is.infinite(x), array(c(FALSE, TRUE, TRUE, FALSE, FALSE, FALSE), dim = c(2,3), dimnames = .dimnames))
+  expect_equal(is.infinite(x_cmp), array(c(FALSE, TRUE, TRUE, FALSE, FALSE, FALSE), dim = c(2,3), dimnames = .dimnames))
   expect_equal(is.nan(x), array(c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE), dim = c(2,3), dimnames = .dimnames))
+  expect_equal(is.nan(x_cmp), array(c(FALSE, FALSE, FALSE, TRUE, FALSE, FALSE), dim = c(2,3), dimnames = .dimnames))
   expect_equal(is.na(x), array(c(TRUE, FALSE, FALSE, TRUE, FALSE, FALSE), dim = c(2,3), dimnames = .dimnames))
+  expect_equal(is.na(x_cmp), array(c(TRUE, FALSE, FALSE, TRUE, FALSE, FALSE), dim = c(2,3), dimnames = .dimnames))
 
   .dimnames = list(a = c("a1", "a2"), b = c("b1", "b2", "b3"))
   expect_equal(is.finite(x_ord), array(c(FALSE, TRUE, TRUE, FALSE, rep(TRUE, 2)), dim = c(2,3), dimnames = .dimnames))
@@ -179,15 +214,20 @@ test_that("special value predicates work", {
 test_that("anyNA works", {
   x_array <- array(1:24, dim = c(4,2,3), dimnames = list(NULL, a = c("a1", "a2"), b = c("b1", "b2", "b3")))
   x <- new_rvar(x_array)
+  x_cmp_array <- x_array + 1i
+  x_cmp <- new_rvar(x_cmp_array)
   x_letters <- array(letters[1:24], dim = c(4,2,3), dimnames = list(NULL, a = c("a1", "a2"), b = c("b1", "b2", "b3")))
   x_ord <- rvar_ordered(x_letters, levels = letters)
   x_fct <- rvar_factor(x_letters, levels = letters)
 
   expect_equal(anyNA(x), FALSE)
+  expect_equal(anyNA(x_cmp), FALSE)
   expect_equal(anyNA(x_fct), FALSE)
   expect_equal(anyNA(x_ord), FALSE)
   x[2,1] <- NA
   expect_equal(anyNA(x), TRUE)
+  x_cmp[2,1] <- NA
+  expect_equal(anyNA(x_cmp), TRUE)
   x_fct[2,1] <- NA
   expect_equal(anyNA(x_fct), TRUE)
   x_ord[2,1] <- NA
