@@ -36,6 +36,7 @@ pit <- function(x, ...) UseMethod("pit")
 pit.default <- function(x, y, loo_weights = NULL, log = TRUE) {
   if (!is.null(loo_weights)) {
     loo_weights <- validate_loo_weights(loo_weights, x, log)
+    loo_weights <- normalize_log_weights(loo_weights)
   }
   pit <- vapply(seq_len(ncol(x)), function(j) {
     sel_min <- x[, j] < y[j]
@@ -62,15 +63,17 @@ pit.default <- function(x, y, loo_weights = NULL, log = TRUE) {
   }, FUN.VALUE = 1.0)
 
   if (any(pit > 1)) {
-    warning(
-      cat(
-        "Some PIT values larger than 1!",
-        "This is usually due to numerical inaccuracies.",
-        "Largest value:",
+    warning_no_call(
+      paste(
+        "Some PIT values larger than 1! ",
+        "This is usually due to numerical inaccuracies. ",
+        "Largest value: ",
         max(pit),
-        "\nRounding PIT > 1 to 1."
+        "\nRounding PIT > 1 to 1.",
+        sep = ""
       )
     )
+    pit <- pmin(1, pit)
   }
 
   pit
@@ -82,7 +85,7 @@ pit.default <- function(x, y, loo_weights = NULL, log = TRUE) {
 validate_loo_weights <- function(loo_weights, draws, log = TRUE) {
   checkmate::assert_numeric(loo_weights, any.missing = FALSE)
   checkmate::assert_flag(log)
-  if (dim(loo_weights) != dim(draws)) {
+  if (!all(dim(loo_weights) == dim(draws))) {
     stop_no_call("Dimension of `loo_weights` must match that of `x`.")
   }
   if (!all(is.finite(loo_weights))) {
@@ -90,9 +93,13 @@ validate_loo_weights <- function(loo_weights, draws, log = TRUE) {
   }
   if (!log) {
     if (any(loo_weights < 0)) {
-      stop_no_call("`loo-weights` must be non-negative.")
+      stop_no_call("`loo-weights` must be non-negative when log = FALSE.")
     }
     loo_weights <- log(loo_weights)
   }
   loo_weights
+}
+
+normalize_log_weights <- function(log_weights) {
+  apply(log_weights, 2, \(col) col - log_sum_exp(col))
 }
