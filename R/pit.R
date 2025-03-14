@@ -37,12 +37,12 @@ pit.default <- function(x, y, loo_weights = NULL, log = TRUE) {
   if (!is.null(loo_weights)) {
     loo_weights <- validate_loo_weights(loo_weights, x, log)
   }
-  vapply(seq_len(ncol(x)), function(j) {
+  pit <- vapply(seq_len(ncol(x)), function(j) {
     sel_min <- x[, j] < y[j]
     if (is.null(loo_weights)) {
       pit <- mean(sel_min)
     } else {
-        pit <- exp(log_sum_exp(loo_weights[sel_min, j]))
+      pit <- exp(log_sum_exp(loo_weights[sel_min, j]))
     }
 
     sel_sup <- x[, j] == y[j]
@@ -53,24 +53,27 @@ pit.default <- function(x, y, loo_weights = NULL, log = TRUE) {
       if (is.null(loo_weights)) {
         pit_sup <- pit + mean(sel_sup)
       } else {
-          pit_sup <- pit + exp(log_sum_exp(loo_weights[sel_sup, j]))
+        pit_sup <- pit + exp(log_sum_exp(loo_weights[sel_sup, j]))
       }
 
       pit <- runif(1, pit, pit_sup)
     }
-    if (any(pit > 1)) {
-      warning(
-        cat(
-          "Some PIT values larger than 1!",
-          "This is usually due to numerical inaccuracies.",
-          "Largest value:",
-          max(pit),
-          "\nRounding PIT > 1 to 1."
-        )
-      )
-    }
     pit
-  }, FUN.VALUE = 1)
+  }, FUN.VALUE = 1.0)
+
+  if (any(pit > 1)) {
+    warning(
+      cat(
+        "Some PIT values larger than 1!",
+        "This is usually due to numerical inaccuracies.",
+        "Largest value:",
+        max(pit),
+        "\nRounding PIT > 1 to 1."
+      )
+    )
+  }
+
+  pit
 }
 
 # internal ----------------------------------------------------------------
