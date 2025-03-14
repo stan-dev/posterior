@@ -4,22 +4,23 @@
 #' (PIT) of a vector of values with regard to provided draws. If weigths are
 #' provided for the draws, a weighted transformation is computed instead.
 #'
-#' @family diagnostics
 #' @param x (draws) A [`draws_df`] object or one coercible to a `draws_df`
 #' object.
 
 #' @param y (observations) A 1D vector of observations. Each element of `y`
 #' corresponds to a column in `x`.
 
-#' @param lw (log-wieghts) A [`draws_df`] object or one coercible to a
-#' `draws_df` object. `lw`` should have the same dimensions as `x`.
+#' @param loo_weights A [`draws_df`] object or one coercible to a
+#' `draws_df` object. `loo_weights`` should have the same dimensions as `x`.
 
-#' @template args-conv-split
-#'
+#' @param log Are the weights provided in `loo_weights` log-weights.
+
+#' @param ... Arguments passed to individual methods (if applicable).
+
 #' @details The `pit()` function computes the probability integral transform of
 #'   `y` using the empirical cumulative distribution computed from the samples
-#'   of `x`. These samples can further be provided a log-weights in `lw`, which
-#'   enables for example the computation of LOO-PITs.
+#'   of `x`. These samples can further be provided (log-)weights in
+#    `loo_weights`, which enables for example the computation of LOO-PITs.
 #'
 #'   If `y` and `x` are discrete, randomisation is used to obtain continuous PIT
 #'   values. (see, e.g., Czado, C., Gneiting, T., Held, L.: Predictive model
@@ -27,23 +28,26 @@
 #'
 #' @return A numeric vector of length `length(y)` containing the PIT values.
 #'
-#' @examples
 #' @export
 pit <- function(x, ...) UseMethod("pit")
 
 #' @rdname pit
 #' @export
-pit.default <- function(x, y, loo_weights = NULL, log = TRUE) {
+pit.default <- function(x, y, loo_weights = NULL, log = TRUE, ...) {
   if (!is.null(loo_weights)) {
     loo_weights <- validate_loo_weights(loo_weights, x, log)
     loo_weights <- normalize_log_weights(loo_weights)
   }
   pit <- vapply(seq_len(ncol(x)), function(j) {
     sel_min <- x[, j] < y[j]
-    if (is.null(loo_weights)) {
-      pit <- mean(sel_min)
+    if (!any(sel_min)) {
+      pit <- 0
     } else {
-      pit <- exp(log_sum_exp(loo_weights[sel_min, j]))
+      if (is.null(loo_weights)) {
+        pit <- mean(sel_min)
+      } else {
+        pit <- exp(log_sum_exp(loo_weights[sel_min, j]))
+      }
     }
 
     sel_sup <- x[, j] == y[j]
