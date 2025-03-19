@@ -3,23 +3,27 @@
 \name{pit}
 \alias{pit}
 \alias{pit.default}
+\alias{pit.draws_matrix}
+\alias{pit.rvar}
 \title{Probability integral transfrom}
 \usage{
-pit(x, ...)
+pit(x, y, loo_weights = NULL, log = TRUE)
 
-\method{pit}{default}(x, y, loo_weights = NULL, log = TRUE, ...)
+\method{pit}{default}(x, y, loo_weights = NULL, log = TRUE)
+
+\method{pit}{draws_matrix}(x, y, loo_weights = NULL, log = TRUE)
+
+\method{pit}{rvar}(x, y, loo_weights = NULL, log = TRUE)
 }
 \arguments{
-\item{x}{(draws) A \code{\link{draws_df}} object or one coercible to a \code{draws_df}
-object.}
-
-\item{...}{Arguments passed to individual methods (if applicable).}
+\item{x}{(draws) A \code{\link{draws_matrix}} object or one coercible to a
+\code{draws_matrix} object.}
 
 \item{y}{(observations) A 1D vector of observations. Each element of \code{y}
 corresponds to a column in \code{x}.}
 
-\item{loo_weights}{A \code{\link{draws_df}} object or one coercible to a
-\code{draws_df} object. \verb{loo_weights`` should have the same dimensions as }x`.}
+\item{loo_weights}{A \code{\link{draws_matrix}} object or one coercible to a
+\code{draws_matrix} object. \verb{loo_weights`` should have the same dimensions as }x`.}
 
 \item{log}{Are the weights provided in \code{loo_weights} log-weights.}
 }

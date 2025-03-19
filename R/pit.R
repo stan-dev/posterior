@@ -4,18 +4,16 @@
 #' (PIT) of a vector of values with regard to provided draws. If weigths are
 #' provided for the draws, a weighted transformation is computed instead.
 #'
-#' @param x (draws) A [`draws_df`] object or one coercible to a `draws_df`
-#' object.
+#' @param x (draws) A [`draws_matrix`] object or one coercible to a
+#' `draws_matrix` object.
 
 #' @param y (observations) A 1D vector of observations. Each element of `y`
 #' corresponds to a column in `x`.
 
-#' @param loo_weights A [`draws_df`] object or one coercible to a
-#' `draws_df` object. `loo_weights`` should have the same dimensions as `x`.
+#' @param loo_weights A [`draws_matrix`] object or one coercible to a
+#' `draws_matrix` object. `loo_weights`` should have the same dimensions as `x`.
 
 #' @param log Are the weights provided in `loo_weights` log-weights.
-
-#' @param ... Arguments passed to individual methods (if applicable).
 
 #' @details The `pit()` function computes the probability integral transform of
 #'   `y` using the empirical cumulative distribution computed from the samples
@@ -29,11 +27,24 @@
 #' @return A numeric vector of length `length(y)` containing the PIT values.
 #'
 #' @export
-pit <- function(x, ...) UseMethod("pit")
+pit <- function(x, y, loo_weights = NULL, log = TRUE) UseMethod("pit")
 
 #' @rdname pit
 #' @export
-pit.default <- function(x, y, loo_weights = NULL, log = TRUE, ...) {
+pit.default <- function(x, y, loo_weights = NULL, log = TRUE) {
+  x <- as_draws_matrix(x)
+  if (!is.null(loo_weights)) {
+    loo_weights <- as_draws_matrix(loo_weights)
+  }
+  pit(x, y, loo_weights, log)
+}
+
+#' @rdname pit
+#' @export
+pit.draws_matrix <- function(x, y, loo_weights = NULL, log = TRUE) {
+  if (length(y) != ncol(x)) {
+    stop_no_call("Length of `y` must match number of columns in `x`")
+  }
   if (!is.null(loo_weights)) {
     loo_weights <- validate_loo_weights(loo_weights, x, log)
     loo_weights <- normalize_log_weights(loo_weights)
@@ -78,6 +89,34 @@ pit.default <- function(x, y, loo_weights = NULL, log = TRUE, ...) {
       )
     )
     pit <- pmin(1, pit)
+  }
+
+  pit
+}
+
+#' @rdname pit
+#' @export
+pit.rvar <- function(x, y, loo_weights = NULL, log = TRUE) {
+  if (any(dim(y) != dim(x))) {
+    stop_no_call("Shape of `y` must match that of `x`.")
+  }
+  if (is.null(loo_weights)) {
+    pit <- array(
+      runif(length(y), Pr(x < y), Pr(x <= y)),
+      dim(x),
+      dimnames(x)
+    )
+  } else {
+    pit <- array(
+      pit(
+        as_draws_matrix(c(x)),
+        y,
+        as_draws_matrix(c(loo_weights)),
+        log
+      ),
+      dim(x),
+      dimnames(x)
+    )
   }
 
   pit
