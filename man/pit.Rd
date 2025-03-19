@@ -5,7 +5,7 @@
 \alias{pit.default}
 \alias{pit.draws_matrix}
 \alias{pit.rvar}
-\title{Probability integral transfrom}
+\title{Probability integral transform}
 \usage{
 pit(x, y, loo_weights = NULL, log = TRUE)
 
@@ -31,9 +31,7 @@ corresponds to a column in \code{x}.}
 A numeric vector of length \code{length(y)} containing the PIT values.
 }
 \description{
-The \code{pit()} function computes the empirical probability integral transform
-(PIT) of a vector of values with regard to provided draws. If weigths are
-provided for the draws, a weighted transformation is computed instead.
+The probability integral transform (PIT). LOO-PIT is achieved with weighted sample.
 }
 \details{
 The \code{pit()} function computes the probability integral transform of

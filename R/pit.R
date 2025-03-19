@@ -1,8 +1,6 @@
-#' Probability integral transfrom
+#' Probability integral transform
 #'
-#' The `pit()` function computes the empirical probability integral transform
-#' (PIT) of a vector of values with regard to provided draws. If weigths are
-#' provided for the draws, a weighted transformation is computed instead.
+#' The probability integral transform (PIT). LOO-PIT is achieved with weighted sample.
 #'
 #' @param x (draws) A [`draws_matrix`] object or one coercible to a
 #' `draws_matrix` object.
