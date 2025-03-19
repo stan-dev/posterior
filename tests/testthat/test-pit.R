@@ -13,7 +13,7 @@ test_that("validate_loo_weights checks for finite values", {
   draws <- matrix(1, nrow = 1, ncol = 3)
   expect_error(
     validate_loo_weights(loo_weights, draws),
-    "All weigths in `loo_weights` must be finite."
+    "All weights in `loo_weights` must be finite."
   )
 })
 
