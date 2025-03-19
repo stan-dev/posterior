@@ -130,7 +130,7 @@ validate_loo_weights <- function(loo_weights, draws, log = TRUE) {
     stop_no_call("Dimension of `loo_weights` must match that of `x`.")
   }
   if (!all(is.finite(loo_weights))) {
-    stop_no_call("All weigths in `loo_weights` must be finite.")
+    stop_no_call("All weights in `loo_weights` must be finite.")
   }
   if (!log) {
     if (any(loo_weights < 0)) {
