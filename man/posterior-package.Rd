@@ -100,6 +100,7 @@ Other contributors:
   \item Ozan Adıgüzel [contributor]
   \item Jacob Socolar [contributor]
   \item Noa Kallioinen [contributor]
+  \item Teemu Säilynoja [contributor]
 }
 
 }
