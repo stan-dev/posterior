@@ -142,5 +142,5 @@ validate_loo_weights <- function(loo_weights, draws, log = TRUE) {
 }
 
 normalize_log_weights <- function(log_weights) {
-  apply(log_weights, 2, \(col) col - log_sum_exp(col))
+  apply(log_weights, 2, function(col) col - log_sum_exp(col))
 }
