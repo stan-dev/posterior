@@ -160,13 +160,13 @@ validate_y <- function(y, x = NULL) {
   if (anyNA(y)) {
     stop_no_call("NAs not allowed in `y`.")
   }
-  if (!is.array.rvar(x)) {
-    if (!is.vector(y, mode = "numeric") || length(y) != nvariables(x)) {
-      stop_no_call("`y` must be a vector of length `nvariables(x)`.")
-    }
-  } else if (!is.null(x)) {
+  if (is_rvar(x)) {
     if (length(x) != length(y) || any(dim(y) != dim(x))) {
       stop_no_call("`dim(y)` must match `dim(x)`.")
+    }
+  } else if (is_draws(x)) {
+    if (!is.vector(y, mode = "numeric") || length(y) != nvariables(x)) {
+      stop_no_call("`y` must be a vector of length `nvariables(x)`.")
     }
   }
   y
