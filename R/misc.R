@@ -14,6 +14,31 @@ named_list <- function(names, values = NULL) {
   setNames(values, names)
 }
 
+
+# flatten a list that may contain vectors into a single level list
+unnest <- function(x) {
+
+  out <- list()
+
+  names_x <- names(x)
+  for (i in seq_along(x)) {
+    if (length(x[[i]]) > 1) {
+      if (rlang::is_named(x[[i]])) {
+        names_i <- names(x[[i]])
+      } else {
+        names_i <- paste0(names_x[[i]], ".", c(1:length(x[[i]])))
+      }
+      for (j in seq_along(x[[i]])) {
+        out[[names_i[j]]] <- x[[i]][[j]]
+      }
+    } else {
+      out[[names_x[[i]]]] <- x[[i]]
+    }
+  }
+  out
+}
+
+
 # unlist lapply output
 ulapply <- function(X, FUN, ..., recursive = TRUE, use.names = TRUE) {
   unlist(lapply(X, FUN, ...), recursive, use.names)
