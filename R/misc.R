@@ -1,4 +1,4 @@
-# initialize a named list
+  # initialize a named list
 # @param names names of the elements
 # @param values optional values of the elements
 named_list <- function(names, values = NULL) {
@@ -209,9 +209,16 @@ escape_all <- function(x) {
 
 # numerically stable version of log(sum(exp(x)))
 log_sum_exp <- function(x) {
-  max <- max(x)
-  sum <- sum(exp(x - max))
-  max + log(sum)
+  max <- max(as.numeric(x), warnings = FALSE)
+  if (max == -Inf) {
+    res <- 0
+  } else if (max == Inf) {
+    res <- Inf
+  } else {
+    sum <- sum(exp(x - max))
+    res <- max + log(sum)
+  }
+  res
 }
 
 # simple version of destructuring assignment
