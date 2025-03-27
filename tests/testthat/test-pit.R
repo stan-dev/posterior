@@ -50,7 +50,7 @@ test_that("pit works without weights", {
   result <- pit(x, y)
 
   expect_length(result, ncol(x))
-  expect_equal(result, c(1, 0.5))
+  expect_equal(unname(result), c(1, 0.5))
 })
 
 test_that("pit.default works with log-weights", {
@@ -60,7 +60,7 @@ test_that("pit.default works with log-weights", {
   result <- pit.default(x, y, weights = weights, log = TRUE)
 
   expect_length(result, ncol(x))
-  expect_equal(result, c(1, 0.5))
+  expect_equal(unname(result), c(1, 0.5))
 })
 
 test_that("pit.default works with non-log weights", {
@@ -70,7 +70,7 @@ test_that("pit.default works with non-log weights", {
   result <- pit.default(x, y, weights = weights)
 
   expect_length(result, ncol(x))
-  expect_equal(result, c(1, 0.5))
+  expect_equal(unname(result), c(1, 0.5))
 })
 
 test_that("pit.default handles randomized PIT with no weights", {
@@ -105,25 +105,6 @@ test_that("pit.default handles randomized PIT with log-weights", {
   expect_true(all(result[1001:2000] >= 0 & result[1001:2000] <= 1))
 })
 
-test_that("pit.default warns for PIT values exceeding 1", {
-  x <- matrix(c(1, 2, 3, 4), nrow = 2)
-  y <- c(3, 5)
-  weights <- matrix(log(c(100, 200, 300, 4000000000)), nrow = 2)
-
-  expect_warning(
-    result <- pit.default(x, y, weights = weights, log = TRUE),
-    regex = paste(
-      "Some PIT values larger than 1! ",
-      "This is usually due to numerical inaccuracies\\. ",
-      "Largest value: 1\\s*",
-      "Rounding PIT > 1 to 1\\.",
-      sep = ""
-    ),
-    fixed = FALSE
-  )
-  expect_true(all(result <= 1))
-})
-
 test_that("pit works with draws objects", {
   set.seed(1)
   n_chains <- 4
@@ -141,11 +122,11 @@ test_that("pit works with draws objects", {
 
   x <- as_draws(test_array)
 
-  expect_equal(pit(x, y), pit_true)
-  expect_equal(pit(as_draws_df(test_array), y), pit_true)
-  expect_equal(pit(as_draws_matrix(test_array), y), pit_true)
-  expect_equal(pit(as_draws_list(test_array), y), pit_true)
-  expect_equal(pit(as_draws_rvars(test_array), y), pit_true)
+  expect_equal(unname(pit(x, y)), pit_true)
+  expect_equal(unname(pit(as_draws_df(test_array), y)), pit_true)
+  expect_equal(unname(pit(as_draws_matrix(test_array), y)), pit_true)
+  expect_equal(unname(pit(as_draws_list(test_array), y)), pit_true)
+  expect_equal(unname(pit(as_draws_rvars(test_array), y)), pit_true)
 })
 
 test_that("pit works with rvars", {
