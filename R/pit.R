@@ -109,10 +109,10 @@ pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE, ...) {
     pit
   }, FUN.VALUE = 1.0)
 
-  if (any(pit > 1)) {
+  if (any(pit > 1 + 1e-10)) {
     warning_no_call(
       paste(
-        "Some PIT values larger than 1! ",
+        "Some PIT values larger than 1. ",
         "This is usually due to numerical inaccuracies. ",
         "Largest value: ",
         max(pit),
@@ -120,10 +120,9 @@ pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE, ...) {
         sep = ""
       )
     )
-    pit <- pmin(1, pit)
   }
 
-  setNames(pit, variables(x))
+  setNames(pmin(1, pit), variables(x))
 }
 
 #' @rdname pit
