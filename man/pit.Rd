@@ -19,8 +19,10 @@ pit(x, y, ...)
 \item{x}{(draws) A \code{\link{draws_matrix}} object or one coercible to a
 \code{draws_matrix} object, or an \code{\link{rvar}} object.}
 
-\item{y}{(observations) A 1D vector of observations, or an array of dim(x),
-if x is an \code{rvar}. Each element of \code{y} corresponds to a variable in \code{x}.}
+\item{y}{(observations) A 1D vector, or an array of dim(x), if x is \code{rvar}.
+Each element of \code{y} corresponds to a variable in \code{x}.}
+
+\item{...}{Arguments passed to individual methods (if applicable).}
 
 \item{weights}{A matrix of weights for each draw and variable. \code{weights}
 should have one column per variable in \code{x}, and \code{ndraws(x)} rows.}
@@ -39,7 +41,7 @@ Probability integral transform (PIT). LOO-PIT is given by a weighted sample.
 \details{
 The \code{pit()} function computes the probability integral transform of
 \code{y} using the empirical cumulative distribution computed from the samples
-of \code{x}. For continuous valued \code{y} and \code{x}, the PIT for the elements of \code{y}
+in \code{x}. For continuous valued \code{y} and \code{x}, the PIT for the elements of \code{y}
 is computed as the empirical cumulative distribution value:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{PIT(y_i) = Pr(x_i < y_i),
@@ -54,4 +56,23 @@ The draws in \code{x} can further be provided (log-)weights in
 If \code{y} and \code{x} are discrete, randomisation is used to obtain continuous PIT
 values. (see, e.g., Czado, C., Gneiting, T., Held, L.: Predictive model
 assessment for count data.  Biometrics 65(4), 1254–1261 (2009).)
+}
+\examples{
+# PIT for a draws object
+x <- example_draws()
+# Create a vector of observations
+y <- rnorm(nvariables(x), 5, 5)
+pit(x, y)
+
+# Compute weighted PIT (for example LOO-PIT)
+weights <- matrix(runif(length(x)), ncol = nvariables(x))
+
+pit(x, y, weights)
+
+# PIT for an rvar
+x <- rvar(example_draws())
+# Create an array of observations with the same dimensions as x.
+y_arr <- array(rnorm(length(x), 5, 5), dim = dim(x))
+pit(x, y_arr)
+
 }

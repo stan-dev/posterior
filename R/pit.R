@@ -2,6 +2,8 @@
 #'
 #' Probability integral transform (PIT). LOO-PIT is given by a weighted sample.
 #'
+#' @name pit
+#' 
 #' @param x (draws) A [`draws_matrix`] object or one coercible to a
 #'   `draws_matrix` object, or an [`rvar`] object.
 #'
@@ -46,7 +48,7 @@
 #' pit(x, y)
 #'
 #' # Compute weighted PIT (for example LOO-PIT)
-#' weights <- matrix(runif(length(x) * nvariables(x)), ncol = nvariables(x))
+#' weights <- matrix(runif(length(x)), ncol = nvariables(x))
 #'
 #' pit(x, y, weights)
 #'
@@ -58,6 +60,7 @@
 #'
 NULL
 
+#' @rdname pit
 #' @export
 pit <- function(x, y, ...) UseMethod("pit")
 
