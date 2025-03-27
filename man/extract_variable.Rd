@@ -25,9 +25,10 @@ extract_variable(x, variable, ...)
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
 
-\item{variable}{(string) The name of the variable to extract. Must include
-indices for array variables (e.g. \code{"x[1]"}, \code{"y[1,2]"}). To extract all
-dimensions from variables with indices, use \code{\link[=extract_variable_array]{extract_variable_array()}}.}
+\item{variable}{(string) The name of the variable to extract. The name must
+correspond to a scalar variable or must include indices for array variables
+(e.g. \code{"x[1]"}, \code{"y[1,2]"}) that result in a scalar variable. To extract
+all dimensions from variables with indices, use \code{\link[=extract_variable_array]{extract_variable_array()}}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
