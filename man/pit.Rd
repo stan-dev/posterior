@@ -7,36 +7,49 @@
 \alias{pit.rvar}
 \title{Probability integral transform}
 \usage{
-pit(x, y, loo_weights = NULL, log = TRUE)
+pit(x, y, ...)
 
-\method{pit}{default}(x, y, loo_weights = NULL, log = TRUE)
+\method{pit}{default}(x, y, weights = NULL, log = FALSE, ...)
 
-\method{pit}{draws_matrix}(x, y, loo_weights = NULL, log = TRUE)
+\method{pit}{draws_matrix}(x, y, weights = NULL, log = FALSE, ...)
 
-\method{pit}{rvar}(x, y, loo_weights = NULL, log = TRUE)
+\method{pit}{rvar}(x, y, weights = NULL, log = FALSE, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{\link{draws_matrix}} object or one coercible to a
-\code{draws_matrix} object.}
+\code{draws_matrix} object, or an \code{\link{rvar}} object.}
 
-\item{y}{(observations) A 1D vector of observations. Each element of \code{y}
-corresponds to a column in \code{x}.}
+\item{y}{(observations) A 1D vector of observations, or an array of dim(x),
+if x is an \code{rvar}. Each element of \code{y} corresponds to a variable in \code{x}.}
 
-\item{loo_weights}{A \code{\link{draws_matrix}} object or one coercible to a
-\code{draws_matrix} object. \verb{loo_weights`` should have the same dimensions as }x`.}
+\item{weights}{A matrix of weights for each draw and variable. \code{weights}
+should have one column per variable in \code{x}, and \code{ndraws(x)} rows.}
 
-\item{log}{Are the weights provided in \code{loo_weights} log-weights.}
+\item{log}{(logical) Are the weights passed already on the log scale? The
+default is \code{FALSE}, that is, expecting \code{weights} to be on the standard
+(non-log) scale.}
 }
 \value{
-A numeric vector of length \code{length(y)} containing the PIT values.
+A numeric vector of length \code{length(y)} containing the PIT values, or
+an array of shape \code{dim(y)}, if \code{x} is an \code{rvar}.
 }
 \description{
-The probability integral transform (PIT). LOO-PIT is achieved with weighted sample.
+Probability integral transform (PIT). LOO-PIT is given by a weighted sample.
 }
 \details{
 The \code{pit()} function computes the probability integral transform of
 \code{y} using the empirical cumulative distribution computed from the samples
-of \code{x}. These samples can further be provided (log-)weights in
+of \code{x}. For continuous valued \code{y} and \code{x}, the PIT for the elements of \code{y}
+is computed as the empirical cumulative distribution value:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{PIT(y_i) = Pr(x_i < y_i),
+}\if{html}{\out{</div>}}
+
+where x_i, is the corresponding set of draws in \code{x}. For \code{draws} objects,
+this corresponds to the draws of the \emph{i}th variable, and for \code{rvar}
+the elements of \code{y} and \code{x} are matched.
+
+The draws in \code{x} can further be provided (log-)weights in
 
 If \code{y} and \code{x} are discrete, randomisation is used to obtain continuous PIT
 values. (see, e.g., Czado, C., Gneiting, T., Held, L.: Predictive model

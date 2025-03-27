@@ -184,6 +184,9 @@ validate_weights <- function(weights, draws, log = FALSE) {
   if (length(weights) != ndraws(draws)) {
     stop_no_call("Number of weights must match the number of draws.")
   }
+  if (any(weights == Inf)) {
+    stop_no_call("Weights must not be positive infinite.")
+  }
   if (!log) {
     if (any(weights < 0)) {
       stop_no_call("Weights must be non-negative.")
