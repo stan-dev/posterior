@@ -164,7 +164,7 @@ validate_y <- function(y, x = NULL) {
     if (!is.vector(y, mode = "numeric") || length(y) != nvariables(x)) {
       stop_no_call("`y` must be a vector of length `nvariables(x)`.")
     }
-  } else {
+  } else if (!is.null(x)) {
     if (length(x) != length(y) || any(dim(y) != dim(x))) {
       stop_no_call("`dim(y)` must match `dim(x)`.")
     }
