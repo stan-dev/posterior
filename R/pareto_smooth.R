@@ -639,7 +639,12 @@ ps_convergence_rate <- function(k, ndraws, ...) {
 #' @return tail length
 #' @export
 ps_tail_length <- function(ndraws, r_eff, ...) {
-  ceiling(ifelse(ndraws > 225, 3 * sqrt(ndraws / r_eff), ndraws / 5))
+  ceiling(
+    ifelse(
+      ndraws * r_eff > 225,
+      3 * sqrt(ndraws / r_eff),
+      ndraws / 5)
+  )
 }
 
 #' Pareto-k diagnostic message
