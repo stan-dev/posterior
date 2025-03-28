@@ -8,6 +8,7 @@
 
 * Convert lists of matrices to `draws_array` objects.
 * Improve the documentation in various places.
+* Implement `pit()` for draws and rvar objects. LOO-PIT can be computed using `weights`.
 
 # posterior 1.6.0
 

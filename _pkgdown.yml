@@ -121,6 +121,7 @@ reference:
       - entropy
       - dissent
       - modal_category
+      - pit
   - title: "Functionality specific to the rvar datatype"
     desc: >
       The `draws_rvar` format (a structured list of `rvar` objects) has the same
