@@ -643,7 +643,7 @@ ps_tail_length <- function(ndraws, r_eff, ...) {
     ifelse(
       ndraws * r_eff > 225,
       3 * sqrt(ndraws / r_eff),
-      (ndraws / r_eff) / 5)
+      ndraws / 5)
   )
 }
 
