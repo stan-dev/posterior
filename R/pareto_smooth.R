@@ -639,11 +639,11 @@ ps_convergence_rate <- function(k, ndraws, ...) {
 #' @return tail length
 #' @export
 ps_tail_length <- function(ndraws, r_eff, ...) {
-  ceiling(
+  floor(
     ifelse(
       ndraws * r_eff > 225,
       3 * sqrt(ndraws / r_eff),
-      ndraws / 5)
+      (ndraws / r_eff) / 5)
   )
 }
 
