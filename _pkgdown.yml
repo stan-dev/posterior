@@ -74,7 +74,7 @@ articles:
 reference:
   - title: "Overview"
     desc: >
-      Pacakge overview and global options
+      Package overview and global options
     contents:
       - posterior-package
   - title: "Draws objects and formats"
