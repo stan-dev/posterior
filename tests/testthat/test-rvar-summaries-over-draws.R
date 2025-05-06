@@ -193,3 +193,23 @@ test_that("anyNA works", {
   x_ord[2,1] <- NA
   expect_equal(anyNA(x_ord), TRUE)
 })
+
+
+# weighted summaries ------------------------------------------------------
+
+test_that("weighted summaries work", {
+  x <- rvar(c(1,1,2,2,2,3,3,3,3))
+  n <- ndraws(x)
+  w <- c(2,3,4,0)
+  xw <- weight_draws(rvar(c(1,2,3,4)), w)
+
+  expect_equal(sum(xw), sum(x))
+  expect_equal(prod(xw), prod(x))
+  expect_equal(mean(xw), mean(x))
+  expect_equal(median(xw), matrixStats::weightedMedian(draws_of(xw), w))
+  expect_equal(mad(xw), matrixStats::weightedMad(draws_of(xw), w))
+  # weighted var and sd don't use sample correction because it depends on
+  # knowing the sample size
+  expect_equal(var(xw), var(x)*(n-1)/n)
+  expect_equal(sd(xw), sqrt(var(x)*(n-1)/n))
+})

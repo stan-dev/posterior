@@ -24,7 +24,6 @@ test_that("modal_category works on rvars", {
   expect_equal(modal_category(c(rvar(c("a","b","b","c","c")), rvar("c"))), c("b","c"))
 })
 
-
 # entropy -----------------------------------------------------------------
 
 test_that("entropy works on vectors", {
@@ -82,4 +81,33 @@ test_that("dissent works on rvars", {
   # if we treat it as an integer, we divide by 2 since it won't
   # know about the missing level at the end
   expect_equal(dissent(as_rvar_numeric(x)), c(-sum(p * log2(1 - abs(1:3 - 1.75) / 2)), 0, 1))
+})
+
+
+# weighted summaries ------------------------------------------------------
+
+test_that("weighted discrete summaries work", {
+  x <- c(0, 0, 0, 3, 3, 1)
+  levs <- c("h","e","f","g")
+  x_factor <- factor(c("h","h","h","g","g","e"), levels = levs)
+  x_ordered <- ordered(c("h","h","h","g","g","e"), levels = levs)
+  xw <- c(1, 2, 0, 3, 0)
+  xw_factor <- factor(c("e","f","h","g","h"), levels = levs)
+  xw_ordered <- ordered(c("e","f","h","g","h"), levels = levs)
+  w <- c(1, 0, 1.25, 2, 1.75)
+
+  expect_equal(modal_category(xw, w), modal_category(x))
+  expect_equal(modal_category(xw_factor, w), modal_category(x_factor))
+  expect_equal(modal_category(xw_ordered, w), modal_category(x_ordered))
+
+  # entropy(xw, w) is equal to entropy(x_factor) because entropy(x_factor)
+  # accounts for the missing level just as entropy(xw, w) accounts for the
+  # element with 0 weight. entropy(x) cannot do this.
+  expect_equal(entropy(xw, w), entropy(x_factor))
+  expect_equal(entropy(xw_factor, w), entropy(x_factor))
+  expect_equal(entropy(xw_ordered, w), entropy(x_ordered))
+
+  expect_equal(dissent(xw, w), dissent(x))
+  expect_equal(dissent(xw_factor, w), dissent(x_factor))
+  expect_equal(dissent(xw_ordered, w), dissent(x_ordered))
 })
