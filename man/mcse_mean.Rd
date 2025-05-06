@@ -8,7 +8,7 @@
 \usage{
 mcse_mean(x, ...)
 
-\method{mcse_mean}{default}(x, ...)
+\method{mcse_mean}{default}(x, weights = NULL, ...)
 
 \method{mcse_mean}{rvar}(x, ...)
 }
@@ -39,7 +39,8 @@ passing the draws array for that element of the \code{\link{rvar}} to this funct
 }
 \description{
 Compute the Monte Carlo standard error for the mean (expectation) of a
-single variable.
+single variable. If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")

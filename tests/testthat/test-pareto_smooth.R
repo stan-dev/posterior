@@ -242,9 +242,9 @@ test_that("pareto khat works for weighted rvars", {
   w2 <- w2 / sum(w2)
   xw2 <- weight_draws(xr, weights = w2)
 
-  k <- pareto_khat(xw2)$khat
-  kw <- pareto_khat(w2, are_log_weights = TRUE)$khat
-  kp <- pareto_khat(draws_of(xw2) * w2)$khat
+  k <- pareto_khat(xw2)
+  kw <- pareto_khat(w2, are_log_weights = TRUE)
+  kp <- pareto_khat(draws_of(xw2) * w2)
 
   expect_true(k > 0.7)
   expect_equal(k, max(kw, kp))

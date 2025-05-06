@@ -8,7 +8,7 @@
 \usage{
 ess_sd(x, ...)
 
-\method{ess_sd}{default}(x, ...)
+\method{ess_sd}{default}(x, weights = NULL, ...)
 
 \method{ess_sd}{rvar}(x, ...)
 }
@@ -41,6 +41,8 @@ passing the draws array for that element of the \code{\link{rvar}} to this funct
 Compute an effective sample size estimate for the standard deviation (SD)
 estimate of a single variable. This is defined as the effective sample size
 estimate for the absolute deviation from mean.
+If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")

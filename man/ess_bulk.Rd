@@ -8,7 +8,7 @@
 \usage{
 ess_bulk(x, ...)
 
-\method{ess_bulk}{default}(x, ...)
+\method{ess_bulk}{default}(x, weights = NULL, ...)
 
 \method{ess_bulk}{rvar}(x, ...)
 }
@@ -44,6 +44,8 @@ the bulk of the posterior. It is defined as the effective sample size for
 rank normalized values using split chains. For the tail effective sample size
 see \code{\link[=ess_tail]{ess_tail()}}. See Vehtari (2021) for an in-depth
 comparison of different effective sample size estimators.
+If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")

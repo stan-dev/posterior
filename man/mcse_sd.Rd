@@ -8,7 +8,7 @@
 \usage{
 mcse_sd(x, ...)
 
-\method{mcse_sd}{default}(x, ...)
+\method{mcse_sd}{default}(x, weights = NULL, ...)
 
 \method{mcse_sd}{rvar}(x, ...)
 }

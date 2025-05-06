@@ -214,7 +214,7 @@ log_weights.rvar <- function(object, ...) {
 validate_weights <- function(weights, ndraws, log = FALSE, pareto_smooth = FALSE) {
   if (is.null(weights)) return(NULL)
   checkmate::assert_numeric(weights)
-  checkmate::assert_atomic_vector(weights)
+#  checkmate::assert_atomic_vector(weights)
   checkmate::assert_flag(log)
   checkmate::assert_flag(pareto_smooth)
 

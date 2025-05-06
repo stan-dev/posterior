@@ -8,7 +8,7 @@
 \usage{
 ess_basic(x, ...)
 
-\method{ess_basic}{default}(x, split = TRUE, ...)
+\method{ess_basic}{default}(x, split = TRUE, weights = NULL, ...)
 
 \method{ess_basic}{rvar}(x, split = TRUE, ...)
 }
@@ -47,6 +47,8 @@ al. (2021). For practical applications, we strongly
 recommend the improved ESS convergence diagnostics implemented in
 \code{\link[=ess_bulk]{ess_bulk()}} and \code{\link[=ess_tail]{ess_tail()}}. See Vehtari (2021) for an in-depth
 comparison of different effective sample size estimators.
+If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")

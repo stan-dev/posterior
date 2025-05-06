@@ -46,28 +46,28 @@ pareto_khat.default <- function(x,
 
 #' @rdname pareto_khat
 #' @export
-pareto_khat.rvar <- function(x, verbose = FALSE, ...) {
+pareto_khat.rvar <- function(x, ...) {
   if (is.null(weights(x))) {
     draws_diags <- summarise_rvar_by_element_with_chains(
       x,
       pareto_smooth.default,
       smooth_draws = FALSE,
       return_k = TRUE,
-      verbose = verbose,
       ...
     )
 
     dim(draws_diags) <- dim(draws_diags) %||% length(draws_diags)
     margins <- seq_along(dim(draws_diags))
 
-    diags <- list(
-      khat = apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat)
-    )
+    diags <- apply(draws_diags, margins, function(x) x[[1]]$diagnostics$khat)
+
   } else {
 
     # take the max of khat for x * weights and khat for weights
+    lw <- weights(x, log = TRUE)
+
     weights_diags <- pareto_khat(
-      weights(x, log = TRUE),
+      lw,
       are_log_weights = TRUE,
       ...
     )
@@ -80,20 +80,17 @@ pareto_khat.rvar <- function(x, verbose = FALSE, ...) {
     product_diags <- summarise_rvar_by_element_with_chains(
       xu,
       pareto_khat.default,
-      verbose = verbose,
       ...
     )
 
     dim(product_diags) <- dim(product_diags) %||% length(product_diags)
     margins <- seq_along(dim(product_diags))
 
-    diags <- list(
-      khat = apply(product_diags, margins,
+    
+    diags <- apply(product_diags, margins,
                    function(x) {
-                     max(x[[1]]$khat,
-                         weights_diags$khat)
+                     max(x, weights_diags)
                    })
-    )
   }
   diags
 }

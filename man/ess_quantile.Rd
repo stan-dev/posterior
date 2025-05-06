@@ -9,7 +9,7 @@
 \usage{
 ess_quantile(x, probs = c(0.05, 0.95), ...)
 
-\method{ess_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, ...)
+\method{ess_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, weights = NULL, ...)
 
 \method{ess_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
@@ -51,8 +51,9 @@ result indexes the input probabilities; i.e. the result has dimension
 \code{c(length(probs), dim(x))}.
 }
 \description{
-Compute effective sample size estimates for quantile estimates of a single
-variable.
+Compute effective sample size estimates for quantile estimates of a
+single variable. If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")

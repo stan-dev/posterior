@@ -8,7 +8,7 @@
 \usage{
 ess_mean(x, ...)
 
-\method{ess_mean}{default}(x, ...)
+\method{ess_mean}{default}(x, weights = NULL, ...)
 
 \method{ess_mean}{rvar}(x, ...)
 }

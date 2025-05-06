@@ -9,7 +9,7 @@
 \usage{
 mcse_quantile(x, probs = c(0.05, 0.95), ...)
 
-\method{mcse_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, ...)
+\method{mcse_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, weights = NULL, ...)
 
 \method{mcse_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
@@ -52,7 +52,8 @@ result indexes the input probabilities; i.e. the result has dimension
 }
 \description{
 Compute Monte Carlo standard errors for quantile estimates of a
-single variable.
+single variable. If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
