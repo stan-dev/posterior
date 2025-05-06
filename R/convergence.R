@@ -91,6 +91,7 @@ rhat_basic.rvar <- function(x, split = TRUE, ...) {
 #' @family diagnostics
 #' @template args-conv
 #' @template args-conv-split
+#' @template args-conv-weights
 #' @template args-methods-dots
 #' @template return-conv
 #' @template ref-gelman-bda-2013
@@ -181,6 +182,7 @@ rhat.rvar <- function(x, ...) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-conv-weights
 #' @template args-methods-dots
 #' @template return-conv
 #' @template ref-vehtari-rhat-2021
@@ -234,6 +236,7 @@ ess_bulk.rvar <- function(x, ...) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-conv-weights
 #' @template args-methods-dots
 #' @template return-conv
 #' @template ref-vehtari-rhat-2021
@@ -273,6 +276,7 @@ ess_tail.rvar <- function(x, ...) {
 #' @family diagnostics
 #' @template args-conv
 #' @template args-conv-quantile
+#' @template args-conv-weights
 #' @template args-methods-dots
 #' @template return-conv-quantile
 #' @template ref-vehtari-rhat-2021
@@ -363,6 +367,7 @@ ess_median <- function(x, ...) {
 #' estimate of a single variable.
 #'
 #' @template args-conv
+#' @template args-conv-weights
 #' @template args-methods-dots
 #' @template return-conv
 #' @template ref-gelman-bda-2013
@@ -413,6 +418,7 @@ ess_mean.rvar <- function(x, ...) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-conv-weights
 #' @template args-methods-dots
 #' @template return-conv
 #' @template ref-vehtari-rhat-2021
@@ -466,6 +472,7 @@ ess_sd.rvar <- function(x, ...) {
 #' @family diagnostics
 #' @template args-conv
 #' @template args-conv-quantile
+#' @template args-conv-weights
 #' @template args-methods-dots
 #' @template return-conv-quantile
 #' @template ref-vehtari-rhat-2021
@@ -561,6 +568,7 @@ mcse_median <- function(x, ...) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-conv-weights
 #' @template args-methods-dots
 #' @template return-conv
 #' @template ref-gelman-bda-2013
@@ -589,7 +597,7 @@ mcse_mean.default <- function(x, weights = NULL, ...) {
     x <- as.matrix(x)
 
     r_eff <- .ess(.split_chains(x)) / (nrow(x) * ncol(x))
-    .mcse_weighted(x, weights, r_eff, ...)
+    .mcse_weighted(x, weights = weights, r_eff = r_eff, ...)
   }
 }
 
@@ -608,6 +616,7 @@ mcse_mean.rvar <- function(x, ...) {
 #'
 #' @family diagnostics
 #' @template args-conv
+#' @template args-conv-weights
 #' @template args-methods-dots
 #' @template return-conv
 #' @template ref-vehtari-rhat-2021
@@ -686,6 +695,7 @@ mcse_sd.rvar <- function(x, ...) {
 #' with other summary functions in the \pkg{posterior} package.
 #'
 #' @template args-conv
+#' @template args-conv-weights
 #' @template args-conv-quantile
 #' @param na.rm (logical) Should `NA` and `NaN` values be removed from `x` prior
 #'   to computing quantiles? The default is `FALSE`.
@@ -702,19 +712,19 @@ mcse_sd.rvar <- function(x, ...) {
 #' quantile2(mu)
 #'
 #' @export
-quantile2 <- function(x, probs = c(0.05, 0.95), na.rm = FALSE, ...) {
+quantile2 <- function(x, ...) {
   UseMethod("quantile2")
 }
 
 #' @rdname quantile2
 #' @export
 quantile2.default <- function(
-  x, probs = c(0.05, 0.95), na.rm = FALSE, names = TRUE, ...
+  x, probs = c(0.05, 0.95), na.rm = FALSE, names = TRUE, weights = NULL, ...
 ) {
   names <- as_one_logical(names)
   na.rm <- as_one_logical(na.rm)
 
-  out <- weighted_quantile(x, probs = probs, na.rm = na.rm, ...)
+  out <- weighted_quantile(x, probs = probs, na.rm = na.rm, weights = weights, ...)
 
   if (names) {
     names(out) <- paste0("q", probs * 100)
@@ -731,8 +741,8 @@ quantile2.rvar <- function(
 ) {
   weights <- weights(x)
   summarise_rvar_by_element(x, function(draws) {
-    quantile2(
-      draws, probs = probs, weights = weights, na.rm = na.rm, names = names, ...
+    quantile2.default(
+      draws, probs = probs, na.rm = na.rm, names = names, weights = weights, ...
     )
   })
 }

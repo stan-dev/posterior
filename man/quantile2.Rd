@@ -6,9 +6,16 @@
 \alias{quantile2.rvar}
 \title{Compute Quantiles}
 \usage{
-quantile2(x, probs = c(0.05, 0.95), na.rm = FALSE, ...)
+quantile2(x, ...)
 
-\method{quantile2}{default}(x, probs = c(0.05, 0.95), na.rm = FALSE, names = TRUE, ...)
+\method{quantile2}{default}(
+  x,
+  probs = c(0.05, 0.95),
+  na.rm = FALSE,
+  names = TRUE,
+  weights = NULL,
+  ...
+)
 
 \method{quantile2}{rvar}(x, probs = c(0.05, 0.95), na.rm = FALSE, names = TRUE, ...)
 }
@@ -20,17 +27,20 @@ quantile2(x, probs = c(0.05, 0.95), na.rm = FALSE, ...)
 \item An \code{\link{rvar}}.
 }}
 
+\item{...}{Arguments passed to individual methods (if applicable) and then
+on to \code{\link[stats:quantile]{stats::quantile()}}.}
+
 \item{probs}{(numeric vector) Probabilities in \verb{[0, 1]}.}
 
 \item{na.rm}{(logical) Should \code{NA} and \code{NaN} values be removed from \code{x} prior
 to computing quantiles? The default is \code{FALSE}.}
 
-\item{...}{Arguments passed to individual methods (if applicable) and then
-on to \code{\link[stats:quantile]{stats::quantile()}}.}
-
 \item{names}{(logical) Should the result have a \code{names} attribute? The
 default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many
 values in \code{probs}.}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 A numeric vector of length \code{length(probs)}. If \code{names = TRUE}, it has a
