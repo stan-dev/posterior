@@ -5,18 +5,15 @@
 \alias{ess_quantile.default}
 \alias{ess_quantile.rvar}
 \alias{ess_median}
-\alias{ess_mean.default}
 \title{Effective sample sizes for quantiles}
 \usage{
 ess_quantile(x, probs = c(0.05, 0.95), ...)
 
-\method{ess_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, ...)
+\method{ess_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, weights = NULL, ...)
 
 \method{ess_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
 ess_median(x, ...)
-
-\method{ess_mean}{default}(x, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -33,6 +30,9 @@ ess_median(x, ...)
 \item{names}{(logical) Should the result have a \code{names} attribute? The
 default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many
 values in \code{probs}.}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 If the input is an array,
@@ -54,8 +54,9 @@ result indexes the input probabilities; i.e. the result has dimension
 \code{c(length(probs), dim(x))}.
 }
 \description{
-Compute effective sample size estimates for quantile estimates of a single
-variable.
+Compute effective sample size estimates for quantile estimates of a
+single variable. If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -69,7 +70,7 @@ ess_quantile(d$mu, probs = c(0.1, 0.9))
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
 Paul-Christian Bürkner (2021). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
-MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
+MCMC (with discussion). \emph{Bayesian Analysis}. 16(2), 667-–718.
 doi:10.1214/20-BA1221
 }
 \seealso{
@@ -83,9 +84,9 @@ Other diagnostics:
 \code{\link{mcse_sd}()},
 \code{\link{pareto_diags}()},
 \code{\link{pareto_khat}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}

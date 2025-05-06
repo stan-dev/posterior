@@ -68,13 +68,13 @@ The default is \code{"both"}.}
 
 \item{r_eff}{(numeric) relative effective sample size estimate. If
 \code{r_eff} is NULL, it will be calculated assuming the draws are
-from MCMC. Default is 1.}
+from MCMC. Default is NULL.}
 
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
 \code{ndraws_tail} is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
 length(x) / 5 otherwise (see Appendix H in Vehtari et
-al. (2022)).}
+al. (2024)).}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto diagnostics will be
@@ -109,19 +109,19 @@ estimate. If the actual sample size is greater than \code{min_ss}, then
 Pareto smoothed estimates can be considered reliable. If the actual
 sample size is lower than \code{min_ss}, increasing the sample size
 might result in more reliable estimates. For further details, see
-Section 3.2.3, Equation 11 in Vehtari et al. (2022).
+Section 3.2.3, Equation 11 in Vehtari et al. (2024).
 \item \code{khat_threshold}: Threshold below which k-hat values result in
 reliable Pareto smoothed estimates. The threshold is lower for
 smaller effective sample sizes. If k-hat is larger than the
 threshold, increasing the total sample size may improve reliability
 of estimates. For further details, see Section 3.2.4, Equation 13
-in Vehtari et al. (2022).
+in Vehtari et al. (2024).
 \item \code{convergence_rate}: Relative convergence rate compared to the
 central limit theorem. Applicable only if the actual sample size
 is sufficiently large (greater than \code{min_ss}). The convergence
 rate tells the rate at which the variance of an estimate reduces
 when the sample size is increased, compared to the central limit
-theorem convergence rate. See Appendix B in Vehtari et al. (2022).
+theorem convergence rate. See Appendix B in Vehtari et al. (2024).
 }
 }
 \examples{
@@ -133,12 +133,15 @@ pareto_diags(d$Sigma)
 }
 \references{
 Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
-Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
-arxiv:arXiv:1507.02646 (version 8)
+Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
+\emph{Journal of Machine Learning Research}, 25(72):1-58.
+\href{https://jmlr.org/papers/v25/19-556.html}{PDF}
 }
 \seealso{
-\code{\link{pareto_khat}} for only calculating khat, and
-\code{\link{pareto_smooth}} for Pareto smoothed draws.
+\code{\link{pareto_khat}}, \code{\link{pareto_min_ss}},
+\code{\link{pareto_khat_threshold}}, and \code{\link{pareto_convergence_rate}} for
+individual diagnostics; and \code{\link{pareto_smooth}} for Pareto smoothing
+draws.
 
 Other diagnostics: 
 \code{\link{ess_basic}()},
@@ -150,9 +153,9 @@ Other diagnostics:
 \code{\link{mcse_quantile}()},
 \code{\link{mcse_sd}()},
 \code{\link{pareto_khat}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}

@@ -8,7 +8,7 @@
 \usage{
 ess_basic(x, ...)
 
-\method{ess_basic}{default}(x, split = TRUE, ...)
+\method{ess_basic}{default}(x, split = TRUE, weights = NULL, ...)
 
 \method{ess_basic}{rvar}(x, split = TRUE, ...)
 }
@@ -24,6 +24,9 @@ ess_basic(x, ...)
 
 \item{split}{(logical) Should the estimate be computed on split chains? The
 default is \code{TRUE}.}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 If the input is an array, returns a single numeric value. If any of the draws
@@ -47,6 +50,8 @@ al. (2021). For practical applications, we strongly
 recommend the improved ESS convergence diagnostics implemented in
 \code{\link[=ess_bulk]{ess_bulk()}} and \code{\link[=ess_tail]{ess_tail()}}. See Vehtari (2021) for an in-depth
 comparison of different effective sample size estimators.
+If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -64,7 +69,7 @@ Hall/CRC.
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
 Paul-Christian Bürkner (2021). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
-MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
+MCMC (with discussion). \emph{Bayesian Analysis}. 16(2), 667-–718.
 doi:10.1214/20-BA1221
 
 Aki Vehtari (2021). Comparison of MCMC effective sample size estimators.
@@ -81,9 +86,9 @@ Other diagnostics:
 \code{\link{mcse_sd}()},
 \code{\link{pareto_diags}()},
 \code{\link{pareto_khat}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}

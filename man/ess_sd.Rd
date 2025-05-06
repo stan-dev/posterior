@@ -8,7 +8,7 @@
 \usage{
 ess_sd(x, ...)
 
-\method{ess_sd}{default}(x, ...)
+\method{ess_sd}{default}(x, weights = NULL, ...)
 
 \method{ess_sd}{rvar}(x, ...)
 }
@@ -21,6 +21,9 @@ ess_sd(x, ...)
 }}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 If the input is an array, returns a single numeric value. If any of the draws
@@ -41,6 +44,8 @@ passing the draws array for that element of the \code{\link{rvar}} to this funct
 Compute an effective sample size estimate for the standard deviation (SD)
 estimate of a single variable. This is defined as the effective sample size
 estimate for the absolute deviation from mean.
+If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -54,7 +59,7 @@ ess_sd(d$Sigma)
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
 Paul-Christian Bürkner (2021). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
-MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
+MCMC (with discussion). \emph{Bayesian Analysis}. 16(2), 667-–718.
 doi:10.1214/20-BA1221
 }
 \seealso{
@@ -68,9 +73,9 @@ Other diagnostics:
 \code{\link{mcse_sd}()},
 \code{\link{pareto_diags}()},
 \code{\link{pareto_khat}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}

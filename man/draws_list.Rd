@@ -76,10 +76,10 @@ str(x2)
 }
 \seealso{
 Other formats: 
+\code{\link{draws}},
 \code{\link{draws_array}()},
 \code{\link{draws_df}()},
 \code{\link{draws_matrix}()},
-\code{\link{draws_rvars}()},
-\code{\link{draws}}
+\code{\link{draws_rvars}()}
 }
 \concept{formats}

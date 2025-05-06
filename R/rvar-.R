@@ -920,6 +920,13 @@ drop_chain_dim <- function(x) {
 #' (first one is draws), etc.
 #' @noRd
 cleanup_rvar_draws <- function(x) {
+  assert(
+    check_numeric(x),
+    check_logical(x),
+    check_factor(x),
+    check_character(x)
+  )
+
   if (length(x) == 0) {
     # canonical NULL rvar is at least 1 draw of nothing
     # this ensures that (e.g.) extending a null rvar

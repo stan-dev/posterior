@@ -1,10 +1,17 @@
-test_that("pareto_khat returns expected reasonable values", {
-  tau <- extract_variable_matrix(example_draws(), "tau")
+test_that("pareto_khat handles constant tail correctly", {
 
-  pk <- pareto_khat(tau)
-  expect_true(names(pk) == "khat")
+  # left tail is constant, so khat should be NA, but for "both" it
+  # should be the same as the right tail
+  x <- c(rep(-100, 10), sort(rnorm(100)))
+
+  expect_true(is.na(pareto_khat(x, tail = "left", ndraws_tail = 10)))
+  expect_equal(
+    pareto_khat(x, tail = "right", ndraws_tail = 10),
+    pareto_khat(x, tail = "both", ndraws_tail = 10)
+  )
 
 })
+
 
 test_that("pareto_khat handles tail argument", {
 
@@ -14,8 +21,8 @@ test_that("pareto_khat handles tail argument", {
   pkl <- pareto_khat(tau, tail = "left")
   pkr <- pareto_khat(tau, tail = "right")
   pkb <- pareto_khat(tau)
-  expect_true(pkl$khat < pkr$khat)
-  expect_equal(pkr$khat, pkb$khat)
+  expect_true(pkl < pkr)
+  expect_equal(pkr, pkb)
 })
 
 test_that("pareto_khat handles ndraws_tail argument", {
@@ -23,12 +30,12 @@ test_that("pareto_khat handles ndraws_tail argument", {
   tau <- extract_variable_matrix(example_draws(), "tau")
   pk10 <- pareto_khat(tau, tail = "right", ndraws_tail = 10)
   pk25 <- pareto_khat(tau, tail = "right", ndraws_tail = 25)
-  expect_true(pk10$khat > pk25$khat)
+  expect_true(pk10 > pk25)
 
   expect_warning(pareto_khat(tau, tail = "both", ndraws_tail = 201),
-                 "Number of tail draws cannot be more than half ",
+                 paste0("Number of tail draws cannot be more than half ",
                  "the total number of draws if both tails are fit, ",
-                 "changing to 200.")
+                 "changing to 200."))
 
   expect_warning(pareto_khat(tau, tail = "both", ndraws_tail = 4),
                  "Number of tail draws cannot be less than 5. Changing to 5.")
@@ -41,7 +48,7 @@ test_that("pareto_khat handles r_eff argument", {
   tau <- extract_variable_matrix(example_draws(), "tau")
   pk1 <- pareto_khat(tau, r_eff = 1)
   pk0.6 <- pareto_khat(tau, r_eff = 0.6)
-  expect_true(pk1$khat < pk0.6$khat)
+  expect_true(pk1 < pk0.6)
 
 })
 
@@ -180,14 +187,27 @@ test_that("pareto_khat functions work with rvars with and without chains", {
 
 })
 
-test_that("pareto_smooth returns x with smoothed tail", {
-  tau <- extract_variable_matrix(example_draws(), "tau")
+test_that("pareto_smooth returns x with smoothed tail(s)", {
+  mu <- extract_variable_matrix(example_draws(), "mu")
 
-  tau_smoothed <- pareto_smooth(tau, ndraws_tail = 10, tail = "right", return_k = TRUE)$x
+  mu_smoothed_right <- pareto_smooth(mu, ndraws_tail = 10, tail = "right", return_k = TRUE)$x
 
-  expect_equal(sort(tau)[1:390], sort(tau_smoothed)[1:390])
+  mu_smoothed_left <- pareto_smooth(mu, ndraws_tail = 10, tail = "left", return_k = TRUE)$x
 
-  expect_false(isTRUE(all.equal(sort(tau), sort(tau_smoothed))))
+  mu_smoothed_both <- pareto_smooth(mu, ndraws_tail = 10, tail = "both", return_k = TRUE)$x
+
+  expect_equal(sort(mu)[1:390], sort(mu_smoothed_right)[1:390])
+  expect_equal(sort(mu_smoothed_both)[11:400], sort(mu_smoothed_right)[11:400])
+
+  expect_equal(sort(mu)[11:400], sort(mu_smoothed_left)[11:400])
+  expect_equal(sort(mu_smoothed_both)[1:390], sort(mu_smoothed_left)[1:390])
+
+  expect_false(isTRUE(all.equal(sort(mu), sort(mu_smoothed_left))))
+  expect_false(isTRUE(all.equal(sort(mu), sort(mu_smoothed_right))))
+  expect_false(isTRUE(all.equal(sort(mu), sort(mu_smoothed_both))))
+
+  expect_false(isTRUE(all.equal(sort(mu_smoothed_both), sort(mu_smoothed_left))))
+  expect_false(isTRUE(all.equal(sort(mu_smoothed_both), sort(mu_smoothed_right))))
 
 })
 
@@ -222,9 +242,9 @@ test_that("pareto khat works for weighted rvars", {
   w2 <- w2 / sum(w2)
   xw2 <- weight_draws(xr, weights = w2)
 
-  k <- pareto_khat(xw2)$khat
-  kw <- pareto_khat(w2, are_log_weights = TRUE)$khat
-  kp <- pareto_khat(draws_of(xw2) * w2)$khat
+  k <- pareto_khat(xw2)
+  kw <- pareto_khat(w2, are_log_weights = TRUE)
+  kp <- pareto_khat(draws_of(xw2) * w2)
 
   expect_true(k > 0.7)
   expect_equal(k, max(kw, kp))

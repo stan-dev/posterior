@@ -22,6 +22,7 @@ subset_draws(x, ...)
   regex = FALSE,
   unique = TRUE,
   exclude = FALSE,
+  scalar = FALSE,
   ...
 )
 
@@ -34,6 +35,7 @@ subset_draws(x, ...)
   regex = FALSE,
   unique = TRUE,
   exclude = FALSE,
+  scalar = FALSE,
   ...
 )
 
@@ -46,6 +48,7 @@ subset_draws(x, ...)
   regex = FALSE,
   unique = TRUE,
   exclude = FALSE,
+  scalar = FALSE,
   ...
 )
 
@@ -58,6 +61,7 @@ subset_draws(x, ...)
   regex = FALSE,
   unique = TRUE,
   exclude = FALSE,
+  scalar = FALSE,
   ...
 )
 
@@ -70,6 +74,7 @@ subset_draws(x, ...)
   regex = FALSE,
   unique = TRUE,
   exclude = FALSE,
+  scalar = FALSE,
   ...
 )
 
@@ -108,6 +113,10 @@ how often they appear in the respective selecting arguments.}
 If \code{FALSE} (the default) only the selected subset will be
 returned.  If \code{TRUE} everything but the selected subset will be
 returned.}
+
+\item{scalar}{(logical) Should only scalar variables be selected?
+If \code{FALSE} (the default), all variables with matching names and
+\emph{arbitrary} indices will be selected (see examples).}
 }
 \value{
 A \code{draws} object of the same class as \code{x}.
@@ -131,5 +140,8 @@ subset_draws(x, chain = c(1, 1), unique = FALSE)
 
 # extract all elements of 'theta'
 subset_draws(x, variable = "theta")
+
+# trying to extract only a scalar 'theta' will fail
+# subset_draws(x, variable = "theta", scalar = TRUE)
 
 }

@@ -131,7 +131,11 @@ as_draws_array.mcmc.list <- function(x, ...) {
 
 # try to convert any R object into a 'draws_array' object
 .as_draws_array <- function(x) {
-  x <- as.array(x)
+  if (is_matrix_list_like(x)) {
+    x <- as_array_matrix_list(x)
+  } else {
+    x <- as.array(x)
+  }
   new_dimnames <- list(iteration = NULL, chain = NULL, variable = NULL)
   if (!is.null(dimnames(x)[[3]])) {
     new_dimnames[[3]] <- dimnames(x)[[3]]
@@ -178,7 +182,14 @@ is_draws_array <- function(x) {
 
 # is an object looking like a 'draws_array' object?
 is_draws_array_like <- function(x) {
-  is.array(x) && length(dim(x)) == 3L
+  is.array(x) && length(dim(x)) == 3L ||
+    is_matrix_list_like(x)
+}
+
+# is an object likely a list of matrices?
+# such an object can be easily converted to a draws_array
+is_matrix_list_like <- function(x) {
+  is.list(x) && length(dim(x[[1]])) == 2L
 }
 
 #' Extract parts of a `draws_array` object
@@ -217,15 +228,8 @@ variance.draws_array <- function(x, ...) {
 # convert a list of matrices to an array
 as_array_matrix_list <- function(x) {
   stopifnot(is.list(x))
-  if (length(x) == 1) {
-    tmp <- dimnames(x[[1]])
-    x <- x[[1]]
-    dim(x) <- c(dim(x), 1)
-    dimnames(x) <- tmp
-  } else {
-    x <- abind::abind(x, along = 3L)
-  }
-  x <- aperm(x, c(1, 3, 2))
+  x <- abind::abind(x, along = 3L)
+  aperm(x, c(1, 3, 2))
 }
 
 # create an empty draws_array object
@@ -246,4 +250,3 @@ empty_draws_array <- function(variables = character(0), nchains = 0,
   class(out) <- class_draws_array()
   out
 }
-

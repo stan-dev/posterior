@@ -9,7 +9,7 @@
 \usage{
 mcse_quantile(x, probs = c(0.05, 0.95), ...)
 
-\method{mcse_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, ...)
+\method{mcse_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, weights = NULL, ...)
 
 \method{mcse_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
@@ -30,6 +30,9 @@ mcse_median(x, ...)
 \item{names}{(logical) Should the result have a \code{names} attribute? The
 default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many
 values in \code{probs}.}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 If the input is an array,
@@ -52,7 +55,8 @@ result indexes the input probabilities; i.e. the result has dimension
 }
 \description{
 Compute Monte Carlo standard errors for quantile estimates of a
-single variable.
+single variable. If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -66,7 +70,7 @@ mcse_quantile(d$mu)
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
 Paul-Christian Bürkner (2021). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
-MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
+MCMC (with discussion). \emph{Bayesian Analysis}. 16(2), 667-–718.
 doi:10.1214/20-BA1221
 }
 \seealso{
@@ -80,9 +84,9 @@ Other diagnostics:
 \code{\link{mcse_sd}()},
 \code{\link{pareto_diags}()},
 \code{\link{pareto_khat}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}

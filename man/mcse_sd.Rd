@@ -8,7 +8,7 @@
 \usage{
 mcse_sd(x, ...)
 
-\method{mcse_sd}{default}(x, ...)
+\method{mcse_sd}{default}(x, weights = NULL, ...)
 
 \method{mcse_sd}{rvar}(x, ...)
 }
@@ -21,6 +21,9 @@ mcse_sd(x, ...)
 }}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 If the input is an array, returns a single numeric value. If any of the draws
@@ -54,7 +57,7 @@ mcse_sd(d$Sigma)
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
 Paul-Christian Bürkner (2021). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
-MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
+MCMC (with discussion). \emph{Bayesian Analysis}. 16(2), 667-–718.
 doi:10.1214/20-BA1221
 
 J. F. Kenney & E. S. Keeping (1951). \emph{Mathematics of Statistics, Vol. II.}
@@ -70,9 +73,9 @@ Other diagnostics:
 \code{\link{mcse_quantile}()},
 \code{\link{pareto_diags}()},
 \code{\link{pareto_khat}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}
