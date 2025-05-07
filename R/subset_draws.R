@@ -400,6 +400,7 @@ subset_dims <- function(x, ...) {
     for (i in seq_along(x)) {
       draws_of(x[[i]]) <- vec_slice(draws_of(x[[i]]), slice_index)
       nchains_rvar(x[[i]]) <- nchains
+      log_weights_rvar(x[[i]]) <- log_weights(x[[i]])[slice_index]
     }
   }
   if (!is.null(iteration)) {
@@ -408,6 +409,7 @@ subset_dims <- function(x, ...) {
       (rep(chain_ids(x), each = niterations) - 1) * niterations(x)
     for (i in seq_along(x)) {
       draws_of(x[[i]]) <- vec_slice(draws_of(x[[i]]), slice_index)
+      log_weights_rvar(x[[i]]) <- log_weights(x[[i]])[slice_index]
     }
   }
   x

@@ -60,7 +60,7 @@ print.rvar <- function(x, ..., summary = NULL, digits = NULL, color = TRUE, widt
   digits <- digits %||% getOption("posterior.digits", 2)
   # \u00b1 = plus/minus sign
   summary_functions <- get_summary_functions(draws_of(x), summary)
-  plus_minus <- summary_functions[[1]] != "modal_category"
+  plus_minus <- !identical(summary_functions[[1]], modal_category)
   summary_string <- if (plus_minus) {
     paste0(paste(names(summary_functions), collapse = " \u00b1 "), ":")
   } else {
@@ -89,7 +89,7 @@ print.rvar <- function(x, ..., summary = NULL, digits = NULL, color = TRUE, widt
 #' @export
 format.rvar <- function(x, ..., summary = NULL, digits = NULL, color = FALSE) {
   digits <- digits %||% getOption("posterior.digits", 2)
-  format_rvar_draws(draws_of(x), ..., summary = summary, digits = digits, color = color)
+  format_rvar_draws(draws_of(x), weights(x), ..., summary = summary, digits = digits, color = color)
 }
 
 #' @rdname print.rvar
@@ -126,7 +126,7 @@ str.rvar <- function(
   }
 
   cat0(" ", rvar_type_full(object), "  ",
-    paste(format_rvar_draws(.draws, summary = summary, trim = TRUE), collapse = "  "),
+    paste(format_rvar_draws(.draws, weights(object), summary = summary, trim = TRUE), collapse = "  "),
     ellipsis, "\n"
   )
 
@@ -158,7 +158,11 @@ str.rvar <- function(
       }
     }
     str_attr(attributes(draws_of(object)), "draws_of(*)", c("names", "dim", "dimnames", "class", "levels"))
-    str_attr(attributes(object), "*", c("draws", "names", "dim", "dimnames", "class", "nchains", "cache"))
+    str_attr(attributes(object), "*", c("draws", "names", "dim", "dimnames", "class", "nchains", "cache", "log_weights"))
+    if ("log_weights" %in% names(attributes(object))) {
+      cat0(indent.str, paste0('- log_weights(*)='))
+      str_next(log_weights(object), ...)
+    }
   }
 
   invisible(NULL)
@@ -218,7 +222,12 @@ rvar_type_full <- function(x, dim1 = TRUE) {
     paste0(",", nchains(x))
   }
 
-  paste0(rvar_class(x), "<", niterations(x), chain_str, ">", dim_str)
+  paste0(
+    if (!is.null(log_weights(x))) "weighted ",
+    rvar_class(x),
+    "<", niterations(x), chain_str, ">",
+    dim_str
+  )
 }
 
 rvar_class <- function(x) {
@@ -235,19 +244,19 @@ rvar_class <- function(x) {
 # formats a draws array for display as individual "variables" (i.e. maintaining
 # its dimensions except for the dimension representing draws)
 format_rvar_draws <- function(
-  draws, ..., pad_left = "", pad_right = "", summary = NULL, digits = 2, color = FALSE, trim = FALSE
+  draws, weights, ..., pad_left = "", pad_right = "", summary = NULL, digits = 2, color = FALSE, trim = FALSE
 ) {
   if (length(draws) == 0) {
     return(character())
   }
   summary_functions <- get_summary_functions(draws, summary)
-  plus_minus <- summary_functions[[1]] != "modal_category"
+  plus_minus <- !identical(summary_functions[[1]], modal_category)
 
   summary_dimensions <- seq_len(length(dim(draws)) - 1) + 1
 
   # these will be mean/sd, median/mad, mode/entropy, mode/dissent depending on `summary`
-  .mean <- .apply_factor(draws, summary_dimensions, summary_functions[[1]])
-  .sd <- .apply_factor(draws, summary_dimensions, summary_functions[[2]])
+  .mean <- .apply_factor(draws, summary_dimensions, function(x) summary_functions[[1]](x, weights))
+  .sd <- .apply_factor(draws, summary_dimensions, function(x) summary_functions[[2]](x, weights))
 
   out <- paste0(
     pad_left,
@@ -313,6 +322,16 @@ format_levels <- function(levels, ordered = FALSE, max_level = NULL, width = get
   )
 }
 
+# matrixStats::weighted_sd assumes we know the sample size, so use
+# this instead
+weighted_sd <- function(x, w = NULL) {
+  if (is.null(w)) {
+    sd(x)
+  } else {
+    sqrt(weighted.mean((x - weighted.mean(x, w))^2, w)    )
+  }
+}
+
 # check that summary is a valid name of the type of summary to do and
 # return a vector of two elements, where the first is the point summary function
 # (mean, median, mode) and the second is the uncertainty function ()
@@ -325,10 +344,10 @@ get_summary_functions <- function(draws, summary = NULL) {
 
   if (is.null(summary)) summary <- getOption("posterior.rvar_summary", "mean_sd")
   switch(summary,
-    mean_sd = list(mean = "mean", sd = "sd"),
-    median_mad = list(median = "median", mad = "mad"),
-    mode_entropy = list(mode = "modal_category", entropy = "entropy"),
-    mode_dissent = list(mode = "modal_category", dissent = "dissent"),
+    mean_sd = list(mean = matrixStats::weightedMean, sd = weighted_sd),
+    median_mad = list(median = matrixStats::weightedMedian, mad = matrixStats::weightedMad),
+    mode_entropy = list(mode = modal_category, entropy = entropy),
+    mode_dissent = list(mode = modal_category, dissent = dissent),
     stop_no_call('`summary` must be one of "mean_sd" or "median_mad"')
   )
 }
