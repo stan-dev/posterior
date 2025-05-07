@@ -29,6 +29,7 @@ test_that("rstar works with draws_df example", {
 
 test_that("rstar with uncertainty returns vectors of correct length", {
   skip_if_not_installed("caret")
+  skip_if_not_installed("gbm")
   x <- example_draws()
   val <- rstar(x, method = "gbm", uncertainty = T, verbose = F)
   expect_equal(length(val), 1000)
@@ -45,6 +46,7 @@ test_that("incorrect nsimulations values throws error", {
 
 test_that("rstar with uncertainty returns reasonable values", {
   skip_if_not_installed("caret")
+  skip_if_not_installed("gbm")
   x <- example_draws()
   val <- rstar(x, method = "gbm", uncertainty = T, verbose = F)
   expect_true(max(val) > 0.3 & min(val) < 10)
@@ -52,6 +54,7 @@ test_that("rstar with uncertainty returns reasonable values", {
 
 test_that("rstar accepts different classifiers", {
   skip_if_not_installed("caret")
+  skip_if_not_installed("gbm")
   x <- example_draws()
   val <- rstar(x, method = "gbm", verbose=F)
   expect_true(is.numeric(val))
@@ -61,6 +64,7 @@ test_that("rstar accepts different classifiers", {
 
 test_that("rstar accepts different hyperparameters", {
   skip_if_not_installed("caret")
+  skip_if_not_installed("gbm")
   x <- example_draws()
 
   # use fast hyperparameters

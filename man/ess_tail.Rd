@@ -8,7 +8,7 @@
 \usage{
 ess_tail(x, ...)
 
-\method{ess_tail}{default}(x, ...)
+\method{ess_tail}{default}(x, weights = NULL, ...)
 
 \method{ess_tail}{rvar}(x, ...)
 }
@@ -21,6 +21,9 @@ ess_tail(x, ...)
 }}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 If the input is an array, returns a single numeric value. If any of the draws
@@ -44,6 +47,8 @@ the tails of the posterior. It is defined as the minimum of the effective
 sample sizes for 5\% and 95\% quantiles. For the bulk effective sample
 size see \code{\link[=ess_bulk]{ess_bulk()}}. See Vehtari (2021) for an in-depth
 comparison of different effective sample size estimators.
+If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -57,7 +62,7 @@ ess_tail(d$Sigma)
 Aki Vehtari, Andrew Gelman, Daniel Simpson, Bob Carpenter, and
 Paul-Christian Bürkner (2021). Rank-normalization, folding, and
 localization: An improved R-hat for assessing convergence of
-MCMC (with discussion). \emph{Bayesian Data Analysis}. 16(2), 667-–718.
+MCMC (with discussion). \emph{Bayesian Analysis}. 16(2), 667-–718.
 doi:10.1214/20-BA1221
 
 Aki Vehtari (2021). Comparison of MCMC effective sample size estimators.
@@ -74,9 +79,9 @@ Other diagnostics:
 \code{\link{mcse_sd}()},
 \code{\link{pareto_diags}()},
 \code{\link{pareto_khat}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}

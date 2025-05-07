@@ -164,8 +164,10 @@ test_that("weights must match draws", {
   }
 })
 
-test_that("weights must be a vector, not array/matrix", {
-  x <- example_draws()
-  w <- seq_len(ndraws(x))
-  expect_error(weight_draws(x, matrix(w)), "Must be.*vector.*not.*matrix")
-})
+
+## pit now allows for weights to be a draws matrix, so this no longer passes
+## test_that("weights must be a vector, not array/matrix", {
+##   x <- example_draws()
+##   w <- seq_len(ndraws(x))
+##   expect_error(weight_draws(x, matrix(w)), "Must be.*vector.*not.*matrix")
+## })

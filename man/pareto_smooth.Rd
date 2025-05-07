@@ -13,7 +13,7 @@ pareto_smooth(x, ...)
 \method{pareto_smooth}{default}(
   x,
   tail = c("both", "right", "left"),
-  r_eff = 1,
+  r_eff = NULL,
   ndraws_tail = NULL,
   return_k = FALSE,
   extra_diags = FALSE,
@@ -53,13 +53,13 @@ The default is \code{"both"}.}
 
 \item{r_eff}{(numeric) relative effective sample size estimate. If
 \code{r_eff} is NULL, it will be calculated assuming the draws are
-from MCMC. Default is 1.}
+from MCMC. Default is NULL.}
 
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
 \code{ndraws_tail} is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
 length(x) / 5 otherwise (see Appendix H in Vehtari et
-al. (2022)).}
+al. (2024)).}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto diagnostics will be
@@ -72,17 +72,25 @@ draws are log weights, and only right tail will be smoothed.}
 \value{
 Either a vector \code{x} of smoothed values or a named list
 containing the vector \code{x} and a named list \code{diagnostics}
-containing Pareto smoothing diagnostics: * \code{khat}: estimated
-Pareto k shape parameter, and optionally * \code{min_ss}: minimum
-sample size for reliable Pareto smoothed estimate *
-\code{khat_threshold}: khat-threshold for reliable Pareto smoothed
-estimates * \code{convergence_rate}: Relative convergence rate for
+containing numeric values:
+\itemize{
+\item \code{khat}: estimated Pareto k shape parameter, and optionally
+\item \code{min_ss}: minimum sample size for reliable Pareto smoothed
+estimate
+\item \code{khat_threshold}: sample size specific khat threshold for
+reliable Pareto smoothed estimates
+\item \code{convergence_rate}: Relative convergence rate for
 Pareto smoothed estimates
+}
+
+If any of the draws is non-finite, that is, \code{NA}, \code{NaN}, \code{Inf}, or
+\code{-Inf}, Pareto smoothing will not be performed, and the original
+draws will be returned and and diagnostics will be \code{NA} (numeric).
 }
 \description{
 Smooth the tail draws of x by replacing tail draws by order
 statistics of a generalized Pareto distribution fit to the
-tail(s). For further details see Vehtari et al. (2022).
+tail(s). For further details see Vehtari et al. (2024).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -93,8 +101,9 @@ pareto_smooth(d$Sigma)
 }
 \references{
 Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
-Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
-arxiv:arXiv:1507.02646 (version 8)
+Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
+\emph{Journal of Machine Learning Research}, 25(72):1-58.
+\href{https://jmlr.org/papers/v25/19-556.html}{PDF}
 }
 \seealso{
 \code{\link{pareto_khat}} for only calculating khat, and

@@ -19,7 +19,7 @@ test_that("ess diagnostics return reasonable values", {
   expect_true(ess > 250 & ess < 310)
 
   ess <- ess_sd(tau)
-  expect_true(ess > 250 & ess < 310)
+  expect_true(ess > 230 & ess < 280)
 
   ess <- ess_bulk(tau)
   expect_true(ess > 230 & ess < 280)

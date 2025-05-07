@@ -41,13 +41,13 @@ The default is \code{"both"}.}
 
 \item{r_eff}{(numeric) relative effective sample size estimate. If
 \code{r_eff} is NULL, it will be calculated assuming the draws are
-from MCMC. Default is 1.}
+from MCMC. Default is NULL.}
 
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
 \code{ndraws_tail} is not specified, it will be calculated as
 ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
 length(x) / 5 otherwise (see Appendix H in Vehtari et
-al. (2022)).}
+al. (2024)).}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto diagnostics will be
@@ -58,13 +58,25 @@ printed. Default is \code{FALSE}.}
 draws are log weights, and only right tail will be smoothed.}
 }
 \value{
-\code{khat} estimated Generalized Pareto Distribution shape parameter k
+If the input is an array, returns a single numeric value. If any of the draws
+is non-finite, that is, \code{NA}, \code{NaN}, \code{Inf}, or \code{-Inf}, the returned output
+will be (numeric) \code{NA}. Also, if all draws within any of the chains of a
+variable are the same (constant), the returned output will be (numeric) \code{NA}
+as well. The reason for the latter is that, for constant draws, we cannot
+distinguish between variables that are supposed to be constant (e.g., a
+diagonal element of a correlation matrix is always 1) or variables that just
+happened to be constant because of a failure of convergence or other problems
+in the sampling process.
+
+If the input is an \code{\link{rvar}}, returns an array of the same dimensions as the
+\code{\link{rvar}}, where each element is equal to the value that would be returned by
+passing the draws array for that element of the \code{\link{rvar}} to this function.
 }
 \description{
 Estimate Pareto k value by fitting a Generalized Pareto
 Distribution to one or two tails of x. This can be used to estimate
 the number of fractional moments that is useful for convergence
-diagnostics. For further details see Vehtari et al. (2022).
+diagnostics. For further details see Vehtari et al. (2024).
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -75,8 +87,9 @@ pareto_khat(d$Sigma)
 }
 \references{
 Aki Vehtari, Daniel Simpson, Andrew Gelman, Yuling Yao and
-Jonah Gabry (2022). Pareto Smoothed Importance Sampling.
-arxiv:arXiv:1507.02646 (version 8)
+Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
+\emph{Journal of Machine Learning Research}, 25(72):1-58.
+\href{https://jmlr.org/papers/v25/19-556.html}{PDF}
 }
 \seealso{
 \code{\link{pareto_diags}} for additional related diagnostics, and
@@ -92,9 +105,9 @@ Other diagnostics:
 \code{\link{mcse_quantile}()},
 \code{\link{mcse_sd}()},
 \code{\link{pareto_diags}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}

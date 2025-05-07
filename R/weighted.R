@@ -42,8 +42,7 @@ weighted_quantile = function(x,
   )(probs)
 }
 
-#' @rdname weighted_quantile
-#' @export
+#' @noRd
 weighted_quantile_fun = function(x, weights = NULL, na.rm = FALSE, type = 7, ...) {
   na.rm <- as_one_logical(na.rm)
   assert_number(type, lower = 1, upper = 9)

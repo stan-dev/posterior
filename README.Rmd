@@ -245,10 +245,12 @@ print(line)
 
 ### Contributing to posterior
 
-We welcome contributions! The **posterior** package is under active development.
+We welcome contributions!
+The **posterior** package is under active development.
 If you find bugs or have ideas for new features (for us or yourself to
-implement) please open an issue on GitHub
-(https://github.com/stan-dev/posterior/issues).
+implement) please [open an issue](https://github.com/stan-dev/posterior/issues) on GitHub.
+See [CONTRIBUTING.md](https://github.com/stan-dev/posterior/blob/master/.github/CONTRIBUTING.md)
+for more details.
 
 ### Citing posterior
 
@@ -263,13 +265,39 @@ When using **posterior**, please cite it as follows:
 Working with Posterior Distributions.” R package version XXX, <URL:
 https://mc-stan.org/posterior/>.
   
-When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, or `ess_tail`,
+When using the MCMC convergence diagnostics `rhat`, `ess_bulk`, `ess_tail`,
+`ess_median`, `ess_quantile`, `mcse_median`, or `mcse_quantile`
 please also cite
 
 * Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2021).
 Rank-normalization, folding, and localization: An improved Rhat for assessing
 convergence of MCMC (with discussion). *Bayesian Analysis*. 16(2), 667–718.
 doi.org/10.1214/20-BA1221
+
+When using the MCMC convergence diagnostic `rhat_nested`
+please also cite
+
+* Margossian, C. C., Hoffman, M. D., Sountsov, P., Riou-Durand, L.,
+  Vehtari, A., and Gelman, A. (2024).
+  Nested $\widehat{R}$: Assessing the convergence of Markov chain
+  Monte Carlo when running many short chains. *Bayesian Analysis*,
+  doi:10.1214/24-BA1453. 
+
+When using the MCMC convergence diagnostic `rstar`
+please also cite
+
+* Lambert, B. and Vehtari, A. (2022). $R^*$: A robust MCMC convergence
+  diagnostic with uncertainty using decision tree classifiers.
+  *Bayesian Analysis*, 17(2):353-379.
+  doi:10.1214/20-BA1252
+
+When using the Pareto-k diagnostics `pareto_khat`, `pareto_min_ss`,
+`pareto_convergence_rate`, `khat_threshold` or `pareto_diags`, or
+Pareto smoothing `pareto_smooth` please also cite
+
+* Vehtari, A., Simpson, D., Gelman, A., Yao, Y., and Gabry, J. (2024).
+Pareto smoothed importance sampling.
+*Journal of Machine Learning Research*, 25(72):1-58.
 
 The same information can be obtained by running `citation("posterior")`.
 
@@ -279,14 +307,29 @@ Gelman A., Carlin J. B., Stern H. S., David B. Dunson D. B., Aki Vehtari A.,
 & Rubin D. B. (2013). *Bayesian Data Analysis, Third Edition*. Chapman and
 Hall/CRC.
 
+Lambert, B. and Vehtari, A. (2022). $R^*$: A robust MCMC convergence
+diagnostic with uncertainty using decision tree classifiers.
+*Bayesian Analysis*, 17(2):353-379.
+doi:10.1214/20-BA1252
+
+Margossian, C. C., Hoffman, M. D., Sountsov, P., Riou-Durand, L.,
+Vehtari, A., and Gelman, A. (2024).
+Nested $\widehat{R}$: Assessing the convergence of Markov chain
+Monte Carlo when running many short chains. *Bayesian Analysis*,
+doi:10.1214/24-BA1453.
+  
 Vehtari A., Gelman A., Simpson D., Carpenter B., & Bürkner P. C. (2021).
 Rank-normalization, folding, and localization: An improved Rhat for assessing
 convergence of MCMC (with discussion). *Bayesian Analysis*. 16(2), 667–718.
 doi.org/10.1214/20-BA1221
 
+Vehtari, A., Simpson, D., Gelman, A., Yao, Y., and Gabry, J. (2024).
+Pareto smoothed importance sampling.
+*Journal of Machine Learning Research*, 25(72):1-58.
+
 ### Licensing
 
 The **posterior** package is licensed under the following licenses:
 
-- Code: BSD 3-clause (https://opensource.org/license/bsd-3-clause/)
+- Code: BSD 3-clause (https://opensource.org/license/bsd-3-clause)
 - Documentation: CC-BY 4.0 (https://creativecommons.org/licenses/by/4.0/)

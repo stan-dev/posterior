@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -166,9 +166,9 @@
         </td>
         <td><p>Print or format a random variable</p></td>
       </tr><tr><td>
-          <p><code><a href="draws-index.html">variables()</a></code> <code><a href="draws-index.html">`variables&lt;-`()</a></code> <code><a href="draws-index.html">iteration_ids()</a></code> <code><a href="draws-index.html">chain_ids()</a></code> <code><a href="draws-index.html">draw_ids()</a></code> <code><a href="draws-index.html">nvariables()</a></code> <code><a href="draws-index.html">niterations()</a></code> <code><a href="draws-index.html">nchains()</a></code> <code><a href="draws-index.html">ndraws()</a></code> </p>
+          <p><code><a href="variables.html">variables()</a></code> <code><a href="variables.html">nvariables()</a></code> </p>
         </td>
-        <td><p>Index <code>draws</code> objects</p></td>
+        <td><p>Get variable names from <code>draws</code> objects</p></td>
       </tr><tr><td>
           <p><code><a href="example_draws.html">example_draws()</a></code> </p>
         </td>
@@ -190,6 +190,10 @@
         </td>
         <td><p>Extract draws of a single variable</p></td>
       </tr><tr><td>
+          <p><code><a href="extract_variable_array.html">extract_variable_array()</a></code> </p>
+        </td>
+        <td><p>Extract array of a single (possibly indexed) variable</p></td>
+      </tr><tr><td>
           <p><code><a href="extract_variable_matrix.html">extract_variable_matrix()</a></code> </p>
         </td>
         <td><p>Extract matrix of a single variable</p></td>
@@ -202,7 +206,7 @@
         </td>
         <td><p>Mutate variables in <code>draws</code> objects</p></td>
       </tr><tr><td>
-          <p><code><a href="set_variables.html">set_variables()</a></code> </p>
+          <p><code><a href="variables-set.html">`variables&lt;-`()</a></code> <code><a href="variables-set.html">set_variables()</a></code> </p>
         </td>
         <td><p>Set variable names in <code>draws</code> objects</p></td>
       </tr><tr><td>
@@ -217,6 +221,10 @@
           <p><code><a href="subset_draws.html">subset_draws()</a></code> <code><a href="subset_draws.html">subset(<i>&lt;draws&gt;</i>)</a></code> </p>
         </td>
         <td><p>Subset <code>draws</code> objects</p></td>
+      </tr><tr><td>
+          <p><code><a href="draws-index.html">iteration_ids()</a></code> <code><a href="draws-index.html">chain_ids()</a></code> <code><a href="draws-index.html">draw_ids()</a></code> <code><a href="draws-index.html">niterations()</a></code> <code><a href="draws-index.html">nchains()</a></code> <code><a href="draws-index.html">ndraws()</a></code> </p>
+        </td>
+        <td><p>Index <code>draws</code> objects</p></td>
       </tr><tr><td>
           <p><code><a href="rename_variables.html">rename_variables()</a></code> </p>
         </td>
@@ -302,6 +310,34 @@
         </td>
         <td><p>Monte Carlo standard error for the standard deviation</p></td>
       </tr><tr><td>
+          <p><code><a href="pareto_diags.html">pareto_diags()</a></code> <code><a href="pareto_diags.html">pareto_khat_threshold()</a></code> <code><a href="pareto_diags.html">pareto_min_ss()</a></code> <code><a href="pareto_diags.html">pareto_convergence_rate()</a></code> </p>
+        </td>
+        <td><p>Pareto smoothing diagnostics</p></td>
+      </tr><tr><td>
+          <p><code><a href="pareto_khat.html">pareto_khat()</a></code> </p>
+        </td>
+        <td><p>Pareto khat diagnostic</p></td>
+      </tr><tr><td>
+          <p><code><a href="pareto_smooth.html">pareto_smooth()</a></code> </p>
+        </td>
+        <td><p>Pareto smoothing</p></td>
+      </tr><tr><td>
+          <p><code><a href="ps_convergence_rate.html">ps_convergence_rate()</a></code> </p>
+        </td>
+        <td><p>Pareto convergence rate</p></td>
+      </tr><tr><td>
+          <p><code><a href="ps_khat_threshold.html">ps_khat_threshold()</a></code> </p>
+        </td>
+        <td><p>Pareto k-hat threshold</p></td>
+      </tr><tr><td>
+          <p><code><a href="ps_min_ss.html">ps_min_ss()</a></code> </p>
+        </td>
+        <td><p>Pareto-smoothing minimum sample-size</p></td>
+      </tr><tr><td>
+          <p><code><a href="ps_tail_length.html">ps_tail_length()</a></code> </p>
+        </td>
+        <td><p>Pareto tail length</p></td>
+      </tr><tr><td>
           <p><code><a href="quantile2.html">quantile2()</a></code> </p>
         </td>
         <td><p>Compute Quantiles</p></td>
@@ -321,18 +357,6 @@
           <p><code><a href="modal_category.html">modal_category()</a></code> </p>
         </td>
         <td><p>Modal category</p></td>
-      </tr><tr><td>
-          <p><code><a href="pareto_diags.html">pareto_diags()</a></code> </p>
-        </td>
-        <td><p>Pareto smoothing diagnostics</p></td>
-      </tr><tr><td>
-          <p><code><a href="pareto_khat.html">pareto_khat()</a></code> </p>
-        </td>
-        <td><p>Pareto khat diagnostic</p></td>
-      </tr><tr><td>
-          <p><code><a href="pareto_smooth.html">pareto_smooth()</a></code> </p>
-        </td>
-        <td><p>Pareto smoothing</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="functionality-specific-to-the-rvar-datatype">Functionality specific to the rvar datatype <a href="#functionality-specific-to-the-rvar-datatype" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p><p>The <code>draws_rvar</code> format (a structured list of <code>rvar</code> objects) has the same methods (e.g. <code><a href="../reference/bind_draws.html">bind_draws()</a></code>) as the other draws formats. For individual <code>rvar</code> objects themselves, however, posterior provides additional functionality.</p>
@@ -346,7 +370,7 @@
         </td>
         <td><p>Density, CDF, and quantile functions of random variables</p></td>
       </tr><tr><td>
-          <p><code><a href="rvar-matmult.html">`%**%`</a></code> </p>
+          <p><code><a href="rvar-matmult.html">`%**%`</a></code> <code><a href="rvar-matmult.html">matrixOps(<i>&lt;rvar&gt;</i>)</a></code> </p>
         </td>
         <td><p>Matrix multiplication of random variables</p></td>
       </tr><tr><td>

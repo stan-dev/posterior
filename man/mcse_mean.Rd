@@ -8,7 +8,7 @@
 \usage{
 mcse_mean(x, ...)
 
-\method{mcse_mean}{default}(x, ...)
+\method{mcse_mean}{default}(x, weights = NULL, ...)
 
 \method{mcse_mean}{rvar}(x, ...)
 }
@@ -21,6 +21,9 @@ mcse_mean(x, ...)
 }}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 If the input is an array, returns a single numeric value. If any of the draws
@@ -39,7 +42,8 @@ passing the draws array for that element of the \code{\link{rvar}} to this funct
 }
 \description{
 Compute the Monte Carlo standard error for the mean (expectation) of a
-single variable.
+single variable. If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
@@ -65,9 +69,9 @@ Other diagnostics:
 \code{\link{mcse_sd}()},
 \code{\link{pareto_diags}()},
 \code{\link{pareto_khat}()},
+\code{\link{rhat}()},
 \code{\link{rhat_basic}()},
 \code{\link{rhat_nested}()},
-\code{\link{rhat}()},
 \code{\link{rstar}()}
 }
 \concept{diagnostics}

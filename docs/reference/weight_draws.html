@@ -21,7 +21,7 @@ draws objects."><meta property="og:image" content="https://mc-stan.org/posterior
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">posterior</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.6.0</span>
       </span>
     </div>
 
@@ -119,19 +119,19 @@ are stored in the form of unnormalized log-weights (in a variable called
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for draws_matrix</span></span>
-<span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, pareto_smooth <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for draws_array</span></span>
-<span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, pareto_smooth <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for draws_df</span></span>
-<span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, pareto_smooth <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for draws_list</span></span>
-<span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, pareto_smooth <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for draws_rvars</span></span>
-<span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, <span class="va">weights</span>, log <span class="op">=</span> <span class="cn">FALSE</span>, pareto_smooth <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -153,9 +153,14 @@ can be returned via the <code><a href="weights.draws.html">weights.draws()</a></
 
 
 <dt>log</dt>
-<dd><p>(logicla) Are the weights passed already on the log scale? The
+<dd><p>(logical) Are the weights passed already on the log scale? The
 default is <code>FALSE</code>, that is, expecting <code>weights</code> to be on the standard
 (non-log) scale.</p></dd>
+
+
+<dt>pareto_smooth</dt>
+<dd><p>(logical) Should the weights be Pareto-smoothed?
+The default is <code>FALSE</code>.</p></dd>
 
 </dl></div>
     <div id="value">
@@ -176,32 +181,36 @@ default is <code>FALSE</code>, that is, expecting <code>weights</code> to be on 
 <span class="r-in"><span><span class="co"># sample some random weights for illustration</span></span></span>
 <span class="r-in"><span><span class="va">wts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fu"><a href="draws-index.html">ndraws</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">wts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2644506 1.4629054 1.9719158 0.8050840 2.4207868 1.4064785</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.07943442 1.20975078 0.09003050 0.22634413 0.47107425 0.22054226</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># add weights</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, weights <span class="op">=</span> <span class="va">wts</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># extract weights</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/weights.html" class="external-link">weights</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span> <span class="co"># defaults to normalized weights</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0007016715 0.0038815529 0.0052321195 0.0021361438 0.0064231168</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] 0.0037318345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0002133569 0.0032493306 0.0002418175 0.0006079491 0.0012652821</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] 0.0005923656</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/weights.html" class="external-link">weights</a></span><span class="op">(</span><span class="va">x</span>, normalize<span class="op">=</span><span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="co"># recover original weights</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2644506 1.4629054 1.9719158 0.8050840 2.4207868 1.4064785</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.07943442 1.20975078 0.09003050 0.22634413 0.47107425 0.22054226</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/weights.html" class="external-link">weights</a></span><span class="op">(</span><span class="va">x</span>, log<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="co"># get normalized log-weights</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -7.262045 -5.551520 -5.252939 -6.148753 -5.047852 -5.590855</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -8.452544 -5.729306 -8.327327 -7.405419 -6.672460 -7.431387</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># add weights which are already on the log scale</span></span></span>
 <span class="r-in"><span><span class="va">log_wts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">wts</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">log_wts</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.3301008  0.3804244  0.6790056 -0.2168086  0.8840926  0.3410891</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2.5328235  0.1904144 -2.4076068 -1.4856988 -0.7527396 -1.5116659</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, weights <span class="op">=</span> <span class="va">log_wts</span>, log <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># extract weights</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/weights.html" class="external-link">weights</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0007016715 0.0038815529 0.0052321195 0.0021361438 0.0064231168</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] 0.0037318345</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.0002133569 0.0032493306 0.0002418175 0.0006079491 0.0012652821</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] 0.0005923656</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/weights.html" class="external-link">weights</a></span><span class="op">(</span><span class="va">x</span>, log<span class="op">=</span><span class="cn">TRUE</span>, normalize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span> <span class="co"># recover original log_wts</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -1.3301008  0.3804244  0.6790056 -0.2168086  0.8840926  0.3410891</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -2.5328235  0.1904144 -2.4076068 -1.4856988 -0.7527396 -1.5116659</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># add weights on log scale and Pareto smooth them</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">weight_draws</span><span class="op">(</span><span class="va">x</span>, weights <span class="op">=</span> <span class="va">log_wts</span>, log <span class="op">=</span> <span class="cn">TRUE</span>, pareto_smooth <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Pareto k-hat = 0.04.</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
