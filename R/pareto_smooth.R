@@ -321,7 +321,7 @@ pareto_smooth.default <- function(x,
     }
 
     # left tail
-    smoothed <- .pareto_smooth_tail(
+    smoothed <- pareto_smooth_tail(
       x,
       ndraws_tail = ndraws_tail,
       tail = "left",
@@ -331,7 +331,7 @@ pareto_smooth.default <- function(x,
     left_k <- smoothed$k
 
     # right tail
-    smoothed <-.pareto_smooth_tail(
+    smoothed <-pareto_smooth_tail(
       x = smoothed$x,
       ndraws_tail = ndraws_tail,
       tail = "right",
@@ -345,7 +345,7 @@ pareto_smooth.default <- function(x,
 
   } else {
 
-    smoothed <- .pareto_smooth_tail(
+    smoothed <- pareto_smooth_tail(
       x,
       ndraws_tail = ndraws_tail,
       tail = tail,
@@ -442,9 +442,29 @@ pareto_convergence_rate.rvar <- function(x, ...) {
 
 
 #' Pareto smooth tail
-#' internal function to pareto smooth the tail of a vector
-#' @noRd
-.pareto_smooth_tail <- function(x,
+#' function to pareto smooth the tail of a vector. Exported
+#' for usage in other packages, not by users.
+#' 
+#' @param x (multiple options) One of:
+#'  - A matrix of draws for a single variable (iterations x chains). See
+#'    [extract_variable_matrix()].
+#'  - An [`rvar`].
+#' @param ndraws_tail (numeric) number of draws for the tail. If
+#'   `ndraws_tail` is not specified, it will be set to `length(x)`.
+#' @param smooth_draws (logical) Should the tails be smoothed? Default is
+#'   `TRUE`. If `FALSE`, `k` will be calculated but `x` will remain untouched.
+#' @param tail (string) The tail to diagnose/smooth:
+#'   * `"right"`: diagnose/smooth only the right (upper) tail
+#'   * `"left"`: diagnose/smooth only the left (lower) tail
+#' @param are_log_weights (logical) Are the draws log weights? Default is
+#'   `FALSE`. If `TRUE` computation will take into account that the
+#'   draws are log weights, and only right tail will be smoothed.
+#' @template args-methods-dots
+#' @template ref-vehtari-paretosmooth-2022
+#' @seealso [`pareto_smooth`] for the user-facing function.
+#' 
+#' @export
+pareto_smooth_tail <- function(x,
                                 ndraws_tail,
                                 smooth_draws = TRUE,
                                 tail = c("right", "left"),
