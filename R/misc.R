@@ -180,6 +180,15 @@ isNA <- function(x) {
   length(x) == 1L && is.na(x)
 }
 
+#' Check if vector is constant
+#' 
+#' check if a vector is constant, up to a defined tolerance.
+#' 
+#' @param x (vector) vector to check if is constant
+#' @param tol (numeric) tolerance to consider two values equal.
+#'   Default is `.Machine$double.eps`.
+#' 
+#' @export
 is_constant <- function(x, tol = .Machine$double.eps) {
   abs(max(x) - min(x)) < tol
 }
