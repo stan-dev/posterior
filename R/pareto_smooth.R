@@ -321,7 +321,7 @@ pareto_smooth.default <- function(x,
     }
 
     # left tail
-    smoothed <- pareto_smooth_tail(
+    smoothed <- ps_tail(
       x,
       ndraws_tail = ndraws_tail,
       tail = "left",
@@ -331,7 +331,7 @@ pareto_smooth.default <- function(x,
     left_k <- smoothed$k
 
     # right tail
-    smoothed <-pareto_smooth_tail(
+    smoothed <-ps_tail(
       x = smoothed$x,
       ndraws_tail = ndraws_tail,
       tail = "right",
@@ -345,7 +345,7 @@ pareto_smooth.default <- function(x,
 
   } else {
 
-    smoothed <- pareto_smooth_tail(
+    smoothed <- ps_tail(
       x,
       ndraws_tail = ndraws_tail,
       tail = tail,
@@ -464,7 +464,7 @@ pareto_convergence_rate.rvar <- function(x, ...) {
 #' @seealso [`pareto_smooth`] for the user-facing function.
 #' 
 #' @export
-pareto_smooth_tail <- function(x,
+ps_tail <- function(x,
                                 ndraws_tail,
                                 smooth_draws = TRUE,
                                 tail = c("right", "left"),
