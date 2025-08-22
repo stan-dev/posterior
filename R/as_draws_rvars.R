@@ -207,9 +207,27 @@ as_draws_rvars.mcmc.list <- function(x, ...) {
 
   check_new_variables(names(x))
 
-  x <- conform_rvar_ndraws_nchains(x)
+  x <- conform_rvar_nchains_ndraws_weights(x)
 
   class(x) <- class_draws_rvars()
+
+  # move the .log_weight column into the log_weights attribute of each rvar,
+  # but only if there is no conflict between any existing weights on the rvars
+  if (".log_weight" %in% names(x)) {
+    existing_weights <- log_weights(x[[1]])
+    .log_weight <- as.vector(draws_of(x$.log_weight))
+    if (is.null(existing_weights)) {
+      x$.log_weight <- NULL
+      x <- weight_draws(x, .log_weight, log = TRUE)
+    } else {
+      # if we reach this point either existing_weights and .log_weight
+      # are identical (so we don't have to do anything) or they aren't
+      # and weights2_common will throw the appropriate error --- thus
+      # we don't need to do anything with its output
+      weights2_common(existing_weights, .log_weight)
+    }
+  }
+
   x
 }
 
@@ -257,4 +275,14 @@ empty_draws_rvars <- function(variables = character(0), nchains = 0) {
   out <- named_list(variables, rvar())
   class(out) <- class_draws_rvars()
   out
+}
+
+# when converting draws_rvars to other formats, we must promote log weights
+# to be a variable before doing the conversion
+promote_rvar_weights_to_variable <- function(x) {
+  .log_weights <- log_weights(x)
+  if (!is.null(.log_weights)) {
+    x$.log_weight <- rvar(log_weights(x), nchains = nchains(x))
+  }
+  x
 }

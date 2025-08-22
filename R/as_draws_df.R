@@ -110,6 +110,7 @@ as_draws_df.draws_rvars <- function(x, ...) {
   if (ndraws(x) == 0L) {
     return(empty_draws_df(variables(x)))
   }
+  x <- promote_rvar_weights_to_variable(x)
   out <- do.call(cbind, lapply(seq_along(x), function(i) {
     # flatten each rvar so it only has two dimensions: draws and variables
     # this also collapses indices into variable names in the format "var[i,j,k,...]"

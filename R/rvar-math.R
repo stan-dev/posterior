@@ -15,6 +15,7 @@ Ops.rvar <- function(e1, e2) {
 
 .Ops.rvar <- function(f, e1, e2, preserve_dims = FALSE) {
   c(e1, e2) %<-% conform_rvar_nchains(list(e1, e2))
+  c(e1, e2) %<-% conform_rvar_weights(list(e1, e2))
   draws_x <- draws_of(e1)
   draws_y <- draws_of(e2)
 
@@ -47,7 +48,7 @@ Ops.rvar <- function(e1, e2) {
     draws <- copy_dims(dim_source, draws)
   }
 
-  new_rvar(draws, .nchains = nchains(e1))
+  new_rvar(draws, .nchains = nchains(e1), .log_weights = log_weights(e1))
 }
 
 #' @export
@@ -95,10 +96,12 @@ Math.rvar <- function(x, ...) {
   if (.Generic %in% c("cumsum", "cumprod", "cummax", "cummin")) {
     # cumulative functions need to be handled differently
     # from other functions in this generic
-    new_rvar(t(apply(draws_of(x), 1, f)), .nchains = nchains(x))
+    draws_of(x) <- t(apply(draws_of(x), 1, f))
   } else {
-    new_rvar(f(draws_of(x), ...), .nchains = nchains(x))
+    draws_of(x) <- f(draws_of(x), ...)
   }
+
+  x
 }
 
 #' @export
@@ -186,7 +189,7 @@ Math.rvar_factor <- function(x, ...) {
   }
 
   # conform the draws dimension in both variables
-  c(x, y) %<-% conform_rvar_ndraws_nchains(list(x, y))
+  c(x, y) %<-% conform_rvar_nchains_ndraws_weights(list(x, y))
 
   # drop the names of the dimensions (mul.tensor gets uppity if dimension names
   # are duplicated, but we don't care about that)
@@ -206,7 +209,7 @@ Math.rvar_factor <- function(x, ...) {
   result <- copy_dimnames(draws_of(x), 1:2, result, 1:2)
   result <- copy_dimnames(draws_of(y), 3, result, 3)
 
-  new_rvar(result, .nchains = nchains(x))
+  new_rvar(result, .nchains = nchains(x), .log_weights = log_weights(x))
 }
 
 # This generic is not exported here as matrixOps is only in R >= 4.3, so we must
@@ -246,16 +249,17 @@ chol.rvar <- function(x, ...) {
   x_tensor <- as.tensor(aperm(draws_of(x), c(2,3,1)))
 
   # do the cholesky decomp
-  result <- unclass(chol.tensor(x_tensor, 1, 2, ...))
+  out_draws <- unclass(chol.tensor(x_tensor, 1, 2, ...))
 
   # move draws dimension back to the front
-  result <- aperm(result, c(3,1,2))
+  out_draws <- aperm(out_draws, c(3,1,2))
 
   # drop dimension names (chol.tensor screws them around)
-  names(dim(result)) <- NULL
-  dimnames(result) <- NULL
+  names(dim(out_draws)) <- NULL
+  dimnames(out_draws) <- NULL
 
-  new_rvar(result, .nchains = nchains(x))
+  draws_of(x) <- out_draws
+  x
 }
 
 #' @importFrom methods setGeneric
@@ -334,14 +338,15 @@ t.rvar = function(x) {
     .dimnames = dimnames(.draws)
     dim(.draws) = c(dim(.draws)[1], 1, dim(.draws)[2])
     dimnames(.draws) = c(.dimnames[1], list(NULL), .dimnames[2])
-    result <- new_rvar(.draws, .nchains = nchains(x))
+    draws_of(x) <- .draws
   } else if (ndim == 3) {
     .draws <- copy_levels(.draws, aperm(.draws, c(1, 3, 2)))
-    result <- new_rvar(.draws, .nchains = nchains(x))
+    draws_of(x) <- .draws
   } else {
     stop_no_call("argument is not a random vector or matrix")
   }
-  result
+
+  x
 }
 
 #' @export
