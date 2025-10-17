@@ -500,6 +500,10 @@ ps_tail <- function(x,
   }
 
   cutoff <- ord$x[min(tail_ids) - 1] # largest value smaller than tail values
+  if (cutoff == ord$x[min(tail_ids)]) {
+    # cutoff is not smaller than the tail values
+    cutoff <- cutoff - .Machine$double.eps
+  }
 
   max_tail <- max(draws_tail)
   min_tail <- min(draws_tail)
