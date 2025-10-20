@@ -15,3 +15,4 @@ Default is \code{.Machine$double.eps}.}
 \description{
 check if a vector is constant, up to a defined tolerance.
 }
+\keyword{internal}

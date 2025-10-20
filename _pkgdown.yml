@@ -6,8 +6,7 @@ development:
   mode: auto
 
 template:
-  params:
-    bootswatch: cosmo
+  package: pkgdownconfig
 
 navbar:
   title: "posterior"

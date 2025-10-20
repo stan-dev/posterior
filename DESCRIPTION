@@ -51,6 +51,7 @@ Suggests:
   ggplot2,
   ggdist,
   rmarkdown
+Config/Needs/website: stan-dev/pkgdown-config
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: false
