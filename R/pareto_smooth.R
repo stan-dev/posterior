@@ -305,19 +305,24 @@ pareto_smooth.default <- function(x,
     return(pareto_diags_na(x, return_k, extra_diags))
   }
 
+  if (ndraws_tail < 5) {
+    warning_no_call("Number of tail draws cannot be less than 5. ",
+            "Changing to ", 5, ".")
+    ndraws_tail <- 5
+  }
+
+  if (ndraws_tail >= length(x)){
+    warning_no_call("Tail draws (", ndraws_tail, ") not strictly less than total draws (", length(x), "). Fitting of generalized Pareto distribution not performed.")
+    return(pareto_diags_na(x, return_k, extra_diags))
+  }
+
   if (tail == "both") {
 
     if (ndraws_tail > ndraws / 2) {
-      warning("Number of tail draws cannot be more than half ",
+      warning_no_call("Number of tail draws cannot be more than half ",
               "the total number of draws if both tails are fit, ",
               "changing to ", ndraws / 2, ".")
       ndraws_tail <- ndraws / 2
-    }
-
-    if (ndraws_tail < 5) {
-      warning("Number of tail draws cannot be less than 5. ",
-              "Changing to ", 5, ".")
-      ndraws_tail <- 5
     }
 
     # left tail

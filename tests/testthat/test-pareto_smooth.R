@@ -39,7 +39,19 @@ test_that("pareto_khat handles ndraws_tail argument", {
 
   expect_warning(pareto_khat(tau, tail = "both", ndraws_tail = 4),
                  "Number of tail draws cannot be less than 5. Changing to 5.")
-
+  
+  expect_warning(pareto_khat(tau, tail = "right", ndraws_tail = 4),
+                 "Number of tail draws cannot be less than 5. Changing to 5.")
+  
+  expect_warning(pareto_khat(tau, tail = "left", ndraws_tail = 4),
+                 "Number of tail draws cannot be less than 5. Changing to 5.")
+  
+  expect_warning(pareto_khat(tau, tail = "right", ndraws_tail = length(tau)),
+                 "Tail draws (400) not strictly less than total draws (400). Fitting of generalized Pareto distribution not performed.",
+                 fixed = TRUE)
+    expect_warning(pareto_khat(tau, tail = "right", ndraws_tail = 2 * length(tau)),
+                 "Tail draws (800) not strictly less than total draws (400). Fitting of generalized Pareto distribution not performed.",
+                 fixed = TRUE)
 })
 
 
