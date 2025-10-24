@@ -52,4 +52,4 @@ jobs:
         with:
           clean: false
           branch: gh-pages
-          folder: "."
+          folder: "docs"
