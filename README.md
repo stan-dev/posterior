@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# posterior <img src="man/figures/stanlogo.png" align="right" width="120" />
+# posterior <img src="man/figures/logo.svg" align="right" width="120" />
 
 <!-- badges: start -->
 
