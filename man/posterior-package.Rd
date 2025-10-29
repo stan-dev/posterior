@@ -7,7 +7,7 @@
 \title{Tools for working with posterior (and prior) distributions}
 \description{
 \if{html}{
-   \figure{stanlogo.png}{options: width="50"}
+   \figure{logo.svg}{options: width="50"}
    \url{https://mc-stan.org/posterior/}
 }
 

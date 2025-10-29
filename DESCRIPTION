@@ -1,6 +1,6 @@
 Package: posterior
 Title: Tools for Working with Posterior Distributions
-Version: 1.6.1
+Version: 1.6.1.9000
 Date: 2025-02-27
 Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.com", role = c("aut", "cre")),
              person("Jonah", "Gabry", email = "jsg2201@columbia.edu", role = c("aut")),
@@ -51,11 +51,12 @@ Suggests:
   ggplot2,
   ggdist,
   rmarkdown
+Config/Needs/website: stan-dev/pkgdown-config
 License: BSD_3_clause + file LICENSE
 Encoding: UTF-8
 LazyData: false
 URL: https://mc-stan.org/posterior/, https://discourse.mc-stan.org/
 BugReports: https://github.com/stan-dev/posterior/issues
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr

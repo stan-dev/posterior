@@ -1,4 +1,4 @@
-  # initialize a named list
+# initialize a named list
 # @param names names of the elements
 # @param values optional values of the elements
 named_list <- function(names, values = NULL) {
@@ -58,7 +58,9 @@ drop_dims_or_classes <- function(x, dims = NULL, reset_class = FALSE) {
 }
 
 '%||%' <- function(x, y) {
-  if (is.null(x)) x <- y
+  if (is.null(x)) {
+    x <- y
+  }
   x
 }
 
@@ -181,13 +183,14 @@ isNA <- function(x) {
 }
 
 #' Check if vector is constant
-#' 
+#'
 #' check if a vector is constant, up to a defined tolerance.
-#' 
+#'
 #' @param x (vector) vector to check if is constant
 #' @param tol (numeric) tolerance to consider two values equal.
 #'   Default is `.Machine$double.eps`.
-#' 
+#'
+#' @keywords internal
 #' @export
 is_constant <- function(x, tol = .Machine$double.eps) {
   abs(max(x) - min(x)) < tol
@@ -254,4 +257,3 @@ has_s3_method <- function(f, signature) {
   }
   FALSE
 }
-
