@@ -1,0 +1,5 @@
+# License
+
+    YEAR: 2021
+    COPYRIGHT HOLDER: posterior package authors; Stan Developers and their Assignees; Trustees of Columbia University
+    ORGANIZATION: copyright holder

@@ -90,7 +90,7 @@
                         <h4 data-toc-skip class="author">Matthew
 Kay</h4>
             
-            <h4 data-toc-skip class="date">2025-10-29</h4>
+            <h4 data-toc-skip class="date">2025-11-24</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/stan-dev/posterior/blob/master/vignettes/rvar.Rmd" class="external-link"><code>vignettes/rvar.Rmd</code></a></small>
       <div class="d-none name"><code>rvar.Rmd</code></div>
@@ -897,7 +897,7 @@ creating the mixture distribution:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggdist</span><span class="fu">::</span><span class="fu"><a href="https://mjskay.github.io/ggdist/reference/stat_slab.html" class="external-link">stat_slab</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xdist <span class="op">=</span> <span class="va">mixture</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="rvar_files/figure-html/mixture-1.png" width="700"></p>
+<p><img src="rvar_files/figure-html/mixture-1.png" class="r-plt" width="700"></p>
 <p>See <code><a href="https://mjskay.github.io/ggdist/articles/slabinterval.html" class="external-link">vignette("slabinterval", package = "ggdist")</a></code> for
 more examples of visualizing distribution-type objects, including
 <code>rvar</code>s.</p>
@@ -1047,7 +1047,7 @@ example, it can be used to construct a parallel coordinates plot:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">eight_schools</span><span class="op">$</span><span class="va">theta</span><span class="op">)</span>, </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/segments.html" class="external-link">segments</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">eight_schools</span><span class="op">$</span><span class="va">theta</span><span class="op">)</span>, y0 <span class="op">=</span> <span class="va">q5</span>, y1 <span class="op">=</span> <span class="va">q95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="rvar_files/figure-html/eight_schools_parcoord-1.png" width="576"></p>
+<p><img src="rvar_files/figure-html/eight_schools_parcoord-1.png" class="r-plt" width="576"></p>
 <p>As <code><a href="../reference/for_each_draw.html">for_each_draw()</a></code> will be slower than most other ways
 of manipulating draws, this function should generally not be used unless
 needed.</p>
@@ -1078,7 +1078,7 @@ can then be visualized with ggplot2 by passing them to the
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://mjskay.github.io/ggdist/reference/stat_halfeye.html" class="external-link">stat_halfeye</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">group</span>, xdist <span class="op">=</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="rvar_files/figure-html/data_frame_plot-1.png" width="700"></p>
+<p><img src="rvar_files/figure-html/data_frame_plot-1.png" class="r-plt" width="700"></p>
 <p>See <code><a href="https://mjskay.github.io/ggdist/articles/slabinterval.html" class="external-link">vignette("slabinterval", package = "ggdist")</a></code> or
 <code><a href="https://mjskay.github.io/tidybayes/articles/tidy-posterior.html" class="external-link">vignette("tidy-posterior", package = "tidybayes")</a></code> for more
 examples.</p>
@@ -1094,7 +1094,7 @@ examples.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
