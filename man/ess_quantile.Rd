@@ -9,7 +9,7 @@
 \usage{
 ess_quantile(x, probs = c(0.05, 0.95), ...)
 
-\method{ess_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, ...)
+\method{ess_quantile}{default}(x, probs = c(0.05, 0.95), names = TRUE, weights = NULL, ...)
 
 \method{ess_quantile}{rvar}(x, probs = c(0.05, 0.95), names = TRUE, ...)
 
@@ -30,6 +30,9 @@ ess_median(x, ...)
 \item{names}{(logical) Should the result have a \code{names} attribute? The
 default is \code{TRUE}, but use \code{FALSE} for improved speed if there are many
 values in \code{probs}.}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 If the input is an array,
@@ -51,8 +54,9 @@ result indexes the input probabilities; i.e. the result has dimension
 \code{c(length(probs), dim(x))}.
 }
 \description{
-Compute effective sample size estimates for quantile estimates of a single
-variable.
+Compute effective sample size estimates for quantile estimates of a
+single variable. If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")

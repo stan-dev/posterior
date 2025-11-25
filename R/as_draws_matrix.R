@@ -85,6 +85,7 @@ as_draws_matrix.draws_rvars <- function(x, ...) {
   x <- check_variables_are_numeric(
     x, to = "draws_matrix", is_non_numeric = is_rvar_factor, convert = FALSE
   )
+  x <- promote_rvar_weights_to_variable(x)
 
   # cbind discards class information when applied to vectors, which converts
   # the underlying factors to numeric

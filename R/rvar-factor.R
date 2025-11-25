@@ -61,7 +61,13 @@
 #'
 #' @export
 rvar_factor <- function(
-  x = factor(), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE, ...
+  x = factor(),
+  dim = NULL,
+  dimnames = NULL,
+  nchains = NULL,
+  with_chains = FALSE,
+  log_weights = NULL,
+  ...
 ) {
 
   # to ensure we pick up levels already attached to x (if there are any), we
@@ -71,7 +77,12 @@ rvar_factor <- function(
   }
 
   out <- rvar(
-    x, dim = dim, dimnames = dimnames, nchains = nchains, with_chains = with_chains
+    x,
+    dim = dim,
+    dimnames = dimnames,
+    nchains = nchains,
+    with_chains = with_chains,
+    log_weights = log_weights
   )
   .rvar_to_rvar_factor(out, ...)
 }
@@ -79,11 +90,24 @@ rvar_factor <- function(
 #' @rdname rvar_factor
 #' @export
 rvar_ordered <- function(
-  x = ordered(NULL), dim = NULL, dimnames = NULL, nchains = NULL, with_chains = FALSE, ...
+  x = ordered(NULL),
+  dim = NULL,
+  dimnames = NULL,
+  nchains = NULL,
+  with_chains = FALSE,
+  log_weights = NULL,
+  ...
 ) {
 
   rvar_factor(
-    x, dim = dim, dimnames = dimnames, nchains = nchains, with_chains = with_chains, ordered = TRUE, ...
+    x,
+    dim = dim,
+    dimnames = dimnames,
+    nchains = nchains,
+    with_chains = with_chains,
+    log_weights = log_weights,
+    ordered = TRUE,
+    ...
   )
 }
 

@@ -8,7 +8,7 @@
 \usage{
 ess_basic(x, ...)
 
-\method{ess_basic}{default}(x, split = TRUE, ...)
+\method{ess_basic}{default}(x, split = TRUE, weights = NULL, ...)
 
 \method{ess_basic}{rvar}(x, split = TRUE, ...)
 }
@@ -24,6 +24,9 @@ ess_basic(x, ...)
 
 \item{split}{(logical) Should the estimate be computed on split chains? The
 default is \code{TRUE}.}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 If the input is an array, returns a single numeric value. If any of the draws
@@ -47,6 +50,8 @@ al. (2021). For practical applications, we strongly
 recommend the improved ESS convergence diagnostics implemented in
 \code{\link[=ess_bulk]{ess_bulk()}} and \code{\link[=ess_tail]{ess_tail()}}. See Vehtari (2021) for an in-depth
 comparison of different effective sample size estimators.
+If computed on a weighted \code{rvar}, weights will be
+taken into account.
 }
 \examples{
 mu <- extract_variable_matrix(example_draws(), "mu")
