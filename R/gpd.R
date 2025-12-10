@@ -64,24 +64,32 @@ gpdfit <- function(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE) {
   M <- min_grid_pts + floor(sqrt(N))
   jj <- seq_len(M)
   xstar <- x[floor(N / 4 + 0.5)] # first quartile of sample
-  theta <- 1 / x[N] + (1 - sqrt(M / (jj - 0.5))) / prior / xstar
-  k <- matrixStats::rowMeans2(log1p(-theta %o% x))
-  l_theta <- N * (log(-theta / k) - k - 1) # profile log-lik
-  w_theta <- exp(l_theta - matrixStats::logSumExp(l_theta)) # normalize
-  theta_hat <- sum(theta * w_theta)
-  k_hat <- mean.default(log1p(-theta_hat * x))
-  sigma_hat <- -k_hat / theta_hat
+  if (xstar > x[1])  {
+    # first quantile is bigger than the minimum
+    theta <- 1 / x[N] + (1 - sqrt(M / (jj - 0.5))) / prior / xstar
+    k <- matrixStats::rowMeans2(log1p(-theta %o% x))
+    l_theta <- N * (log(-theta / k) - k - 1) # profile log-lik
+    w_theta <- exp(l_theta - matrixStats::logSumExp(l_theta)) # normalize
+    theta_hat <- sum(theta * w_theta)
+    k_hat <- mean.default(log1p(-theta_hat * x))
+    sigma_hat <- -k_hat / theta_hat
 
-  # adjust k_hat based on weakly informative prior, Gaussian centered on 0.5.
-  # this stabilizes estimates for very small Monte Carlo sample sizes and low ess
-  # (see Vehtari et al., 2024 for details)
-  if (wip) {
-    k_hat <- (k_hat * N + 0.5 * 10) / (N + 10)
-  }
-
-  if (is.na(k_hat)) {
-    k_hat <- Inf
-    sigma_hat <- NaN
+    # adjust k_hat based on weakly informative prior, Gaussian centered on 0.5.
+    # this stabilizes estimates for very small Monte Carlo sample sizes and low ess
+    # (see Vehtari et al., 2024 for details)
+    if (wip) {
+      k_hat <- (k_hat * N + 0.5 * 10) / (N + 10)
+    }
+    if (is.na(k_hat)) {
+      k_hat <- Inf
+      sigma_hat <- NaN
+    }
+  } else {
+    # first quantile is not bigger than the minimum, which indicates
+    # that the distribution is far from a generalized Pareto
+    # distribution
+    k_hat <- NA
+    sigma_hat <- NA
   }
 
   list(k = k_hat, sigma = sigma_hat)
