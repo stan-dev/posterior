@@ -7,6 +7,7 @@
 \alias{weight_draws.draws_df}
 \alias{weight_draws.draws_list}
 \alias{weight_draws.draws_rvars}
+\alias{weight_draws.rvar}
 \title{Weight \code{draws} objects}
 \usage{
 weight_draws(x, weights, ...)
@@ -20,15 +21,18 @@ weight_draws(x, weights, ...)
 \method{weight_draws}{draws_list}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
 
 \method{weight_draws}{draws_rvars}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
+
+\method{weight_draws}{rvar}(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
 
-\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)}.
-Weights will be internally stored on the log scale (in a variable called
-\code{.log_weight}) and will not be normalized, but normalized (non-log) weights
-can be returned via the \code{\link[=weights.draws]{weights.draws()}} method later.}
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to remove weights. Weights will be internally stored on the log
+scale and will not be normalized. Normalized (non-log) weights can be
+returned via the \code{\link[=weights.draws]{weights.draws()}} method, and the unnormalized
+log weights can be accessed via \code{\link[=log_weights]{log_weights()}}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
@@ -72,6 +76,9 @@ x <- weight_draws(x, weights = log_wts, log = TRUE)
 # extract weights
 head(weights(x))
 head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
+
+# log_weights(x) is equivalent to weights(x, log = TRUE, normalize = FALSE)
+all.equal(log_weights(x), weights(x, log = TRUE, normalize = FALSE))
 
 # add weights on log scale and Pareto smooth them
 x <- weight_draws(x, weights = log_wts, log = TRUE, pareto_smooth = TRUE)

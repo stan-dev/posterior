@@ -72,7 +72,7 @@ resample_draws.draws <- function(x, weights = NULL, method = "stratified",
       weights <- rep.int(1/ndraws_total, ndraws_total)
     }
     # resampling invalidates stored weights
-    x <- remove_variables(x, ".log_weight")
+    x <- weight_draws(x, NULL)
   } else {
     weights <- weights / sum(weights)
   }

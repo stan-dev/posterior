@@ -145,3 +145,65 @@ test_that("autocovariance returns correct results", {
   ac2 <- acf(x, type = "covariance", lag.max = length(x), plot = FALSE)$acf[, 1, 1]
   expect_equal(ac1, ac2)
 })
+
+test_that("NA quantile2 works", {
+  expect_equal(quantile2(NA_real_, c(0.25, 0.75)), c(q25 = NA_real_, q75 = NA_real_))
+})
+
+
+test_that("weighted convergence measures work", {
+
+  # draws from standard normal
+  x <- cbind(
+    rnorm(100),
+    rnorm(100),
+    rnorm(100),
+    rnorm(100)
+  )
+
+  xr <- rvar(x, with_chains = TRUE)
+
+  # target is normal(0, 0.5)
+  # here, ess should be higher for mean
+  # mcse should be lower for mean
+  w1 <- as.numeric(dnorm(x, sd = 0.5) / dnorm(x))
+  w1 <- w1 / sum(w1)
+  xw1 <- weight_draws(xr, weights = w1)
+
+  expect_true(ess_mean(xw1) > ess_mean(xr))
+  expect_true(mcse_mean(xw1) < mcse_mean(xr))
+  expect_true(ess_quantile(xw1, probs = 0.05) > ess_quantile(xr, probs = 0.05))
+  expect_true(ess_quantile(xw1, probs = 0.95) > ess_quantile(xr, probs = 0.95))
+  expect_true(mcse_quantile(xw1, probs = 0.05) < mcse_quantile(xr, probs = 0.05))
+  expect_true(mcse_quantile(xw1, probs = 0.95) < mcse_quantile(xr, probs = 0.95))
+
+  # target is normal(0, 1.2)
+  # here ess should be lower, and mcse should be higher
+  w2 <- as.numeric(dnorm(x, sd = 1.2) / dnorm(x))
+  w2 <- w2 / sum(w2)
+  xw2 <- weight_draws(xr, weights = w2)
+
+  expect_true(ess_mean(xw2) < ess_mean(xr))
+  expect_true(mcse_mean(xw2) > mcse_mean(xr))
+
+  expect_true(ess_quantile(xw2, probs = 0.05) < ess_quantile(xr, probs = 0.05))
+  expect_true(ess_quantile(xw2, probs = 0.95) < ess_quantile(xr, probs = 0.95))
+  expect_true(mcse_quantile(xw2, probs = 0.05) > mcse_quantile(xr, probs = 0.05))
+  expect_true(mcse_quantile(xw2, probs = 0.95) > mcse_quantile(xr, probs = 0.95))
+
+
+  # target is normal(1, 1)
+  # here ess for mean and q95 should be lower, but for q5 it should be higher
+  w3 <- as.numeric(dnorm(x, mean = 1, sd = 1) / dnorm(x))
+  w3 <- w3 / sum(w3)
+  xw3 <- weight_draws(xr, weights = w3)
+
+  expect_true(ess_mean(xw3) < ess_mean(xr))
+  expect_true(mcse_mean(xw3) > mcse_mean(xr))
+
+  expect_true(ess_quantile(xw3, probs = 0.05) > ess_quantile(xr, probs = 0.05))
+  expect_true(ess_quantile(xw3, probs = 0.95) < ess_quantile(xr, probs = 0.95))
+  expect_true(mcse_quantile(xw3, probs = 0.05) < mcse_quantile(xr, probs = 0.05))
+  expect_true(mcse_quantile(xw3, probs = 0.95) > mcse_quantile(xr, probs = 0.95))
+
+})
