@@ -11,13 +11,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
-<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
-  window.MathJax = {
-    chtml: {
-      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
-    }
-  };
-</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.0.0/tex-mml-chtml.js" integrity="sha256-qoRlVrS5NAnXSSSiMfFXwK8C9obG11Iybe4h2+bQYR4=" crossorigin="anonymous">
+  </script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Source_Sans_3-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
@@ -90,7 +85,7 @@
                         <h4 data-toc-skip class="author">Matthew
 Kay</h4>
             
-            <h4 data-toc-skip class="date">2025-12-04</h4>
+            <h4 data-toc-skip class="date">2025-12-30</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/stan-dev/posterior/blob/master/vignettes/rvar.Rmd" class="external-link"><code>vignettes/rvar.Rmd</code></a></small>
       <div class="d-none name"><code>rvar.Rmd</code></div>
@@ -810,7 +805,8 @@ and <code>y</code> has length 3 while columns of <code>X</code> have
 length 4:</p>
 <div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">X</span> <span class="op">+</span> <span class="va">y</span></span></code></pre></div>
-<pre><code><span><span class="co">## Error: Cannot broadcast array of shape [4000,3,1] to array of shape [4000,4,3]:</span></span>
+<pre><code><span><span class="co">## <span style="color: #BBBB00; font-weight: bold;">Error</span><span style="font-weight: bold;">:</span></span></span>
+<span><span class="co">## <span style="color: #BBBB00;">!</span> Cannot broadcast array of shape [4000,3,1] to array of shape [4000,4,3]:</span></span>
 <span><span class="co">## All dimensions must be 1 or equal.</span></span></code></pre>
 <p>By contrast, R arrays of the same shape will simply recycle
 <code>y</code> until it is the same length as <code>X</code> (regardless
@@ -897,7 +893,7 @@ creating the mixture distribution:</p>
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu">ggdist</span><span class="fu">::</span><span class="fu"><a href="https://mjskay.github.io/ggdist/reference/stat_slab.html" class="external-link">stat_slab</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>xdist <span class="op">=</span> <span class="va">mixture</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="rvar_files/figure-html/mixture-1.png" class="r-plt" width="700"></p>
+<p><img src="rvar_files/figure-html/mixture-1.png" class="r-plt" alt="" width="700"></p>
 <p>See <code><a href="https://mjskay.github.io/ggdist/articles/slabinterval.html" class="external-link">vignette("slabinterval", package = "ggdist")</a></code> for
 more examples of visualizing distribution-type objects, including
 <code>rvar</code>s.</p>
@@ -1047,7 +1043,7 @@ example, it can be used to construct a parallel coordinates plot:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="fu"><a href="../reference/draws_summary.html">summarise_draws</a></span><span class="op">(</span><span class="va">eight_schools</span><span class="op">$</span><span class="va">theta</span><span class="op">)</span>, </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/segments.html" class="external-link">segments</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">eight_schools</span><span class="op">$</span><span class="va">theta</span><span class="op">)</span>, y0 <span class="op">=</span> <span class="va">q5</span>, y1 <span class="op">=</span> <span class="va">q95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="rvar_files/figure-html/eight_schools_parcoord-1.png" class="r-plt" width="576"></p>
+<p><img src="rvar_files/figure-html/eight_schools_parcoord-1.png" class="r-plt" alt="" width="576"></p>
 <p>As <code><a href="../reference/for_each_draw.html">for_each_draw()</a></code> will be slower than most other ways
 of manipulating draws, this function should generally not be used unless
 needed.</p>
@@ -1078,7 +1074,7 @@ can then be visualized with ggplot2 by passing them to the
 <span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://mjskay.github.io/ggdist/reference/stat_halfeye.html" class="external-link">stat_halfeye</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">group</span>, xdist <span class="op">=</span> <span class="va">mu</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="rvar_files/figure-html/data_frame_plot-1.png" class="r-plt" width="700"></p>
+<p><img src="rvar_files/figure-html/data_frame_plot-1.png" class="r-plt" alt="" width="700"></p>
 <p>See <code><a href="https://mjskay.github.io/ggdist/articles/slabinterval.html" class="external-link">vignette("slabinterval", package = "ggdist")</a></code> or
 <code><a href="https://mjskay.github.io/tidybayes/articles/tidy-posterior.html" class="external-link">vignette("tidy-posterior", package = "tidybayes")</a></code> for more
 examples.</p>

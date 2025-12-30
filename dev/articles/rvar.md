@@ -646,7 +646,8 @@ columns of `X` have length 4:
 X + y
 ```
 
-    ## Error: Cannot broadcast array of shape [4000,3,1] to array of shape [4000,4,3]:
+    ## Error:
+    ## ! Cannot broadcast array of shape [4000,3,1] to array of shape [4000,4,3]:
     ## All dimensions must be 1 or equal.
 
 By contrast, R arrays of the same shape will simply recycle `y` until it
