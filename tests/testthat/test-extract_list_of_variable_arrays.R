@@ -124,24 +124,37 @@ test_that("extract_list_of_variable_arrays works with default method", {
 })
 
 
-test_that("extract_list_of_variable_arrays works with NULL variables (extract all)", {
-  x <- example_draws()
+test_that("extract_list_of_variable_arrays works with NULL variables (extract all base variables)", {
+  x <- example_draws(example = "multi_normal")
   
-  # Test with NULL (should extract all variables)
+  # Test with NULL (should extract base variables only, not indexed ones)
   all_vars <- extract_list_of_variable_arrays(x)
-  expected_vars <- variables(x)
+  
+  # Get expected base variable names
+  all_individual_vars <- variables(x)
+  expected_base_vars <- unique(split_variable_names(all_individual_vars)$base_name)  # Fixed: base_name not base_names
   
   expect_type(all_vars, "list")
-  expect_length(all_vars, length(expected_vars))
-  expect_named(all_vars, expected_vars)
+  expect_length(all_vars, length(expected_base_vars))
+  expect_named(all_vars, expected_base_vars)
   
-  # Compare with extracting each variable individually
-  for (var in expected_vars) {
+  # Should match explicit specification of base variables
+  explicit_vars <- extract_list_of_variable_arrays(x, expected_base_vars)
+  expect_identical(all_vars, explicit_vars)
+  
+  # Compare with extracting each base variable individually
+  for (var in expected_base_vars) {
     expect_equal(all_vars[[var]], extract_variable_array(x, var))
   }
   
   # Test with explicit NULL
   all_vars_explicit <- extract_list_of_variable_arrays(x, variables = NULL)
   expect_equal(all_vars, all_vars_explicit)
+  
+  # Verify we get base variables, not indexed ones
+  expect_true("mu" %in% names(all_vars))
+  expect_true("Sigma" %in% names(all_vars))  
+  expect_false("mu[1]" %in% names(all_vars))
+  expect_false("Sigma[1,1]" %in% names(all_vars))
 })
 

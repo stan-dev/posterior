@@ -18,13 +18,13 @@
 #' @examples
 #' x <- example_draws(example = "multi_normal")
 #'
-#' # Extract all variables
-#' all_vars <- extract_list_of_variable_arrays(x)
-#' str(all_vars)
-#'
 #' # Extract multiple variables at once
 #' vars <- extract_list_of_variable_arrays(x, c("mu", "Sigma"))
 #' str(vars)
+#'
+#' # Extract all variables (uses base variable names)
+#' all_vars <- extract_list_of_variable_arrays(x)
+#' str(all_vars)
 #'
 #' # Extract specific indexed variables
 #' vars2 <- extract_list_of_variable_arrays(x, c("mu[1]", "mu[2]"))
@@ -46,7 +46,9 @@ extract_list_of_variable_arrays.default <- function(x, variables = NULL, ...) {
 #' @export
 extract_list_of_variable_arrays.draws <- function(x, variables = NULL, ...) {
   if (is.null(variables)) {
-    variables <- variables(x)
+    # Get unique base variable names (without indices) when variables = NULL
+    all_vars <- variables(x)
+    variables <- unique(split_variable_names(all_vars)$base_name)  # Fixed: base_name not base_names
   }
   
   if (!is.character(variables)) {
@@ -63,30 +65,4 @@ extract_list_of_variable_arrays.draws <- function(x, variables = NULL, ...) {
   
   names(out) <- variables
   out
-}
-
-
-#' @export
-extract_list_of_variable_arrays.draws_array <- function(x, variables = NULL, ...) {
-  extract_list_of_variable_arrays.draws(x, variables, ...)
-}
-
-#' @export  
-extract_list_of_variable_arrays.draws_df <- function(x, variables = NULL, ...) {
-  extract_list_of_variable_arrays.draws(x, variables, ...)
-}
-
-#' @export
-extract_list_of_variable_arrays.draws_list <- function(x, variables = NULL, ...) {
-  extract_list_of_variable_arrays.draws(x, variables, ...)
-}
-
-#' @export
-extract_list_of_variable_arrays.draws_matrix <- function(x, variables = NULL, ...) {
-  extract_list_of_variable_arrays.draws(x, variables, ...)
-}
-
-#' @export
-extract_list_of_variable_arrays.draws_rvars <- function(x, variables = NULL, ...) {
-  extract_list_of_variable_arrays.draws(x, variables, ...)
 }
