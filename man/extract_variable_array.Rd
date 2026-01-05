@@ -45,6 +45,7 @@ str(Sigma)
 }
 \seealso{
 Other variable extraction methods: 
+\code{\link{extract_list_of_variable_arrays}()},
 \code{\link{extract_variable}()},
 \code{\link{extract_variable_matrix}()}
 }
