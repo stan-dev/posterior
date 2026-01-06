@@ -9,9 +9,9 @@
 #' @param chain (integer vector) The chain indices to select.
 #' @param draw (integer vector) The draw indices to be
 #'   select. Subsetting draw indices will lead to an automatic merging
-#'   of chains via [`merge_chains`]. By default, no warning will be
-#'   issued when this happens but you can activate one via
-#'   `options(posterior.warn_on_merge_chains = TRUE)`.
+#'   of chains via [`merge_chains`]. By default, a message will be
+#'   issued when this happens but you can deactivate it via
+#'   `options(posterior.warn_on_merge_chains = FALSE)`.
 #' @param regex (logical) Should `variable` should be treated as a
 #'   (vector of) regular expressions? Any variable in `x` matching at
 #'   least one of the regular expressions will be selected. Defaults
@@ -428,7 +428,7 @@ prepare_subsetting <- function(x, iteration = NULL, chain = NULL,
     if (nchains(x) > 1L) {
       warn <- as_one_logical(getOption(
         "posterior.warn_on_merge_chains",
-        default = FALSE
+        default = TRUE
       ))
       if (warn) {
         message("Merging chains in order to subset via 'draw'.")

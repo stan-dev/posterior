@@ -31,6 +31,10 @@ test_that("subset_draws works correctly for draws_matrix objects", {
 })
 
 test_that("subset_draws works correctly for draws_array objects", {
+  # Store and restore option to ensure test isolation
+  old_option <- getOption("posterior.warn_on_merge_chains")
+  on.exit(options(posterior.warn_on_merge_chains = old_option))
+
   x <- as_draws_array(example_draws())
 
   x_sub <- subset_draws(x, variable = c("mu", "tau"), iteration = 5:10, chain = 3:4)
@@ -41,11 +45,6 @@ test_that("subset_draws works correctly for draws_array objects", {
   x_sub <- subset_draws(x, chain = c(1, 1), unique = FALSE)
   expect_equal(nchains(x_sub), 2)
   expect_equivalent(x_sub[, 1, ], x_sub[, 2, ])
-
-  # Temporarily set option to ensure message appears
-  old_option <- getOption("posterior.warn_on_merge_chains")
-  on.exit(options(posterior.warn_on_merge_chains = old_option), add = TRUE)
-  options(posterior.warn_on_merge_chains = TRUE)
 
   expect_message(
     x_sub <- subset_draws(x, draw = c(1, 200, 10)),
@@ -95,6 +94,10 @@ test_that("subset_draws works correctly for draws_df objects", {
 })
 
 test_that("subset_draws works correctly for draws_list objects", {
+  # Store and restore option to ensure test isolation
+  old_option <- getOption("posterior.warn_on_merge_chains")
+  on.exit(options(posterior.warn_on_merge_chains = old_option))
+
   x <- as_draws_list(example_draws())
   x_sub <- subset_draws(x, variable = c("theta[1]"), iteration = 5:10, chain = 3:4)
   expect_equal(variables(x_sub), "theta[1]")
@@ -104,11 +107,6 @@ test_that("subset_draws works correctly for draws_list objects", {
   x_sub <- subset_draws(x, iteration = c(1, 1, 2), unique = FALSE)
   expect_equal(niterations(x_sub), 3)
   expect_equal(x_sub[[1]]$mu[1], x_sub[[1]]$mu[2])
-
-  # Temporarily set option to ensure message appears
-  old_option <- getOption("posterior.warn_on_merge_chains")
-  on.exit(options(posterior.warn_on_merge_chains = old_option), add = TRUE)
-  options(posterior.warn_on_merge_chains = TRUE)
 
   expect_message(
     x_sub <- subset_draws(x, draw = c(1, 200, 10)),
@@ -132,6 +130,10 @@ test_that("subset_draws works correctly for draws_list objects", {
 })
 
 test_that("subset_draws works correctly for draws_rvars objects", {
+  # Store and restore option to ensure test isolation
+  old_option <- getOption("posterior.warn_on_merge_chains")
+  on.exit(options(posterior.warn_on_merge_chains = old_option))
+
   x <- as_draws_rvars(example_draws())
   x_sub <- subset_draws(x, variable = c("mu"), iteration = 5:10, chain = 3:4)
   expect_equal(variables(x_sub), "mu")
@@ -141,11 +143,6 @@ test_that("subset_draws works correctly for draws_rvars objects", {
   x_sub <- subset_draws(x, iteration = c(1, 1, 2), unique = FALSE)
   expect_equal(niterations(x_sub), 3)
   expect_equal(draws_of(x_sub[[1]]$mu)[1], draws_of(x_sub[[1]]$mu)[2])
-
-  # Temporarily set option to ensure message appears
-  old_option <- getOption("posterior.warn_on_merge_chains")
-  on.exit(options(posterior.warn_on_merge_chains = old_option), add = TRUE)
-  options(posterior.warn_on_merge_chains = TRUE)
 
   expect_message(
     x_sub <- subset_draws(x, draw = c(1, 200, 10)),
@@ -347,6 +344,15 @@ test_that("subset_draws respects posterior.warn_on_merge_chains option", {
   x <- as_draws_rvars(example_draws())$theta
   expect_silent(
     x_sub <- subset_draws(x, draw = c(1, 200, 10))
+  )
+  expect_equal(niterations(x_sub), 3)
+  
+  # Test with default behavior (should be TRUE, showing message)
+  options(posterior.warn_on_merge_chains = NULL)
+  x <- as_draws_array(example_draws())
+  expect_message(
+    x_sub <- subset_draws(x, draw = c(1, 200, 10)),
+    "Merging chains in order to subset via 'draw'"
   )
   expect_equal(niterations(x_sub), 3)
 })

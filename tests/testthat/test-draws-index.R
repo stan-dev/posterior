@@ -115,6 +115,10 @@ test_that("indexing draws_matrix with [ and drop works correctly", {
 })
 
 test_that("indexing draws dimension draws_matrix triggers a warning", {
+  # Store and restore option to ensure test isolation
+  old_option <- getOption("posterior.warn_on_merge_chains")
+  on.exit(options(posterior.warn_on_merge_chains = old_option))
+  
   options(posterior.warn_on_merge_chains = TRUE)
   x <- as_draws_matrix(example_draws())
   expect_warning(
@@ -124,5 +128,4 @@ test_that("indexing draws dimension draws_matrix triggers a warning", {
   x <- merge_chains(x)
   x2 <- x[1:3, ]
   expect_equal(x1, x2)
-  options(posterior.warn_on_merge_chains = FALSE)
 })

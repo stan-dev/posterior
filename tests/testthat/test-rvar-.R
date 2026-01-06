@@ -237,12 +237,15 @@ test_that("broadcast_array works on a factor", {
 # conforming chains / draws -----------------------------------------------
 
 test_that("warnings for unequal draws/chains are correct", {
+  # Store and restore option to ensure test isolation
+  old_option <- getOption("posterior.warn_on_merge_chains")
+  on.exit(options(posterior.warn_on_merge_chains = old_option))
+  
   options(posterior.warn_on_merge_chains = TRUE)
   expect_warning(
     expect_equal(rvar(1:10) + rvar(1:10, nchains = 2), rvar(1:10 + 1:10)),
     "Chains were dropped due to chain information not matching"
   )
-  options(posterior.warn_on_merge_chains = FALSE)
 
   expect_error(
     draws_rvars(x = rvar(1:10), y = rvar(1:11)),
