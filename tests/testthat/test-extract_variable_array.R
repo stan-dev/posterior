@@ -103,3 +103,26 @@ test_that("extract_list_of_variable_arrays passes with_chains parameter", {
   expect_equal(vars_without$mu, extract_variable_array(x, "mu", with_chains = FALSE))
 })
 
+test_that("extract_variable_array preserves factor levels with indexed variables", {
+  # Create rvar_factor with known levels (vector, not matrix)
+  mu <- rvar_factor(
+    array(sample(c("low", "med", "high"), 200, replace = TRUE), dim = c(100, 2))
+  )
+  draws <- as_draws_rvars(list(mu = mu))
+  
+  # Extract indexed variable with both with_chains settings
+  mu1_chains <- extract_variable_array(draws, "mu[1]", with_chains = TRUE)
+  mu1_nochains <- extract_variable_array(draws, "mu[1]", with_chains = FALSE)
+  
+  # Both should be factors
+  expect_s3_class(mu1_chains, "factor")
+  expect_s3_class(mu1_nochains, "factor")
+  
+  # Both should have the same levels
+  expect_equal(levels(mu1_chains), levels(mu1_nochains))
+  expect_equal(levels(mu1_chains), c("high", "low", "med"))
+  
+  # Values should be the same
+  expect_equal(c(mu1_chains), c(mu1_nochains))
+})
+

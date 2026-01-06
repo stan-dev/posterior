@@ -58,9 +58,14 @@ extract_variable_array.draws <- function(x, variable, with_chains = TRUE, ...) {
       dim(out) <- c(dim(out), 1)
       dimnames(out) <- list(NULL)
     } else {
-      # For with_chains = FALSE, reshape to (ndraws, 1)  
-      out <- array(c(out), dim = c(length(c(out)), 1))
-      dimnames(out) <- list(NULL)
+      # For with_chains = FALSE, reshape to (ndraws, 1) while preserving attributes
+      out_reshaped <- array(unclass(out), dim = c(length(out), 1))
+      dimnames(out_reshaped) <- list(NULL)
+      if (is.factor(out)) {
+        out <- copy_levels(out, out_reshaped)
+      } else {
+        out <- out_reshaped
+      }
     }
   } else {
     x <- subset_draws(x, variable = variable, reserved = FALSE)
