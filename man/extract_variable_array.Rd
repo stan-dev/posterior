@@ -6,11 +6,11 @@
 \alias{extract_variable_array.draws}
 \title{Extract array of a single (possibly indexed) variable}
 \usage{
-extract_variable_array(x, variable, ...)
+extract_variable_array(x, variable, with_chains = TRUE, ...)
 
-\method{extract_variable_array}{default}(x, variable, ...)
+\method{extract_variable_array}{default}(x, variable, with_chains = TRUE, ...)
 
-\method{extract_variable_array}{draws}(x, variable, ...)
+\method{extract_variable_array}{draws}(x, variable, with_chains = TRUE, ...)
 }
 \arguments{
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
@@ -20,11 +20,17 @@ is defined.}
 dimensions from variables with indices (e.g. \code{"x[1]"}), provide the base
 variable name (e.g. \code{"x"}).}
 
+\item{with_chains}{(logical) Should the array of draws include a dimension for chains?
+If \code{TRUE} (the default), chains are included and the array has dimension
+\code{c(niterations(x), nchains(x), ...)}. If \code{FALSE}, chains are not included and the array has
+dimension \code{c(niterations(x) * nchains(x), ...)}.}
+
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 An \code{array} with dimension \code{niterations(x)} x \code{nchains(x)} x any remaining
-dimensions determined by the indices of the variable \code{x}.
+dimensions determined by the indices of the variable \code{x} (if \code{with_chains = TRUE}) or
+dimension \code{niterations(x) * nchains(x)} x any remaining dimensions (if \code{with_chains = FALSE}).
 }
 \description{
 Extract an array of draws of a single variable, including any dimensions of
@@ -36,6 +42,10 @@ x <- example_draws(example = "multi_normal")
 mu <- extract_variable_array(x, variable = "mu")
 str(mu)
 
+# With chains collapsed
+mu_no_chains <- extract_variable_array(x, variable = "mu", with_chains = FALSE)
+str(mu_no_chains)
+
 mu1 <- extract_variable_array(x, variable = "mu[1]")
 str(mu1)
 
@@ -45,6 +55,7 @@ str(Sigma)
 }
 \seealso{
 Other variable extraction methods: 
+\code{\link{extract_list_of_variable_arrays}()},
 \code{\link{extract_variable}()},
 \code{\link{extract_variable_matrix}()}
 }
