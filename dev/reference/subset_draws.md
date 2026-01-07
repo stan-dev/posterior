@@ -114,6 +114,8 @@ subset(x, ...)
   (integer vector) The draw indices to be select. Subsetting draw
   indices will lead to an automatic merging of chains via
   [`merge_chains`](https://mc-stan.org/posterior/dev/reference/merge_chains.md).
+  By default, a message will be issued when this happens but you can
+  deactivate it via `options(posterior.warn_on_merge_chains = FALSE)`.
 
 - regex:
 

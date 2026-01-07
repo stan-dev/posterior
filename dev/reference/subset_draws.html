@@ -168,7 +168,9 @@ elements of non-scalar variables can be selected at once.</p></dd>
 <dt id="arg-draw">draw<a class="anchor" aria-label="anchor" href="#arg-draw"></a></dt>
 <dd><p>(integer vector) The draw indices to be
 select. Subsetting draw indices will lead to an automatic merging
-of chains via <code><a href="merge_chains.html">merge_chains</a></code>.</p></dd>
+of chains via <code><a href="merge_chains.html">merge_chains</a></code>. By default, a message will be
+issued when this happens but you can deactivate it via
+<code>options(posterior.warn_on_merge_chains = FALSE)</code>.</p></dd>
 
 
 <dt id="arg-regex">regex<a class="anchor" aria-label="anchor" href="#arg-regex"></a></dt>
