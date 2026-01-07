@@ -11,9 +11,12 @@
 #'   (e.g. \code{"x"}).
 #' @template args-methods-dots
 #' @returns
-#' A named list of arrays, where each array has dimension 
-#' \code{niterations(x)} x \code{nchains(x)} x any remaining
-#' dimensions determined by the indices of the variable.
+#' A named list of arrays, where each array has dimension
+#' `niterations(x)` x `nchains(x)` x any remaining
+#' dimensions determined by the indices of the variable `x`
+#' (if `with_chains = TRUE`) or dimension
+#' `niterations(x) * nchains(x)` x any remaining dimensions
+#' (if `with_chains = FALSE`).
 #' @family variable extraction methods
 #' @examples
 #' x <- example_draws(example = "multi_normal")
