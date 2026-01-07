@@ -130,18 +130,18 @@ assessment for count data.  Biometrics 65(4), 1254–1261 (2009).)</p>
 <span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fu"><a href="variables.html">nvariables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">pit</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu      tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6] </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.9925   0.9250   0.6850   0.2375   0.4100   0.3275   0.6100   0.3725 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.9600   0.8825   0.2200   0.2800   0.4100   0.4800   0.3975   0.9650 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> theta[7] theta[8] </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   0.8425   0.1700 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   0.0775   0.6025 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compute weighted PIT (for example LOO-PIT)</span></span></span>
 <span class="r-in"><span><span class="va">weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html" class="external-link">runif</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fu"><a href="variables.html">nvariables</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">pit</span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, <span class="va">weights</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        mu       tau  theta[1]  theta[2]  theta[3]  theta[4]  theta[5]  theta[6] </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9972353 0.9297652 0.6788869 0.2233790 0.4367275 0.3191985 0.5956808 0.3728594 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  theta[7]  theta[8] </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.8496700 0.1614059 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         mu        tau   theta[1]   theta[2]   theta[3]   theta[4]   theta[5] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.96092124 0.88834727 0.23164173 0.30290652 0.39153378 0.47201908 0.42623629 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   theta[6]   theta[7]   theta[8] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.97574934 0.07874259 0.60007608 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># PIT for an rvar</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="rvar.html">rvar</a></span><span class="op">(</span><span class="fu"><a href="example_draws.html">example_draws</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
@@ -150,16 +150,16 @@ assessment for count data.  Biometrics 65(4), 1254–1261 (2009).)</p>
 <span class="r-in"><span><span class="fu">pit</span><span class="op">(</span><span class="va">x</span>, <span class="va">y_arr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      variable</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> chain   mu  tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6] theta[7]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     1 0.30 0.00     0.45     0.85     0.15     0.10     0.23     0.17     0.30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     2 0.02 0.65     0.73     0.18     0.56     0.45     0.42     0.54     0.23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     3 1.00 0.41     0.14     0.88     0.40     0.87     0.41     0.20     0.00</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     4 0.03 0.92     0.00     0.63     0.39     0.44     0.62     0.92     0.89</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     1 0.01 0.44     0.65     0.13     0.57     0.40     0.45     0.49     0.24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     2 0.99 0.42     0.27     0.88     0.41     0.81     0.39     0.23     0.07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     3 0.03 0.88     0.00     0.70     0.38     0.50     0.66     0.89     0.90</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     4 0.03 0.72     0.80     0.03     0.24     0.15     0.13     0.53     0.49</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      variable</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> chain theta[8]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     1     0.64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     2     0.52</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     3     0.25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     4     0.48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     2     0.30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     3     0.55</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     4     0.20</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

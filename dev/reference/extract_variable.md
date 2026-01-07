@@ -49,6 +49,7 @@ A vector of length equal to the number of draws.
 ## See also
 
 Other variable extraction methods:
+[`extract_list_of_variable_arrays()`](https://mc-stan.org/posterior/dev/reference/extract_list_of_variable_arrays.md),
 [`extract_variable_array()`](https://mc-stan.org/posterior/dev/reference/extract_variable_array.md),
 [`extract_variable_matrix()`](https://mc-stan.org/posterior/dev/reference/extract_variable_matrix.md)
 

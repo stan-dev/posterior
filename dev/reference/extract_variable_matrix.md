@@ -51,6 +51,7 @@ A `matrix` with dimension iterations x chains.
 ## See also
 
 Other variable extraction methods:
+[`extract_list_of_variable_arrays()`](https://mc-stan.org/posterior/dev/reference/extract_list_of_variable_arrays.md),
 [`extract_variable()`](https://mc-stan.org/posterior/dev/reference/extract_variable.md),
 [`extract_variable_array()`](https://mc-stan.org/posterior/dev/reference/extract_variable_array.md)
 

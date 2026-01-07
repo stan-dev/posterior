@@ -110,6 +110,9 @@ Functions for modifying `draws` objects and extracting their contents
 
   Bind `draws` objects together
 
+- [`extract_list_of_variable_arrays()`](https://mc-stan.org/posterior/dev/reference/extract_list_of_variable_arrays.md)
+  : Extract arrays of multiple variables
+
 - [`extract_variable()`](https://mc-stan.org/posterior/dev/reference/extract_variable.md)
   : Extract draws of a single variable
 

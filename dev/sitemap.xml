@@ -36,6 +36,7 @@
 <url><loc>https://mc-stan.org/posterior/dev/reference/ess_sd.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/ess_tail.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/example_draws.html</loc></url>
+<url><loc>https://mc-stan.org/posterior/dev/reference/extract_list_of_variable_arrays.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/extract_variable.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/extract_variable_array.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/extract_variable_matrix.html</loc></url>

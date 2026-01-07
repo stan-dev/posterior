@@ -63,13 +63,13 @@ variables with indices.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract_variable_array</span><span class="op">(</span><span class="va">x</span>, <span class="va">variable</span>, <span class="va">...</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract_variable_array</span><span class="op">(</span><span class="va">x</span>, <span class="va">variable</span>, with_chains <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Default S3 method</span></span>
-<span><span class="fu">extract_variable_array</span><span class="op">(</span><span class="va">x</span>, <span class="va">variable</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">extract_variable_array</span><span class="op">(</span><span class="va">x</span>, <span class="va">variable</span>, with_chains <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'draws'</span></span>
-<span><span class="fu">extract_variable_array</span><span class="op">(</span><span class="va">x</span>, <span class="va">variable</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">extract_variable_array</span><span class="op">(</span><span class="va">x</span>, <span class="va">variable</span>, with_chains <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -87,6 +87,13 @@ dimensions from variables with indices (e.g. <code>"x[1]"</code>), provide the b
 variable name (e.g. <code>"x"</code>).</p></dd>
 
 
+<dt id="arg-with-chains">with_chains<a class="anchor" aria-label="anchor" href="#arg-with-chains"></a></dt>
+<dd><p>(logical) Should the array of draws include a dimension for chains?
+If <code>TRUE</code> (the default), chains are included and the array has dimension
+<code>c(niterations(x), nchains(x), ...)</code>. If <code>FALSE</code>, chains are not included and the array has
+dimension <code>c(niterations(x) * nchains(x), ...)</code>.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Arguments passed to individual methods (if applicable).</p></dd>
 
@@ -94,11 +101,13 @@ variable name (e.g. <code>"x"</code>).</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>An <code>array</code> with dimension <code>niterations(x)</code> x <code>nchains(x)</code> x any remaining
-dimensions determined by the indices of the variable <code>x</code>.</p>
+dimensions determined by the indices of the variable <code>x</code> (if <code>with_chains = TRUE</code>) or
+dimension <code>niterations(x) * nchains(x)</code> x any remaining dimensions (if <code>with_chains = FALSE</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other variable extraction methods:
+<code><a href="extract_list_of_variable_arrays.html">extract_list_of_variable_arrays()</a></code>,
 <code><a href="extract_variable.html">extract_variable()</a></code>,
 <code><a href="extract_variable_matrix.html">extract_variable_matrix()</a></code></p></div>
     </div>
@@ -113,6 +122,14 @@ dimensions determined by the indices of the variable <code>x</code>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "dimnames")=List of 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : NULL</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : NULL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : NULL</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># With chains collapsed</span></span></span>
+<span class="r-in"><span><span class="va">mu_no_chains</span> <span class="op">&lt;-</span> <span class="fu">extract_variable_array</span><span class="op">(</span><span class="va">x</span>, variable <span class="op">=</span> <span class="st">"mu"</span>, with_chains <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">mu_no_chains</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  num [1:400, 1:3] 0.18119 -0.03419 -0.05875 -0.1536 0.00989 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "dimnames")=List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : chr [1:400] "1" "2" "3" "4" ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   ..$ : NULL</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">mu1</span> <span class="op">&lt;-</span> <span class="fu">extract_variable_array</span><span class="op">(</span><span class="va">x</span>, variable <span class="op">=</span> <span class="st">"mu[1]"</span><span class="op">)</span></span></span>
