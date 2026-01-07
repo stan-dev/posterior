@@ -97,7 +97,9 @@ elements of non-scalar variables can be selected at once.}
 
 \item{draw}{(integer vector) The draw indices to be
 select. Subsetting draw indices will lead to an automatic merging
-of chains via \code{\link{merge_chains}}.}
+of chains via \code{\link{merge_chains}}. By default, a message will be
+issued when this happens but you can deactivate it via
+\code{options(posterior.warn_on_merge_chains = FALSE)}.}
 
 \item{regex}{(logical) Should \code{variable} should be treated as a
 (vector of) regular expressions? Any variable in \code{x} matching at
