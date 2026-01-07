@@ -51,11 +51,11 @@ extract_list_of_variable_arrays.draws <- function(x, variables = NULL, ...) {
   if (is.null(variables)) {
     # Get unique base variable names (without indices) when variables = NULL
     all_vars <- variables(x)
-    variables <- unique(split_variable_names(all_vars)$base_name)  # Fixed: base_name not base_names
+    variables <- unique(split_variable_names(all_vars)$base_name)
   }
   
   if (!is.character(variables)) {
-    stop_no_call("\047variables\047 must be a character vector.")
+    stop_no_call("'variables' must be a character vector.")
   }
   
   if (length(variables) == 0) {

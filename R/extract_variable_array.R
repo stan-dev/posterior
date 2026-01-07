@@ -42,13 +42,14 @@ extract_variable_array <- function(x, variable, with_chains = TRUE, ...) {
 #' @export
 extract_variable_array.default <- function(x, variable, with_chains = TRUE, ...) {
   x <- as_draws(x)
-  extract_variable_array(x, variable, with_chains, ...)
+  extract_variable_array(x, variable, with_chains = with_chains, ...)
 }
 
 #' @rdname extract_variable_array
 #' @export
 extract_variable_array.draws <- function(x, variable, with_chains = TRUE, ...) {
   variable <- as_one_character(variable)
+  with_chains <- as_one_logical(with_chains)
 
   if (isTRUE(nzchar(split_variable_names(variable)$indices))) {
     # indices provided => scalar => equivalent to extract_variable_matrix
