@@ -17,7 +17,7 @@ authors:
     affiliation: 3
   - name: Aki Vehtari
     orcid: 0000-0003-2164-9469
-    affiliation: 4
+    affiliation: 4,5
 affiliations:
  - name: TU Dortmund University, Germany
    index: 1
@@ -25,8 +25,10 @@ affiliations:
    index: 2
  - name: Northwestern University, USA
    index: 3
- - name: Aalto University, Finland
+ - name: ELLIS Institute Finland, Finland
    index: 4
+ - name: Aalto University, Finland
+   index: 5
 date: 26 January 2026
 bibliography: paper.bib
 
@@ -55,16 +57,16 @@ from Bayesian models. The primary goals of `posterior` are three-fold:
 
 # Software design
 
-`posterior`'s design follows the central idea of providing consistent and safe interfaces between all draws formats, operations, and diagnostics. As such, users and developers alike can rely on predictable output structures and error handling regardless of their draws format of choice. All draws formats all contain information on (a) the *variables* (parameters) from whose distributions draws have been sampled and (b) the *draw indices* to safely map draws across variables, thus preserving their dependence structure. Some formats also contain information on (c) the *chain indices*, primarily useful for MCMC, to ensure the correct behavior of convergence diagnostics [@vehtari_rhat_2021]. 
+`posterior`'s design follows the central idea of providing consistent and safe interfaces between all draws formats, operations, and diagnostics. As such, users and developers alike can rely on predictable output structures and error handling regardless of their draws format of choice. All draws formats contain information on (a) the *variables* (parameters and derived quantities) from whose distributions draws have been sampled and (b) the *draw indices* to safely map draws across variables, thus preserving their dependence structure. Some formats also contain information on (c) the *chain indices*, primarily useful for MCMC, to ensure the correct behavior of convergence diagnostics [@vehtari_rhat_2021]. 
 
 Except for one special format (see [https://mc-stan.org/posterior/articles/rvar.html](https://mc-stan.org/posterior/articles/rvar.html)), all formats are directly built on R base formats (matrices, arrays, lists, and data.frames) such that the objects are easily usable also outside of the methods that `posterior` itself provides. As such, users can easily move in and out of the `posterior` framework without facing major difficulties of converting their draws into any special format. The deliberate choice to supporting multiple formats required extra work on the internal interfaces and introduced the requirements for format-transforming methods. Nevertheless, we believe that the practical benefit of the multi-format approach justifies the internal code overhead necessary for its support. 
 
 # Research impact statement
 
 The `posterior` package is part of the Stan ecosystem of packages ([https://mc-stan.org/tools](https://mc-stan.org/tools/)), being tightly integrated in the post-processing methods of widely-used Stan-based packages such as `brms` [@brms1], `rstanarm` [@rstanarm], and `cmdstanr` [@cmdstanr], among others. 
-These packages have together been cited well over 10,000 times (according to GoogleScholar) since they started to feature `posterior` for the handling of posterior draws. While not being cited directly in most of these applications, `posterior` is sure to have been used in almost all of them in terms of posterior summaries and convergence diagnostics, which are essential within the Bayesian workflow [@gelman_workflow_2020]. `posterior` itself has been cited directly over 100 times (according to GoogleScholar) by methods, software, and application papers alike.
+These packages have together been cited well over 10,000 times (according to GoogleScholar) since they started to use `posterior` for handling posterior draws. While not being cited directly in most of these applications, `posterior` is sure to have been used in almost all of them in terms of posterior summaries and convergence diagnostics, which are essential within the Bayesian workflow [@gelman_workflow_2020]. `posterior` itself has been cited directly over 100 times (according to GoogleScholar) by methods, software, and application papers alike.
 
-Despite its close connection to Stan, its modules and methods are generic, thus being compatible with essentially all implementations of sampling algorithms available in R. It is currently imported or suggested by a growing list of currently over 60 other packages on [CRAN](https://cran.r-project.org/web/packages/posterior/index.html), many of which building on sampling backends other than Stan, for example, `BayesMultiMode` [@BayesMultiMode], `bayesQRsurvey` [@bayesQRsurvey], or `jagstargets` [@jagstargets]. From the Posit CRAN mirror alone, `posterior` have been downloaded over 3,7 million times since its first release in August 2021. In 2025, it has been downloaded over 1 million times, which corresponds to roughly 20,000 weekly downloads on average. Together, this showcases the importance of `posterior` for the area of sampling-based Bayesian inference. 
+Despite its close connection to Stan, its modules and methods are generic, thus being compatible with essentially all implementations of sampling algorithms available in R. It is currently imported or suggested by a growing list of over 60 other packages on [CRAN](https://cran.r-project.org/web/packages/posterior/index.html), many of which are building on sampling backends other than Stan, for example, `BayesMultiMode` [@BayesMultiMode], `bayesQRsurvey` [@bayesQRsurvey], or `jagstargets` [@jagstargets]. From the Posit CRAN mirror alone, `posterior` has been downloaded over 3,7 million times since its first release in August 2021. In 2025, it has been downloaded over 1 million times, which corresponds to roughly 20,000 weekly downloads on average. Together, this showcases the importance of `posterior` for the area of sampling-based Bayesian inference. 
 
 # AI usage disclosure
 
