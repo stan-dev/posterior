@@ -5,22 +5,26 @@ test_that("modal_category works on vectors", {
   expect_equal(modal_category(logical()), logical())
   expect_equal(modal_category(double()), double())
   expect_equal(modal_category(integer()), integer())
+  expect_equal(modal_category(complex()), complex())
   expect_equal(modal_category(character()), character())
   expect_equal(modal_category(factor()), character())
   expect_equal(modal_category(ordered(NULL)), character())
   expect_equal(modal_category(NA), NA)
 
   expect_equal(modal_category(c(1,2.1,2.1,3,3)), 2.1)
+  expect_equal(modal_category(c(1,2.1i,2.1i,3,3)), 2.1i)
   expect_equal(modal_category(c("a","b","b","c","c")), "b")
   expect_equal(modal_category(factor(c("a","b","b","c","c"))), "b")
 })
 
 test_that("modal_category works on rvars", {
   expect_equal(modal_category(rvar()), double())
+  expect_equal(modal_category(rvar(complex())), complex())
   expect_equal(modal_category(rvar_factor()), character())
   expect_equal(modal_category(rvar_ordered()), character())
 
   expect_equal(modal_category(c(rvar(c(1,2.1,2.1,3,3)), rvar(1))), c(2.1, 1))
+  expect_equal(modal_category(c(rvar(c(1,2.1i,2.1i,3,3)), rvar(1))), c(2.1i, 1))
   expect_equal(modal_category(c(rvar(c("a","b","b","c","c")), rvar("c"))), c("b","c"))
 })
 

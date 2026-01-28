@@ -3,6 +3,8 @@
 test_that("numeric summary functions work", {
   x_array <- array(1:24, dim = c(4,2,3))
   x <- new_rvar(x_array)
+  x_cmp_array <- x_array + x_array * 1i
+  x_cmp <- rvar(x_cmp_array)
   x_letters <- array(letters[1:24], dim = c(4,2,3))
   x_ord <- rvar_ordered(x_letters, levels = letters)
   x_fct <- rvar_factor(x_letters, levels = letters)
@@ -13,6 +15,13 @@ test_that("numeric summary functions work", {
   expect_equal(draws_of(rvar_prod(x)), apply(x_array, 1, prod), check.attributes = FALSE)
   expect_equal(draws_of(rvar_min(x)), apply(x_array, 1, min), check.attributes = FALSE)
   expect_equal(draws_of(rvar_max(x)), apply(x_array, 1, max), check.attributes = FALSE)
+
+  expect_equal(draws_of(rvar_mean(x_cmp)), as.matrix(apply(x_cmp_array, 1, mean)), check.attributes = FALSE)
+  expect_error(draws_of(rvar_median(x_cmp)))
+  expect_equal(draws_of(rvar_sum(x_cmp)), as.matrix(apply(x_cmp_array, 1, sum)), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_prod(x_cmp)), as.matrix(apply(x_cmp_array, 1, prod)), check.attributes = FALSE)
+  expect_error(draws_of(rvar_min(x_cmp)))
+  expect_error(draws_of(rvar_max(x_cmp)))
 
   expect_error(rvar_mean(x_ord))
   expect_equal(rvar_median(x_ord), rvar_ordered(letters[apply(x_array, 1, median)], levels = letters))
@@ -51,6 +60,8 @@ test_that("numeric summary functions work", {
 test_that("spread summary functions work", {
   x_array <- array(1:24, dim = c(4,2,3))
   x <- new_rvar(x_array)
+  x_cmp_array <- x_array + x_array * 1i
+  x_cmp <- new_rvar(x_cmp_array)
   x_letters <- array(letters[1:24], dim = c(4,2,3))
   x_ord <- rvar_ordered(x_letters, levels = letters)
   x_fct <- rvar_factor(x_letters, levels = letters)
@@ -59,6 +70,10 @@ test_that("spread summary functions work", {
   expect_equal(draws_of(rvar_var(x)), apply(x_array, 1, function(x) var(as.vector(x))), check.attributes = FALSE)
   expect_equal(draws_of(rvar_mad(x)), apply(x_array, 1, mad), check.attributes = FALSE)
   expect_equal(draws_of(rvar_mad(x, constant = 1)), apply(x_array, 1, mad, constant = 1), check.attributes = FALSE)
+
+  expect_equal(draws_of(rvar_sd(x_cmp)), apply(x_cmp_array, 1, sd), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_var(x_cmp)), apply(x_cmp_array, 1, function(x) var(as.vector(x))), check.attributes = FALSE)
+  expect_error(rvar_mad(x_cmp))
 
   expect_error(rvar_sd(x_ord))
   expect_error(rvar_var(x_ord))
@@ -92,6 +107,7 @@ test_that("rvar_range works", {
   x_ord <- rvar_ordered(x_letters, levels = letters)
 
   expect_equal(draws_of(rvar_range(x)), t(apply(x_array, 1, range)), check.attributes = FALSE)
+  expect_error(rvar_range(rvar(1i)))
   expect_equal(rvar_range(x_ord), rvar_ordered(array(letters[t(apply(x_array, 1, range))], dim = c(4, 2)), levels = letters))
   expect_error(rvar_range(rvar_factor("a")))
 
@@ -128,6 +144,9 @@ test_that("rvar_quantile works", {
 
   # passing NULL should still result in a vector with length = length(probs)
   expect_equal(rvar_quantile(NULL, probs = c(0.25, 0.75)), as_rvar(c(NA_real_, NA_real_)))
+
+  expect_error(rvar_quantile(rvar(1i), probs = 0.5))
+  expect_error(rvar_quantile(rvar_factor("a"), probs = 0.5))
 })
 
 
@@ -141,7 +160,9 @@ test_that("logical summaries work", {
   expect_equal(draws_of(rvar_any(x > 6)), as.matrix(apply(x_array > 6, 1, any)), check.attributes = FALSE)
 
   expect_error(rvar_all(rvar("a")))
+  expect_error(rvar_all(rvar(1i)))
   expect_error(rvar_any(rvar("a")))
+  expect_error(rvar_any(rvar(1i)))
 
   # default values on empty input
   expect_equal(rvar_all(), as_rvar(TRUE))
@@ -154,6 +175,8 @@ test_that("logical summaries work", {
 test_that("special value predicates work", {
   x_array <- c(1, Inf, -Inf, NaN, NA)
   x <- new_rvar(x_array)
+  x_cmp_array <- x_array + 1i
+  x_cmp <- new_rvar(x_cmp_array)
   x_letters <- factor(letters[c(1, 2, 3, NaN, NA)])
   x_ord <- rvar_ordered(x_letters)
   x_fct <- rvar_factor(x_letters)
@@ -162,6 +185,11 @@ test_that("special value predicates work", {
   expect_equal(draws_of(rvar_is_infinite(x)), as.matrix(is.infinite(x_array)), check.attributes = FALSE)
   expect_equal(draws_of(rvar_is_nan(x)), as.matrix(is.nan(x_array)), check.attributes = FALSE)
   expect_equal(draws_of(rvar_is_na(x)), as.matrix(is.na(x_array)), check.attributes = FALSE)
+
+  expect_equal(draws_of(rvar_is_finite(x_cmp)), as.matrix(is.finite(x_cmp_array)), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_is_infinite(x_cmp)), as.matrix(is.infinite(x_cmp_array)), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_is_nan(x_cmp)), as.matrix(is.nan(x_cmp_array)), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_is_na(x_cmp)), as.matrix(is.na(x_cmp_array)), check.attributes = FALSE)
 
   expect_equal(draws_of(rvar_is_finite(x_ord)), as.matrix(is.finite(x_letters)), check.attributes = FALSE)
   expect_equal(draws_of(rvar_is_infinite(x_ord)), as.matrix(is.infinite(x_letters)), check.attributes = FALSE)
