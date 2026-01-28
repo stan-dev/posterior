@@ -9,6 +9,9 @@
 * Convert lists of matrices to `draws_array` objects.
 * Improve the documentation in various places.
 * Implement `pit()` for draws and rvar objects. LOO-PIT can be computed using `weights`.
+* Add support for applying weights to individual `rvar` objects.
+* Add `log_weights()` function for easy access to raw internal weights.
+* Add support for weights in `ess` and `mcse` functions.
 
 # posterior 1.6.0
 

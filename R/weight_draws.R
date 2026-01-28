@@ -7,10 +7,11 @@
 #' `draws` objects.
 #'
 #' @template args-methods-x
-#' @param weights (numeric vector) A vector of weights of length `ndraws(x)`.
-#'   Weights will be internally stored on the log scale (in a variable called
-#'   `.log_weight`) and will not be normalized, but normalized (non-log) weights
-#'   can be returned via the [weights.draws()] method later.
+#' @param weights (numeric vector) A vector of weights of length `ndraws(x)`,
+#'   or `NULL` to remove weights. Weights will be internally stored on the log
+#'   scale and will not be normalized. Normalized (non-log) weights can be
+#'   returned via the [weights.draws()] method, and the unnormalized
+#'   log weights can be accessed via [log_weights()].
 #' @param log (logical) Are the weights passed already on the log scale? The
 #'   default is `FALSE`, that is, expecting `weights` to be on the standard
 #'   (non-log) scale.
@@ -45,6 +46,9 @@
 #' head(weights(x))
 #' head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
 #'
+#' # log_weights(x) is equivalent to weights(x, log = TRUE, normalize = FALSE)
+#' all.equal(log_weights(x), weights(x, log = TRUE, normalize = FALSE))
+#'
 #' # add weights on log scale and Pareto smooth them
 #' x <- weight_draws(x, weights = log_wts, log = TRUE, pareto_smooth = TRUE)
 #'
@@ -56,14 +60,9 @@ weight_draws <- function(x, weights, ...) {
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_matrix <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
+  log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
+  if (is.null(weights)) return(remove_variables(x, ".log_weight"))
 
-
-  pareto_smooth <- as_one_logical(pareto_smooth)
-  log <- as_one_logical(log)
-  log_weights <- validate_weights(weights, x, log = log)
-  if (pareto_smooth) {
-    log_weights <- pareto_smooth_log_weights(log_weights)
-  }
   if (".log_weight" %in% variables(x, reserved = TRUE)) {
     # overwrite existing weights
     x[, ".log_weight"] <- log_weights
@@ -78,13 +77,9 @@ weight_draws.draws_matrix <- function(x, weights, log = FALSE, pareto_smooth = F
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_array <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
+  log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
+  if (is.null(weights)) return(remove_variables(x, ".log_weight"))
 
-  pareto_smooth <- as_one_logical(pareto_smooth)
-  log <- as_one_logical(log)
-  log_weights <- validate_weights(weights, x, log = log)
-  if (pareto_smooth) {
-    log_weights <- pareto_smooth_log_weights(log_weights)
-  }
   if (".log_weight" %in% variables(x, reserved = TRUE)) {
     # overwrite existing weights
     x[, , ".log_weight"] <- log_weights
@@ -99,27 +94,16 @@ weight_draws.draws_array <- function(x, weights, log = FALSE, pareto_smooth = FA
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_df <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
-
-  pareto_smooth <- as_one_logical(pareto_smooth)
-  log <- as_one_logical(log)
-  log_weights <- validate_weights(weights, x, log = log)
-  if (pareto_smooth) {
-    log_weights <- pareto_smooth_log_weights(log_weights)
-  }
-  x$.log_weight <- log_weights
+  x$.log_weight <- validate_weights(weights, ndraws(x), log, pareto_smooth)
   x
 }
 
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_list <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
+  log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
+  if (is.null(log_weights)) return(remove_variables(x, ".log_weight"))
 
-  pareto_smooth <- as_one_logical(pareto_smooth)
-  log <- as_one_logical(log)
-  log_weights <- validate_weights(weights, x, log = log)
-  if (pareto_smooth) {
-    log_weights <- pareto_smooth_log_weights(log_weights)
-  }
   niterations <- niterations(x)
   for (i in seq_len(nchains(x))) {
     sel <- (1 + (i - 1) * niterations):(i * niterations)
@@ -131,14 +115,17 @@ weight_draws.draws_list <- function(x, weights, log = FALSE, pareto_smooth = FAL
 #' @rdname weight_draws
 #' @export
 weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
-
-  pareto_smooth <- as_one_logical(pareto_smooth)
-  log <- as_one_logical(log)
-  log_weights <- validate_weights(weights, x, log = log)
-  if (pareto_smooth) {
-    log_weights <- pareto_smooth_log_weights(log_weights)
+  .log_weights <- validate_weights(weights, ndraws(x), log, pareto_smooth)
+  for (i in seq_along(x)) {
+    log_weights_rvar(x[[i]]) <- .log_weights
   }
-  x$.log_weight <- rvar(log_weights)
+  x
+}
+
+#' @rdname weight_draws
+#' @export
+weight_draws.rvar <- function(x, weights, log = FALSE, pareto_smooth = FALSE, ...) {
+  log_weights_rvar(x) <- validate_weights(weights, ndraws(x), log, pareto_smooth)
   x
 }
 
@@ -146,15 +133,18 @@ weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FA
 #'
 #' Extract weights from [`draws`] objects, with one weight per draw.
 #' See [`weight_draws`] for details how to add weights to [`draws`] objects.
+#' `log_weights(x)` is a low-level shortcut for `weights(x, log = TRUE, normalize = FALSE)`,
+#' returning the internal log weights without transforming them.
 #'
-#' @param object (draws) A [`draws`] object.
+#' @param object (draws) A [`draws`] object or an [`rvar`].
 #' @param log (logical) Should the weights be returned on the log scale?
 #'   Defaults to `FALSE`.
 #' @param normalize (logical) Should the weights be normalized to sum to 1 on
 #'   the standard scale? Defaults to `TRUE`.
 #' @template args-methods-dots
 #'
-#' @return A vector of weights, with one weight per draw.
+#' @return A vector of weights, with one weight per draw, or `NULL` if this
+#'   object does not contain weights.
 #'
 #' @seealso [`weight_draws`], [`resample_draws`]
 #'
@@ -164,10 +154,10 @@ weight_draws.draws_rvars <- function(x, weights, log = FALSE, pareto_smooth = FA
 weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
   log <- as_one_logical(log)
   normalize <- as_one_logical(normalize)
-  if (!".log_weight" %in% variables(object, reserved = TRUE)) {
-    return(NULL)
-  }
-  out <- extract_variable(object, ".log_weight")
+
+  out <- log_weights(object)
+  if (is.null(out)) return(NULL)
+
   if (normalize) {
     out <- out - log_sum_exp(out)
   }
@@ -177,11 +167,58 @@ weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
   out
 }
 
+#' @rdname weights.draws
+#' @export
+weights.rvar <- weights.draws
+
+#' @rdname weights.draws
+#' @export
+log_weights <- function(object, ...) {
+  UseMethod("log_weights")
+}
+
+#' @rdname weights.draws
+#' @export
+log_weights.draws <- function(object, ...) {
+  if (!".log_weight" %in% variables(object, reserved = TRUE)) {
+    return(NULL)
+  }
+  extract_variable(object, ".log_weight")
+}
+
+#' @rdname weights.draws
+#' @export
+log_weights.draws_rvars <- function(object, ...) {
+  if (length(object) < 1) return(NULL)
+  log_weights(object[[1]])
+}
+
+#' @rdname weights.draws
+#' @export
+log_weights.rvar <- function(object, ...) {
+  attr(object, "log_weights")
+}
+# for internal use only currently: if you are setting the log_weights
+# attribute on an rvar, ALWAYS use this function so that the proxy
+# cache is invalidated
+`log_weights_rvar<-` <- function(x, value) {
+  if (!identical(attr(x, "log_weights"), value)) {
+    attr(x, "log_weights") <- value
+    x <- invalidate_rvar_cache(x)
+  }
+  x
+}
+
+
 # validate weights and return log weights
-validate_weights <- function(weights, draws, log = FALSE) {
-  checkmate::assert_numeric(weights, any.missing = FALSE)
+validate_weights <- function(weights, ndraws, log = FALSE, pareto_smooth = FALSE) {
+  if (is.null(weights)) return(NULL)
+  checkmate::assert_numeric(weights)
+#  checkmate::assert_atomic_vector(weights)
   checkmate::assert_flag(log)
-  if (length(weights) != ndraws(draws)) {
+  checkmate::assert_flag(pareto_smooth)
+
+  if (length(weights) != ndraws) {
     stop_no_call("Number of weights must match the number of draws.")
   }
   if (any(weights == Inf)) {
@@ -193,6 +230,10 @@ validate_weights <- function(weights, draws, log = FALSE) {
     }
     weights <- log(weights)
   }
+  if (pareto_smooth) {
+    weights <- pareto_smooth_log_weights(weights)
+  }
+
   weights
 }
 

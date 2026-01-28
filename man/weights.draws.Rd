@@ -2,12 +2,27 @@
 % Please edit documentation in R/weight_draws.R
 \name{weights.draws}
 \alias{weights.draws}
+\alias{weights.rvar}
+\alias{log_weights}
+\alias{log_weights.draws}
+\alias{log_weights.draws_rvars}
+\alias{log_weights.rvar}
 \title{Extract Weights from Draws Objects}
 \usage{
 \method{weights}{draws}(object, log = FALSE, normalize = TRUE, ...)
+
+\method{weights}{rvar}(object, log = FALSE, normalize = TRUE, ...)
+
+log_weights(object, ...)
+
+\method{log_weights}{draws}(object, ...)
+
+\method{log_weights}{draws_rvars}(object, ...)
+
+\method{log_weights}{rvar}(object, ...)
 }
 \arguments{
-\item{object}{(draws) A \code{\link{draws}} object.}
+\item{object}{(draws) A \code{\link{draws}} object or an \code{\link{rvar}}.}
 
 \item{log}{(logical) Should the weights be returned on the log scale?
 Defaults to \code{FALSE}.}
@@ -18,11 +33,14 @@ the standard scale? Defaults to \code{TRUE}.}
 \item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
-A vector of weights, with one weight per draw.
+A vector of weights, with one weight per draw, or \code{NULL} if this
+object does not contain weights.
 }
 \description{
 Extract weights from \code{\link{draws}} objects, with one weight per draw.
 See \code{\link{weight_draws}} for details how to add weights to \code{\link{draws}} objects.
+\code{log_weights(x)} is a low-level shortcut for \code{weights(x, log = TRUE, normalize = FALSE)},
+returning the internal log weights without transforming them.
 }
 \examples{
 x <- example_draws()
@@ -47,6 +65,9 @@ x <- weight_draws(x, weights = log_wts, log = TRUE)
 # extract weights
 head(weights(x))
 head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
+
+# log_weights(x) is equivalent to weights(x, log = TRUE, normalize = FALSE)
+all.equal(log_weights(x), weights(x, log = TRUE, normalize = FALSE))
 
 # add weights on log scale and Pareto smooth them
 x <- weight_draws(x, weights = log_wts, log = TRUE, pareto_smooth = TRUE)

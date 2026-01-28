@@ -86,7 +86,7 @@ mutate_variables.draws_rvars <- function(.x, ...) {
   for (var in names(dots)) {
     .x[[var]] <- as_rvar(eval_tidy(dots[[var]], .x, env))
   }
-  conform_rvar_ndraws_nchains(.x)
+  conform_rvar_nchains_ndraws_weights(.x)
 }
 
 # evaluate an expression passed to 'mutate_variables' and check its validity

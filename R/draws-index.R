@@ -270,8 +270,11 @@ nchains.rvar <- function(x) {
 # attribute on an rvar, ALWAYS use this function so that the proxy
 # cache is invalidated
 `nchains_rvar<-` <- function(x, value) {
-  attr(x, "nchains") <- value
-  invalidate_rvar_cache(x)
+  if (attr(x, "nchains") != value) {
+    attr(x, "nchains") <- value
+    x <- invalidate_rvar_cache(x)
+  }
+  x
 }
 
 

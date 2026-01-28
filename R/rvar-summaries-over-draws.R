@@ -68,7 +68,7 @@ E <- function(x, ...) {
 #' @export
 mean.rvar <- function(x, ...) {
   summarise_rvar_by_element_via_matrix(
-    x, "mean", matrixStats::colMeans2, useNames = FALSE, .ordered_okay = FALSE, ...
+    x, "mean", matrixStats::colWeightedMeans, useNames = FALSE, .ordered_okay = FALSE, w = weights(x), ...
   )
 }
 
@@ -101,7 +101,7 @@ Pr.rvar <- function(x, ...) {
 #' @export
 median.rvar <- function(x, ...) {
   summarise_rvar_by_element_via_matrix(
-    x, "median", matrixStats::colMedians, useNames = FALSE, ...
+    x, "median", matrixStats::colWeightedMedians, useNames = FALSE, w = weights(x), ...
   )
 }
 
@@ -124,6 +124,8 @@ max.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 sum.rvar <- function(x, ...) {
+  .weights <- weights(x, normalize = FALSE)
+  if (!is.null(.weights)) x <- x * new_rvar(.weights, .nchains = nchains(x))
   summarise_rvar_by_element_via_matrix(
     x, "sum", matrixStats::colSums2, useNames = FALSE, .ordered_okay = FALSE, ...
   )
@@ -132,6 +134,8 @@ sum.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 prod.rvar <- function(x, ...) {
+  .weights <- weights(x, normalize = FALSE)
+  if (!is.null(.weights)) x <- x ^ new_rvar(.weights, .nchains = nchains(x))
   summarise_rvar_by_element_via_matrix(
     x, "prod", matrixStats::colProds, useNames = FALSE, .ordered_okay = FALSE, ...
   )
@@ -172,9 +176,14 @@ distributional::variance
 #' @rdname rvar-summaries-over-draws
 #' @export
 variance.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(
-    x, "variance", matrixStats::colVars, useNames = FALSE, .ordered_okay = FALSE, ...
-  )
+  .weights <- weights(x)
+  if (is.null(.weights)) {
+    summarise_rvar_by_element_via_matrix(
+      x, "variance", matrixStats::colVars, useNames = FALSE, .ordered_okay = FALSE, ...
+    )
+  } else {
+    mean((x - mean(x))^2)
+  }
 }
 
 #' @rdname rvar-summaries-over-draws
@@ -196,9 +205,14 @@ sd.default <- function(x, ...) stats::sd(x, ...)
 #' @rdname rvar-summaries-over-draws
 #' @export
 sd.rvar <- function(x, ...) {
-  summarise_rvar_by_element_via_matrix(
-    x, "sd", matrixStats::colSds, useNames = FALSE, .ordered_okay = FALSE, ...
-  )
+  .weights <- weights(x)
+  if (is.null(.weights)) {
+    summarise_rvar_by_element_via_matrix(
+      x, "sd", matrixStats::colWeightedSds, useNames = FALSE, .ordered_okay = FALSE, w = weights(x), ...
+    )
+  } else {
+    sqrt(variance(x))
+  }
 }
 
 #' @rdname rvar-summaries-over-draws
@@ -211,7 +225,7 @@ mad.default <- function(x, ...) stats::mad(x, ...)
 #' @export
 mad.rvar <- function(x, ...) {
   summarise_rvar_by_element_via_matrix(
-    x, "mad", matrixStats::colMads, useNames = FALSE, .ordered_okay = FALSE, ...
+    x, "mad", matrixStats::colWeightedMads, useNames = FALSE, .ordered_okay = FALSE, w = weights(x), ...
   )
 }
 #' @rdname rvar-summaries-over-draws

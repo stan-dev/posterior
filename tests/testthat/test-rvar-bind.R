@@ -143,6 +143,15 @@ test_that("c works on rvar_ordered", {
   expect_equal(c(x_col, y), x_y)
 })
 
+test_that("binding weighted and unweighted rvars works", {
+  x = rvar(1:10)
+  xw = rvar(1:10, log_weights = 1:10)
+
+  # binding weighted to unweighted constant is okay
+  expect_equal(c(xw, 1), rvar(cbind(1:10, 1), log_weights = 1:10))
+  # but binding weights to unweighted non-constant is not okay
+  expect_error(c(xw, x), "different log weights")
+})
 
 # cbind.rvar --------------------------------------------------------------
 

@@ -40,8 +40,9 @@
 #' @name rvar-dist
 #' @export
 density.rvar <- function(x, at, ...) {
+  weights <- weights(x)
   summarise_rvar_by_element(x, function(draws) {
-    d <- density(draws, cut = 0, ...)
+    d <- density(draws, weights = weights, cut = 0, ...)
     f <- approxfun(d$x, d$y, yleft = 0, yright = 0)
     f(at)
   })
@@ -50,11 +51,12 @@ density.rvar <- function(x, at, ...) {
 #' @rdname rvar-dist
 #' @export
 density.rvar_factor <- function(x, at, ...) {
+  weights <- weights(x)
   at <- as.numeric(factor(at, levels = levels(x)))
-  nbins <- nlevels(x)
 
   summarise_rvar_by_element(x, function(draws) {
-    props <- prop.table(tabulate(draws, nbins = nbins))[at]
+    tab <- weighted_simple_table(draws, weights)
+    props <- prop.table(tab$count)[at]
     props
   })
 }
@@ -66,8 +68,9 @@ distributional::cdf
 #' @rdname rvar-dist
 #' @export
 cdf.rvar <- function(x, q, ...) {
+  weights <- weights(x)
   summarise_rvar_by_element(x, function(draws) {
-    ecdf(draws)(q)
+    weighted_ecdf(draws, weights)(q)
   })
 }
 
@@ -76,7 +79,7 @@ cdf.rvar <- function(x, q, ...) {
 cdf.rvar_factor <- function(x, q, ...) {
   # CDF is not defined for unordered distributions
   # generate an all-NA array of the appropriate shape
-  out <- rep_len(NA, length(x) * length(q))
+  out <- rep_len(NA_real_, length(x) * length(q))
   if (length(x) > 1) dim(out) <- c(length(q), dim(x))
   out
 }
@@ -91,14 +94,10 @@ cdf.rvar_ordered <- function(x, q, ...) {
 #' @rdname rvar-dist
 #' @export
 quantile.rvar <- function(x, probs, ...) {
-  summarise_rvar_by_element_via_matrix(x,
-    "quantile",
-    function(draws) {
-      t(matrixStats::colQuantiles(draws, probs = probs, useNames = TRUE, ...))
-    },
-    .extra_dim = length(probs),
-    .extra_dimnames = list(NULL)
-  )
+  weights <- weights(x)
+  summarise_rvar_by_element(x, function(draws) {
+    weighted_quantile(draws, probs = probs, weights = weights, ...)
+  })
 }
 
 #' @rdname rvar-dist

@@ -8,7 +8,7 @@
 \usage{
 mcse_sd(x, ...)
 
-\method{mcse_sd}{default}(x, ...)
+\method{mcse_sd}{default}(x, weights = NULL, ...)
 
 \method{mcse_sd}{rvar}(x, ...)
 }
@@ -21,6 +21,9 @@ mcse_sd(x, ...)
 }}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{weights}{(numeric vector) A vector of weights of length \code{ndraws(x)},
+or \code{NULL} to not have weights. Note that if \code{x} is an \code{rvar} with weights, they are used instead of this argument.}
 }
 \value{
 If the input is an array, returns a single numeric value. If any of the draws
