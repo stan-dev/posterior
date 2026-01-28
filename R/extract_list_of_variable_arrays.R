@@ -5,7 +5,7 @@
 #' \code{\link{extract_variable_array}}.
 #'
 #' @template args-methods-x
-#' @param variable A character vector of variable names to extract, or NULL to
+#' @param variables A character vector of variable names to extract, or NULL to
 #'   extract all variables. To extract all dimensions from variables with 
 #'   indices (e.g. \code{"x[1]"}), provide the base variable names 
 #'   (e.g. \code{"x"}).

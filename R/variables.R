@@ -102,7 +102,7 @@ remove_reserved_variable_names <- function(variables, reserved) {
 #' @template args-methods-x
 #' @template args-methods-dots
 #' @template args-methods-with_indices
-#' @param value,variable (character vector) new variable names.
+#' @param value,variables (character vector) new variable names.
 #'
 #' @details
 #' `variables(x) <- value` allows you to modify the vector of variable names,
