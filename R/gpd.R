@@ -1,5 +1,6 @@
 #' Quantile function for generalized pareto
 #' @noRd
+#' @export
 qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, log.p = FALSE) {
   stopifnot(length(mu) == 1 && length(sigma) == 1 && length(k) == 1)
   if (is.na(sigma) || sigma <= 0) {
@@ -54,6 +55,7 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
 #' for the generalized Pareto distribution. *Technometrics* **51**, 316-325.
 #'
 #' @noRd
+#' @export
 gpdfit <- function(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE) {
   # see section 4 of Zhang and Stephens (2009)
   if (sort_x) {
