@@ -1,6 +1,18 @@
-#' Quantile function for generalized pareto
-#' @noRd
+#' Quantile function for the generalized Pareto distribution
+#'
+#' Computes the quantile function for a generalized Pareto distribution
+#' with location `mu`, scale `sigma`, and shape `k`.
+#' 
+#' @param p Numeric vector of probabilities.
+#' @param mu Location parameter.
+#' @param sigma Scale parameter (must be positive).
+#' @param k Shape parameter.
+#' @param lower.tail Logical; if `TRUE` (default), probabilities are `P[X <= x]`.
+#' @param log.p Logical; if `TRUE`, probabilities are given as `log(p)`.
+#' @return A numeric vector of quantiles.
 #' @export
+#' @examples
+#' qgeneralized_pareto(p = c(0.1, 0.5, 0.9), mu = 0, sigma = 1, k = 0.2)
 qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, log.p = FALSE) {
   stopifnot(length(mu) == 1 && length(sigma) == 1 && length(k) == 1)
   if (is.na(sigma) || sigma <= 0) {
@@ -54,7 +66,6 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
 #' Zhang, J., and Stephens, M. A. (2009). A new and efficient estimation method
 #' for the generalized Pareto distribution. *Technometrics* **51**, 316-325.
 #'
-#' @noRd
 #' @export
 gpdfit <- function(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE) {
   # see section 4 of Zhang and Stephens (2009)
