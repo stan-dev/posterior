@@ -25,6 +25,7 @@ other packages. For user-facing diagnostic functions, see
 }
 \seealso{
 Other helper-functions: 
+\code{\link{gpdfit}()},
 \code{\link{ps_khat_threshold}()},
 \code{\link{ps_min_ss}()},
 \code{\link{ps_tail_length}()}
