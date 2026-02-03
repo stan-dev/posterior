@@ -23,6 +23,7 @@ used internally and is exported to be available for other packages.
 }
 \seealso{
 Other helper-functions: 
+\code{\link{gpdfit}()},
 \code{\link{ps_convergence_rate}()},
 \code{\link{ps_khat_threshold}()},
 \code{\link{ps_min_ss}()}

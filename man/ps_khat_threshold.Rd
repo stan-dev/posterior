@@ -24,6 +24,7 @@ user-facing diagnostic functions, see \code{\link{pareto_khat_threshold}} and
 }
 \seealso{
 Other helper-functions: 
+\code{\link{gpdfit}()},
 \code{\link{ps_convergence_rate}()},
 \code{\link{ps_min_ss}()},
 \code{\link{ps_tail_length}()}
