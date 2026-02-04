@@ -61,7 +61,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         if: ${{ matrix.config.no_suggests }}
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: any::rcmdcheck, any::testthat
           dependencies: '"hard"'
 
       - name: Session info
@@ -77,15 +77,20 @@ jobs:
         with:
           args: 'c("--no-manual", "--as-cran")'
 
-      - uses: r-lib/actions/check-r-package@v2
+      - name: Run R CMD check (no vignettes)
         if: ${{ matrix.config.no_vignettes }}
-        env:
-          _R_CHECK_CRAN_INCOMING_: false
-          _R_CHECK_FORCE_SUGGESTS_: "FALSE"
-          _R_CHECK_VIGNETTES_: "FALSE"
-        with:
-          args: 'c("--no-manual", "--no-vignettes")'
-          build_args: 'c("--no-build-vignettes")'
+        run: |
+          options(crayon.enabled = TRUE)
+          Sys.setenv("_R_CHECK_CRAN_INCOMING_" = "false")
+          Sys.setenv("_R_CHECK_FORCE_SUGGESTS_" = "false")
+          Sys.setenv("_R_CHECK_VIGNETTES_" = "false")
+          rcmdcheck::rcmdcheck(
+            args = c("--no-manual", "--no-vignettes"),
+            build_args = c("--no-build-vignettes"),
+            error_on = "warning",
+            check_dir = "check"
+          )
+        shell: Rscript {0}
 
       - name: Show testthat output
         if: always()
