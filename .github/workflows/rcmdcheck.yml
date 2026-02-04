@@ -62,7 +62,7 @@ jobs:
         if: ${{ matrix.config.no_suggests }}
         with:
           extra-packages: any::rcmdcheck
-          dependencies: hard
+          dependencies: "hard"
 
       - name: Session info
         run: |
