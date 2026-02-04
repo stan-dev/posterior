@@ -47,12 +47,32 @@ jobs:
 
       - uses: r-lib/actions/setup-pandoc@v2
 
-      - name: Remove randomForest from DESCRIPTION for R 3.6
+      - name: Remove randomForest from DESCRIPTION and examples for R 3.6
         if: ${{ matrix.config.r == '3.6' }}
         run: |
+          # Remove randomForest from DESCRIPTION
           desc_lines <- readLines("DESCRIPTION")
           desc_lines <- desc_lines[!grepl("randomForest", desc_lines)]
           writeLines(desc_lines, "DESCRIPTION")
+
+          # Remove randomForest from rstar.Rd examples
+          rd_file <- "man/rstar.Rd"
+          rd_lines <- readLines(rd_file)
+
+          # Find the examples section and remove randomForest requirement
+          in_examples <- FALSE
+          for (i in seq_along(rd_lines)) {
+            if (grepl("^\\\\examples\\{", rd_lines[i])) {
+              in_examples <- TRUE
+            }
+            if (in_examples && grepl("require\\(\"randomForest\"", rd_lines[i])) {
+              rd_lines[i] <- gsub(" && require\\(\"randomForest\", quietly = TRUE\\)", "", rd_lines[i])
+            }
+            if (in_examples && grepl("^\\}$", rd_lines[i])) {
+              in_examples <- FALSE
+            }
+          }
+          writeLines(rd_lines, rd_file)
         shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2

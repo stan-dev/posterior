@@ -14,7 +14,7 @@ test_that("validate_y raises an error for NAs in 'y'", {
 })
 
 test_that("validate_y checks 'y' length against nvariables(x)", {
-  x <- example_draws() |> as_draws_matrix()
+  x <- as_draws_matrix(example_draws())
   expect_error(
     validate_y(1:3, x),
     "`y` must be a vector of length `nvariables(x)`.",
@@ -23,8 +23,8 @@ test_that("validate_y checks 'y' length against nvariables(x)", {
 })
 
 test_that("validate_y verifies dimensions for array inputs", {
-  x <- posterior::example_draws() |> rvar()
-  y <- posterior::example_draws() |> rvar() |> mean()
+  x <- rvar(posterior::example_draws())
+  y <- mean(rvar(posterior::example_draws()))
   expect_equal(validate_y(y, x), y)
 
   y_mismatched <- array(1:8, dim = c(2, 2, 2))
@@ -118,7 +118,7 @@ test_that("pit works with draws objects", {
 
   y <- rnorm(n_vars)
 
-  pit_true <- sapply(1:n_vars, function(v) mean(test_array[, , v] < y[v]))
+  pit_true <- sapply(1:n_vars, function(v) mean(test_array[,, v] < y[v]))
 
   x <- as_draws(test_array)
 
@@ -159,14 +159,17 @@ test_that("pit works with rvars", {
 
   result <- pit(rvar(test_array), y, weights)
   expect_equal(dim(result), dim(y))
-  expect_true(all(result == array(
-    pit(
-      array(test_array, dim = c(n_draws, n_col * n_row)),
-      c(y),
-      array(weights, dim = c(n_draws, n_col * n_row))
-    ),
-    dim(y)
-  )))
+  expect_true(all(
+    result ==
+      array(
+        pit(
+          array(test_array, dim = c(n_draws, n_col * n_row)),
+          c(y),
+          array(weights, dim = c(n_draws, n_col * n_row))
+        ),
+        dim(y)
+      )
+  ))
 })
 
 test_that("pit doesn't error for empty draws", {
