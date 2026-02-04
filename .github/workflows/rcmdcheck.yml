@@ -81,7 +81,8 @@ jobs:
         if: ${{ matrix.config.no_vignettes }}
         env:
           _R_CHECK_CRAN_INCOMING_: false
-          _R_CHECK_FORCE_SUGGESTS_: false
+          _R_CHECK_FORCE_SUGGESTS_: "FALSE"
+          _R_CHECK_VIGNETTES_: "FALSE"
         with:
           args: 'c("--no-manual", "--no-vignettes")'
           build_args: 'c("--no-build-vignettes")'
