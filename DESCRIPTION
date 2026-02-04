@@ -43,7 +43,7 @@ Suggests:
   testthat (>= 2.1.0),
   caret (>= 6.0-84),
   gbm (>= 2.1.8),
-  randomForest (>= 4.6.14),
+  randomForest,
   e1071 (>= 1.7-3),
   dplyr,
   tidyr,
