@@ -10,6 +10,7 @@
 #' @param lower.tail Logical; if `TRUE` (default), probabilities are `P[X <= x]`.
 #' @param log.p Logical; if `TRUE`, probabilities are given as `log(p)`.
 #' @return A numeric vector of quantiles.
+#' @keywords internal
 #' @export
 #' @examples
 #' qgeneralized_pareto(p = c(0.1, 0.5, 0.9), mu = 0, sigma = 1, k = 0.2)
@@ -66,6 +67,7 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
 #' Zhang, J., and Stephens, M. A. (2009). A new and efficient estimation method
 #' for the generalized Pareto distribution. *Technometrics* **51**, 316-325.
 #'
+#' @keywords internal
 #' @export
 gpdfit <- function(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE) {
   # see section 4 of Zhang and Stephens (2009)

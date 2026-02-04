@@ -52,3 +52,4 @@ Other helper-functions:
 \code{\link{ps_tail_length}()}
 }
 \concept{helper-functions}
+\keyword{internal}

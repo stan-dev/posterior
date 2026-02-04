@@ -26,7 +26,10 @@ indices (e.g. \code{"x[1]"}), provide the base variable names
 \value{
 A named list of arrays, where each array has dimension
 \code{niterations(x)} x \code{nchains(x)} x any remaining
-dimensions determined by the indices of the variable.
+dimensions determined by the indices of the variable \code{x}
+(if \code{with_chains = TRUE}) or dimension
+\code{niterations(x) * nchains(x)} x any remaining dimensions
+(if \code{with_chains = FALSE}).
 }
 \description{
 Extract arrays of draws for multiple variables, returning them as a named list

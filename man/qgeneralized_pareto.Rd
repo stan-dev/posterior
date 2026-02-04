@@ -36,3 +36,4 @@ with location \code{mu}, scale \code{sigma}, and shape \code{k}.
 \examples{
 qgeneralized_pareto(p = c(0.1, 0.5, 0.9), mu = 0, sigma = 1, k = 0.2)
 }
+\keyword{internal}

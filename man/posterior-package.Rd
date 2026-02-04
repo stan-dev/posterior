@@ -87,7 +87,7 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Jonah Gabry \email{jsg2201@columbia.edu}
+  \item Jonah Gabry \email{jgabry@gmail.com}
   \item Matthew Kay \email{mjskay@northwestern.edu}
   \item Aki Vehtari \email{Aki.Vehtari@aalto.fi}
 }
