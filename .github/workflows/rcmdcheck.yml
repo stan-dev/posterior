@@ -62,6 +62,7 @@ jobs:
         if: ${{ matrix.config.no_suggests }}
         with:
           extra-packages: any::rcmdcheck
+          dependencies: '"hard"'
 
       - name: Session info
         run: |
@@ -70,10 +71,21 @@ jobs:
         shell: Rscript {0}
 
       - uses: r-lib/actions/check-r-package@v2
+        if: ${{ !matrix.config.no_vignettes }}
         env:
           _R_CHECK_CRAN_INCOMING_: false
         with:
           args: 'c("--no-manual", "--as-cran")'
+
+      - uses: r-lib/actions/check-r-package@v2
+        if: ${{ matrix.config.no_vignettes }}
+        env:
+          _R_CHECK_CRAN_INCOMING_: false
+          _R_CHECK_FORCE_SUGGESTS_: "FALSE"
+          _R_CHECK_VIGNETTES_: "FALSE"
+        with:
+          args: 'c("--no-manual", "--no-vignettes")'
+          build_args: 'c("--no-build-vignettes")'
 
       - name: Show testthat output
         if: always()
