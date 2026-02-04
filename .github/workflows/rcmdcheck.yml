@@ -59,9 +59,10 @@ jobs:
         shell: Rscript {0}
 
       - uses: r-lib/actions/check-r-package@v2
+        env:
+          _R_CHECK_CRAN_INCOMING_: false
         with:
-          build_args: 'c("--no-build-vignettes")'
-          args: 'c("--no-manual", "--no-vignettes", "--ignore-vignettes")'
+          args: 'c("--no-manual", "--as-cran")'
 
       - name: Show testthat output
         if: always()
