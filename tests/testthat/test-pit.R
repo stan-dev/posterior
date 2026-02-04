@@ -118,7 +118,7 @@ test_that("pit works with draws objects", {
 
   y <- rnorm(n_vars)
 
-  pit_true <- sapply(1:n_vars, \(v) mean(test_array[, , v] < y[v]))
+  pit_true <- sapply(1:n_vars, function(v) mean(test_array[, , v] < y[v]))
 
   x <- as_draws(test_array)
 

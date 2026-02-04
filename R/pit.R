@@ -79,7 +79,7 @@ pit.default <- function(x, y, weights = NULL, log = FALSE, ...) {
 pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE, ...) {
   y <- validate_y(y, x)
   if (!is.null(weights)) {
-    weights <- sapply(seq_len(nvariables(x)), \(var_idx) {
+    weights <- sapply(seq_len(nvariables(x)), function(var_idx) {
       validate_weights(weights[, var_idx], x[, var_idx], log)
     })
     weights <- normalize_log_weights(weights)
