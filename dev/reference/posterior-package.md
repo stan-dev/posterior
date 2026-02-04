@@ -94,7 +94,7 @@ Useful links:
 
 Authors:
 
-- Jonah Gabry <jsg2201@columbia.edu>
+- Jonah Gabry <jgabry@gmail.com>
 
 - Matthew Kay <mjskay@northwestern.edu>
 

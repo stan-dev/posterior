@@ -31,6 +31,7 @@ minimum sample size
 ## See also
 
 Other helper-functions:
+[`gpdfit()`](https://mc-stan.org/posterior/dev/reference/gpdfit.md),
 [`ps_convergence_rate()`](https://mc-stan.org/posterior/dev/reference/ps_convergence_rate.md),
 [`ps_khat_threshold()`](https://mc-stan.org/posterior/dev/reference/ps_khat_threshold.md),
 [`ps_tail_length()`](https://mc-stan.org/posterior/dev/reference/ps_tail_length.md)

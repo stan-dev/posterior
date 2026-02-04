@@ -35,6 +35,7 @@ convergence rate
 ## See also
 
 Other helper-functions:
+[`gpdfit()`](https://mc-stan.org/posterior/dev/reference/gpdfit.md),
 [`ps_khat_threshold()`](https://mc-stan.org/posterior/dev/reference/ps_khat_threshold.md),
 [`ps_min_ss()`](https://mc-stan.org/posterior/dev/reference/ps_min_ss.md),
 [`ps_tail_length()`](https://mc-stan.org/posterior/dev/reference/ps_tail_length.md)

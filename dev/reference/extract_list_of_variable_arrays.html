@@ -99,7 +99,10 @@ indices (e.g. <code>"x[1]"</code>), provide the base variable names
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A named list of arrays, where each array has dimension
 <code>niterations(x)</code> x <code>nchains(x)</code> x any remaining
-dimensions determined by the indices of the variable.</p>
+dimensions determined by the indices of the variable <code>x</code>
+(if <code>with_chains = TRUE</code>) or dimension
+<code>niterations(x) * nchains(x)</code> x any remaining dimensions
+(if <code>with_chains = FALSE</code>).</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

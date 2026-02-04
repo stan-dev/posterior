@@ -37,7 +37,9 @@ extract_list_of_variable_arrays(x, variables = NULL, ...)
 
 A named list of arrays, where each array has dimension `niterations(x)`
 x `nchains(x)` x any remaining dimensions determined by the indices of
-the variable.
+the variable `x` (if `with_chains = TRUE`) or dimension
+`niterations(x) * nchains(x)` x any remaining dimensions (if
+`with_chains = FALSE`).
 
 ## See also
 

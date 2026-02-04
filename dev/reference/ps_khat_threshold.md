@@ -32,6 +32,7 @@ threshold
 ## See also
 
 Other helper-functions:
+[`gpdfit()`](https://mc-stan.org/posterior/dev/reference/gpdfit.md),
 [`ps_convergence_rate()`](https://mc-stan.org/posterior/dev/reference/ps_convergence_rate.md),
 [`ps_min_ss()`](https://mc-stan.org/posterior/dev/reference/ps_min_ss.md),
 [`ps_tail_length()`](https://mc-stan.org/posterior/dev/reference/ps_tail_length.md)

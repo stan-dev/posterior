@@ -41,6 +41,7 @@
 <url><loc>https://mc-stan.org/posterior/dev/reference/extract_variable_array.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/extract_variable_matrix.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/for_each_draw.html</loc></url>
+<url><loc>https://mc-stan.org/posterior/dev/reference/gpdfit.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/index.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/is_constant.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/is_rvar.html</loc></url>
@@ -70,6 +71,7 @@
 <url><loc>https://mc-stan.org/posterior/dev/reference/ps_min_ss.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/ps_tail.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/ps_tail_length.html</loc></url>
+<url><loc>https://mc-stan.org/posterior/dev/reference/qgeneralized_pareto.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/quantile2.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/r_scale.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/rdo.html</loc></url>
