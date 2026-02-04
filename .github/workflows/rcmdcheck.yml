@@ -20,18 +20,17 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - { os: macOS-latest, r: "devel", suggested_check: TRUE }
-          - { os: macOS-latest, r: "release", suggested_check: TRUE }
-          - { os: windows-latest, r: "release", suggested_check: TRUE }
-          - { os: ubuntu-latest, r: "devel", suggested_check: TRUE }
-          - { os: ubuntu-latest, r: "release", suggested_check: TRUE }
-          - { os: ubuntu-latest, r: "oldrel", suggested_check: FALSE }
-          - { os: ubuntu-latest, r: "3.6", suggested_check: FALSE }
+          - { os: macOS-latest, r: "devel" }
+          - { os: macOS-latest, r: "release" }
+          - { os: windows-latest, r: "release" }
+          - { os: ubuntu-latest, r: "devel" }
+          - { os: ubuntu-latest, r: "release" }
+          - { os: ubuntu-latest, r: "oldrel" }
+          - { os: ubuntu-latest, r: "3.6" }
 
     env:
       R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-      DEPS_MODE: ${{ matrix.config.suggested_check && 'all' || 'hard' }}
 
     steps:
       - uses: n1hility/cancel-previous-runs@v3
@@ -51,8 +50,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, any::knitr, any::rmarkdown
-          dependencies: 'Sys.getenv("DEPS_MODE")'
+          extra-packages: any::rcmdcheck
           needs: check
 
       - name: Session info
@@ -61,11 +59,10 @@ jobs:
           sessioninfo::session_info(installed.packages()[, "Package"], include_base = TRUE)
         shell: Rscript {0}
 
-      - name: Check
-        env:
-          _R_CHECK_CRAN_INCOMING_: false
-        run: rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran"), error_on = "warning", check_dir = "check")
-        shell: Rscript {0}
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          build_args: 'c("--no-build-vignettes")'
+          args: 'c("--no-manual", "--no-vignettes", "--ignore-vignettes")'
 
       - name: Show testthat output
         if: always()
