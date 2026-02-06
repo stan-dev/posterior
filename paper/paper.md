@@ -29,8 +29,11 @@ affiliations:
    index: 4
  - name: Aalto University, Finland
    index: 5
-date: 26 January 2026
 bibliography: paper.bib
+format:
+  pdf:
+    keep-tex: true
+
 
 # Optional fields if submitting to a AAS journal too, see this blog post:
 # https://blog.joss.theoj.org/2018/12/a-new-collaboration-with-aas-publishing
@@ -45,7 +48,7 @@ Modern Bayesian inference is often performed via sampling algorithms that produc
 
 # Statement of need
 
-The `posterior` R package is intended to provide useful tools for both users
+The `posterior` R package ([https://mc-stan.org/posterior](https://mc-stan.org/posterior/)) is intended to provide useful tools for both users
 and developers of packages for fitting Bayesian models or working with output
 from Bayesian models. The primary goals of `posterior` are three-fold:
 
