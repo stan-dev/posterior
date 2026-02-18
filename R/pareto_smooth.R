@@ -447,7 +447,7 @@ pareto_convergence_rate.rvar <- function(x, ...) {
 
 
 #' Pareto smooth tail
-#' function to pareto smooth the tail of a vector. Exported
+#' function to Pareto smooth the tail of a vector. Exported
 #' for usage in other packages, not by users.
 #' 
 #' @param x (multiple options) One of:
@@ -565,10 +565,10 @@ ps_tail <- function(x,
   return(out)
 }
 
-#' Extra pareto-k diagnostics
+#' Extra Pareto-k diagnostics
 #'
 #' internal function to calculate the extra diagnostics for a given
-#' pareto k and number of draws ndraws
+#' Pareto-k and number of draws ndraws
 #' @noRd
 .pareto_smooth_extra_diags <- function(k, ndraws, ...) {
 
