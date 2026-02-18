@@ -40,7 +40,7 @@ Probability integral transform (PIT). LOO-PIT is given by a weighted sample.
 }
 \details{
 The \code{pit()} function computes the probability integral transform of
-\code{y} using the empirical cumulative distribution computed from the samples
+\code{y} using the empirical cumulative distribution computed from the draws
 in \code{x}. For continuous valued \code{y} and \code{x}, the PIT for the elements of \code{y}
 is computed as the empirical cumulative distribution value:
 

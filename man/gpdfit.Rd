@@ -4,7 +4,7 @@
 \alias{gpdfit}
 \title{Estimate parameters of the Generalized Pareto distribution}
 \usage{
-gpdfit(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE)
+gpdfit(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE, weights = NULL)
 }
 \arguments{
 \item{x}{A numeric vector. The sample from which to estimate the
@@ -21,6 +21,11 @@ fitting algorithm. The actual number used is \code{min_grid_pts + floor(sqrt(len
 fitting algorithm is to sort the elements of \code{x}. If \code{x} is
 already sorted in ascending order then \code{sort_x} can be set to
 \code{FALSE} to skip the initial sorting step.}
+
+\item{weights}{An optional numeric vector of positive weights the same
+length as \code{x}. If \code{NULL} (the default), all observations are
+weighted equally and the result is identical to the unweighted fit.
+Weights are normalized internally to sum to \code{length(x)}.}
 }
 \value{
 A named list with components \code{k} and \code{sigma}.
