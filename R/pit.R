@@ -201,7 +201,7 @@ pit.rvar <- function(x, y, weights = NULL, log = FALSE, ...) {
 #'   where \eqn{p_{tail}} is the proportion of (weighted) mass in the
 #'   tail.
 #'
-#'   When (log-)weights in in `weights` are provided, they are used for
+#'   When (log-)weights in `weights` are provided, they are used for
 #'   the raw PIT computation (as in [pit()]) and for GPD fit.
 #'
 #' @return A numeric vector of length `length(y)` containing the PIT values, or
