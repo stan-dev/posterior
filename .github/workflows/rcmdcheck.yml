@@ -74,6 +74,12 @@ jobs:
           }
           writeLines(rd_lines, rd_file)
         shell: Rscript {0}
+        
+      - name: Install macOS system dependencies (gettext and OpenMP)
+        if: runner.os == 'macOS'
+        run: |
+          brew install gettext libomp
+          brew link --force gettext
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
