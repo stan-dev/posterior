@@ -301,6 +301,7 @@ check_rvar_margin <- function(x, MARGIN) {
   MARGIN + 1
 }
 
+#' @method all.equal rvar
 #' @export
 all.equal.rvar <- function(target, current, ...) {
   result <- NULL
