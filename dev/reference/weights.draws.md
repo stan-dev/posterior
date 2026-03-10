@@ -53,34 +53,34 @@ x <- example_draws()
 # sample some random weights for illustration
 wts <- rexp(ndraws(x))
 head(wts)
-#> [1] 3.50844541 0.69823066 1.11631261 0.01682935 0.64546527 0.03515349
+#> [1] 0.44924386 0.01132425 0.79627288 0.06250828 0.26065786 0.04660613
 
 # add weights
 x <- weight_draws(x, weights = wts)
 
 # extract weights
 head(weights(x)) # defaults to normalized weights
-#> [1] 9.333062e-03 1.857412e-03 2.969582e-03 4.476894e-05 1.717048e-03
-#> [6] 9.351427e-05
+#> [1] 1.191764e-03 3.004123e-05 2.112371e-03 1.658234e-04 6.914792e-04
+#> [6] 1.236378e-04
 head(weights(x, normalize=FALSE)) # recover original weights
-#> [1] 3.50844541 0.69823066 1.11631261 0.01682935 0.64546527 0.03515349
+#> [1] 0.44924386 0.01132425 0.79627288 0.06250828 0.26065786 0.04660613
 head(weights(x, log=TRUE)) # get normalized log-weights
-#> [1]  -4.674192  -6.288571  -5.819334 -10.013996  -6.367149  -9.277397
+#> [1]  -6.732320 -10.412940  -6.159944  -8.704587  -7.276678  -8.998154
 
 # add weights which are already on the log scale
 log_wts <- log(wts)
 head(log_wts)
-#> [1]  1.2551730 -0.3592058  0.1100309 -4.0846308 -0.4377839 -3.3480314
+#> [1] -0.8001894 -4.4808090 -0.2278133 -2.7724563 -1.3445466 -3.0660231
 
 x <- weight_draws(x, weights = log_wts, log = TRUE)
 # extract weights
 head(weights(x))
-#> [1] 9.333062e-03 1.857412e-03 2.969582e-03 4.476894e-05 1.717048e-03
-#> [6] 9.351427e-05
+#> [1] 1.191764e-03 3.004123e-05 2.112371e-03 1.658234e-04 6.914792e-04
+#> [6] 1.236378e-04
 head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
-#> [1]  1.2551730 -0.3592058  0.1100309 -4.0846308 -0.4377839 -3.3480314
+#> [1] -0.8001894 -4.4808090 -0.2278133 -2.7724563 -1.3445466 -3.0660231
 
 # add weights on log scale and Pareto smooth them
 x <- weight_draws(x, weights = log_wts, log = TRUE, pareto_smooth = TRUE)
-#> Pareto k-hat = -0.01.
+#> Pareto k-hat = 0.07.
 ```

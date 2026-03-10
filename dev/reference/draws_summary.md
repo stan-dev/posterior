@@ -259,16 +259,16 @@ summarise_draws(x, weighted.mean, .args = list(w = ws))
 #> # A tibble: 10 × 2
 #>    variable weighted.mean
 #>    <chr>            <dbl>
-#>  1 mu                4.37
-#>  2 tau               3.93
-#>  3 theta[1]          6.56
-#>  4 theta[2]          5.17
-#>  5 theta[3]          3.01
-#>  6 theta[4]          5.00
-#>  7 theta[5]          3.42
-#>  8 theta[6]          4.08
-#>  9 theta[7]          6.35
-#> 10 theta[8]          4.82
+#>  1 mu                4.33
+#>  2 tau               4.07
+#>  3 theta[1]          6.66
+#>  4 theta[2]          5.35
+#>  5 theta[3]          3.47
+#>  6 theta[4]          4.90
+#>  7 theta[5]          3.53
+#>  8 theta[6]          4.05
+#>  9 theta[7]          6.71
+#> 10 theta[8]          4.58
 
 # adjust how numerical summaries are printed
 summarise_draws(x, .num_args = list(sigfig = 2, notation = "dec"))

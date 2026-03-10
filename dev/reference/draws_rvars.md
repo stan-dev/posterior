@@ -108,18 +108,18 @@ class(x2)
 print(x2)
 #> # A draws_rvars: 10 iterations, 1 chains, and 3 variables
 #> $a: rvar<10>[1] mean ± sd:
-#> [1] 0.42 ± 1.2 
+#> [1] 0.0023 ± 0.67 
 #> 
 #> $b: rvar<10>[1] mean ± sd:
-#> [1] -0.17 ± 0.93 
+#> [1] 0.25 ± 1.4 
 #> 
 #> $c: rvar<10>[1] mean ± sd:
 #> [1] 1 ± 0 
 #> 
 str(x2)
 #> List of 3
-#>  $ a: rvar<10>[1]  0.42 ± 1.2
-#>  $ b: rvar<10>[1]  -0.17 ± 0.93
+#>  $ a: rvar<10>[1]  0.0023 ± 0.67
+#>  $ b: rvar<10>[1]  0.25 ± 1.4
 #>  $ c: rvar<10>[1]  1 ± 0
 #>  - attr(*, "class")= chr [1:3] "draws_rvars" "draws" "list"
 ```

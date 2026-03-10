@@ -193,22 +193,22 @@ iteration and chain indices, respectively. See <strong>Examples</strong>.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "draws_df"   "draws"      "tbl_df"     "tbl"        "data.frame"</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # A draws_df: 10 iterations, 1 chains, and 3 variables</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         a      b c</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  -0.666 -0.034 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  -0.693  0.680 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3  -0.535  0.010 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4   0.130  1.754 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5   0.212 -0.676 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   0.119  0.601 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7   1.522  1.057 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8   0.006 -0.589 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9   0.438 -0.520 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  0.327  0.705 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        a      b c</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1.12  1.522 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   0.23  0.006 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   0.30  0.438 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   1.32  0.327 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  -0.67 -0.034 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  -0.69  0.680 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  -0.53  0.010 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   0.13  1.754 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   0.21 -0.676 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  0.12  0.601 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">x2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> draws_df [10 × 6] (S3: draws_df/draws/tbl_df/tbl/data.frame)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ a         : num [1:10] -0.666 -0.693 -0.535 0.13 0.212 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ b         : num [1:10] -0.0341 0.6796 0.0103 1.7538 -0.6757 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ a         : num [1:10] 1.121 0.227 0.302 1.316 -0.666 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ b         : num [1:10] 1.52244 0.00604 0.43754 0.32722 -0.03409 ...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ c         : num [1:10] 1 1 1 1 1 1 1 1 1 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ .chain    : int [1:10] 1 1 1 1 1 1 1 1 1 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  $ .iteration: int [1:10] 1 2 3 4 5 6 7 8 9 10</span>
@@ -243,16 +243,16 @@ iteration and chain indices, respectively. See <strong>Examples</strong>.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">xnew</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # A draws_df: 5 iterations, 2 chains, and 1 variables</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       mu</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1  -0.10</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2  -0.77</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3   1.29</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4  -1.36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5  -0.34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6   0.24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7  -2.07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8   0.73</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9   0.66</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10  0.51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   1.06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  -0.59</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  -0.52</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   0.71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  -0.10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  -0.77</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   1.29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  -1.36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  -0.34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  0.24</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> # ... hidden reserved variables {'.chain', '.iteration', '.draw'}</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

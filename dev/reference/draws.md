@@ -49,7 +49,7 @@ Other formats:
 x <- matrix(rnorm(30), nrow = 10)
 colnames(x) <- c("a", "b", "c")
 str(x)
-#>  num [1:10, 1:3] -0.195 1.916 0.702 0.971 -0.128 ...
+#>  num [1:10, 1:3] -0.963 -0.814 -0.195 1.916 0.702 ...
 #>  - attr(*, "dimnames")=List of 2
 #>   ..$ : NULL
 #>   ..$ : chr [1:3] "a" "b" "c"
@@ -57,7 +57,7 @@ str(x)
 # transform to a draws object
 y <- as_draws(x)
 str(y)
-#>  'draws_matrix' num [1:10, 1:3] -0.195 1.916 0.702 0.971 -0.128 ...
+#>  'draws_matrix' num [1:10, 1:3] -0.963 -0.814 -0.195 1.916 0.702 ...
 #>  - attr(*, "dimnames")=List of 2
 #>   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
 #>   ..$ variable: chr [1:3] "a" "b" "c"
@@ -66,7 +66,7 @@ str(y)
 # remove the draws classes from the object
 class(y) <- class(y)[-(1:2)]
 str(y)
-#>  num [1:10, 1:3] -0.195 1.916 0.702 0.971 -0.128 ...
+#>  num [1:10, 1:3] -0.963 -0.814 -0.195 1.916 0.702 ...
 #>  - attr(*, "dimnames")=List of 2
 #>   ..$ draw    : chr [1:10] "1" "2" "3" "4" ...
 #>   ..$ variable: chr [1:3] "a" "b" "c"
