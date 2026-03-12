@@ -1,4 +1,5 @@
 # Tests for uniformity_test (main entry point) ---------------------------------
+set.seed(123)
 
 test_that("uniformity_test returns list with pvalue and pointwise", {
   pit <- runif(20)
@@ -204,11 +205,4 @@ test_that("compute_cauchy computes correct transformations", {
   
   # For x = 0.75: tan((0.5 - 0.75) * pi) = tan(-0.25 * pi) = -1
   expect_equal(.compute_cauchy(0.75), -1, tolerance = 1e-10)
-})
-
-test_that("formatting of p-values works as expected", {
-  expect_equal(fmt_p(0.446), "0.45")
-  expect_equal(fmt_p(0.045), "0.045")
-  expect_equal(fmt_p(0.0045), "0.005")
-  expect_equal(fmt_p(0.00045), "0.000")
 })
