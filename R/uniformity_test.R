@@ -48,8 +48,7 @@
 #'   a robust and powerful p-value combination method with arbitrary
 #'   correlations. arXiv preprint arXiv:2506.12489.
 #'
-#' @noRd
-
+#' @export
 uniformity_test <- function(pit, test) {
 
   choices <- c("POT", "PRIT", "PIET")
