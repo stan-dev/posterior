@@ -8,3 +8,9 @@ inst/doc
 cran-comments.md
 CRAN-RELEASE
 CRAN-SUBMISSION
+
+# agent skills (Posit/Cursor skills installation)
+.agent/
+.agents/
+skills/
+skills-lock.json
