@@ -3,7 +3,7 @@
 \name{ps_tail}
 \alias{ps_tail}
 \title{Pareto smooth tail
-function to pareto smooth the tail of a vector. Exported
+function to Pareto smooth the tail of a vector. Exported
 for usage in other packages, not by users.}
 \usage{
 ps_tail(
@@ -43,7 +43,7 @@ draws are log weights, and only right tail will be smoothed.}
 }
 \description{
 Pareto smooth tail
-function to pareto smooth the tail of a vector. Exported
+function to Pareto smooth the tail of a vector. Exported
 for usage in other packages, not by users.
 }
 \references{
