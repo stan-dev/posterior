@@ -361,6 +361,10 @@ pareto_smooth.default <- function(x,
     x <- smoothed$x
   }
 
+  if (is.na(k)) {
+    return(pareto_diags_na(x, return_k, extra_diags))
+  }
+
   diags_list <- list(khat = k)
 
   if (extra_diags) {
@@ -470,12 +474,20 @@ pareto_convergence_rate.rvar <- function(x, ...) {
 #' 
 #' @export
 ps_tail <- function(x,
-                                ndraws_tail,
-                                smooth_draws = TRUE,
-                                tail = c("right", "left"),
-                                are_log_weights = FALSE,
-                                ...
-                                ) {
+                    ndraws_tail,
+                    smooth_draws = TRUE,
+                    tail = c("right", "left"),
+                    are_log_weights = FALSE,
+                    ...
+                    ) {
+
+  if (ndraws_tail < 5) {
+    warning_no_call(
+      "Can't fit generalized Pareto distribution ",
+      "because ndraws_tail is less than 5."
+    )
+    return(list(x = x, k = NA))
+  }
 
   if (are_log_weights) {
     # shift log values for safe exponentiation
@@ -483,25 +495,21 @@ ps_tail <- function(x,
   }
 
   tail <- match.arg(tail)
-
-  ndraws <- length(x)
-  tail_ids <- seq(ndraws - ndraws_tail + 1, ndraws)
-
   if (tail == "left") {
     x <- -x
   }
+
+  ndraws <- length(x)
+  tail_ids <- seq(ndraws - ndraws_tail + 1, ndraws)
 
   ord <- sort.int(x, index.return = TRUE)
   draws_tail <- ord$x[tail_ids]
 
   if (is_constant(draws_tail)) {
-
     if (tail == "left") {
       x <- -x
     }
-
-    out <- list(x = x, k = NA)
-    return(out)
+    return(list(x = x, k = NA))
   }
 
   cutoff <- ord$x[min(tail_ids) - 1] # largest value smaller than tail values
@@ -511,43 +519,22 @@ ps_tail <- function(x,
   }
 
   max_tail <- max(draws_tail)
-  min_tail <- min(draws_tail)
 
-  if (ndraws_tail >= 5) {
-    ord <- sort.int(x, index.return = TRUE)
-    if (abs(max_tail - min_tail) < .Machine$double.eps / 100) {
-      warning_no_call(
-        "Can't fit generalized Pareto distribution ",
-        "because all tail values are the same."
-      )
-      smoothed <- NULL
-      k <- NA
-    } else {
-      # save time not sorting since x already sorted
-      if (are_log_weights) {
-        draws_tail <- exp(draws_tail)
-        cutoff <- exp(cutoff)
-      }
-      fit <- gpdfit(draws_tail - cutoff, sort_x = FALSE, ...)
-      k <- fit$k
-      sigma <- fit$sigma
-      if (is.finite(k) && smooth_draws) {
-        p <- (seq_len(ndraws_tail) - 0.5) / ndraws_tail
-        smoothed <- qgeneralized_pareto(p = p, mu = cutoff, k = k, sigma = sigma)
-        if (are_log_weights) {
-          smoothed <- log(smoothed)
-        }
-      } else {
-        smoothed <- NULL
-      }
+  if (are_log_weights) {
+    draws_tail <- exp(draws_tail)
+    cutoff <- exp(cutoff)
+  }
+  fit <- gpdfit(draws_tail - cutoff, sort_x = FALSE, ...)
+  k <- fit$k
+  sigma <- fit$sigma
+  if (is.finite(k) && smooth_draws) {
+    p <- (seq_len(ndraws_tail) - 0.5) / ndraws_tail
+    smoothed <- qgeneralized_pareto(p = p, mu = cutoff, k = k, sigma = sigma)
+    if (are_log_weights) {
+      smoothed <- log(smoothed)
     }
   } else {
-    warning_no_call(
-      "Can't fit generalized Pareto distribution ",
-      "because ndraws_tail is less than 5."
-    )
     smoothed <- NULL
-    k <- NA
   }
 
   # truncate at max of raw draws
@@ -598,7 +585,10 @@ ps_tail <- function(x,
 #' @return minimum sample size
 #' @export
 ps_min_ss <- function(k, ...) {
-  if (k < 1) {
+  if (is.na(k)) {
+    return(NA)
+  }
+  if (isTRUE(k < 1)) {
     out <- 10^(1 / (1 - max(0, k)))
   } else {
     out <- Inf
