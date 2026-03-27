@@ -84,7 +84,7 @@ internally but is exported for use by other packages.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gpdfit</span><span class="op">(</span><span class="va">x</span>, wip <span class="op">=</span> <span class="cn">TRUE</span>, min_grid_pts <span class="op">=</span> <span class="fl">30</span>, sort_x <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">gpdfit</span><span class="op">(</span><span class="va">x</span>, wip <span class="op">=</span> <span class="cn">TRUE</span>, min_grid_pts <span class="op">=</span> <span class="fl">30</span>, sort_x <span class="op">=</span> <span class="cn">TRUE</span>, weights <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -112,6 +112,13 @@ fitting algorithm. The actual number used is <code>min_grid_pts + floor(sqrt(len
 fitting algorithm is to sort the elements of <code>x</code>. If <code>x</code> is
 already sorted in ascending order then <code>sort_x</code> can be set to
 <code>FALSE</code> to skip the initial sorting step.</p></dd>
+
+
+<dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
+<dd><p>An optional numeric vector of positive weights the same
+length as <code>x</code>. If <code>NULL</code> (the default), all observations are
+weighted equally and the result is identical to the unweighted fit.
+Weights are normalized internally to sum to <code>length(x)</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

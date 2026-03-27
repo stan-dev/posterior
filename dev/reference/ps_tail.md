@@ -1,6 +1,6 @@
-# Pareto smooth tail function to pareto smooth the tail of a vector. Exported for usage in other packages, not by users.
+# Pareto smooth tail function to Pareto smooth the tail of a vector. Exported for usage in other packages, not by users.
 
-Pareto smooth tail function to pareto smooth the tail of a vector.
+Pareto smooth tail function to Pareto smooth the tail of a vector.
 Exported for usage in other packages, not by users.
 
 ## Usage

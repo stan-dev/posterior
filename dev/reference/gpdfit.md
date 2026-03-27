@@ -13,7 +13,7 @@ packages.
 ## Usage
 
 ``` r
-gpdfit(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE)
+gpdfit(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE, weights = NULL)
 ```
 
 ## Arguments
@@ -37,6 +37,13 @@ gpdfit(x, wip = TRUE, min_grid_pts = 30, sort_x = TRUE)
   If `TRUE` (the default), the first step in the fitting algorithm is to
   sort the elements of `x`. If `x` is already sorted in ascending order
   then `sort_x` can be set to `FALSE` to skip the initial sorting step.
+
+- weights:
+
+  An optional numeric vector of positive weights the same length as `x`.
+  If `NULL` (the default), all observations are weighted equally and the
+  result is identical to the unweighted fit. Weights are normalized
+  internally to sum to `length(x)`.
 
 ## Value
 

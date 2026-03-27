@@ -760,6 +760,9 @@ Compute summary statistics and convergence diagnostics
 - [`pareto_khat()`](https://mc-stan.org/posterior/dev/reference/pareto_khat.md)
   : Pareto khat diagnostic
 
+- [`pareto_pit()`](https://mc-stan.org/posterior/dev/reference/pareto_pit.md)
+  : Pareto-smoothed probability integral transform
+
 - [`pareto_smooth()`](https://mc-stan.org/posterior/dev/reference/pareto_smooth.md)
   : Pareto smoothing
 
@@ -773,7 +776,7 @@ Compute summary statistics and convergence diagnostics
   : Pareto-smoothing minimum sample-size
 
 - [`ps_tail()`](https://mc-stan.org/posterior/dev/reference/ps_tail.md)
-  : Pareto smooth tail function to pareto smooth the tail of a vector.
+  : Pareto smooth tail function to Pareto smooth the tail of a vector.
   Exported for usage in other packages, not by users.
 
 - [`ps_tail_length()`](https://mc-stan.org/posterior/dev/reference/ps_tail_length.md)
@@ -796,6 +799,9 @@ Compute summary statistics and convergence diagnostics
 
 - [`pit()`](https://mc-stan.org/posterior/dev/reference/pit.md) :
   Probability integral transform
+
+- [`uniformity_test()`](https://mc-stan.org/posterior/dev/reference/uniformity_test.md)
+  : Uniformity test for PIT values
 
 ## Functionality specific to the rvar datatype
 

@@ -55,7 +55,7 @@ array of shape `dim(y)`, if `x` is an `rvar`.
 ## Details
 
 The `pit()` function computes the probability integral transform of `y`
-using the empirical cumulative distribution computed from the samples in
+using the empirical cumulative distribution computed from the draws in
 `x`. For continuous valued `y` and `x`, the PIT for the elements of `y`
 is computed as the empirical cumulative distribution value:
 
@@ -80,18 +80,18 @@ x <- example_draws()
 y <- rnorm(nvariables(x), 5, 5)
 pit(x, y)
 #>       mu      tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6] 
-#>   0.1150   0.1575   0.3200   0.9675   0.8300   0.8675   0.5875   0.1100 
+#>   0.7200   0.9250   0.6900   0.0125   0.0825   0.9650   0.1900   0.2000 
 #> theta[7] theta[8] 
-#>   0.7025   0.4475 
+#>   0.0650   0.2850 
 
 # Compute weighted PIT (for example LOO-PIT)
 weights <- matrix(runif(length(x)), ncol = nvariables(x))
 
 pit(x, y, weights)
-#>        mu       tau  theta[1]  theta[2]  theta[3]  theta[4]  theta[5]  theta[6] 
-#> 0.1188946 0.1573926 0.3205254 0.9633941 0.8292876 0.8611088 0.5991041 0.1101363 
-#>  theta[7]  theta[8] 
-#> 0.6934052 0.4586079 
+#>         mu        tau   theta[1]   theta[2]   theta[3]   theta[4]   theta[5] 
+#> 0.73168924 0.92422631 0.67537851 0.01551178 0.07374251 0.96731879 0.18392838 
+#>   theta[6]   theta[7]   theta[8] 
+#> 0.18079978 0.05075895 0.30773529 
 
 # PIT for an rvar
 x <- rvar(example_draws())
@@ -100,14 +100,14 @@ y_arr <- array(rnorm(length(x), 5, 5), dim = dim(x))
 pit(x, y_arr)
 #>      variable
 #> chain   mu  tau theta[1] theta[2] theta[3] theta[4] theta[5] theta[6] theta[7]
-#>     1 0.97 0.00     0.31     0.32     0.71     0.74     0.09     0.42     0.65
-#>     2 0.45 0.96     0.12     0.10     0.56     0.64     0.95     0.33     0.18
-#>     3 0.42 1.00     0.72     0.87     0.93     0.32     0.23     0.84     0.00
-#>     4 0.02 0.46     0.46     0.52     0.51     0.27     0.17     0.63     0.81
+#>     1 0.93 0.97     0.74     0.26     0.20     0.86     0.11     0.64     0.21
+#>     2 0.51 0.78     0.39     0.28     0.19     0.52     0.87     0.14     0.12
+#>     3 0.40 0.78     0.58     0.00     0.48     0.82     0.27     0.60     0.37
+#>     4 0.03 0.70     0.55     0.92     0.38     0.27     0.94     0.40     0.81
 #>      variable
 #> chain theta[8]
-#>     1     0.19
-#>     2     0.83
-#>     3     0.71
-#>     4     0.12
+#>     1     0.50
+#>     2     0.24
+#>     3     0.37
+#>     4     0.34
 ```

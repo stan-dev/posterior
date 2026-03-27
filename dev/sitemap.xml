@@ -56,7 +56,9 @@
 <url><loc>https://mc-stan.org/posterior/dev/reference/order_draws.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/pareto_diags.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/pareto_khat.html</loc></url>
+<url><loc>https://mc-stan.org/posterior/dev/reference/pareto_pit.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/pareto_smooth.html</loc></url>
+<url><loc>https://mc-stan.org/posterior/dev/reference/pgeneralized_pareto.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/pit.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/posterior-package.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/print.draws_array.html</loc></url>
@@ -102,6 +104,7 @@
 <url><loc>https://mc-stan.org/posterior/dev/reference/subset_draws.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/thin_draws.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/u_scale.html</loc></url>
+<url><loc>https://mc-stan.org/posterior/dev/reference/uniformity_test.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/variables-set.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/variables.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/dev/reference/weight_draws.html</loc></url>
