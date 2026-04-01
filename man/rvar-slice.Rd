@@ -21,7 +21,7 @@
 
 \item{i, ...}{indices; see \emph{Details}.}
 
-\item{value}{(\code{rvar} or coercable to \code{rvar}) Value to insert into
+\item{value}{(\code{rvar} or coercible to \code{rvar}) Value to insert into
 \code{x} at the location determined by the indices.}
 
 \item{drop}{(logical) Should singular dimensions be dropped when slicing
