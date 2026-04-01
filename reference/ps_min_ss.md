@@ -1,0 +1,37 @@
+# Pareto-smoothing minimum sample-size
+
+Given Pareto-k computes the minimum sample size for reliable Pareto
+smoothed estimate (to have small probability of large error). See
+section 3.2.3 in Vehtari et al. (2024). This function is exported to be
+usable by other packages. For user-facing diagnostic functions, see
+[`pareto_min_ss`](https://mc-stan.org/posterior/reference/pareto_diags.md)
+and
+[`pareto_diags`](https://mc-stan.org/posterior/reference/pareto_diags.md).
+
+## Usage
+
+``` r
+ps_min_ss(k, ...)
+```
+
+## Arguments
+
+- k:
+
+  pareto k value
+
+- ...:
+
+  unused
+
+## Value
+
+minimum sample size
+
+## See also
+
+Other helper-functions:
+[`gpdfit()`](https://mc-stan.org/posterior/reference/gpdfit.md),
+[`ps_convergence_rate()`](https://mc-stan.org/posterior/reference/ps_convergence_rate.md),
+[`ps_khat_threshold()`](https://mc-stan.org/posterior/reference/ps_khat_threshold.md),
+[`ps_tail_length()`](https://mc-stan.org/posterior/reference/ps_tail_length.md)
