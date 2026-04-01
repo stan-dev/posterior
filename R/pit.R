@@ -33,7 +33,7 @@
 #'   The draws in `x` can further be provided (log-)weights in
 #    `weights`, which enables for example the computation of LOO-PITs.
 #'
-#'   If `y` and `x` are discrete, randomisation is used to obtain continuous PIT
+#'   If `y` and `x` are discrete, randomization is used to obtain continuous PIT
 #'   values. (see, e.g., Czado, C., Gneiting, T., Held, L.: Predictive model
 #'   assessment for count data.  Biometrics 65(4), 1254–1261 (2009).)
 #'

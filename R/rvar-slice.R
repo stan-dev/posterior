@@ -6,7 +6,7 @@
 #' @param i,... indices; see *Details*.
 #' @param drop (logical) Should singular dimensions be dropped when slicing
 #' array [`rvar`]s? Unlike base array slicing operations, defaults to `FALSE`.
-#' @param value (`rvar` or coercable to `rvar`) Value to insert into
+#' @param value (`rvar` or coercible to `rvar`) Value to insert into
 #' `x` at the location determined by the indices.
 #'
 #' @details
