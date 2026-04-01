@@ -67,7 +67,7 @@ objects, this corresponds to the draws of the *i*th variable, and for
 
 The draws in `x` can further be provided (log-)weights in
 
-If `y` and `x` are discrete, randomisation is used to obtain continuous
+If `y` and `x` are discrete, randomization is used to obtain continuous
 PIT values. (see, e.g., Czado, C., Gneiting, T., Held, L.: Predictive
 model assessment for count data. Biometrics 65(4), 1254–1261 (2009).)
 

@@ -32,7 +32,7 @@ x[i, ...] <- value
 
 - value:
 
-  (`rvar` or coercable to `rvar`) Value to insert into `x` at the
+  (`rvar` or coercible to `rvar`) Value to insert into `x` at the
   location determined by the indices.
 
 - drop:

@@ -85,7 +85,7 @@ str(
 
 - width:
 
-  The maxmimum width used to print out lists of factor levels for
+  The maximum width used to print out lists of factor levels for
   [`rvar_factor`](https://mc-stan.org/posterior/reference/rvar_factor.md)s.
   See [`format()`](https://rdrr.io/r/base/format.html).
 
