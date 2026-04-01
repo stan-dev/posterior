@@ -1,3 +1,19 @@
+# posterior 1.7.0
+
+### Bug Fixes
+
+* Fix several minor issues occurring in edge cases.
+
+### Enhancements
+
+* Extend and export several functions related to the generalized
+Pareto distribution for use in other packages. (#408)
+* Support Pareto PIT functionality via `pareto_pit`. (#435)
+* Allow more warnings to be turned off via option 
+`posterior.warn_on_merge_chains`.
+* Improve documentation in many places.
+* Improve tests by checking for edge cases.
+
 # posterior 1.6.1
 
 ### Bug Fixes
