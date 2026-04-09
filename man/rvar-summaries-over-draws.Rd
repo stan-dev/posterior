@@ -17,8 +17,10 @@
 \alias{any.rvar}
 \alias{Summary.rvar}
 \alias{variance.rvar}
+\alias{variance.complex}
 \alias{var}
 \alias{var.default}
+\alias{var.complex}
 \alias{var.rvar}
 \alias{sd}
 \alias{sd.default}
@@ -64,9 +66,13 @@ Pr(x, ...)
 
 \method{variance}{rvar}(x, ...)
 
+\method{variance}{complex}(x, ...)
+
 var(x, ...)
 
 \method{var}{default}(x, ...)
+
+\method{var}{complex}(x, ...)
 
 \method{var}{rvar}(x, ...)
 
