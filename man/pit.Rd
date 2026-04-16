@@ -53,7 +53,7 @@ the elements of \code{y} and \code{x} are matched.
 
 The draws in \code{x} can further be provided (log-)weights in
 
-If \code{y} and \code{x} are discrete, randomisation is used to obtain continuous PIT
+If \code{y} and \code{x} are discrete, randomization is used to obtain continuous PIT
 values. (see, e.g., Czado, C., Gneiting, T., Held, L.: Predictive model
 assessment for count data.  Biometrics 65(4), 1254–1261 (2009).)
 }

@@ -56,7 +56,7 @@ output. If \code{TRUE}, the \code{\link[pillar:style_subtle]{pillar::style_num()
 produce strings containing control sequences to produce colored output on
 the terminal.}
 
-\item{width}{The maxmimum width used to print out lists of factor levels
+\item{width}{The maximum width used to print out lists of factor levels
 for \code{\link{rvar_factor}}s. See \code{\link[=format]{format()}}.}
 
 \item{vec.len}{(nonnegative integer) How many 'first few' elements are
