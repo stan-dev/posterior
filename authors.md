@@ -27,7 +27,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/stan-dev/posterior/blob/master/inst/CITATION)
+[`inst/CITATION`](https://github.com/stan-dev/posterior/blob/v1.7.0/inst/CITATION)
 
 Bürkner P, Gabry J, Kay M, Vehtari A (2026). “posterior: Tools for
 Working with Posterior Distributions.” R package version 1.7.0,

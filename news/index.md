@@ -2,6 +2,8 @@
 
 ## posterior 1.7.0
 
+CRAN release: 2026-04-01
+
 #### Bug Fixes
 
 - Fix several minor issues occurring in edge cases.
