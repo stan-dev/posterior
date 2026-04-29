@@ -4,13 +4,18 @@
 \alias{uniformity_test}
 \title{Uniformity test for PIT values}
 \usage{
-uniformity_test(pit, test)
+uniformity_test(pit, test, truncate = NULL)
 }
 \arguments{
 \item{pit}{Numeric vector of PIT values in \verb{[0, 1]}.}
 
 \item{test}{Character string. One of \code{"POT"}, \code{"PIET"}, or \code{"PRIT"}.
 See details above.}
+
+\item{truncate}{Boolean. Determines whether the truncated (TRUE) or
+untruncated (FALSE) Cauchy combination test (CCT) is used. By default it
+is NULL in which case the truncated CCT is computed for \code{POT} and \code{PRIT}
+and the untruncated CCT is computed for \code{PIET}.}
 }
 \value{
 A list with components:
