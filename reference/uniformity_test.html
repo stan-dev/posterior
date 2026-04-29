@@ -62,7 +62,7 @@ procedures from Tesso and Vehtari (2026)."><meta property="og:image" content="ht
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Uniformity test for PIT values</h1>
-      <small class="dont-index">Source: <a href="https://github.com/stan-dev/posterior/blob/v1.7.0/R/uniformity_test.R" class="external-link"><code>R/uniformity_test.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/stan-dev/posterior/blob/master/R/uniformity_test.R" class="external-link"><code>R/uniformity_test.R</code></a></small>
       <div class="d-none name"><code>uniformity_test.Rd</code></div>
     </div>
 
@@ -78,7 +78,7 @@ procedures from Tesso and Vehtari (2026).</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">uniformity_test</span><span class="op">(</span><span class="va">pit</span>, <span class="va">test</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">uniformity_test</span><span class="op">(</span><span class="va">pit</span>, <span class="va">test</span>, truncate <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -92,6 +92,13 @@ procedures from Tesso and Vehtari (2026).</p>
 <dt id="arg-test">test<a class="anchor" aria-label="anchor" href="#arg-test"></a></dt>
 <dd><p>Character string. One of <code>"POT"</code>, <code>"PIET"</code>, or <code>"PRIT"</code>.
 See details above.</p></dd>
+
+
+<dt id="arg-truncate">truncate<a class="anchor" aria-label="anchor" href="#arg-truncate"></a></dt>
+<dd><p>Boolean. Determines whether the truncated (TRUE) or
+untruncated (FALSE) Cauchy combination test (CCT) is used. By default it
+is NULL in which case the truncated CCT is computed for <code>POT</code> and <code>PRIT</code>
+and the untruncated CCT is computed for <code>PIET</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

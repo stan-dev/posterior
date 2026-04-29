@@ -4,6 +4,12 @@
 
 CRAN release: 2026-04-01
 
+#### Enhancements
+
+- Add `truncate` argument to
+  [`uniformity_test()`](https://mc-stan.org/posterior/reference/uniformity_test.md)
+  to allow for custom truncation
+
 #### Bug Fixes
 
 - Fix several minor issues occurring in edge cases.

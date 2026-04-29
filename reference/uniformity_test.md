@@ -11,7 +11,7 @@ implements dependence-aware procedures from Tesso and Vehtari (2026).
 ## Usage
 
 ``` r
-uniformity_test(pit, test)
+uniformity_test(pit, test, truncate = NULL)
 ```
 
 ## Arguments
@@ -24,6 +24,13 @@ uniformity_test(pit, test)
 
   Character string. One of `"POT"`, `"PIET"`, or `"PRIT"`. See details
   above.
+
+- truncate:
+
+  Boolean. Determines whether the truncated (TRUE) or untruncated
+  (FALSE) Cauchy combination test (CCT) is used. By default it is NULL
+  in which case the truncated CCT is computed for `POT` and `PRIT` and
+  the untruncated CCT is computed for `PIET`.
 
 ## Value
 
