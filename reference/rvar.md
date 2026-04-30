@@ -118,6 +118,7 @@ higher-level interfaces for creating `rvar`s.
 ## Examples
 
 ``` r
+
 set.seed(1234)
 
 # To create a "scalar" `rvar`, pass a one-dimensional array or a vector

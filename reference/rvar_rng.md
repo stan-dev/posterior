@@ -95,6 +95,7 @@ Other rfun: [`rdo()`](https://mc-stan.org/posterior/reference/rdo.md),
 ## Examples
 
 ``` r
+
 mu <- rvar_rng(rnorm, 10, mean = 1:10, sd = 1)
 sigma <- rvar_rng(rgamma, 1, shape = 1, rate = 1)
 x <- rvar_rng(rnorm, 10, mu, sigma)

@@ -54,6 +54,7 @@ Other rvar-summaries:
 ## Examples
 
 ``` r
+
 x <- rvar(c(1, Inf, -Inf, NaN, NA))
 x
 #> rvar<5>[1] mean ± sd:

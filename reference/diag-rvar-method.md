@@ -62,6 +62,7 @@ function. See that function's documentation for usage with
 ## Examples
 
 ``` r
+
 # Sigma is a 3x3 covariance matrix
 Sigma <- as_draws_rvars(example_draws("multi_normal"))$Sigma
 Sigma

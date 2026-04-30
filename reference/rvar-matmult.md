@@ -65,6 +65,7 @@ matrix multiplication of
 ## Examples
 
 ``` r
+
 # d has mu (mean vector of length 3) and Sigma (3x3 covariance matrix)
 d <- as_draws_rvars(example_draws("multi_normal"))
 d$Sigma

@@ -96,6 +96,7 @@ Other rfun: [`rdo()`](https://mc-stan.org/posterior/reference/rdo.md),
 ## Examples
 
 ``` r
+
 rvar_norm <- rfun(rnorm)
 rvar_gamma <- rfun(rgamma)
 

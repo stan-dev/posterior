@@ -143,6 +143,7 @@ Reasoning*. 45(3), 531–545.
 ## Examples
 
 ``` r
+
 set.seed(5678)
 x = rbind(
   cbind(rvar(rnorm(1000, 1)), rvar(rnorm(1000, 2))),

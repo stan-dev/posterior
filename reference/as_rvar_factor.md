@@ -128,6 +128,7 @@ higher-level interfaces for creating `rvar`s.
 ## Examples
 
 ``` r
+
 # You can use as_rvar_factor() to create "constant" rvars (having only one draw):
 x <- as_rvar_factor("a")
 x

@@ -94,6 +94,7 @@ higher-level interfaces for creating `rvar`s.
 ## Examples
 
 ``` r
+
 set.seed(3456)
 x <- rvar_rng(rnorm, 24, mean = 1:24)
 dim(x) <- c(2,3,4)

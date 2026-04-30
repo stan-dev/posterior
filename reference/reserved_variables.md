@@ -68,6 +68,7 @@ More reserved variables may be added in the future.
 ## Examples
 
 ``` r
+
 x <- example_draws()
 reserved_variables(x)
 #> character(0)

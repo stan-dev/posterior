@@ -83,6 +83,7 @@ for the corresponding cell in the input array, `x[...]`.
 ## Examples
 
 ``` r
+
 set.seed(1234)
 x = rvar(rnorm(100))
 

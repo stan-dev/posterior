@@ -28,12 +28,14 @@ vignettes:
 You can install the latest official release version via
 
 ``` r
+
 install.packages("posterior")
 ```
 
 or build the developmental version directly from GitHub via
 
 ``` r
+
 # install.packages("remotes")
 remotes::install_github("stan-dev/posterior")
 ```
@@ -45,6 +47,7 @@ overview see the vignette [*The posterior R
 package*](https://mc-stan.org/posterior/articles/posterior.html).
 
 ``` r
+
 library("posterior")
 #> This is posterior version 1.6.1
 #> 
@@ -66,6 +69,7 @@ an overall mean (`mu`) and standard deviation across schools (`tau`).
 #### Draws formats
 
 ``` r
+
 eight_schools_array <- example_draws("eight_schools")
 print(eight_schools_array, max_variables = 3)
 #> # A draws_array: 100 iterations, 4 chains, and 10 variables
@@ -108,6 +112,7 @@ transform it to another format, for instance, a data frame with
 additional meta information.
 
 ``` r
+
 eight_schools_df <- as_draws_df(eight_schools_array)
 print(eight_schools_df)
 #> # A draws_df: 100 iterations, 4 chains, and 10 variables
@@ -144,6 +149,7 @@ this purpose via
 [`summarise_draws()`](https://mc-stan.org/posterior/reference/draws_summary.md):
 
 ``` r
+
 # summarise_draws or summarize_draws
 summarise_draws(eight_schools_df)
 #> # A tibble: 10 × 10
@@ -170,6 +176,7 @@ the mean and its corresponding Monte Carlo Standard Error (MCSE) we
 would use:
 
 ``` r
+
 summarise_draws(eight_schools_df, "mean", "mcse_mean")
 #> # A tibble: 10 × 3
 #>    variable  mean mcse_mean
@@ -201,6 +208,7 @@ method. For example, here is the code to extract the first five
 iterations of the first two chains of the variable `mu`:
 
 ``` r
+
 subset_draws(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 #> # A draws_df: 5 iterations, 2 chains, and 1 variables
 #>      mu
@@ -234,6 +242,7 @@ draws from the posterior distribution of the transformed variable. This
 procedure is automated in the `mutate_variables` method:
 
 ``` r
+
 x <- mutate_variables(eight_schools_df, phi = (mu + tau)^2)
 x <- subset_draws(x, c("mu", "tau", "phi"))
 print(x)
@@ -261,6 +270,7 @@ We may also easily rename variables, or even entire vectors of variables
 via `rename_variables`, for example:
 
 ``` r
+
 x <- rename_variables(eight_schools_df, mean = mu, alpha = theta)
 variables(x)
 #>  [1] "mean"     "tau"      "alpha[1]" "alpha[2]" "alpha[3]" "alpha[4]" "alpha[5]"
@@ -275,6 +285,7 @@ As with all **posterior** methods, `mutate_variables` and
 Suppose we have multiple draws objects that we want to bind together:
 
 ``` r
+
 x1 <- draws_matrix(alpha = rnorm(5), beta = 1)
 x2 <- draws_matrix(alpha = rnorm(5), beta = 2)
 x3 <- draws_matrix(theta = rexp(5))
@@ -285,6 +296,7 @@ dimensions. For example, we can bind `x1` and `x3` together along the
 `'variable'` dimension:
 
 ``` r
+
 x4 <- bind_draws(x1, x3, along = "variable")
 print(x4)
 #> # A draws_matrix: 5 iterations, 1 chains, and 3 variables
@@ -300,6 +312,7 @@ print(x4)
 Or, we can bind `x1` and `x2` together along the `'draw'` dimension:
 
 ``` r
+
 x5 <- bind_draws(x1, x2, along = "draw")
 print(x5)
 #> # A draws_matrix: 10 iterations, 1 chains, and 2 variables
@@ -327,6 +340,7 @@ by posterior but we could of course also import the draws from other
 sources, for example, from common base R objects:
 
 ``` r
+
 x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
@@ -368,6 +382,7 @@ could be stored in base R 3-D array object, which can also be converted
 to a draws object:
 
 ``` r
+
 x <- array(data=rnorm(200), dim=c(10, 2, 5))
 x <- as_draws_matrix(x)
 variables(x) <-  paste0("V", 1:5)
@@ -394,6 +409,7 @@ The **coda** and **rjags** packages use `mcmc` and `mcmc.list` objects
 which can also be converted to draws objects:
 
 ``` r
+
 data(line, package = "coda")
 line <- as_draws_df(line)
 print(line)

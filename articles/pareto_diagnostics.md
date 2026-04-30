@@ -27,6 +27,7 @@ function can be used to transform draws by smoothing the tail(s). \##
 Example
 
 ``` r
+
 library(posterior)
 ```
 
@@ -44,6 +45,7 @@ library(posterior)
     ##     %in%, match
 
 ``` r
+
 library(dplyr)
 ```
 
@@ -59,6 +61,7 @@ library(dplyr)
     ##     intersect, setdiff, setequal, union
 
 ``` r
+
 options(pillar.neg = FALSE, pillar.subtle=FALSE, pillar.sigfig=2)
 ```
 
@@ -68,6 +71,7 @@ Generate `xn` a simulated MCMC sample with 4 chains each with 1000
 iterations using AR process with marginal normal(0,1)
 
 ``` r
+
 N <- 1000
 phi <- 0.3
 set.seed(6534)
@@ -86,6 +90,7 @@ and \\t_1\\. These all have thick tails. In addition \\t_2\\,
 Cauchy) has infinite mean.
 
 ``` r
+
 drt <- dr %>%
   mutate_variables(xt3=qt(pnorm(xn), df=3),
                    xt2_5=qt(pnorm(xn), df=2.5),
@@ -100,6 +105,7 @@ We examine the draws with the default
 [`summarise_draws()`](https://mc-stan.org/posterior/reference/draws_summary.md).
 
 ``` r
+
 drt %>%
   summarise_draws()
 ```
@@ -125,6 +131,7 @@ many digits to
 report](https://users.aalto.fi/~ave/casestudies/Digits/digits.html)).
 
 ``` r
+
 drt %>%
   summarise_draws(mean, sd, mcse_mean, ess_bulk, ess_basic)
 ```
@@ -151,6 +158,7 @@ To diagnose whether our variables of interest may have infinite variance
 and even infinite mean, we can use Pareto-\\\hat{k}\\ diagnostic.
 
 ``` r
+
 drt %>%
   summarise_draws(mean, sd, mcse_mean, ess_basic, pareto_khat)
 ```
@@ -192,6 +200,7 @@ which we know when it is negligible. As a thumb rule when
 We do Pareto smoothing for all the variables.
 
 ``` r
+
 drts <- drt %>% 
   mutate_variables(xt3_s=pareto_smooth(xt3),
                    xt2_5_s=pareto_smooth(xt2_5),
@@ -216,6 +225,7 @@ When \\\hat{k}\>0.7\\ both bias and variance grow so fast that Pareto
 smoothing rarely helps (see more details in the paper).
 
 ``` r
+
 drts %>%
   summarise_draws(mean, mcse_mean, ess_basic, pareto_khat)
 ```
@@ -236,6 +246,7 @@ additional diagnostic `min_ss` which tells the minimum sample size
 needed so that `mcse_mean` can be trusted.
 
 ``` r
+
 drt %>%
   summarise_draws(mean, mcse_mean, ess_basic,
                   pareto_khat, min_ss=pareto_min_ss)
@@ -262,6 +273,7 @@ can go further, but the convergence rate decreases when \\\hat{k}\\
 increases.
 
 ``` r
+
 drt %>%
   summarise_draws(mean, mcse_mean, ess_basic,
                   pareto_khat, min_ss=pareto_min_ss,
@@ -289,6 +301,7 @@ smaller sample sizes. Here we select only 100 iterations per chain to
 get total of 400 draws.
 
 ``` r
+
 drt %>%
   subset_draws(iteration=1:100) %>%
   summarise_draws(mean, mcse_mean, ess_basic,
@@ -319,6 +332,7 @@ We can get all these diagnostics with
 and it’s easy to use it also for derived quantities.
 
 ``` r
+
 drt %>%
   mutate_variables(xt2_5_sq=xt2_5^2) %>%
   subset_draws(variable="xt2_5_sq") %>%

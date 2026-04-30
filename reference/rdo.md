@@ -85,6 +85,7 @@ Other rfun: [`rfun()`](https://mc-stan.org/posterior/reference/rfun.md),
 ## Examples
 
 ``` r
+
 mu <- rdo(rnorm(10, mean = 1:10, sd = 1))
 sigma <- rdo(rgamma(1, shape = 1, rate = 1))
 x <- rdo(rnorm(10, mu, sigma))

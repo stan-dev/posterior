@@ -59,6 +59,7 @@ the second dimension is the index of the chains.
 ## Examples
 
 ``` r
+
 x <- rvar(1:10, nchains = 2)
 x
 #> rvar<5,2>[1] mean ± sd:

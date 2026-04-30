@@ -20,12 +20,14 @@ to:
 You can install the latest official release version via
 
 ``` r
+
 install.packages("posterior")
 ```
 
 or the latest development version from GitHub via
 
 ``` r
+
 # install.packages("remotes")
 remotes::install_github("stan-dev/posterior")
 ```
@@ -33,6 +35,7 @@ remotes::install_github("stan-dev/posterior")
 ## Example
 
 ``` r
+
 library("posterior")
 ```
 
@@ -57,6 +60,7 @@ through `theta[8]`) as well as an overall mean (`mu`) and standard
 deviation across schools (`tau`).
 
 ``` r
+
 eight_schools_array <- example_draws("eight_schools")
 print(eight_schools_array, max_variables = 3)
 ```
@@ -127,6 +131,7 @@ The draws for our example come as a `draws_array` object with 100
 iterations, 4 chains, and 10 variables:
 
 ``` r
+
 str(eight_schools_array)
 ```
 
@@ -147,6 +152,7 @@ a data frame with additional meta information. To convert to a
 [`as_draws_df()`](https://mc-stan.org/posterior/reference/draws_df.md).
 
 ``` r
+
 eight_schools_df <- as_draws_df(eight_schools_array)
 str(eight_schools_df)
 ```
@@ -167,6 +173,7 @@ str(eight_schools_df)
     ##  $ .draw     : int [1:400] 1 2 3 4 5 6 7 8 9 10 ...
 
 ``` r
+
 print(eight_schools_df)
 ```
 
@@ -199,6 +206,7 @@ format, the
 function will convert a regular matrix to a `draws_matrix`.
 
 ``` r
+
 x <- matrix(rnorm(50), nrow = 10, ncol = 5)
 colnames(x) <- paste0("V", 1:5)
 x <- as_draws_matrix(x)
@@ -240,6 +248,7 @@ constructor function that can be used to create draws matrix from
 multiple vectors.
 
 ``` r
+
 x <- draws_matrix(alpha = rnorm(50), beta = rnorm(50))
 print(x)
 ```
@@ -279,6 +288,7 @@ For example, here is the code to extract the first five iterations of
 the first two chains of the variable `mu`.
 
 ``` r
+
 sub_df <- subset_draws(eight_schools_df, variable = "mu", chain = 1:2, iteration = 1:5)
 str(sub_df)
 ```
@@ -296,6 +306,7 @@ same code except replacing the `draws_df` object with the `draws_array`
 object.
 
 ``` r
+
 sub_arr <- subset_draws(eight_schools_array, variable = "mu", chain = 1:2, iteration = 1:5)
 str(sub_arr)
 ```
@@ -312,6 +323,7 @@ We can check that these two calls to
 same result.
 
 ``` r
+
 identical(sub_df, as_draws_df(sub_arr))
 identical(as_draws_array(sub_df), sub_arr)
 ```
@@ -325,6 +337,7 @@ objects. The following is equivalent to the use of
 with the array above.
 
 ``` r
+
 eight_schools_array[1:5, 1:2, "mu"]
 ```
 
@@ -358,6 +371,7 @@ procedure is handled by
 [`mutate_variables()`](https://mc-stan.org/posterior/reference/mutate_variables.md).
 
 ``` r
+
 x <- mutate_variables(eight_schools_df, phi = (mu + tau)^2)
 x <- subset_draws(x, c("mu", "tau", "phi"))
 print(x)
@@ -386,6 +400,7 @@ Here we rename the scalar `mu` to `mean` and the vector `theta` to
 `alpha`.
 
 ``` r
+
 # mu is a scalar, theta is a vector
 x <- rename_variables(eight_schools_df, mean = mu, alpha = theta)
 variables(x)
@@ -402,6 +417,7 @@ It is also possible to rename individual elements of non-scalar
 parameters, for example we can rename just the first element of `alpha`:
 
 ``` r
+
 x <- rename_variables(x, a1 = `alpha[1]`)
 variables(x)
 ```
@@ -418,6 +434,7 @@ dimensions. As an example, suppose we have several different
 `draws_matrix` objects:
 
 ``` r
+
 x1 <- draws_matrix(alpha = rnorm(5), beta = rnorm(5))
 x2 <- draws_matrix(alpha = rnorm(5), beta = rnorm(5))
 x3 <- draws_matrix(theta = rexp(5))
@@ -427,6 +444,7 @@ We can bind `x1` and `x3` together along the `'variable'` dimension to
 get a single `draws_matrix` with the variables from both `x1` and `x3`:
 
 ``` r
+
 x4 <- bind_draws(x1, x3, along = "variable")
 print(x4)
 ```
@@ -445,6 +463,7 @@ the `'draw'` dimension to create a single `draws_matrix` with more
 draws:
 
 ``` r
+
 x5 <- bind_draws(x1, x2, along = "draw")
 print(x5)
 ```
@@ -486,6 +505,7 @@ purpose via
 which can be passed any of the formats supported by the package.
 
 ``` r
+
 # summarise_draws or summarize_draws
 summarise_draws(eight_schools_df)
 ```
@@ -513,6 +533,7 @@ the mean and its corresponding Monte Carlo Standard Error (MCSE) we
 could use either of these options:
 
 ``` r
+
 # the function mcse_mean is provided by the posterior package
 s1 <- summarise_draws(eight_schools_df, "mean", "mcse_mean") 
 s2 <- summarise_draws(eight_schools_df, mean, mcse_mean) 
@@ -522,6 +543,7 @@ identical(s1, s2)
     ## [1] TRUE
 
 ``` r
+
 print(s1)
 ```
 
@@ -547,6 +569,7 @@ the value is a function name or definition. For example, here we change
 the names `mean` and `sd` to `posterior_mean` and `posterior_sd`.
 
 ``` r
+
 summarise_draws(eight_schools_df, posterior_mean = mean, posterior_sd = sd)
 ```
 
@@ -574,6 +597,7 @@ arguments to the function can be specified in a list passed to the
 `.args` argument.
 
 ``` r
+
 weighted_mean <- function(x, wts) {
   sum(x * wts)/sum(wts)
 }
@@ -606,12 +630,14 @@ formula that follows the conventions supported by
 For example, the function
 
 ``` r
+
 function(x) quantile(x, probs = c(0.4, 0.6))
 ```
 
 can be simplified to
 
 ``` r
+
 # for multiple arguments `.x` and `.y` can be used, see ?rlang::as_function
 ~quantile(., probs = c(0.4, 0.6))
 ```
@@ -621,6 +647,7 @@ Both can be used with
 and produce the same output:
 
 ``` r
+
 summarise_draws(eight_schools_df, function(x) quantile(x, probs = c(0.4, 0.6)))
 ```
 
@@ -639,6 +666,7 @@ summarise_draws(eight_schools_df, function(x) quantile(x, probs = c(0.4, 0.6)))
     ## 10 theta[8]  3.50  5.92
 
 ``` r
+
 summarise_draws(eight_schools_df, ~quantile(.x, probs = c(0.4, 0.6)))
 ```
 
@@ -684,17 +712,17 @@ In addition to the methods demonstrated in this vignette, posterior has
 various other methods available for working with `draws` objects. The
 following is a (potentially incomplete) list.
 
-| **Method**                                                                                        | **Description**                                                                                                   |
-|:--------------------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------|
-| [`order_draws()`](https://mc-stan.org/posterior/reference/order_draws.md)                         | Order `draws` objects according to iteration and chain number                                                     |
-| [`repair_draws()`](https://mc-stan.org/posterior/reference/repair_draws.md)                       | Repair indices of `draws` objects so that iterations chains, and draws are continuously and consistently numbered |
-| [`resample_draws()`](https://mc-stan.org/posterior/reference/resample_draws.md)                   | Resample `draws` objects according to provided weights                                                            |
-| [`thin_draws()`](https://mc-stan.org/posterior/reference/thin_draws.md)                           | Thin `draws` objects to reduce size and autocorrelation                                                           |
-| [`weight_draws()`](https://mc-stan.org/posterior/reference/weight_draws.md)                       | Add weights to draws objects, with one weight per draw, for use in subsequent weighting operations                |
-| [`extract_variable()`](https://mc-stan.org/posterior/reference/extract_variable.md)               | Extract a vector of draws of a single variable                                                                    |
-| [`extract_variable_matrix()`](https://mc-stan.org/posterior/reference/extract_variable_matrix.md) | Extract an iterations x chains matrix of draws of a single variable                                               |
-| [`merge_chains()`](https://mc-stan.org/posterior/reference/merge_chains.md)                       | Merge chains of `draws` objects into a single chain.                                                              |
-| [`split_chains()`](https://mc-stan.org/posterior/reference/split_chains.md)                       | Split chains of `draws` objects by halving the number of iterations per chain and doubling the number of chains.  |
+| **Method** | **Description** |
+|:---|:---|
+| [`order_draws()`](https://mc-stan.org/posterior/reference/order_draws.md) | Order `draws` objects according to iteration and chain number |
+| [`repair_draws()`](https://mc-stan.org/posterior/reference/repair_draws.md) | Repair indices of `draws` objects so that iterations chains, and draws are continuously and consistently numbered |
+| [`resample_draws()`](https://mc-stan.org/posterior/reference/resample_draws.md) | Resample `draws` objects according to provided weights |
+| [`thin_draws()`](https://mc-stan.org/posterior/reference/thin_draws.md) | Thin `draws` objects to reduce size and autocorrelation |
+| [`weight_draws()`](https://mc-stan.org/posterior/reference/weight_draws.md) | Add weights to draws objects, with one weight per draw, for use in subsequent weighting operations |
+| [`extract_variable()`](https://mc-stan.org/posterior/reference/extract_variable.md) | Extract a vector of draws of a single variable |
+| [`extract_variable_matrix()`](https://mc-stan.org/posterior/reference/extract_variable_matrix.md) | Extract an iterations x chains matrix of draws of a single variable |
+| [`merge_chains()`](https://mc-stan.org/posterior/reference/merge_chains.md) | Merge chains of `draws` objects into a single chain. |
+| [`split_chains()`](https://mc-stan.org/posterior/reference/split_chains.md) | Split chains of `draws` objects by halving the number of iterations per chain and doubling the number of chains. |
 
 If you have suggestions for additional methods that would be useful for
 working with `draws` objects, please open an issue at

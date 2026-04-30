@@ -95,6 +95,7 @@ Other rvar-summaries:
 ## Examples
 
 ``` r
+
 set.seed(5678)
 x = rvar_rng(rnorm, 4, mean = 1:4, sd = 2)
 
