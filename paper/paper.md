@@ -17,7 +17,7 @@ authors:
     affiliation: 3
   - name: Aki Vehtari
     orcid: 0000-0003-2164-9469
-    affiliation: 4,5
+    affiliation: 4
 affiliations:
  - name: TU Dortmund University, Germany
    index: 1
@@ -25,10 +25,8 @@ affiliations:
    index: 2
  - name: Northwestern University, USA
    index: 3
- - name: ELLIS Institute Finland, Finland
+ - name: Aalto University and ELLIS Institute Finland, Finland
    index: 4
- - name: Aalto University, Finland
-   index: 5
 bibliography: paper.bib
 format:
   pdf:
@@ -74,6 +72,12 @@ convergence diagnostics are essential to assess the trustworthiness of the
 conclusions obtained from the draws. By providing a consistent and extensible
 interface for all these diagnostics, we not only ensure safe and easy use, but
 also easy extensibility whenever new, promising diagnostics are being proposed.
+
+# State of the field
+
+The need to store, diagnose, and summarize posterior draws is an important challenge for essentially all Bayesian software ecosystems. The `coda` package [@coda] has historically been the most widely used tool for handling MCMC draws in R. It defines the `mcmc` and `mcmc.list` objects to store draws from one chain and multiple chains, respectively. It also provides convergence diagnostics such as older versions of the $\widehat{R}$ diagnostic [@gelman_rhat_1992] and effective sample size measures. However, `coda` is limited to two draws formats and has not kept pace with more recently developed diagnostics or the diversity of sampling backends now commonly used in practice.
+
+Outside of R, the Python library `ArviZ` [@arviz] provides diagnostics, visualizations, and the `InferenceData` format for storing posterior draws. `ArviZ` has become the de facto standard for posterior analysis in Python. It shares several design goals with `posterior`, particularly the goal of being backend-agnostic. Both implement modern $\widehat{R}$ diagnostics and effective sample size measures [@vehtari_rhat_2021]. While `ArviZ` and `posterior` serve analogous roles in their respective languages, they differ in their approach to which draws formats they support: `posterior` exposes multiple native R formats (matrices, arrays, data frames, lists) to minimize friction for users moving in and out of the framework, whereas `ArviZ` unifies the storage of draws into a single `InferenceData` format.
 
 # Software design
 
