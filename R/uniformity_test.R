@@ -29,6 +29,10 @@
 #' @param pit Numeric vector of PIT values in `[0, 1]`.
 #' @param test Character string. One of `"POT"`, `"PIET"`, or `"PRIT"`.
 #'   See details above.
+#' @param truncate Boolean. Determines whether the truncated (TRUE) or
+#'   untruncated (FALSE) Cauchy combination test (CCT) is used. By default it
+#'   is NULL in which case the truncated CCT is computed for `POT` and `PRIT`
+#'   and the untruncated CCT is computed for `PIET`.
 #'
 #' @return A list with components:
 #'   * `pvalue`: Global p-value from the Cauchy combination test.
@@ -49,13 +53,10 @@
 #'   correlations. arXiv preprint arXiv:2506.12489.
 #'
 #' @export
-uniformity_test <- function(pit, test) {
+uniformity_test <- function(pit, test, truncate = NULL) {
 
-  choices <- c("POT", "PRIT", "PIET")
-  if (!test %in% choices) {
-    stop("'test' should be one of ", paste(dQuote(choices), collapse = ", "), call. = FALSE)
-  }
-  test <- match.arg(test, choices = choices)
+  test <- rlang::arg_match(test, values = c("POT", "PRIT", "PIET"))
+  if (is.null(truncate)) truncate <- (test != "PIET")
 
   test_fn <- switch(test,
       POT  = .pot_test,
@@ -67,7 +68,7 @@ uniformity_test <- function(pit, test) {
     std_cauchy_values    <- .compute_cauchy(test_fn(pit_sorted))
     p_value_CCT          <- .cauchy_combination_test(
       test_fn(pit),
-      truncate = test != "PIET"
+      truncate = truncate
     )
     pointwise_contributions  <- .compute_shapley_values(std_cauchy_values)
 
@@ -83,9 +84,9 @@ uniformity_test <- function(pit, test) {
 
 #' Compute Shapley values
 #'
-#' Calculates the average marginal contribution of players across 
+#' Calculates the average marginal contribution of players across
 #' all random arrival orders in a cooperative game.
-#' Used to provide a principled approach for quantifying 
+#' Used to provide a principled approach for quantifying
 #' point-specific influences in a way that reflects local miscalibration.
 #'
 #' @param x Numeric vector of Cauchy-transformed PIT values.
@@ -99,11 +100,11 @@ uniformity_test <- function(pit, test) {
   if (n == 1) {
     return(0)
   }
-  
+
   # Harmonic number
   # H_n = sum(1/i) for i = 1 to n
   harmonic_number <- sum(1 / seq_len(n))
-  
+
   shapley_values <- numeric(n)
   for (i in seq_len(n)) {
     mean_others <- sum(x[-i]) / (n - 1)
@@ -120,7 +121,7 @@ uniformity_test <- function(pit, test) {
 #' H0: The value obtained via the inverse CDF transformation F^(-1)(x_i)
 #' follows the distribution of X under uniformity.
 #' HA: The p-value p_(i) provides evidence against uniformity.
-#' 
+#'
 #' @param x Numeric vector of PIT values in `[0, 1]`.
 #' @return Numeric vector of p-values.
 #' @noRd
@@ -138,7 +139,7 @@ uniformity_test <- function(pit, test) {
 #' under uniformity.
 #' HA: The p-value p_(i) provides evidence against uniformity
 #' at the i-th order statistic u_(i).
-#' 
+#'
 #' @param x Numeric vector of PIT values in `[0, 1]`.
 #' @return Numeric vector of p-values.
 #' @noRd
@@ -153,12 +154,12 @@ uniformity_test <- function(pit, test) {
 }
 
 #' Pointwise Rank-based Individual Tests Combination (PRIT)
-#' 
+#'
 #' Uniformity test based on a binomial distribution.
 #' H0: The number of observations falling at or below x_i
 #' follows a binomial distribution under uniformity.
 #' HA: The p-value p_i provides evidence against uniformity.
-#' 
+#'
 #' @param x Numeric vector of PIT values in `[0, 1]`.
 #' @return Numeric vector of p-values.
 #' @noRd
@@ -168,7 +169,7 @@ uniformity_test <- function(pit, test) {
   probs1 <- pbinom(scaled_ecdf - 1, n, x)
   probs2 <- pbinom(scaled_ecdf, n, x)
   p_values <- 2 * pmin(1 - probs1, probs2)
-  
+
   return(p_values)
 }
 
