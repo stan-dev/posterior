@@ -75,7 +75,12 @@ also easy extensibility whenever new, promising diagnostics are being proposed.
 
 # State of the field
 
-The need to store, diagnose, and summarize posterior draws is an important challenge for essentially all Bayesian software ecosystems. The `coda` package [@coda] has historically been the most widely used tool for handling MCMC draws in R. It defines the `mcmc` and `mcmc.list` objects to store draws from one chain and multiple chains, respectively. It also provides convergence diagnostics such as older versions of the $\widehat{R}$ diagnostic [@gelman_rhat_1992] and effective sample size measures. However, `coda` is limited to two draws formats and has not kept pace with more recently developed diagnostics or the diversity of sampling backends now commonly used in practice.
+The need to store, diagnose, and summarize posterior draws is an important challenge for essentially all Bayesian software ecosystems. The `coda` package [@coda] has historically been the most widely used tool for handling MCMC draws in R. It defines the `mcmc` and `mcmc.list` objects to store draws from one chain and multiple chains, respectively. It also provides convergence diagnostics such as older versions of the $\widehat{R}$ diagnostic [@gelman_rhat_1992] and effective sample size measures. However, `coda` is limited to two draws formats and has not kept pace with more recently developed diagnostics or the diversity of sampling backends now commonly used in practice. 
+
+The `tidybayes` R package [@tidybayes] aims to integrate Bayesian modeling into a tidy data framework, allowing users to leverage the full power of the `tidyverse` [@tidyverse] for Bayesian analysis. While `tidybayes` also
+summarizes posteriors, it does so mostly with the aim
+of visualization and uses `posterior` for many backend operations on the posterior draws. As such, it builds on rather than competes with `posterior`. Similarly,
+the `distributional` package [@distributional] builds on `posterior` to create vectorized distribution objects for manipulating and visualizing probability distributions.
 
 Outside of R, the Python library `ArviZ` [@arviz] provides diagnostics, visualizations, and the `InferenceData` format for storing posterior draws. `ArviZ` has become the de facto standard for posterior analysis in Python. It shares several design goals with `posterior`, particularly the goal of being backend-agnostic. Both implement modern $\widehat{R}$ diagnostics and effective sample size measures [@vehtari_rhat_2021]. While `ArviZ` and `posterior` serve analogous roles in their respective languages, they differ in their approach to which draws formats they support: `posterior` exposes multiple native R formats (matrices, arrays, data frames, lists) to minimize friction for users moving in and out of the framework, whereas `ArviZ` unifies the storage of draws into a single `InferenceData` format.
 
@@ -92,8 +97,7 @@ formats also contain information on (c) the *chain indices*, primarily useful
 for MCMC, to ensure the correct behavior of convergence diagnostics
 [@vehtari_rhat_2021].
 
-Except for one special format (see
-[https://mc-stan.org/posterior/articles/rvar.html](https://mc-stan.org/posterior/articles/rvar.html)),
+Except for one special format (see below),
 all formats are directly built on R base formats (matrices, arrays, lists, and
 data.frames) such that the objects are also easily usable outside of the methods
 that `posterior` itself provides. As such, users can easily move in and out of
@@ -103,6 +107,12 @@ required extra work on the internal interfaces and introduced the requirements
 for format-transforming methods. Nevertheless, we believe that the practical
 benefit of the multi-format approach justifies the internal code overhead
 necessary for its support.
+
+The special `rvar` format (see
+[https://mc-stan.org/posterior/articles/rvar.html](https://mc-stan.org/posterior/articles/rvar.html)) 
+offers a multidimensional, sample-based representation of random variables.
+It is designed to act as much like base R arrays as possible, but removing the necessity to interact with the underlying draws directly. As such, `rvars` provides a convenient interface for working with random variables without having
+to worry about their internal representation.
 
 # Research impact statement
 
