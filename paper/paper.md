@@ -46,9 +46,7 @@ Modern Bayesian inference is often performed via sampling algorithms that produc
 
 # Statement of need
 
-The `posterior` R package ([https://mc-stan.org/posterior](https://mc-stan.org/posterior/)) is intended to provide useful tools for both users
-and developers of packages for fitting Bayesian models or working with output
-from Bayesian models. The primary goals of `posterior` are three-fold:
+The posterior R package ([https://mc-stan.org/posterior](https://mc-stan.org/posterior/)) is intended to provide useful tools for both users and developers of Bayesian modeling software, focusing on manipulating, summarizing, and diagnosing the output of Bayesian models. The primary goals of `posterior` are three-fold:
 
 (a\) Efficiently convert between many different useful formats of draws.
 Existing packages for storing posterior draws, most notably `coda` [@coda],
@@ -82,7 +80,7 @@ summarizes posteriors, it does so mostly with the aim
 of visualization and uses `posterior` for many backend operations on the posterior draws. As such, it builds on rather than competes with `posterior`. Similarly,
 the `distributional` package [@distributional] builds on `posterior` to create vectorized distribution objects for manipulating and visualizing probability distributions.
 
-Outside of R, the Python library `ArviZ` [@arviz] provides diagnostics, visualizations, and the `InferenceData` format for storing posterior draws. `ArviZ` has become the de facto standard for posterior analysis in Python. It shares several design goals with `posterior`, particularly the goal of being backend-agnostic. Both implement modern $\widehat{R}$ diagnostics and effective sample size measures [@vehtari_rhat_2021]. While `ArviZ` and `posterior` serve analogous roles in their respective languages, they differ in their approach to which draws formats they support: `posterior` exposes multiple native R formats (matrices, arrays, data frames, lists) to minimize friction for users moving in and out of the framework, whereas `ArviZ` unifies the storage of draws into a single `InferenceData` format.
+Outside of R, the Python library `ArviZ` [@arviz] provides diagnostics and visualizations, using the `xarray.DataTree` format [@xarray] for storing posterior draws. `ArviZ` has become the de facto standard for posterior analysis in Python. It shares several design goals with `posterior`, particularly the goal of being backend-agnostic. Both implement modern $\widehat{R}$ diagnostics and effective sample size measures [@vehtari_rhat_2021]. While `ArviZ` and `posterior` serve analogous roles in their respective languages, they differ in their approach to which draws formats they support: `posterior` exposes multiple native R formats (matrices, arrays, data frames, lists) to minimize friction for users moving in and out of the framework, whereas `ArviZ` unifies the storage of draws into a single `InferenceData` format.
 
 # Software design
 

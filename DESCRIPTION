@@ -13,8 +13,9 @@ Authors@R: c(person("Paul-Christian", "Bürkner", email = "paul.buerkner@gmail.c
              person("Jacob", "Socolar", role = c("ctb")),
              person("Noa", "Kallioinen", role = c("ctb")),
              person("Teemu", "Säilynoja", role = c("ctb")))
-Description: Provides useful tools for both users and developers of packages 
-  for fitting Bayesian models or working with output from Bayesian models.
+Description: Provides useful tools for both users and developers of 
+  Bayesian modeling software, focusing on manipulating, summarizing, 
+  and diagnosing the output of Bayesian models.
   The primary goals of the package are to: 
   (a) Efficiently convert between many different useful formats of
   draws (samples) from posterior or prior distributions.
