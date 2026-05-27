@@ -112,7 +112,8 @@ The special `rvar` format (see
 [https://mc-stan.org/posterior/articles/rvar.html](https://mc-stan.org/posterior/articles/rvar.html)) 
 offers a multidimensional, sample-based representation of random variables.
 It is designed to act as much like base R arrays as possible, but removing the necessity to interact with the underlying draws directly. As such, `rvars` provides a convenient interface for working with random variables without having
-to worry about their internal representation.
+to worry about their internal representation. This forms the basis, for example,
+for the probability distribution objects of the `distributional` package.
 
 # Research impact statement
 
