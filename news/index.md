@@ -1,5 +1,9 @@
 # Changelog
 
+## posterior 1.7.1
+
+- Minor release to accommodate the JOSS paper.
+
 ## posterior 1.7.0
 
 CRAN release: 2026-04-01
