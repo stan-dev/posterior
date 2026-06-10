@@ -1,3 +1,7 @@
+# posterior 1.7.1
+
+* Minor release to accommodate the JOSS paper.
+
 # posterior 1.7.0
 
 ### Enhancements
