@@ -39,7 +39,7 @@ remotes::install_github("stan-dev/posterior")
 library("posterior")
 ```
 
-    ## This is posterior version 1.7.1
+    ## This is posterior version 1.7.2
 
     ## 
     ## Attaching package: 'posterior'

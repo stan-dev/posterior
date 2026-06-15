@@ -1,5 +1,9 @@
 # Changelog
 
+## posterior 1.7.2
+
+- Minor fixes to ensure CRAN checks are passing on R dev.
+
 ## posterior 1.7.1
 
 - Minor release to accommodate the JOSS paper.

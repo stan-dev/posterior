@@ -27,17 +27,17 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/stan-dev/posterior/blob/v1.7.1/inst/CITATION)
+[`inst/CITATION`](https://github.com/stan-dev/posterior/blob/master/inst/CITATION)
 
 Bürkner P, Gabry J, Kay M, Vehtari A (2026). “posterior: Tools for
-Working with Posterior Distributions.” R package version 1.7.1,
+Working with Posterior Distributions.” R package version 1.7.2,
 <https://mc-stan.org/posterior/>.
 
     @Misc{,
       title = {posterior: Tools for Working with Posterior Distributions},
       author = {Paul-Christian Bürkner and Jonah Gabry and Matthew Kay and Aki Vehtari},
       year = {2026},
-      note = {R package version 1.7.1},
+      note = {R package version 1.7.2},
       url = {https://mc-stan.org/posterior/},
     }
 
