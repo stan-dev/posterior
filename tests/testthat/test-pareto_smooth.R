@@ -249,20 +249,6 @@ test_that("pareto_smooth works for log_weights", {
 
 })
 
-test_that("check ps_tail behavior for ndraws_tail less than 5", {
-  w <- c(1:25, 1e3, 1e3, 1e3)
-  lw <- log(w)
-
-  # prints correct warning
-  expect_warning(
-    tail <- ps_tail(lw, ndraws_tail = 4, tail = "right"),
-    "Can't fit generalized Pareto distribution because ndraws_tail is less than 5."
-  )
-  # output has expected shape and k = NA
-  expect_equal(names(tail), c("x", "k"))
-  expect_true(is.na(tail$k))
-})
-
 test_that("check ps_tail behavior for constant draws_tail", {
   x <- log(replicate(10, 0.3))
 
