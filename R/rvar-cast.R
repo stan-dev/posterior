@@ -554,9 +554,7 @@ vec_cast.distribution.rvar <- function(x, to, ..., x_arg = "", to_arg = "") {
     vctrs::stop_incompatible_cast(x, to, x_arg = x_arg, to_arg = to_arg)
   }
   .draws <- draws_of(x)
-  x_array_list <- vctrs::vec_chop(aperm_no_attr(
-    .draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])
-  ))
+  x_array_list <- vctrs::vec_chop(aperm(.draws, c(2, 1, seq_along(dim(.draws))[c(-1,-2)])))
   x_vector_list <- lapply(x_array_list, as.vector)
   names(x_vector_list) <- names(x)
   distributional::dist_sample(x_vector_list)

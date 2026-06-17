@@ -199,7 +199,7 @@ Math.rvar_factor <- function(x, ...) {
   result <- unclass(mul.tensor(x_tensor, 3, y_tensor, 2, by = 1))
 
   # move draws dimension back to the front
-  result <- aperm_no_attr(result, c(3,1,2))
+  result <- aperm(result, c(3,1,2))
 
   # restore dimension names (as.tensor adds dummy names to dimensions)
   names(dim(result)) <- NULL
@@ -243,13 +243,13 @@ chol.rvar <- function(x, ...) {
   }
 
   # must re-order draws dimension to the end, as chol.tensor expects it there
-  x_tensor <- as.tensor(aperm_no_attr(draws_of(x), c(2,3,1)))
+  x_tensor <- as.tensor(aperm(draws_of(x), c(2,3,1)))
 
   # do the cholesky decomp
   result <- unclass(chol.tensor(x_tensor, 1, 2, ...))
 
   # move draws dimension back to the front
-  result <- aperm_no_attr(result, c(3,1,2))
+  result <- aperm(result, c(3,1,2))
 
   # drop dimension names (chol.tensor screws them around)
   names(dim(result)) <- NULL
@@ -336,7 +336,7 @@ t.rvar = function(x) {
     dimnames(.draws) = c(.dimnames[1], list(NULL), .dimnames[2])
     result <- new_rvar(.draws, .nchains = nchains(x))
   } else if (ndim == 3) {
-    .draws <- copy_levels(.draws, aperm_no_attr(.draws, c(1, 3, 2)))
+    .draws <- copy_levels(.draws, aperm(.draws, c(1, 3, 2)))
     result <- new_rvar(.draws, .nchains = nchains(x))
   } else {
     stop_no_call("argument is not a random vector or matrix")
@@ -347,6 +347,6 @@ t.rvar = function(x) {
 #' @export
 aperm.rvar = function(a, perm, ...) {
   .draws <- draws_of(a)
-  draws_of(a) <- copy_levels(.draws, aperm_no_attr(.draws, c(1, perm + 1), ...))
+  draws_of(a) <- copy_levels(.draws, aperm(.draws, c(1, perm + 1), ...))
   a
 }

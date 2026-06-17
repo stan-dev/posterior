@@ -233,17 +233,6 @@ log_sum_exp <- function(x) {
   res
 }
 
-# Apply aperm but drop any extra attributes (class, levels, etc.)
-# that shouldn't transfer from the draws array
-# we may actually benefit from some more attributes being kept (e.g., levels), 
-# but for now this is a safe way to ensure that the output is a plain array
-aperm_no_attr <- function(a, perm) {
-  res <- aperm(a, perm)
-  # Only keep dim and dimnames — strip anything else aperm.default now copies
-  attributes(res) <- attributes(res)[c("dim", "dimnames")]
-  res
-}
-
 # simple version of destructuring assignment
 `%<-%` <- function(vars, values, envir = parent.frame()) {
   vars <- as.character(substitute(vars)[-1])
