@@ -176,7 +176,12 @@ as.array.rvar <- function(x, ...) {
 }
 
 #' @export
-as.matrix.rvar <- as.array.rvar
+as.matrix.rvar <- function(x, ...) {
+  if (length(dim(x)) != 2) {
+    stop("Cannot coerce an rvar with ", length(dim(x)), " dimensions to a matrix.")
+  }
+  as.array.rvar(x, ...)
+}
 
 #' Collapse a list of rvars from `as.array.rvar()` back into an rvar
 #' @noRd
