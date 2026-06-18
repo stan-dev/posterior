@@ -22,10 +22,10 @@ r_eff. See Appendix H in Vehtari et al. (2024). This function is
 used internally and is exported to be available for other packages.
 }
 \seealso{
-Other helper-functions: 
-\code{\link{gpdfit}()},
-\code{\link{ps_convergence_rate}()},
-\code{\link{ps_khat_threshold}()},
-\code{\link{ps_min_ss}()}
+Other helper-functions:
+\code{\link[=gpdfit]{gpdfit()}},
+\code{\link[=ps_convergence_rate]{ps_convergence_rate()}},
+\code{\link[=ps_khat_threshold]{ps_khat_threshold()}},
+\code{\link[=ps_min_ss]{ps_min_ss()}}
 }
 \concept{helper-functions}

@@ -81,6 +81,9 @@ Ignored when \code{x} is already an \code{\link{rvar}}.}
     \item{\code{ordered}}{logical flag to determine if the levels should be regarded
     as ordered (in the order given).}
     \item{\code{nmax}}{an upper bound on the number of levels; see \sQuote{Details}.}
+    \item{\code{ifany}}{only add an \code{NA} level if it is used, i.e.
+    if \code{any(is.na(x))}.}
+    \item{\code{object}}{an \R object.}
   }}
 }
 \value{
