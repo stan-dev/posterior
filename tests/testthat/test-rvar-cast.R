@@ -264,10 +264,10 @@ test_that("base apply works on multidimensional rvars", {
   x <- rvar_rng(rnorm, 24, mean = 1:24)
   dim(x) <- c(2, 3, 4)
 
-  expect_equal(
-    apply(x, c(1, 2), length) |> unname(),
-    array(4L, dim = c(2, 3))
-  )
+  expect_equal(unname(apply(x, c(1, 2), length)), array(4L, dim = c(2, 3)))
+
+  dim(x) <- c(6, 4)
+  expect_equal(unname(apply(x, 1, length)), rep(4L, 6))
 })
 
 test_that("as.data.frame and as_tibble work on rvars", {
