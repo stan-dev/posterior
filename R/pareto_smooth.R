@@ -499,11 +499,15 @@ ps_tail <- function(x,
     x <- -x
   }
 
-  ndraws <- length(x)
-  tail_ids <- seq(ndraws - ndraws_tail + 1, ndraws)
+  if (is_constant(x)) {
+    if (tail == "left") {
+      x <- -x
+    }
+    return(list(x = x, k = NA))
+  }
 
-  ord <- sort.int(x, index.return = TRUE)
-  draws_tail <- ord$x[tail_ids]
+  tail_info <- .ps_tail_select(x, ndraws_tail)
+  draws_tail <- tail_info$tail
 
   if (is_constant(draws_tail)) {
     if (tail == "left") {
@@ -512,9 +516,8 @@ ps_tail <- function(x,
     return(list(x = x, k = NA))
   }
 
-  cutoff <- ord$x[min(tail_ids) - 1] # largest value smaller than tail values
-  if (cutoff == ord$x[min(tail_ids)]) {
-    # cutoff is not smaller than the tail values
+  cutoff <- tail_info$cutoff
+  if (cutoff == draws_tail[1]) {
     cutoff <- cutoff - .Machine$double.eps
   }
 
@@ -540,7 +543,7 @@ ps_tail <- function(x,
   # truncate at max of raw draws
   if (!is.null(smoothed)) {
     smoothed[smoothed > max_tail] <- max_tail
-    x[ord$ix[tail_ids]] <- smoothed
+    x[tail_info$tail_idx] <- smoothed
   }
 
   if (tail == "left") {
@@ -550,6 +553,10 @@ ps_tail <- function(x,
   out <- list(x = x, k = k)
 
   return(out)
+}
+
+.ps_tail_select <- function(x, ndraws_tail) {
+  .Call(posterior_ps_tail_select, x, as.integer(ndraws_tail))
 }
 
 #' Extra Pareto-k diagnostics
