@@ -259,6 +259,17 @@ test_that("as.vector works", {
   expect_equal(as.vector(x), rvar(array(1:12, dim = c(2, 6))))
 })
 
+test_that("base apply works on multidimensional rvars", {
+  set.seed(3456)
+  x <- rvar_rng(rnorm, 24, mean = 1:24)
+  dim(x) <- c(2, 3, 4)
+
+  expect_equal(
+    apply(x, c(1, 2), length) |> unname(),
+    array(4L, dim = c(2, 3))
+  )
+})
+
 test_that("as.data.frame and as_tibble work on rvars", {
   x1 = rvar(array(1:9, dim = c(3,3)),
     dimnames = list(A = paste0("a", 1:3))

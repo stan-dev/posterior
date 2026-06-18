@@ -167,6 +167,14 @@ as.list.rvar <- function(x, ...) {
   out
 }
 
+#' @export
+as.array.rvar <- function(x, ...) {
+  out <- as.list(as.vector(x))
+  dim(out) <- dim(x)
+  dimnames(out) <- dimnames(x)
+  out
+}
+
 #' @importFrom rlang as_label
 #' @export
 as.data.frame.rvar <- function(x, ..., optional = FALSE) {
@@ -184,7 +192,6 @@ as_tibble.rvar <- function(x, ...) {
   value <- x
   as_tibble(as.data.frame(value, optional = FALSE), ...)
 }
-
 
 # vctrs proxy / restore --------------------------------------------------------
 
