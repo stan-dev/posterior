@@ -43,7 +43,7 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: always
+          use-public-rspm: true
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -74,6 +74,11 @@ jobs:
           }
           writeLines(rd_lines, rd_file)
         shell: Rscript {0}
+
+      - name: Install macOS R system libraries
+        if: runner.os == 'macOS'
+        run: |
+          sudo Rscript -e 'source("https://mac.R-project.org/bin/install.R"); install.libs("gettext")'
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
