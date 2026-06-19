@@ -110,7 +110,7 @@ check_draws_object <- function(x) {
 #' @noRd
 check_variables_are_numeric <- function(
   x, to = "draws_array",
-  is_non_numeric = function(x_i) !is.numeric(x_i) && !is.logical(x_i),
+  is_non_numeric = function(x_i) !is.numeric(x_i) && !is.logical(x_i) && !is.complex(x_i),
   convert = TRUE
 ) {
 
@@ -146,7 +146,7 @@ validate_draws_per_variable <- function(...) {
     # '.nchains' is an additional argument in chain supporting formats
     stop_no_call("'.nchains' is not supported for this format.")
   }
-  out <- lapply(out, as.numeric)
+  out <- lapply(out, function(x) if (is.numeric(x) || is.complex(x)) x else as.numeric(x))
   ndraws_per_variable <- lengths(out)
   ndraws <- max(ndraws_per_variable)
   if (!all(ndraws_per_variable %in% c(1, ndraws))) {

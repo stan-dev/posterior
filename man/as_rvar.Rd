@@ -3,6 +3,7 @@
 \name{as_rvar}
 \alias{as_rvar}
 \alias{as_rvar_numeric}
+\alias{as_rvar_complex}
 \alias{as_rvar_integer}
 \alias{as_rvar_logical}
 \title{Coerce to a random variable}
@@ -10,6 +11,8 @@
 as_rvar(x, dim = NULL, dimnames = NULL, nchains = NULL)
 
 as_rvar_numeric(x, dim = NULL, dimnames = NULL, nchains = NULL)
+
+as_rvar_complex(x, dim = NULL, dimnames = NULL, nchains = NULL)
 
 as_rvar_integer(x, dim = NULL, dimnames = NULL, nchains = NULL)
 
@@ -44,15 +47,15 @@ Convert \code{x} to an \code{\link{rvar}} object.
 For objects that are already \code{\link{rvar}}s, returns them (with modified dimensions
 if \code{dim} is not \code{NULL}).
 
-For numeric or logical vectors or arrays, returns an \code{\link{rvar}} with a single draw and
+For \code{\link{numeric}}, \code{\link{complex}}, or \code{\link{logical}} vectors or arrays, returns an \code{\link{rvar}} with a single draw and
 the same dimensions as \code{x}. This is in contrast to the \code{\link[=rvar]{rvar()}} constructor, which
 treats the first dimension of \code{x} as the draws dimension. As a result, \code{as_rvar()}
 is useful for creating constants.
 
 While \code{as_rvar()} attempts to pick the most suitable subtype of \code{\link{rvar}} based on the
 type of \code{x} (possibly returning an \code{\link{rvar_factor}} or \code{\link{rvar_ordered}}),
-\code{as_rvar_numeric()}, \code{as_rvar_integer()}, and \code{as_rvar_logical()} always coerce
-the draws of the output \code{\link{rvar}} to be \code{\link{numeric}}, \code{\link{integer}}, or \code{\link{logical}}
+\code{as_rvar_numeric()}, \code{as_rvar_complex()}, \code{as_rvar_integer()}, and \code{as_rvar_logical()} always coerce
+the draws of the output \code{\link{rvar}} to be \code{\link{numeric}}, \code{\link{complex}}, \code{\link{integer}}, or \code{\link{logical}}
 (respectively), and always return a base \code{\link{rvar}}, never a subtype.
 }
 \examples{
