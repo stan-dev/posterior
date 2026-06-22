@@ -16,7 +16,7 @@ jobs:
       config: ${{ steps.read_touchstone_config.outputs.config }}
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
