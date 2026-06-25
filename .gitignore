@@ -14,3 +14,5 @@ CRAN-SUBMISSION
 .agents/
 skills/
 skills-lock.json
+/.quarto/
+**/*.quarto_ipynb

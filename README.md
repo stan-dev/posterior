@@ -10,6 +10,7 @@ status](https://www.r-pkg.org/badges/version/posterior)](https://CRAN.R-project.
 [![R-CMD-check](https://github.com/stan-dev/posterior/workflows/R-CMD-check/badge.svg)](https://github.com/stan-dev/posterior/actions?workflow=R-CMD-check)
 [![Coverage
 Status](https://codecov.io/gh/stan-dev/posterior/branch/master/graph/badge.svg)](https://app.codecov.io/gh/stan-dev/posterior)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.10526/status.svg)](https://doi.org/10.21105/joss.10526)
 <!-- badges: end -->
 
 The **posterior** R package is intended to provide useful tools for both
