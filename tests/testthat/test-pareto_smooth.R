@@ -13,6 +13,18 @@ test_that("pareto_khat handles constant tail correctly", {
 })
 
 
+test_that("pareto_khat handles both tails being constant correctly", {
+
+  # left and right tails are constant, so khat should be NA in all cases
+  x <- c(rep(-100, 10), sort(rnorm(100)), rep(100, 10))
+  
+  expect_true(is.na(pareto_khat(x, tail = "left", ndraws_tail = 10)))
+  expect_true(is.na(pareto_khat(x, tail = "right", ndraws_tail = 10)))
+  expect_true(is.na(pareto_khat(x, tail = "both", ndraws_tail = 10)))
+
+})
+
+
 test_that("pareto_smooth handles non-constant x with constant tail", {
 
   # x is non-constant but the right tail is constant
