@@ -52,6 +52,15 @@
 #'
 #' @export
 rvar_apply <- function(.x, .margin, .f, ...) {
+  .x_orig <- .x
+  if (is_rvar(.x)) {
+    .f_orig <- match.fun(.f)
+    .x <- as.array(.x)
+    .f <- function(x, ...) {
+      .f_orig(rvar_list_to_rvar(x), ...)
+    }
+  }
+
   # this should return a list of rvars
   rvar_list <- apply(.x, .margin, .f, ...)
   if (!is.list(rvar_list) || !all(sapply(rvar_list, is_rvar))) {
@@ -90,7 +99,7 @@ rvar_apply <- function(.x, .margin, .f, ...) {
     }
     # restore marginal dimnames
     marginal_dim_i <- seq_along(marginal_dim)
-    out <- copy_dimnames(.x, .margin, out, marginal_dim_i)
+    out <- copy_dimnames(.x_orig, .margin, out, marginal_dim_i)
   }
 
   out

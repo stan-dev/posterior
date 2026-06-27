@@ -50,11 +50,11 @@ Zhang, J., and Stephens, M. A. (2009). A new and efficient estimation method
 for the generalized Pareto distribution. \emph{Technometrics} \strong{51}, 316-325.
 }
 \seealso{
-Other helper-functions: 
-\code{\link{ps_convergence_rate}()},
-\code{\link{ps_khat_threshold}()},
-\code{\link{ps_min_ss}()},
-\code{\link{ps_tail_length}()}
+Other helper-functions:
+\code{\link[=ps_convergence_rate]{ps_convergence_rate()}},
+\code{\link[=ps_khat_threshold]{ps_khat_threshold()}},
+\code{\link[=ps_min_ss]{ps_min_ss()}},
+\code{\link[=ps_tail_length]{ps_tail_length()}}
 }
 \concept{helper-functions}
 \keyword{internal}

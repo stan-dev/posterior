@@ -259,6 +259,77 @@ test_that("as.vector works", {
   expect_equal(as.vector(x), rvar(array(1:12, dim = c(2, 6))))
 })
 
+test_that("base apply works on multidimensional rvars", {
+  set.seed(3456)
+  x <- rvar_rng(rnorm, 24, mean = 1:24)
+  dim(x) <- c(2, 3, 4)
+  dimnames(x) <- list(
+    a = paste0("a", 1:2),
+    b = paste0("b", 1:3),
+    c = paste0("c", 1:4)
+  )
+
+  out <- apply(x, c(1, 2), length)
+
+  expect_equal(unname(out), array(4L, dim = c(2, 3)))
+  expect_equal(dimnames(out), dimnames(x)[1:2])
+})
+
+test_that("base apply works on 2D rvars with dimnames", {
+  set.seed(3456)
+  x <- rvar_rng(rnorm, 24, mean = 1:24)
+  dim(x) <- c(6, 4)
+  dimnames(x) <- list(row = paste0("r", 1:6), col = paste0("c", 1:4))
+
+  out <- apply(x, 1, length)
+
+  expect_equal(unname(out), rep(4L, 6))
+  expect_equal(names(out), paste0("r", 1:6))
+})
+
+test_that("as.array.rvar preserves multidimensional shape and dimnames", {
+  set.seed(3456)
+  x <- rvar_rng(rnorm, 24, mean = 1:24)
+  dim(x) <- c(2, 3, 4)
+  dimnames(x) <- list(
+    a = paste0("a", 1:2),
+    b = paste0("b", 1:3),
+    c = paste0("c", 1:4)
+  )
+
+  out <- as.array(x)
+
+  expect_equal(dim(out), dim(x))
+  expect_equal(dimnames(out), dimnames(x))
+  expect_true(all(vapply(out, is_rvar, logical(1))))
+})
+
+test_that("as.matrix.rvar preserves 2D rvar shape and dimnames", {
+  set.seed(3456)
+  x <- rvar_rng(rnorm, 24, mean = 1:24)
+  dim(x) <- c(6, 4)
+  dimnames(x) <- list(row = paste0("r", 1:6), col = paste0("c", 1:4))
+
+  out <- as.matrix(x)
+
+  expect_true(is.matrix(out))
+  expect_equal(dim(out), dim(x))
+  expect_equal(dimnames(out), dimnames(x))
+  expect_true(all(vapply(out, is_rvar, logical(1))))
+})
+
+test_that("as.matrix.rvar rejects non-2D rvars", {
+  set.seed(3456)
+  x <- rvar_rng(rnorm, 24, mean = 1:24)
+  dim(x) <- c(2, 3, 4)
+
+  expect_error(
+    as.matrix(x),
+    "Cannot coerce an rvar with 3 dimensions to a matrix",
+    fixed = TRUE
+  )
+})
+
 test_that("as.data.frame and as_tibble work on rvars", {
   x1 = rvar(array(1:9, dim = c(3,3)),
     dimnames = list(A = paste0("a", 1:3))

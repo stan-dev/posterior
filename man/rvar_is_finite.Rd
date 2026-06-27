@@ -46,7 +46,7 @@ rvar_is_na(x)
 implementations of \code{is.finite()}, \code{is.infinite()}, \code{is.nan()}, and \code{is.na()} for
 \code{rvar}s.
 
-Other rvar-summaries: 
+Other rvar-summaries:
 \code{\link{rvar-summaries-over-draws}},
 \code{\link{rvar-summaries-within-draws}}
 }

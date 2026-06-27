@@ -87,6 +87,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Paul-Christian Bürkner \email{paul.buerkner@gmail.com}
   \item Jonah Gabry \email{jgabry@gmail.com}
   \item Matthew Kay \email{mjskay@northwestern.edu}
   \item Aki Vehtari \email{Aki.Vehtari@aalto.fi}

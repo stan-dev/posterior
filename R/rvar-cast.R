@@ -167,6 +167,37 @@ as.list.rvar <- function(x, ...) {
   out
 }
 
+#' @export
+as.array.rvar <- function(x, ...) {
+  out <- as.list(as.vector(x))
+  dim(out) <- dim(x)
+  dimnames(out) <- dimnames(x)
+  out
+}
+
+#' @export
+as.matrix.rvar <- function(x, ...) {
+  if (length(dim(x)) != 2) {
+    stop("Cannot coerce an rvar with ", length(dim(x)), " dimensions to a matrix.")
+  }
+  as.array.rvar(x, ...)
+}
+
+#' Collapse a list of rvars from `as.array.rvar()` back into an rvar
+#' @noRd
+rvar_list_to_rvar <- function(x) {
+  x_dim <- dim(x)
+  x_dimnames <- dimnames(x)
+  x <- do.call(c, unname(as.vector(x)))
+  if (!is.null(x_dim)) {
+    dim(x) <- x_dim
+    if (length(x_dim) > 1) {
+      dimnames(x) <- x_dimnames
+    }
+  }
+  x
+}
+
 #' @importFrom rlang as_label
 #' @export
 as.data.frame.rvar <- function(x, ..., optional = FALSE) {
@@ -184,7 +215,6 @@ as_tibble.rvar <- function(x, ...) {
   value <- x
   as_tibble(as.data.frame(value, optional = FALSE), ...)
 }
-
 
 # vctrs proxy / restore --------------------------------------------------------
 

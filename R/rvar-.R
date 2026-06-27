@@ -201,6 +201,9 @@ new_rvar <- function(x = double(), .nchains = 1L) {
 #' @export
 draws_of <- function(x, with_chains = FALSE) {
   with_chains <- as_one_logical(with_chains)
+  if (!is_rvar(x) && length(x) && is.list(x) && all(sapply(x, is_rvar))) {
+    x <- rvar_list_to_rvar(x)
+  }
   draws <- attr(x, "draws")
 
   if (with_chains) {

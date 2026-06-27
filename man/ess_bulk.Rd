@@ -64,19 +64,19 @@ Aki Vehtari (2021). Comparison of MCMC effective sample size estimators.
 Retrieved from https://avehtari.github.io/rhat_ess/ess_comparison.html
 }
 \seealso{
-Other diagnostics: 
-\code{\link{ess_basic}()},
-\code{\link{ess_quantile}()},
-\code{\link{ess_sd}()},
-\code{\link{ess_tail}()},
-\code{\link{mcse_mean}()},
-\code{\link{mcse_quantile}()},
-\code{\link{mcse_sd}()},
-\code{\link{pareto_diags}()},
-\code{\link{pareto_khat}()},
-\code{\link{rhat}()},
-\code{\link{rhat_basic}()},
-\code{\link{rhat_nested}()},
-\code{\link{rstar}()}
+Other diagnostics:
+\code{\link[=ess_basic]{ess_basic()}},
+\code{\link[=ess_quantile]{ess_quantile()}},
+\code{\link[=ess_sd]{ess_sd()}},
+\code{\link[=ess_tail]{ess_tail()}},
+\code{\link[=mcse_mean]{mcse_mean()}},
+\code{\link[=mcse_quantile]{mcse_quantile()}},
+\code{\link[=mcse_sd]{mcse_sd()}},
+\code{\link[=pareto_diags]{pareto_diags()}},
+\code{\link[=pareto_khat]{pareto_khat()}},
+\code{\link[=rhat]{rhat()}},
+\code{\link[=rhat_basic]{rhat_basic()}},
+\code{\link[=rhat_nested]{rhat_nested()}},
+\code{\link[=rstar]{rstar()}}
 }
 \concept{diagnostics}

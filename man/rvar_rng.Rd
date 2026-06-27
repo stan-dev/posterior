@@ -61,8 +61,8 @@ x
 
 }
 \seealso{
-Other rfun: 
-\code{\link{rdo}()},
-\code{\link{rfun}()}
+Other rfun:
+\code{\link[=rdo]{rdo()}},
+\code{\link[=rfun]{rfun()}}
 }
 \concept{rfun}
