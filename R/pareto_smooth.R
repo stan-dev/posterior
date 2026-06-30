@@ -449,7 +449,6 @@ pareto_convergence_rate.rvar <- function(x, ...) {
   ps_convergence_rate(k, ndraws(x))
 }
 
-
 #' Pareto smooth tail
 #' function to Pareto smooth the tail of a vector. Exported
 #' for usage in other packages, not by users.
@@ -481,14 +480,6 @@ ps_tail <- function(x,
                     ...
                     ) {
 
-  if (ndraws_tail < 5) {
-    warning_no_call(
-      "Can't fit generalized Pareto distribution ",
-      "because ndraws_tail is less than 5."
-    )
-    return(list(x = x, k = NA))
-  }
-
   if (are_log_weights) {
     # shift log values for safe exponentiation
     x <- x - max(x)
@@ -518,38 +509,96 @@ ps_tail <- function(x,
     cutoff <- cutoff - .Machine$double.eps
   }
 
-  max_tail <- max(draws_tail)
-
   if (are_log_weights) {
-    draws_tail <- exp(draws_tail)
-    cutoff <- exp(cutoff)
-  }
-  fit <- gpdfit(draws_tail - cutoff, sort_x = FALSE, ...)
-  k <- fit$k
-  sigma <- fit$sigma
-  if (is.finite(k) && smooth_draws) {
-    p <- (seq_len(ndraws_tail) - 0.5) / ndraws_tail
-    smoothed <- qgeneralized_pareto(p = p, mu = cutoff, k = k, sigma = sigma)
-    if (are_log_weights) {
-      smoothed <- log(smoothed)
-    }
+    smoothed <- .ps_tail_sorted(
+      x = exp(draws_tail),
+      cutoff = exp(cutoff),
+      smooth_draws = smooth_draws,
+      ...
+    )
+    smoothed$tail <- log(smoothed$tail)
   } else {
-    smoothed <- NULL
+    smoothed <- .ps_tail_sorted(
+      x = draws_tail,
+      cutoff = cutoff,
+      smooth_draws = smooth_draws,
+      ...
+    )
   }
 
-  # truncate at max of raw draws
-  if (!is.null(smoothed)) {
-    smoothed[smoothed > max_tail] <- max_tail
-    x[ord$ix[tail_ids]] <- smoothed
+  k <- smoothed$k
+
+  if (is.finite(k) && smooth_draws) {
+    x[ord$ix[tail_ids]] <- smoothed$tail
   }
 
   if (tail == "left") {
     x <- -x
   }
 
-  out <- list(x = x, k = k)
+  list(x = x, k = k)
+}
 
-  return(out)
+#' Pareto smooth sorted tail of log ratios
+#'
+#' Function to Pareto smooth a sorted tail of log ratios. Exported
+#' for usage in other packages, not by users.
+#'
+#' @param x Vector of tail elements already sorted in ascending order. Already shifted to account for overflow.
+#' @param cutoff Largest value smaller than the tail values.
+#' @inheritParams ps_tail
+#' @seealso [`ps_tail`] for the general tail smoothing function.
+#'
+#' @export
+ps_tail_sorted_log_ratios <- function(x, cutoff, smooth_draws = TRUE, ...) {
+  if (is_constant(x)) {
+    return(list(tail = x, k = NA))
+  }
+
+  smoothed <- .ps_tail_sorted(
+    x = exp(x),
+    cutoff = exp(cutoff),
+    smooth_draws = smooth_draws,
+    ...
+  )
+
+  smoothed$tail <- log(smoothed$tail)
+
+  smoothed
+}
+
+#' Pareto smooth sorted tail
+#'
+#' Internal function to Pareto smooth a sorted tail.
+#'
+#' @param x Vector of tail elements already sorted in ascending order.
+#' @param cutoff Largest value smaller than the tail values.
+#' @param smooth_draws Should the tail values be smoothed?
+#' @param ... Passed to [gpdfit()].
+#'
+#' @noRd
+.ps_tail_sorted <- function(x, cutoff, smooth_draws = TRUE, ...) {
+  len <- length(x)
+
+  fit <- gpdfit(x - cutoff, sort_x = FALSE, ...)
+  k <- fit$k
+  sigma <- fit$sigma
+
+  if (is.finite(k) && smooth_draws) {
+    tail <- qgeneralized_pareto(
+      p = (seq_len(len) - 0.5) / len,
+      mu = cutoff,
+      k = k,
+      sigma = sigma
+    )
+  } else {
+    tail <- x
+  }
+
+  # truncate at max of raw draws
+  tail[tail > max(x)] <- max(x)
+
+  list(tail = tail, k = k)
 }
 
 #' Extra Pareto-k diagnostics
