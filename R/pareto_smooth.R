@@ -345,7 +345,11 @@ pareto_smooth.default <- function(x,
     )
     right_k <- smoothed$k
 
-    k <- max(left_k, right_k, na.rm = TRUE)
+    if (is.na(left_k) && is.na(right_k)) {
+      k <- NA
+    } else {
+      k <- max(left_k, right_k, na.rm = TRUE)
+    }
     x <- smoothed$x
 
   } else {
