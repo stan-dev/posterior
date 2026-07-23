@@ -44,10 +44,10 @@ The posterior R package ([https://mc-stan.org/posterior](https://mc-stan.org/pos
 
 (a\) Efficiently convert between many different useful formats of draws.
 Existing packages for storing posterior draws, most notably `coda` [@coda],
-support only a single format. However, in practice, different analyses and
-workflows require different formats. For example, when MCMC chain information is
-required, say, for convergence diagnostics, storing chains in an extra dimension
-is beneficial. In contrast, once convergence has been established, chain
+support only a limited set of formats. However, in practice, different 
+analyses and workflows require different formats. For example, when MCMC chain 
+information is required, say, for convergence diagnostics, storing chains in 
+an extra dimension is beneficial. In contrast, once convergence has been established, chain
 information becomes irrelevant and so dropping this information simplifies any
 subsequent operations. To accommodate users' and developers' practical needs,
 `posterior` natively supports several formats, with the ability to seamlessly
@@ -114,13 +114,13 @@ The `posterior` package is part of the Stan ecosystem of packages
 integrated into the post-processing methods of widely-used Stan-based packages
 such as `brms` [@brms1], `rstanarm` [@rstanarm], and `cmdstanr` [@cmdstanr],
 among others. These packages have together been cited well over 10,000 times
-(according to Google Scholar) since they started to use `posterior` for handling
+(according to Google Scholar; 2026/06/25) since they started to use `posterior` for handling
 posterior draws. Although it is not cited directly in most of these
 applications, `posterior` is sure to have been used in almost all of them for
 posterior summaries and convergence diagnostics, which are essential within the
 Bayesian workflow [@gelman_workflow_2020]. `posterior` itself has been cited
-directly over 100 times (according to GoogleScholar) by methods, software, and
-application papers alike.
+directly over 100 times (according to Google Scholar; 2026/06/25) 
+by methods, software, and application papers alike.
 
 Despite its close connection to Stan, its modules and methods are generic and
 thus compatible with essentially all implementations of sampling algorithms
