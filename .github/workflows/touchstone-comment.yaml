@@ -1,21 +1,46 @@
 name: Continuous Benchmarks (Comment)
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref }}
+  group: ${{ github.workflow }}-${{ github.run_id }}
   cancel-in-progress: true
 
 on:
   workflow_run:
     workflows: ["Continuous Benchmarks (Receive)"]
-    types:
-      - completed
+    types: [completed]
 
 jobs:
-  upload:
+  comment:
     runs-on: ubuntu-latest
-    if: >
-      ${{ github.event.workflow_run.event == 'pull_request' }}
+    permissions:
+      actions: read
+      pull-requests: write
+    if: ${{ github.event.workflow_run.event == 'pull_request' }}
     steps:
-      - uses: lorenzwalthert/touchstone/actions/comment@main
-        with: 
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Download Touchstone artifact
+        id: download
+        uses: actions/download-artifact@v8
+        with:
+          name: pr
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      # defensive since issues could cause commenting in random places
+      - name: Read PR number
+        id: pr
+        shell: bash
+        run: |
+          number="$(tr -cd '0-9' < ./NR)"
+          test -n "$number"
+          echo "number=$number" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update sticky PR comment
+        id: comment
+        uses: marocchino/sticky-pull-request-comment@v3
+        with:
+          GITHUB_TOKEN: ${{ github.token }}
+          number_force: ${{ steps.pr.outputs.number }}
+          header: touchstone
+          path: ./info.txt
+          skip_unchanged: true
