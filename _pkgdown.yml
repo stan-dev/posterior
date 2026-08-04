@@ -10,48 +10,31 @@ template:
 
 navbar:
   title: "posterior"
-  left:
-    - icon: fa-home fa-lg
-      href: index.html
-    - text: "Vignettes"
-      href: articles/index.html
-    - text: "Functions"
-      href: reference/index.html
-    - text: "News"
-      href: news/index.html
-    - text: "Other Packages"
+
+  structure:
+    left: [home, vignettes, functions, news, pkgs, stan]
+    right: [search, bluesky, forum, github, lightswitch]
+
+  components:
+    pkgs:
+      text: Other Packages
       menu:
-        - text: "rstan"
-          href: https://mc-stan.org/rstan
-        - text: "cmdstanr"
-          href: https://mc-stan.org/cmdstanr
-        - text: "rstanarm"
-          href: https://mc-stan.org/rstanarm
-        - text: "bayesplot"
+        - text: bayesplot
           href: https://mc-stan.org/bayesplot
-        - text: "shinystan"
-          href: https://mc-stan.org/shinystan
-        - text: "loo"
+        - text: cmdstanr
+          href: https://mc-stan.org/cmdstanr
+        - text: loo
           href: https://mc-stan.org/loo
-        - text: "projpred"
+        - text: projpred
           href: https://mc-stan.org/projpred
-        - text: "rstantools"
+        - text: rstan
+          href: https://mc-stan.org/rstan
+        - text: rstanarm
+          href: https://mc-stan.org/rstanarm
+        - text: rstantools
           href: https://mc-stan.org/rstantools
-    - text: "Stan"
-      href: https://mc-stan.org
-  right:
-   - icon: fa-twitter
-     href: https://twitter.com/mcmc_stan
-   - icon: fa-github
-     href: https://github.com/stan-dev/posterior
-   - icon: fa-users
-     href: https://discourse.mc-stan.org/
-
-home:
-  links:
-  - text: Ask a question
-    href: https://discourse.mc-stan.org/
-
+        - text: shinystan
+          href: https://mc-stan.org/shinystan
 
 articles:
   - title: "Getting started"
