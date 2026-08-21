@@ -2,7 +2,7 @@
 set.seed(123)
 
 test_that("uniformity_test returns list with pvalue and pointwise", {
-  pit <- runif(20)
+  pit <- runif(100)
   for (test in c("POT", "PIET", "PRIT")) {
     res <- posterior:::uniformity_test(pit, test)
     expect_type(res, "list")
