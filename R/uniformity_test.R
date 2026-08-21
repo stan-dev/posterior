@@ -166,12 +166,16 @@ uniformity_test <- function(pit, test, truncate = NULL) {
 .prit_test <- function(x) {
   n <- length(x)
   scaled_ecdf <- n * ecdf(x)(x)
-  probs1 <- pbinom(scaled_ecdf - 1, n, x)
-  probs2 <- pbinom(scaled_ecdf, n, x)
-  p_values <- 2 * pmin(1 - probs1, probs2)
 
+  p_exact <- dbinom(scaled_ecdf,n,x)
+  probs1 <- pbinom(scaled_ecdf, n, x)-0.5*p_exact
+  probs2 <- 1-probs1
+  
+  p_values <- 2 * pmin(probs1, probs2)
+  
   return(p_values)
 }
+
 
 #' Truncated Cauchy combination test
 #'
@@ -185,9 +189,8 @@ uniformity_test <- function(pit, test, truncate = NULL) {
 #' @return p-value of the Cauchy combination method.
 #' @noRd
 .cauchy_combination_test <- function(x, truncate = NULL) {
-  if (truncate) {
-    mask <- as.numeric(x<0.5) 
-    1 - pcauchy(mean(-qcauchy(x)*mask)) 
+  if (truncate){
+    1 - pcauchy( mean(ifelse(x < 0.5,-qcauchy(x), 0.0)) ) 
   } else {
     1 - pcauchy(mean(-qcauchy(x)))
   }
@@ -203,3 +206,4 @@ uniformity_test <- function(pit, test, truncate = NULL) {
 .compute_cauchy <- function(x) {
   tan((0.5 - x) * pi)
 }
+
