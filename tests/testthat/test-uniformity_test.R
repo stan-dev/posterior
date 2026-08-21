@@ -2,7 +2,7 @@
 set.seed(123)
 
 test_that("uniformity_test returns list with pvalue and pointwise", {
-  pit <- runif(20)
+  pit <- runif(100)
   for (test in c("POT", "PIET", "PRIT")) {
     res <- posterior:::uniformity_test(pit, test)
     expect_type(res, "list")
@@ -36,6 +36,20 @@ test_that("uniformity_test errors on invalid test", {
   pit <- runif(5)
   expect_error(posterior:::uniformity_test(pit, "INVALID"),
                "`test` must be one of")
+})
+
+
+test_that("uniformity_test is calibrated", {
+  for (test in c("POT", "PIET", "PRIT")) {
+     for( alpha in c( 0.01, 0.02) ){
+    pvals <- replicate(10000, {
+    x <- runif(200)   # generate under H0
+    uniformity_test(x, test)$pvalue })
+    res <- mean(pvals<alpha)
+
+    expect_equal(res, alpha, tolerance =1e-2 )
+     }
+    }
 })
 
 
@@ -113,12 +127,12 @@ test_that("pot_test handles NAs", {
 test_that("prit_test computes correct p-values", {
   # Let n = 2, x = c(0.5, 0.5)
   # scaled_ecdf = 2 * c(1, 1) = c(2, 2)
-  # probs1 = pbinom(1, 2, 0.5) = 0.75
-  # probs2 = pbinom(2, 2, 0.5) = 1.00
-  # p_val = 2 * min(1 - 0.75, 1.00) = 2 * 0.25 = 0.5
+  # probs1 = pbinom(2, 2, 0.5)-0.5*dbinom(2,2,0.5) = 0.875
+  # probs2 =1-probs1 = 0.125
+  # p_val = 2 * min(0.875, 0.125) = 2 * 0.125 = 0.25
 
   x <- c(0.5, 0.5)
-  expect_equal(.prit_test(x), c(0.5, 0.5))
+  expect_equal(.prit_test(x), c(0.25, 0.25))
 })
 
 # Test for computation of Shapley values -------------------------------------
@@ -193,7 +207,7 @@ test_that("cauchy_combination_test handles boundary values", {
   # TODO: if 1 included in vector, CCT will always evaluate to 0
   # as the mean evaluates to Inf and 1 - cdf(Inf) = 1 - 1 = 0
   x2 <- c(0, 0.3, 0.4, 1)
-  expect_equal(.cauchy_combination_test(x2, truncate = TRUE), 1 - pcauchy(mean(-qcauchy(x2)*(x2<0.5))) )
+  expect_equal(.cauchy_combination_test(x2, truncate = TRUE), 1 - pcauchy(mean(ifelse(x2<0.5,-qcauchy(x2),0))) )
   
 })
 
