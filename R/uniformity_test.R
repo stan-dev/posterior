@@ -188,8 +188,8 @@ uniformity_test <- function(pit, test, truncate = NULL) {
 #' @return p-value of the Cauchy combination method.
 #' @noRd
 .cauchy_combination_test <- function(x, truncate = NULL) {
-  if (truncate){
-    1 - pcauchy( mean(ifelse(x < 0.5,-qcauchy(x), 0.0)) ) 
+  if (truncate) {
+    1 - pcauchy(mean(ifelse(x < 0.5, -qcauchy(x), 0.0))) 
   } else {
     1 - pcauchy(mean(-qcauchy(x)))
   }
