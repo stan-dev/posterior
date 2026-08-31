@@ -167,9 +167,9 @@ uniformity_test <- function(pit, test, truncate = NULL) {
   n <- length(x)
   scaled_ecdf <- n * ecdf(x)(x)
 
-  p_exact <- dbinom(scaled_ecdf,n,x)
-  probs1 <- pbinom(scaled_ecdf, n, x)-0.5*p_exact
-  probs2 <- 1-probs1
+  p_exact <- dbinom(scaled_ecdf, n, x)
+  probs1 <- pbinom(scaled_ecdf, n, x) - 0.5 * p_exact
+  probs2 <- 1 - probs1
   
   p_values <- 2 * pmin(probs1, probs2)
   
