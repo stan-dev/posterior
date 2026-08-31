@@ -176,7 +176,6 @@ uniformity_test <- function(pit, test, truncate = NULL) {
   return(p_values)
 }
 
-
 #' Truncated Cauchy combination test
 #'
 #' Combines dependent p-values using the Cauchy combination method.
