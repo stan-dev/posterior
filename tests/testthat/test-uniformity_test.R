@@ -189,7 +189,7 @@ test_that("cauchy_combination_test handles truncate = TRUE", {
 
   x <- c(0.1, 0.2, 0.3, 0.4, 0.7, 0.8)
   result <- .cauchy_combination_test(x, truncate = TRUE)
-  expected <- 1 - pcauchy(mean(-qcauchy(x)*(x<0.5)))
+  expected <- 1 - pcauchy(mean(-qcauchy(x) * (x < 0.5)))
 
   expect_equal(result, expected, tolerance = 1e-10)
   expect_true(is.finite(result))
