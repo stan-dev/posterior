@@ -1,3 +1,10 @@
+# posterior (development)
+
+### Bug Fixes
+
+* Fix truncation operation for `uniformity_test()` (#462)
+* Add additional unit tests for `uniformity_test()` 
+
 # posterior 1.7.1
 
 * Minor release to accommodate the JOSS paper.
