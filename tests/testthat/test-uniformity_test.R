@@ -206,8 +206,10 @@ test_that("cauchy_combination_test handles boundary values", {
   # TODO: if 1 included in vector, CCT will always evaluate to 0
   # as the mean evaluates to Inf and 1 - cdf(Inf) = 1 - 1 = 0
   x2 <- c(0, 0.3, 0.4, 1)
-  expect_equal(.cauchy_combination_test(x2, truncate = TRUE), 1 - pcauchy(mean(ifelse(x2<0.5,-qcauchy(x2),0))) )
-  
+  expect_equal(
+    .cauchy_combination_test(x2, truncate = TRUE),
+    1 - pcauchy(mean(ifelse(x2 < 0.5, -qcauchy(x2), 0)))
+  )
 })
 
 # Test for compute_cauchy -----------------------------------------------------
