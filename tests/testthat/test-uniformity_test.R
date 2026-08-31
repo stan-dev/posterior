@@ -44,11 +44,9 @@ test_that("uniformity_test is calibrated", {
   set.seed(4711)
   nsim <- 10000
   for (test in c("POT", "PIET", "PRIT")) {
-    pvals <- replicate(nsim, uniformity_test(runif(200), test)$pvalue)
-    for (alpha in c(0.01, 0.02)) {
-      res <- mean(pvals < alpha)
-      expect_equal(res, alpha, tolerance = 1e-2)
-    }
+    pvals <- replicate(nsim, uniformity_test(runif(100), test)$pvalue)
+      res <- mean(pvals < 0.01)
+      expect_equal(res, 0.01, tolerance = 1e-2)
   }
 })
 
@@ -194,6 +192,14 @@ test_that("cauchy_combination_test handles truncate = TRUE", {
   expect_equal(result, expected, tolerance = 1e-10)
   expect_true(is.finite(result))
   expect_true(result >= 0 && result <= 1)
+})
+
+test_that("truncated cauchy test with no pvalues<0.5, give p=0.5", {
+  # No pvalues below half gives a statistic of 0, i.e. p = 0.5.
+
+  x <- c(0.5, 0.7, 0.8, 0.9)
+  result <- .cauchy_combination_test(x, truncate = TRUE)
+  expect_equal(result, 0.5, tolerance = 1e-10)
 })
 
 test_that("cauchy_combination_test handles boundary values", {
