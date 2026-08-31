@@ -224,3 +224,4 @@ test_that("compute_cauchy computes correct transformations", {
   # For x = 0.75: tan((0.5 - 0.75) * pi) = tan(-0.25 * pi) = -1
   expect_equal(.compute_cauchy(0.75), -1, tolerance = 1e-10)
 })
+
