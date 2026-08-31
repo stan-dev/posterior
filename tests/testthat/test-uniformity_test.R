@@ -40,16 +40,16 @@ test_that("uniformity_test errors on invalid test", {
 
 
 test_that("uniformity_test is calibrated", {
+  skip_on_cran()
+  set.seed(4711)
+  nsim <- 10000
   for (test in c("POT", "PIET", "PRIT")) {
-     for( alpha in c( 0.01, 0.02) ){
-    pvals <- replicate(10000, {
-    x <- runif(200)   # generate under H0
-    uniformity_test(x, test)$pvalue })
-    res <- mean(pvals<alpha)
-
-    expect_equal(res, alpha, tolerance =1e-2 )
-     }
+    pvals <- replicate(nsim, uniformity_test(runif(200), test)$pvalue)
+    for (alpha in c(0.01, 0.02)) {
+      res <- mean(pvals < alpha)
+      expect_equal(res, alpha, tolerance = 1e-2)
     }
+  }
 })
 
 
