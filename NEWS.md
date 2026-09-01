@@ -3,6 +3,7 @@
 ### Bug Fixes
 
 * Fix truncation operation for `uniformity_test()` (#462)
+* mid-p value adjusment for discrete `PRIT` test method  
 * Add additional unit tests for `uniformity_test()` 
 
 # posterior 1.7.1

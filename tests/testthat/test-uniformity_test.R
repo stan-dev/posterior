@@ -38,16 +38,27 @@ test_that("uniformity_test errors on invalid test", {
                "`test` must be one of")
 })
 
-
-test_that("uniformity_test is calibrated", {
+# Tests for calibration of uniformity_test (for small alpha (0, 0.03)) ------------
+test_that("POT & PRIT are calibrated for continuous pit values", {
   skip_on_cran()
   set.seed(4711)
-  nsim <- 10000
-  for (test in c("POT", "PIET", "PRIT")) {
+  nsim <- 1000
+  for (test in c("POT", "PIET")) {
     pvals <- replicate(nsim, uniformity_test(runif(100), test)$pvalue)
       res <- mean(pvals < 0.01)
       expect_equal(res, 0.01, tolerance = 1e-2)
   }
+})
+
+test_that("PRIT is calibrated for discrete pit values", {
+  skip_on_cran()
+  set.seed(4711)
+  nsim <- 1000
+
+  draw_pit <- function() pbinom(rbinom(100, 5, 0.5), 5, 0.5)
+  pvals <- replicate(nsim, uniformity_test(draw_pit(), "PRIT")$pvalue)
+  res <- mean(pvals < 0.01)
+  expect_equal(res, 0.01, tolerance = 1e-2)
 })
 
 # Tests for the dependence-aware uniformity tests ------------------------------
@@ -130,6 +141,24 @@ test_that("prit_test computes correct p-values", {
 
   x <- c(0.5, 0.5)
   expect_equal(.prit_test(x), c(0.25, 0.25))
+})
+
+test_that("prit_test gives equal p-values to tied PIT values", {
+  # Let n = 4, x = c(0.25, 0.25, 0.75, 0.75)
+  # scaled_ecdf = 4 * c(0.5, 0.5, 1, 1) = c(2, 2, 4, 4)
+  # For x = 0.25: pbinom(2, 4, 0.25) = 0.94921875
+  #               dbinom(2, 4, 0.25) = 0.2109375
+  #               probs1 = 0.94921875 - 0.10546875 = 0.84375
+  #               p_val = 2 * (1 - 0.84375) = 0.3125
+  # For x = 0.75: pbinom(4, 4, 0.75) = 1
+  #               dbinom(4, 4, 0.75) = 0.31640625
+  #               probs1 = 1 - 0.158203125 = 0.841796875
+  #               p_val = 2 * 0.158203125 = 0.31640625
+
+  x <- c(0.25, 0.25, 0.75, 0.75)
+  expected <- c(0.3125, 0.3125, 0.31640625, 0.31640625)
+
+  expect_equal(.prit_test(x), expected, tolerance = 1e-10)
 })
 
 # Test for computation of Shapley values -------------------------------------
