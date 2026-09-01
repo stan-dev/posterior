@@ -2,7 +2,7 @@
 set.seed(123)
 
 test_that("uniformity_test returns list with pvalue and pointwise", {
-  pit <- runif(20)
+  pit <- runif(100)
   for (test in c("POT", "PIET", "PRIT")) {
     res <- posterior:::uniformity_test(pit, test)
     expect_type(res, "list")
@@ -38,15 +38,27 @@ test_that("uniformity_test errors on invalid test", {
                "`test` must be one of")
 })
 
-test_that("uniformity_test works with custom truncation", {
-  testthat::expect_error(
-    uniformity_test(pit = c(0.8, 0.5, 0.3, 0.1), test = "POT")
-  )
+# Tests for calibration of uniformity_test (for small alpha (0, 0.03)) ------------
+test_that("POT & PRIT are calibrated for continuous pit values", {
+  skip_on_cran()
+  set.seed(4711)
+  nsim <- 1000
+  for (test in c("POT", "PIET")) {
+    pvals <- replicate(nsim, uniformity_test(runif(100), test)$pvalue)
+      res <- mean(pvals < 0.01)
+      expect_equal(res, 0.01, tolerance = 1e-2)
+  }
+})
 
-  testthat::expect_no_error(
-    uniformity_test(pit = c(0.8, 0.5, 0.3, 0.1), test = "POT",
-    truncate = FALSE)
-  )
+test_that("PRIT is calibrated for discrete pit values", {
+  skip_on_cran()
+  set.seed(4711)
+  nsim <- 1000
+
+  draw_pit <- function() pbinom(rbinom(100, 5, 0.5), 5, 0.5)
+  pvals <- replicate(nsim, uniformity_test(draw_pit(), "PRIT")$pvalue)
+  res <- mean(pvals < 0.01)
+  expect_equal(res, 0.01, tolerance = 1e-2)
 })
 
 # Tests for the dependence-aware uniformity tests ------------------------------
@@ -123,12 +135,30 @@ test_that("pot_test handles NAs", {
 test_that("prit_test computes correct p-values", {
   # Let n = 2, x = c(0.5, 0.5)
   # scaled_ecdf = 2 * c(1, 1) = c(2, 2)
-  # probs1 = pbinom(1, 2, 0.5) = 0.75
-  # probs2 = pbinom(2, 2, 0.5) = 1.00
-  # p_val = 2 * min(1 - 0.75, 1.00) = 2 * 0.25 = 0.5
+  # probs1 = pbinom(2, 2, 0.5)-0.5*dbinom(2,2,0.5) = 0.875
+  # probs2 =1-probs1 = 0.125
+  # p_val = 2 * min(0.875, 0.125) = 2 * 0.125 = 0.25
 
   x <- c(0.5, 0.5)
-  expect_equal(.prit_test(x), c(0.5, 0.5))
+  expect_equal(.prit_test(x), c(0.25, 0.25))
+})
+
+test_that("prit_test gives equal p-values to tied PIT values", {
+  # Let n = 4, x = c(0.25, 0.25, 0.75, 0.75)
+  # scaled_ecdf = 4 * c(0.5, 0.5, 1, 1) = c(2, 2, 4, 4)
+  # For x = 0.25: pbinom(2, 4, 0.25) = 0.94921875
+  #               dbinom(2, 4, 0.25) = 0.2109375
+  #               probs1 = 0.94921875 - 0.10546875 = 0.84375
+  #               p_val = 2 * (1 - 0.84375) = 0.3125
+  # For x = 0.75: pbinom(4, 4, 0.75) = 1
+  #               dbinom(4, 4, 0.75) = 0.31640625
+  #               probs1 = 1 - 0.158203125 = 0.841796875
+  #               p_val = 2 * 0.158203125 = 0.31640625
+
+  x <- c(0.25, 0.25, 0.75, 0.75)
+  expected <- c(0.3125, 0.3125, 0.31640625, 0.31640625)
+
+  expect_equal(.prit_test(x), expected, tolerance = 1e-10)
 })
 
 # Test for computation of Shapley values -------------------------------------
@@ -186,11 +216,19 @@ test_that("cauchy_combination_test handles truncate = TRUE", {
 
   x <- c(0.1, 0.2, 0.3, 0.4, 0.7, 0.8)
   result <- .cauchy_combination_test(x, truncate = TRUE)
-  expected <- 1 - pcauchy(mean(-qcauchy(c(0.1, 0.2, 0.3, 0.4))))
+  expected <- 1 - pcauchy(mean(-qcauchy(x) * (x < 0.5)))
 
   expect_equal(result, expected, tolerance = 1e-10)
   expect_true(is.finite(result))
   expect_true(result >= 0 && result <= 1)
+})
+
+test_that("truncated cauchy test with no pvalues<0.5, give p=0.5", {
+  # No pvalues below half gives a statistic of 0, i.e. p = 0.5.
+
+  x <- c(0.5, 0.7, 0.8, 0.9)
+  result <- .cauchy_combination_test(x, truncate = TRUE)
+  expect_equal(result, 0.5, tolerance = 1e-10)
 })
 
 test_that("cauchy_combination_test handles boundary values", {
@@ -202,7 +240,11 @@ test_that("cauchy_combination_test handles boundary values", {
   expect_true(is.nan(.cauchy_combination_test(c(0, 1), truncate = FALSE)))
   # TODO: if 1 included in vector, CCT will always evaluate to 0
   # as the mean evaluates to Inf and 1 - cdf(Inf) = 1 - 1 = 0
-  expect_equal(.cauchy_combination_test(c(0, 0.3, 0.4, 1), truncate = TRUE), 0)
+  x2 <- c(0, 0.3, 0.4, 1)
+  expect_equal(
+    .cauchy_combination_test(x2, truncate = TRUE),
+    1 - pcauchy(mean(ifelse(x2 < 0.5, -qcauchy(x2), 0)))
+  )
 })
 
 # Test for compute_cauchy -----------------------------------------------------
@@ -217,3 +259,4 @@ test_that("compute_cauchy computes correct transformations", {
   # For x = 0.75: tan((0.5 - 0.75) * pi) = tan(-0.25 * pi) = -1
   expect_equal(.compute_cauchy(0.75), -1, tolerance = 1e-10)
 })
+
