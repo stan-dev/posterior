@@ -261,6 +261,15 @@ test_that("pareto_smooth works for log_weights", {
 
 })
 
+test_that("exp_x_minus_exp_y is stable for nearby values", {
+  cutoff <- -30
+  x <- cutoff + 1e-14
+
+  expect_equal(exp_x_minus_exp_y(x, cutoff), 9.973486536736925e-28)
+  expect_equal(exp_x_minus_exp_y(0, -1000), 1)
+})
+
+
 test_that("check ps_tail behavior for ndraws_tail less than 5", {
   w <- c(1:25, 1e3, 1e3, 1e3)
   lw <- log(w)

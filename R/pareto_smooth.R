@@ -454,6 +454,11 @@ pareto_convergence_rate.rvar <- function(x, ...) {
 }
 
 
+exp_x_minus_exp_y <- function(x, y) {
+  -exp(x) * expm1(y - x)
+}
+
+
 #' Pareto smooth tail
 #' function to Pareto smooth the tail of a vector. Exported
 #' for usage in other packages, not by users.
@@ -525,10 +530,12 @@ ps_tail <- function(x,
   max_tail <- max(draws_tail)
 
   if (are_log_weights) {
-    draws_tail <- exp(draws_tail)
+    tail_excesses <- exp_x_minus_exp_y(draws_tail, cutoff)
     cutoff <- exp(cutoff)
+  } else {
+    tail_excesses <- draws_tail - cutoff
   }
-  fit <- gpdfit(draws_tail - cutoff, sort_x = FALSE, ...)
+  fit <- gpdfit(tail_excesses, sort_x = FALSE, ...)
   k <- fit$k
   sigma <- fit$sigma
   if (is.finite(k) && smooth_draws) {
