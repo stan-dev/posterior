@@ -42,6 +42,9 @@ test_that("qgeneralized_pareto handles log.p = TRUE", {
   result <- qgeneralized_pareto(p, mu = 0, sigma = 1, k = 0.2)
   result_log <- qgeneralized_pareto(log(p), mu = 0, sigma = 1, k = 0.2, log.p = TRUE)
   expect_equal(result, result_log)
+
+  result_upper <- qgeneralized_pareto(-100, k = 0.2, lower.tail = FALSE, log.p = TRUE)
+  expect_equal(result_upper, expm1(20) / 0.2)
 })
 
 test_that("qgeneralized_pareto returns NaN for invalid sigma", {
@@ -117,6 +120,8 @@ test_that("pgeneralized_pareto handles lower.tail = FALSE", {
   result_lower <- pgeneralized_pareto(q, mu = 0, sigma = 1, k = 0.2)
   result_upper <- pgeneralized_pareto(q, mu = 0, sigma = 1, k = 0.2, lower.tail = FALSE)
   expect_equal(result_lower + result_upper, rep(1, 3))
+  expect_equal(pgeneralized_pareto(100, k = 0, lower.tail = FALSE), exp(-100))
+  expect_equal(pgeneralized_pareto(100, k = 0, lower.tail = FALSE, log.p = TRUE), -100)
 })
 
 test_that("pgeneralized_pareto handles log.p = TRUE", {

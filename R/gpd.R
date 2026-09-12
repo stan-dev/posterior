@@ -20,15 +20,14 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
     return(rep(NaN, length(p)))
   }
   if (log.p) {
-    p <- exp(p)
-  }
-  if (!lower.tail) {
-    p <- 1 - p
+    log_survival <- if (lower.tail) log(-expm1(p)) else p
+  } else {
+    log_survival <- if (lower.tail) log1p(-p) else log(p)
   }
   if (k == 0) {
-    q <-  mu - sigma * log1p(-p)
+    q <- mu - sigma * log_survival
   } else {
-    q <- mu + sigma * expm1(-k * log1p(-p)) / k
+    q <- mu + sigma * expm1(-k * log_survival) / k
   }
   q
 }
@@ -57,18 +56,16 @@ pgeneralized_pareto <- function(q, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
   z <- (q - mu) / sigma
   if (abs(k) < 1e-15) {
     # for very small values of indistinguishable in floating point accuracy from the case k=0
-    p <- -expm1(-z)
+    log_survival <- -z
   } else {
     # pmax handles values outside the support
-    p <- -expm1(log1p(pmax(k * z, -1)) / -k)
+    log_survival <- log1p(pmax(k * z, -1)) / -k
   }
-  # force to [0, 1] for values outside the support
-  p <- pmin(pmax(p, 0), 1)
-  if (!lower.tail) {
-    p <- 1 - p
-  }
-  if (log.p) {
-    p <- log(p)
+  log_survival <- pmin(log_survival, 0)
+  if (lower.tail) {
+    p <- if (log.p) log(-expm1(log_survival)) else -expm1(log_survival)
+  } else {
+    p <- if (log.p) log_survival else exp(log_survival)
   }
   p
 }
