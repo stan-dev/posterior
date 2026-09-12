@@ -294,3 +294,18 @@ test_that("check ps_min_ss behavior special cases", {
   # k < 1
   expect_equal(ps_min_ss(0.5), 10^(1 / (1 - max(0, 0.5))))
 })
+
+
+test_that("ps_convergence_rate is stable at transition points", {
+  n <- 10
+  half_limit <- n / (n - 1) - 1 / log(n)
+
+  expect_equal(ps_convergence_rate(0, n), 1)
+  expect_equal(ps_convergence_rate(0.5, n), half_limit)
+  expect_equal(ps_convergence_rate(0.5 + .Machine$double.eps / 2, n), half_limit)
+  expect_equal(
+    ps_convergence_rate(1 - .Machine$double.eps / 2, n),
+    1.8359566012903116e-16
+  )
+  expect_equal(ps_convergence_rate(1, n), 0)
+})
