@@ -24,6 +24,8 @@ test_that("c works on rvar", {
   expect_equal(vctrs::vec_c(5, x), rvar(array(c(5, 5, 5, 1:9), dim = c(3,4))))
   expect_equal(c(x, 5L), rvar(array(c(1:9, 5, 5, 5), dim = c(3,4))))
   expect_equal(vctrs::vec_c(5L, x), rvar(array(c(5, 5, 5, 1:9), dim = c(3,4))))
+  expect_equal(c(x, 5i), rvar(array(c(1:9, 5i, 5i, 5i), dim = c(3,4))))
+  expect_equal(vctrs::vec_c(5i, x), rvar(array(c(5i, 5i, 5i, 1:9), dim = c(3,4))))
 
   expect_equal(c(x == 1, TRUE), rvar(array(c(1:9 == 1, TRUE, TRUE, TRUE), dim = c(3,4))))
   expect_equal(vctrs::vec_c(TRUE, x == TRUE), rvar(array(c(TRUE, TRUE, TRUE, 1:9 == 1), dim = c(3,4))))
