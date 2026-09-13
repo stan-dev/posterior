@@ -454,11 +454,6 @@ pareto_convergence_rate.rvar <- function(x, ...) {
 }
 
 
-exp_x_minus_exp_y <- function(x, y) {
-  -exp(x) * expm1(y - x)
-}
-
-
 #' Pareto smooth tail
 #' function to Pareto smooth the tail of a vector. Exported
 #' for usage in other packages, not by users.

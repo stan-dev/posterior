@@ -76,11 +76,6 @@ entropy.rvar <- function(x) {
 }
 
 
-log2_one_minus <- function(x) {
-  log1p(-x) / log(2)
-}
-
-
 #' Dissention
 #'
 #' Dissention, for measuring dispersion in draws from ordinal distributions.
