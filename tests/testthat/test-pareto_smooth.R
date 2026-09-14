@@ -269,6 +269,22 @@ test_that("exp_x_minus_exp_y is stable for nearby values", {
   expect_equal(exp_x_minus_exp_y(0, -1000), 1)
 })
 
+test_that("exp_x_minus_exp_y returns zero for equal infinite inputs", {
+  expect_equal(exp_x_minus_exp_y(-Inf, -Inf), 0)
+  expect_equal(exp_x_minus_exp_y(c(-Inf, 0, 1), c(-Inf, 0, 0)), c(0, 0, exp(1) - 1))
+  expect_equal(exp_x_minus_exp_y(0, -Inf), 1)
+})
+
+test_that("ps_tail handles -Inf log weights below the cutoff", {
+  # more tail draws than finite log weights, so the cutoff is -Inf and the
+  # lowest tail draws equal it
+  lw <- c(rep(-Inf, 90), log(1:10))
+  tail <- ps_tail(lw, ndraws_tail = 20, tail = "right", are_log_weights = TRUE)
+
+  expect_false(anyNA(tail$x))
+  expect_true(all(is.infinite(tail$x[1:80]) & tail$x[1:80] < 0))
+})
+
 
 test_that("check ps_tail behavior for ndraws_tail less than 5", {
   w <- c(1:25, 1e3, 1e3, 1e3)

@@ -235,7 +235,11 @@ log_sum_exp <- function(x) {
 
 # numerically stable version of exp(x) - exp(y)
 exp_x_minus_exp_y <- function(x, y) {
-  -exp(x) * expm1(y - x)
+  out <- -exp(x) * expm1(y - x)
+  # equal infinite inputs give 0 * NaN above; which() drops the NA comparisons
+  # that NA or NaN inputs would produce
+  out[which(x == y)] <- 0
+  out
 }
 
 # numerically stable version of log2(1 - x)
