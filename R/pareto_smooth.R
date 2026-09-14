@@ -639,7 +639,8 @@ ps_convergence_rate <- function(k, ndraws, ...) {
   rate[k <= 0] <- 1
   # k>=1 non-finite mean
   rate[k >= 1] <- 0
-  # smooth approximation for the rest (see Appendix B of PSIS paper)
+  # smooth approximation for the rest 
+  # this is a numerically stable calculation of the equation on page 31, in Appendix B of PSIS paper
   ki <- k > 0 & k < 1
   kk <- k[ki]
   aa <- 2 * kk - 1
