@@ -14,7 +14,9 @@ qgeneralized_pareto(
 )
 }
 \arguments{
-\item{p}{Numeric vector of probabilities.}
+\item{p}{Numeric vector of probabilities, in \code{[0, 1]}, or of log
+probabilities, in \code{[-Inf, 0]}, if \code{log.p} is \code{TRUE}. Values outside the
+valid range return \code{NaN} with a warning.}
 
 \item{mu}{Location parameter.}
 

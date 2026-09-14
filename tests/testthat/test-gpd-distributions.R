@@ -47,6 +47,52 @@ test_that("qgeneralized_pareto handles log.p = TRUE", {
   expect_equal(result_upper, expm1(20) / 0.2)
 })
 
+test_that("qgeneralized_pareto returns the endpoints for infinite log probabilities", {
+  # log.p = TRUE with p = -Inf is probability 0: the lower endpoint for the
+  # lower tail, the upper endpoint of the support for the upper tail
+  for (k in c(-0.4, 0, 0.3)) {
+    expect_equal(
+      qgeneralized_pareto(-Inf, mu = 2, sigma = 3, k = k, log.p = TRUE),
+      2
+    )
+    upper <- if (k < 0) 2 - 3 / k else Inf
+    expect_equal(
+      qgeneralized_pareto(-Inf, mu = 2, sigma = 3, k = k,
+                          lower.tail = FALSE, log.p = TRUE),
+      upper
+    )
+  }
+
+  # log.p = TRUE with p = 0 is probability 1, i.e. the two endpoints swapped
+  expect_equal(qgeneralized_pareto(0, mu = 2, sigma = 3, k = -0.4, log.p = TRUE), 9.5)
+  expect_equal(
+    qgeneralized_pareto(0, mu = 2, sigma = 3, k = -0.4,
+                        lower.tail = FALSE, log.p = TRUE),
+    2
+  )
+})
+
+test_that("qgeneralized_pareto rejects probabilities outside the valid range", {
+  for (lower in c(TRUE, FALSE)) {
+    expect_warning(
+      out <- qgeneralized_pareto(c(-0.5, 0.5, 1.5), k = 0.2, lower.tail = lower),
+      "NaNs produced"
+    )
+    expect_equal(is.nan(out), c(TRUE, FALSE, TRUE))
+
+    expect_warning(
+      out <- qgeneralized_pareto(c(1, -1), k = 0.2, lower.tail = lower, log.p = TRUE),
+      "NaNs produced"
+    )
+    expect_equal(is.nan(out), c(TRUE, FALSE))
+  }
+
+  # missing values stay missing rather than becoming NaN
+  expect_identical(qgeneralized_pareto(NA_real_, k = 0.2), NA_real_)
+  expect_silent(qgeneralized_pareto(c(0, 0.5, 1), k = 0.2))
+  expect_silent(qgeneralized_pareto(c(-Inf, -1, 0), k = 0.2, log.p = TRUE))
+})
+
 test_that("qgeneralized_pareto returns NaN for invalid sigma", {
   result <- qgeneralized_pareto(0.5, mu = 0, sigma = -1, k = 0.2)
   expect_true(is.nan(result))

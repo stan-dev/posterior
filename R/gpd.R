@@ -3,7 +3,9 @@
 #' Computes the quantile function for a generalized Pareto distribution
 #' with location `mu`, scale `sigma`, and shape `k`.
 #' 
-#' @param p Numeric vector of probabilities.
+#' @param p Numeric vector of probabilities, in `[0, 1]`, or of log
+#'   probabilities, in `[-Inf, 0]`, if `log.p` is `TRUE`. Values outside the
+#'   valid range return `NaN` with a warning.
 #' @param mu Location parameter.
 #' @param sigma Scale parameter (must be positive).
 #' @param k Shape parameter.
@@ -18,6 +20,14 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
   stopifnot(length(mu) == 1 && length(sigma) == 1 && length(k) == 1)
   if (is.na(sigma) || sigma <= 0) {
     return(rep(NaN, length(p)))
+  }
+  # probabilities outside the valid range give NaN with a warning, as in the
+  # base R quantile functions. which() leaves NA and NaN inputs to propagate,
+  # and replacing them here avoids a second warning from log() or log1p().
+  invalid <- which(if (log.p) p > 0 else p < 0 | p > 1)
+  if (length(invalid)) {
+    warning_no_call("NaNs produced")
+    p[invalid] <- NaN
   }
   if (log.p) {
     log_survival <- if (lower.tail) log(-expm1(p)) else p
