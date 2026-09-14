@@ -124,6 +124,21 @@ test_that("pgeneralized_pareto handles lower.tail = FALSE", {
   expect_equal(pgeneralized_pareto(100, k = 0, lower.tail = FALSE, log.p = TRUE), -100)
 })
 
+test_that("pgeneralized_pareto distinguishes small nonzero shape", {
+  k <- 9e-16
+  q <- 1e7
+  expected <- -log1p(k * q) / k
+  expect_equal(
+    pgeneralized_pareto(q, k = k, lower.tail = FALSE, log.p = TRUE),
+    expected
+  )
+
+  expect_equal(
+    pgeneralized_pareto(2e15, k = -k, lower.tail = FALSE, log.p = TRUE),
+    -Inf
+  )
+})
+
 test_that("pgeneralized_pareto handles log.p = TRUE", {
   q <- c(0.5, 1, 2)
   result <- pgeneralized_pareto(q, mu = 0, sigma = 1, k = 0.2)

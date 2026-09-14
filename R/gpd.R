@@ -54,8 +54,7 @@ pgeneralized_pareto <- function(q, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
     return(rep(NaN, length(q)))
   }
   z <- (q - mu) / sigma
-  if (abs(k) < 1e-15) {
-    # for very small values of indistinguishable in floating point accuracy from the case k=0
+  if (k == 0) {
     log_survival <- -z
   } else {
     # pmax handles values outside the support
