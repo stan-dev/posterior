@@ -334,3 +334,14 @@ test_that("ps_convergence_rate is stable at transition points", {
   )
   expect_equal(ps_convergence_rate(1, n), 0)
 })
+
+test_that("ps_convergence_rate propagates missing shape parameters", {
+  n <- 1000
+
+  expect_identical(ps_convergence_rate(NA_real_, n), NA_real_)
+  expect_identical(ps_convergence_rate(NaN, n), NA_real_)
+  expect_equal(
+    ps_convergence_rate(c(0.3, NA, 0.8, NaN, -1, 2), n),
+    c(ps_convergence_rate(0.3, n), NA, ps_convergence_rate(0.8, n), NA, 1, 0)
+  )
+})
