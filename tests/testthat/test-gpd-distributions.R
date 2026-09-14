@@ -170,6 +170,40 @@ test_that("pgeneralized_pareto handles lower.tail = FALSE", {
   expect_equal(pgeneralized_pareto(100, k = 0, lower.tail = FALSE, log.p = TRUE), -100)
 })
 
+test_that("pgeneralized_pareto is -Inf at mu and below the support", {
+  for (k in c(-0.4, 0, 0.3)) {
+    # at the lower endpoint the lower-tail probability is exactly 0
+    expect_equal(pgeneralized_pareto(2, mu = 2, sigma = 3, k = k), 0)
+    expect_equal(
+      pgeneralized_pareto(2, mu = 2, sigma = 3, k = k, log.p = TRUE),
+      -Inf
+    )
+    expect_equal(
+      pgeneralized_pareto(2, mu = 2, sigma = 3, k = k, lower.tail = FALSE, log.p = TRUE),
+      0
+    )
+
+    # below the support the same holds, without escaping [0, 1]
+    below <- c(-Inf, -1e300, 1.5)
+    expect_equal(pgeneralized_pareto(below, mu = 2, sigma = 3, k = k), rep(0, 3))
+    expect_equal(
+      pgeneralized_pareto(below, mu = 2, sigma = 3, k = k, log.p = TRUE),
+      rep(-Inf, 3)
+    )
+    expect_equal(
+      pgeneralized_pareto(below, mu = 2, sigma = 3, k = k, lower.tail = FALSE),
+      rep(1, 3)
+    )
+  }
+
+  # above the support of a negative shape the upper tail is exactly 0
+  expect_equal(
+    pgeneralized_pareto(c(9.5, 20, Inf), mu = 2, sigma = 3, k = -0.4,
+                        lower.tail = FALSE, log.p = TRUE),
+    rep(-Inf, 3)
+  )
+})
+
 test_that("pgeneralized_pareto distinguishes small nonzero shape", {
   k <- 9e-16
   q <- 1e7

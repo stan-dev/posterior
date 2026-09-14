@@ -269,6 +269,25 @@ test_that("exp_x_minus_exp_y is stable for nearby values", {
   expect_equal(exp_x_minus_exp_y(0, -1000), 1)
 })
 
+test_that("user-facing pareto functions reject -Inf draws", {
+  # -Inf is a valid zero weight for the internal helpers, but the user-facing
+  # functions take draws rather than weights and decline to fit
+  set.seed(1)
+  x <- c(-Inf, rnorm(999))
+  msg <- "Input contains infinite or NA values, is constant or has constant tail"
+
+  expect_warning(khat <- pareto_khat(x), msg)
+  expect_identical(khat, NA_real_)
+
+  expect_warning(diags <- pareto_diags(x), msg)
+  expect_named(diags, c("khat", "min_ss", "khat_threshold", "convergence_rate"))
+  expect_true(all(is.na(unlist(diags))))
+
+  # smoothing returns the draws unchanged rather than silently altering them
+  expect_warning(smoothed <- pareto_smooth(x), msg)
+  expect_identical(smoothed, x)
+})
+
 test_that("exp_x_minus_exp_y returns zero for equal infinite inputs", {
   expect_equal(exp_x_minus_exp_y(-Inf, -Inf), 0)
   expect_equal(exp_x_minus_exp_y(c(-Inf, 0, 1), c(-Inf, 0, 0)), c(0, 0, exp(1) - 1))
