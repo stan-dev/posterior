@@ -6,6 +6,13 @@
 #' `.log_weight`). See [weights.draws()] for details how to extract weights from
 #' `draws` objects.
 #'
+#' Because the stored log-weights are unnormalized and are normalized only when
+#' they are extracted, subsetting a weighted `draws` object conditions on the
+#' retained draws: the weights of the draws that remain are renormalized to sum
+#' to one. Any operation that drops draws has this effect, including
+#' [subset_draws()], [thin_draws()] and `[` indexing. Weights are therefore
+#' comparable only within one subset, not across subsets of the same object.
+#'
 #' @template args-methods-x
 #' @param weights (numeric vector) A vector of weights of length `ndraws(x)`.
 #'   Weights will be internally stored on the log scale (in a variable called
