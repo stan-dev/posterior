@@ -88,6 +88,42 @@ test_that("weight_draws works on draws_rvars", {
 
 # conversion preserves weights --------------------------------------------
 
+test_that("weight_draws handles a mix of finite and -Inf log weights", {
+  x <- example_draws()
+  n <- ndraws(x)
+  zero <- c(rep(TRUE, 3), rep(FALSE, n - 3))
+  log_wts <- log(seq_len(n))
+  log_wts[zero] <- -Inf
+  wts <- exp(log_wts)
+
+  for (fmt in list(as_draws_matrix, as_draws_array, as_draws_df,
+                   as_draws_list, as_draws_rvars)) {
+    xf <- fmt(x)
+    from_log <- weight_draws(xf, log_wts, log = TRUE)
+    from_ordinary <- weight_draws(xf, wts)
+
+    # -Inf log weights and ordinary zeros describe the same distribution
+    expect_equal(weights(from_log), weights(from_ordinary))
+    expect_equal(weights(from_log, log = TRUE),
+                 weights(from_ordinary, log = TRUE))
+
+    w <- weights(from_log)
+    expect_equal(unname(w[zero]), rep(0, sum(zero)))
+    expect_true(all(w[!zero] > 0))
+    expect_equal(sum(w), 1)
+
+    # the zero-weight draws stay at -Inf on the log scale rather than
+    # underflowing to something finite
+    expect_equal(unname(weights(from_log, log = TRUE)[zero]),
+                 rep(-Inf, sum(zero)))
+
+    # unnormalized weights round-trip back to the input
+    expect_equal(unname(weights(from_log, normalize = FALSE)), wts)
+    expect_equal(unname(weights(from_log, normalize = FALSE, log = TRUE)),
+                 log_wts)
+  }
+})
+
 test_that("weights() errors when subsetting has removed all the mass", {
   x <- example_draws()
   n <- ndraws(x)
