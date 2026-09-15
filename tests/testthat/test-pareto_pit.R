@@ -25,6 +25,41 @@ test_that("pareto_pit bulk values match pit", {
   expect_equal(unname(refined), unname(raw))
 })
 
+test_that("pareto_pit treats -Inf log weights as ordinary zero weights", {
+  set.seed(1)
+  x <- draws_matrix(a = rnorm(400), b = rnorm(400))
+  n <- ndraws(x)
+  # y strictly between two draws, so the randomized-tie path cannot fire
+  y <- vapply(seq_len(nvariables(x)), function(j) {
+    sorted <- sort(as.numeric(x[, j]))
+    mean(sorted[c(380, 381)])
+  }, numeric(1))
+
+  # zeros spread through the sample, leaving the tails populated
+  keep <- seq(1, n, by = 3)
+  log_w <- matrix(-Inf, n, 2)
+  log_w[keep, ] <- log(1 / length(keep))
+  expect_equal(pareto_pit(x, y, weights = log_w, log = TRUE),
+               pareto_pit(x, y, weights = exp(log_w)))
+
+  # unequal weights, still with zeros interleaved
+  log_w2 <- matrix(-Inf, n, 2)
+  log_w2[keep, ] <- log(seq_along(keep))
+  expect_equal(pareto_pit(x, y, weights = log_w2, log = TRUE),
+               pareto_pit(x, y, weights = exp(log_w2)))
+
+  # a tail refinement actually happened, so the equivalence is not vacuous
+  expect_false(isTRUE(all.equal(
+    unname(pareto_pit(x, y, weights = log_w, log = TRUE)),
+    unname(pit(x, y, weights = log_w, log = TRUE))
+  )))
+
+  # unlike pit(), dropping the zero-weight draws is NOT equivalent here,
+  # because the number of tail draws is derived from ndraws
+  expect_equal(ps_tail_length(n, 1), 60)
+  expect_equal(ps_tail_length(length(keep), 1), 26)
+})
+
 test_that("pareto_pit keeps the raw PIT when the fitted tail has no mass", {
   set.seed(1)
   x <- draws_matrix(a = rnorm(400), b = rnorm(400))
