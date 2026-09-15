@@ -221,9 +221,13 @@ escape_all <- function(x) {
 
 # numerically stable version of log(sum(exp(x)))
 log_sum_exp <- function(x) {
-  max <- max(as.numeric(x), warnings = FALSE)
+  x <- as.numeric(x)
+  if (length(x) == 0) {
+    return(-Inf)
+  }
+  max <- max(x)
   if (max == -Inf) {
-    res <- 0
+    res <- -Inf
   } else if (max == Inf) {
     res <- Inf
   } else {

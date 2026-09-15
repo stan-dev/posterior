@@ -124,6 +124,17 @@ test_that("weight_draws handles a mix of finite and -Inf log weights", {
   }
 })
 
+test_that("weights() normalizes very negative unnormalized log weights", {
+  x <- example_draws()
+  n <- ndraws(x)
+  # a log likelihood summed over a few hundred observations lands here, and
+  # every value is finite, so nothing upstream rejects it
+  xw <- weight_draws(x, rep(-1000, n), log = TRUE)
+
+  expect_equal(unname(weights(xw)), rep(1 / n, n))
+  expect_equal(unname(weights(xw, log = TRUE)), rep(-log(n), n))
+})
+
 test_that("weights() errors when subsetting has removed all the mass", {
   x <- example_draws()
   n <- ndraws(x)
