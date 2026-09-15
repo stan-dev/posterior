@@ -1,3 +1,26 @@
+test_that("weight_draws rejects weights with no probability mass", {
+  x <- example_draws()
+  n <- ndraws(x)
+  msg <- "All weights are zero"
+
+  expect_error(weight_draws(x, rep(0, n)), msg)
+  expect_error(weight_draws(x, rep(-Inf, n), log = TRUE), msg)
+  # underflow is the usual cause, so the message points at log = TRUE
+  expect_error(weight_draws(x, exp(rep(-800, n))), "log = TRUE", fixed = TRUE)
+
+  # the error is classed, so callers can handle it per variable
+  expect_error(weight_draws(x, rep(0, n)), class = "posterior_degenerate_weights_error")
+
+  # a single draw carrying all the mass is still valid
+  w <- c(1, rep(0, n - 1))
+  expect_equal(unname(weights(weight_draws(x, w))), w)
+
+  # all formats reject it
+  for (fmt in list(as_draws_array, as_draws_df, as_draws_list, as_draws_rvars)) {
+    expect_error(weight_draws(fmt(x), rep(0, n)), msg)
+  }
+})
+
 test_that("weight_draws works on draws_matrix", {
   x <- as_draws_matrix(example_draws())
   weights <- rexp(ndraws(x))

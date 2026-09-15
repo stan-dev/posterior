@@ -200,6 +200,18 @@ validate_weights <- function(weights, draws, log = FALSE) {
     }
     weights <- log(weights)
   }
+  if (!any(is.finite(weights))) {
+    # classed so that callers working variable by variable, such as pit(), can
+    # handle one degenerate column without aborting the whole call
+    stop(errorCondition(
+      paste0(
+        "All weights are zero, so no draw carries any probability mass. ",
+        "If the weights underflowed to zero, pass them on the log scale ",
+        "with `log = TRUE`."
+      ),
+      class = "posterior_degenerate_weights_error"
+    ))
+  }
   weights
 }
 
