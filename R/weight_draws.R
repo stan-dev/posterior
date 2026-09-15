@@ -176,6 +176,11 @@ weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
   }
   out <- extract_variable(object, ".log_weight")
   if (normalize) {
+    # weight_draws() rejects this at construction, but dropping draws from an
+    # object that was valid can still remove every weighted draw
+    if (!any(is.finite(out))) {
+      stop_no_call("All draws have zero weight.")
+    }
     out <- out - log_sum_exp(out)
   }
   if (!log) {

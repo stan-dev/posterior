@@ -88,6 +88,30 @@ test_that("weight_draws works on draws_rvars", {
 
 # conversion preserves weights --------------------------------------------
 
+test_that("weights() errors when subsetting has removed all the mass", {
+  x <- example_draws()
+  n <- ndraws(x)
+  # valid at construction: the first 10 draws carry all the mass
+  xw <- weight_draws(x, c(rep(1, 10), rep(0, n - 10)))
+  expect_silent(weights(xw))
+
+  # dropping those draws leaves nothing behind
+  # (subsetting by draw merges chains, hence the message)
+  sub <- suppressMessages(subset_draws(xw, draw = 50:100))
+  expect_error(weights(sub), "All draws have zero weight")
+  expect_error(weights(sub, log = TRUE), "All draws have zero weight")
+
+  # the unnormalized weights are still well defined, so they are still returned
+  expect_equal(unname(weights(sub, normalize = FALSE)), rep(0, ndraws(sub)))
+  expect_equal(unname(weights(sub, normalize = FALSE, log = TRUE)),
+               rep(-Inf, ndraws(sub)))
+
+  # a subset that keeps some mass is unaffected
+  kept <- suppressMessages(subset_draws(xw, draw = 1:5))
+  expect_silent(w <- weights(kept))
+  expect_equal(sum(w), 1)
+})
+
 test_that("conversion between formats preserves weights", {
   draws <- list(
     matrix = weight_draws(draws_matrix(x = 1:10), 1:10),
