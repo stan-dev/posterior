@@ -312,9 +312,13 @@ pareto_pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE,
     }
 
     # --- right tail ---
+    # A tail carrying no probability mass cannot inform the fit: the raw PIT is
+    # already the whole answer, and gpdfit() would be handed all-zero weights.
+    right_tail_empty <- !is.null(log_wt_sorted) && tail_proportion == 0
+
     right_replaced <- FALSE
     right_tail <- sorted[tail_ids]
-    if (!is_constant(right_tail)) {
+    if (!right_tail_empty && !is_constant(right_tail)) {
       right_cutoff <- sorted[min(tail_ids) - 1]
       if (right_cutoff == right_tail[1]) {
         right_cutoff <- right_cutoff - .Machine$double.eps
@@ -344,8 +348,11 @@ pareto_pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE,
       left_sorted <- left_ord$x
       log_wt_left_sorted <- if (!is.null(weights)) weights[left_ord$ix, j] else NULL
 
+      left_tail_empty <- !is.null(log_wt_left_sorted) &&
+        log_sum_exp(log_wt_left_sorted[tail_ids]) == -Inf
+
       left_tail <- left_sorted[tail_ids]
-      if (!is_constant(left_tail)) {
+      if (!left_tail_empty && !is_constant(left_tail)) {
         left_cutoff <- left_sorted[min(tail_ids) - 1]
         if (left_cutoff == left_tail[1]) {
           left_cutoff <- left_cutoff - .Machine$double.eps
