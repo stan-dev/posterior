@@ -44,6 +44,41 @@ test_that("normalize_log_weights returns log-normalized columns", {
 })
 
 # tests for pit.default
+test_that("pit treats -Inf log weights as ordinary zero weights", {
+  set.seed(1)
+  x <- draws_matrix(a = rnorm(400), b = rnorm(400))
+  n <- ndraws(x)
+  # y strictly between two draws, so the randomized-tie path cannot fire
+  y <- vapply(seq_len(nvariables(x)), function(j) {
+    sorted <- sort(as.numeric(x[, j]))
+    mean(sorted[c(200, 201)])
+  }, numeric(1))
+
+  # uniform mass on a subset, expressed both ways
+  keep <- seq(1, n, by = 3)
+  log_w <- matrix(-Inf, n, 2)
+  log_w[keep, ] <- log(1 / length(keep))
+  w <- exp(log_w)
+
+  expect_equal(pit(x, y, weights = log_w, log = TRUE), pit(x, y, weights = w))
+
+  # zero-weight draws must not influence the result at all: the answer is the
+  # unweighted PIT of the retained draws alone
+  expect_equal(
+    unname(pit(x, y, weights = log_w, log = TRUE)),
+    unname(pit(x[keep, ], y))
+  )
+
+  # unequal weights on the retained draws, still with zeros elsewhere
+  log_w2 <- matrix(-Inf, n, 2)
+  log_w2[keep, ] <- log(seq_along(keep))
+  expect_equal(pit(x, y, weights = log_w2, log = TRUE),
+               pit(x, y, weights = exp(log_w2)))
+  expect_equal(unname(pit(x, y, weights = log_w2, log = TRUE)),
+               unname(pit(x[keep, ], y, weights = cbind(seq_along(keep),
+                                                        seq_along(keep)))))
+})
+
 test_that("pit and pareto_pit report degenerate weight columns per variable", {
   set.seed(1)
   x <- draws_matrix(a = rnorm(400), b = rnorm(400))
