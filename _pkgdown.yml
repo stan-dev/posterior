@@ -12,7 +12,7 @@ navbar:
   title: "posterior"
 
   structure:
-    left: [home, vignettes, functions, news, pkgs, stan]
+    left: [home, articles, functions, news, pkgs, stan]
     right: [search, bluesky, forum, github, lightswitch]
 
   components:
