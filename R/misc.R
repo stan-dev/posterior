@@ -219,38 +219,6 @@ escape_all <- function(x) {
   gsub(specials, "\\\\\\1", x)
 }
 
-# numerically stable version of log(sum(exp(x)))
-log_sum_exp <- function(x) {
-  x <- as.numeric(x)
-  if (length(x) == 0) {
-    return(-Inf)
-  }
-  max <- max(x)
-  if (max == -Inf) {
-    res <- -Inf
-  } else if (max == Inf) {
-    res <- Inf
-  } else {
-    sum <- sum(exp(x - max))
-    res <- max + log(sum)
-  }
-  res
-}
-
-# numerically stable version of exp(x) - exp(y)
-exp_x_minus_exp_y <- function(x, y) {
-  out <- -exp(x) * expm1(y - x)
-  # equal infinite inputs give 0 * NaN above; which() drops the NA comparisons
-  # that NA or NaN inputs would produce
-  out[which(x == y)] <- 0
-  out
-}
-
-# numerically stable version of log2(1 - x)
-log2_one_minus <- function(x) {
-  log1p(-x) / log(2)
-}
-
 # simple version of destructuring assignment
 `%<-%` <- function(vars, values, envir = parent.frame()) {
   vars <- as.character(substitute(vars)[-1])

@@ -181,7 +181,7 @@ weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
     if (!any(is.finite(out))) {
       stop_no_call("All draws have zero weight.")
     }
-    out <- out - log_sum_exp(out)
+    out <- log_normalize(out)
   }
   if (!log) {
     out <- exp(out)

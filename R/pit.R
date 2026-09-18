@@ -430,7 +430,7 @@ validate_y <- function(y, x = NULL) {
 }
 
 normalize_log_weights <- function(log_weights) {
-  apply(log_weights, 2, function(col) col - log_sum_exp(col))
+  apply(log_weights, 2, log_normalize)
 }
 
 #' Validate and normalize a per-variable weights matrix

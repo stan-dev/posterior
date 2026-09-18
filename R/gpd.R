@@ -30,7 +30,7 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
     p[invalid] <- NaN
   }
   if (log.p) {
-    log_survival <- if (lower.tail) log(-expm1(p)) else p
+    log_survival <- if (lower.tail) log1m_exp(p) else p
   } else {
     log_survival <- if (lower.tail) log1p(-p) else log(p)
   }
@@ -72,7 +72,7 @@ pgeneralized_pareto <- function(q, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
   }
   log_survival <- pmin(log_survival, 0)
   if (lower.tail) {
-    p <- if (log.p) log(-expm1(log_survival)) else -expm1(log_survival)
+    p <- if (log.p) log1m_exp(log_survival) else -expm1(log_survival)
   } else {
     p <- if (log.p) log_survival else exp(log_survival)
   }
