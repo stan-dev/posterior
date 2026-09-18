@@ -25,6 +25,74 @@ test_that("pareto_pit bulk values match pit", {
   expect_equal(unname(refined), unname(raw))
 })
 
+test_that("pareto_pit treats -Inf log weights as ordinary zero weights", {
+  set.seed(1)
+  x <- draws_matrix(a = rnorm(400), b = rnorm(400))
+  n <- ndraws(x)
+  # y strictly between two draws, so the randomized-tie path cannot fire
+  y <- vapply(seq_len(nvariables(x)), function(j) {
+    sorted <- sort(as.numeric(x[, j]))
+    mean(sorted[c(380, 381)])
+  }, numeric(1))
+
+  # zeros spread through the sample, leaving the tails populated
+  keep <- seq(1, n, by = 3)
+  log_w <- matrix(-Inf, n, 2)
+  log_w[keep, ] <- log(1 / length(keep))
+  expect_equal(pareto_pit(x, y, weights = log_w, log = TRUE),
+               pareto_pit(x, y, weights = exp(log_w)))
+
+  # unequal weights, still with zeros interleaved
+  log_w2 <- matrix(-Inf, n, 2)
+  log_w2[keep, ] <- log(seq_along(keep))
+  expect_equal(pareto_pit(x, y, weights = log_w2, log = TRUE),
+               pareto_pit(x, y, weights = exp(log_w2)))
+
+  # a tail refinement actually happened, so the equivalence is not vacuous
+  expect_false(isTRUE(all.equal(
+    unname(pareto_pit(x, y, weights = log_w, log = TRUE)),
+    unname(pit(x, y, weights = log_w, log = TRUE))
+  )))
+
+  # unlike pit(), dropping the zero-weight draws is NOT equivalent here,
+  # because the number of tail draws is derived from ndraws
+  expect_equal(ps_tail_length(n, 1), 60)
+  expect_equal(ps_tail_length(length(keep), 1), 26)
+})
+
+test_that("pareto_pit keeps the raw PIT when the fitted tail has no mass", {
+  set.seed(1)
+  x <- draws_matrix(a = rnorm(400), b = rnorm(400))
+  n <- ndraws(x)
+  # weights built from each variable's own ordering
+  mass_on <- function(idx) sapply(seq_len(nvariables(x)), function(j) {
+    out <- rep(-Inf, n)
+    out[order(as.numeric(x[, j]))[idx]] <- log(1 / length(idx))
+    out
+  })
+  # y strictly between two draws, so the randomized-tie path cannot fire
+  y_between <- function(rank) vapply(seq_len(nvariables(x)), function(j) {
+    sorted <- sort(as.numeric(x[, j]))
+    mean(sorted[c(rank, rank + 1)])
+  }, numeric(1))
+
+  # mass in the middle: both fitted tails are empty, so the GPD can add
+  # nothing and the refined PIT must equal the raw weighted PIT
+  w <- mass_on(190:209)
+  y <- y_between(200)
+  expect_equal(unname(pareto_pit(x, y, weights = w, log = TRUE)), c(0.55, 0.55))
+  expect_equal(pareto_pit(x, y, weights = w, log = TRUE),
+               pit(x, y, weights = w, log = TRUE))
+
+  # all mass below y: the raw PIT is 1, up to the min_tail_prob clamp that
+  # pareto_pit applies to every result
+  w <- mass_on(1:20)
+  y <- y_between(300)
+  expect_equal(unname(pit(x, y, weights = w, log = TRUE)), c(1, 1))
+  expect_equal(unname(pareto_pit(x, y, weights = w, log = TRUE)),
+               rep(1 - 1 / n / 1e4, 2))
+})
+
 test_that("pareto_pit differs from pit in tails", {
   set.seed(42)
   ndraws <- 1000

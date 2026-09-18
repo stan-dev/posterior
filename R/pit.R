@@ -79,12 +79,12 @@ pit.default <- function(x, y, weights = NULL, log = FALSE, ...) {
 pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE, ...) {
   y <- validate_y(y, x)
   if (!is.null(weights)) {
-    weights <- sapply(seq_len(nvariables(x)), function(var_idx) {
-      validate_weights(weights[, var_idx], x[, var_idx], log)
-    })
-    weights <- normalize_log_weights(weights)
+    weights <- validate_pit_weights(weights, x, log)
   }
   pit <- vapply(seq_len(ncol(x)), function(j) {
+    if (!is.null(weights) && anyNA(weights[, j])) {
+      return(NA_real_)
+    }
     sel_min <- x[, j] < y[j]
     if (!any(sel_min)) {
       pit <- 0
@@ -112,7 +112,7 @@ pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE, ...) {
     pit
   }, FUN.VALUE = 1.0)
 
-  if (any(pit > 1 + 1e-10)) {
+  if (any(pit > 1 + 1e-10, na.rm = TRUE)) {
     warning_no_call(
       paste(
         "Some PIT values larger than 1. ",
@@ -241,10 +241,7 @@ pareto_pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE,
 
   # validate and normalize weights to log scale (same as pit.draws_matrix)
   if (!is.null(weights)) {
-    weights <- sapply(seq_len(nvariables(x)), function(var_idx) {
-      validate_weights(weights[, var_idx], x[, var_idx], log)
-    })
-    weights <- normalize_log_weights(weights)
+    weights <- validate_pit_weights(weights, x, log)
   }
 
   ndraws <- ndraws(x)
@@ -270,6 +267,9 @@ pareto_pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE,
   }
 
   pit_values <- vapply(seq_len(ncol(x)), function(j) {
+    if (!is.null(weights) && anyNA(weights[, j])) {
+      return(NA_real_)
+    }
     draws <- x[, j]
 
     # --- raw PIT (same logic as pit.draws_matrix) ---
@@ -312,9 +312,13 @@ pareto_pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE,
     }
 
     # --- right tail ---
+    # A tail carrying no probability mass cannot inform the fit: the raw PIT is
+    # already the whole answer, and gpdfit() would be handed all-zero weights.
+    right_tail_empty <- !is.null(log_wt_sorted) && tail_proportion == 0
+
     right_replaced <- FALSE
     right_tail <- sorted[tail_ids]
-    if (!is_constant(right_tail)) {
+    if (!right_tail_empty && !is_constant(right_tail)) {
       right_cutoff <- sorted[min(tail_ids) - 1]
       if (right_cutoff == right_tail[1]) {
         right_cutoff <- right_cutoff - .Machine$double.eps
@@ -344,8 +348,11 @@ pareto_pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE,
       left_sorted <- left_ord$x
       log_wt_left_sorted <- if (!is.null(weights)) weights[left_ord$ix, j] else NULL
 
+      left_tail_empty <- !is.null(log_wt_left_sorted) &&
+        log_sum_exp(log_wt_left_sorted[tail_ids]) == -Inf
+
       left_tail <- left_sorted[tail_ids]
-      if (!is_constant(left_tail)) {
+      if (!left_tail_empty && !is_constant(left_tail)) {
         left_cutoff <- left_sorted[min(tail_ids) - 1]
         if (left_cutoff == left_tail[1]) {
           left_cutoff <- left_cutoff - .Machine$double.eps
@@ -423,5 +430,44 @@ validate_y <- function(y, x = NULL) {
 }
 
 normalize_log_weights <- function(log_weights) {
-  apply(log_weights, 2, function(col) col - log_sum_exp(col))
+  apply(log_weights, 2, log_normalize)
+}
+
+#' Validate and normalize a per-variable weights matrix
+#'
+#' Columns whose weights carry no probability mass are reported and returned as
+#' `NA`, so that one degenerate variable does not take down the whole call. This
+#' matches [pareto_khat()], which warns and returns `NA` rather than erroring.
+#' Weights that are malformed for any other reason still raise an error.
+#'
+#' @noRd
+#' @param weights A matrix of weights, one column per variable in `x`.
+#' @param x A `draws_matrix`.
+#' @param log (logical) Are the weights already on the log scale?
+#' @return A matrix of normalized log weights, `NA` for degenerate columns.
+#'
+validate_pit_weights <- function(weights, x, log) {
+  vars <- variables(x)
+  cols <- lapply(seq_along(vars), function(var_idx) {
+    tryCatch(
+      validate_weights(weights[, var_idx], x[, var_idx], log),
+      posterior_degenerate_weights_error = function(cnd) NULL
+    )
+  })
+  degenerate <- vapply(cols, is.null, logical(1))
+  if (any(degenerate)) {
+    warning_no_call(
+      "All draws have zero weight for ",
+      paste0("'", vars[degenerate], "'", collapse = ", "),
+      ". Returning NA for ",
+      if (sum(degenerate) > 1) "those variables." else "that variable."
+    )
+    cols[degenerate] <- list(rep(NA_real_, ndraws(x)))
+  }
+  out <- do.call(cbind, cols)
+  # normalize only the columns that carry mass; log_sum_exp() has no NA handling
+  if (any(!degenerate)) {
+    out[, !degenerate] <- normalize_log_weights(out[, !degenerate, drop = FALSE])
+  }
+  out
 }

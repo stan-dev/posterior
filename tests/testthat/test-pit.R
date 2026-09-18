@@ -44,6 +44,78 @@ test_that("normalize_log_weights returns log-normalized columns", {
 })
 
 # tests for pit.default
+test_that("pit treats -Inf log weights as ordinary zero weights", {
+  set.seed(1)
+  x <- draws_matrix(a = rnorm(400), b = rnorm(400))
+  n <- ndraws(x)
+  # y strictly between two draws, so the randomized-tie path cannot fire
+  y <- vapply(seq_len(nvariables(x)), function(j) {
+    sorted <- sort(as.numeric(x[, j]))
+    mean(sorted[c(200, 201)])
+  }, numeric(1))
+
+  # uniform mass on a subset, expressed both ways
+  keep <- seq(1, n, by = 3)
+  log_w <- matrix(-Inf, n, 2)
+  log_w[keep, ] <- log(1 / length(keep))
+  w <- exp(log_w)
+
+  expect_equal(pit(x, y, weights = log_w, log = TRUE), pit(x, y, weights = w))
+
+  # zero-weight draws must not influence the result at all: the answer is the
+  # unweighted PIT of the retained draws alone
+  expect_equal(
+    unname(pit(x, y, weights = log_w, log = TRUE)),
+    unname(pit(x[keep, ], y))
+  )
+
+  # unequal weights on the retained draws, still with zeros elsewhere
+  log_w2 <- matrix(-Inf, n, 2)
+  log_w2[keep, ] <- log(seq_along(keep))
+  expect_equal(pit(x, y, weights = log_w2, log = TRUE),
+               pit(x, y, weights = exp(log_w2)))
+  expect_equal(unname(pit(x, y, weights = log_w2, log = TRUE)),
+               unname(pit(x[keep, ], y, weights = cbind(seq_along(keep),
+                                                        seq_along(keep)))))
+})
+
+test_that("pit and pareto_pit report degenerate weight columns per variable", {
+  set.seed(1)
+  x <- draws_matrix(a = rnorm(400), b = rnorm(400))
+  n <- ndraws(x)
+  y <- c(0, 0)
+  good <- rep(log(1 / n), n)
+  msg <- "All draws have zero weight for 'a'"
+
+  # one bad column must not take down the other variable
+  w <- cbind(rep(-Inf, n), good)
+  expect_warning(out <- pit(x, y, weights = w, log = TRUE), msg)
+  expect_true(is.na(out[["a"]]))
+  expect_false(is.na(out[["b"]]))
+  expect_warning(out <- pareto_pit(x, y, weights = w, log = TRUE), msg)
+  expect_true(is.na(out[["a"]]))
+  expect_false(is.na(out[["b"]]))
+
+  # a single degenerate variable warns and returns NA rather than erroring,
+  # matching pareto_khat() rather than aborting
+  x1 <- subset_draws(x, variable = "a")
+  expect_warning(out <- pit(x1, 0, weights = matrix(-Inf, n, 1), log = TRUE), msg)
+  expect_true(is.na(out))
+
+  # every column degenerate: warn once naming both, all NA
+  expect_warning(
+    out <- pit(x, y, weights = matrix(-Inf, n, 2), log = TRUE),
+    "'a', 'b'"
+  )
+  expect_true(all(is.na(out)))
+
+  # ordinary zero weights take the same path
+  expect_warning(pit(x, y, weights = matrix(0, n, 2)), "All draws have zero weight")
+
+  # genuinely malformed weights still abort
+  expect_error(pit(x, y, weights = matrix(-1, n, 2)), "non-negative")
+})
+
 test_that("pit works without weights", {
   x <- matrix(c(1, 2, 3, 5), nrow = 2)
   y <- c(3, 4)

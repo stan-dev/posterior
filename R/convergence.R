@@ -495,11 +495,12 @@ mcse_sd.default <- function(x, ...) {
   # has (X-E[X])^2. The following ESS is based on a relevant quantity
   # in the computation and is empirically a good choice.
   sims_c <- x - mean(x)
-  ess <- ess_mean((sims_c)^2)
+  sims_sq <- sims_c^2
+  ess <- ess_mean(sims_sq)
   # Variance of variance estimate by Kenney and Keeping (1951, p. 141),
   # which doesn't assume normality of sims.
-  Evar <- mean(sims_c^2)
-  varvar <- (mean(sims_c^4) - Evar^2) / ess
+  Evar <- mean(sims_sq)
+  varvar <- mean((sims_sq - Evar)^2) / ess
   # The first order Taylor series approximation of variance of sd.
   # Kenney and Keeping (1951, p. 141) write "...since fluctuations of
   # any moment are of order N^{-1/2}, squares and higher powers of

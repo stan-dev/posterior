@@ -261,6 +261,50 @@ test_that("pareto_smooth works for log_weights", {
 
 })
 
+test_that("exp_x_minus_exp_y is stable for nearby values", {
+  cutoff <- -30
+  x <- cutoff + 1e-14
+
+  expect_equal(exp_x_minus_exp_y(x, cutoff), 9.973486536736925e-28)
+  expect_equal(exp_x_minus_exp_y(0, -1000), 1)
+})
+
+test_that("user-facing pareto functions reject -Inf draws", {
+  # -Inf is a valid zero weight for the internal helpers, but the user-facing
+  # functions take draws rather than weights and decline to fit
+  set.seed(1)
+  x <- c(-Inf, rnorm(999))
+  msg <- "Input contains infinite or NA values, is constant or has constant tail"
+
+  expect_warning(khat <- pareto_khat(x), msg)
+  expect_identical(khat, NA_real_)
+
+  expect_warning(diags <- pareto_diags(x), msg)
+  expect_named(diags, c("khat", "min_ss", "khat_threshold", "convergence_rate"))
+  expect_true(all(is.na(unlist(diags))))
+
+  # smoothing returns the draws unchanged rather than silently altering them
+  expect_warning(smoothed <- pareto_smooth(x), msg)
+  expect_identical(smoothed, x)
+})
+
+test_that("exp_x_minus_exp_y returns zero for equal infinite inputs", {
+  expect_equal(exp_x_minus_exp_y(-Inf, -Inf), 0)
+  expect_equal(exp_x_minus_exp_y(c(-Inf, 0, 1), c(-Inf, 0, 0)), c(0, 0, exp(1) - 1))
+  expect_equal(exp_x_minus_exp_y(0, -Inf), 1)
+})
+
+test_that("ps_tail handles -Inf log weights below the cutoff", {
+  # more tail draws than finite log weights, so the cutoff is -Inf and the
+  # lowest tail draws equal it
+  lw <- c(rep(-Inf, 90), log(1:10))
+  tail <- ps_tail(lw, ndraws_tail = 20, tail = "right", are_log_weights = TRUE)
+
+  expect_false(anyNA(tail$x))
+  expect_true(all(is.infinite(tail$x[1:80]) & tail$x[1:80] < 0))
+})
+
+
 test_that("check ps_tail behavior for ndraws_tail less than 5", {
   w <- c(1:25, 1e3, 1e3, 1e3)
   lw <- log(w)
@@ -293,4 +337,30 @@ test_that("check ps_min_ss behavior special cases", {
   expect_true(is.infinite(ps_min_ss(2)))
   # k < 1
   expect_equal(ps_min_ss(0.5), 10^(1 / (1 - max(0, 0.5))))
+})
+
+
+test_that("ps_convergence_rate is stable at transition points", {
+  n <- 10
+  half_limit <- n / (n - 1) - 1 / log(n)
+
+  expect_equal(ps_convergence_rate(0, n), 1)
+  expect_equal(ps_convergence_rate(0.5, n), half_limit)
+  expect_equal(ps_convergence_rate(0.5 + .Machine$double.eps / 2, n), half_limit)
+  expect_equal(
+    ps_convergence_rate(1 - .Machine$double.eps / 2, n),
+    1.8359566012903116e-16
+  )
+  expect_equal(ps_convergence_rate(1, n), 0)
+})
+
+test_that("ps_convergence_rate propagates missing shape parameters", {
+  n <- 1000
+
+  expect_identical(ps_convergence_rate(NA_real_, n), NA_real_)
+  expect_identical(ps_convergence_rate(NaN, n), NA_real_)
+  expect_equal(
+    ps_convergence_rate(c(0.3, NA, 0.8, NaN, -1, 2), n),
+    c(ps_convergence_rate(0.3, n), NA, ps_convergence_rate(0.8, n), NA, 1, 0)
+  )
 })

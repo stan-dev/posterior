@@ -525,10 +525,12 @@ ps_tail <- function(x,
   max_tail <- max(draws_tail)
 
   if (are_log_weights) {
-    draws_tail <- exp(draws_tail)
+    tail_excesses <- exp_x_minus_exp_y(draws_tail, cutoff)
     cutoff <- exp(cutoff)
+  } else {
+    tail_excesses <- draws_tail - cutoff
   }
-  fit <- gpdfit(draws_tail - cutoff, sort_x = FALSE, ...)
+  fit <- gpdfit(tail_excesses, sort_x = FALSE, ...)
   k <- fit$k
   sigma <- fit$sigma
   if (is.finite(k) && smooth_draws) {
@@ -631,22 +633,31 @@ ps_khat_threshold <- function(ndraws, ...) {
 #' @return convergence rate
 #' @export
 ps_convergence_rate <- function(k, ndraws, ...) {
-  # allow array of k's
-  rate <- numeric(length(k))
-  # k<0 bounded distribution
-  rate[k < 0] <- 1
-  # k>0 non-finite mean
-  rate[k > 1] <- 0
-  # limit value at k=1/2
-  rate[k == 0.5] <- 1 - 1 / log(ndraws)
-  # smooth approximation for the rest (see Appendix B of PSIS paper)
-  ki <- (k > 0 & k < 1 & k != 0.5)
+  # allow array of k's; which() keeps NA and NaN shapes out of every branch,
+  # so they keep the NA initialization instead of silently reading as 0
+  rate <- rep(NA_real_, length(k))
+  # k<0 bounded distribution, k=0 exponential tail; both converge at rate 1
+  rate[which(k <= 0)] <- 1
+  # k>=1 non-finite mean
+  rate[which(k >= 1)] <- 0
+  # smooth approximation for the rest
+  # this is a numerically stable calculation of the equation on page 31, in Appendix B of PSIS paper
+  ki <- which(k > 0 & k < 1)
   kk <- k[ki]
-  rate[ki] <- pmax(
-    0,
-    (2 * (kk - 1) * ndraws^(2 * kk + 1) + (1 - 2 * kk) * ndraws^(2 * kk) + ndraws^2) /
-      ((ndraws - 1) * (ndraws - ndraws^(2 * kk)))
-  )
+  aa <- 2 * kk - 1
+  near_half <- abs(aa) <= abs(1 - aa)
+  rate_ki <- numeric(length(kk))
+  rate_ki[aa == 0] <- ndraws / (ndraws - 1) - 1 / log(ndraws)
+  use_half <- near_half & aa != 0
+  rate_ki[use_half] <-
+    ndraws / (ndraws - 1) -
+    aa[use_half] / -expm1(-aa[use_half] * log(ndraws))
+  use_one <- !near_half
+  bb <- 1 - aa[use_one]
+  rate_ki[use_one] <-
+    (bb * (ndraws - 1) - expm1(bb * log(ndraws))) /
+    ((ndraws - 1) * -expm1((bb - 1) * log(ndraws)))
+  rate[ki] <- pmax(0, rate_ki)
   rate
 }
 
