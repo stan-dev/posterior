@@ -219,20 +219,6 @@ escape_all <- function(x) {
   gsub(specials, "\\\\\\1", x)
 }
 
-# numerically stable version of log(sum(exp(x)))
-log_sum_exp <- function(x) {
-  max <- max(as.numeric(x), warnings = FALSE)
-  if (max == -Inf) {
-    res <- 0
-  } else if (max == Inf) {
-    res <- Inf
-  } else {
-    sum <- sum(exp(x - max))
-    res <- max + log(sum)
-  }
-  res
-}
-
 # simple version of destructuring assignment
 `%<-%` <- function(vars, values, envir = parent.frame()) {
   vars <- as.character(substitute(vars)[-1])

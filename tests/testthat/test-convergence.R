@@ -55,6 +55,11 @@ test_that("mcse diagnostics return reasonable values", {
   mcse <- mcse_sd(tau)
   expect_true(mcse > 0.15 & mcse < 0.25)
 
+  x <- rep(c(-1e8 - 1, -1e8 + 1, 1e8 - 1, 1e8 + 1), 100)
+  x_sq <- (x - mean(x))^2
+  expected <- sqrt(mean((x_sq - mean(x_sq))^2) / ess_mean(x_sq) / mean(x_sq) / 4)
+  expect_equal(mcse_sd(x), expected)
+
   mcse <- mcse_quantile(tau, probs = c(0.2, 0.8))
   expect_equal(names(mcse), c("mcse_q20", "mcse_q80"))
   expect_true(mcse[1] > 0.16 & mcse[1] < 0.21)
