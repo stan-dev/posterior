@@ -86,7 +86,9 @@ with location <code>mu</code>, scale <code>sigma</code>, and shape <code>k</code
 
 
 <dl><dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
-<dd><p>Numeric vector of probabilities.</p></dd>
+<dd><p>Numeric vector of probabilities, in <code>[0, 1]</code>, or of log
+probabilities, in <code>[-Inf, 0]</code>, if <code>log.p</code> is <code>TRUE</code>. Values outside the
+valid range return <code>NaN</code> with a warning.</p></dd>
 
 
 <dt id="arg-mu">mu<a class="anchor" aria-label="anchor" href="#arg-mu"></a></dt>

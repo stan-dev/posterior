@@ -20,7 +20,9 @@ qgeneralized_pareto(
 
 - p:
 
-  Numeric vector of probabilities.
+  Numeric vector of probabilities, in `[0, 1]`, or of log probabilities,
+  in `[-Inf, 0]`, if `log.p` is `TRUE`. Values outside the valid range
+  return `NaN` with a warning.
 
 - mu:
 

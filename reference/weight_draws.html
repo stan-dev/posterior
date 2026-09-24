@@ -134,6 +134,15 @@ The default is <code>FALSE</code>.</p></dd>
     <p>A <code>draws</code> object of the same class as <code>x</code>.</p>
     </div>
     <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>Because the stored log-weights are unnormalized and are normalized only when
+they are extracted, subsetting a weighted <code>draws</code> object conditions on the
+retained draws: the weights of the draws that remain are renormalized to sum
+to one. Any operation that drops draws has this effect, including
+<code><a href="subset_draws.html">subset_draws()</a></code>, <code><a href="thin_draws.html">thin_draws()</a></code> and <code>[</code> indexing. Weights are therefore
+comparable only within one subset, not across subsets of the same object.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p><code><a href="weights.draws.html">weights.draws()</a></code>, <code><a href="resample_draws.html">resample_draws()</a></code></p></div>
     </div>

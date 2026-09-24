@@ -64,6 +64,18 @@ weight_draws(x, weights, log = FALSE, pareto_smooth = FALSE, ...)
 
 A `draws` object of the same class as `x`.
 
+## Details
+
+Because the stored log-weights are unnormalized and are normalized only
+when they are extracted, subsetting a weighted `draws` object conditions
+on the retained draws: the weights of the draws that remain are
+renormalized to sum to one. Any operation that drops draws has this
+effect, including
+[`subset_draws()`](https://mc-stan.org/posterior/reference/subset_draws.md),
+[`thin_draws()`](https://mc-stan.org/posterior/reference/thin_draws.md)
+and `[` indexing. Weights are therefore comparable only within one
+subset, not across subsets of the same object.
+
 ## See also
 
 [`weights.draws()`](https://mc-stan.org/posterior/reference/weights.draws.md),
