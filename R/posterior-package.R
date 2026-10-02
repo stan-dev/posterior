@@ -65,4 +65,5 @@
 #' match between two objects involved in a binary operation. Whether this
 #' causes a warning can be controlled by this option.
 #'
+#' @useDynLib posterior, .registration = TRUE
 "_PACKAGE"
