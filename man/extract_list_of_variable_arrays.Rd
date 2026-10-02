@@ -16,12 +16,12 @@ extract_list_of_variable_arrays(x, variables = NULL, ...)
 \item{x}{(draws) A \code{draws} object or another \R object for which the method
 is defined.}
 
-\item{variables}{A character vector of variable names to extract, or NULL to
+\item{...}{Arguments passed to individual methods (if applicable).}
+
+\item{variable}{A character vector of variable names to extract, or NULL to
 extract all variables. To extract all dimensions from variables with
 indices (e.g. \code{"x[1]"}), provide the base variable names
 (e.g. \code{"x"}).}
-
-\item{...}{Arguments passed to individual methods (if applicable).}
 }
 \value{
 A named list of arrays, where each array has dimension
