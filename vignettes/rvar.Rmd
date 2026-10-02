@@ -237,6 +237,7 @@ includes:
 | Array transposition         | `t()`, `aperm()` |
 | Matrix decomposition        | `chol()` |
 | Matrix diagonals            | `diag()` |
+| Complex numbers             | `Arg()`, `Conj()`, `Im()`, `Mod()`, `Re()` |
 
 ## Expectations and summary functions
 

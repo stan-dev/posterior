@@ -95,15 +95,25 @@ Math.rvar <- function(x, ...) {
   if (.Generic %in% c("cumsum", "cumprod", "cummax", "cummin")) {
     # cumulative functions need to be handled differently
     # from other functions in this generic
-    new_rvar(t(apply(draws_of(x), 1, f)), .nchains = nchains(x))
+    if (length(x) > 1) {
+      draws_of(x) <- t(apply(draws_of(x), 1, f))
+    }
   } else {
-    new_rvar(f(draws_of(x), ...), .nchains = nchains(x))
+    draws_of(x) <- f(draws_of(x), ...)
   }
+
+  x
 }
 
 #' @export
 Math.rvar_factor <- function(x, ...) {
   stop_no_call("Cannot apply `", .Generic, "` function to rvar_factor objects.")
+}
+
+#' @export
+Complex.rvar <- function(z) {
+  f <- get(.Generic)
+  rvar_apply_vec_fun(f, z)
 }
 
 # matrix stuff ---------------------------------------------------

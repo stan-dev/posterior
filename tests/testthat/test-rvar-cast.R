@@ -36,7 +36,7 @@ test_that("as_rvar preserves dimension names", {
 })
 
 
-# as_rvar_numeric/integer/logical ------------------------------------------------
+# as_rvar_numeric/complex/integer/logical -----------------------------------------
 
 test_that("as_rvar_numeric works", {
   x_array = array(
@@ -55,6 +55,17 @@ test_that("as_rvar_numeric works", {
   expect_equal(as_rvar_numeric(x_ord), x)
   expect_type(draws_of(as_rvar_numeric(x_ord)), "double")
   expect_type(draws_of(as_rvar_numeric(x_fct)), "double")
+})
+
+test_that("as_rvar_complex works", {
+  x_array = array(
+    1:24, dim = c(2,4,3),
+    dimnames = list(NULL, A = paste0("a", 1:4), B = paste0("b", 1:3))
+  )
+  x <- rvar(x_array)
+
+  expect_equal(as_rvar_complex(x), new_rvar(x_array + 0i))
+  expect_type(draws_of(as_rvar_complex(x)), "complex")
 })
 
 test_that("as_rvar_integer works", {
@@ -104,6 +115,10 @@ test_that("as_rvar_factor works", {
     structure(1:4L, levels = c("1", "2", "3", "4"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = "factor")
   )
   expect_equal(
+    draws_of(as_rvar_factor(array(1:4 * 1i, dim = c(2,2)))),
+    structure(1:4L, levels = c("0+1i", "0+2i", "0+3i", "0+4i"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = "factor")
+  )
+  expect_equal(
     draws_of(as_rvar_factor(array(c(TRUE, TRUE, FALSE, FALSE), dim = c(2,2)))),
     structure(c(2, 2, 1, 1), levels = c("FALSE", "TRUE"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = "factor")
   )
@@ -132,6 +147,10 @@ test_that("as_rvar_ordered works", {
   expect_equal(
     draws_of(as_rvar_ordered(array(1:4, dim = c(2,2)))),
     structure(1:4L, levels = c("1", "2", "3", "4"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"))
+  )
+  expect_equal(
+    draws_of(as_rvar_ordered(array(1:4 * 1i, dim = c(2,2)))),
+    structure(1:4L, levels = c("0+1i", "0+2i", "0+3i", "0+4i"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"))
   )
   expect_equal(
     draws_of(as_rvar_ordered(as_rvar(array(1:4, dim = c(2,2))))),
@@ -204,6 +223,57 @@ test_that("casting to/from rvar/distribution objects works", {
 
 
 # type predicates ---------------------------------------------------------
+
+test_that("is_rvar_XXX works", {
+  x <- rvar()
+  x_lgl <- rvar(logical())
+  x_int <- rvar(integer())
+  x_cmp <- rvar(complex())
+  x_fct <- rvar(factor())
+  x_ord <- rvar(ordered(NULL))
+
+  expect_true(is_rvar(x))
+  expect_false(is_rvar_logical(x))
+  expect_false(is_rvar_integer(x))
+  expect_false(is_rvar_complex(x))
+  expect_false(is_rvar_factor(x))
+  expect_false(is_rvar_ordered(x))
+
+  expect_true(is_rvar(x_lgl))
+  expect_true(is_rvar_logical(x_lgl))
+  expect_false(is_rvar_integer(x_lgl))
+  expect_false(is_rvar_complex(x_lgl))
+  expect_false(is_rvar_factor(x_lgl))
+  expect_false(is_rvar_ordered(x_lgl))
+
+  expect_true(is_rvar(x_int))
+  expect_false(is_rvar_logical(x_int))
+  expect_true(is_rvar_integer(x_int))
+  expect_false(is_rvar_complex(x_int))
+  expect_false(is_rvar_factor(x_int))
+  expect_false(is_rvar_ordered(x_int))
+
+  expect_true(is_rvar(x_cmp))
+  expect_false(is_rvar_logical(x_cmp))
+  expect_false(is_rvar_integer(x_cmp))
+  expect_true(is_rvar_complex(x_cmp))
+  expect_false(is_rvar_factor(x_cmp))
+  expect_false(is_rvar_ordered(x_cmp))
+
+  expect_true(is_rvar(x_fct))
+  expect_false(is_rvar_logical(x_fct))
+  expect_false(is_rvar_integer(x_fct))
+  expect_false(is_rvar_complex(x_fct))
+  expect_true(is_rvar_factor(x_fct))
+  expect_false(is_rvar_ordered(x_fct))
+
+  expect_true(is_rvar(x_ord))
+  expect_false(is_rvar_logical(x_ord))
+  expect_false(is_rvar_integer(x_ord))
+  expect_false(is_rvar_complex(x_ord))
+  expect_true(is_rvar_factor(x_ord))
+  expect_true(is_rvar_ordered(x_ord))
+})
 
 test_that("is.matrix/array on rvar works", {
   x_mat <- rvar(array(1:24, dim = c(2,2,6)))
