@@ -70,6 +70,9 @@ subset_draws.draws_matrix <- function(x, variable = NULL, iteration = NULL,
     variable, x, regex = regex, exclude = exclude,
     scalar = scalar
   )
+  if (selects_everything(x, variable, iteration, chain, draw)) {
+    return(x)
+  }
   iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
   chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
   draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
@@ -97,6 +100,9 @@ subset_draws.draws_array <- function(x, variable = NULL, iteration = NULL,
     variable, x, regex = regex, exclude = exclude,
     scalar = scalar
   )
+  if (selects_everything(x, variable, iteration, chain, draw)) {
+    return(x)
+  }
   iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
   chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
   draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
@@ -128,6 +134,9 @@ subset_draws.draws_df <- function(x, variable = NULL, iteration = NULL,
     variable, x, regex = regex, exclude = exclude,
     scalar = scalar
   )
+  if (selects_everything(x, variable, iteration, chain, draw)) {
+    return(x)
+  }
   iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
   chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
   draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
@@ -155,6 +164,9 @@ subset_draws.draws_list <- function(x, variable = NULL, iteration = NULL,
     variable, x, regex = regex, exclude = exclude,
     scalar = scalar
   )
+  if (selects_everything(x, variable, iteration, chain, draw)) {
+    return(x)
+  }
   iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
   chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
   draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
@@ -185,6 +197,9 @@ subset_draws.draws_rvars <- function(x, variable = NULL, iteration = NULL,
     variable, x, regex = regex, exclude = exclude,
     scalar = scalar
   )
+  if (selects_everything(x, variable, iteration, chain, draw)) {
+    return(x)
+  }
   iteration <- check_iteration_ids(iteration, x, unique = unique, exclude = exclude)
   chain <- check_chain_ids(chain, x, unique = unique, exclude = exclude)
   draw <- check_draw_ids(draw, x, unique = unique, exclude = exclude)
@@ -437,4 +452,16 @@ prepare_subsetting <- function(x, iteration = NULL, chain = NULL,
     }
   }
   x
+}
+
+#' Check if a subset would leave the draws object unchanged
+#'
+#' Called after `check_existing_variables()`, so `variable` holds the resolved
+#' names and `repair_draws()` has already run. Weighted draws never match,
+#' since `variable` leaves out `.log_weight` and the subset moves it.
+#' @noRd
+#' @return `TRUE` if nothing would be subset, `FALSE` otherwise.
+selects_everything <- function(x, variable, iteration, chain, draw) {
+  all_null(iteration, chain, draw) &&
+    identical(variable, variables(x, reserved = TRUE))
 }

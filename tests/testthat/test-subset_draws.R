@@ -67,6 +67,18 @@ test_that("subset_draws works correctly for draws_array objects", {
   expect_equal(ndraws(x) - 3 * nchains(x), ndraws(x_sub))
 })
 
+test_that("subset_draws returns draws unchanged when selecting all variables", {
+  x <- as_draws_array(example_draws())
+  expect_identical(subset_draws(x, variable = variables(x)), x)
+
+  x <- as_draws_df(example_draws())
+  expect_identical(subset_draws(x, variable = variables(x)), x)
+
+  x$.chain <- c(2L, 4L, 6L, 8L)[x$.chain]
+  x_sub <- subset_draws(x, variable = variables(x))
+  expect_equal(unique(x_sub$.chain), 1:4)
+})
+
 test_that("subset_draws works correctly for draws_df objects", {
   x <- as_draws_df(example_draws())
   x_sub <- subset_draws(x, variable = c("mu", "tau"), iteration = 5:10, chain = 3:4)

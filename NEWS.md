@@ -4,6 +4,8 @@
 
 * `bind_draws()` for `draws_array` objects is faster and holds one copy of the
 result instead of about three.
+* `subset_draws()` returns its input without copying it when every variable is
+selected.
 
 ### Bug Fixes
 
