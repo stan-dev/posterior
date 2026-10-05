@@ -457,8 +457,8 @@ prepare_subsetting <- function(x, iteration = NULL, chain = NULL,
 #' Check if a subset would leave the draws object unchanged
 #'
 #' Called after `check_existing_variables()`, so `variable` holds the resolved
-#' names and `repair_draws()` has already run. Weighted draws never match,
-#' since `variable` leaves out `.log_weight` and the subset moves it.
+#' names and `repair_draws()` has already run. Reserved variables such as
+#' `.log_weight` count, so weighted draws match only if they are selected too.
 #' @noRd
 #' @return `TRUE` if nothing would be subset, `FALSE` otherwise.
 selects_everything <- function(x, variable, iteration, chain, draw) {

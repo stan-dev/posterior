@@ -77,25 +77,27 @@ bind_draws.draws_array <- function(x, ..., along = "variable") {
     check_same_fun_output(dots, chain_ids)
     check_same_fun_output(dots, iteration_ids)
   } else if (along == "chain") {
-    check_same_fun_output(dots, variables)
+    check_same_fun_output(dots, variables, reserved = TRUE)
     check_same_fun_output(dots, iteration_ids)
   } else if (along == "iteration") {
-    check_same_fun_output(dots, variables)
+    check_same_fun_output(dots, variables, reserved = TRUE)
     check_same_fun_output(dots, chain_ids)
   } else if (along == "draw") {
     stop_no_call("Cannot bind 'draws_array' objects along 'draw'.")
   }
-  new_variables <- dimnames(dots[[1]])[[3]]
   if (along == "variable") {
     new_variables <- unlist(lapply(dots, function(x) dimnames(x)[[3]]))
+  } else {
+    new_variables <- dimnames(dots[[1]])[[3]]
   }
+  new_variables <- as.character(new_variables)
   check_new_variables(new_variables)
   # fill one preallocated array
   margin <- match(along, c("iteration", "chain", "variable"))
   sizes <- vapply(dots, function(x) dim(x)[margin], integer(1))
   out_dim <- dim(dots[[1]])
   out_dim[margin] <- sum(sizes)
-  type <- typeof(do.call(c, lapply(dots, function(x) vector(typeof(x), 0))))
+  type <- typeof(unlist(lapply(dots, function(x) vector(typeof(x), 0))))
   out <- vector(type, prod(out_dim))
   dim(out) <- out_dim
   ends <- cumsum(sizes)
@@ -272,8 +274,9 @@ bind_draws.list <- function(x, ..., along = "variable") {
 # check if function output is the same across objects
 # @param ls list of objects
 # @param fun a function to be evaluated on the objects
+# @param ... further arguments passed to 'fun'
 # @param TRUE if the function output matches for all objects
-check_same_fun_output <- function(ls, fun) {
+check_same_fun_output <- function(ls, fun, ...) {
   assert_list(ls)
   if (is.function(fun)) {
     fun_name <- deparse_pretty(substitute(fun))
@@ -281,7 +284,7 @@ check_same_fun_output <- function(ls, fun) {
     fun_name <- as_one_character(fun)
     fun <- get(fun, mode = "function")
   }
-  ids <- lapply(ls, fun)
+  ids <- lapply(ls, fun, ...)
   if (sum(!duplicated(ids)) > 1L) {
     stop_no_call("'", fun_name, "' of bound objects do not match.")
   }

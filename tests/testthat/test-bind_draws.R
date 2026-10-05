@@ -221,5 +221,12 @@ test_that("bind_draws errors for inputs with incompatible variables", {
   x1 <- x2 <- example_draws()
   variables(x1) <- gsub("theta", "beta", variables(x1))
   expect_error(bind_draws(x1, x2, along = "chain"), "'variables' of bound objects do not match")
+
+  x <- draws_array(mu = 1:4, .nchains = 2)
+  wx <- weight_draws(x, rep(1, 4))
+  expect_error(
+    bind_draws(wx, x, along = "chain"),
+    "'variables' of bound objects do not match"
+  )
 })
 
