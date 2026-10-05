@@ -79,6 +79,15 @@ test_that("subset_draws returns draws unchanged when selecting all variables", {
   expect_equal(unique(x_sub$.chain), 1:4)
 })
 
+test_that("subset_draws preserves weighted draws_df when selecting all variables", {
+  x <- weight_draws(draws_df(mu = 1:4, .nchains = 2), 1:4)
+  x_sub <- subset_draws(x, variable = variables(x, reserved = TRUE))
+
+  expect_named(x_sub, c("mu", ".chain", ".iteration", ".draw", ".log_weight"))
+  expect_identical(x_sub, x)
+  expect_identical(weights(x_sub), weights(x))
+})
+
 test_that("subset_draws works correctly for draws_df objects", {
   x <- as_draws_df(example_draws())
   x_sub <- subset_draws(x, variable = c("mu", "tau"), iteration = 5:10, chain = 3:4)
