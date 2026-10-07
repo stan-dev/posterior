@@ -7,7 +7,8 @@
 ps_tail_sorted_log_ratios(x, cutoff, smooth_draws = TRUE, ...)
 }
 \arguments{
-\item{x}{Vector of tail elements already sorted in ascending order. Already shifted to account for overflow.}
+\item{x}{Vector of log ratios in the tail, sorted in ascending order and
+already shifted to account for overflow.}
 
 \item{cutoff}{Largest value smaller than the tail values.}
 
@@ -15,6 +16,11 @@ ps_tail_sorted_log_ratios(x, cutoff, smooth_draws = TRUE, ...)
 \code{TRUE}. If \code{FALSE}, \code{k} will be calculated but \code{x} will remain untouched.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
+}
+\value{
+A list with elements \code{tail}, the (smoothed) tail of log ratios, and
+\code{k}, the estimated shape parameter. Unlike \code{\link[=ps_tail]{ps_tail()}}, the full vector
+of draws is not returned.
 }
 \description{
 Function to Pareto smooth a sorted tail of log ratios. Exported

@@ -261,6 +261,39 @@ test_that("pareto_smooth works for log_weights", {
 
 })
 
+test_that("check ps_tail behavior for ndraws_tail less than 5", {
+  lw <- log(c(1:25, 1e3, 1e3, 1e3))
+
+  expect_warning(
+    tail <- ps_tail(lw, ndraws_tail = 4, tail = "right"),
+    "Can't fit generalized Pareto distribution because ndraws_tail is less than 5."
+  )
+  expect_equal(names(tail), c("x", "k"))
+  expect_true(is.na(tail$k))
+})
+
+test_that("ps_tail_sorted_log_ratios matches ps_tail", {
+  lw <- sort(log(c(1:25, 1e3, 1e2, 1e3)))
+  lw <- lw - max(lw)
+  tail_ids <- 19:28
+
+  expected <- ps_tail(lw, ndraws_tail = 10, are_log_weights = TRUE)
+  actual <- ps_tail_sorted_log_ratios(lw[tail_ids], cutoff = lw[min(tail_ids) - 1])
+
+  expect_equal(names(actual), c("tail", "k"))
+  expect_equal(actual$k, expected$k)
+  expect_equal(actual$tail, expected$x[tail_ids])
+})
+
+test_that("ps_tail_sorted_log_ratios handles constant tails", {
+  x <- log(rep(0.3, 10))
+
+  out <- ps_tail_sorted_log_ratios(x, cutoff = log(0.2))
+
+  expect_equal(out$tail, x)
+  expect_true(is.na(out$k))
+})
+
 test_that("check ps_tail behavior for constant draws_tail", {
   x <- log(replicate(10, 0.3))
 

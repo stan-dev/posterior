@@ -453,6 +453,7 @@ pareto_convergence_rate.rvar <- function(x, ...) {
   ps_convergence_rate(k, ndraws(x))
 }
 
+
 #' Pareto smooth tail
 #' function to Pareto smooth the tail of a vector. Exported
 #' for usage in other packages, not by users.
@@ -483,6 +484,14 @@ ps_tail <- function(x,
                     are_log_weights = FALSE,
                     ...
                     ) {
+
+  if (ndraws_tail < 5) {
+    warning_no_call(
+      "Can't fit generalized Pareto distribution ",
+      "because ndraws_tail is less than 5."
+    )
+    return(list(x = x, k = NA))
+  }
 
   if (are_log_weights) {
     # shift log values for safe exponentiation
@@ -548,9 +557,13 @@ ps_tail <- function(x,
 #' Function to Pareto smooth a sorted tail of log ratios. Exported
 #' for usage in other packages, not by users.
 #'
-#' @param x Vector of tail elements already sorted in ascending order. Already shifted to account for overflow.
+#' @param x Vector of log ratios in the tail, sorted in ascending order and
+#'   already shifted to account for overflow.
 #' @param cutoff Largest value smaller than the tail values.
 #' @inheritParams ps_tail
+#' @return A list with elements `tail`, the (smoothed) tail of log ratios, and
+#'   `k`, the estimated shape parameter. Unlike [ps_tail()], the full vector
+#'   of draws is not returned.
 #' @seealso [`ps_tail`] for the general tail smoothing function.
 #'
 #' @export
