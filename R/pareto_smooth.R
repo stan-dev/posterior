@@ -506,8 +506,9 @@ ps_tail <- function(x,
   ndraws <- length(x)
   tail_ids <- seq(ndraws - ndraws_tail + 1, ndraws)
 
-  ord <- sort.int(x, index.return = TRUE)
-  draws_tail <- ord$x[tail_ids]
+  ix <- order(x)
+  sorted_x <- x[ix]
+  draws_tail <- sorted_x[tail_ids]
 
   if (is_constant(draws_tail)) {
     if (tail == "left") {
@@ -516,8 +517,8 @@ ps_tail <- function(x,
     return(list(x = x, k = NA))
   }
 
-  cutoff <- ord$x[min(tail_ids) - 1] # largest value smaller than tail values
-  if (cutoff == ord$x[min(tail_ids)]) {
+  cutoff <- sorted_x[min(tail_ids) - 1] # largest value smaller than tail values
+  if (cutoff == sorted_x[min(tail_ids)]) {
     # cutoff is not smaller than the tail values
     cutoff <- cutoff - .Machine$double.eps
   }
@@ -542,7 +543,7 @@ ps_tail <- function(x,
   k <- smoothed$k
 
   if (is.finite(k) && smooth_draws) {
-    x[ord$ix[tail_ids]] <- smoothed$tail
+    x[ix[tail_ids]] <- smoothed$tail
   }
 
   if (tail == "left") {
