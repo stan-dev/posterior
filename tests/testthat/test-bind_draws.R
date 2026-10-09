@@ -65,6 +65,23 @@ test_that("bind_draws works for draws_array objects", {
                "Cannot bind 'draws_array' objects along 'draw'")
 })
 
+test_that("bind_draws preserves array values with mixed storage types", {
+  x <- as_draws_array(array(
+    1:12, dim = c(3, 2, 2),
+    dimnames = list(NULL, NULL, c("a", "b"))
+  ))
+  y <- x + 12.5
+
+  for (along in c("iteration", "chain", "variable")) {
+    variables(y) <- if (along == "variable") c("c", "d") else variables(x)
+    expected <- as_draws_array(abind::abind(
+      unclass(x), unclass(y),
+      along = match(along, c("iteration", "chain", "variable"))
+    ))
+    expect_identical(bind_draws(x, y, along = along), expected)
+  }
+})
+
 test_that("bind_draws works for draws_df objects", {
   draws1 <- as_draws_df(example_draws())
   draws2 <- subset_draws(draws1, chain = 2)
@@ -221,5 +238,12 @@ test_that("bind_draws errors for inputs with incompatible variables", {
   x1 <- x2 <- example_draws()
   variables(x1) <- gsub("theta", "beta", variables(x1))
   expect_error(bind_draws(x1, x2, along = "chain"), "'variables' of bound objects do not match")
+
+  x <- draws_array(mu = 1:4, .nchains = 2)
+  wx <- weight_draws(x, rep(1, 4))
+  expect_error(
+    bind_draws(wx, x, along = "chain"),
+    "'variables' of bound objects do not match"
+  )
 })
 
