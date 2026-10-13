@@ -184,16 +184,22 @@ isNA <- function(x) {
 
 #' Check if vector is constant
 #'
-#' check if a vector is constant, up to a defined tolerance.
+#' check if a vector is constant, up to a defined tolerance relative to the
+#' magnitude of its values.
 #'
 #' @param x (vector) vector to check if is constant
-#' @param tol (numeric) tolerance to consider two values equal.
+#' @param tol (numeric) relative tolerance to consider two values equal. `x`
+#'   is constant if `max(x) - min(x)` is at most `tol` times the largest
+#'   absolute value in `x`.
 #'   Default is `.Machine$double.eps`.
 #'
 #' @keywords internal
 #' @export
 is_constant <- function(x, tol = .Machine$double.eps) {
-  abs(max(x) - min(x)) < tol
+  r <- range(x)
+  spread <- r[2] - r[1]
+  # the equality check covers all-zero and all-infinite x
+  r[1] == r[2] || (is.finite(spread) && spread <= tol * max(abs(r)))
 }
 
 # collapse variables via commas for pretty printing

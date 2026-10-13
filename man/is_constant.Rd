@@ -9,10 +9,13 @@ is_constant(x, tol = .Machine$double.eps)
 \arguments{
 \item{x}{(vector) vector to check if is constant}
 
-\item{tol}{(numeric) tolerance to consider two values equal.
+\item{tol}{(numeric) relative tolerance to consider two values equal. \code{x}
+is constant if \code{max(x) - min(x)} is at most \code{tol} times the largest
+absolute value in \code{x}.
 Default is \code{.Machine$double.eps}.}
 }
 \description{
-check if a vector is constant, up to a defined tolerance.
+check if a vector is constant, up to a defined tolerance relative to the
+magnitude of its values.
 }
 \keyword{internal}
