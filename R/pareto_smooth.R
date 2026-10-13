@@ -516,11 +516,9 @@ ps_tail <- function(x,
     return(list(x = x, k = NA))
   }
 
-  cutoff <- ord$x[min(tail_ids) - 1] # largest value smaller than tail values
-  if (cutoff == ord$x[min(tail_ids)]) {
-    # cutoff is not smaller than the tail values
-    cutoff <- cutoff - .Machine$double.eps
-  }
+  # largest value not in the tail; tail values equal to it give zero
+  # excesses, which are in the support of the generalized Pareto distribution
+  cutoff <- ord$x[min(tail_ids) - 1]
 
   max_tail <- max(draws_tail)
 

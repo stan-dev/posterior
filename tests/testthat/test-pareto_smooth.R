@@ -304,6 +304,32 @@ test_that("ps_tail handles -Inf log weights below the cutoff", {
   expect_true(all(is.infinite(tail$x[1:80]) & tail$x[1:80] < 0))
 })
 
+test_that("ps_tail does not smooth tail values below the cutoff", {
+  # many weights underflow to 0, so the cutoff ties with the lowest tail
+  # values; the smoothed tail must not go below the cutoff (here below 0)
+  w <- c(rep(0, 350), exp(-seq(0, 60, length.out = 50)))
+  tail <- ps_tail(w, ndraws_tail = 60, tail = "right")
+  expect_true(is.finite(tail$k))
+  expect_true(all(tail$x >= 0))
+  # the order of the draws does not change
+  expect_true(all(diff(tail$x[order(w)]) >= 0))
+
+  # same for the left tail
+  tail <- ps_tail(-w, ndraws_tail = 60, tail = "left")
+  expect_true(is.finite(tail$k))
+  expect_true(all(tail$x <= 0))
+})
+
+test_that("pareto_smooth does not return negative weights for ties at 0", {
+  w <- c(rep(0, 350), exp(-seq(0, 60, length.out = 50)))
+  ws <- pareto_smooth(w, tail = "right", r_eff = 1, return_k = FALSE, verbose = FALSE)
+  expect_true(all(ws >= 0))
+  x <- as_draws_df(data.frame(theta = seq_along(ws)))
+  expect_no_error(
+    resample_draws(x, ndraws = 4, weights = ws, method = "simple_no_replace")
+  )
+})
+
 
 test_that("check ps_tail behavior for ndraws_tail less than 5", {
   w <- c(1:25, 1e3, 1e3, 1e3)

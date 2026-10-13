@@ -188,6 +188,33 @@ test_that("pareto_pit uses randomization for discrete observations in bulk", {
   expect_true(all(results >= 0 & results <= 1))
 })
 
+test_that("pareto_pit uses the raw PIT at a tail cutoff that ties with tail draws", {
+  # the tail cutoff (0) ties with the lowest 10 tail draws
+  draws <- c(rep(0, 350), exp(-seq(0, 5, length.out = 50)))
+  min_pit <- 1 / length(draws) / 1e4
+
+  # right tail: the result does not depend on the location of the draws
+  x0 <- as_draws_matrix(matrix(draws, ncol = 1))
+  x5 <- as_draws_matrix(matrix(draws + 5, ncol = 1))
+  set.seed(1)
+  pit0 <- pareto_pit(x0, 0)
+  set.seed(1)
+  pit5 <- pareto_pit(x5, 5)
+  expect_equal(unname(pit0), unname(pit5))
+  # an observation below all draws is not in the right tail
+  expect_equal(unname(pareto_pit(x0, -1e-300)), min_pit)
+
+  # left tail: same checks on the mirrored draws
+  xl0 <- as_draws_matrix(matrix(-draws, ncol = 1))
+  xl5 <- as_draws_matrix(matrix(-draws - 5, ncol = 1))
+  set.seed(1)
+  pitl0 <- pareto_pit(xl0, 0)
+  set.seed(1)
+  pitl5 <- pareto_pit(xl5, -5)
+  expect_equal(unname(pitl0), unname(pitl5))
+  expect_equal(unname(pareto_pit(xl0, 1e-300)), 1 - min_pit)
+})
+
 # ---- ndraws_tail argument ----
 
 test_that("pareto_pit respects ndraws_tail argument", {
