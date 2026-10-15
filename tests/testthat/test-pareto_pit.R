@@ -473,3 +473,12 @@ test_that("pareto_pit.default passes weights through", {
   expect_length(result, 2)
   expect_true(all(result >= 0 & result <= 1))
 })
+
+test_that("pareto_pit does not depend on the scale of the draws", {
+  set.seed(42)
+  x <- matrix(exp(rnorm(4000)), ncol = 4)
+  y <- c(0.05, 1, 10, 30)
+  for (s in c(1e-20, 1e-200)) {
+    expect_equal(pareto_pit(s * x, s * y), pareto_pit(x, y))
+  }
+})

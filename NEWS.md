@@ -13,6 +13,8 @@ selected.
 * mid-p value adjusment for discrete `PRIT` test method  
 * Add additional unit tests for `uniformity_test()` 
 * Remove the offset at a tied Pareto tail cutoff in `ps_tail()` and `pareto_pit()` (#468)
+* Use a tolerance relative to the magnitude of `x` in `is_constant()` (#469)
+
 
 # posterior 1.7.1
 
