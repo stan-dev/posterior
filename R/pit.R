@@ -320,9 +320,6 @@ pareto_pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE,
     right_tail <- sorted[tail_ids]
     if (!right_tail_empty && !is_constant(right_tail)) {
       right_cutoff <- sorted[min(tail_ids) - 1]
-      if (right_cutoff == right_tail[1]) {
-        right_cutoff <- right_cutoff - .Machine$double.eps
-      }
       right_tail_wt <- if (!is.null(log_wt_sorted)) {
         exp(log_wt_sorted[tail_ids])
       } else {
@@ -354,9 +351,6 @@ pareto_pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE,
       left_tail <- left_sorted[tail_ids]
       if (!left_tail_empty && !is_constant(left_tail)) {
         left_cutoff <- left_sorted[min(tail_ids) - 1]
-        if (left_cutoff == left_tail[1]) {
-          left_cutoff <- left_cutoff - .Machine$double.eps
-        }
         left_tail_wt <- if (!is.null(log_wt_left_sorted)) {
           exp(log_wt_left_sorted[tail_ids])
         } else {
