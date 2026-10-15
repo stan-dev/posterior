@@ -1,6 +1,7 @@
 # Check if vector is constant
 
-check if a vector is constant, up to a defined tolerance.
+check if a vector is constant, up to a defined tolerance relative to the
+magnitude of its values.
 
 ## Usage
 
@@ -16,5 +17,6 @@ is_constant(x, tol = .Machine$double.eps)
 
 - tol:
 
-  (numeric) tolerance to consider two values equal. Default is
-  `.Machine$double.eps`.
+  (numeric) relative tolerance to consider two values equal. `x` is
+  constant if `max(x) - min(x)` is at most `tol` times the largest
+  absolute value in `x`. Default is `.Machine$double.eps`.
