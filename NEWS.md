@@ -11,7 +11,8 @@ selected.
 
 * Fix truncation operation for `uniformity_test()` (#462)
 * mid-p value adjusment for discrete `PRIT` test method  
-* Add additional unit tests for `uniformity_test()` 
+* Add additional unit tests for `uniformity_test()`
+* Use a tolerance relative to the magnitude of `x` in `is_constant()` (#469)
 
 # posterior 1.7.1
 

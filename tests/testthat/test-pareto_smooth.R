@@ -364,3 +364,17 @@ test_that("ps_convergence_rate propagates missing shape parameters", {
     c(ps_convergence_rate(0.3, n), NA, ps_convergence_rate(0.8, n), NA, 1, 0)
   )
 })
+
+test_that("pareto diagnostics and smoothing do not depend on the scale of the draws", {
+  set.seed(1234)
+  x <- exp(rnorm(1000))
+  for (s in c(1e-20, 1e-200)) {
+    expect_equal(pareto_khat(s * x), pareto_khat(x))
+    expect_equal(pareto_diags(s * x), pareto_diags(x))
+    expect_equal(
+      pareto_smooth(s * x, return_k = FALSE, verbose = FALSE) / s,
+      pareto_smooth(x, return_k = FALSE, verbose = FALSE)
+    )
+    expect_equal(ps_tail(s * x, ndraws_tail = 50)$k, ps_tail(x, ndraws_tail = 50)$k)
+  }
+})
