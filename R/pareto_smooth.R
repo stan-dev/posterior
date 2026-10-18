@@ -503,12 +503,9 @@ ps_tail <- function(x,
     x <- -x
   }
 
-  ndraws <- length(x)
-  tail_ids <- seq(ndraws - ndraws_tail + 1, ndraws)
-
-  ix <- order(x)
-  sorted_x <- x[ix]
-  draws_tail <- sorted_x[tail_ids]
+  selection <- .ps_tail_selection(x, ndraws_tail)
+  ix_tail <- selection$ix
+  draws_tail <- x[ix_tail]
 
   if (is_constant(draws_tail)) {
     if (tail == "left") {
@@ -517,9 +514,8 @@ ps_tail <- function(x,
     return(list(x = x, k = NA))
   }
 
-  cutoff <- sorted_x[min(tail_ids) - 1] # largest value smaller than tail values
-  if (cutoff == sorted_x[min(tail_ids)]) {
-    # cutoff is not smaller than the tail values
+  cutoff <- selection$cutoff
+  if (cutoff == min(draws_tail)) {
     cutoff <- cutoff - .Machine$double.eps
   }
 
@@ -543,7 +539,7 @@ ps_tail <- function(x,
   k <- smoothed$k
 
   if (is.finite(k) && smooth_draws) {
-    x[ix[tail_ids]] <- smoothed$tail
+    x[ix_tail] <- smoothed$tail
   }
 
   if (tail == "left") {
@@ -551,6 +547,22 @@ ps_tail <- function(x,
   }
 
   list(x = x, k = k)
+}
+
+.ps_tail_selection <- function(x, ndraws_tail) {
+  ndraws <- length(x)
+  start <- ndraws - ndraws_tail + 1
+
+  if (start > 1 && !anyNA(x)) {
+    cutoff <- sort.int(x, partial = start - 1)[start - 1]
+    ix <- which(x > cutoff)
+    if (length(ix) == ndraws_tail) {
+      return(list(ix = ix[order(x[ix], method = "radix")], cutoff = cutoff))
+    }
+  }
+
+  ix <- order(x, method = "radix")
+  list(ix = ix[seq(start, ndraws)], cutoff = x[ix[start - 1]])
 }
 
 #' Pareto smooth sorted tail of log ratios
