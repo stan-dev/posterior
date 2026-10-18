@@ -57,6 +57,10 @@ test_that("entropy works on rvars", {
 
 # dissent -----------------------------------------------------------------
 
+test_that("log2_one_minus is stable near zero", {
+  expect_equal(log2_one_minus(1e-20), -1.4426950408889633e-20)
+})
+
 test_that("dissent works on vectors", {
   expect_equal(dissent(NULL), 0)
   expect_equal(dissent(1), 0)

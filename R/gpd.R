@@ -3,7 +3,9 @@
 #' Computes the quantile function for a generalized Pareto distribution
 #' with location `mu`, scale `sigma`, and shape `k`.
 #' 
-#' @param p Numeric vector of probabilities.
+#' @param p Numeric vector of probabilities, in `[0, 1]`, or of log
+#'   probabilities, in `[-Inf, 0]`, if `log.p` is `TRUE`. Values outside the
+#'   valid range return `NaN` with a warning.
 #' @param mu Location parameter.
 #' @param sigma Scale parameter (must be positive).
 #' @param k Shape parameter.
@@ -19,16 +21,23 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
   if (is.na(sigma) || sigma <= 0) {
     return(rep(NaN, length(p)))
   }
-  if (log.p) {
-    p <- exp(p)
+  # probabilities outside the valid range give NaN with a warning, as in the
+  # base R quantile functions. which() leaves NA and NaN inputs to propagate,
+  # and replacing them here avoids a second warning from log() or log1p().
+  invalid <- which(if (log.p) p > 0 else p < 0 | p > 1)
+  if (length(invalid)) {
+    warning_no_call("NaNs produced")
+    p[invalid] <- NaN
   }
-  if (!lower.tail) {
-    p <- 1 - p
+  if (log.p) {
+    log_survival <- if (lower.tail) log1m_exp(p) else p
+  } else {
+    log_survival <- if (lower.tail) log1p(-p) else log(p)
   }
   if (k == 0) {
-    q <-  mu - sigma * log1p(-p)
+    q <- mu - sigma * log_survival
   } else {
-    q <- mu + sigma * expm1(-k * log1p(-p)) / k
+    q <- mu + sigma * expm1(-k * log_survival) / k
   }
   q
 }
@@ -55,20 +64,17 @@ pgeneralized_pareto <- function(q, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
     return(rep(NaN, length(q)))
   }
   z <- (q - mu) / sigma
-  if (abs(k) < 1e-15) {
-    # for very small values of indistinguishable in floating point accuracy from the case k=0
-    p <- -expm1(-z)
+  if (k == 0) {
+    log_survival <- -z
   } else {
     # pmax handles values outside the support
-    p <- -expm1(log1p(pmax(k * z, -1)) / -k)
+    log_survival <- log1p(pmax(k * z, -1)) / -k
   }
-  # force to [0, 1] for values outside the support
-  p <- pmin(pmax(p, 0), 1)
-  if (!lower.tail) {
-    p <- 1 - p
-  }
-  if (log.p) {
-    p <- log(p)
+  log_survival <- pmin(log_survival, 0)
+  if (lower.tail) {
+    p <- if (log.p) log1m_exp(log_survival) else -expm1(log_survival)
+  } else {
+    p <- if (log.p) log_survival else exp(log_survival)
   }
   p
 }

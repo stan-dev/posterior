@@ -55,6 +55,11 @@ test_that("mcse diagnostics return reasonable values", {
   mcse <- mcse_sd(tau)
   expect_true(mcse > 0.15 & mcse < 0.25)
 
+  x <- rep(c(-1e8 - 1, -1e8 + 1, 1e8 - 1, 1e8 + 1), 100)
+  x_sq <- (x - mean(x))^2
+  expected <- sqrt(mean((x_sq - mean(x_sq))^2) / ess_mean(x_sq) / mean(x_sq) / 4)
+  expect_equal(mcse_sd(x), expected)
+
   mcse <- mcse_quantile(tau, probs = c(0.2, 0.8))
   expect_equal(names(mcse), c("mcse_q20", "mcse_q80"))
   expect_true(mcse[1] > 0.16 & mcse[1] < 0.21)
@@ -108,6 +113,42 @@ test_that("convergence diagnostics handle special cases correctly", {
   # x <- cbind(1, rnorm(10))
   # expect_true(is.na(rhat_basic(x)))
   # expect_true(is.na(ess_basic(x)))
+})
+
+test_that("is_constant uses a tolerance relative to the magnitude of x", {
+  eps <- .Machine$double.eps
+  expect_true(is_constant(rep(0, 5)))
+  expect_true(is_constant(rep(-3e-300, 5)))
+  expect_true(is_constant(c(-Inf, -Inf)))
+  # values that differ by at most eps relative to their magnitude
+  expect_true(is_constant(c(1, 1 + eps)))
+  expect_true(is_constant(1e10 * c(1, 1 + eps)))
+  # small values that differ relative to their magnitude
+  expect_false(is_constant(c(0, 1e-300)))
+  expect_false(is_constant(1e-20 * c(1, 2)))
+  expect_false(is_constant(c(1, 1 + 4 * eps)))
+  expect_false(is_constant(c(-Inf, 2)))
+  expect_true(is.na(is_constant(c(1, NA))))
+})
+
+test_that("convergence diagnostics do not depend on the scale of the draws", {
+  set.seed(1234)
+  x <- matrix(exp(rnorm(400)), ncol = 4)
+  for (s in c(1e-10, 1e-100)) {
+    expect_equal(rhat_basic(s * x), rhat_basic(x))
+    expect_equal(ess_basic(s * x), ess_basic(x))
+    expect_equal(ess_mean(s * x), ess_mean(x))
+    expect_equal(ess_quantile(s * x, 0.9), ess_quantile(x, 0.9))
+    expect_equal(
+      rhat_nested(s * x, superchain_ids = c(1, 1, 2, 2)),
+      rhat_nested(x, superchain_ids = c(1, 1, 2, 2))
+    )
+  }
+  # ess_sd() works on squared deviations, and their autocovariance is of
+  # the order s^4, which underflows for s = 1e-100
+  for (s in c(1e-10, 1e-50)) {
+    expect_equal(ess_sd(s * x), ess_sd(x))
+  }
 })
 
 test_that("convergence diagnostics throw correct errors", {

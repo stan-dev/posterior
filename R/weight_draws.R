@@ -6,6 +6,13 @@
 #' `.log_weight`). See [weights.draws()] for details how to extract weights from
 #' `draws` objects.
 #'
+#' Because the stored log-weights are unnormalized and are normalized only when
+#' they are extracted, subsetting a weighted `draws` object conditions on the
+#' retained draws: the weights of the draws that remain are renormalized to sum
+#' to one. Any operation that drops draws has this effect, including
+#' [subset_draws()], [thin_draws()] and `[` indexing. Weights are therefore
+#' comparable only within one subset, not across subsets of the same object.
+#'
 #' @template args-methods-x
 #' @param weights (numeric vector) A vector of weights of length `ndraws(x)`.
 #'   Weights will be internally stored on the log scale (in a variable called
@@ -169,7 +176,12 @@ weights.draws <- function(object, log = FALSE, normalize = TRUE, ...) {
   }
   out <- extract_variable(object, ".log_weight")
   if (normalize) {
-    out <- out - log_sum_exp(out)
+    # weight_draws() rejects this at construction, but dropping draws from an
+    # object that was valid can still remove every weighted draw
+    if (!any(is.finite(out))) {
+      stop_no_call("All draws have zero weight.")
+    }
+    out <- log_normalize(out)
   }
   if (!log) {
     out <- exp(out)
@@ -192,6 +204,18 @@ validate_weights <- function(weights, draws, log = FALSE) {
       stop_no_call("Weights must be non-negative.")
     }
     weights <- log(weights)
+  }
+  if (!any(is.finite(weights))) {
+    # classed so that callers working variable by variable, such as pit(), can
+    # handle one degenerate column without aborting the whole call
+    stop(errorCondition(
+      paste0(
+        "All weights are zero, so no draw carries any probability mass. ",
+        "If the weights underflowed to zero, pass them on the log scale ",
+        "with `log = TRUE`."
+      ),
+      class = "posterior_degenerate_weights_error"
+    ))
   }
   weights
 }

@@ -1,3 +1,21 @@
+# posterior (development)
+
+### Enhancements
+
+* `bind_draws()` for `draws_array` objects is faster and holds one copy of the
+result instead of about three.
+* `subset_draws()` returns its input without copying it when every variable is
+selected.
+
+### Bug Fixes
+
+* Fix truncation operation for `uniformity_test()` (#462)
+* mid-p value adjusment for discrete `PRIT` test method  
+* Add additional unit tests for `uniformity_test()` 
+* Remove the offset at a tied Pareto tail cutoff in `ps_tail()` and `pareto_pit()` (#468)
+* Use a tolerance relative to the magnitude of `x` in `is_constant()` (#469)
+
+
 # posterior 1.7.1
 
 * Minor release to accommodate the JOSS paper.

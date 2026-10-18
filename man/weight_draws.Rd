@@ -49,6 +49,14 @@ are stored in the form of unnormalized log-weights (in a variable called
 \code{.log_weight}). See \code{\link[=weights.draws]{weights.draws()}} for details how to extract weights from
 \code{draws} objects.
 }
+\details{
+Because the stored log-weights are unnormalized and are normalized only when
+they are extracted, subsetting a weighted \code{draws} object conditions on the
+retained draws: the weights of the draws that remain are renormalized to sum
+to one. Any operation that drops draws has this effect, including
+\code{\link[=subset_draws]{subset_draws()}}, \code{\link[=thin_draws]{thin_draws()}} and \code{[} indexing. Weights are therefore
+comparable only within one subset, not across subsets of the same object.
+}
 \examples{
 x <- example_draws()
 
