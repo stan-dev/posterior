@@ -30,7 +30,7 @@ is defined.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 
-\item{value, variables}{(character vector) new variable names.}
+\item{value, variable}{(character vector) new variable names.}
 
 \item{with_indices}{(logical) Should indices be included in variable
 names? For example, if the object includes variables named \code{"x[1]"} and
