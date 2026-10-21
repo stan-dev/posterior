@@ -595,7 +595,12 @@ ps_tail_sorted_log_ratios <- function(x, cutoff, smooth_draws = TRUE, ...) {
     ...
   )
 
-  smoothed$tail <- log(smoothed$tail)
+  # log(exp(x)) is not x: it rounds, and it gives -Inf where exp(x) underflows
+  if (is.finite(smoothed$k) && smooth_draws) {
+    smoothed$tail <- log(smoothed$tail)
+  } else {
+    smoothed$tail <- x
+  }
 
   smoothed
 }

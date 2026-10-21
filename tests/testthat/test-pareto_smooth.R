@@ -364,6 +364,16 @@ test_that("ps_tail_sorted_log_ratios handles constant tails", {
   expect_true(is.na(out$k))
 })
 
+test_that("ps_tail_sorted_log_ratios returns x unchanged if not smoothed", {
+  # exp() underflows to 0 for the smallest values
+  x <- c(-850, -800, -760, log(seq(0.05, 1, length.out = 20)))
+
+  out <- ps_tail_sorted_log_ratios(x, cutoff = -900, smooth_draws = FALSE)
+
+  expect_identical(out$tail, x)
+  expect_true(is.finite(out$k))
+})
+
 test_that("check ps_tail behavior for constant draws_tail", {
   x <- log(replicate(10, 0.3))
 
