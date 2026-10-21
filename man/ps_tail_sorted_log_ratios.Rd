@@ -8,14 +8,16 @@ ps_tail_sorted_log_ratios(x, cutoff, smooth_draws = TRUE, ...)
 }
 \arguments{
 \item{x}{Vector of log ratios in the tail, sorted in ascending order and
-already shifted to account for overflow.}
+shifted so that \code{exp(x)} does not overflow, e.g. by subtracting the
+maximum of all log ratios.}
 
-\item{cutoff}{Largest value smaller than the tail values.}
+\item{cutoff}{The largest log ratio not in the tail, on the same shifted
+scale as \code{x}. Tail values may be equal to it.}
 
-\item{smooth_draws}{(logical) Should the tails be smoothed? Default is
-\code{TRUE}. If \code{FALSE}, \code{k} will be calculated but \code{x} will remain untouched.}
+\item{smooth_draws}{(logical) Should the tail be smoothed? If \code{FALSE},
+only \code{k} is estimated and \code{tail} is \code{x} unchanged.}
 
-\item{...}{Arguments passed to individual methods (if applicable).}
+\item{...}{Arguments passed to \code{\link[=gpdfit]{gpdfit()}}.}
 }
 \value{
 A list with elements \code{tail}, the (smoothed) tail of log ratios, and

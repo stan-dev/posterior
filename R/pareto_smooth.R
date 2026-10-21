@@ -548,6 +548,16 @@ ps_tail <- function(x,
   list(x = x, k = k)
 }
 
+#' Select the right tail without a full sort
+#'
+#' @param x Vector of draws.
+#' @param ndraws_tail Number of draws in the tail.
+#' @return A list with elements `ix`, the indices of the `ndraws_tail` largest
+#'   values of `x` in ascending order of the values, and `cutoff`, the largest
+#'   value not in the tail. The result is the same as with
+#'   `order(x, method = "radix")`, also with ties.
+#'
+#' @noRd
 .ps_tail_selection <- function(x, ndraws_tail) {
   ndraws <- length(x)
   start <- ndraws - ndraws_tail + 1
@@ -573,9 +583,13 @@ ps_tail <- function(x,
 #' for usage in other packages, not by users.
 #'
 #' @param x Vector of log ratios in the tail, sorted in ascending order and
-#'   already shifted to account for overflow.
-#' @param cutoff Largest value smaller than the tail values.
-#' @inheritParams ps_tail
+#'   shifted so that `exp(x)` does not overflow, e.g. by subtracting the
+#'   maximum of all log ratios.
+#' @param cutoff The largest log ratio not in the tail, on the same shifted
+#'   scale as `x`. Tail values may be equal to it.
+#' @param smooth_draws (logical) Should the tail be smoothed? If `FALSE`,
+#'   only `k` is estimated and `tail` is `x` unchanged.
+#' @param ... Arguments passed to [gpdfit()].
 #' @return A list with elements `tail`, the (smoothed) tail of log ratios, and
 #'   `k`, the estimated shape parameter. Unlike [ps_tail()], the full vector
 #'   of draws is not returned.
@@ -611,7 +625,8 @@ ps_tail_sorted_log_ratios <- function(x, cutoff, smooth_draws = TRUE, ...) {
 #'
 #' @param x Vector of tail elements already sorted in ascending order.
 #' @param excess Tail elements minus the cutoff, computed without overflow.
-#' @param cutoff Largest value smaller than the tail values.
+#' @param cutoff The largest value not in the tail. Tail values may be equal
+#'   to it.
 #' @param smooth_draws Should the tail values be smoothed?
 #' @param ... Passed to [gpdfit()].
 #'
