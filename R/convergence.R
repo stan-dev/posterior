@@ -426,7 +426,6 @@ mcse_median <- function(x, ...) {
   p <- c(0.1586553, 0.8413447)
   a <- qbeta(p, ess * prob + 1, ess * (1 - prob) + 1)
   x <- as.vector(x)
-  x <- x[!is.na(x)]  # as sort() did
   S <- length(x)
   i1 <- max(floor(a[1] * S), 1)
   i2 <- min(ceiling(a[2] * S), S)
