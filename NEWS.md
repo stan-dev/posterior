@@ -7,7 +7,7 @@ result instead of about three.
 * `subset_draws()` returns its input without copying it when every variable is
 selected.
 * All warnings now have the class `posterior_warning` and a class for each
-cause. Calling packages can catch, count, or muffle each type of warning (#309).
+cause. Calling packages can catch, count, or muffle each type of warning (#470).
 
 ### Bug Fixes
 
