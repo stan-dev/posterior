@@ -425,10 +425,18 @@ mcse_median <- function(x, ...) {
   ess <- ess_quantile(x, prob)
   p <- c(0.1586553, 0.8413447)
   a <- qbeta(p, ess * prob + 1, ess * (1 - prob) + 1)
-  ssims <- sort(x)
-  S <- length(ssims)
-  th1 <- ssims[max(floor(a[1] * S), 1)]
-  th2 <- ssims[min(ceiling(a[2] * S), S)]
+  x <- as.vector(x)
+  x <- x[!is.na(x)]  # as sort() did
+  S <- length(x)
+  i1 <- max(floor(a[1] * S), 1)
+  i2 <- min(ceiling(a[2] * S), S)
+  if (anyNA(c(i1, i2))) {
+    return(NA_real_)
+  }
+  # only the two order statistics are needed
+  ssims <- sort.int(x, partial = unique(c(i1, i2)))
+  th1 <- ssims[i1]
+  th2 <- ssims[i2]
   as.vector((th2 - th1) / 2)
 }
 
