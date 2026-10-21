@@ -374,6 +374,15 @@ test_that("ps_tail_sorted_log_ratios returns x unchanged if not smoothed", {
   expect_true(is.finite(out$k))
 })
 
+test_that("ps_tail_sorted_log_ratios requires a sorted tail", {
+  x <- log(seq(0.05, 1, length.out = 20))
+
+  expect_error(
+    ps_tail_sorted_log_ratios(rev(x), cutoff = log(0.01)),
+    "must be sorted in ascending order"
+  )
+})
+
 test_that("check ps_tail behavior for constant draws_tail", {
   x <- log(replicate(10, 0.3))
 

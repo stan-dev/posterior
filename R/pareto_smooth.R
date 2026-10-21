@@ -597,6 +597,9 @@ ps_tail <- function(x,
 #'
 #' @export
 ps_tail_sorted_log_ratios <- function(x, cutoff, smooth_draws = TRUE, ...) {
+  if (is.unsorted(x)) {
+    stop_no_call("'x' must be sorted in ascending order.")
+  }
   if (is_constant(x)) {
     return(list(tail = x, k = NA))
   }
