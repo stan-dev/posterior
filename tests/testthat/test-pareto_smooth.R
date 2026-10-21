@@ -423,3 +423,22 @@ test_that("pareto diagnostics and smoothing do not depend on the scale of the dr
     expect_equal(ps_tail(s * x, ndraws_tail = 50)$k, ps_tail(x, ndraws_tail = 50)$k)
   }
 })
+
+test_that(".ps_tail_selection selects the tail of a full sort, also with ties", {
+  full_sort_selection <- function(x, ndraws_tail) {
+    ix <- order(x, method = "radix")
+    start <- length(x) - ndraws_tail + 1
+    list(ix = ix[seq(start, length(x))], cutoff = x[ix[start - 1]])
+  }
+  set.seed(452)
+  # rounding and repeated values give ties at the cutoff
+  for (x in list(rnorm(1000), round(rnorm(4000), 1), c(rep(0, 300), runif(100)),
+                 c(rep(-Inf, 50), rnorm(200)))) {
+    for (ndraws_tail in c(5, 19, 60)) {
+      expect_identical(
+        .ps_tail_selection(x, ndraws_tail),
+        full_sort_selection(x, ndraws_tail)
+      )
+    }
+  }
+})

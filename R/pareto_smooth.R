@@ -554,10 +554,13 @@ ps_tail <- function(x,
 
   if (start > 1 && !anyNA(x)) {
     cutoff <- sort.int(x, partial = start - 1)[start - 1]
-    ix <- which(x > cutoff)
-    if (length(ix) == ndraws_tail) {
-      return(list(ix = ix[order(x[ix], method = "radix")], cutoff = cutoff))
-    }
+    # The candidates include all values that tie with the cutoff. The radix
+    # order is stable, so the last ndraws_tail candidates are the tail of a
+    # full sort, also with ties.
+    ix <- which(x >= cutoff)
+    ix <- ix[order(x[ix], method = "radix")]
+    n_ix <- length(ix)
+    return(list(ix = ix[seq(n_ix - ndraws_tail + 1, n_ix)], cutoff = cutoff))
   }
 
   ix <- order(x, method = "radix")
