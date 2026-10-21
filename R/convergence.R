@@ -785,7 +785,10 @@ fold_draws <- function(x) {
   # Safety check for negative values and with max ess equal to ess*log10(ess)
   tau_bound <- 1 / log10(ess)
   if (tau_hat < tau_bound) {
-    warning_no_call("The ESS has been capped to avoid unstable estimates.")
+    warning_no_call(
+      "The ESS has been capped to avoid unstable estimates.",
+      class = "posterior_warning_ess_capped"
+    )
     tau_hat <- tau_bound
   }
   ess <- ess / tau_hat

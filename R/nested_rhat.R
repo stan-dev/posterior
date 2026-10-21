@@ -62,7 +62,8 @@ rhat_nested.rvar <- function(x, superchain_ids, ...) {
   # check that all chains are assigned a superchain
   if (length(superchain_ids) != nchains) {
     warning_no_call("Length of superchain_ids not equal to number of chains, ",
-                    "returning NA.")
+                    "returning NA.",
+                    class = "posterior_warning_superchain_ids_length")
     return(NA_real_)
   }
 
@@ -72,7 +73,8 @@ rhat_nested.rvar <- function(x, superchain_ids, ...) {
 
   if (nchains_per_superchain != min(superchain_id_table)) {
     warning_no_call("Number of chains per superchain is not the same for ",
-                    "each superchain, returning NA.")
+                    "each superchain, returning NA.",
+                    class = "posterior_warning_superchain_unequal")
     return(NA_real_)
   }
 
