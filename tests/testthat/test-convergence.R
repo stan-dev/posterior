@@ -186,3 +186,22 @@ test_that("autocovariance returns correct results", {
   ac2 <- acf(x, type = "covariance", lag.max = length(x), plot = FALSE)$acf[, 1, 1]
   expect_equal(ac1, ac2)
 })
+
+test_that("mcse_quantile gives the order statistics of a full sort", {
+  # reference: the computation with sort() of posterior 1.7.1
+  mcse_quantile_full_sort <- function(x, prob) {
+    ess <- ess_quantile(x, prob)
+    a <- qbeta(c(0.1586553, 0.8413447), ess * prob + 1, ess * (1 - prob) + 1)
+    ssims <- sort(x)
+    S <- length(ssims)
+    (ssims[min(ceiling(a[2] * S), S)] - ssims[max(floor(a[1] * S), 1)]) / 2
+  }
+  tau <- extract_variable_matrix(example_draws(), "tau")
+  for (prob in c(0.001, 0.05, 0.5, 0.95, 0.999)) {
+    expect_identical(
+      unname(mcse_quantile(tau, probs = prob)),
+      as.vector(mcse_quantile_full_sort(tau, prob))
+    )
+  }
+  expect_true(is.na(mcse_quantile(c(rnorm(100), NA), probs = 0.5)))
+})

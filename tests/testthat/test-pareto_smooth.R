@@ -332,17 +332,55 @@ test_that("pareto_smooth does not return negative weights for ties at 0", {
 
 
 test_that("check ps_tail behavior for ndraws_tail less than 5", {
-  w <- c(1:25, 1e3, 1e3, 1e3)
-  lw <- log(w)
+  lw <- log(c(1:25, 1e3, 1e3, 1e3))
 
-  # prints correct warning
   expect_warning(
     tail <- ps_tail(lw, ndraws_tail = 4, tail = "right"),
     "Can't fit generalized Pareto distribution because ndraws_tail is less than 5."
   )
-  # output has expected shape and k = NA
   expect_equal(names(tail), c("x", "k"))
   expect_true(is.na(tail$k))
+})
+
+test_that("ps_tail_sorted_log_ratios matches ps_tail", {
+  lw <- sort(log(c(1:25, 1e3, 1e2, 1e3)))
+  lw <- lw - max(lw)
+  tail_ids <- 19:28
+
+  expected <- ps_tail(lw, ndraws_tail = 10, are_log_weights = TRUE)
+  actual <- ps_tail_sorted_log_ratios(lw[tail_ids], cutoff = lw[min(tail_ids) - 1])
+
+  expect_equal(names(actual), c("tail", "k"))
+  expect_equal(actual$k, expected$k)
+  expect_equal(actual$tail, expected$x[tail_ids])
+})
+
+test_that("ps_tail_sorted_log_ratios handles constant tails", {
+  x <- log(rep(0.3, 10))
+
+  out <- ps_tail_sorted_log_ratios(x, cutoff = log(0.2))
+
+  expect_equal(out$tail, x)
+  expect_true(is.na(out$k))
+})
+
+test_that("ps_tail_sorted_log_ratios returns x unchanged if not smoothed", {
+  # exp() underflows to 0 for the smallest values
+  x <- c(-850, -800, -760, log(seq(0.05, 1, length.out = 20)))
+
+  out <- ps_tail_sorted_log_ratios(x, cutoff = -900, smooth_draws = FALSE)
+
+  expect_identical(out$tail, x)
+  expect_true(is.finite(out$k))
+})
+
+test_that("ps_tail_sorted_log_ratios requires a sorted tail", {
+  x <- log(seq(0.05, 1, length.out = 20))
+
+  expect_error(
+    ps_tail_sorted_log_ratios(rev(x), cutoff = log(0.01)),
+    "must be sorted in ascending order"
+  )
 })
 
 test_that("check ps_tail behavior for constant draws_tail", {
@@ -402,5 +440,24 @@ test_that("pareto diagnostics and smoothing do not depend on the scale of the dr
       pareto_smooth(x, return_k = FALSE, verbose = FALSE)
     )
     expect_equal(ps_tail(s * x, ndraws_tail = 50)$k, ps_tail(x, ndraws_tail = 50)$k)
+  }
+})
+
+test_that(".ps_tail_selection selects the tail of a full sort, also with ties", {
+  full_sort_selection <- function(x, ndraws_tail) {
+    ix <- order(x, method = "radix")
+    start <- length(x) - ndraws_tail + 1
+    list(ix = ix[seq(start, length(x))], cutoff = x[ix[start - 1]])
+  }
+  set.seed(452)
+  # rounding and repeated values give ties at the cutoff
+  for (x in list(rnorm(1000), round(rnorm(4000), 1), c(rep(0, 300), runif(100)),
+                 c(rep(-Inf, 50), rnorm(200)))) {
+    for (ndraws_tail in c(5, 19, 60)) {
+      expect_identical(
+        .ps_tail_selection(x, ndraws_tail),
+        full_sort_selection(x, ndraws_tail)
+      )
+    }
   }
 })
