@@ -797,6 +797,9 @@ Compute summary statistics and convergence diagnostics
 - [`ps_tail_length()`](https://mc-stan.org/posterior/reference/ps_tail_length.md)
   : Pareto tail length
 
+- [`ps_tail_sorted_log_ratios()`](https://mc-stan.org/posterior/reference/ps_tail_sorted_log_ratios.md)
+  : Pareto smooth sorted tail of log ratios
+
 - [`quantile2()`](https://mc-stan.org/posterior/reference/quantile2.md)
   : Compute Quantiles
 

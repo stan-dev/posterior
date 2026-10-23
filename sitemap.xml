@@ -74,6 +74,7 @@
 <url><loc>https://mc-stan.org/posterior/reference/ps_min_ss.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/reference/ps_tail.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/reference/ps_tail_length.html</loc></url>
+<url><loc>https://mc-stan.org/posterior/reference/ps_tail_sorted_log_ratios.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/reference/qgeneralized_pareto.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/reference/quantile2.html</loc></url>
 <url><loc>https://mc-stan.org/posterior/reference/r_scale.html</loc></url>
