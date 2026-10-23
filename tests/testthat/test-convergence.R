@@ -46,6 +46,26 @@ test_that("negative ess estimates are avoided with a warning", {
   expect_equal(ess, 3000)
 })
 
+test_that("capped ess warning has posterior warning classes", {
+  x <- stats::arima.sim(list(ar=-0.9), 1000)
+  w <- tryCatch(ess_basic(x), warning = identity)
+  expect_s3_class(w, "posterior_warning_ess_capped")
+  expect_s3_class(w, "posterior_warning")
+})
+
+test_that("calling code can count and muffle classed warnings", {
+  x <- replicate(3, stats::arima.sim(list(ar=-0.9), 1000))
+  n_capped <- 0
+  expect_silent(withCallingHandlers(
+    apply(x, 2, ess_basic),
+    posterior_warning_ess_capped = function(w) {
+      n_capped <<- n_capped + 1
+      invokeRestart("muffleWarning")
+    }
+  ))
+  expect_equal(n_capped, 3)
+})
+
 test_that("mcse diagnostics return reasonable values", {
   tau <- extract_variable_matrix(example_draws(), "tau")
 
