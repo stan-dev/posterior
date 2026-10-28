@@ -1,7 +1,7 @@
 #' Tools for working with posterior (and prior) distributions
 #'
 #' @name posterior-package
-#' @aliases posterior
+#' @aliases posterior posterior_warning
 #'
 #' @import checkmate
 #' @import stats
@@ -64,5 +64,43 @@
 #' trigger an automatic merging of chains, for example, because chains do not
 #' match between two objects involved in a binary operation. Whether this
 #' causes a warning can be controlled by this option.
+#'
+#' @section Warning and error classes:
+#'
+#' Every warning signaled by \pkg{posterior} has the class
+#' `posterior_warning` and one class for its cause. Use these classes to
+#' handle or muffle a specific warning, for example with
+#' [withCallingHandlers()] and [invokeRestart()]`("muffleWarning")`.
+#'
+#' * `posterior_warning_ess_capped`: An ESS estimate was capped.
+#' * `posterior_warning_superchain_ids_length`: The length of
+#' `superchain_ids` does not equal the number of chains.
+#' * `posterior_warning_superchain_unequal`: The superchains do not have the
+#' same number of chains.
+#' * `posterior_warning_non_numeric`: A conversion dropped non-numeric
+#' variables.
+#' * `posterior_warning_chains_dropped`: Chains were dropped.
+#' * `posterior_warning_no_variables`: No variables with unreserved names
+#' were found.
+#' * `posterior_warning_odd_iterations`: The number of iterations is not
+#' even.
+#' * `posterior_warning_pit_above_one`: Some PIT values are larger than 1.
+#' * `posterior_warning_zero_weight`: All draws of a variable have zero
+#' weight.
+#' * `posterior_warning_nans_produced`: NaNs were produced.
+#' * `posterior_warning_draws_df_dropped`: The `draws_df` class was dropped.
+#' * `posterior_warning_pareto_invalid_input`: The input to Pareto smoothing
+#' contains infinite or `NA` values.
+#' * `posterior_warning_pareto_tail_too_short`: The number of tail draws was
+#' increased to 5.
+#' * `posterior_warning_pareto_tail_exceeds_draws`: The number of tail draws
+#' is not less than the total number of draws.
+#' * `posterior_warning_pareto_tail_too_long`: The number of tail draws is
+#' more than half of the total number of draws.
+#' * `posterior_warning_pareto_tail_not_fitted`: The generalized Pareto
+#' distribution was not fitted because there are fewer than 5 tail draws.
+#'
+#' The error signaled when all weights are zero has the class
+#' `posterior_error_degenerate_weights`.
 #'
 "_PACKAGE"
