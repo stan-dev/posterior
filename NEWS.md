@@ -2,6 +2,8 @@
 
 ### Enhancements
 
+* Improve performance by avoiding full sorts in `ps_tail()` and `mcse_quantile()`.
+* Add `ps_tail_sorted_log_ratios()` for loo.
 * `bind_draws()` for `draws_array` objects is faster and holds one copy of the
 result instead of about three.
 * `subset_draws()` returns its input without copying it when every variable is
