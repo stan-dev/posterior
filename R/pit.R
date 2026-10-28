@@ -446,7 +446,7 @@ validate_pit_weights <- function(weights, x, log) {
   cols <- lapply(seq_along(vars), function(var_idx) {
     tryCatch(
       validate_weights(weights[, var_idx], x[, var_idx], log),
-      posterior_degenerate_weights_error = function(cnd) NULL
+      posterior_error_degenerate_weights = function(cnd) NULL
     )
   })
   degenerate <- vapply(cols, is.null, logical(1))
