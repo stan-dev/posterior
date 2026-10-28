@@ -115,6 +115,30 @@ test_that("convergence diagnostics handle special cases correctly", {
   # expect_true(is.na(ess_basic(x)))
 })
 
+test_that("ess_quantile treats the lower and upper tails of discrete draws alike", {
+  set.seed(1234)
+  x <- matrix(rbinom(4000, 1, 0.3), ncol = 4)
+  # more than 5% of the draws are at the maximum
+  expect_false(is.na(ess_quantile(x, 0.95)))
+  expect_false(is.na(ess_tail(x)))
+  expect_equal(
+    ess_quantile(x, 0.95, names = FALSE),
+    ess_quantile(-x, 0.05, names = FALSE)
+  )
+  expect_equal(
+    ess_quantile(x, 0.05, names = FALSE),
+    ess_quantile(-x, 0.95, names = FALSE)
+  )
+  expect_equal(ess_tail(x), ess_tail(-x))
+
+  # for continuous draws, x >= q is the complement of x <= q
+  y <- matrix(rnorm(4000), ncol = 4)
+  expect_equal(
+    ess_quantile(y, 0.95, names = FALSE),
+    .ess(.split_chains(y <= quantile(y, 0.95)))
+  )
+})
+
 test_that("is_constant uses a tolerance relative to the magnitude of x", {
   eps <- .Machine$double.eps
   expect_true(is_constant(rep(0, 5)))

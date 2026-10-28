@@ -296,7 +296,11 @@ ess_median <- function(x, ...) {
     len <- length(x)
     prob <- (len - 0.5) / len
   }
-  I <- x <= quantile(x, prob)
+  q <- quantile(x, prob)
+  # the upper-tail indicator mirrors the lower-tail indicator, so that for
+  # discrete draws the result for x at prob equals the result for -x at
+  # 1 - prob
+  I <- if (prob > 0.5) x >= q else x <= q
   .ess(.split_chains(I))
 }
 
