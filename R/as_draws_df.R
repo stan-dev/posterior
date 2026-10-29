@@ -235,7 +235,10 @@ dplyr_reconstruct.draws_df <- function(data, template) {
 # from the data frame
 drop_draws_class_if_metadata_removed <- function(x, warn = TRUE) {
   if (!all(reserved_df_variables() %in% names(x))) {
-    if (warn) warning_no_call("Dropping 'draws_df' class as required metadata was removed.")
+    if (warn) warning_no_call(
+      "Dropping 'draws_df' class as required metadata was removed.",
+      class = "posterior_warning_draws_df_dropped"
+    )
     class(x) <- setdiff(class(x), c("draws_df", "draws"))
   }
   x

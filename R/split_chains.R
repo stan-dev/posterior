@@ -27,7 +27,8 @@ split_chains.draws <- function(x, ...) {
   if (niter %% 2 != 0) {
     warning_no_call(
       "Number of iterations is not even. Removing the last iteration ",
-      "in order to split chains into two parts of equal length."
+      "in order to split chains into two parts of equal length.",
+      class = "posterior_warning_odd_iterations"
     )
     niter <- niter - 1
   }

@@ -174,7 +174,8 @@ summarise_draws.draws <- function(
   if (!length(variables_x)) {
     warning_no_call(
       "The draws object contained no variables with unreserved names. ",
-      "No summaries were computed."
+      "No summaries were computed.",
+      class = "posterior_warning_no_variables"
     )
     return(tibble::tibble(character()))
   }
