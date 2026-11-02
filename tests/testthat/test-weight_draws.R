@@ -9,7 +9,7 @@ test_that("weight_draws rejects weights with no probability mass", {
   expect_error(weight_draws(x, exp(rep(-800, n))), "log = TRUE", fixed = TRUE)
 
   # the error is classed, so callers can handle it per variable
-  expect_error(weight_draws(x, rep(0, n)), class = "posterior_degenerate_weights_error")
+  expect_error(weight_draws(x, rep(0, n)), class = "posterior_error_degenerate_weights")
 
   # a single draw carrying all the mass is still valid
   w <- c(1, rep(0, n - 1))

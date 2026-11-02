@@ -214,7 +214,7 @@ validate_weights <- function(weights, draws, log = FALSE) {
         "If the weights underflowed to zero, pass them on the log scale ",
         "with `log = TRUE`."
       ),
-      class = "posterior_degenerate_weights_error"
+      class = "posterior_error_degenerate_weights"
     ))
   }
   weights

@@ -211,8 +211,8 @@ stop_no_call <- function(...) {
   stop(..., call. = FALSE)
 }
 
-warning_no_call <- function(...) {
-  warning(..., call. = FALSE)
+warning_no_call <- function(..., class = NULL) {
+  rlang::warn(paste0(...), class = c(class, "posterior_warning"))
 }
 
 SW <- function(expr) {

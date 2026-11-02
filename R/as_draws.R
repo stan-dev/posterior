@@ -118,7 +118,8 @@ check_variables_are_numeric <- function(
   if (any(non_numeric_cols)) {
     warning_no_call(
       to,
-      " does not support non-numeric variables (e.g., factors). Converting non-numeric variables to numeric."
+      " does not support non-numeric variables (e.g., factors). Converting non-numeric variables to numeric.",
+      class = "posterior_warning_non_numeric"
     )
   }
   if (convert) {

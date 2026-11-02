@@ -26,7 +26,7 @@ qgeneralized_pareto <- function(p, mu = 0, sigma = 1, k = 0, lower.tail = TRUE, 
   # and replacing them here avoids a second warning from log() or log1p().
   invalid <- which(if (log.p) p > 0 else p < 0 | p > 1)
   if (length(invalid)) {
-    warning_no_call("NaNs produced")
+    warning_no_call("NaNs produced", class = "posterior_warning_nans_produced")
     p[invalid] <- NaN
   }
   if (log.p) {

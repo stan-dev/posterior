@@ -279,7 +279,10 @@ pareto_smooth.default <- function(x,
 
   # check for infinite or na values
   if (should_return_NA(x)) {
-    warning_no_call("Input contains infinite or NA values, is constant or has constant tail. Fitting of generalized Pareto distribution not performed.")
+    warning_no_call(
+      "Input contains infinite or NA values, is constant or has constant tail. Fitting of generalized Pareto distribution not performed.",
+      class = "posterior_warning_pareto_invalid_input"
+    )
     return(pareto_diags_na(x, return_k, extra_diags))
   }
 
@@ -301,18 +304,25 @@ pareto_smooth.default <- function(x,
   }
 
   if (is.na(ndraws_tail)) {
-    warning_no_call("Input contains infinite or NA values, is constant, or has constant tail. Fitting of generalized Pareto distribution not performed.")
+    warning_no_call(
+      "Input contains infinite or NA values, is constant, or has constant tail. Fitting of generalized Pareto distribution not performed.",
+      class = "posterior_warning_pareto_invalid_input"
+    )
     return(pareto_diags_na(x, return_k, extra_diags))
   }
 
   if (ndraws_tail < 5) {
     warning_no_call("Number of tail draws cannot be less than 5. ",
-            "Changing to ", 5, ".")
+            "Changing to ", 5, ".",
+            class = "posterior_warning_pareto_tail_too_short")
     ndraws_tail <- 5
   }
 
   if (ndraws_tail >= length(x)){
-    warning_no_call("Tail draws (", ndraws_tail, ") not strictly less than total draws (", length(x), "). Fitting of generalized Pareto distribution not performed.")
+    warning_no_call(
+      "Tail draws (", ndraws_tail, ") not strictly less than total draws (", length(x), "). Fitting of generalized Pareto distribution not performed.",
+      class = "posterior_warning_pareto_tail_exceeds_draws"
+    )
     return(pareto_diags_na(x, return_k, extra_diags))
   }
 
@@ -321,7 +331,8 @@ pareto_smooth.default <- function(x,
     if (ndraws_tail > ndraws / 2) {
       warning_no_call("Number of tail draws cannot be more than half ",
               "the total number of draws if both tails are fit, ",
-              "changing to ", ndraws / 2, ".")
+              "changing to ", ndraws / 2, ".",
+              class = "posterior_warning_pareto_tail_too_long")
       ndraws_tail <- ndraws / 2
     }
 
@@ -488,7 +499,8 @@ ps_tail <- function(x,
   if (ndraws_tail < 5) {
     warning_no_call(
       "Can't fit generalized Pareto distribution ",
-      "because ndraws_tail is less than 5."
+      "because ndraws_tail is less than 5.",
+      class = "posterior_warning_pareto_tail_not_fitted"
     )
     return(list(x = x, k = NA))
   }

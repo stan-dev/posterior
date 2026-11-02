@@ -121,7 +121,8 @@ pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE, ...) {
         max(pit),
         "\nRounding PIT > 1 to 1.",
         sep = ""
-      )
+      ),
+      class = "posterior_warning_pit_above_one"
     )
   }
 
@@ -445,7 +446,7 @@ validate_pit_weights <- function(weights, x, log) {
   cols <- lapply(seq_along(vars), function(var_idx) {
     tryCatch(
       validate_weights(weights[, var_idx], x[, var_idx], log),
-      posterior_degenerate_weights_error = function(cnd) NULL
+      posterior_error_degenerate_weights = function(cnd) NULL
     )
   })
   degenerate <- vapply(cols, is.null, logical(1))
@@ -454,7 +455,8 @@ validate_pit_weights <- function(weights, x, log) {
       "All draws have zero weight for ",
       paste0("'", vars[degenerate], "'", collapse = ", "),
       ". Returning NA for ",
-      if (sum(degenerate) > 1) "those variables." else "that variable."
+      if (sum(degenerate) > 1) "those variables." else "that variable.",
+      class = "posterior_warning_zero_weight"
     )
     cols[degenerate] <- list(rep(NA_real_, ndraws(x)))
   }

@@ -89,7 +89,8 @@ warn_merge_chains <- function(type = c("match", "index")) {
       switch(type, ".",
         match = " due to chain information not matching.",
         index = " due to manually indexing draws."
-      )
+      ),
+      class = "posterior_warning_chains_dropped"
     )
   }
   invisible(NULL)
