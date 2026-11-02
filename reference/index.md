@@ -6,6 +6,7 @@ Package overview and global options
 
 - [`posterior-package`](https://mc-stan.org/posterior/reference/posterior-package.md)
   [`posterior`](https://mc-stan.org/posterior/reference/posterior-package.md)
+  [`posterior_warning`](https://mc-stan.org/posterior/reference/posterior-package.md)
   : Tools for working with posterior (and prior) distributions
 
 ## Draws objects and formats

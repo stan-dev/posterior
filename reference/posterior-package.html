@@ -138,6 +138,44 @@ match between two objects involved in a binary operation. Whether this
 causes a warning can be controlled by this option.</p></li>
 </ul></div>
     <div class="section level2">
+    <h2 id="warning-and-error-classes">Warning and error classes<a class="anchor" aria-label="anchor" href="#warning-and-error-classes"></a></h2>
+
+
+
+<p>Every warning signaled by <span class="pkg">posterior</span> has the class
+<code>posterior_warning</code> and one class for its cause. Use these classes to
+handle or muffle a specific warning, for example with
+<code><a href="https://rdrr.io/r/base/conditions.html" class="external-link">withCallingHandlers()</a></code> and <code>invokeRestart("muffleWarning")</code>.</p><ul><li><p><code>posterior_warning_ess_capped</code>: An ESS estimate was capped.</p></li>
+<li><p><code>posterior_warning_superchain_ids_length</code>: The length of
+<code>superchain_ids</code> does not equal the number of chains.</p></li>
+<li><p><code>posterior_warning_superchain_unequal</code>: The superchains do not have the
+same number of chains.</p></li>
+<li><p><code>posterior_warning_non_numeric</code>: Non-numeric variables (e.g., factors)
+were converted to numeric.</p></li>
+<li><p><code>posterior_warning_chains_dropped</code>: Chains were dropped.</p></li>
+<li><p><code>posterior_warning_no_variables</code>: No variables with unreserved names
+were found.</p></li>
+<li><p><code>posterior_warning_odd_iterations</code>: The number of iterations is not
+even.</p></li>
+<li><p><code>posterior_warning_pit_above_one</code>: Some PIT values are larger than 1.</p></li>
+<li><p><code>posterior_warning_zero_weight</code>: All draws of a variable have zero
+weight.</p></li>
+<li><p><code>posterior_warning_nans_produced</code>: NaNs were produced.</p></li>
+<li><p><code>posterior_warning_draws_df_dropped</code>: The <code>draws_df</code> class was dropped.</p></li>
+<li><p><code>posterior_warning_pareto_invalid_input</code>: The input to Pareto smoothing
+contains infinite or <code>NA</code> values, is constant, or has a constant tail.</p></li>
+<li><p><code>posterior_warning_pareto_tail_too_short</code>: The number of tail draws was
+increased to 5.</p></li>
+<li><p><code>posterior_warning_pareto_tail_exceeds_draws</code>: The number of tail draws
+is not less than the total number of draws.</p></li>
+<li><p><code>posterior_warning_pareto_tail_too_long</code>: The number of tail draws is
+more than half of the total number of draws.</p></li>
+<li><p><code>posterior_warning_pareto_tail_not_fitted</code>: The generalized Pareto
+distribution was not fitted because there are fewer than 5 tail draws.</p></li>
+</ul><p>The error signaled when all weights are zero has the class
+<code>posterior_error_degenerate_weights</code>.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Useful links:</p><ul><li><p><a href="https://mc-stan.org/posterior/">https://mc-stan.org/posterior/</a></p></li>
 <li><p><a href="https://discourse.mc-stan.org/" class="external-link">https://discourse.mc-stan.org/</a></p></li>
