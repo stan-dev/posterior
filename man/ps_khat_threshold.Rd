@@ -4,10 +4,13 @@
 \alias{ps_khat_threshold}
 \title{Pareto k-hat threshold}
 \usage{
-ps_khat_threshold(ndraws, ...)
+ps_khat_threshold(ndraws, max_threshold = Inf, ...)
 }
 \arguments{
 \item{ndraws}{number of draws}
+
+\item{max_threshold}{(numeric) upper bound for the threshold. Default is
+\code{Inf}, which means no bound. Algorithm 1 in Vehtari et al. (2024) uses 0.7.}
 
 \item{...}{unused}
 }

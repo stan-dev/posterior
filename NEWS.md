@@ -12,6 +12,7 @@ selected.
 cause. Calling packages can catch, count, or muffle each type of warning (#470).
 * `ps_tail()` warns if all tail values are the same, with the class
 `posterior_warning_pareto_constant_tail`.
+* Add the argument `max_threshold` to `ps_khat_threshold()`.
 * Improve efficiency of `is_constant()` and `ps_tail_length()`.
 
 ### Bug Fixes

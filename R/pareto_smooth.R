@@ -742,11 +742,17 @@ ps_min_ss <- function(k, ...) {
 #' [`pareto_diags`].
 #' @family helper-functions
 #' @param ndraws number of draws
+#' @param max_threshold (numeric) upper bound for the threshold. Default is
+#' `Inf`, which means no bound. Algorithm 1 in Vehtari et al. (2024) uses 0.7.
 #' @param ... unused
 #' @return threshold
 #' @export
-ps_khat_threshold <- function(ndraws, ...) {
-  1 - 1 / log10(ndraws)
+ps_khat_threshold <- function(ndraws, max_threshold = Inf, ...) {
+  out <- 1 - 1 / log10(ndraws)
+  if (max_threshold < Inf) {
+    out[out > max_threshold] <- max_threshold
+  }
+  out
 }
 
 #' Pareto convergence rate

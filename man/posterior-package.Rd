@@ -109,6 +109,8 @@ is not less than the total number of draws.
 more than half of the total number of draws.
 \item \code{posterior_warning_pareto_tail_not_fitted}: The generalized Pareto
 distribution was not fitted because there are fewer than 5 tail draws.
+\item \code{posterior_warning_pareto_constant_tail}: The generalized Pareto
+distribution was not fitted because all tail values are the same.
 }
 
 The error signaled when all weights are zero has the class

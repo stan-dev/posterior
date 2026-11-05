@@ -450,6 +450,17 @@ test_that("ps_tail_length gives the same values as the old ifelse version", {
 })
 
 
+test_that("ps_khat_threshold caps the threshold at max_threshold", {
+  ndraws <- c(10, 4000, 1e6)
+  expect_equal(ps_khat_threshold(ndraws), 1 - 1 / log10(ndraws))
+  expect_equal(
+    ps_khat_threshold(ndraws, max_threshold = 0.7),
+    pmin(1 - 1 / log10(ndraws), 0.7)
+  )
+  expect_true(is.na(ps_khat_threshold(NA, max_threshold = 0.7)))
+})
+
+
 test_that("check ps_min_ss behavior special cases", {
   # k = NA
   expect_true(is.na(ps_min_ss(NA)))
