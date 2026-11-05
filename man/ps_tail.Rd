@@ -12,6 +12,7 @@ ps_tail(
   smooth_draws = TRUE,
   tail = c("right", "left"),
   are_log_weights = FALSE,
+  warn_constant_tail = TRUE,
   ...
 )
 }
@@ -38,6 +39,9 @@ ps_tail(
 \item{are_log_weights}{(logical) Are the draws log weights? Default is
 \code{FALSE}. If \code{TRUE} computation will take into account that the
 draws are log weights, and only right tail will be smoothed.}
+
+\item{warn_constant_tail}{(logical) Warn if all tail values are the
+same? Default is \code{TRUE}.}
 
 \item{...}{Arguments passed to individual methods (if applicable).}
 }

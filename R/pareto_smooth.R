@@ -342,16 +342,19 @@ pareto_smooth.default <- function(x,
       ndraws_tail = ndraws_tail,
       tail = "left",
       are_log_weights = are_log_weights,
+      warn_constant_tail = FALSE,
       ...
     )
     left_k <- smoothed$k
 
     # right tail
-    smoothed <-ps_tail(
+    smoothed <- ps_tail(
       x = smoothed$x,
       ndraws_tail = ndraws_tail,
       tail = "right",
       are_log_weights = are_log_weights,
+      # warn only if k is NA for both tails
+      warn_constant_tail = is.na(left_k),
       ...
     )
     right_k <- smoothed$k
@@ -483,6 +486,8 @@ pareto_convergence_rate.rvar <- function(x, ...) {
 #' @param are_log_weights (logical) Are the draws log weights? Default is
 #'   `FALSE`. If `TRUE` computation will take into account that the
 #'   draws are log weights, and only right tail will be smoothed.
+#' @param warn_constant_tail (logical) Warn if all tail values are the
+#'   same? Default is `TRUE`.
 #' @template args-methods-dots
 #' @template ref-vehtari-paretosmooth-2022
 #' @seealso [`pareto_smooth`] for the user-facing function.
@@ -493,6 +498,7 @@ ps_tail <- function(x,
                     smooth_draws = TRUE,
                     tail = c("right", "left"),
                     are_log_weights = FALSE,
+                    warn_constant_tail = TRUE,
                     ...
                     ) {
 
@@ -510,7 +516,7 @@ ps_tail <- function(x,
     x <- x - max(x)
   }
 
-  tail <- match.arg(tail)
+  tail <- match.arg(tail, c("right", "left"))
   if (tail == "left") {
     x <- -x
   }
@@ -519,7 +525,14 @@ ps_tail <- function(x,
   ix_tail <- selection$ix
   draws_tail <- x[ix_tail]
 
-  if (is_constant(draws_tail)) {
+  if (is_constant(draws_tail[c(1L, ndraws_tail)])) {
+    if (warn_constant_tail) {
+      warning_no_call(
+        "Can't fit generalized Pareto distribution ",
+        "because all tail values are the same.",
+        class = "posterior_warning_pareto_constant_tail"
+      )
+    }
     if (tail == "left") {
       x <- -x
     }
@@ -531,7 +544,7 @@ ps_tail <- function(x,
   cutoff <- selection$cutoff
 
   if (are_log_weights) {
-    smoothed <- ps_tail_sorted_log_ratios(
+    smoothed <- .ps_tail_sorted_log_ratios(
       x = draws_tail,
       cutoff = cutoff,
       smooth_draws = smooth_draws,
@@ -615,7 +628,12 @@ ps_tail_sorted_log_ratios <- function(x, cutoff, smooth_draws = TRUE, ...) {
   if (is_constant(x)) {
     return(list(tail = x, k = NA))
   }
+  .ps_tail_sorted_log_ratios(x, cutoff, smooth_draws = smooth_draws, ...)
+}
 
+# Internal version without input checks. The caller must give a sorted,
+# non-constant x.
+.ps_tail_sorted_log_ratios <- function(x, cutoff, smooth_draws = TRUE, ...) {
   smoothed <- .ps_tail_sorted(
     x = exp(x),
     excess = exp_x_minus_exp_y(x, cutoff),
@@ -785,12 +803,7 @@ ps_convergence_rate <- function(k, ndraws, ...) {
 #' @return tail length
 #' @export
 ps_tail_length <- function(ndraws, r_eff, ...) {
-  floor(
-    ifelse(
-      ndraws * r_eff > 225,
-      3 * sqrt(ndraws / r_eff),
-      ndraws / 5)
-  )
+  floor(pmin(ndraws / 5, 3 * sqrt(ndraws / r_eff)))
 }
 
 #' Pareto-k diagnostic message

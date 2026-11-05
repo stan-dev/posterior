@@ -4,11 +4,16 @@ test_that("pareto_khat handles constant tail correctly", {
   # should be the same as the right tail
   x <- c(rep(-100, 10), sort(rnorm(100)))
 
-  expect_true(is.na(pareto_khat(x, tail = "left", ndraws_tail = 10)))
-  expect_equal(
-    pareto_khat(x, tail = "right", ndraws_tail = 10),
-    pareto_khat(x, tail = "both", ndraws_tail = 10)
+  expect_warning(
+    k_left <- pareto_khat(x, tail = "left", ndraws_tail = 10),
+    class = "posterior_warning_pareto_constant_tail"
   )
+  expect_true(is.na(k_left))
+  # the constant left tail gives no warning, because k is not NA
+  expect_no_warning(
+    k_both <- pareto_khat(x, tail = "both", ndraws_tail = 10)
+  )
+  expect_equal(pareto_khat(x, tail = "right", ndraws_tail = 10), k_both)
 
 })
 
@@ -18,9 +23,37 @@ test_that("pareto_khat handles both tails being constant correctly", {
   # left and right tails are constant, so khat should be NA in all cases
   x <- c(rep(-100, 10), sort(rnorm(100)), rep(100, 10))
   
-  expect_true(is.na(pareto_khat(x, tail = "left", ndraws_tail = 10)))
-  expect_true(is.na(pareto_khat(x, tail = "right", ndraws_tail = 10)))
-  expect_true(is.na(pareto_khat(x, tail = "both", ndraws_tail = 10)))
+  for (tail in c("left", "right", "both")) {
+    expect_warning(
+      k <- pareto_khat(x, tail = tail, ndraws_tail = 10),
+      class = "posterior_warning_pareto_constant_tail"
+    )
+    expect_true(is.na(k))
+  }
+
+})
+
+
+test_that("pareto_khat with tail = 'both' warns only if k is NA", {
+
+  set.seed(1)
+  mid <- sort(rnorm(100))
+  const <- rep(100, 10)
+  # the 3 smallest tail values are equal, so gpdfit gives k = NA
+  ties <- c(5, 5, 5, 6:12)
+
+  # only the left tail is constant: k comes from the right tail
+  expect_no_warning(
+    k <- pareto_khat(c(-const, mid), tail = "both", ndraws_tail = 10)
+  )
+  expect_false(is.na(k))
+
+  # left tail with ties, right tail constant: k is NA
+  expect_warning(
+    k <- pareto_khat(c(-ties, mid, const), tail = "both", ndraws_tail = 10),
+    class = "posterior_warning_pareto_constant_tail"
+  )
+  expect_true(is.na(k))
 
 })
 
@@ -30,8 +63,9 @@ test_that("pareto_smooth handles non-constant x with constant tail", {
   # x is non-constant but the right tail is constant
   x <- c(seq(-3, 3, length.out = 90), rep(5, 10))
 
-  expect_no_error(
-    ps <- pareto_smooth(x, tail = "right", ndraws_tail = 10, return_k = TRUE, verbose = FALSE)
+  expect_warning(
+    ps <- pareto_smooth(x, tail = "right", ndraws_tail = 10, return_k = TRUE, verbose = FALSE),
+    class = "posterior_warning_pareto_constant_tail"
   )
   expect_true(is.na(ps$diagnostics$khat))
   expect_equal(ps$x, x)
@@ -386,11 +420,33 @@ test_that("ps_tail_sorted_log_ratios requires a sorted tail", {
 test_that("check ps_tail behavior for constant draws_tail", {
   x <- log(replicate(10, 0.3))
 
-  tail <- ps_tail(x, ndraws_tail = 10, tail = "left")
+  expect_warning(
+    tail <- ps_tail(x, ndraws_tail = 10, tail = "left"),
+    class = "posterior_warning_pareto_constant_tail"
+  )
 
   # output has expected return values
   expect_equal(x, tail$x)
   expect_true(is.na(tail$k))
+
+  # warn_constant_tail = FALSE gives no warning and the same output
+  expect_no_warning(
+    tail2 <- ps_tail(x, ndraws_tail = 10, tail = "left", warn_constant_tail = FALSE)
+  )
+  expect_equal(tail2, tail)
+})
+
+
+test_that("ps_tail_length gives the same values as the old ifelse version", {
+  old_tail_length <- function(ndraws, r_eff) {
+    floor(ifelse(ndraws * r_eff > 225, 3 * sqrt(ndraws / r_eff), ndraws / 5))
+  }
+  # the first 4 cases have ndraws * r_eff == 225, where the 2 branches meet
+  ndraws <- c(225, 1125, 450, 100, 4000, 1e5, 10)
+  r_eff <- c(1, 0.2, 0.5, 2.25, 1, 0.01, 1)
+  expect_equal(ps_tail_length(ndraws, r_eff), old_tail_length(ndraws, r_eff))
+  expect_equal(ps_tail_length(225, 1), 45)
+  expect_true(is.na(ps_tail_length(1000, NA)))
 })
 
 

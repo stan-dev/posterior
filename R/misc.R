@@ -196,10 +196,11 @@ isNA <- function(x) {
 #' @keywords internal
 #' @export
 is_constant <- function(x, tol = .Machine$double.eps) {
-  r <- range(x)
-  spread <- r[2] - r[1]
+  lo <- min(x)
+  hi <- max(x)
+  spread <- hi - lo
   # the equality check covers all-zero and all-infinite x
-  r[1] == r[2] || (is.finite(spread) && spread <= tol * max(abs(r)))
+  lo == hi || (is.finite(spread) && spread <= tol * max(abs(lo), abs(hi)))
 }
 
 # collapse variables via commas for pretty printing

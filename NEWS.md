@@ -10,6 +10,9 @@ result instead of about three.
 selected.
 * All warnings now have the class `posterior_warning` and a class for each
 cause. Calling packages can catch, count, or muffle each type of warning (#470).
+* `ps_tail()` warns if all tail values are the same, with the class
+`posterior_warning_pareto_constant_tail`.
+* Improve efficiency of `is_constant()` and `ps_tail_length()`.
 
 ### Bug Fixes
 
