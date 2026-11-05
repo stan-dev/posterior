@@ -172,7 +172,7 @@ test_that("str(<rvar_factor>) works", {
   )
   expect_match(
     out,
-    regexp = ' - attr\\(\\*, "foo"\\)= chr "bar"',
+    regexp = " - attr\\(\\*, \"foo\"\\)= ?chr \"bar\"",
     all = FALSE
   )
 })
@@ -195,7 +195,7 @@ test_that("str(<rvar_ordered>) works", {
   )
   expect_match(
     out,
-    regexp = ' - attr\\(\\*, "foo"\\)= chr "bar"',
+    regexp = " - attr\\(\\*, \"foo\"\\)= ?chr \"bar\"",
     all = FALSE
   )
 })
