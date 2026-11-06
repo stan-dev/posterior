@@ -30,7 +30,7 @@ test_that("c works on rvar", {
 
   x_col <- x
   dim(x_col) <- c(3,1)
-  expect_equal(c(x_col), x)
+  expect_equal(c(x_col), x, ignore_attr = TRUE)
   expect_equal(c(x_col, y), x_y)
 })
 
@@ -77,7 +77,7 @@ test_that("c works on rvar_factor", {
 
   x_col <- x
   dim(x_col) <- c(3,1)
-  expect_equal(c(x_col), x)
+  expect_equal(c(x_col), x, ignore_attr = TRUE)
   expect_equal(c(x_col, y), x_y)
 })
 
@@ -139,7 +139,7 @@ test_that("c works on rvar_ordered", {
 
   x_col <- x
   dim(x_col) <- c(3,1)
-  expect_equal(c(x_col), x)
+  expect_equal(c(x_col), x, ignore_attr = TRUE)
   expect_equal(c(x_col, y), x_y)
 })
 

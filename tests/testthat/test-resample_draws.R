@@ -3,22 +3,22 @@ test_that("resample_draws returns expected format", {
   w <- runif(ndraws(x), 0, 10)
 
   x <- as_draws_matrix(x)
-  x_rs <- resample_draws(x, weights = w, method = "stratified")
+  expect_message(x_rs <- resample_draws(x, weights = w, method = "stratified"))
   expect_true(is_draws_matrix(x_rs))
   expect_equal(ndraws(x_rs), ndraws(x))
 
   x <- as_draws_array(x)
-  x_rs <- resample_draws(x, weights = w, method = "deterministic", ndraws = 200)
+  expect_message(x_rs <- resample_draws(x, weights = w, method = "deterministic", ndraws = 200))
   expect_true(is_draws_array(x_rs))
   expect_equal(ndraws(x_rs), 200)
 
   x <- as_draws_df(x)
-  x_rs <- resample_draws(x, weights = w, method = "simple")
+  expect_message(x_rs <- resample_draws(x, weights = w, method = "simple"))
   expect_true(is_draws_df(x_rs))
   expect_equal(ndraws(x_rs), ndraws(x))
 
   x <- as_draws_list(x)
-  x_rs <- resample_draws(x, w, method = "simple_no_replace", ndraws = 100)
+  expect_message(x_rs <- resample_draws(x, w, method = "simple_no_replace", ndraws = 100))
   expect_true(is_draws_list(x_rs))
   expect_equal(ndraws(x_rs), 100)
   expect_error(
@@ -27,7 +27,7 @@ test_that("resample_draws returns expected format", {
   )
 
   x <- as_draws_rvars(x)
-  x_rs <- resample_draws(x, weights = w, method = "simple")
+  expect_message(x_rs <- resample_draws(x, weights = w, method = "simple"))
   expect_true(is_draws_rvars(x_rs))
   expect_equal(ndraws(x_rs), ndraws(x))
 })
@@ -56,13 +56,13 @@ test_that("Resampling algorithms return the correct result in expectation", {
 test_that("resample_draws uses stored weights when available", {
   x <- example_draws()
 
-  x_rs <- resample_draws(x)
+  expect_message(x_rs <- resample_draws(x))
   expect_true(is_draws_array(x_rs))
   expect_equal(ndraws(x_rs), ndraws(x))
 
   w <- runif(ndraws(x), 0, 10)
   x <- weight_draws(x, w)
-  x_rs <- resample_draws(x)
+  expect_message(x_rs <- resample_draws(x))
   expect_true(is_draws_array(x_rs))
   expect_equal(ndraws(x_rs), ndraws(x))
   # .log_weight variable has been dropped

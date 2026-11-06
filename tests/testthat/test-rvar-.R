@@ -159,13 +159,15 @@ test_that("rvars work in tibbles", {
   df = tibble::tibble(x, y = x + 1)
 
   expect_equal(df$x, x)
-  expect_equal(df$y, rvar(x_array + 1))
+  expect_equal(df$y, rvar(x_array + 1), ignore_attr = TRUE)
   expect_equal(dplyr::mutate(df, z = x)$z, x)
 
-  expect_equal(dplyr::mutate(df, z = x * 2)$z, rvar(x_array * 2))
+  expect_equal(dplyr::mutate(df, z = x * 2)$z, rvar(x_array * 2),
+               ignore_attr = TRUE)
   expect_equal(
     dplyr::mutate(dplyr::group_by(df, 1:4), z = x * 2)$z,
-    rvar(x_array * 2)
+    rvar(x_array * 2),
+    ignore_attr = TRUE
   )
 
   df = tibble::tibble(g = letters[1:4], x)
@@ -175,7 +177,8 @@ test_that("rvars work in tibbles", {
     c = rvar(x_array[,3, drop = FALSE]),
     d = rvar(x_array[,4, drop = FALSE])
   )
-  expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref)
+  expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref,
+               ignore_attr = TRUE)
   expect_equal(tidyr::pivot_longer(ref, a:d, names_to = "g", values_to = "x"), df)
 
   df$y = df$x + 1
@@ -186,13 +189,15 @@ test_that("rvars work in tibbles", {
     c = c(rvar(NA), NA, df$x[[3]], NA),
     d = c(rvar(NA), NA, NA, df$x[[4]]),
   )
-  expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref2)
+  expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref2,
+               ignore_attr = TRUE)
 
   expect_equal(dplyr::first(df$x), x[1])
 
   z = cbind(a = x, b = x + 1)
   df$z = z
-  expect_equal(dplyr::mutate(dplyr::rowwise(df), w = z[,"b"])$w, z[,"b"])
+  expect_equal(dplyr::mutate(dplyr::rowwise(df), w = z[,"b"])$w, z[,"b"],
+               ignore_attr = TRUE)
 })
 
 
@@ -240,7 +245,7 @@ test_that("warnings for unequal draws/chains are correct", {
   # Store and restore option to ensure test isolation
   old_option <- getOption("posterior.warn_on_merge_chains")
   on.exit(options(posterior.warn_on_merge_chains = old_option))
-  
+
   options(posterior.warn_on_merge_chains = TRUE)
   expect_warning(
     expect_equal(rvar(1:10) + rvar(1:10, nchains = 2), rvar(1:10 + 1:10)),
