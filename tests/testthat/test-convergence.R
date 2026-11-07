@@ -91,10 +91,10 @@ test_that("mcse diagnostics return reasonable values", {
 
   # check if issue #252 remains fixed
   se <- mcse_quantile(tau, c(0.999999, 1))
-  expect_equivalent(se[1], se[2])
+  expect_equal(se[1], se[2], ignore_attr = TRUE)
 
   se <- mcse_quantile(tau, c(0.000001, 0))
-  expect_equivalent(se[1], se[2])
+  expect_equal(se[1], se[2], ignore_attr = TRUE)
 })
 
 test_that("convergence diagnostics accept vectors as input", {

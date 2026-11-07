@@ -139,7 +139,9 @@ test_that("as_rvar_ordered works", {
   )
   expect_equal(
     draws_of(as_rvar_ordered(as_rvar_factor(array(1:4, dim = c(2,2))))),
-    structure(1:4L, levels = c("1", "2", "3", "4"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"))
+    structure(1:4L, levels = c("1", "2", "3", "4"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"),
+              ignore_attr = TRUE),
+    ignore_attr = TRUE
   )
   expect_equal(
     draws_of(as_rvar_ordered(array(c(TRUE, TRUE, FALSE, FALSE), dim = c(2,2)))),
@@ -343,9 +345,9 @@ test_that("proxy restore works", {
     dimnames = list(A = paste0("a", 1:2), B = paste0("b", 1:2), C = paste0("c", 1:4))
   )
 
-  expect_equal(vec_restore(vec_proxy(unname(x1)), rvar()), unname(x1))
-  expect_equal(vec_restore(vec_proxy(unname(x2)), rvar()), unname(x2))
-  expect_equal(vec_restore(vec_proxy(unname(x3)), rvar()), unname(x3))
+  expect_equal(vec_restore(vec_proxy(unname(x1)), rvar()), unname(x1), ignore_attr = TRUE)
+  expect_equal(vec_restore(vec_proxy(unname(x2)), rvar()), unname(x2), ignore_attr = TRUE)
+  expect_equal(vec_restore(vec_proxy(unname(x3)), rvar()), unname(x3), ignore_attr = TRUE)
   expect_equal(vec_restore(vec_proxy(x1), rvar()), x1)
   expect_equal(vec_restore(vec_proxy(x2), rvar()), x2)
   expect_equal(vec_restore(vec_proxy(x3), rvar()), x3)

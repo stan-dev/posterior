@@ -45,6 +45,6 @@ test_that("extract_variable_matrix default method works", {
   # it should convert matrix to draws object
   x <- matrix(1:20, nrow = 10, ncol = 2)
   colnames(x) <- c("A", "B")
-  expect_equivalent(extract_variable_matrix(x, "A"), x[, 1, drop=FALSE])
-  expect_equivalent(extract_variable_matrix(x, "B"), x[, 2, drop=FALSE])
+  expect_equal(extract_variable_matrix(x, "A"), x[, 1, drop=FALSE], ignore_attr = TRUE)
+  expect_equal(extract_variable_matrix(x, "B"), x[, 2, drop=FALSE], ignore_attr = TRUE)
 })
