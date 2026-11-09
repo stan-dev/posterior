@@ -10,6 +10,8 @@ result instead of about three.
 selected.
 * All warnings now have the class `posterior_warning` and a class for each
 cause. Calling packages can catch, count, or muffle each type of warning (#470).
+* `ps_tail_length()` no longer uses `r_eff`. The Pareto tail length now
+depends on the number of draws only. (#478)
 
 ### Bug Fixes
 
