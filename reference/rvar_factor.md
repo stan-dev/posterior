@@ -124,6 +124,14 @@ rvar_ordered(
 
   :   an upper bound on the number of levels; see ‘Details’.
 
+  `ifany`
+
+  :   only add an `NA` level if it is used, i.e. if `any(is.na(x))`.
+
+  `object`
+
+  :   an R object.
+
 ## Value
 
 An object of class `"rvar_factor"` representing a `factor`-like random

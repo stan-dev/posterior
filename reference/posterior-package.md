@@ -149,6 +149,8 @@ Useful links:
 
 Authors:
 
+- Paul-Christian Bürkner <paul.buerkner@gmail.com>
+
 - Jonah Gabry <jgabry@gmail.com>
 
 - Matthew Kay <mjskay@northwestern.edu>
