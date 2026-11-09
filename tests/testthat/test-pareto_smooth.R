@@ -231,6 +231,13 @@ test_that("pareto_khat functions work with rvars with and without chains", {
 
 })
 
+test_that("rvar methods give one r_eff warning", {
+  theta <- as_draws_rvars(example_draws())$theta
+  expect_length(capture_warnings(pareto_khat(theta, r_eff = 0.5)), 1)
+  expect_length(capture_warnings(pareto_diags(theta, r_eff = 0.5)), 1)
+  expect_length(capture_warnings(pareto_smooth(theta, r_eff = 0.5)), 1)
+})
+
 test_that("pareto_smooth returns x with smoothed tail(s)", {
   mu <- extract_variable_matrix(example_draws(), "mu")
 

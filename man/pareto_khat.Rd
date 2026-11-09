@@ -18,7 +18,7 @@ pareto_khat(x, ...)
   ...
 )
 
-\method{pareto_khat}{rvar}(x, ...)
+\method{pareto_khat}{rvar}(x, r_eff = NULL, ...)
 }
 \arguments{
 \item{x}{(multiple options) One of:

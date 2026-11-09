@@ -46,7 +46,10 @@ pareto_khat.default <- function(x,
 
 #' @rdname pareto_khat
 #' @export
-pareto_khat.rvar <- function(x, ...) {
+pareto_khat.rvar <- function(x, r_eff = NULL, ...) {
+  if (!is.null(r_eff)) {
+    warn_r_eff_ignored()
+  }
   draws_diags <- summarise_rvar_by_element_with_chains(
     x,
     pareto_khat.default,
@@ -148,7 +151,10 @@ pareto_diags.default <- function(x,
 
 #' @rdname pareto_diags
 #' @export
-pareto_diags.rvar <- function(x, ...) {
+pareto_diags.rvar <- function(x, r_eff = NULL, ...) {
+  if (!is.null(r_eff)) {
+    warn_r_eff_ignored()
+  }
   draws_diags <- summarise_rvar_by_element_with_chains(
     x,
     pareto_diags.default,
@@ -216,8 +222,12 @@ pareto_smooth <- function(x, ...) UseMethod("pareto_smooth")
 
 #' @rdname pareto_smooth
 #' @export
-pareto_smooth.rvar <- function(x, return_k = FALSE, extra_diags = FALSE, ...) {
-
+pareto_smooth.rvar <- function(
+  x, return_k = FALSE, extra_diags = FALSE, r_eff = NULL, ...
+) {
+  if (!is.null(r_eff)) {
+    warn_r_eff_ignored()
+  }
   if (extra_diags) {
     return_k <- TRUE
   }

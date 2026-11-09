@@ -27,7 +27,7 @@ pareto_diags(x, ...)
   ...
 )
 
-\method{pareto_diags}{rvar}(x, ...)
+\method{pareto_diags}{rvar}(x, r_eff = NULL, ...)
 
 pareto_khat_threshold(x, ...)
 

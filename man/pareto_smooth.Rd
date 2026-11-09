@@ -8,7 +8,7 @@
 \usage{
 pareto_smooth(x, ...)
 
-\method{pareto_smooth}{rvar}(x, return_k = FALSE, extra_diags = FALSE, ...)
+\method{pareto_smooth}{rvar}(x, return_k = FALSE, extra_diags = FALSE, r_eff = NULL, ...)
 
 \method{pareto_smooth}{default}(
   x,
@@ -42,6 +42,9 @@ be included in output? If \code{TRUE}, \code{min_ss}, \code{khat_threshold} and
 \code{convergence_rate} for the estimated k value will be
 returned. Default is \code{FALSE}.}
 
+\item{r_eff}{Ignored. A value other than \code{NULL} gives a warning.
+Default is \code{NULL}.}
+
 \item{tail}{(string) The tail to diagnose/smooth:
 \itemize{
 \item \code{"right"}: diagnose/smooth only the right (upper) tail
@@ -50,9 +53,6 @@ returned. Default is \code{FALSE}.}
 }
 
 The default is \code{"both"}.}
-
-\item{r_eff}{Ignored. A value other than \code{NULL} gives a warning.
-Default is \code{NULL}.}
 
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
 \code{ndraws_tail} is not specified, it is calculated with
