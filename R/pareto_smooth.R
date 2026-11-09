@@ -263,7 +263,7 @@ pareto_smooth.default <- function(x,
                                   ...) {
 
   if (!is.null(r_eff)) {
-    r_eff <- as_one_numeric(r_eff)
+    warn_r_eff_ignored()
   }
   if (!is.null(ndraws_tail)) {
     ndraws_tail <- as_one_integer(ndraws_tail)
@@ -293,14 +293,9 @@ pareto_smooth.default <- function(x,
   tail <- match.arg(tail)
   ndraws <- length(x)
 
-  # automatically calculate relative efficiency
-  if (is.null(r_eff)) {
-    r_eff <- ess_tail(x) / ndraws
-  }
-
   # automatically calculate tail length
   if (is.null(ndraws_tail)) {
-    ndraws_tail <- ps_tail_length(ndraws, r_eff)
+    ndraws_tail <- ps_tail_length(ndraws)
   }
 
   if (is.na(ndraws_tail)) {
@@ -773,24 +768,31 @@ ps_convergence_rate <- function(k, ndraws, ...) {
   rate
 }
 
+warn_r_eff_ignored <- function() {
+  warning_no_call(
+    "`r_eff` is ignored. The Pareto tail length now depends on the number of draws only.",
+    class = "posterior_warning_pareto_r_eff_ignored"
+  )
+}
+
 #' Pareto tail length
 #'
-#' Calculate the tail length from number of draws and relative efficiency
-#' r_eff. See Appendix H in Vehtari et al. (2024). This function is
-#' used internally and is exported to be available for other packages.
+#' Calculate the tail length from the number of draws. The tail length is
+#' `floor(3 * sqrt(ndraws))` if `ndraws > 225`, and `floor(ndraws / 5)`
+#' otherwise. This differs from Appendix H in Vehtari et al. (2024), which
+#' also divides by the relative efficiency `r_eff`. This function is used
+#' internally and is exported to be available for other packages.
 #' @family helper-functions
 #' @param ndraws number of draws
-#' @param r_eff relative efficiency
+#' @param r_eff Ignored. A value other than `NULL` gives a warning.
 #' @param ... unused
 #' @return tail length
 #' @export
-ps_tail_length <- function(ndraws, r_eff, ...) {
-  floor(
-    ifelse(
-      ndraws * r_eff > 225,
-      3 * sqrt(ndraws / r_eff),
-      ndraws / 5)
-  )
+ps_tail_length <- function(ndraws, r_eff = NULL, ...) {
+  if (!is.null(r_eff)) {
+    warn_r_eff_ignored()
+  }
+  floor(ifelse(ndraws > 225, 3 * sqrt(ndraws), ndraws / 5))
 }
 
 #' Pareto-k diagnostic message
