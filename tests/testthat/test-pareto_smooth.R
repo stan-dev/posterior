@@ -80,13 +80,20 @@ test_that("pareto_khat handles ndraws_tail argument", {
 })
 
 
-test_that("pareto_khat handles r_eff argument", {
-
+test_that("pareto_khat ignores r_eff with a warning", {
   tau <- extract_variable_matrix(example_draws(), "tau")
-  pk1 <- pareto_khat(tau, r_eff = 1)
-  pk0.6 <- pareto_khat(tau, r_eff = 0.6)
-  expect_true(pk1 < pk0.6)
+  cls <- "posterior_warning_pareto_r_eff_ignored"
+  expect_warning(pk <- pareto_khat(tau, r_eff = 0.6), class = cls)
+  expect_equal(pk, pareto_khat(tau))
+  expect_warning(pareto_smooth(tau, r_eff = 1, ndraws_tail = 20), class = cls)
+})
 
+test_that("ps_tail_length depends on ndraws only", {
+  expect_equal(ps_tail_length(100), 20)
+  expect_equal(ps_tail_length(1000), floor(3 * sqrt(1000)))
+  expect_warning(out <- ps_tail_length(1000, 0.5),
+                 class = "posterior_warning_pareto_r_eff_ignored")
+  expect_equal(out, ps_tail_length(1000))
 })
 
 
@@ -322,7 +329,7 @@ test_that("ps_tail does not smooth tail values below the cutoff", {
 
 test_that("pareto_smooth does not return negative weights for ties at 0", {
   w <- c(rep(0, 350), exp(-seq(0, 60, length.out = 50)))
-  ws <- pareto_smooth(w, tail = "right", r_eff = 1, return_k = FALSE, verbose = FALSE)
+  ws <- pareto_smooth(w, tail = "right", return_k = FALSE, verbose = FALSE)
   expect_true(all(ws >= 0))
   x <- as_draws_df(data.frame(theta = seq_along(ws)))
   expect_no_error(
