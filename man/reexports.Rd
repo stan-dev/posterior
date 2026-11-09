@@ -12,6 +12,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{distributional}{\code{\link[distributional]{cdf}}, \code{\link[distributional]{variance}}}
+  \item{distributional}{\code{\link[distributional:cdf]{cdf()}}, \code{\link[distributional:variance]{variance()}}}
 }}
 

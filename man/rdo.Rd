@@ -8,7 +8,7 @@ rdo(expr, dim = NULL, ndraws = NULL)
 }
 \arguments{
 \item{expr}{(expression) A bare expression that can (optionally) contain
-\code{\link{rvar}}s. The expression supports \link[rlang:topic-inject]{quasiquotation}.}
+\code{\link{rvar}}s. The expression supports \link[rlang:quasiquotation]{quasiquotation}.}
 
 \item{dim}{(integer vector) One or more integers giving the maximal indices
 in each dimension to override the dimensions of the \code{\link{rvar}} to be created
@@ -54,8 +54,8 @@ x
 
 }
 \seealso{
-Other rfun: 
-\code{\link{rfun}()},
-\code{\link{rvar_rng}()}
+Other rfun:
+\code{\link[=rfun]{rfun()}},
+\code{\link[=rvar_rng]{rvar_rng()}}
 }
 \concept{rfun}

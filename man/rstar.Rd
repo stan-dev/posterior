@@ -106,19 +106,19 @@ diagnostic with uncertainty using gradient-boosted machines.
 \emph{arXiv preprint} \code{arXiv:2003.07900}.
 }
 \seealso{
-Other diagnostics: 
-\code{\link{ess_basic}()},
-\code{\link{ess_bulk}()},
-\code{\link{ess_quantile}()},
-\code{\link{ess_sd}()},
-\code{\link{ess_tail}()},
-\code{\link{mcse_mean}()},
-\code{\link{mcse_quantile}()},
-\code{\link{mcse_sd}()},
-\code{\link{pareto_diags}()},
-\code{\link{pareto_khat}()},
-\code{\link{rhat}()},
-\code{\link{rhat_basic}()},
-\code{\link{rhat_nested}()}
+Other diagnostics:
+\code{\link[=ess_basic]{ess_basic()}},
+\code{\link[=ess_bulk]{ess_bulk()}},
+\code{\link[=ess_quantile]{ess_quantile()}},
+\code{\link[=ess_sd]{ess_sd()}},
+\code{\link[=ess_tail]{ess_tail()}},
+\code{\link[=mcse_mean]{mcse_mean()}},
+\code{\link[=mcse_quantile]{mcse_quantile()}},
+\code{\link[=mcse_sd]{mcse_sd()}},
+\code{\link[=pareto_diags]{pareto_diags()}},
+\code{\link[=pareto_khat]{pareto_khat()}},
+\code{\link[=rhat]{rhat()}},
+\code{\link[=rhat_basic]{rhat_basic()}},
+\code{\link[=rhat_nested]{rhat_nested()}}
 }
 \concept{diagnostics}
