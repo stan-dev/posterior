@@ -343,9 +343,9 @@ test_that("proxy restore works", {
     dimnames = list(A = paste0("a", 1:2), B = paste0("b", 1:2), C = paste0("c", 1:4))
   )
 
-  expect_equal(vec_restore(vec_proxy(unname(x1)), rvar()), unname(x1))
-  expect_equal(vec_restore(vec_proxy(unname(x2)), rvar()), unname(x2))
-  expect_equal(vec_restore(vec_proxy(unname(x3)), rvar()), unname(x3))
+  expect_equal(vec_restore(vec_proxy(unname(x1)), rvar()), unname(x1), ignore_attr = TRUE)
+  expect_equal(vec_restore(vec_proxy(unname(x2)), rvar()), unname(x2), ignore_attr = TRUE)
+  expect_equal(vec_restore(vec_proxy(unname(x3)), rvar()), unname(x3), ignore_attr = TRUE)
   expect_equal(vec_restore(vec_proxy(x1), rvar()), x1)
   expect_equal(vec_restore(vec_proxy(x2), rvar()), x2)
   expect_equal(vec_restore(vec_proxy(x3), rvar()), x3)

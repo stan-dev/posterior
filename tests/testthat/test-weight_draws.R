@@ -176,7 +176,7 @@ test_that("conversion between formats preserves weights", {
   for (type in names(draws)) {
     expect_equal(as_draws_matrix(draws[[!!type]]), draws$matrix)
     expect_equal(as_draws_array(draws[[!!type]]), draws$array)
-    expect_equal(as_draws_df(draws[[!!type]]), draws$df)
+    expect_equal(as.data.frame(as_draws_df(draws[[!!type]])), as.data.frame(draws$df))
     expect_equal(as_draws_list(draws[[!!type]]), draws$list)
     expect_equal(as_draws_rvars(draws[[!!type]]), draws$rvars)
   }
@@ -188,6 +188,9 @@ test_that("pareto smoothing smooths weights in weight_draws", {
   x <- example_draws()
   lw <- sort(log(abs(rt(ndraws(x), 1))))
   weighted <- weight_draws(x, lw, pareto_smooth = FALSE, log = TRUE)
-  smoothed <- weight_draws(x, lw, pareto_smooth = TRUE, log = TRUE)
+  expect_message(
+    smoothed <- weight_draws(x, lw, pareto_smooth = TRUE, log = TRUE),
+    "Pareto khat for weights is high"
+  )
   expect_false(all(weights(weighted) == weights(smoothed)))
 })

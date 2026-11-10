@@ -7,12 +7,12 @@ test_that("numeric summary functions work", {
   x_ord <- rvar_ordered(x_letters, levels = letters)
   x_fct <- rvar_factor(x_letters, levels = letters)
 
-  expect_equal(draws_of(rvar_mean(x)), apply(x_array, 1, mean), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_median(x)), apply(x_array, 1, median), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_sum(x)), apply(x_array, 1, sum), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_prod(x)), apply(x_array, 1, prod), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_min(x)), apply(x_array, 1, min), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_max(x)), apply(x_array, 1, max), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_mean(x)), apply(x_array, 1, mean), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_median(x)), apply(x_array, 1, median), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_sum(x)), apply(x_array, 1, sum), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_prod(x)), apply(x_array, 1, prod), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_min(x)), apply(x_array, 1, min), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_max(x)), apply(x_array, 1, max), ignore_attr = TRUE)
 
   expect_error(rvar_mean(x_ord))
   expect_equal(rvar_median(x_ord), rvar_ordered(letters[apply(x_array, 1, median)], levels = letters))
@@ -41,7 +41,7 @@ test_that("numeric summary functions work", {
   expect_equal(
     draws_of(rvar_mean(x, na.rm = TRUE)),
     apply(draws_of(x), 1, function(x) mean(x, na.rm = TRUE)),
-    check.attributes = FALSE
+    ignore_attr = TRUE
   )
 })
 
@@ -55,10 +55,10 @@ test_that("spread summary functions work", {
   x_ord <- rvar_ordered(x_letters, levels = letters)
   x_fct <- rvar_factor(x_letters, levels = letters)
 
-  expect_equal(draws_of(rvar_sd(x)), apply(x_array, 1, sd), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_var(x)), apply(x_array, 1, function(x) var(as.vector(x))), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_mad(x)), apply(x_array, 1, mad), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_mad(x, constant = 1)), apply(x_array, 1, mad, constant = 1), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_sd(x)), apply(x_array, 1, sd), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_var(x)), apply(x_array, 1, function(x) var(as.vector(x))), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_mad(x)), apply(x_array, 1, mad), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_mad(x, constant = 1)), apply(x_array, 1, mad, constant = 1), ignore_attr = TRUE)
 
   expect_error(rvar_sd(x_ord))
   expect_error(rvar_var(x_ord))
@@ -78,7 +78,7 @@ test_that("spread summary functions work", {
   expect_equal(
     draws_of(rvar_var(x, na.rm = TRUE)),
     apply(draws_of(x), 1, function(x) var(as.vector(x), na.rm = TRUE)),
-    check.attributes = FALSE
+    ignore_attr = TRUE
   )
 })
 
@@ -91,7 +91,7 @@ test_that("rvar_range works", {
   x_letters <- array(letters[1:24], dim = c(4,2,3))
   x_ord <- rvar_ordered(x_letters, levels = letters)
 
-  expect_equal(draws_of(rvar_range(x)), t(apply(x_array, 1, range)), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_range(x)), t(apply(x_array, 1, range)), ignore_attr = TRUE)
   expect_equal(rvar_range(x_ord), rvar_ordered(array(letters[t(apply(x_array, 1, range))], dim = c(4, 2)), levels = letters))
   expect_error(rvar_range(rvar_factor("a")))
 
@@ -137,8 +137,8 @@ test_that("logical summaries work", {
   x_array <- array(1:24, dim = c(4,2,3))
   x <- new_rvar(x_array)
 
-  expect_equal(draws_of(rvar_all(x > 6)), as.matrix(apply(x_array > 6, 1, all)), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_any(x > 6)), as.matrix(apply(x_array > 6, 1, any)), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_all(x > 6)), as.matrix(apply(x_array > 6, 1, all)), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_any(x > 6)), as.matrix(apply(x_array > 6, 1, any)), ignore_attr = TRUE)
 
   expect_error(rvar_all(rvar("a")))
   expect_error(rvar_any(rvar("a")))
@@ -158,18 +158,18 @@ test_that("special value predicates work", {
   x_ord <- rvar_ordered(x_letters)
   x_fct <- rvar_factor(x_letters)
 
-  expect_equal(draws_of(rvar_is_finite(x)), as.matrix(is.finite(x_array)), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_is_infinite(x)), as.matrix(is.infinite(x_array)), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_is_nan(x)), as.matrix(is.nan(x_array)), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_is_na(x)), as.matrix(is.na(x_array)), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_is_finite(x)), as.matrix(is.finite(x_array)), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_is_infinite(x)), as.matrix(is.infinite(x_array)), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_is_nan(x)), as.matrix(is.nan(x_array)), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_is_na(x)), as.matrix(is.na(x_array)), ignore_attr = TRUE)
 
-  expect_equal(draws_of(rvar_is_finite(x_ord)), as.matrix(is.finite(x_letters)), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_is_infinite(x_ord)), as.matrix(is.infinite(x_letters)), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_is_nan(x_ord)), as.matrix(is.nan(x_letters)), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_is_na(x_ord)), as.matrix(is.na(x_letters)), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_is_finite(x_ord)), as.matrix(is.finite(x_letters)), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_is_infinite(x_ord)), as.matrix(is.infinite(x_letters)), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_is_nan(x_ord)), as.matrix(is.nan(x_letters)), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_is_na(x_ord)), as.matrix(is.na(x_letters)), ignore_attr = TRUE)
 
-  expect_equal(draws_of(rvar_is_finite(x_fct)), as.matrix(is.finite(x_letters)), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_is_infinite(x_fct)), as.matrix(is.infinite(x_letters)), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_is_nan(x_fct)), as.matrix(is.nan(x_letters)), check.attributes = FALSE)
-  expect_equal(draws_of(rvar_is_na(x_fct)), as.matrix(is.na(x_letters)), check.attributes = FALSE)
+  expect_equal(draws_of(rvar_is_finite(x_fct)), as.matrix(is.finite(x_letters)), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_is_infinite(x_fct)), as.matrix(is.infinite(x_letters)), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_is_nan(x_fct)), as.matrix(is.nan(x_letters)), ignore_attr = TRUE)
+  expect_equal(draws_of(rvar_is_na(x_fct)), as.matrix(is.na(x_letters)), ignore_attr = TRUE)
 })

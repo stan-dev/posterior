@@ -55,13 +55,15 @@ test_that("rvar_factors work in tibbles", {
   df = tibble::tibble(x, y = as_rvar_ordered(x))
 
   expect_equal(df$x, x)
-  expect_equal(df$y, rvar(x_array_ordered))
+  expect_equal(df$y, rvar(x_array_ordered), ignore_attr = TRUE)
   expect_equal(dplyr::mutate(df, z = x)$z, x)
 
-  expect_equal(dplyr::mutate(df, z = as_rvar_ordered(x))$z, rvar(x_array_ordered))
+  expect_equal(dplyr::mutate(df, z = as_rvar_ordered(x))$z, rvar(x_array_ordered),
+               ignore_attr = TRUE)
   expect_equal(
     dplyr::group_by(dplyr::mutate(df, z = as_rvar_ordered(x)), 1:4)$z,
-    rvar(x_array_ordered)
+    rvar(x_array_ordered),
+    ignore_attr = TRUE
   )
 
   df = tibble::tibble(g = letters[1:4], x)
@@ -71,7 +73,8 @@ test_that("rvar_factors work in tibbles", {
     c = rvar(x_array[,3, drop = FALSE]),
     d = rvar(x_array[,4, drop = FALSE])
   )
-  expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref)
+  expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref,
+               ignore_attr = TRUE)
   expect_equal(tidyr::pivot_longer(ref, a:d, names_to = "g", values_to = "x"), df)
 
   df$y = as_rvar_ordered(df$x)
@@ -82,7 +85,8 @@ test_that("rvar_factors work in tibbles", {
     c = c(rvar(factor(NA)), NA, df$x[[3]], NA),
     d = c(rvar(factor(NA)), NA, NA, df$x[[4]]),
   )
-  expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref2)
+  expect_equal(tidyr::pivot_wider(df, names_from = g, values_from = x), ref2,
+               ignore_attr = TRUE)
 })
 
 # rep ---------------------------------------------------------------------

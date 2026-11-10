@@ -58,9 +58,15 @@ test_that("transformations to and from draws_df objects work", {
   expect_equal(draws_df, draws_df2)
 
   # test that a single draw does not lead to a drop of dimensions
-  draws_rvars2 <- subset_draws(draws_rvars, draw = 1)
+  expect_message(
+    draws_rvars2 <- subset_draws(draws_rvars, draw = 1),
+    "Merging chains in order to subset via 'draw'"
+  )
   draws_df2 <- as_draws_df(draws_rvars2)
-  expect_equal(subset_draws(draws_df, draw = 1), draws_df2)
+  expect_message(
+    expect_equal(subset_draws(draws_df, draw = 1), draws_df2),
+    "Merging chains in order to subset via 'draw'"
+  )
 })
 
 test_that("transformations to and from draws_list objects work", {
@@ -109,7 +115,7 @@ test_that("matrices can be transformed to draws_matrix objects", {
   dimnames(x) <- list(NULL, paste0("theta", 1:5))
 
   y <- as_draws(x)
-  expect_is(y, "draws_matrix")
+  expect_s3_class(y, "draws_matrix")
   expect_equal(variables(y), colnames(x))
   expect_equal(niterations(y), 40)
   expect_equal(nchains(y), 1)
@@ -121,7 +127,7 @@ test_that("arrays can be transformed to draws_array objects", {
   dimnames(x) <- list(NULL, NULL, paste0("theta", 1:5))
 
   y <- as_draws(x)
-  expect_is(y, "draws_array")
+  expect_s3_class(y, "draws_array")
   expect_equal(variables(y), dimnames(x)[[3]])
   expect_equal(niterations(y), 10)
   expect_equal(nchains(y), 4)
@@ -135,7 +141,7 @@ test_that("lists of matrices can be transformed to draws_array objects", {
   # one chain
   z1 <- list(x)
   y <- as_draws(z1)
-  expect_is(y, "draws_array")
+  expect_s3_class(y, "draws_array")
   expect_equal(variables(y), colnames(z1[[1]]))
   expect_equal(niterations(y), 50)
   expect_equal(nchains(y), 1)
@@ -143,7 +149,7 @@ test_that("lists of matrices can be transformed to draws_array objects", {
   # multiple chains
   z3 <- list(x, x, x)
   y <- as_draws(z3)
-  expect_is(y, "draws_array")
+  expect_s3_class(y, "draws_array")
   expect_equal(variables(y), colnames(z3[[1]]))
   expect_equal(niterations(y), 50)
   expect_equal(nchains(y), 3)
@@ -155,7 +161,7 @@ test_that("data.frames can be transformed to draws_df objects", {
     v2 = rnorm(100)
   )
   y <- as_draws(x)
-  expect_is(y, "draws_df")
+  expect_s3_class(y, "draws_df")
   expect_equal(variables(y), names(x))
   expect_equal(niterations(y), 100)
   expect_equal(nchains(y), 1)
@@ -165,7 +171,7 @@ test_that("data.frames can be transformed to draws_df objects", {
   x2$.iteration <- 1:100
   x2$.chain <- rep(1:4, each = 25)
   y2 <- as_draws(x2)
-  expect_is(y2, "draws_df")
+  expect_s3_class(y2, "draws_df")
   expect_equal(variables(y2), names(x))
   expect_equal(niterations(y2), 25)
   expect_equal(nchains(y2), 4)
@@ -183,7 +189,7 @@ test_that("lists can be transformed to draws_list objects", {
     )
   )
   y <- as_draws(x)
-  expect_is(y, "draws_list")
+  expect_s3_class(y, "draws_list")
   expect_equal(variables(y), names(x[[1]]))
   expect_equal(ndraws(y), 100)
   expect_equal(nchains(y), 2)
@@ -192,7 +198,7 @@ test_that("lists can be transformed to draws_list objects", {
 test_that("numeric vectors can be transformed to draws_matrix objects", {
   draws_matrix <- draws_matrix(a = 1:10, b = 11:20, c = 1)
   draws_matrix2 <- as_draws_matrix(cbind(1:10, 11:20, 1))
-  expect_equivalent(draws_matrix, draws_matrix2)
+  expect_equal(draws_matrix, draws_matrix2, ignore_attr = TRUE)
 })
 
 test_that("numeric vectors can be transformed to draws_array objects", {
@@ -486,14 +492,14 @@ test_that("1-length rvars can be cast to other formats", {
   # scalars should stay as scalars...
   x <- rvar(1:10)
   expect_equal(as_draws_array(x), draws_array(x = 1:10))
-  expect_equal(as_draws_df(x), draws_df(x = 1:10))
+  expect_equal(as.data.frame(as_draws_df(x)), as.data.frame(draws_df(x = 1:10)))
   expect_equal(as_draws_list(x), draws_list(x = 1:10))
   expect_equal(as_draws_matrix(x), draws_matrix(x = 1:10))
 
   # ... but extra dims should not be dropped
   x <- rvar(array(1:10, dim = c(10, 1, 1)))
   expect_equal(as_draws_array(x), draws_array(`x[1,1]` = 1:10))
-  expect_equal(as_draws_df(x), draws_df(`x[1,1]` = 1:10))
+  expect_equal(as.data.frame(as_draws_df(x)), as.data.frame(draws_df(`x[1,1]` = 1:10)))
   expect_equal(as_draws_list(x), draws_list(`x[1,1]` = 1:10))
   expect_equal(as_draws_matrix(x), draws_matrix(`x[1,1]` = 1:10))
 })

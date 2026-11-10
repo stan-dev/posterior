@@ -41,7 +41,7 @@ Imports:
   parallel,
   matrixStats
 Suggests: 
-  testthat (>= 2.1.0),
+  testthat (>= 3.0.0),
   caret (>= 6.0-84),
   gbm (>= 2.1.8),
   randomForest (>= 4.6.14),
@@ -58,6 +58,9 @@ Encoding: UTF-8
 LazyData: false
 URL: https://mc-stan.org/posterior/, https://discourse.mc-stan.org/
 BugReports: https://github.com/stan-dev/posterior/issues
+Config/testthat/edition: 3
+Config/testthat/parallel: true
+Config/testthat/start-first: summarise_draws-multicore-many-variables, summarise_draws-multicore-two-variables, summarise_draws-multicore-external-function, summarise_draws-multicore-one-variable, rstar
 Roxygen: list(markdown = TRUE)
 VignetteBuilder: knitr
 Config/roxygen2/version: 8.1.0
