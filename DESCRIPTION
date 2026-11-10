@@ -41,7 +41,7 @@ Imports:
   parallel,
   matrixStats
 Suggests: 
-  testthat (>= 2.1.0),
+  testthat (>= 3.0.0),
   caret (>= 6.0-84),
   gbm (>= 2.1.8),
   randomForest (>= 4.6.14),

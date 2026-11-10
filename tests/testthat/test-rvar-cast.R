@@ -139,9 +139,7 @@ test_that("as_rvar_ordered works", {
   )
   expect_equal(
     draws_of(as_rvar_ordered(as_rvar_factor(array(1:4, dim = c(2,2))))),
-    structure(1:4L, levels = c("1", "2", "3", "4"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"),
-              ignore_attr = TRUE),
-    ignore_attr = TRUE
+    structure(1:4L, levels = c("1", "2", "3", "4"), dim = c(1, 2, 2), dimnames = list("1", NULL, NULL), class = c("ordered", "factor"))
   )
   expect_equal(
     draws_of(as_rvar_ordered(array(c(TRUE, TRUE, FALSE, FALSE), dim = c(2,2)))),
