@@ -248,7 +248,7 @@ pareto_pit.draws_matrix <- function(x, y, weights = NULL, log = FALSE,
   ndraws <- ndraws(x)
 
   if (is.null(ndraws_tail)) {
-    ndraws_tail <- ps_tail_length(ndraws, 1)
+    ndraws_tail <- ps_tail_length(ndraws)
   } else {
     ndraws_tail <- as_one_integer(ndraws_tail)
   }
