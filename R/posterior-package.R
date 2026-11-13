@@ -99,8 +99,8 @@
 #' more than half of the total number of draws.
 #' * `posterior_warning_pareto_tail_not_fitted`: The generalized Pareto
 #' distribution was not fitted because there are fewer than 5 tail draws.
-#' * `posterior_warning_pareto_r_eff_ignored`: `r_eff` was given, but the
-#' Pareto tail length no longer uses it.
+#' * `posterior_warning_pareto_r_eff_ignored`: `r_eff` was given with a value
+#' other than 1, but the Pareto tail length no longer uses it.
 #'
 #' The error signaled when all weights are zero has the class
 #' `posterior_error_degenerate_weights`.

@@ -9,7 +9,7 @@ ps_tail_length(ndraws, r_eff = NULL, ...)
 \arguments{
 \item{ndraws}{number of draws}
 
-\item{r_eff}{Ignored. A value other than \code{NULL} gives a warning.}
+\item{r_eff}{Ignored. A value other than \code{NULL} or 1 gives a warning.}
 
 \item{...}{unused}
 }

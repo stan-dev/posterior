@@ -46,10 +46,8 @@ pareto_khat.default <- function(x,
 
 #' @rdname pareto_khat
 #' @export
-pareto_khat.rvar <- function(x, r_eff = NULL, ...) {
-  if (!is.null(r_eff)) {
-    warn_r_eff_ignored()
-  }
+pareto_khat.rvar <- function(x, ..., r_eff = NULL) {
+  warn_r_eff_ignored(r_eff)
   draws_diags <- summarise_rvar_by_element_with_chains(
     x,
     pareto_khat.default,
@@ -151,10 +149,8 @@ pareto_diags.default <- function(x,
 
 #' @rdname pareto_diags
 #' @export
-pareto_diags.rvar <- function(x, r_eff = NULL, ...) {
-  if (!is.null(r_eff)) {
-    warn_r_eff_ignored()
-  }
+pareto_diags.rvar <- function(x, ..., r_eff = NULL) {
+  warn_r_eff_ignored(r_eff)
   draws_diags <- summarise_rvar_by_element_with_chains(
     x,
     pareto_diags.default,
@@ -223,11 +219,9 @@ pareto_smooth <- function(x, ...) UseMethod("pareto_smooth")
 #' @rdname pareto_smooth
 #' @export
 pareto_smooth.rvar <- function(
-  x, return_k = FALSE, extra_diags = FALSE, r_eff = NULL, ...
+  x, return_k = FALSE, extra_diags = FALSE, ..., r_eff = NULL
 ) {
-  if (!is.null(r_eff)) {
-    warn_r_eff_ignored()
-  }
+  warn_r_eff_ignored(r_eff)
   if (extra_diags) {
     return_k <- TRUE
   }
@@ -272,9 +266,7 @@ pareto_smooth.default <- function(x,
                                   are_log_weights = FALSE,
                                   ...) {
 
-  if (!is.null(r_eff)) {
-    warn_r_eff_ignored()
-  }
+  warn_r_eff_ignored(r_eff)
   if (!is.null(ndraws_tail)) {
     ndraws_tail <- as_one_integer(ndraws_tail)
   }
@@ -778,11 +770,13 @@ ps_convergence_rate <- function(k, ndraws, ...) {
   rate
 }
 
-warn_r_eff_ignored <- function() {
-  warning_no_call(
-    "`r_eff` is ignored. The Pareto tail length now depends on the number of draws only.",
-    class = "posterior_warning_pareto_r_eff_ignored"
-  )
+warn_r_eff_ignored <- function(r_eff) {
+  if (!is.null(r_eff) && !isTRUE(all(r_eff == 1))) {
+    warning_no_call(
+      "`r_eff` is ignored. The Pareto tail length now depends on the number of draws only.",
+      class = "posterior_warning_pareto_r_eff_ignored"
+    )
+  }
 }
 
 #' Pareto tail length
@@ -794,14 +788,12 @@ warn_r_eff_ignored <- function() {
 #' internally and is exported to be available for other packages.
 #' @family helper-functions
 #' @param ndraws number of draws
-#' @param r_eff Ignored. A value other than `NULL` gives a warning.
+#' @param r_eff Ignored. A value other than `NULL` or 1 gives a warning.
 #' @param ... unused
 #' @return tail length
 #' @export
 ps_tail_length <- function(ndraws, r_eff = NULL, ...) {
-  if (!is.null(r_eff)) {
-    warn_r_eff_ignored()
-  }
+  warn_r_eff_ignored(r_eff)
   floor(ifelse(ndraws > 225, 3 * sqrt(ndraws), ndraws / 5))
 }
 

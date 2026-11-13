@@ -11,7 +11,7 @@
 #' @param ndraws_tail (numeric) number of draws for the tail. If
 #'   `ndraws_tail` is not specified, it is calculated with
 #'   [ps_tail_length()].
-#' @param r_eff Ignored. A value other than `NULL` gives a warning.
+#' @param r_eff Ignored. A value other than `NULL` or 1 gives a warning.
 #'   Default is `NULL`.
 #' @param verbose (logical) Should diagnostic messages be printed? If
 #'   `TRUE`, messages related to Pareto diagnostics will be

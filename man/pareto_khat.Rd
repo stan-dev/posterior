@@ -18,7 +18,7 @@ pareto_khat(x, ...)
   ...
 )
 
-\method{pareto_khat}{rvar}(x, r_eff = NULL, ...)
+\method{pareto_khat}{rvar}(x, ..., r_eff = NULL)
 }
 \arguments{
 \item{x}{(multiple options) One of:
@@ -39,7 +39,7 @@ pareto_khat(x, ...)
 
 The default is \code{"both"}.}
 
-\item{r_eff}{Ignored. A value other than \code{NULL} gives a warning.
+\item{r_eff}{Ignored. A value other than \code{NULL} or 1 gives a warning.
 Default is \code{NULL}.}
 
 \item{ndraws_tail}{(numeric) number of draws for the tail. If

@@ -85,7 +85,9 @@ test_that("pareto_khat ignores r_eff with a warning", {
   cls <- "posterior_warning_pareto_r_eff_ignored"
   expect_warning(pk <- pareto_khat(tau, r_eff = 0.6), class = cls)
   expect_equal(pk, pareto_khat(tau))
-  expect_warning(pareto_smooth(tau, r_eff = 1, ndraws_tail = 20), class = cls)
+  expect_warning(pareto_smooth(tau, r_eff = 0.6, ndraws_tail = 20), class = cls)
+  expect_no_warning(pareto_khat(tau, r_eff = 1))
+  expect_no_warning(pareto_khat(tau, r_eff = c(1, 1)))
 })
 
 test_that("ps_tail_length depends on ndraws only", {
@@ -236,6 +238,16 @@ test_that("rvar methods give one r_eff warning", {
   expect_length(capture_warnings(pareto_khat(theta, r_eff = 0.5)), 1)
   expect_length(capture_warnings(pareto_diags(theta, r_eff = 0.5)), 1)
   expect_length(capture_warnings(pareto_smooth(theta, r_eff = 0.5)), 1)
+})
+
+test_that("rvar methods pass positional tail via dots", {
+  rv <- rvar(rexp(4000), nchains = 4)
+  expect_no_warning(k <- pareto_khat(rv, "left"))
+  expect_equal(k, pareto_khat(rv, tail = "left"))
+  expect_no_warning(d <- pareto_diags(rv, "left"))
+  expect_equal(d, pareto_diags(rv, tail = "left"))
+  expect_no_warning(s <- pareto_smooth(rv, TRUE, FALSE, "left", verbose = FALSE))
+  expect_equal(s, pareto_smooth(rv, return_k = TRUE, tail = "left", verbose = FALSE))
 })
 
 test_that("pareto_smooth returns x with smoothed tail(s)", {

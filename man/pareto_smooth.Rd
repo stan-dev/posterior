@@ -8,7 +8,7 @@
 \usage{
 pareto_smooth(x, ...)
 
-\method{pareto_smooth}{rvar}(x, return_k = FALSE, extra_diags = FALSE, r_eff = NULL, ...)
+\method{pareto_smooth}{rvar}(x, return_k = FALSE, extra_diags = FALSE, ..., r_eff = NULL)
 
 \method{pareto_smooth}{default}(
   x,
@@ -42,7 +42,7 @@ be included in output? If \code{TRUE}, \code{min_ss}, \code{khat_threshold} and
 \code{convergence_rate} for the estimated k value will be
 returned. Default is \code{FALSE}.}
 
-\item{r_eff}{Ignored. A value other than \code{NULL} gives a warning.
+\item{r_eff}{Ignored. A value other than \code{NULL} or 1 gives a warning.
 Default is \code{NULL}.}
 
 \item{tail}{(string) The tail to diagnose/smooth:
