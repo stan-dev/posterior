@@ -164,8 +164,8 @@ test_that("subset_draws works correctly for draws_list objects", {
 test_that("subset_draws works correctly for draws_rvars objects", {
   # Store and restore option to ensure test isolation
   old_option <- getOption("posterior.warn_on_merge_chains")
-  on.exit(options(posterior.warn_on_merge_chains = old_option))
-
+  on.exit(options(posterior.warn_on_merge_chains = old_option), add = TRUE)
+  options(posterior.warn_on_merge_chains = TRUE)
   x <- as_draws_rvars(example_draws())
   x_sub <- subset_draws(x, variable = c("mu"), iteration = 5:10, chain = 3:4)
   expect_equal(variables(x_sub), "mu")

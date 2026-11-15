@@ -58,6 +58,8 @@ test_that("transformations to and from draws_df objects work", {
   expect_equal(draws_df, draws_df2)
 
   # test that a single draw does not lead to a drop of dimensions
+  old_option <- getOption("posterior.warn_on_merge_chains")
+  on.exit(options(posterior.warn_on_merge_chains = old_option), add = TRUE)
   options(posterior.warn_on_merge_chains = FALSE)
   draws_rvars2 <- subset_draws(draws_rvars, draw = 1)
   draws_df2 <- as_draws_df(draws_rvars2)
