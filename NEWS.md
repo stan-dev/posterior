@@ -10,6 +10,12 @@ result instead of about three.
 selected.
 * All warnings now have the class `posterior_warning` and a class for each
 cause. Calling packages can catch, count, or muffle each type of warning (#470).
+* The Pareto tail length in `pareto_khat()`, `pareto_diags()`,
+`pareto_smooth()`, and `ps_tail_length()` now depends only on the number of
+draws (#446, #478). For MCMC draws, results with the default `r_eff = NULL`
+change slightly because `r_eff` was previously estimated with `ess_tail()`.
+These functions are also faster now. `r_eff` is ignored, with a warning unless
+it is `NULL` or `1` (#478).
 
 ### Bug Fixes
 
