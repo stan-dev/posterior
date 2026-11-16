@@ -95,8 +95,8 @@ rvar_quantile(x, probs = c(0.25, 0.5, 0.75), names = TRUE)
 \link{rvar-summaries-over-draws} for summary functions across draws (e.g. expectations).
 \link{rvar-dist} for density, CDF, and quantile functions of random variables.
 
-Other rvar-summaries: 
+Other rvar-summaries:
 \code{\link{rvar-summaries-over-draws}},
-\code{\link{rvar_is_finite}()}
+\code{\link[=rvar_is_finite]{rvar_is_finite()}}
 }
 \concept{rvar-summaries}

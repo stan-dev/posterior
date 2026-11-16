@@ -14,7 +14,7 @@ is defined.}
 variables in \code{x} by name. This expression will be executed once per draw
 of \code{x}, where references to variables in \code{x} resolve to the value of that
 variable in that draw. The expression supports
-\link[rlang:topic-inject]{quasiquotation}.}
+\link[rlang:quasiquotation]{quasiquotation}.}
 }
 \value{
 As \code{for_each_draw()} is used primarily for its side effects (the expression

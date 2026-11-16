@@ -16,3 +16,4 @@
 ^touchstone$
 ^codecov\.yml$
 ^paper$
+^\.git-blame-ignore-revs$

@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{(draws_summary) A \code{"draws_summary"} object as output by \code{\link[=summarise_draws]{summarise_draws()}}.}
 
-\item{...}{Additional arguments passed to \code{\link[tibble:formatting]{tibble::print.tbl_df()}}}
+\item{...}{Additional arguments passed to \code{\link[tibble:print.tbl_df]{tibble::print.tbl_df()}}}
 
 \item{num_args}{(named list) Optional arguments passed to
 \link[tibble:num]{num()} for pretty printing of summaries. If \code{NULL}

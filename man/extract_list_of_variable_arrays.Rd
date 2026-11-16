@@ -53,9 +53,9 @@ str(vars2)
 
 }
 \seealso{
-Other variable extraction methods: 
-\code{\link{extract_variable}()},
-\code{\link{extract_variable_array}()},
-\code{\link{extract_variable_matrix}()}
+Other variable extraction methods:
+\code{\link[=extract_variable]{extract_variable()}},
+\code{\link[=extract_variable_array]{extract_variable_array()}},
+\code{\link[=extract_variable_matrix]{extract_variable_matrix()}}
 }
 \concept{variable extraction methods}

@@ -213,6 +213,7 @@ Math.rvar_factor <- function(x, ...) {
 # conditionally export it in .onLoad() for compatibility with older versions
 #' @rdname rvar-matmult
 #' @method matrixOps rvar
+#' @exportS3Method NULL
 matrixOps.rvar <- function(x, y) {
   # as of R 4.3 this group generic is only used for %*%, but that may change
   # in the future (crossprod and tcrossprod are planned), so we include this

@@ -45,11 +45,11 @@ str(y)
 
 }
 \seealso{
-Other formats: 
-\code{\link{draws_array}()},
-\code{\link{draws_df}()},
-\code{\link{draws_list}()},
-\code{\link{draws_matrix}()},
-\code{\link{draws_rvars}()}
+Other formats:
+\code{\link[=draws_array]{draws_array()}},
+\code{\link[=draws_df]{draws_df()}},
+\code{\link[=draws_list]{draws_list()}},
+\code{\link[=draws_matrix]{draws_matrix()}},
+\code{\link[=draws_rvars]{draws_rvars()}}
 }
 \concept{formats}
