@@ -1,3 +1,6 @@
+normalize_str_output <- function(x) {
+  sub('= *chr "bar"', '= chr "bar"', x)
+}
 
 # print -------------------------------------------------------------------
 
@@ -49,7 +52,10 @@ test_that("str(<rvar_factor>) works", {
   x[[1]] <- "a"
   attr(x, "foo") <- "bar"
 
-  expect_snapshot(str(x, vec.len = 5))
+  expect_snapshot(
+    str(x, vec.len = 5),
+    transform = normalize_str_output
+  )
 })
 
 test_that("str(<rvar_ordered>) works", {
@@ -57,7 +63,10 @@ test_that("str(<rvar_ordered>) works", {
   x[[1]] <- "a"
   attr(x, "foo") <- "bar"
 
-  expect_snapshot(str(x, vec.len = 5))
+  expect_snapshot(
+    str(x, vec.len = 5),
+    transform = normalize_str_output
+  )
 })
 
 
