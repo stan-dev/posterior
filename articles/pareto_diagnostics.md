@@ -166,11 +166,11 @@ drt %>%
     ## # A tibble: 6 × 6
     ##   variable  mean    sd mcse_mean ess_basic pareto_khat
     ##   <chr>    <dbl> <dbl>     <dbl>     <dbl>       <dbl>
-    ## 1 xn       0.010  0.99     0.021     2280.      -0.072
-    ## 2 xt3      0.025  1.6      0.033     2452.       0.33 
-    ## 3 xt2_5    0.031  2.0      0.039     2584.       0.41 
-    ## 4 xt2      0.046  2.9      0.054     2903.       0.52 
-    ## 5 xt1_5    0.092  7.6      0.13      3553.       0.69 
+    ## 1 xn       0.010  0.99     0.021     2280.      -0.073
+    ## 2 xt3      0.025  1.6      0.033     2452.       0.32 
+    ## 3 xt2_5    0.031  2.0      0.039     2584.       0.40 
+    ## 4 xt2      0.046  2.9      0.054     2903.       0.51 
+    ## 5 xt1_5    0.092  7.6      0.13      3553.       0.68 
     ## 6 xt1      0.33  93.       1.5       3976.       1.0
 
 \\\hat{k} \leq 0\\ indicates that all moments exist, and the inverse of
@@ -210,15 +210,15 @@ drts <- drt %>%
   subset_draws(variable="_s", regex=TRUE)
 ```
 
-    ## Pareto k-hat = 0.33.
+    ## Pareto k-hat = 0.32.
 
-    ## Pareto k-hat = 0.41.
+    ## Pareto k-hat = 0.4.
 
-    ## Pareto k-hat = 0.52.
+    ## Pareto k-hat = 0.51.
 
-    ## Pareto k-hat = 0.69.
+    ## Pareto k-hat = 0.68.
 
-    ## Pareto k-hat = 1.03. Mean does not exist, making empirical mean estimate of the draws not applicable.
+    ## Pareto k-hat = 1.01. Mean does not exist, making empirical mean estimate of the draws not applicable.
 
 Now the `mcse_mean` values are more trustworthy when \\\hat{k} \< 0.7\\.
 When \\\hat{k}\>0.7\\ both bias and variance grow so fast that Pareto
@@ -233,11 +233,11 @@ drts %>%
     ## # A tibble: 5 × 5
     ##   variable  mean mcse_mean ess_basic pareto_khat
     ##   <chr>    <dbl>     <dbl>     <dbl>       <dbl>
-    ## 1 xt3_s    0.026     0.033     2439.        0.34
-    ## 2 xt2_5_s  0.034     0.038     2538.        0.41
-    ## 3 xt2_s    0.053     0.051     2768.        0.51
-    ## 4 xt1_5_s  0.13      0.10      3305.        0.68
-    ## 5 xt1_s    1.0       0.83      3908.        1.00
+    ## 1 xt3_s    0.026     0.033     2436.        0.34
+    ## 2 xt2_5_s  0.034     0.038     2532.        0.41
+    ## 3 xt2_s    0.053     0.050     2752.        0.51
+    ## 4 xt1_5_s  0.13      0.099     3273.        0.67
+    ## 5 xt1_s    1.0       0.77      3899.        0.98
 
 ## Minimum sample size required
 
@@ -255,11 +255,11 @@ drt %>%
     ## # A tibble: 6 × 6
     ##   variable  mean mcse_mean ess_basic pareto_khat min_ss
     ##   <chr>    <dbl>     <dbl>     <dbl>       <dbl>  <dbl>
-    ## 1 xn       0.010     0.021     2280.      -0.072    10 
-    ## 2 xt3      0.025     0.033     2452.       0.33     31.
-    ## 3 xt2_5    0.031     0.039     2584.       0.41     48.
-    ## 4 xt2      0.046     0.054     2903.       0.52    116.
-    ## 5 xt1_5    0.092     0.13      3553.       0.69   1746.
+    ## 1 xn       0.010     0.021     2280.      -0.073    10 
+    ## 2 xt3      0.025     0.033     2452.       0.32     30.
+    ## 3 xt2_5    0.031     0.039     2584.       0.40     46.
+    ## 4 xt2      0.046     0.054     2903.       0.51    105.
+    ## 5 xt1_5    0.092     0.13      3553.       0.68   1262.
     ## 6 xt1      0.33      1.5       3976.       1.0     Inf
 
 Here required `min_ss` is smaller than `ess_basic` for all except
@@ -283,11 +283,11 @@ drt %>%
     ## # A tibble: 6 × 7
     ##   variable  mean mcse_mean ess_basic pareto_khat min_ss conv_rate
     ##   <chr>    <dbl>     <dbl>     <dbl>       <dbl>  <dbl>     <dbl>
-    ## 1 xn       0.010     0.021     2280.      -0.072    10       1   
-    ## 2 xt3      0.025     0.033     2452.       0.33     31.      0.98
-    ## 3 xt2_5    0.031     0.039     2584.       0.41     48.      0.95
-    ## 4 xt2      0.046     0.054     2903.       0.52    116.      0.86
-    ## 5 xt1_5    0.092     0.13      3553.       0.69   1746.      0.60
+    ## 1 xn       0.010     0.021     2280.      -0.073    10       1   
+    ## 2 xt3      0.025     0.033     2452.       0.32     30.      0.98
+    ## 3 xt2_5    0.031     0.039     2584.       0.40     46.      0.95
+    ## 4 xt2      0.046     0.054     2903.       0.51    105.      0.87
+    ## 5 xt1_5    0.092     0.13      3553.       0.68   1262.      0.63
     ## 6 xt1      0.33      1.5       3976.       1.0     Inf       0
 
 We see that with \\t_2\\, \\t\_{1.5}\\, and \\t_1\\ we need
@@ -313,12 +313,12 @@ drt %>%
     ## # A tibble: 6 × 8
     ##   variable   mean mcse_mean ess_basic pareto_khat min_ss khat_thres conv_rate
     ##   <chr>     <dbl>     <dbl>     <dbl>       <dbl>  <dbl>      <dbl>     <dbl>
-    ## 1 xn        0.038     0.066      244.      -0.015 1  e 1       0.62      1   
-    ## 2 xt3       0.054     0.11       237.       0.32  2.9e 1       0.62      0.96
-    ## 3 xt2_5     0.057     0.13       237.       0.38  4.1e 1       0.62      0.93
-    ## 4 xt2       0.063     0.17       243.       0.47  7.9e 1       0.62      0.86
-    ## 5 xt1_5     0.061     0.31       271.       0.63  4.9e 2       0.62      0.68
-    ## 6 xt1      -0.26      1.6        344.       0.93  2.0e15       0.62      0.13
+    ## 1 xn        0.038     0.066      244.     -0.0057 1  e 1       0.62      1   
+    ## 2 xt3       0.054     0.11       237.      0.32   2.9e 1       0.62      0.96
+    ## 3 xt2_5     0.057     0.13       237.      0.38   4.1e 1       0.62      0.93
+    ## 4 xt2       0.063     0.17       243.      0.47   7.8e 1       0.62      0.86
+    ## 5 xt1_5     0.061     0.31       271.      0.62   4.3e 2       0.62      0.69
+    ## 6 xt1      -0.26      1.6        344.      0.92   1.4e12       0.62      0.16
 
 With only 400 draws, we can trust the Pareto smoothed result only when
 \\\hat{k}\<0.62\\. For \\t\_{1.5}\\ \\\hat{k}\approx 0.64\\, and
@@ -343,7 +343,7 @@ drt %>%
     ## # A tibble: 1 × 7
     ##   variable  mean mcse_mean  khat min_ss khat_threshold convergence_rate
     ##   <chr>    <dbl>     <dbl> <dbl>  <dbl>          <dbl>            <dbl>
-    ## 1 xt2_5_sq   3.9      0.56  0.67  1051.           0.72             0.64
+    ## 1 xt2_5_sq   3.9      0.56  0.66   876.           0.72             0.66
 
 ## Discussion
 

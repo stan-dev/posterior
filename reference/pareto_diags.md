@@ -21,7 +21,7 @@ pareto_diags(
 )
 
 # S3 method for class 'rvar'
-pareto_diags(x, ...)
+pareto_diags(x, ..., r_eff = NULL)
 
 pareto_khat_threshold(x, ...)
 
@@ -78,16 +78,14 @@ pareto_convergence_rate(x, ...)
 
 - r_eff:
 
-  (numeric) relative effective sample size estimate. If `r_eff` is NULL,
-  it will be calculated assuming the draws are from MCMC. Default is
-  NULL.
+  Ignored. A value other than `NULL` or 1 gives a warning. Default is
+  `NULL`.
 
 - ndraws_tail:
 
   (numeric) number of draws for the tail. If `ndraws_tail` is not
-  specified, it will be calculated as ceiling(3 \* sqrt(length(x) /
-  r_eff)) if length(x) \> 225 and length(x) / 5 otherwise (see Appendix
-  H in Vehtari et al. (2024)).
+  specified, it is calculated with
+  [`ps_tail_length()`](https://mc-stan.org/posterior/reference/ps_tail_length.md).
 
 - verbose:
 
@@ -177,31 +175,31 @@ Other diagnostics:
 mu <- extract_variable_matrix(example_draws(), "mu")
 pareto_diags(mu)
 #> $khat
-#> [1] 0.1883631
+#> [1] 0.2728938
 #> 
 #> $min_ss
-#> [1] 17.06389
+#> [1] 23.73094
 #> 
 #> $khat_threshold
 #> [1] 0.6156891
 #> 
 #> $convergence_rate
-#> [1] 0.9872523
+#> [1] 0.970523
 #> 
 
 d <- as_draws_rvars(example_draws("multi_normal"))
 pareto_diags(d$Sigma)
 #> $khat
 #>            [,1]       [,2]        [,3]
-#> [1,] 0.04795008 0.04397814  0.04538642
-#> [2,] 0.04397814 0.08793028  0.07088579
-#> [3,] 0.04538642 0.07088579 -0.08599429
+#> [1,] 0.02212907 0.03117354  0.05660144
+#> [2,] 0.03117354 0.07103026  0.14702769
+#> [3,] 0.05660144 0.14702769 -0.07396071
 #> 
 #> $min_ss
 #>          [,1]     [,2]     [,3]
-#> [1,] 11.22962 11.11735 11.15692
-#> [2,] 11.11735 12.48554 11.92049
-#> [3,] 11.15692 11.92049 10.00000
+#> [1,] 10.53489 10.76903 11.48147
+#> [2,] 10.76903 11.92508 14.87206
+#> [3,] 11.48147 14.87206 10.00000
 #> 
 #> $khat_threshold
 #>           [,1]      [,2]      [,3]
@@ -211,8 +209,8 @@ pareto_diags(d$Sigma)
 #> 
 #> $convergence_rate
 #>           [,1]      [,2]      [,3]
-#> [1,] 0.9984733 0.9986277 0.9985736
-#> [2,] 0.9986277 0.9965542 0.9974598
-#> [3,] 0.9985736 0.9974598 1.0000000
+#> [1,] 0.9993812 0.9990881 0.9981162
+#> [2,] 0.9990881 0.9974527 0.9920776
+#> [3,] 0.9981162 0.9920776 1.0000000
 #> 
 ```

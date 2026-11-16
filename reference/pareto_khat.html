@@ -93,7 +93,7 @@ diagnostics. For further details see Vehtari et al. (2024).</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'rvar'</span></span>
-<span><span class="fu">pareto_khat</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">pareto_khat</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, r_eff <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -119,17 +119,14 @@ diagnostics. For further details see Vehtari et al. (2024).</p>
 
 
 <dt id="arg-r-eff">r_eff<a class="anchor" aria-label="anchor" href="#arg-r-eff"></a></dt>
-<dd><p>(numeric) relative effective sample size estimate. If
-<code>r_eff</code> is NULL, it will be calculated assuming the draws are
-from MCMC. Default is NULL.</p></dd>
+<dd><p>Ignored. A value other than <code>NULL</code> or 1 gives a warning.
+Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-ndraws-tail">ndraws_tail<a class="anchor" aria-label="anchor" href="#arg-ndraws-tail"></a></dt>
 <dd><p>(numeric) number of draws for the tail. If
-<code>ndraws_tail</code> is not specified, it will be calculated as
-ceiling(3 * sqrt(length(x) / r_eff)) if length(x) &gt; 225 and
-length(x) / 5 otherwise (see Appendix H in Vehtari et
-al. (2024)).</p></dd>
+<code>ndraws_tail</code> is not specified, it is calculated with
+<code><a href="ps_tail_length.html">ps_tail_length()</a></code>.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -190,14 +187,14 @@ Jonah Gabry (2024). Pareto Smoothed Importance Sampling.
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="extract_variable_matrix.html">extract_variable_matrix</a></span><span class="op">(</span><span class="fu"><a href="example_draws.html">example_draws</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"mu"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">pareto_khat</span><span class="op">(</span><span class="va">mu</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1883631</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2728938</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="draws_rvars.html">as_draws_rvars</a></span><span class="op">(</span><span class="fu"><a href="example_draws.html">example_draws</a></span><span class="op">(</span><span class="st">"multi_normal"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">pareto_khat</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">Sigma</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]        [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.04795008 0.04397814  0.04538642</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.04397814 0.08793028  0.07088579</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.04538642 0.07088579 -0.08599429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.02212907 0.03117354  0.05660144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.03117354 0.07103026  0.14702769</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.05660144 0.14702769 -0.07396071</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

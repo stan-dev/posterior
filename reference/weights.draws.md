@@ -81,5 +81,5 @@ head(weights(x, log=TRUE, normalize = FALSE)) # recover original log_wts
 
 # add weights on log scale and Pareto smooth them
 x <- weight_draws(x, weights = log_wts, log = TRUE, pareto_smooth = TRUE)
-#> Pareto k-hat = 0.07.
+#> Pareto k-hat = 0.08.
 ```

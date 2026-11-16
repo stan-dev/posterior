@@ -90,7 +90,7 @@ distribution fit to the tail(s).</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'rvar'</span></span>
-<span><span class="fu">pareto_diags</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu">pareto_diags</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span>, r_eff <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">pareto_khat_threshold</span><span class="op">(</span><span class="va">x</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
@@ -140,17 +140,14 @@ distribution fit to the tail(s).</p>
 
 
 <dt id="arg-r-eff">r_eff<a class="anchor" aria-label="anchor" href="#arg-r-eff"></a></dt>
-<dd><p>(numeric) relative effective sample size estimate. If
-<code>r_eff</code> is NULL, it will be calculated assuming the draws are
-from MCMC. Default is NULL.</p></dd>
+<dd><p>Ignored. A value other than <code>NULL</code> or 1 gives a warning.
+Default is <code>NULL</code>.</p></dd>
 
 
 <dt id="arg-ndraws-tail">ndraws_tail<a class="anchor" aria-label="anchor" href="#arg-ndraws-tail"></a></dt>
 <dd><p>(numeric) number of draws for the tail. If
-<code>ndraws_tail</code> is not specified, it will be calculated as
-ceiling(3 * sqrt(length(x) / r_eff)) if length(x) &gt; 225 and
-length(x) / 5 otherwise (see Appendix H in Vehtari et
-al. (2024)).</p></dd>
+<code>ndraws_tail</code> is not specified, it is calculated with
+<code><a href="ps_tail_length.html">ps_tail_length()</a></code>.</p></dd>
 
 
 <dt id="arg-verbose">verbose<a class="anchor" aria-label="anchor" href="#arg-verbose"></a></dt>
@@ -230,31 +227,31 @@ draws.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">mu</span> <span class="op">&lt;-</span> <span class="fu"><a href="extract_variable_matrix.html">extract_variable_matrix</a></span><span class="op">(</span><span class="fu"><a href="example_draws.html">example_draws</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"mu"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">pareto_diags</span><span class="op">(</span><span class="va">mu</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $khat</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.1883631</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.2728938</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $min_ss</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 17.06389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 23.73094</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $khat_threshold</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.6156891</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $convergence_rate</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.9872523</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.970523</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="draws_rvars.html">as_draws_rvars</a></span><span class="op">(</span><span class="fu"><a href="example_draws.html">example_draws</a></span><span class="op">(</span><span class="st">"multi_normal"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">pareto_diags</span><span class="op">(</span><span class="va">d</span><span class="op">$</span><span class="va">Sigma</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $khat</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            [,1]       [,2]        [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.04795008 0.04397814  0.04538642</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.04397814 0.08793028  0.07088579</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.04538642 0.07088579 -0.08599429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.02212907 0.03117354  0.05660144</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.03117354 0.07103026  0.14702769</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.05660144 0.14702769 -0.07396071</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $min_ss</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>          [,1]     [,2]     [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 11.22962 11.11735 11.15692</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 11.11735 12.48554 11.92049</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 11.15692 11.92049 10.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 10.53489 10.76903 11.48147</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 10.76903 11.92508 14.87206</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 11.48147 14.87206 10.00000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $khat_threshold</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]      [,3]</span>
@@ -264,9 +261,9 @@ draws.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $convergence_rate</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           [,1]      [,2]      [,3]</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.9984733 0.9986277 0.9985736</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.9986277 0.9965542 0.9974598</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.9985736 0.9974598 1.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1,] 0.9993812 0.9990881 0.9981162</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [2,] 0.9990881 0.9974527 0.9920776</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [3,] 0.9981162 0.9920776 1.0000000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 </code></pre></div>
     </div>

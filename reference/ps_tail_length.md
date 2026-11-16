@@ -1,13 +1,15 @@
 # Pareto tail length
 
-Calculate the tail length from number of draws and relative efficiency
-r_eff. See Appendix H in Vehtari et al. (2024). This function is used
+Calculate the tail length from the number of draws. The tail length is
+`floor(3 * sqrt(ndraws))` if `ndraws > 225`, and `floor(ndraws / 5)`
+otherwise. This differs from Appendix H in Vehtari et al. (2024), which
+also divides by the relative efficiency `r_eff`. This function is used
 internally and is exported to be available for other packages.
 
 ## Usage
 
 ``` r
-ps_tail_length(ndraws, r_eff, ...)
+ps_tail_length(ndraws, r_eff = NULL, ...)
 ```
 
 ## Arguments
@@ -18,7 +20,7 @@ ps_tail_length(ndraws, r_eff, ...)
 
 - r_eff:
 
-  relative efficiency
+  Ignored. A value other than `NULL` or 1 gives a warning.
 
 - ...:
 

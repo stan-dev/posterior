@@ -22,7 +22,7 @@ pareto_khat(
 )
 
 # S3 method for class 'rvar'
-pareto_khat(x, ...)
+pareto_khat(x, ..., r_eff = NULL)
 ```
 
 ## Arguments
@@ -55,16 +55,14 @@ pareto_khat(x, ...)
 
 - r_eff:
 
-  (numeric) relative effective sample size estimate. If `r_eff` is NULL,
-  it will be calculated assuming the draws are from MCMC. Default is
-  NULL.
+  Ignored. A value other than `NULL` or 1 gives a warning. Default is
+  `NULL`.
 
 - ndraws_tail:
 
   (numeric) number of draws for the tail. If `ndraws_tail` is not
-  specified, it will be calculated as ceiling(3 \* sqrt(length(x) /
-  r_eff)) if length(x) \> 225 and length(x) / 5 otherwise (see Appendix
-  H in Vehtari et al. (2024)).
+  specified, it is calculated with
+  [`ps_tail_length()`](https://mc-stan.org/posterior/reference/ps_tail_length.md).
 
 - verbose:
 
@@ -133,12 +131,12 @@ Other diagnostics:
 ``` r
 mu <- extract_variable_matrix(example_draws(), "mu")
 pareto_khat(mu)
-#> [1] 0.1883631
+#> [1] 0.2728938
 
 d <- as_draws_rvars(example_draws("multi_normal"))
 pareto_khat(d$Sigma)
 #>            [,1]       [,2]        [,3]
-#> [1,] 0.04795008 0.04397814  0.04538642
-#> [2,] 0.04397814 0.08793028  0.07088579
-#> [3,] 0.04538642 0.07088579 -0.08599429
+#> [1,] 0.02212907 0.03117354  0.05660144
+#> [2,] 0.03117354 0.07103026  0.14702769
+#> [3,] 0.05660144 0.14702769 -0.07396071
 ```
