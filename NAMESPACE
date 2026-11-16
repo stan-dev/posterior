@@ -549,45 +549,59 @@ exportMethods(drop)
 import(checkmate)
 import(stats)
 importFrom(abind,abind)
-importFrom(distributional,cdf)
-importFrom(distributional,variance)
-importFrom(methods,callNextMethod)
-importFrom(methods,setGeneric)
-importFrom(methods,setMethod)
-importFrom(methods,setOldClass)
-importFrom(pillar,format_glimpse)
-importFrom(pillar,new_pillar_shaft_simple)
-importFrom(pillar,pillar_shaft)
-importFrom(rlang,as_label)
-importFrom(rlang,as_name)
-importFrom(rlang,caller_env)
-importFrom(rlang,dots_list)
-importFrom(rlang,enquo)
-importFrom(rlang,enquos)
-importFrom(rlang,eval_tidy)
-importFrom(rlang,expr)
-importFrom(rlang,inject)
-importFrom(rlang,is_missing)
-importFrom(rlang,missing_arg)
-importFrom(rlang,quo_get_env)
-importFrom(rlang,quo_get_expr)
-importFrom(rlang,quos)
-importFrom(tensorA,as.tensor)
-importFrom(tensorA,chol.tensor)
-importFrom(tensorA,mul.tensor)
+importFrom(distributional,
+  cdf,
+  variance
+)
+importFrom(methods,
+  callNextMethod,
+  setGeneric,
+  setMethod,
+  setOldClass
+)
+importFrom(pillar,
+  format_glimpse,
+  new_pillar_shaft_simple,
+  pillar_shaft
+)
+importFrom(rlang,
+  as_label,
+  as_name,
+  caller_env,
+  dots_list,
+  enquo,
+  enquos,
+  eval_tidy,
+  expr,
+  inject,
+  is_missing,
+  missing_arg,
+  quo_get_env,
+  quo_get_expr,
+  quos
+)
+importFrom(tensorA,
+  as.tensor,
+  chol.tensor,
+  mul.tensor
+)
 importFrom(tibble,as_tibble)
-importFrom(utils,lsf.str)
-importFrom(utils,str)
-importFrom(vctrs,new_vctr)
-importFrom(vctrs,vec_cast)
-importFrom(vctrs,vec_cast_common)
-importFrom(vctrs,vec_proxy)
-importFrom(vctrs,vec_proxy_compare)
-importFrom(vctrs,vec_proxy_equal)
-importFrom(vctrs,vec_proxy_order)
-importFrom(vctrs,vec_ptype)
-importFrom(vctrs,vec_ptype2)
-importFrom(vctrs,vec_ptype_abbr)
-importFrom(vctrs,vec_ptype_full)
-importFrom(vctrs,vec_restore)
-importFrom(vctrs,vec_slice)
+importFrom(utils,
+  lsf.str,
+  str
+)
+importFrom(vctrs,
+  new_vctr,
+  vec_cast,
+  vec_cast_common,
+  vec_proxy,
+  vec_proxy_compare,
+  vec_proxy_equal,
+  vec_proxy_order,
+  vec_ptype,
+  vec_ptype2,
+  vec_ptype_abbr,
+  vec_ptype_full,
+  vec_restore,
+  vec_slice
+)

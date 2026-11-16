@@ -24,10 +24,10 @@ other packages. For user-facing diagnostic functions, see
 \code{\link{pareto_convergence_rate}} and \code{\link{pareto_diags}}.
 }
 \seealso{
-Other helper-functions: 
-\code{\link{gpdfit}()},
-\code{\link{ps_khat_threshold}()},
-\code{\link{ps_min_ss}()},
-\code{\link{ps_tail_length}()}
+Other helper-functions:
+\code{\link[=gpdfit]{gpdfit()}},
+\code{\link[=ps_khat_threshold]{ps_khat_threshold()}},
+\code{\link[=ps_min_ss]{ps_min_ss()}},
+\code{\link[=ps_tail_length]{ps_tail_length()}}
 }
 \concept{helper-functions}

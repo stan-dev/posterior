@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.rda binary
+*.RData binary
+*.rds binary
