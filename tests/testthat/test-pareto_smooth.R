@@ -17,7 +17,7 @@ test_that("pareto_khat handles both tails being constant correctly", {
 
   # left and right tails are constant, so khat should be NA in all cases
   x <- c(rep(-100, 10), sort(rnorm(100)), rep(100, 10))
-  
+
   expect_true(is.na(pareto_khat(x, tail = "left", ndraws_tail = 10)))
   expect_true(is.na(pareto_khat(x, tail = "right", ndraws_tail = 10)))
   expect_true(is.na(pareto_khat(x, tail = "both", ndraws_tail = 10)))
@@ -64,13 +64,13 @@ test_that("pareto_khat handles ndraws_tail argument", {
 
   expect_warning(pareto_khat(tau, tail = "both", ndraws_tail = 4),
                  "Number of tail draws cannot be less than 5. Changing to 5.")
-  
+
   expect_warning(pareto_khat(tau, tail = "right", ndraws_tail = 4),
                  "Number of tail draws cannot be less than 5. Changing to 5.")
-  
+
   expect_warning(pareto_khat(tau, tail = "left", ndraws_tail = 4),
                  "Number of tail draws cannot be less than 5. Changing to 5.")
-  
+
   expect_warning(pareto_khat(tau, tail = "right", ndraws_tail = length(tau)),
                  "Tail draws (400) not strictly less than total draws (400). Fitting of generalized Pareto distribution not performed.",
                  fixed = TRUE)
@@ -100,7 +100,6 @@ test_that("ps_tail_length depends on ndraws only", {
 
 
 test_that("pareto_khat diagnostics messages are as expected", {
-
   diags <- list(
     khat = 0.5,
     min_ss = 10,
@@ -108,26 +107,36 @@ test_that("pareto_khat diagnostics messages are as expected", {
     convergence_rate = 0.99
   )
 
-  expect_message(pareto_k_diagmsg(diags),
-                   paste0("Pareto k-hat = 0.5.\n"))
+  expect_snapshot(
+    {
+      # Ordinary message
+      pareto_k_diagmsg(diags)
 
-  diags$khat <- 0.6
+      # Sample size warning
+      diags$khat <- 0.6
+      pareto_k_diagmsg(diags)
 
-    expect_message(pareto_k_diagmsg(diags),
-                   paste0("Pareto k-hat = 0.6. Sample size is too small, for given Pareto k-hat. Sample size larger than 10 is needed for reliable results.\n"))
+      # Bias warning without sample size warning
+      diags$khat <- 0.71
+      diags$khat_threshold <- 0.8
+      pareto_k_diagmsg(diags)
 
-    diags$khat <- 0.71
-    diags$khat_threshold <- 0.8
+      # Combined sample size and bias warnings
+      diags$khat_threshold <- 0.55
+      pareto_k_diagmsg(diags)
 
-    expect_message(pareto_k_diagmsg(diags),
-                   paste0("Pareto k-hat = 0.71. Bias dominates when k-hat > 0.7, making empirical mean estimate of the Pareto-smoothed draws unreliable.\n"))
+      # Mean does not exist
+      diags$khat <- 1.1
+      pareto_k_diagmsg(diags)
 
-
-    diags$khat <- 1.1
-
-    expect_message(pareto_k_diagmsg(diags),
-                   paste0("Pareto k-hat = 1.1. Mean does not exist, making empirical mean estimate of the draws not applicable.\n"))
-
+      # Weighted diagnostics, high and low k-hat
+      diags$khat <- 0.8
+      pareto_k_diagmsg(diags, are_weights = TRUE)
+      diags$khat <- 0.5
+      pareto_k_diagmsg(diags, are_weights = TRUE)
+    },
+    cran = TRUE
+  )
 })
 
 test_that("pareto_diags returns expected diagnostics", {
@@ -182,11 +191,10 @@ test_that("pareto_khat functions work with matrix with chains", {
   expect_equal(pareto_khat(tau_chains, ndraws_tail = 20),
                pareto_khat(tau_nochains, ndraws_tail = 20))
 
-  ps_chains <- pareto_smooth(tau_chains, ndraws_tail = 20, return_k = TRUE)
-  ps_nochains <- pareto_smooth(tau_nochains, ndraws_tail = 20, return_k = TRUE)
+  ps_chains <- pareto_smooth(tau_chains, ndraws_tail = 20, return_k = TRUE, verbose = FALSE)
+  ps_nochains <- pareto_smooth(tau_nochains, ndraws_tail = 20, return_k = TRUE, verbose = FALSE)
 
   expect_equal(as.numeric(ps_chains$x), as.numeric(ps_nochains$x))
-
 })
 
 test_that("pareto_khat functions work with rvars with and without chains", {
@@ -210,22 +218,21 @@ test_that("pareto_khat functions work with rvars with and without chains", {
   expect_equal(pareto_diags(tau_rvar_chains, ndraws_tail = 20),
                pareto_diags(tau_rvar_nochains, ndraws_tail = 20))
 
-  ps_chains <- pareto_smooth(tau_chains, ndraws_tail = 20, return_k = TRUE)
-  ps_rvar_chains <- pareto_smooth(tau_rvar_chains, ndraws_tail = 20, return_k = TRUE)
+  ps_chains <- pareto_smooth(tau_chains, ndraws_tail = 20, return_k = TRUE, verbose = FALSE)
+  ps_rvar_chains <- pareto_smooth(tau_rvar_chains, ndraws_tail = 20, return_k = TRUE, verbose = FALSE)
 
-  ps_nochains <- pareto_smooth(tau_nochains, ndraws_tail = 20, return_k = TRUE)
-  ps_rvar_nochains <- pareto_smooth(tau_rvar_nochains, ndraws_tail = 20, return_k = TRUE)
+  ps_nochains <- pareto_smooth(tau_nochains, ndraws_tail = 20, return_k = TRUE, verbose = FALSE)
+  ps_rvar_nochains <- pareto_smooth(tau_rvar_nochains, ndraws_tail = 20, return_k = TRUE, verbose = FALSE)
 
   expect_equal(ps_rvar_chains$x, rvar(ps_chains$x, with_chains = TRUE))
 
   expect_equal(ps_rvar_nochains$x, rvar(ps_nochains$x))
 
+  ps_chains <- pareto_smooth(tau_chains, ndraws_tail = 20, extra_diags = TRUE, return_k = TRUE, verbose = FALSE)
+  ps_rvar_chains <- pareto_smooth(tau_rvar_chains, ndraws_tail = 20, extra_diags = TRUE, return_k = TRUE, verbose = FALSE)
 
-  ps_chains <- pareto_smooth(tau_chains, ndraws_tail = 20, extra_diags = TRUE, return_k = TRUE)
-  ps_rvar_chains <- pareto_smooth(tau_rvar_chains, ndraws_tail = 20, extra_diags = TRUE, return_k = TRUE)
-
-  ps_nochains <- pareto_smooth(tau_nochains, ndraws_tail = 20, extra_diags = TRUE, return_k = TRUE)
-  ps_rvar_nochains <- pareto_smooth(tau_rvar_nochains, ndraws_tail = 20, extra_diags = TRUE, return_k = TRUE)
+  ps_nochains <- pareto_smooth(tau_nochains, ndraws_tail = 20, extra_diags = TRUE, return_k = TRUE, verbose = FALSE)
+  ps_rvar_nochains <- pareto_smooth(tau_rvar_nochains, ndraws_tail = 20, extra_diags = TRUE, return_k = TRUE, verbose = FALSE)
 
   expect_equal(ps_rvar_chains$x, rvar(ps_chains$x, with_chains = TRUE))
 
@@ -253,11 +260,11 @@ test_that("rvar methods pass positional tail via dots", {
 test_that("pareto_smooth returns x with smoothed tail(s)", {
   mu <- extract_variable_matrix(example_draws(), "mu")
 
-  mu_smoothed_right <- pareto_smooth(mu, ndraws_tail = 10, tail = "right", return_k = TRUE)$x
+  mu_smoothed_right <- pareto_smooth(mu, ndraws_tail = 10, tail = "right", return_k = TRUE, verbose = FALSE)$x
 
-  mu_smoothed_left <- pareto_smooth(mu, ndraws_tail = 10, tail = "left", return_k = TRUE)$x
+  mu_smoothed_left <- pareto_smooth(mu, ndraws_tail = 10, tail = "left", return_k = TRUE, verbose = FALSE)$x
 
-  mu_smoothed_both <- pareto_smooth(mu, ndraws_tail = 10, tail = "both", return_k = TRUE)$x
+  mu_smoothed_both <- pareto_smooth(mu, ndraws_tail = 10, tail = "both", return_k = TRUE, verbose = FALSE)$x
 
   expect_equal(sort(mu)[1:390], sort(mu_smoothed_right)[1:390])
   expect_equal(sort(mu_smoothed_both)[11:400], sort(mu_smoothed_right)[11:400])

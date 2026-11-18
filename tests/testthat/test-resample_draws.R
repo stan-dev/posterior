@@ -1,4 +1,11 @@
 test_that("resample_draws returns expected format", {
+
+  # Store and restore option to ensure test isolation
+  old_option <- getOption("posterior.warn_on_merge_chains")
+  on.exit(options(posterior.warn_on_merge_chains = old_option))
+
+  options(posterior.warn_on_merge_chains = FALSE)
+
   x <- example_draws()
   w <- runif(ndraws(x), 0, 10)
 
@@ -54,6 +61,12 @@ test_that("Resampling algorithms return the correct result in expectation", {
 })
 
 test_that("resample_draws uses stored weights when available", {
+  # Store and restore option to ensure test isolation
+  old_option <- getOption("posterior.warn_on_merge_chains")
+  on.exit(options(posterior.warn_on_merge_chains = old_option))
+
+  options(posterior.warn_on_merge_chains = FALSE)
+
   x <- example_draws()
 
   x_rs <- resample_draws(x)
