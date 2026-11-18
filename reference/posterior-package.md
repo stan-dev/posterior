@@ -175,3 +175,5 @@ Other contributors:
 - Noa Kallioinen \[contributor\]
 
 - Teemu Säilynoja \[contributor\]
+
+- Florence Bockting \[contributor\]

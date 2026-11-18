@@ -1,5 +1,58 @@
 # Changelog
 
+## posterior 1.8.0
+
+#### Enhancements
+
+- Improve performance by avoiding full sorts in
+  [`ps_tail()`](https://mc-stan.org/posterior/reference/ps_tail.md) and
+  [`mcse_quantile()`](https://mc-stan.org/posterior/reference/mcse_quantile.md).
+- Add
+  [`ps_tail_sorted_log_ratios()`](https://mc-stan.org/posterior/reference/ps_tail_sorted_log_ratios.md)
+  for loo.
+- [`bind_draws()`](https://mc-stan.org/posterior/reference/bind_draws.md)
+  for `draws_array` objects is faster and holds one copy of the result
+  instead of about three.
+- [`subset_draws()`](https://mc-stan.org/posterior/reference/subset_draws.md)
+  returns its input without copying it when every variable is selected.
+- All warnings now have the class `posterior_warning` and a class for
+  each cause. Calling packages can catch, count, or muffle each type of
+  warning ([\#470](https://github.com/stan-dev/posterior/issues/470)).
+- The Pareto tail length in
+  [`pareto_khat()`](https://mc-stan.org/posterior/reference/pareto_khat.md),
+  [`pareto_diags()`](https://mc-stan.org/posterior/reference/pareto_diags.md),
+  [`pareto_smooth()`](https://mc-stan.org/posterior/reference/pareto_smooth.md),
+  and
+  [`ps_tail_length()`](https://mc-stan.org/posterior/reference/ps_tail_length.md)
+  now depends only on the number of draws
+  ([\#446](https://github.com/stan-dev/posterior/issues/446),
+  [\#478](https://github.com/stan-dev/posterior/issues/478)). For MCMC
+  draws, results with the default `r_eff = NULL` change slightly because
+  `r_eff` was previously estimated with
+  [`ess_tail()`](https://mc-stan.org/posterior/reference/ess_tail.md).
+  These functions are also faster now. `r_eff` is ignored, with a
+  warning unless it is `NULL` or `1`
+  ([\#478](https://github.com/stan-dev/posterior/issues/478)).
+
+#### Bug Fixes
+
+- Fix truncation operation for
+  [`uniformity_test()`](https://mc-stan.org/posterior/reference/uniformity_test.md)
+  ([\#462](https://github.com/stan-dev/posterior/issues/462))
+- mid-p value adjusment for discrete `PRIT` test method  
+- Add additional unit tests for
+  [`uniformity_test()`](https://mc-stan.org/posterior/reference/uniformity_test.md)
+- Remove the offset at a tied Pareto tail cutoff in
+  [`ps_tail()`](https://mc-stan.org/posterior/reference/ps_tail.md) and
+  [`pareto_pit()`](https://mc-stan.org/posterior/reference/pareto_pit.md)
+  ([\#468](https://github.com/stan-dev/posterior/issues/468))
+- Use a tolerance relative to the magnitude of `x` in
+  [`is_constant()`](https://mc-stan.org/posterior/reference/is_constant.md)
+  ([\#469](https://github.com/stan-dev/posterior/issues/469))
+- Use `x >= q` for the upper tail in
+  [`ess_quantile()`](https://mc-stan.org/posterior/reference/ess_quantile.md)
+  ([\#471](https://github.com/stan-dev/posterior/issues/471))
+
 ## posterior 1.7.1
 
 - Minor release to accommodate the JOSS paper.

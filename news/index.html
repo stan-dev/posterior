@@ -15,7 +15,7 @@
       posterior
     </a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.7.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">1.8.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -63,6 +63,30 @@
       <small>Source: <a href="https://github.com/stan-dev/posterior/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.8.0" id="posterior-180">posterior 1.8.0<a class="anchor" aria-label="anchor" href="#posterior-180"></a></h2>
+<div class="section level4">
+<h4 id="enhancements-1-8-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-8-0"></a></h4>
+<ul><li>Improve performance by avoiding full sorts in <code><a href="../reference/ps_tail.html">ps_tail()</a></code> and <code><a href="../reference/mcse_quantile.html">mcse_quantile()</a></code>.</li>
+<li>Add <code><a href="../reference/ps_tail_sorted_log_ratios.html">ps_tail_sorted_log_ratios()</a></code> for loo.</li>
+<li>
+<code><a href="../reference/bind_draws.html">bind_draws()</a></code> for <code>draws_array</code> objects is faster and holds one copy of the result instead of about three.</li>
+<li>
+<code><a href="../reference/subset_draws.html">subset_draws()</a></code> returns its input without copying it when every variable is selected.</li>
+<li>All warnings now have the class <code>posterior_warning</code> and a class for each cause. Calling packages can catch, count, or muffle each type of warning (<a href="https://github.com/stan-dev/posterior/issues/470" class="external-link">#470</a>).</li>
+<li>The Pareto tail length in <code><a href="../reference/pareto_khat.html">pareto_khat()</a></code>, <code><a href="../reference/pareto_diags.html">pareto_diags()</a></code>, <code><a href="../reference/pareto_smooth.html">pareto_smooth()</a></code>, and <code><a href="../reference/ps_tail_length.html">ps_tail_length()</a></code> now depends only on the number of draws (<a href="https://github.com/stan-dev/posterior/issues/446" class="external-link">#446</a>, <a href="https://github.com/stan-dev/posterior/issues/478" class="external-link">#478</a>). For MCMC draws, results with the default <code>r_eff = NULL</code> change slightly because <code>r_eff</code> was previously estimated with <code><a href="../reference/ess_tail.html">ess_tail()</a></code>. These functions are also faster now. <code>r_eff</code> is ignored, with a warning unless it is <code>NULL</code> or <code>1</code> (<a href="https://github.com/stan-dev/posterior/issues/478" class="external-link">#478</a>).</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-1-8-0">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-8-0"></a></h4>
+<ul><li>Fix truncation operation for <code><a href="../reference/uniformity_test.html">uniformity_test()</a></code> (<a href="https://github.com/stan-dev/posterior/issues/462" class="external-link">#462</a>)</li>
+<li>mid-p value adjusment for discrete <code>PRIT</code> test method<br></li>
+<li>Add additional unit tests for <code><a href="../reference/uniformity_test.html">uniformity_test()</a></code>
+</li>
+<li>Remove the offset at a tied Pareto tail cutoff in <code><a href="../reference/ps_tail.html">ps_tail()</a></code> and <code><a href="../reference/pareto_pit.html">pareto_pit()</a></code> (<a href="https://github.com/stan-dev/posterior/issues/468" class="external-link">#468</a>)</li>
+<li>Use a tolerance relative to the magnitude of <code>x</code> in <code><a href="../reference/is_constant.html">is_constant()</a></code> (<a href="https://github.com/stan-dev/posterior/issues/469" class="external-link">#469</a>)</li>
+<li>Use <code>x &gt;= q</code> for the upper tail in <code><a href="../reference/ess_quantile.html">ess_quantile()</a></code> (<a href="https://github.com/stan-dev/posterior/issues/471" class="external-link">#471</a>)</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.7.1" id="posterior-171">posterior 1.7.1<a class="anchor" aria-label="anchor" href="#posterior-171"></a></h2>
 <ul><li>Minor release to accommodate the JOSS paper.</li>
