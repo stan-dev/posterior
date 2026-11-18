@@ -1,4 +1,4 @@
-# posterior (development)
+# posterior 1.8.0
 
 ### Enhancements
 

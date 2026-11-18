@@ -146,6 +146,7 @@ Other contributors:
   \item Jacob Socolar [contributor]
   \item Noa Kallioinen [contributor]
   \item Teemu Säilynoja [contributor]
+  \item Florence Bockting [contributor]
 }
 
 }
