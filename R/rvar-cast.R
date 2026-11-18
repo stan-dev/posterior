@@ -11,15 +11,15 @@
 #' @details For objects that are already [`rvar`]s, returns them (with modified dimensions
 #' if `dim` is not `NULL`).
 #'
-#' For numeric or logical vectors or arrays, returns an [`rvar`] with a single draw and
+#' For [`numeric`], [`complex`], or [`logical`] vectors or arrays, returns an [`rvar`] with a single draw and
 #' the same dimensions as `x`. This is in contrast to the [rvar()] constructor, which
 #' treats the first dimension of `x` as the draws dimension. As a result, `as_rvar()`
 #' is useful for creating constants.
 #'
 #' While `as_rvar()` attempts to pick the most suitable subtype of [`rvar`] based on the
 #' type of `x` (possibly returning an [`rvar_factor`] or [`rvar_ordered`]),
-#' `as_rvar_numeric()`, `as_rvar_integer()`, and `as_rvar_logical()` always coerce
-#' the draws of the output [`rvar`] to be [`numeric`], [`integer`], or [`logical`]
+#' `as_rvar_numeric()`, `as_rvar_complex()`, `as_rvar_integer()`, and `as_rvar_logical()` always coerce
+#' the draws of the output [`rvar`] to be [`numeric`], [`complex`], [`integer`], or [`logical`]
 #' (respectively), and always return a base [`rvar`], never a subtype.
 #'
 #' @seealso [rvar()] to construct [`rvar`]s directly.  See [rdo()], [rfun()], and
@@ -90,6 +90,14 @@ as_rvar_numeric <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 
 #' @rdname as_rvar
 #' @export
+as_rvar_complex <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
+  out <- as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
+  draws_of(out) <- while_preserving_dims(as.complex, draws_of(out))
+  out
+}
+
+#' @rdname as_rvar
+#' @export
 as_rvar_integer <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
   out <- as_rvar(x, dim = dim, dimnames = dimnames, nchains = nchains)
   .draws <- draws_of(out)
@@ -122,6 +130,51 @@ as_rvar_logical <- function(x, dim = NULL, dimnames = NULL, nchains = NULL) {
 #' @export
 is_rvar <- function(x) {
   inherits(x, "rvar")
+}
+
+#' Is `x` a complex random variable?
+#'
+#' Test if `x` is an [`rvar`] backed by [`complex`] draws.
+#'
+#' @inheritParams is_rvar
+#'
+#' @seealso [as_rvar_complex()] to convert objects to `rvar`s backed by [`complex`] draws.
+#'
+#' @return `TRUE` if `x` is an [`rvar`] backed by [`complex`] draws, `FALSE` otherwise.
+#'
+#' @export
+is_rvar_complex <- function(x) {
+  is.complex(draws_of(x))
+}
+
+#' Is `x` an integer random variable?
+#'
+#' Test if `x` is an [`rvar`] backed by [`integer`] draws.
+#'
+#' @inheritParams is_rvar
+#'
+#' @seealso [as_rvar_integer()] to convert objects to `rvar`s backed by [`integer`] draws.
+#'
+#' @return `TRUE` if `x` is an [`rvar`] backed by [`integer`] draws, `FALSE` otherwise.
+#'
+#' @export
+is_rvar_integer <- function(x) {
+  is.integer(draws_of(x))
+}
+
+#' Is `x` a logical random variable?
+#'
+#' Test if `x` is an [`rvar`] backed by [`logical`] draws.
+#'
+#' @inheritParams is_rvar
+#'
+#' @seealso [as_rvar_logical()] to convert objects to `rvar`s backed by [`logical`] draws.
+#'
+#' @return `TRUE` if `x` is an [`rvar`] backed by [`logical`] draws, `FALSE` otherwise.
+#'
+#' @export
+is_rvar_logical <- function(x) {
+  is.logical(draws_of(x))
 }
 
 #' @export
@@ -386,6 +439,22 @@ vec_cast.rvar_factor.double <- function(x, to, ...) new_constant_rvar(copy_dims(
 # double -> rvar_ordered
 #' @export
 vec_cast.rvar_ordered.double <- function(x, to, ...) new_constant_rvar(copy_dims(x, as.ordered(x)))
+
+# complex -> rvar
+#' @export
+vec_ptype2.complex.rvar <- function(x, y, ...) new_rvar()
+#' @export
+vec_ptype2.rvar.complex <- function(x, y, ...) new_rvar()
+#' @export
+vec_cast.rvar.complex <- function(x, to, ...) new_constant_rvar(x)
+
+# complex -> rvar_factor
+#' @export
+vec_cast.rvar_factor.complex <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.factor, x))
+
+# complex -> rvar_ordered
+#' @export
+vec_cast.rvar_ordered.complex <- function(x, to, ...) new_constant_rvar(while_preserving_dims(as.ordered, x))
 
 # integer -> rvar
 #' @export

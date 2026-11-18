@@ -60,3 +60,11 @@ test_that("distributional functions work on an rvar_ordered", {
 
   expect_equal(quantile(x, c(.3, .5, .9, 1)), letters[2:5])
 })
+
+test_that("distributional functions throw an error on complex rvars", {
+  x <- rvar(1:10 + 10:1 * 1i)
+
+  expect_error(density(x, 5 + 1i), "Cannot apply.*to complex rvars")
+  expect_error(cdf(x, 5 + 1i), "Cannot apply.*to complex rvars")
+  expect_error(quantile(x, 0.5), "Cannot apply.*to complex rvars")
+})

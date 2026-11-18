@@ -68,7 +68,7 @@ E <- function(x, ...) {
 #' @export
 mean.rvar <- function(x, ...) {
   summarise_rvar_by_element_via_matrix(
-    x, "mean", matrixStats::colMeans2, useNames = FALSE, .ordered_okay = FALSE, ...
+    x, "mean", function(...) matrixStats::colMeans2(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
 }
 
@@ -88,7 +88,7 @@ Pr.logical <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 Pr.rvar <- function(x, ...) {
-  if (!is.logical(draws_of(x))) {
+  if (!is_rvar_logical(x)) {
     stop_no_call("Can only use `Pr()` on logical random variables.")
   }
   mean(x, ...)
@@ -100,24 +100,27 @@ Pr.rvar <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 median.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "median")
   summarise_rvar_by_element_via_matrix(
-    x, "median", matrixStats::colMedians, useNames = FALSE, ...
+    x, "median", function(...) matrixStats::colMedians(..., useNames = FALSE), ...
   )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 min.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "min")
   summarise_rvar_by_element_via_matrix(
-    x, "min", matrixStats::colMins, useNames = FALSE, ...
+    x, "min", function(...) matrixStats::colMins(..., useNames = FALSE), ...
   )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 max.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "max")
   summarise_rvar_by_element_via_matrix(
-    x, "max", matrixStats::colMaxs, useNames = FALSE, ...
+    x, "max", function(...) matrixStats::colMaxs(..., useNames = FALSE), ...
   )
 }
 
@@ -125,7 +128,7 @@ max.rvar <- function(x, ...) {
 #' @export
 sum.rvar <- function(x, ...) {
   summarise_rvar_by_element_via_matrix(
-    x, "sum", matrixStats::colSums2, useNames = FALSE, .ordered_okay = FALSE, ...
+    x, "sum", function(...) matrixStats::colSums2(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
 }
 
@@ -133,23 +136,25 @@ sum.rvar <- function(x, ...) {
 #' @export
 prod.rvar <- function(x, ...) {
   summarise_rvar_by_element_via_matrix(
-    x, "prod", matrixStats::colProds, useNames = FALSE, .ordered_okay = FALSE, ...
+    x, "prod", function(...) matrixStats::colProds(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 all.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "all")
   summarise_rvar_by_element_via_matrix(
-    x, "all", matrixStats::colAlls, useNames = FALSE, .ordered_okay = FALSE, ...
+    x, "all", function(...) matrixStats::colAlls(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
 }
 
 #' @rdname rvar-summaries-over-draws
 #' @export
 any.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "any")
   summarise_rvar_by_element_via_matrix(
-    x, "any", matrixStats::colAnys, useNames = FALSE, .ordered_okay = FALSE, ...
+    x, "any", function(...) matrixStats::colAnys(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
 }
 
@@ -173,9 +178,15 @@ distributional::variance
 #' @export
 variance.rvar <- function(x, ...) {
   summarise_rvar_by_element_via_matrix(
-    x, "variance", matrixStats::colVars, useNames = FALSE, .ordered_okay = FALSE, ...
+    x, "variance", function(...) matrixStats::colVars(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
 }
+#' @rdname rvar-summaries-over-draws
+#' @export
+variance.complex <- function(x, ...) {
+  variance(Re(c(x)), ...) + variance(Im(c(x)), ...)
+}
+
 
 #' @rdname rvar-summaries-over-draws
 #' @export
@@ -185,6 +196,9 @@ var <- function(x, ...) UseMethod("var")
 var.default <- function(x, ...) stats::var(x, ...)
 #' @rdname rvar-summaries-over-draws
 #' @export
+var.complex <- variance.complex
+#' @rdname rvar-summaries-over-draws
+#' @export
 var.rvar <- variance.rvar
 
 #' @rdname rvar-summaries-over-draws
@@ -192,12 +206,20 @@ var.rvar <- variance.rvar
 sd <- function(x, ...) UseMethod("sd")
 #' @rdname rvar-summaries-over-draws
 #' @export
-sd.default <- function(x, ...) stats::sd(x, ...)
+sd.default <- function(x, ...) {
+  # because complex matrices do not dispatch on the complex class, check for
+  # complex numbers here
+  if (is.complex(x)) {
+    sqrt(variance(c(x), ...))
+  } else {
+    stats::sd(x, ...)
+  }
+}
 #' @rdname rvar-summaries-over-draws
 #' @export
 sd.rvar <- function(x, ...) {
   summarise_rvar_by_element_via_matrix(
-    x, "sd", matrixStats::colSds, useNames = FALSE, .ordered_okay = FALSE, ...
+    x, "sd", function(...) matrixStats::colSds(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
 }
 
@@ -210,8 +232,9 @@ mad.default <- function(x, ...) stats::mad(x, ...)
 #' @rdname rvar-summaries-over-draws
 #' @export
 mad.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "mad")
   summarise_rvar_by_element_via_matrix(
-    x, "mad", matrixStats::colMads, useNames = FALSE, .ordered_okay = FALSE, ...
+    x, "mad", function(...) matrixStats::colMads(..., useNames = FALSE), .ordered_okay = FALSE, ...
   )
 }
 #' @rdname rvar-summaries-over-draws
@@ -226,9 +249,10 @@ mad.rvar_ordered <- function(x, ...) {
 #' @rdname rvar-summaries-over-draws
 #' @export
 range.rvar <- function(x, ...) {
+  check_rvar_not_complex(x, "range")
   summarise_rvar_by_element_via_matrix(
-    x, "range", function(...) t(matrixStats::colRanges(...)),
-    useNames = FALSE, .extra_dim = 2, .extra_dimnames = list(NULL), ...
+    x, "range", function(...) t(matrixStats::colRanges(..., useNames = FALSE)),
+    .extra_dim = 2, .extra_dimnames = list(NULL), ...
   )
 }
 
@@ -239,7 +263,8 @@ range.rvar <- function(x, ...) {
 #' @export
 is.finite.rvar <- function(x) {
   summarise_rvar_by_element_via_matrix(
-    x, "is.finite", function(x) matrixStats::colAlls(is.finite(x), useNames = FALSE), .factor_okay = TRUE
+    x, "is.finite", function(x) matrixStats::colAlls(is.finite(x), useNames = FALSE),
+    .factor_okay = TRUE, .complex_okay = TRUE
   )
 }
 
@@ -247,7 +272,8 @@ is.finite.rvar <- function(x) {
 #' @export
 is.infinite.rvar <- function(x) {
   summarise_rvar_by_element_via_matrix(
-    x, "is.inifite", function(x) matrixStats::colAnys(is.infinite(x), useNames = FALSE), .factor_okay = TRUE
+    x, "is.infinite", function(x) matrixStats::colAnys(is.infinite(x), useNames = FALSE),
+    .factor_okay = TRUE, .complex_okay = TRUE
   )
 }
 
@@ -255,7 +281,8 @@ is.infinite.rvar <- function(x) {
 #' @export
 is.nan.rvar <- function(x) {
   summarise_rvar_by_element_via_matrix(
-    x, "is.nan", function(x) matrixStats::colAnys(is.nan(x), useNames = FALSE), .factor_okay = TRUE
+    x, "is.nan", function(x) matrixStats::colAnys(is.nan(x), useNames = FALSE),
+    .factor_okay = TRUE, .complex_okay = TRUE
   )
 }
 
@@ -263,7 +290,8 @@ is.nan.rvar <- function(x) {
 #' @export
 is.na.rvar <- function(x) {
   summarise_rvar_by_element_via_matrix(
-    x, "is.na", matrixStats::colAnyNAs, useNames = FALSE, .factor_okay = TRUE
+    x, "is.na", matrixStats::colAnyNAs, useNames = FALSE,
+    .factor_okay = TRUE, .complex_okay = TRUE
   )
 }
 
