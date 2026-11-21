@@ -27,7 +27,10 @@ test_that("automatic thinning works as expected", {
 
   thin_by <- niterations(mu) / mean(
     c(ess_mu_1, ess_mu_2, ess_mu_3, ess_mu_4))
-  
-  expect_equal(thin_draws(mu), thin_draws(mu, thin = thin_by))
 
+  expect_message(
+    thinned <- thin_draws(mu),
+    "Automatically thinned by 1.6 based on ESS"
+  )
+  expect_equal(thinned, thin_draws(mu, thin = thin_by))
 })
