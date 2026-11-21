@@ -2,6 +2,8 @@
 
 ## posterior 1.8.0
 
+CRAN release: 2026-11-18
+
 #### Enhancements
 
 - Improve performance by avoiding full sorts in
