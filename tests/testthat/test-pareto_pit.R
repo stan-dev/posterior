@@ -56,8 +56,8 @@ test_that("pareto_pit treats -Inf log weights as ordinary zero weights", {
 
   # unlike pit(), dropping the zero-weight draws is NOT equivalent here,
   # because the number of tail draws is derived from ndraws
-  expect_equal(ps_tail_length(n, 1), 60)
-  expect_equal(ps_tail_length(length(keep), 1), 26)
+  expect_equal(ps_tail_length(n), 60)
+  expect_equal(ps_tail_length(length(keep)), 26)
 })
 
 test_that("pareto_pit keeps the raw PIT when the fitted tail has no mass", {

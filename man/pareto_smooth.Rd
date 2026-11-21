@@ -8,7 +8,7 @@
 \usage{
 pareto_smooth(x, ...)
 
-\method{pareto_smooth}{rvar}(x, return_k = FALSE, extra_diags = FALSE, ...)
+\method{pareto_smooth}{rvar}(x, return_k = FALSE, extra_diags = FALSE, ..., r_eff = NULL)
 
 \method{pareto_smooth}{default}(
   x,
@@ -42,6 +42,9 @@ be included in output? If \code{TRUE}, \code{min_ss}, \code{khat_threshold} and
 \code{convergence_rate} for the estimated k value will be
 returned. Default is \code{FALSE}.}
 
+\item{r_eff}{Ignored. A value other than \code{NULL} or 1 gives a warning.
+Default is \code{NULL}.}
+
 \item{tail}{(string) The tail to diagnose/smooth:
 \itemize{
 \item \code{"right"}: diagnose/smooth only the right (upper) tail
@@ -51,15 +54,9 @@ returned. Default is \code{FALSE}.}
 
 The default is \code{"both"}.}
 
-\item{r_eff}{(numeric) relative effective sample size estimate. If
-\code{r_eff} is NULL, it will be calculated assuming the draws are
-from MCMC. Default is NULL.}
-
 \item{ndraws_tail}{(numeric) number of draws for the tail. If
-\code{ndraws_tail} is not specified, it will be calculated as
-ceiling(3 * sqrt(length(x) / r_eff)) if length(x) > 225 and
-length(x) / 5 otherwise (see Appendix H in Vehtari et
-al. (2024)).}
+\code{ndraws_tail} is not specified, it is calculated with
+\code{\link[=ps_tail_length]{ps_tail_length()}}.}
 
 \item{verbose}{(logical) Should diagnostic messages be printed? If
 \code{TRUE}, messages related to Pareto diagnostics will be
