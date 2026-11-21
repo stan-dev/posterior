@@ -115,6 +115,7 @@ test_that("rvar_quantile works", {
 
   ord_quantiles <- t(apply(x_array, 1, quantile, probs = p, type = 1, names = TRUE))
   dimnames(ord_quantiles)[1] <- list(1:4)
+  storage.mode(ord_quantiles) <- "integer"
   expect_equal(
     rvar_quantile(x_ord, probs = p, names = TRUE),
     rvar_ordered(structure(ord_quantiles, levels = letters, class = c("ordered", "factor")))
