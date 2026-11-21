@@ -14,7 +14,7 @@ test_that("numeric summaries work", {
   expect_equal(max(x), apply(x_array, c(2,3), max))
 
   ordered_out <- function(x) structure(
-    x, dim = c(2,3), dimnames = list(a = c("a1", "a2"), b = c("b1", "b2", "b3")),
+    as.integer(x), dim = c(2,3), dimnames = list(a = c("a1", "a2"), b = c("b1", "b2", "b3")),
     levels = letters, class = c("ordered", "factor")
   )
   expect_equal(median(x_ord), ordered_out(c(2, 6, 10, 14, 18, 22)))
@@ -101,7 +101,7 @@ test_that("range works", {
 
   expect_equal(range(x), apply(x_array, c(2,3), range))
   expect_equal(range(x_ord),
-    structure(c(1, 4, 5, 8, 9, 12, 13, 16, 17, 20, 21, 24), levels = letters,
+    structure(c(1L, 4L, 5L, 8L, 9L, 12L, 13L, 16L, 17L, 20L, 21L, 24L), levels = letters,
       class = c("ordered", "factor"), dim = c(2, 2, 3),
       dimnames = list(NULL, a = c("a1", "a2"), b = c("b1", "b2", "b3"))
     )
