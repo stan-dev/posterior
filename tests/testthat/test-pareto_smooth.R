@@ -100,7 +100,6 @@ test_that("ps_tail_length depends on ndraws only", {
 
 
 test_that("pareto_khat diagnostics messages are as expected", {
-
   diags <- list(
     khat = 0.5,
     min_ss = 10,
@@ -108,26 +107,36 @@ test_that("pareto_khat diagnostics messages are as expected", {
     convergence_rate = 0.99
   )
 
-  expect_message(pareto_k_diagmsg(diags),
-                   paste0("Pareto k-hat = 0.5.\n"))
+  expect_snapshot(
+    {
+      # Ordinary message
+      pareto_k_diagmsg(diags)
 
-  diags$khat <- 0.6
+      # Sample size warning
+      diags$khat <- 0.6
+      pareto_k_diagmsg(diags)
 
-    expect_message(pareto_k_diagmsg(diags),
-                   paste0("Pareto k-hat = 0.6. Sample size is too small, for given Pareto k-hat. Sample size larger than 10 is needed for reliable results.\n"))
+      # Bias warning without sample size warning
+      diags$khat <- 0.71
+      diags$khat_threshold <- 0.8
+      pareto_k_diagmsg(diags)
 
-    diags$khat <- 0.71
-    diags$khat_threshold <- 0.8
+      # Combined sample size and bias warnings
+      diags$khat_threshold <- 0.55
+      pareto_k_diagmsg(diags)
 
-    expect_message(pareto_k_diagmsg(diags),
-                   paste0("Pareto k-hat = 0.71. Bias dominates when k-hat > 0.7, making empirical mean estimate of the Pareto-smoothed draws unreliable.\n"))
+      # Mean does not exist
+      diags$khat <- 1.1
+      pareto_k_diagmsg(diags)
 
-
-    diags$khat <- 1.1
-
-    expect_message(pareto_k_diagmsg(diags),
-                   paste0("Pareto k-hat = 1.1. Mean does not exist, making empirical mean estimate of the draws not applicable.\n"))
-
+      # Weighted diagnostics, high and low k-hat
+      diags$khat <- 0.8
+      pareto_k_diagmsg(diags, are_weights = TRUE)
+      diags$khat <- 0.5
+      pareto_k_diagmsg(diags, are_weights = TRUE)
+    },
+    cran = TRUE
+  )
 })
 
 test_that("pareto_diags returns expected diagnostics", {
