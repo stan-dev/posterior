@@ -1,3 +1,8 @@
+# posterior 1.8.1
+
+* Fix minor issues arising in CRAN checks on R devel.
+
+
 # posterior 1.8.0
 
 ### Enhancements
