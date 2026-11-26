@@ -31,7 +31,7 @@ Example
 library(posterior)
 ```
 
-    ## This is posterior version 1.8.0
+    ## This is posterior version 1.8.1
 
     ## 
     ## Attaching package: 'posterior'
