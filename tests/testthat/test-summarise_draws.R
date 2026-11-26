@@ -19,6 +19,14 @@ test_that("summarise_draws works correctly", {
   sum_x <- summarise_draws(x)
   expect_true(is.na(sum_x[1, "q5"]))
   expect_true(all(c("q5", "q95") %in% names(sum_x)))
+
+  sum_x <- summarise_draws(x, quantile2 = ~quantile2(.x, names = FALSE))
+  expect_true(all(c("quantile2.1", "quantile2.2") %in% names(sum_x)))
+
+  sum_x <- summarise_draws(x, mean, char = function(x) "char")
+  expect_double(sum_x[["mean"]])
+  expect_character(sum_x[["char"]])
+
 })
 
 test_that("aliases of summarise_draws work", {
