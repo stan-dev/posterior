@@ -6,14 +6,12 @@
 #' @aliases thin
 #' @template args-methods-x
 #' @param thin (positive numeric) The period for selecting draws. Must
-#'   be between 1 and the number of iterations. If the value is not an
-#'   integer, the draws will be selected such that the number of draws
-#'   returned is equal to round(ndraws(x) / thin). Intervals between
-#'   selected draws will be either ceiling(thin) or floor(thin), such
-#'   that the average interval will be close to the thin value. If
-#'   `NULL`, it will be automatically calculated based on bulk and
-#'   tail effective sample size as suggested by Säilynoja et
-#'   al. (2022).
+#'   be real value between 1 and the number of iterations. The number of draws
+#'   returned is equal to nchains * (floor((niterations - 1) / thin) + 1).
+#'   Intervals between selected draws will be either ceiling(thin) or
+#'   floor(thin), such that the average interval will be close to the thin
+#'   value. If `NULL`, it will be automatically calculated based on bulk and
+#'   tail effective sample size as suggested by Säilynoja et al. (2022).
 #' @template args-methods-dots
 #' @template ref-sailynoja-ecdf-2022
 #' @template return-draws
